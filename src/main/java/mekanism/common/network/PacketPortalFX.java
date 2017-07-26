@@ -28,8 +28,8 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 		
 				for(int i = 0; i < 50; i++)
 				{
-					player.world.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-					player.world.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + 1 + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+					player.world.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.x + random.nextFloat(), message.coord4D.y + random.nextFloat(), message.coord4D.z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+					player.world.spawnParticle(EnumParticleTypes.PORTAL, message.coord4D.x + random.nextFloat(), message.coord4D.y + 1 + random.nextFloat(), message.coord4D.z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 				}
 			}
 		}, player);

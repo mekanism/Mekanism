@@ -167,17 +167,17 @@ public class GuiSideConfiguration extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		String title = currentType.localize() + " " + LangUtils.localize("gui.config");
-		fontRendererObj.drawString(title, (xSize/2)-(fontRendererObj.getStringWidth(title)/2), 5, 0x404040);
+		fontRenderer.drawString(title, (xSize/2)-(fontRenderer.getStringWidth(title)/2), 5, 0x404040);
 		
 		if(configurable.getConfig().canEject(currentType))
 		{
-			fontRendererObj.drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
 		}
 		else {
-			fontRendererObj.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
 		}
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
+		fontRenderer.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
 
 		for(int i = 0; i < slotPosMap.size(); i++)
 		{
@@ -190,14 +190,14 @@ public class GuiSideConfiguration extends GuiMekanism
 			{
 				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 				{
-					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+					drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
 				}
 			}
 		}
 
 		if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

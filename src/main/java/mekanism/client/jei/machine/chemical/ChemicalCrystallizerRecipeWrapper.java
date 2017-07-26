@@ -1,16 +1,15 @@
 package mekanism.client.jei.machine.chemical;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChemicalCrystallizerRecipeWrapper extends BaseRecipeWrapper
 {
@@ -25,7 +24,7 @@ public class ChemicalCrystallizerRecipeWrapper extends BaseRecipeWrapper
 	}
 	
 	@Override
-	public void getIngredients(IIngredients ingredients) 
+	public void getIngredients(IIngredients ingredients)
 	{
 		ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
 		ingredients.setOutput(ItemStack.class, recipe.recipeOutput.output);

@@ -80,7 +80,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			
 			if(server != null)
 			{
-				World world = server.worldServerForDimension(coord4D.dimensionId);
+				World world = server.getWorld(coord4D.dimensionId);
 				PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.getTileEntity(world) + ")");
 			}
 			

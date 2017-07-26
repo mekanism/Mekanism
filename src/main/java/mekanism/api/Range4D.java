@@ -31,9 +31,9 @@ public class Range4D
 	
 	public Range4D(Chunk3D chunk)
 	{
-		xMin = chunk.xCoord*16;
+		xMin = chunk.x *16;
 		yMin = 0;
-		zMin = chunk.zCoord*16;
+		zMin = chunk.z *16;
 		xMax = xMin+16;
 		yMax = 255;
 		zMax = zMin+16;
@@ -43,13 +43,13 @@ public class Range4D
 	
 	public Range4D(Coord4D coord)
 	{
-		xMin = coord.xCoord;
-		yMin = coord.yCoord;
-		zMin = coord.zCoord;
+		xMin = coord.x;
+		yMin = coord.y;
+		zMin = coord.z;
 		
-		xMax = coord.xCoord+1;
-		yMax = coord.yCoord+1;
-		zMax = coord.zCoord+1;
+		xMax = coord.x +1;
+		yMax = coord.y +1;
+		zMax = coord.z +1;
 		
 		dimensionId = coord.dimensionId;
 	}

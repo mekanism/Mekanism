@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:basicblock",
+    "data": 3
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "item": "minecraft:coal",
+      "data": 1
+    }
+  }
+}

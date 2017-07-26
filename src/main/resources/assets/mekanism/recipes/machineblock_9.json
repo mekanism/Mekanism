@@ -1,0 +1,36 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 9
+  },
+  "pattern": [
+    "ECE",
+    "ORO",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:machine_enabled",
+      "machineType": "PurificationChamber"
+    }
+  ],
+  "key": {
+    "R": {
+      "item": "mekanism:machineblock",
+      "data": 0
+    },
+    "C": {
+      "ore": "circuitAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

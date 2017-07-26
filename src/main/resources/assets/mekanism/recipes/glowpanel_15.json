@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "mekanism:glowpanel",
+    "data": 15,
+    "count": 2
+  },
+  "pattern": [
+    "PSP",
+    "S S",
+    "GSG"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "mekanism:polyethene",
+      "data": 2
+    },
+    "G": {
+      "ore": "dustGlowstone",
+      "type": "forge:ore_dict"
+    }
+  }
+}

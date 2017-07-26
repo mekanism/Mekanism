@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:freerunners"
+  },
+  "pattern": [
+    "C C",
+    "A A",
+    "T T"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:energytablet"
+    }
+  }
+}

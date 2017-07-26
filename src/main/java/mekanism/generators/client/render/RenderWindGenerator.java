@@ -12,7 +12,7 @@ public class RenderWindGenerator extends TileEntitySpecialRenderer<TileEntityWin
 	private ModelWindGenerator model = new ModelWindGenerator();
 
 	@Override
-	public void renderTileEntityAt(TileEntityWindGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void render(TileEntityWindGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

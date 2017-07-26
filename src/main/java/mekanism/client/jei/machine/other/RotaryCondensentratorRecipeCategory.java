@@ -1,7 +1,5 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.List;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mezz.jei.api.IGuiHelper;
@@ -42,7 +40,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft) 
+	public void drawExtras(Minecraft minecraft)
 	{
 		super.drawExtras(minecraft);
 		
@@ -61,13 +59,13 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public IDrawable getBackground() 
+	public IDrawable getBackground()
 	{
 		return background;
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		if(recipeWrapper instanceof RotaryCondensentratorRecipeWrapper)
 		{

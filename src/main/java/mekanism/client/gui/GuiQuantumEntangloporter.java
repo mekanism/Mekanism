@@ -86,7 +86,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		setButton = new GuiButton(2, guiWidth + 27, guiHeight + 116, 60, 20, LangUtils.localize("gui.set"));
 		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, LangUtils.localize("gui.delete"));
 		
-		frequencyField = new GuiTextField(4, fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
+		frequencyField = new GuiTextField(4, fontRenderer, guiWidth + 50, guiHeight + 104, 86, 11);
 		frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
 		
 		frequencyField.setEnableBackgroundDrawing(false);
@@ -289,14 +289,14 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.getSecurity().getClientOwner() != null ? tileEntity.getSecurity().getClientOwner() : LangUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.owner") + ": " + (tileEntity.getSecurity().getClientOwner() != null ? tileEntity.getSecurity().getClientOwner() : LangUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
 		
-		fontRendererObj.drawString(" " + (tileEntity.getFrequency(null) != null ? tileEntity.getFrequency(null).name : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
-		fontRendererObj.drawString(" " + (tileEntity.getFrequency(null) != null ? getSecurity(tileEntity.getFrequency(null)) : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
+		fontRenderer.drawString(" " + (tileEntity.getFrequency(null) != null ? tileEntity.getFrequency(null).name : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRenderer.getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
+		fontRenderer.drawString(" " + (tileEntity.getFrequency(null) != null ? getSecurity(tileEntity.getFrequency(null)) : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRenderer.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
 		
 		String str = LangUtils.localize("gui.set") + ":";
 		renderScaledText(str, 27, 104, 0x404040, 20);

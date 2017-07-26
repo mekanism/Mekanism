@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:electricbow"
+  },
+  "pattern": [
+    " AB",
+    "E B",
+    " AB"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "B": {
+      "item": "minecraft:string"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    }
+  }
+}

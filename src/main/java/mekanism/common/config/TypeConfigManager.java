@@ -20,21 +20,4 @@ public class TypeConfigManager
 	{
 		config.put(type, enabled);
 	}
-	
-	public static void updateConfigRecipes(List blocks, TypeConfigManager manager)
-	{
-		for(Object obj : blocks) //enums are quirky
-		{
-			IBlockType type = (IBlockType)obj;
-			
-			if(manager.isEnabled(type.getBlockName()))
-			{
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
-				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());
-			}
-			else {
-				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
-			}
-		}
-	}
 }

@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanismtools:glowstoneleggings"
+  },
+  "pattern": [
+    "***",
+    "* *",
+    "* *"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotRefinedGlowstone",
+      "type": "forge:ore_dict"
+    }
+  }
+}

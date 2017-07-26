@@ -1,10 +1,5 @@
 package mekanism.client.jei.machine.chemical;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.MekanismFluids;
@@ -12,6 +7,10 @@ import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChemicalDissolutionChamberRecipeWrapper extends BaseRecipeWrapper
 {
@@ -26,7 +25,7 @@ public class ChemicalDissolutionChamberRecipeWrapper extends BaseRecipeWrapper
 	}
 	
 	@Override
-	public void getIngredients(IIngredients ingredients) 
+	public void getIngredients(IIngredients ingredients)
 	{
 		ingredients.setInput(GasStack.class, new GasStack(MekanismFluids.SulfuricAcid, 1000));
 		ingredients.setInput(ItemStack.class, recipe.recipeInput.ingredient);

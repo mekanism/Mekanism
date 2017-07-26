@@ -1,10 +1,5 @@
 package mekanism.client.jei;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -20,8 +15,12 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-
 import org.lwjgl.opengl.GL11;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 {
@@ -62,9 +61,15 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	{
 		return LangUtils.localize(unlocalizedName);
 	}
+
+	@Override
+	public String getModName()
+	{
+		return "Mekanism";
+	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft) 
+	public void drawExtras(Minecraft minecraft)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(guiLocation);
@@ -82,7 +87,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	}
 
 	@Override
-	public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h) 
+	public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h)
 	{
 		gui.drawTexturedModalRect(x, y, icon, w, h);
 	}
@@ -94,7 +99,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public void displayTooltips(List<String> list, int xAxis, int yAxis) {}
 
 	@Override
-	public FontRenderer getFont() 
+	public FontRenderer getFont()
 	{
 		return null;
 	}
@@ -161,7 +166,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		return guiTexture.replace("mekanism:gui/", "");
 	}
 
-	public void changeTexture(ResourceLocation texture) 
+	public void changeTexture(ResourceLocation texture)
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 	}
@@ -173,7 +178,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public static class GuiDummy extends Gui {}
 	
 	@Override
-	public IDrawable getIcon() 
+	public IDrawable getIcon()
 	{
 		return null;
 	}

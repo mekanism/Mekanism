@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:woodpaxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "minecraft:wooden_axe"
+    },
+    "Y": {
+      "item": "minecraft:wooden_pickaxe"
+    },
+    "Z": {
+      "item": "minecraft:wooden_shovel"
+    }
+  }
+}

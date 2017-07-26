@@ -115,8 +115,8 @@ public class GuiOredictionificator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		for(int i = 0; i < 3; i++)
 		{
@@ -141,7 +141,7 @@ public class GuiOredictionificator extends GuiMekanism
 					GlStateManager.popMatrix();
 				}
 
-				fontRendererObj.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
+				fontRenderer.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
 				renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
 			}
 		}

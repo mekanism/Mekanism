@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanism:basicblock",
+    "data": 8
+  },
+  "pattern": [
+    "SGS",
+    "GPG",
+    "SGS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

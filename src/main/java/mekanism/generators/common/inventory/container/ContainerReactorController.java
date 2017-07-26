@@ -133,7 +133,7 @@ public class ContainerReactorController extends Container
 
 		@Override
 	    @SideOnly(Side.CLIENT)
-	    public boolean canBeHovered()
+	    public boolean isEnabled()
 	    {
 	        return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorld(), tileEntity.getPos());
 	    }

@@ -1,9 +1,5 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -30,6 +26,10 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 {
@@ -95,7 +95,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft) 
+	public void drawExtras(Minecraft minecraft)
 	{
 		super.drawExtras(minecraft);
 		
@@ -105,13 +105,13 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public IDrawable getBackground() 
+	public IDrawable getBackground()
 	{
 		return background;
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		if(recipeWrapper instanceof MetallurgicInfuserRecipeWrapper)
 		{

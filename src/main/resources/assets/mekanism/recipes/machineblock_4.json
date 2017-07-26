@@ -1,0 +1,41 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 4
+  },
+  "pattern": [
+    "ACA",
+    "SES",
+    "TIT"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:machine_enabled",
+      "machineType": "DigitalMiner"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:atomicalloy"
+    },
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "item": "mekanism:machineblock",
+      "data": 15
+    },
+    "T": {
+      "item": "mekanism:teleportationcore"
+    },
+    "E": {
+      "item": "mekanism:robit"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

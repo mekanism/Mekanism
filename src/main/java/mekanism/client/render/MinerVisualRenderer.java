@@ -81,7 +81,7 @@ public final class MinerVisualRenderer
 	{
 		Model3D toReturn = new Model3D();
 		
-		toReturn.setBlockBounds(rel.xCoord + 0.4, rel.yCoord + 0.4, rel.zCoord + 0.4, rel.xCoord + 0.6, rel.yCoord + 0.6, rel.zCoord + 0.6);
+		toReturn.setBlockBounds(rel.x + 0.4, rel.y + 0.4, rel.z + 0.4, rel.x + 0.6, rel.y + 0.6, rel.z + 0.6);
 		toReturn.baseBlock = Blocks.WATER;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		

@@ -54,9 +54,9 @@ public class ContainerRobitSmelting extends Container
 	public void addListener(IContainerListener icrafting)
 	{
 		super.addListener(icrafting);
-		icrafting.sendProgressBarUpdate(this, 0, robit.furnaceCookTime);
-		icrafting.sendProgressBarUpdate(this, 1, robit.furnaceBurnTime);
-		icrafting.sendProgressBarUpdate(this, 2, robit.currentItemBurnTime);
+		icrafting.sendWindowProperty(this, 0, robit.furnaceCookTime);
+		icrafting.sendWindowProperty(this, 1, robit.furnaceBurnTime);
+		icrafting.sendWindowProperty(this, 2, robit.currentItemBurnTime);
 	}
 
 	@Override
@@ -70,17 +70,17 @@ public class ContainerRobitSmelting extends Container
 
 			if(lastCookTime != robit.furnaceCookTime)
 			{
-				icrafting.sendProgressBarUpdate(this, 0, robit.furnaceCookTime);
+				icrafting.sendWindowProperty(this, 0, robit.furnaceCookTime);
 			}
 
 			if(lastBurnTime != robit.furnaceBurnTime)
 			{
-				icrafting.sendProgressBarUpdate(this, 1, robit.furnaceBurnTime);
+				icrafting.sendWindowProperty(this, 1, robit.furnaceBurnTime);
 			}
 
 			if(lastItemBurnTime != robit.currentItemBurnTime)
 			{
-				icrafting.sendProgressBarUpdate(this, 2, robit.currentItemBurnTime);
+				icrafting.sendWindowProperty(this, 2, robit.currentItemBurnTime);
 			}
 		}
 

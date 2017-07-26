@@ -382,9 +382,11 @@ public class BlockGasTank extends BlockContainer
 		return false;
 	}
 
+	/*
 	@Override
 	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 	{
 		return false;
 	}
+	*/
 }

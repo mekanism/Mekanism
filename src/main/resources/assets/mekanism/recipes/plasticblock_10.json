@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:plasticblock",
+    "data": 10,
+    "count": 4
+  },
+  "pattern": [
+    "SSS",
+    "SDS",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "item": "mekanism:polyethene",
+      "data": 2
+    },
+    "D": {
+      "ore": "dyeLime",
+      "type": "forge:ore_dict"
+    }
+  }
+}

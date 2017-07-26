@@ -385,8 +385,6 @@ public class CommonProxy implements IGuiProvider
 	public void init() 
 	{
 		MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
-
-		MekanismSounds.register();
 	}
 
 	/**
@@ -614,8 +612,6 @@ public class CommonProxy implements IGuiProvider
 		}
 		
 		BlockStateMachine.MachineType.updateAllUsages();
-		
-		TypeConfigManager.updateConfigRecipes(MachineType.getValidMachines(), general.machinesManager);
 
 		if(fromPacket)
 		{
@@ -672,7 +668,7 @@ public class CommonProxy implements IGuiProvider
 
 	public EntityPlayer getPlayer(MessageContext context)
 	{
-		return context.getServerHandler().playerEntity;
+		return context.getServerHandler().player;
 	}
 	
 	public void handlePacket(Runnable runnable, EntityPlayer player)

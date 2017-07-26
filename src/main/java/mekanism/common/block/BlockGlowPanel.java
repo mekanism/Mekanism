@@ -46,7 +46,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			bounds[side.ordinal()] = MultipartUtils.rotate(cuboid.offset(fromOrigin.xCoord, fromOrigin.yCoord, fromOrigin.zCoord), side).offset(-fromOrigin.xCoord, -fromOrigin.zCoord, -fromOrigin.zCoord);
+			bounds[side.ordinal()] = MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side).offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z);
 		}
 	}
 	

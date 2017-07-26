@@ -44,12 +44,12 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
 		renderScaledText(LangUtils.localize("gui.coolingMeasurements") + ": " + EnumColor.RED + LangUtils.transOnOff(tileEntity.activeCooled), 36, 20, 0x404040, 117);
 		renderScaledText(LangUtils.localize("gui.redstoneOutputMode") + ": " + EnumColor.RED + tileEntity.logicType.getLocalizedName(), 23, 123, 0x404040, 130);
 		
 		String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
-		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 136, 0x404040); 
+		fontRenderer.drawString(text, (xSize/2)-(fontRenderer.getStringWidth(text)/2), 136, 0x404040); 
 		
 		for(ReactorLogic type : ReactorLogic.values())
 		{
@@ -59,7 +59,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 			
-			fontRendererObj.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);
+			fontRenderer.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);
 		}
 		
 		for(ReactorLogic type : ReactorLogic.values())
@@ -72,7 +72,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		
 		if(xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -28,6 +28,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -49,12 +50,13 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @InterfaceList({
 	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
 })
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer, IItemNetwork
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IItemNetwork
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -67,9 +69,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List<String> list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
-		super.addInformation(itemstack, entityplayer, list, flag);
+		super.addInformation(itemstack, world, list, flag);
 		list.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
 	}
 
@@ -169,7 +172,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 								if(slotStack.hasTagCompound())
 								{
-									item.getEntityItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+									item.getItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
 								}
 
 								float k = 0.05F;
@@ -280,24 +283,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	{
 		return getState(stack) == ConfiguratorMode.WRENCH;
 	}
-
-	@Override
-	public boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos)
-	{
-		return user instanceof EntityPlayer && canUseWrench(item, (EntityPlayer)user, pos);
-	}
-	
-	@Override
-	public boolean isUsable(ItemStack item, EntityLivingBase user, Entity entity)
-	{
-		return user instanceof EntityPlayer && canUseWrench(item, (EntityPlayer)user, null);
-	}
-
-	@Override
-	public void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos) {}
-	
-	@Override
-	public void toolUsed(ItemStack item, EntityLivingBase user, Entity entity) {}
 	
 	public static enum ConfiguratorMode
 	{

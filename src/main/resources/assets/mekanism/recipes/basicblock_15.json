@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:basicblock",
+    "data": 15
+  },
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "ore": "circuitAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:basicblock2",
+      "data": 0
+    }
+  }
+}

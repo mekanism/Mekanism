@@ -748,6 +748,47 @@ public class ClientProxy extends CommonProxy
 		};
 		
 		ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);
+
+		//Walkie Talkie dynamic texture
+		ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie)
+				{
+					ItemWalkieTalkie item = (ItemWalkieTalkie)stack.getItem();
+
+					if(item.getOn(stack))
+					{
+						return ItemWalkieTalkie.CHANNEL_MODELS.get(item.getChannel(stack));
+					}
+				}
+
+				return ItemWalkieTalkie.OFF_MODEL;
+			}
+		});
+
+		//Crafting Formula dynamic texture
+		ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, new ItemMeshDefinition() {
+			@Override
+			public ModelResourceLocation getModelLocation(ItemStack stack)
+			{
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula)
+				{
+					ItemCraftingFormula item = (ItemCraftingFormula)stack.getItem();
+
+					if(item.getInventory(stack) == null)
+					{
+						return ItemCraftingFormula.MODEL;
+					}
+					else {
+						return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL : ItemCraftingFormula.ENCODED_MODEL;
+					}
+				}
+
+				return ItemCraftingFormula.MODEL;
+			}
+		});
 		
 		OBJLoader.INSTANCE.addDomain("mekanism");
 	}
@@ -1112,47 +1153,6 @@ public class ClientProxy extends CommonProxy
 			}
 		});
 		
-		//Walkie Talkie dynamic texture
-		ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) 
-			{
-				if(!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie)
-				{
-					ItemWalkieTalkie item = (ItemWalkieTalkie)stack.getItem();
-					
-					if(item.getOn(stack))
-					{
-						return ItemWalkieTalkie.CHANNEL_MODELS.get(item.getChannel(stack));
-					}
-				}
-				
-				return ItemWalkieTalkie.OFF_MODEL;
-			}
-		});
-		
-		//Crafting Formula dynamic texture
-		ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, new ItemMeshDefinition() {
-			@Override
-			public ModelResourceLocation getModelLocation(ItemStack stack) 
-			{
-				if(!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula)
-				{
-					ItemCraftingFormula item = (ItemCraftingFormula)stack.getItem();
-					
-					if(item.getInventory(stack) == null)
-					{
-						return ItemCraftingFormula.MODEL;
-					}
-					else {
-						return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL : ItemCraftingFormula.ENCODED_MODEL;
-					}
-				}
-				
-				return ItemCraftingFormula.MODEL;
-			}
-		});
-		
 		CTMRegistry.registerCTMs("mekanism", "dynamic_tank", "structural_glass", "dynamic_valve", "teleporter", "teleporter_frame", "induction_casing", "induction_port", "induction_port_output",
 				"induction_cell_basic", "induction_cell_advanced", "induction_cell_elite", "induction_cell_ultimate", "induction_provider_basic", "induction_provider_advanced", "induction_provider_elite",
 				"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on",
@@ -1203,7 +1203,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			return context.getServerHandler().playerEntity;
+			return context.getServerHandler().player;
 		}
 		else {
 			return Minecraft.getMinecraft().player;
@@ -1232,6 +1232,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public FontRenderer getFontRenderer()
 	{
-		return Minecraft.getMinecraft().fontRendererObj;
+		return Minecraft.getMinecraft().fontRenderer;
 	}
 }

@@ -15,7 +15,7 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
 	private ModelHeatGenerator model = new ModelHeatGenerator();
 
 	@Override
-	public void renderTileEntityAt(TileEntityHeatGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void render(TileEntityHeatGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

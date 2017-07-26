@@ -1,7 +1,5 @@
 package mekanism.client.jei.machine;
 
-import java.util.List;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
@@ -76,7 +74,7 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft) 
+	public void drawExtras(Minecraft minecraft)
 	{
 		super.drawExtras(minecraft);
 		
@@ -89,13 +87,13 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 	}
 
 	@Override
-	public IDrawable getBackground() 
+	public IDrawable getBackground()
 	{
 		return background;
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		if(recipeWrapper instanceof AdvancedMachineRecipeWrapper)
 		{

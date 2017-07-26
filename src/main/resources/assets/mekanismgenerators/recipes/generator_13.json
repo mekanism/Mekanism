@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 13
+  },
+  "pattern": [
+    "STS",
+    "TBT",
+    "STS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    }
+  }
+}

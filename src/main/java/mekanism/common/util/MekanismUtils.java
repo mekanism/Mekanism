@@ -10,7 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -68,8 +67,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -94,8 +91,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import cofh.api.item.IToolHammer;
 
 import javax.annotation.Nonnull;
 
@@ -281,7 +276,7 @@ public final class MekanismUtils
 	 */
 	public static void addRecipe(ItemStack output, Object[] params)
 	{
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
+//		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
 	}
 
 	/**
@@ -991,23 +986,23 @@ public final class MekanismUtils
 	{
 		boolean didRemove = false;
 
-		for(Iterator itr = CraftingManager.getInstance().getRecipeList().iterator(); itr.hasNext();)
-		{
-			Object obj = itr.next();
-
-			if(obj instanceof IRecipe && !((IRecipe)obj).getRecipeOutput().isEmpty())
-			{
-				for(ItemStack itemStack : itemStacks)
-				{
-					if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
-					{
-						itr.remove();
-						didRemove = true;
-						break;
-					}
-				}
-			}
-		}
+//		for(Iterator itr = CraftingManager.getInstance().getRecipeList().iterator(); itr.hasNext();)
+//		{
+//			Object obj = itr.next();
+//
+//			if(obj instanceof IRecipe && ((IRecipe)obj).getRecipeOutput() != null)
+//			{
+//				for(ItemStack itemStack : itemStacks)
+//				{
+//					if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
+//					{
+//						itr.remove();
+//						didRemove = true;
+//						break;
+//					}
+//				}
+//			}
+//		}
 
 		return didRemove;
 	}
@@ -1068,7 +1063,7 @@ public final class MekanismUtils
 
 		Vec3d headVec = getHeadVec(player);
 		Vec3d lookVec = player.getLook(1);
-		Vec3d endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
+		Vec3d endVec = headVec.addVector(lookVec.x*reach, lookVec.y*reach, lookVec.z*reach);
 
 		return world.rayTraceBlocks(headVec, endVec, true);
 	}
@@ -1219,7 +1214,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return !general.blacklistRF;
+		return Mekanism.hooks.RFLoaded && !general.blacklistRF;
 	}
 	
 	/**
@@ -1247,7 +1242,7 @@ public final class MekanismUtils
 	 */
 	public static String getCoordDisplay(Coord4D obj)
 	{
-		return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
+		return "[" + obj.x + ", " + obj.y + ", " + obj.z + "]";
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -1389,15 +1384,15 @@ public final class MekanismUtils
 			return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
 		}
 
-		List<IRecipe> list = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
-		
-		for(IRecipe recipe : list)
-		{
-			if(recipe.matches(inv, world))
-			{
-				return recipe.getCraftingResult(inv);
-			}
-		}
+//		List<IRecipe> list = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
+//
+//		for(IRecipe recipe : list)
+//		{
+//			if(recipe.matches(inv, world))
+//			{
+//				return recipe.getCraftingResult(inv);
+//			}
+//		}
 
 		return ItemStack.EMPTY;
 	}
@@ -1532,7 +1527,7 @@ public final class MekanismUtils
 				return true;
 			}
 			
-			if(isCoFHHammer(tool.getItem()) && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
+			if(isCoFHHammer(tool.getItem())) // TODO Implement CoFH Hammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
 			{
 				return true;
 			}

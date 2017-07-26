@@ -24,7 +24,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 	private static final float BASE_SPEED = 512F;
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void render(TileEntity tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		renderAModelAt((TileEntityTurbineRotor)tileEntity, x, y, z, partialTick);
 	}

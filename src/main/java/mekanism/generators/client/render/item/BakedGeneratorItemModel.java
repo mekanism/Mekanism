@@ -31,14 +31,13 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.ImmutableList;
 
-public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareModel
+public class BakedGeneratorItemModel implements IBakedModel
 {
 	private IBakedModel baseModel;
 	private ItemStack stack;
@@ -186,7 +185,7 @@ public class BakedGeneratorItemModel implements IBakedModel, IPerspectiveAwareMo
 	}
 	
     @Override
-    public Pair<? extends IPerspectiveAwareModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) 
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
     	prevTransform = cameraTransformType;
     	

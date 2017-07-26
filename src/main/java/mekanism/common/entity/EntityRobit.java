@@ -1,5 +1,6 @@
 package mekanism.common.entity;
 
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 
@@ -59,7 +60,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
-import cofh.api.energy.IEnergyContainerItem;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticraft API")
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
@@ -177,7 +177,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 			if(ticksExisted % 20 == 0)
 			{
-				World serverWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(homeLocation.dimensionId);
+				World serverWorld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(homeLocation.dimensionId);
 				
 				if(homeLocation.exists(serverWorld))
 				{
@@ -293,7 +293,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		{
 			for(EntityItem item : items)
 			{
-				if(item.cannotPickup() || item.getEntityItem().getItem() instanceof ItemRobit)
+				if(item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit)
 				{
 					continue;
 				}
@@ -304,25 +304,25 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 					if(itemStack.isEmpty())
 					{
-						inventory.set(i, item.getEntityItem());
-						onItemPickup(item, item.getEntityItem().getCount());
+						inventory.set(i, item.getItem());
+						onItemPickup(item, item.getItem().getCount());
 						item.setDead();
 
 						playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}
-					else if(itemStack.isItemEqual(item.getEntityItem()) && itemStack.getCount() < itemStack.getMaxStackSize())
+					else if(itemStack.isItemEqual(item.getItem()) && itemStack.getCount() < itemStack.getMaxStackSize())
 					{
 						int needed = itemStack.getMaxStackSize() - itemStack.getCount();
-						int toAdd = Math.min(needed, item.getEntityItem().getCount());
+						int toAdd = Math.min(needed, item.getItem().getCount());
 
 						itemStack.grow(toAdd);
-						item.getEntityItem().shrink(toAdd);
+						item.getItem().shrink(toAdd);
 
 						onItemPickup(item, toAdd);
 
-						if(item.getEntityItem().getCount() == 0)
+						if(item.getItem().getCount() == 0)
 						{
 							item.setDead();
 						}
@@ -345,7 +345,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			changeDimension(homeLocation.dimensionId);
 		}
 
-		setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
+		setPositionAndUpdate(homeLocation.x +0.5, homeLocation.y +0.3, homeLocation.z +0.5);
 
 		motionX = 0;
 		motionY = 0;
@@ -431,10 +431,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		EntityItem entityItem = new EntityItem(world, posX, posY+0.3, posZ, new ItemStack(MekanismItems.Robit));
 
-		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
-		item.setEnergy(entityItem.getEntityItem(), getEnergy());
-		item.setInventory(((ISustainedInventory)this).getInventory(), entityItem.getEntityItem());
-		item.setName(entityItem.getEntityItem(), getName());
+		ItemRobit item = (ItemRobit)entityItem.getItem().getItem();
+		item.setEnergy(entityItem.getItem(), getEnergy());
+		item.setInventory(((ISustainedInventory)this).getInventory(), entityItem.getItem());
+		item.setName(entityItem.getItem(), getName());
 
 		float k = 0.05F;
 		entityItem.motionX = 0;

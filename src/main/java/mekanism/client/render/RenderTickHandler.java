@@ -51,7 +51,7 @@ public class RenderTickHandler
 			{
 				EntityPlayer player = mc.player;
 				World world = mc.player.world;
-				FontRenderer font = mc.fontRendererObj;
+				FontRenderer font = mc.fontRenderer;
 				RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
 				
 				if(font == null)
@@ -160,16 +160,16 @@ public class RenderTickHandler
 						mRight = mRight.translate(rRight);
 
 						Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
-						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mLeft.xCoord, mLeft.yCoord, mLeft.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 
 						v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
-						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mRight.xCoord, mRight.yCoord, mRight.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 
 						v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
-						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.xCoord, v.yCoord, v.zCoord, mCenter.xCoord, mCenter.yCoord, mCenter.zCoord);
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 					}
 				}
 				
@@ -195,7 +195,7 @@ public class RenderTickHandler
 							Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 							
 							Pos3D v = playerPos.translate(vec);
-							spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.xCoord, v.yCoord, v.zCoord, motion.xCoord, motion.yCoord + 0.2, motion.zCoord);
+							spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
 						}
 					}
 				}
@@ -247,7 +247,7 @@ public class RenderTickHandler
 								
 								Pos3D mergedVec = playerPos.translate(flameVec);
 								
-								spawnAndSetParticle(EnumParticleTypes.FLAME, world, mergedVec.xCoord, mergedVec.yCoord, mergedVec.zCoord, flameMotion.xCoord, flameMotion.yCoord, flameMotion.zCoord);
+								spawnAndSetParticle(EnumParticleTypes.FLAME, world, mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
 							}
 						}
 					}

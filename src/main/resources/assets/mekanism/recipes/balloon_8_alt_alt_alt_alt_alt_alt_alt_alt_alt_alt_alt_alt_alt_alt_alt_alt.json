@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:balloon",
+    "data": 8
+  },
+  "ingredients": [
+    {
+      "item": "mekanism:balloon",
+      "data": 15
+    },
+    {
+      "ore": "dyeGray",
+      "type": "forge:ore_dict"
+    }
+  ],
+  "type": "mekanism:ore_shapeless"
+}

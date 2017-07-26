@@ -10,8 +10,8 @@ import mekanism.tools.item.ItemMekanismSword;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ObjectHolder("mekanismtools")
 public class ToolsItems
@@ -210,88 +210,86 @@ public class ToolsItems
 		item.setHarvestLevel("shovel", material.getHarvestLevel());
 	}
 
-	public static void register()
+	public static void registerItems(IForgeRegistry<Item> registry)
 	{
 		//Base
-		GameRegistry.register(WoodPaxel);
-		GameRegistry.register(StonePaxel);
-		GameRegistry.register(IronPaxel);
-		GameRegistry.register(DiamondPaxel);
-		GameRegistry.register(GoldPaxel);
+		registry.register(WoodPaxel);
+		registry.register(StonePaxel);
+		registry.register(IronPaxel);
+		registry.register(DiamondPaxel);
+		registry.register(GoldPaxel);
 
 		//Obsidian
-		GameRegistry.register(ObsidianHelmet);
-		GameRegistry.register(ObsidianChestplate);
-		GameRegistry.register(ObsidianLeggings);
-		GameRegistry.register(ObsidianBoots);
-		GameRegistry.register(ObsidianPaxel);
-		GameRegistry.register(ObsidianPickaxe);
-		GameRegistry.register(ObsidianAxe);
-		GameRegistry.register(ObsidianShovel);
-		GameRegistry.register(ObsidianHoe);
-		GameRegistry.register(ObsidianSword);
+		registry.register(ObsidianHelmet);
+		registry.register(ObsidianChestplate);
+		registry.register(ObsidianLeggings);
+		registry.register(ObsidianBoots);
+		registry.register(ObsidianPaxel);
+		registry.register(ObsidianPickaxe);
+		registry.register(ObsidianAxe);
+		registry.register(ObsidianShovel);
+		registry.register(ObsidianHoe);
+		registry.register(ObsidianSword);
 
 		//Lazuli
-		GameRegistry.register(LazuliHelmet);
-		GameRegistry.register(LazuliChestplate);
-		GameRegistry.register(LazuliLeggings);
-		GameRegistry.register(LazuliBoots);
-		GameRegistry.register(LazuliPaxel);
-		GameRegistry.register(LazuliPickaxe);
-		GameRegistry.register(LazuliAxe);
-		GameRegistry.register(LazuliShovel);
-		GameRegistry.register(LazuliHoe);
-		GameRegistry.register(LazuliSword);
+		registry.register(LazuliHelmet);
+		registry.register(LazuliChestplate);
+		registry.register(LazuliLeggings);
+		registry.register(LazuliBoots);
+		registry.register(LazuliPaxel);
+		registry.register(LazuliPickaxe);
+		registry.register(LazuliAxe);
+		registry.register(LazuliShovel);
+		registry.register(LazuliHoe);
+		registry.register(LazuliSword);
 
 		//Osmium
-		GameRegistry.register(OsmiumHelmet);
-		GameRegistry.register(OsmiumChestplate);
-		GameRegistry.register(OsmiumLeggings);
-		GameRegistry.register(OsmiumBoots);
-		GameRegistry.register(OsmiumPaxel);
-		GameRegistry.register(OsmiumPickaxe);
-		GameRegistry.register(OsmiumAxe);
-		GameRegistry.register(OsmiumShovel);
-		GameRegistry.register(OsmiumHoe);
-		GameRegistry.register(OsmiumSword);
+		registry.register(OsmiumHelmet);
+		registry.register(OsmiumChestplate);
+		registry.register(OsmiumLeggings);
+		registry.register(OsmiumBoots);
+		registry.register(OsmiumPaxel);
+		registry.register(OsmiumPickaxe);
+		registry.register(OsmiumAxe);
+		registry.register(OsmiumShovel);
+		registry.register(OsmiumHoe);
+		registry.register(OsmiumSword);
 
 		//Bronze
-		GameRegistry.register(BronzeHelmet);
-		GameRegistry.register(BronzeChestplate);
-		GameRegistry.register(BronzeLeggings);
-		GameRegistry.register(BronzeBoots);
-		GameRegistry.register(BronzePaxel);
-		GameRegistry.register(BronzePickaxe);
-		GameRegistry.register(BronzeAxe);
-		GameRegistry.register(BronzeShovel);
-		GameRegistry.register(BronzeHoe);
-		GameRegistry.register(BronzeSword);
+		registry.register(BronzeHelmet);
+		registry.register(BronzeChestplate);
+		registry.register(BronzeLeggings);
+		registry.register(BronzeBoots);
+		registry.register(BronzePaxel);
+		registry.register(BronzePickaxe);
+		registry.register(BronzeAxe);
+		registry.register(BronzeShovel);
+		registry.register(BronzeHoe);
+		registry.register(BronzeSword);
 
 		//Glowstone
-		GameRegistry.register(GlowstonePaxel);
-		GameRegistry.register(GlowstonePickaxe);
-		GameRegistry.register(GlowstoneAxe);
-		GameRegistry.register(GlowstoneShovel);
-		GameRegistry.register(GlowstoneHoe);
-		GameRegistry.register(GlowstoneSword);
-		GameRegistry.register(GlowstoneHelmet);
-		GameRegistry.register(GlowstoneChestplate);
-		GameRegistry.register(GlowstoneLeggings);
-		GameRegistry.register(GlowstoneBoots);
+		registry.register(GlowstonePaxel);
+		registry.register(GlowstonePickaxe);
+		registry.register(GlowstoneAxe);
+		registry.register(GlowstoneShovel);
+		registry.register(GlowstoneHoe);
+		registry.register(GlowstoneSword);
+		registry.register(GlowstoneHelmet);
+		registry.register(GlowstoneChestplate);
+		registry.register(GlowstoneLeggings);
+		registry.register(GlowstoneBoots);
 
 		//Steel
-		GameRegistry.register(SteelPaxel);
-		GameRegistry.register(SteelPickaxe);
-		GameRegistry.register(SteelAxe);
-		GameRegistry.register(SteelShovel);
-		GameRegistry.register(SteelHoe);
-		GameRegistry.register(SteelSword);
-		GameRegistry.register(SteelHelmet);
-		GameRegistry.register(SteelChestplate);
-		GameRegistry.register(SteelLeggings);
-		GameRegistry.register(SteelBoots);
-		
-		MekanismTools.proxy.registerItemRenders();
+		registry.register(SteelPaxel);
+		registry.register(SteelPickaxe);
+		registry.register(SteelAxe);
+		registry.register(SteelShovel);
+		registry.register(SteelHoe);
+		registry.register(SteelSword);
+		registry.register(SteelHelmet);
+		registry.register(SteelChestplate);
+		registry.register(SteelLeggings);
+		registry.register(SteelBoots);
 	}
 	
 	public static Item init(Item item, String name)

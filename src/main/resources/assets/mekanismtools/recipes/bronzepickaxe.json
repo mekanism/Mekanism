@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:bronzepickaxe"
+  },
+  "pattern": [
+    "XXX",
+    " T ",
+    " T "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "ore": "ingotBronze",
+      "type": "forge:ore_dict"
+    }
+  }
+}

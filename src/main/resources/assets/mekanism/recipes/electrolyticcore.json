@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanism:electrolyticcore"
+  },
+  "pattern": [
+    "EPE",
+    "IEG",
+    "EPE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "dustOsmium",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "G": {
+      "ore": "dustGold",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "ore": "dustIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -29,9 +29,10 @@ import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
 import mekanism.common.item.ItemBlockTransmitter;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @ObjectHolder("mekanism")
 public class MekanismBlocks
@@ -59,52 +60,58 @@ public class MekanismBlocks
 
 	/**
 	 * Adds and registers all blocks.
+	 * @param registry IForgeRegistry for blocks.
 	 */
-	public static void register()
+	public static void registerBlocks(IForgeRegistry<Block> registry)
 	{
-		GameRegistry.register(init(BasicBlock, "BasicBlock"));
-		GameRegistry.register(init(BasicBlock2, "BasicBlock2"));
-		GameRegistry.register(init(MachineBlock, "MachineBlock"));
-		GameRegistry.register(init(MachineBlock2, "MachineBlock2"));
-		GameRegistry.register(init(MachineBlock3, "MachineBlock3"));
-		GameRegistry.register(init(OreBlock, "OreBlock"));
-		GameRegistry.register(init(EnergyCube, "EnergyCube"));
-		GameRegistry.register(init(Transmitter, "Transmitter"));
-		GameRegistry.register(init(ObsidianTNT, "ObsidianTNT"));
-		GameRegistry.register(init(BoundingBlock, "BoundingBlock"));
-		GameRegistry.register(init(GasTank, "GasTank"));
-		GameRegistry.register(init(CardboardBox, "CardboardBox"));
-		GameRegistry.register(init(GlowPanel, "GlowPanel"));
-		GameRegistry.register(init(PlasticBlock, "PlasticBlock"));
-		GameRegistry.register(init(SlickPlasticBlock, "SlickPlasticBlock"));
-		GameRegistry.register(init(GlowPlasticBlock, "GlowPlasticBlock"));
-		GameRegistry.register(init(ReinforcedPlasticBlock, "ReinforcedPlasticBlock"));
-		GameRegistry.register(init(RoadPlasticBlock, "RoadPlasticBlock"));
-		GameRegistry.register(init(PlasticFence, "PlasticFence"));
-		GameRegistry.register(init(SaltBlock, "SaltBlock"));
-		
-		GameRegistry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock), "BasicBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock2), "BasicBlock2"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock), "MachineBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock2), "MachineBlock2"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock3), "MachineBlock3"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockOre(OreBlock), "OreBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockEnergyCube(EnergyCube), "EnergyCube"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockTransmitter(Transmitter), "Transmitter"));
-		GameRegistry.register(MekanismItems.init(new ItemBlock(ObsidianTNT), "ObsidianTNT"));
-		GameRegistry.register(MekanismItems.init(new ItemBlock(BoundingBlock), "BoundingBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockGasTank(GasTank), "GasTank"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockCardboardBox(CardboardBox), "CardboardBox"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockGlowPanel(GlowPanel), "GlowPanel"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(PlasticBlock), "PlasticBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(SlickPlasticBlock), "SlickPlasticBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(GlowPlasticBlock), "GlowPlasticBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(ReinforcedPlasticBlock), "ReinforcedPlasticBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(RoadPlasticBlock), "RoadPlasticBlock"));
-		GameRegistry.register(MekanismItems.init(new ItemBlockPlastic(PlasticFence), "PlasticFence"));
-		GameRegistry.register(MekanismItems.init(new ItemBlock(SaltBlock), "SaltBlock"));
-		
-		Mekanism.proxy.registerBlockRenders();
+		registry.register(init(BasicBlock, "BasicBlock"));
+		registry.register(init(BasicBlock2, "BasicBlock2"));
+		registry.register(init(MachineBlock, "MachineBlock"));
+		registry.register(init(MachineBlock2, "MachineBlock2"));
+		registry.register(init(MachineBlock3, "MachineBlock3"));
+		registry.register(init(OreBlock, "OreBlock"));
+		registry.register(init(EnergyCube, "EnergyCube"));
+		registry.register(init(Transmitter, "Transmitter"));
+		registry.register(init(ObsidianTNT, "ObsidianTNT"));
+		registry.register(init(BoundingBlock, "BoundingBlock"));
+		registry.register(init(GasTank, "GasTank"));
+		registry.register(init(CardboardBox, "CardboardBox"));
+		registry.register(init(GlowPanel, "GlowPanel"));
+		registry.register(init(PlasticBlock, "PlasticBlock"));
+		registry.register(init(SlickPlasticBlock, "SlickPlasticBlock"));
+		registry.register(init(GlowPlasticBlock, "GlowPlasticBlock"));
+		registry.register(init(ReinforcedPlasticBlock, "ReinforcedPlasticBlock"));
+		registry.register(init(RoadPlasticBlock, "RoadPlasticBlock"));
+		registry.register(init(PlasticFence, "PlasticFence"));
+		registry.register(init(SaltBlock, "SaltBlock"));
+	}
+
+	/**
+	 * Adds and registers all itemBlocks.
+	 * @param registry IForgeRegistry for items.
+	 */
+	public static void registerItemBlocks(IForgeRegistry<Item> registry)
+	{
+		registry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock), "BasicBlock"));
+		registry.register(MekanismItems.init(new ItemBlockBasic(BasicBlock2), "BasicBlock2"));
+		registry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock), "MachineBlock"));
+		registry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock2), "MachineBlock2"));
+		registry.register(MekanismItems.init(new ItemBlockMachine(MachineBlock3), "MachineBlock3"));
+		registry.register(MekanismItems.init(new ItemBlockOre(OreBlock), "OreBlock"));
+		registry.register(MekanismItems.init(new ItemBlockEnergyCube(EnergyCube), "EnergyCube"));
+		registry.register(MekanismItems.init(new ItemBlockTransmitter(Transmitter), "Transmitter"));
+		registry.register(MekanismItems.init(new ItemBlock(ObsidianTNT), "ObsidianTNT"));
+		registry.register(MekanismItems.init(new ItemBlock(BoundingBlock), "BoundingBlock"));
+		registry.register(MekanismItems.init(new ItemBlockGasTank(GasTank), "GasTank"));
+		registry.register(MekanismItems.init(new ItemBlockCardboardBox(CardboardBox), "CardboardBox"));
+		registry.register(MekanismItems.init(new ItemBlockGlowPanel(GlowPanel), "GlowPanel"));
+		registry.register(MekanismItems.init(new ItemBlockPlastic(PlasticBlock), "PlasticBlock"));
+		registry.register(MekanismItems.init(new ItemBlockPlastic(SlickPlasticBlock), "SlickPlasticBlock"));
+		registry.register(MekanismItems.init(new ItemBlockPlastic(GlowPlasticBlock), "GlowPlasticBlock"));
+		registry.register(MekanismItems.init(new ItemBlockPlastic(ReinforcedPlasticBlock), "ReinforcedPlasticBlock"));
+		registry.register(MekanismItems.init(new ItemBlockPlastic(RoadPlasticBlock), "RoadPlasticBlock"));
+		registry.register(MekanismItems.init(new ItemBlockPlastic(PlasticFence), "PlasticFence"));
+		registry.register(MekanismItems.init(new ItemBlock(SaltBlock), "SaltBlock"));
 	}
 	
 	public static Block init(Block block, String name)

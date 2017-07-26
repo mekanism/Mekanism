@@ -1,0 +1,34 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 2
+    },
+    "item": "mekanism:gastank",
+    "data": 0,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "APA",
+    "PTP",
+    "APA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    },
+    "A": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "nbt": {
+        "tier": 1
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

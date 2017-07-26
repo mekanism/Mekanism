@@ -138,9 +138,9 @@ public class TileComponentChunkLoader implements ITileComponent
 	            
 				if(ticket != null) 
 	            {
-					ticket.getModData().setInteger("xCoord", tileEntity.getPos().getX());
-					ticket.getModData().setInteger("yCoord", tileEntity.getPos().getY());
-					ticket.getModData().setInteger("zCoord", tileEntity.getPos().getZ());
+					ticket.getModData().setInteger("x", tileEntity.getPos().getX());
+					ticket.getModData().setInteger("y", tileEntity.getPos().getY());
+					ticket.getModData().setInteger("z", tileEntity.getPos().getZ());
 					
 					forceChunks(ticket);
 	            }
@@ -179,8 +179,8 @@ public class TileComponentChunkLoader implements ITileComponent
 		for(ChunkPos pos : chunkSet)
 		{
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setInteger("chunkX", pos.chunkXPos);
-			compound.setInteger("chunkZ", pos.chunkZPos);
+			compound.setInteger("chunkX", pos.x);
+			compound.setInteger("chunkZ", pos.z);
 			list.appendTag(compound);
 		}
 		

@@ -1,12 +1,12 @@
 package mekanism.client.jei.machine;
 
-import javax.annotation.Nonnull;
-
 import mekanism.client.jei.BaseRecipeCategory;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
-public class BaseRecipeHandler<CATEGORY extends BaseRecipeCategory, WRAPPER extends BaseRecipeWrapper> implements IRecipeHandler<WRAPPER> 
+import javax.annotation.Nonnull;
+
+public class BaseRecipeHandler<CATEGORY extends BaseRecipeCategory, WRAPPER extends BaseRecipeWrapper> implements IRecipeHandler<WRAPPER>
 {
 	private final CATEGORY category;
 	

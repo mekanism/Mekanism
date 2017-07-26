@@ -1,16 +1,15 @@
 package mekanism.client.jei.machine.chemical;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChemicalInfuserRecipeWrapper extends BaseRecipeWrapper
 {
@@ -25,7 +24,7 @@ public class ChemicalInfuserRecipeWrapper extends BaseRecipeWrapper
 	}
 	
 	@Override
-	public void getIngredients(IIngredients ingredients) 
+	public void getIngredients(IIngredients ingredients)
 	{
 		ingredients.setInputs(GasStack.class, Arrays.asList(recipe.recipeInput.leftGas, recipe.recipeInput.rightGas));
 		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);

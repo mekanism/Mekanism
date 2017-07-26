@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 1
+  },
+  "pattern": [
+    "ECE",
+    "BIB",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:machine_enabled",
+      "machineType": "OsmiumCompressor"
+    }
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "ore": "circuitAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

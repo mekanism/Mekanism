@@ -13,7 +13,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
@@ -58,17 +58,13 @@ repositories {
         url 'http://tehnut.info/maven'
     }
     maven {
+        name 'CoFH Maven'
+        url = 'http://maven.covers1624.net'
+    }
+    maven {
         name 'buildcraft'
         url 'https://mod-buildcraft.com/maven/'
     }
-	maven {
-		name 'thiakil.io'
-		url 'https://thiakil.github.io/maven/'
-	}
-	maven {
-		name 'thiakil mirror' //in case GitHub doesn't like maven being hosted in GH Pages
-		url 'http://maven.thiakil.com'
-	}
 }
 
 // Define properties file
@@ -97,15 +93,14 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}"
-    deobfCompile "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
-    compile "net.darkhax.tesla:Tesla:${config.tesla_version}"
-    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
-    compile "li.cil.oc:OpenComputers:MC${config.minecraft_version}-${config.opencomputers_version}:api"
+    deobfProvided "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}:api"
+	runtime "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
+    compile "net.darkhax.tesla:Tesla-${config.minecraft_version}:${config.tesla_version}"
+    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api" // Not updated yet
+    compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
+    deobfCompile "cofh:RedstoneFlux:${config.minecraft_version}-${config.redstoneflux_version}:universal"
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
-	compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
-		exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
-	}
 }
 
 processResources

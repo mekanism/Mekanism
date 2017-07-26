@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -263,9 +263,9 @@ public class MekanismRenderer
 		return isDrawing(tess.getBuffer());
 	}
 	
-	public static boolean isDrawing(VertexBuffer buffer)
+	public static boolean isDrawing(BufferBuilder buffer)
 	{
-		return (boolean)ReflectionUtils.getPrivateValue(buffer, VertexBuffer.class, ObfuscatedNames.VertexBuffer_isDrawing);
+		return (boolean)ReflectionUtils.getPrivateValue(buffer, BufferBuilder.class, ObfuscatedNames.VertexBuffer_isDrawing);
 	}
 
 	public static class Model3D

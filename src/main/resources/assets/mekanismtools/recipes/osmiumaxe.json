@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:osmiumaxe"
+  },
+  "pattern": [
+    "XX",
+    "XT",
+    " T"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

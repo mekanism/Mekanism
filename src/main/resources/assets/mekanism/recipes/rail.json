@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "minecraft:rail",
+    "count": 24
+  },
+  "pattern": [
+    "O O",
+    "OSO",
+    "O O"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "stickWood",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

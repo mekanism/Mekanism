@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:polyethene",
+    "data": 3
+  },
+  "pattern": [
+    "R",
+    "R"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "mekanism:polyethene",
+      "data": 1
+    }
+  }
+}

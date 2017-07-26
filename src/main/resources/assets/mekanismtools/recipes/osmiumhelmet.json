@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanismtools:osmiumhelmet"
+  },
+  "pattern": [
+    "***",
+    "* *"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

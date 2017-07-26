@@ -112,7 +112,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 							
 							if(coords != null)
 							{
-								World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
+								World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(coords.dimensionId);
 								TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);
 								
 								if(teleporter != null)

@@ -13,6 +13,8 @@ import mekanism.common.security.IOwnerItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.SecurityUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 {
@@ -30,9 +34,10 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	}
 	
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
-		list.add(SecurityUtils.getOwnerDisplay(entityplayer, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+		list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
 		
 		if(getFrequency(itemstack) != null)
 		{
@@ -40,7 +45,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + (isPrivateMode(itemstack) ? "private" : "public")));
 		}
 		
-		super.addInformation(itemstack, entityplayer, list, flag);
+		super.addInformation(itemstack, world, list, flag);
 	}
 
 	@Override
@@ -84,7 +89,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			neededEnergy += 10000;
 		}
 
-		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
+		int distance = (int)entity.getDistance(coords.x, coords.y, coords.z);
 
 		neededEnergy+=(distance*10);
 

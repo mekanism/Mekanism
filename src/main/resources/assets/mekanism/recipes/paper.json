@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:paper",
+    "count": 6
+  },
+  "pattern": [
+    "SSS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "mekanism:sawdust"
+    }
+  }
+}

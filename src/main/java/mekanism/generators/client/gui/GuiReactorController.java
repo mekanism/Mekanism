@@ -55,14 +55,14 @@ public class GuiReactorController extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getName(), 46, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 46, 6, 0x404040);
 		
 		if(tileEntity.getActive())
 		{
-			fontRendererObj.drawString(LangUtils.localize("gui.formed"), 8, 16, 0x404040);
+			fontRenderer.drawString(LangUtils.localize("gui.formed"), 8, 16, 0x404040);
 		}
 		else {
-			fontRendererObj.drawString(LangUtils.localize("gui.incomplete"), 8, 16, 0x404040);
+			fontRenderer.drawString(LangUtils.localize("gui.incomplete"), 8, 16, 0x404040);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

@@ -216,14 +216,13 @@ public abstract class BlockReactor extends Block implements ICTMBlock, ITileEnti
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(BlockStateReactor.ReactorBlockType type : BlockStateReactor.ReactorBlockType.values())
 		{
 			if(type.blockType == getReactorBlock())
 			{
-				list.add(new ItemStack(item, 1, type.meta));
+				list.add(new ItemStack(this, 1, type.meta));
 			}
 		}
 	}

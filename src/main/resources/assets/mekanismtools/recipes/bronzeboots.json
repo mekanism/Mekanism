@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanismtools:bronzeboots"
+  },
+  "pattern": [
+    "* *",
+    "* *"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotBronze",
+      "type": "forge:ore_dict"
+    }
+  }
+}

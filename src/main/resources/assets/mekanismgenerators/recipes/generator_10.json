@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 10,
+    "count": 4
+  },
+  "pattern": [
+    " S ",
+    "SOS",
+    " S "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

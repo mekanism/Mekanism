@@ -14,7 +14,6 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
-import mekanism.common.recipe.ShapedMekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityChargepad;
@@ -170,7 +169,7 @@ public class BlockStateMachine extends ExtendedBlockState
 		public boolean isElectric;
 		public boolean hasModel;
 		public boolean supportsUpgrades;
-		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
+//		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 		public Tier.FactoryTier factoryTier;
@@ -205,24 +204,6 @@ public class BlockStateMachine extends ExtendedBlockState
 		public boolean isEnabled()
 		{
 			return general.machinesManager.isEnabled(blockName);
-		}
-
-		@Override
-		public void addRecipes(Collection<ShapedMekanismRecipe> recipes)
-		{
-			blockRecipes.addAll(recipes);
-		}
-
-		@Override
-		public void addRecipe(ShapedMekanismRecipe recipe)
-		{
-			blockRecipes.add(recipe);
-		}
-
-		@Override
-		public Collection<ShapedMekanismRecipe> getRecipes()
-		{
-			return blockRecipes;
 		}
 
 		public static List<MachineType> getValidMachines()

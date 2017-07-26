@@ -1,0 +1,42 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 7
+  },
+  "pattern": [
+    "CWC",
+    "EIE",
+    "CGC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:machine_enabled",
+      "machineType": "ChemicalWasher"
+    }
+  ],
+  "key": {
+    "C": {
+      "ore": "circuitBasic",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "W": {
+      "item": "minecraft:bucket"
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 3
+  },
+  "pattern": [
+    "RCR",
+    "GPG",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:machine_enabled",
+      "machineType": "ChemicalInjectionChamber"
+    }
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:machineblock",
+      "data": 9
+    },
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "circuitElite",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "ore": "ingotGold",
+      "type": "forge:ore_dict"
+    }
+  }
+}

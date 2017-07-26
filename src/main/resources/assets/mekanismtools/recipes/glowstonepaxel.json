@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:glowstonepaxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "mekanismtools:glowstoneaxe"
+    },
+    "Y": {
+      "item": "mekanismtools:glowstonepickaxe"
+    },
+    "Z": {
+      "item": "mekanismtools:glowstoneshovel"
+    }
+  }
+}

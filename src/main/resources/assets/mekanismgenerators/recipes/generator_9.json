@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 9
+  },
+  "pattern": [
+    "SGS",
+    "GEG",
+    "SGS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "G": {
+      "ore": "ingotGold",
+      "type": "forge:ore_dict"
+    }
+  }
+}

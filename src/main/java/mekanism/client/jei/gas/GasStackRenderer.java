@@ -1,10 +1,5 @@
 package mekanism.client.jei.gas;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.util.LangUtils;
@@ -12,15 +7,20 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.Fluid;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GasStackRenderer implements IIngredientRenderer<GasStack>
 {
@@ -47,12 +47,12 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 		this(Fluid.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEX_WIDTH, TEX_HEIGHT, null);
 	}
 
-	public GasStackRenderer(int capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay) 
+	public GasStackRenderer(int capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay)
 	{
 		this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height, overlay);
 	}
 
-	public GasStackRenderer(int capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) 
+	public GasStackRenderer(int capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay)
 	{
 		this.capacityMb = capacityMb;
 		this.tooltipMode = tooltipMode;
@@ -62,7 +62,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 	}
 
 	@Override
-	public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) 
+	public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack)
 	{
 		GlStateManager.enableBlend();
 		GlStateManager.enableAlpha();
@@ -148,7 +148,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 		}
 	}
 
-	private static TextureAtlasSprite getStillGasSprite(Minecraft minecraft, Gas gas) 
+	private static TextureAtlasSprite getStillGasSprite(Minecraft minecraft, Gas gas)
 	{
 		TextureMap textureMapBlocks = minecraft.getTextureMapBlocks();
 		ResourceLocation gasStill = gas.getIcon();
@@ -186,7 +186,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 		vMax = vMax - (maskTop / 16.0 * (vMax - vMin));
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexBuffer = tessellator.getBuffer();
+		BufferBuilder vertexBuffer = tessellator.getBuffer();
 		vertexBuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 		vertexBuffer.pos(xCoord, yCoord + 16, zLevel).tex(uMin, vMax).endVertex();
 		vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + 16, zLevel).tex(uMax, vMax).endVertex();
@@ -196,9 +196,9 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 	}
 
 	@Override
-	public List<String> getTooltip(Minecraft minecraft, GasStack gasStack) 
+	public List<String> getTooltip(Minecraft minecraft, GasStack gasStack, ITooltipFlag tooltipFlag)
 	{
-		List<String> tooltip = new ArrayList<String>();
+		List<String> tooltip = new ArrayList<>();
 		Gas gasType = gasStack.getGas();
 		
 		if(gasType == null) 
@@ -225,6 +225,6 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 
 	@Override
 	public FontRenderer getFontRenderer(Minecraft minecraft, GasStack gasStack) {
-		return minecraft.fontRendererObj;
+		return minecraft.fontRenderer;
 	}
 }

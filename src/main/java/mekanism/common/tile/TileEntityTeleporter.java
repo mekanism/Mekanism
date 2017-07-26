@@ -353,7 +353,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 		for(Entity entity : entitiesInPortal)
 		{
-			World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(closestCoords.dimensionId);
+			World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(closestCoords.dimensionId);
 			TileEntityTeleporter teleporter = (TileEntityTeleporter)closestCoords.getTileEntity(teleWorld);
 
 			if(teleporter != null)
@@ -387,9 +387,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		if(player.dimension != coord.dimensionId)
 		{
 			int id = player.dimension;
-			WorldServer oldWorld = player.mcServer.worldServerForDimension(player.dimension);
+			WorldServer oldWorld = player.mcServer.getWorld(player.dimension);
 			player.dimension = coord.dimensionId;
-			WorldServer newWorld = player.mcServer.worldServerForDimension(player.dimension);
+			WorldServer newWorld = player.mcServer.getWorld(player.dimension);
 			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.world.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
 			oldWorld.removeEntityDangerously(player);
 			player.isDead = false;
@@ -397,13 +397,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			if(player.isEntityAlive())
 			{
 				newWorld.spawnEntity(player);
-				player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+				player.setLocationAndAngles(coord.x +0.5, coord.y +1, coord.z +0.5, player.rotationYaw, player.rotationPitch);
 				newWorld.updateEntityWithOptionalForce(player, false);
 				player.setWorld(newWorld);
 			}
 
 			player.mcServer.getPlayerList().preparePlayer(player, oldWorld);
-			player.connection.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.connection.setPlayerLocation(coord.x +0.5, coord.y +1, coord.z +0.5, player.rotationYaw, player.rotationPitch);
 			player.interactionManager.setWorld(newWorld);
 			player.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
 			player.mcServer.getPlayerList().syncPlayerInventory(player);
@@ -418,13 +418,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, id, coord.dimensionId);
 		}
 		else {
-			player.connection.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.connection.setPlayerLocation(coord.x +0.5, coord.y +1, coord.z +0.5, player.rotationYaw, player.rotationPitch);
 		}
 	}
 
 	public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter)
 	{
-		WorldServer world = server.worldServerForDimension(coord.dimensionId);
+		WorldServer world = server.getWorld(coord.dimensionId);
 
 		if(entity.world.provider.getDimension() != coord.dimensionId)
 		{
@@ -432,7 +432,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			entity.isDead = false;
 
 			world.spawnEntity(entity);
-			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			entity.setLocationAndAngles(coord.x +0.5, coord.y +1, coord.z +0.5, entity.rotationYaw, entity.rotationPitch);
 			world.updateEntityWithOptionalForce(entity, false);
 			entity.setWorld(world);
 			world.resetUpdateEntityTick();
@@ -455,7 +455,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			entity.isDead = true;
 		}
 		else {
-			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			entity.setLocationAndAngles(coord.x +0.5, coord.y +1, coord.z +0.5, entity.rotationYaw, entity.rotationPitch);
 			Mekanism.packetHandler.sendToReceivers(new EntityMoveMessage(entity), new Range4D(new Coord4D(entity)));
 		}
 	}
@@ -524,7 +524,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 			energyCost+=10000;
 		}
 
-		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
+		int distance = (int)entity.getDistance(coords.x, coords.y, coords.z);
 		energyCost+=(distance*10);
 
 		return energyCost;

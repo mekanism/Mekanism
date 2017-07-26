@@ -96,7 +96,7 @@ public class GuiMModIDFilter extends GuiMekanism
 			(buttonList.get(1)).enabled = false;
 		}
 
-		modIDText = new GuiTextField(2, fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
+		modIDText = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
 		modIDText.setMaxStringLength(TransporterFilter.MAX_LENGTH);
 		modIDText.setFocused(true);
 	}
@@ -163,8 +163,8 @@ public class GuiMModIDFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		renderScaledText(LangUtils.localize("gui.id") + ": " + filter.modID, 35, 32, 0x00CD00, 107);
 
 		if(!renderStack.isEmpty())
@@ -189,7 +189,7 @@ public class GuiMModIDFilter extends GuiMekanism
 		
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

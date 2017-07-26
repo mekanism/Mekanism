@@ -16,7 +16,6 @@ import mekanism.common.Resource;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.computer.CCPeripheral;
 import mekanism.common.integration.computer.OCDriver;
-import mekanism.common.integration.storagedrawer.StorageDrawerRecipeHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
@@ -42,6 +41,7 @@ public final class MekanismHooks
 	public boolean AE2Loaded = false;
 	public boolean TeslaLoaded = false;
 	public boolean MCMPLoaded = false;
+	public boolean RFLoaded = false;
 
 	public boolean MetallurgyCoreLoaded = false;
 	public boolean MetallurgyBaseLoaded = false;
@@ -56,6 +56,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
 		if(Loader.isModLoaded("tesla")) TeslaLoaded = true;
 		if(Loader.isModLoaded("mcmultipart")) MCMPLoaded = true;
+		if(Loader.isModLoaded("redstoneflux")) RFLoaded = true;
 		
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{
@@ -78,11 +79,6 @@ public final class MekanismHooks
 		if(MetallurgyCoreLoaded)
 		{
 			//loadMettallurgy();
-		}
-
-		if(Loader.isModLoaded("storagedrawers"))
-		{
-			StorageDrawerRecipeHandler.register();
 		}
 	}
 

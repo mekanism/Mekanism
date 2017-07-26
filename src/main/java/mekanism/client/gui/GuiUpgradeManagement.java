@@ -74,8 +74,8 @@ public class GuiUpgradeManagement extends GuiMekanism
 		GL11.glColor4f(1, 1, 1, 1);
 		drawTexturedModalRect(84, 8+getScroll(), 202, 0, 4, 4);
 		
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
 		
 		if(selectedType == null)
 		{
@@ -102,7 +102,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			if(supported.length > supportedIndex)
 			{
 				renderUpgrade(supported[supportedIndex], 80, 57, 0.8F, true);
-				fontRendererObj.drawString(supported[supportedIndex].getName(), 96, 59, 0x404040);
+				fontRenderer.drawString(supported[supportedIndex].getName(), 96, 59, 0x404040);
 			}
 		}
 		
@@ -123,7 +123,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			int yPos = 7 + (i*12);
 			int yRender = 0;
 			
-			fontRendererObj.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
+			fontRenderer.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
 			
 			renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
 			
@@ -140,7 +140,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(size, size, size);
-		fontRendererObj.drawString(text, scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y, 0x00CD00);
+		fontRenderer.drawString(text, scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y, 0x00CD00);
 		GlStateManager.popMatrix();
 	}
 	

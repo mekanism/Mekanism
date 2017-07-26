@@ -105,7 +105,7 @@ public final class TransporterUtils
 
 		TransporterManager.remove(stack);
 
-		EntityItem entityItem = new EntityItem(tileEntity.world(), tileEntity.coord().xCoord + pos[0], tileEntity.coord().yCoord + pos[1], tileEntity.coord().zCoord + pos[2], stack.itemStack);
+		EntityItem entityItem = new EntityItem(tileEntity.world(), tileEntity.coord().x + pos[0], tileEntity.coord().y + pos[1], tileEntity.coord().z + pos[2], stack.itemStack);
 
 		entityItem.motionX = 0;
 		entityItem.motionY = 0;
@@ -119,7 +119,7 @@ public final class TransporterUtils
 		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.world().provider.getDimension()).offset(stack.getSide(tileEntity));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
-		return new float[] {0.5F + offset.xCoord*progress, 0.25F + offset.yCoord*progress, 0.5F + offset.zCoord*progress};
+		return new float[] {0.5F + offset.x *progress, 0.25F + offset.y *progress, 0.5F + offset.z *progress};
 	}
 
 	public static void incrementColor(ILogisticalTransporter tileEntity)

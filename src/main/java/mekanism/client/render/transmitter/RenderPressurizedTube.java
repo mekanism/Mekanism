@@ -5,7 +5,7 @@ import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
@@ -18,7 +18,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 	}
 	
 	@Override
-	public void renderTileEntityAt(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage)
+	public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(client.opaqueTransmitters || !tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
 		{
@@ -27,7 +27,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 
 		push();
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
 
 		for(EnumFacing side : EnumFacing.VALUES)
@@ -44,7 +44,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 		pop();
 	}
 	
-	public void renderGasSide(VertexBuffer renderer, EnumFacing side, TileEntityPressurizedTube tube)
+	public void renderGasSide(BufferBuilder renderer, EnumFacing side, TileEntityPressurizedTube tube)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(renderer, tube.getTransmitter().getTransmitterNetwork().refGas.getSprite(), getModelForSide(tube, side), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));

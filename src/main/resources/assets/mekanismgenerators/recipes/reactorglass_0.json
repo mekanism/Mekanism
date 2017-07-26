@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanismgenerators:reactorglass",
+    "data": 0,
+    "count": 4
+  },
+  "pattern": [
+    " I ",
+    "IGI",
+    " I "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanismgenerators:reactor",
+      "data": 1
+    }
+  }
+}

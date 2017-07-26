@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
@@ -37,7 +38,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import cofh.api.energy.IEnergyContainerItem;
 
 public class TileEntityChargepad extends TileEntityNoisyBlock
 {

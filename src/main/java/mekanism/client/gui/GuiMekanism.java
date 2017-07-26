@@ -43,7 +43,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	
 	public float getNeededScale(String text, int maxX)
 	{
-		int length = fontRendererObj.getStringWidth(text);
+		int length = fontRenderer.getStringWidth(text);
 		
 		if(length <= maxX)
 		{
@@ -57,11 +57,11 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	/** returns scale */
 	public void renderScaledText(String text, int x, int y, int color, int maxX)
 	{
-		int length = fontRendererObj.getStringWidth(text);
+		int length = fontRenderer.getStringWidth(text);
 		
 		if(length <= maxX)
 		{
-			fontRendererObj.drawString(text, x, y, color);
+			fontRenderer.drawString(text, x, y, color);
 		}
 		else {
 			float scale = (float)maxX/length;
@@ -71,7 +71,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			GlStateManager.pushMatrix();
 			
 			GlStateManager.scale(scale, scale, scale);
-			fontRendererObj.drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
+			fontRenderer.drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
 			
 			GlStateManager.popMatrix();
 		}
@@ -125,7 +125,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 				if(data != null)
 				{
-					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+					drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
 				}
 			}
 		}
@@ -211,7 +211,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	public void displayTooltip(String s, int x, int y)
 	{
-		drawCreativeTabHoveringText(s, x, y);
+		drawHoveringText(s, x, y);
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	public FontRenderer getFont()
 	{
-		return fontRendererObj;
+		return fontRenderer;
 	}
 	
 	@Override
@@ -294,6 +294,13 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	protected FontRenderer getFontRenderer()
 	{
-		return fontRendererObj;
+		return fontRenderer;
+	}
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		this.drawDefaultBackground();
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 }

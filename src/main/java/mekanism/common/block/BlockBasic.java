@@ -302,8 +302,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
 		for(BasicBlockType type : BasicBlockType.values())
 		{
@@ -318,7 +317,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						{
 							if(type == BasicBlockType.BIN || tier.isObtainable())
 							{
-								ItemStack stack = new ItemStack(item, 1, type.meta);
+								ItemStack stack = new ItemStack(this, 1, type.meta);
 								((ItemBlockBasic)stack.getItem()).setBaseTier(stack, tier);
 								list.add(stack);
 							}
@@ -326,7 +325,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 						
 						break;
 					default:
-						list.add(new ItemStack(item, 1, type.meta));
+						list.add(new ItemStack(this, 1, type.meta));
 				}
 			}
 		}

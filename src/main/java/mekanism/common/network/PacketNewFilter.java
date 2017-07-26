@@ -28,7 +28,7 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 	@Override
 	public IMessage onMessage(NewFilterMessage message, MessageContext context) 
 	{
-		WorldServer worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		WorldServer worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
 		
 		worldServer.addScheduledTask(new Runnable() {
 			@Override

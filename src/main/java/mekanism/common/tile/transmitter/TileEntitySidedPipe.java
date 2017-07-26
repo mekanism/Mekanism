@@ -298,12 +298,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			if(connectionMapContainsSide(connections, side))
 			{
 				AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord];
-				if(box.intersectsWith(entityBox)) list.add(box);
+				if(box.intersects(entityBox)) list.add(box);
 			}
 		}
 
 		AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6];
-		if(box.intersectsWith(entityBox)) list.add(box);
+		if(box.intersects(entityBox)) list.add(box);
 		return list;
 	}
 	

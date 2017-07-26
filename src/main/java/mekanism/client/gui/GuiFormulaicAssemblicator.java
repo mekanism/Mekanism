@@ -75,37 +75,37 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
 		if(xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.encodeFormula"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.craftSingle"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

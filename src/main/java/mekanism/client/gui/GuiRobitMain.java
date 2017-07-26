@@ -76,7 +76,7 @@ public class GuiRobitMain extends GuiMekanism
 		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, LangUtils.localize("gui.confirm")));
 		confirmName.visible = displayNameChange;
 
-		nameChangeField = new GuiTextField(1, fontRendererObj, guiWidth + 48, guiHeight + 21, 80, 12);
+		nameChangeField = new GuiTextField(1, fontRenderer, guiWidth + 48, guiHeight + 21, 80, 12);
 		nameChangeField.setMaxStringLength(12);
 		nameChangeField.setFocused(true);
 	}
@@ -105,16 +105,16 @@ public class GuiRobitMain extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(LangUtils.localize("gui.robit"), 76, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.robit"), 76, 6, 0x404040);
 
 		if(!displayNameChange)
 		{
 			CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-			fontRendererObj.drawString(LangUtils.localize("gui.robit.greeting") + " " + robit.getName() + "!", 29, 18, 0x00CD00);
-			fontRendererObj.drawString(LangUtils.localize("gui.energy") + ": " + MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), 29, 36-4, 0x00CD00);
-			fontRendererObj.drawString(LangUtils.localize("gui.robit.following") + ": " + robit.getFollowing(), 29, 45-4, 0x00CD00);
-			fontRendererObj.drawString(LangUtils.localize("gui.robit.dropPickup") + ": " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
-			fontRendererObj.drawString(LangUtils.localize("gui.robit.owner") + ": " + owner, 29, 63-4, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.robit.greeting") + " " + robit.getName() + "!", 29, 18, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.energy") + ": " + MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), 29, 36-4, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.robit.following") + ": " + robit.getFollowing(), 29, 45-4, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.robit.dropPickup") + ": " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.robit.owner") + ": " + owner, 29, 63-4, 0x00CD00);
 		}
 
 		int xAxis = (mouseX - (width - xSize) / 2);
@@ -122,23 +122,23 @@ public class GuiRobitMain extends GuiMekanism
 
 		if(xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
+			drawHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy(), robit.MAX_ELECTRICITY), xAxis, yAxis);
 		}
 		else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.robit.toggleFollow"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.robit.rename"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.robit.rename"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.robit.teleport"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.robit.teleport"), xAxis, yAxis);
 		}
 		else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

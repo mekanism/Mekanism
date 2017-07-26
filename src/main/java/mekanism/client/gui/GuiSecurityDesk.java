@@ -71,7 +71,7 @@ public class GuiSecurityDesk extends GuiMekanism
 
 		removeButton = new GuiButton(0, guiWidth + 13, guiHeight + 81, 122, 20, LangUtils.localize("gui.remove"));
 		
-		trustedField = new GuiTextField(1, fontRendererObj, guiWidth + 35, guiHeight + 69, 86, 11);
+		trustedField = new GuiTextField(1, fontRenderer, guiWidth + 35, guiHeight + 69, 86, 11);
 		trustedField.setMaxStringLength(MAX_LENGTH);
 		trustedField.setEnableBackgroundDrawing(false);
 		
@@ -256,12 +256,12 @@ public class GuiSecurityDesk extends GuiMekanism
 		int yAxis = (mouseY-(height-ySize)/2);
 
 		String ownerText = EnumColor.RED + tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : LangUtils.localize("gui.noOwner");
-		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
-		fontRendererObj.drawString(ownerText, (xSize - 7) - fontRendererObj.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
+		fontRenderer.drawString(ownerText, (xSize - 7) - fontRenderer.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
 		String trusted = LangUtils.localize("gui.trustedPlayers");
-		fontRendererObj.drawString(trusted, 74-(fontRendererObj.getStringWidth(trusted)/2), 57, 0x787878);
+		fontRenderer.drawString(trusted, 74-(fontRenderer.getStringWidth(trusted)/2), 57, 0x787878);
 		
 		String security = EnumColor.RED + LangUtils.localize("gui.securityOffline");
 		
@@ -270,7 +270,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			security = LangUtils.localize("gui.security") + ": " + tileEntity.frequency.securityMode.getDisplay();
 		}
 		
-		fontRendererObj.drawString(security, 13, 103, 0x404040);
+		fontRenderer.drawString(security, 13, 103, 0x404040);
 		
 		renderScaledText(LangUtils.localize("gui.add") + ":", 13, 70, 0x404040, 20);
 		

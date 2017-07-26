@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanism:plasticblock",
+    "data": 15,
+    "count": 4
+  },
+  "pattern": [
+    "SSS",
+    "S S",
+    "SSS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "mekanism:polyethene",
+      "data": 2
+    }
+  }
+}

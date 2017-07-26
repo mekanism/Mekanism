@@ -8,8 +8,9 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
+
+import java.util.function.Function;
 
 public class MekanismOBJModel extends OBJModel
 {

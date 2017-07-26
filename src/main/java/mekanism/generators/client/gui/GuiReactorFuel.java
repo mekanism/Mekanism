@@ -106,10 +106,10 @@ public class GuiReactorFuel extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRendererObj.drawString(tileEntity.getName(), 46, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 46, 6, 0x404040);
 		String str = LangUtils.localize("gui.reactor.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate());
-		fontRendererObj.drawString(str, (xSize / 2) - (fontRendererObj.getStringWidth(str) / 2), 35, 0x404040);
-		fontRendererObj.drawString("Edit Rate" + ":", 50, 117, 0x404040);
+		fontRenderer.drawString(str, (xSize / 2) - (fontRenderer.getStringWidth(str) / 2), 35, 0x404040);
+		fontRenderer.drawString("Edit Rate" + ":", 50, 117, 0x404040);
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class GuiReactorFuel extends GuiMekanism
 
 		String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
 
-		injectionRateField = new GuiTextField(0, fontRendererObj, guiWidth + 98, guiHeight + 115, 26, 11);
+		injectionRateField = new GuiTextField(0, fontRenderer, guiWidth + 98, guiHeight + 115, 26, 11);
 		injectionRateField.setMaxStringLength(2);
 		injectionRateField.setText(prevRad);
 	}

@@ -83,7 +83,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			final Coord4D initDisperser = dispersers.iterator().next();
 			
 			//Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
-			Coord4D pos = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord, structure.renderLocation.zCoord, pointer.getWorld().provider.getDimension());
+			Coord4D pos = new Coord4D(structure.renderLocation.x, initDisperser.y, structure.renderLocation.z, pointer.getWorld().provider.getDimension());
 			for(int x = 1; x < structure.volLength-1; x++)
 			{
 				for(int z = 1; z < structure.volWidth-1; z++)
@@ -126,11 +126,11 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 			int totalAir = 0;
 
 			//Find the first available block in the structure for water storage (including casings)
-			for(int x = structure.renderLocation.xCoord; x < structure.renderLocation.xCoord+structure.volLength; x++)
+			for(int x = structure.renderLocation.x; x < structure.renderLocation.x +structure.volLength; x++)
 			{
-				for(int y = structure.renderLocation.yCoord; y < initDisperser.yCoord; y++)
+				for(int y = structure.renderLocation.y; y < initDisperser.y; y++)
 				{
-					for(int z = structure.renderLocation.zCoord; z < structure.renderLocation.zCoord+structure.volWidth; z++)
+					for(int z = structure.renderLocation.z; z < structure.renderLocation.z +structure.volWidth; z++)
 					{
 						if(pointer.getWorld().isAirBlock(new BlockPos(x, y, z)) || isViableNode(x, y, z))
 						{
@@ -156,9 +156,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				@Override
 				public final boolean isValid(Coord4D coord) 
 				{
-					return coord.yCoord >= renderLocation.yCoord-1 && coord.yCoord < initDisperser.yCoord &&
-							coord.xCoord >= renderLocation.xCoord && coord.xCoord < renderLocation.xCoord+volLength &&
-							coord.zCoord >= renderLocation.zCoord && coord.zCoord < renderLocation.zCoord+volWidth &&
+					return coord.y >= renderLocation.y -1 && coord.y < initDisperser.y &&
+							coord.x >= renderLocation.x && coord.x < renderLocation.x +volLength &&
+							coord.z >= renderLocation.z && coord.z < renderLocation.z +volWidth &&
 							(coord.isAirBlock(pointer.getWorld()) || isViableNode(coord.getPos()));
 				}
 			}).calculate(initAir);
@@ -169,10 +169,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				return false;
 			}
 			
-			int steamHeight = (structure.renderLocation.yCoord+structure.volHeight-2)-initDisperser.yCoord;
+			int steamHeight = (structure.renderLocation.y +structure.volHeight-2)-initDisperser.y;
 			structure.steamVolume = structure.volWidth*structure.volLength*steamHeight;
 			
-			structure.upperRenderLocation = new Coord4D(structure.renderLocation.xCoord, initDisperser.yCoord+1, structure.renderLocation.zCoord, pointer.getWorld().provider.getDimension());
+			structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y +1, structure.renderLocation.z, pointer.getWorld().provider.getDimension());
 			
 			return true;
 		}

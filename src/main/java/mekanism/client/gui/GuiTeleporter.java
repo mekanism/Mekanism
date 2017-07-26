@@ -170,7 +170,7 @@ public class GuiTeleporter extends GuiMekanism
 			teleportButton = new GuiButton(4, guiWidth + 42, guiHeight + 140, 92, 20, LangUtils.localize("gui.teleport"));
 		}
 
-		frequencyField = new GuiTextField(5, fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
+		frequencyField = new GuiTextField(5, fontRenderer, guiWidth + 50, guiHeight + 104, 86, 11);
 		frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
 		
 		frequencyField.setEnableBackgroundDrawing(false);
@@ -420,14 +420,14 @@ public class GuiTeleporter extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		fontRendererObj.drawString(getName(), (xSize/2)-(fontRendererObj.getStringWidth(getName())/2), 4, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (getOwnerUsername() != null ? getOwnerUsername() : LangUtils.localize("gui.none")), 8, !itemStack.isEmpty() ? ySize-12 : (ySize-96)+4, 0x404040);
+		fontRenderer.drawString(getName(), (xSize/2)-(fontRenderer.getStringWidth(getName())/2), 4, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.owner") + ": " + (getOwnerUsername() != null ? getOwnerUsername() : LangUtils.localize("gui.none")), 8, !itemStack.isEmpty() ? ySize-12 : (ySize-96)+4, 0x404040);
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.security") + ":", 32, 91, 0x404040);
 		
-		fontRendererObj.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
-		fontRendererObj.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
+		fontRenderer.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRenderer.getStringWidth(LangUtils.localize("gui.freq") + ":"), 81, 0x797979);
+		fontRenderer.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRenderer.getStringWidth(LangUtils.localize("gui.security") + ":"), 91, 0x797979);
 		
 		String str = LangUtils.localize("gui.set") + ":";
 		renderScaledText(str, 27, 104, 0x404040, 20);
@@ -436,10 +436,10 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			if(getFrequency() == null)
 			{
-				drawCreativeTabHoveringText(EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
+				drawHoveringText(EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(getStatusDisplay(), xAxis, yAxis);
+				drawHoveringText(getStatusDisplay(), xAxis, yAxis);
 			}
 		}
 

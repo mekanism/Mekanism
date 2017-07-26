@@ -9,7 +9,7 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -63,7 +63,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 		GL11.glPopMatrix();
 	}
 	
-	public void renderTransparency(VertexBuffer renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color)
+	public void renderTransparency(BufferBuilder renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color)
 	{
 		if(!MekanismRenderer.isDrawing(renderer))
 		{

@@ -5,7 +5,7 @@ import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
@@ -23,7 +23,7 @@ public class ParticleLaser extends Particle
 
 	public ParticleLaser(World world, Pos3D start, Pos3D end, EnumFacing dir, double energy)
 	{
-		super(world, (start.xCoord + end.xCoord)/2D, (start.yCoord + end.yCoord)/2D, (start.zCoord+end.zCoord)/2D);
+		super(world, (start.x + end.x)/2D, (start.y + end.y)/2D, (start.z+end.z)/2D);
 		particleMaxAge = 5;
 		particleRed = 1;
 		particleGreen = 0;
@@ -36,7 +36,7 @@ public class ParticleLaser extends Particle
 	}
 
 	@Override
-	public void renderParticle(VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
+	public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		

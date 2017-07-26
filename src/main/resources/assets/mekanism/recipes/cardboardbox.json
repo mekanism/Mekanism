@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanism:cardboardbox"
+  },
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "pulpWood",
+      "type": "forge:ore_dict"
+    }
+  }
+}

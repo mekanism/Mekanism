@@ -23,7 +23,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<Integer, DisplayInteger>();
 
 	@Override
-	public void renderTileEntityAt(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage)
+	public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
 		if(tileEntity.shouldRender)
 		{

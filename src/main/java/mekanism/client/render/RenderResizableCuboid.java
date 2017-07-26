@@ -10,7 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -152,7 +152,7 @@ public class RenderResizableCuboid {
         manager.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         Tessellator tess = Tessellator.getInstance();
-        VertexBuffer wr = tess.getBuffer();
+        BufferBuilder wr = tess.getBuffer();
 
         GlStateManager.enableAlpha();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
@@ -171,7 +171,7 @@ public class RenderResizableCuboid {
         GlStateManager.enableFog();
     }
 
-    private void renderCuboidFace(VertexBuffer wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
+    private void renderCuboidFace(BufferBuilder wr, EnumFacing face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
             Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula,
             IBlockAccess access) {
         int ordinal = face.ordinal();
@@ -207,13 +207,13 @@ public class RenderResizableCuboid {
     }
     
     public static Vec3d withValue(Vec3d vector, Axis axis, double value) {
-        if (axis == Axis.X) return new Vec3d(value, vector.yCoord, vector.zCoord);
-        else if (axis == Axis.Y) return new Vec3d(vector.xCoord, value, vector.zCoord);
-        else if (axis == Axis.Z) return new Vec3d(vector.xCoord, vector.yCoord, value);
+        if (axis == Axis.X) return new Vec3d(value, vector.y, vector.z);
+        else if (axis == Axis.Y) return new Vec3d(vector.x, value, vector.z);
+        else if (axis == Axis.Z) return new Vec3d(vector.x, vector.y, value);
         else throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 
-    private void renderPoint(VertexBuffer wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
+    private void renderPoint(BufferBuilder wr, EnumFacing face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
             IBlockLocation locationFormula, IFacingLocation faceFormula, IBlockAccess access, EnumShadeArgument shadeTypes) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
@@ -222,7 +222,7 @@ public class RenderResizableCuboid {
         vertex = withValue(vertex, v, ri.xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
 
-        wr.pos(vertex.xCoord, vertex.yCoord, vertex.zCoord);
+        wr.pos(vertex.x, vertex.y, vertex.z);
         wr.tex(ri.uv[U_ARRAY], ri.uv[V_ARRAY]);
 
         if (shadeTypes.isEnabled(EnumShadeType.FACE)) {
@@ -244,7 +244,7 @@ public class RenderResizableCuboid {
     }
     
     public static BlockPos convertFloor(Vec3d vec) {
-        return new BlockPos(vec.xCoord, vec.yCoord, vec.zCoord);
+        return new BlockPos(vec.x, vec.y, vec.z);
     }
     
     public static Vec3d convert(Vec3i vec3i) {
@@ -271,7 +271,7 @@ public class RenderResizableCuboid {
         return faces;
     }
 
-    private void applyLocalAO(VertexBuffer wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes,
+    private void applyLocalAO(BufferBuilder wr, EnumFacing face, IBlockLocation locationFormula, IBlockAccess access, EnumShadeArgument shadeTypes,
             Vec3d vertex) {
         // This doesn't work. At all.
         boolean allAround = false;
@@ -337,8 +337,8 @@ public class RenderResizableCuboid {
         setWorldRendererRGB(wr, color);
     }
     
-    public static void setWorldRendererRGB(VertexBuffer wr, Vec3d color) {
-        wr.color((float) color.xCoord, (float) color.yCoord, (float) color.zCoord, 1f);
+    public static void setWorldRendererRGB(BufferBuilder wr, Vec3d color) {
+        wr.color((float) color.x, (float) color.y, (float) color.z, 1f);
     }
     
     public static Vec3d vec3(double value) {
@@ -346,7 +346,7 @@ public class RenderResizableCuboid {
     }
     
     public static Vec3d multiply(Vec3d vec, double multiple) {
-        return new Vec3d(vec.xCoord * multiple, vec.yCoord * multiple, vec.zCoord * multiple);
+        return new Vec3d(vec.x * multiple, vec.y * multiple, vec.z * multiple);
     }
     
     public static Vec3d convertMiddle(Vec3i vec3i) {
@@ -558,9 +558,9 @@ public class RenderResizableCuboid {
     }
     
     public static double getValue(Vec3d vector, Axis axis) {
-        if (axis == Axis.X) return vector.xCoord;
-        else if (axis == Axis.Y) return vector.yCoord;
-        else if (axis == Axis.Z) return vector.zCoord;
+        if (axis == Axis.X) return vector.x;
+        else if (axis == Axis.Y) return vector.y;
+        else if (axis == Axis.Z) return vector.z;
         else throw new RuntimeException("Was given a null axis! That was probably not intentional, consider this a bug! (Vector = " + vector + ")");
     }
 

@@ -78,12 +78,12 @@ public class GuiLaserAmplifier extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getName(), 55, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 55, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRendererObj.drawString(tileEntity.time > 0 ? LangUtils.localize("gui.delay") + ": " + tileEntity.time + "t" : LangUtils.localize("gui.noDelay"), 26, 30, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.min") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.minThreshold), 26, 45, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.max") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.maxThreshold), 26, 60, 0x404040);
+		fontRenderer.drawString(tileEntity.time > 0 ? LangUtils.localize("gui.delay") + ": " + tileEntity.time + "t" : LangUtils.localize("gui.noDelay"), 26, 30, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.min") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.minThreshold), 26, 45, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.max") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.maxThreshold), 26, 60, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -228,18 +228,18 @@ public class GuiLaserAmplifier extends GuiMekanism
 
 		String prevTime = timerField != null ? timerField.getText() : "";
 
-		timerField = new GuiTextField(0, fontRendererObj, guiWidth + 96, guiHeight + 28, 36, 11);
+		timerField = new GuiTextField(0, fontRenderer, guiWidth + 96, guiHeight + 28, 36, 11);
 		timerField.setMaxStringLength(4);
 		timerField.setText(prevTime);
 
 		String prevMin = minField != null ? minField.getText() : "";
-		minField = new GuiTextField(1, fontRendererObj, guiWidth + 96, guiHeight + 43, 72, 11);
+		minField = new GuiTextField(1, fontRenderer, guiWidth + 96, guiHeight + 43, 72, 11);
 		minField.setMaxStringLength(10);
 		minField.setText(prevMin);
 
 		String prevMax = maxField != null ? maxField.getText() : "";
 
-		maxField = new GuiTextField(2, fontRendererObj, guiWidth + 96, guiHeight + 58, 72, 11);
+		maxField = new GuiTextField(2, fontRenderer, guiWidth + 96, guiHeight + 58, 72, 11);
 		maxField.setMaxStringLength(10);
 		maxField.setText(prevMax);
 	}

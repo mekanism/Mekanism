@@ -1,15 +1,14 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SolarNeutronRecipeWrapper extends BaseRecipeWrapper
 {
@@ -24,7 +23,7 @@ public class SolarNeutronRecipeWrapper extends BaseRecipeWrapper
 	}
 	
 	@Override
-	public void getIngredients(IIngredients ingredients) 
+	public void getIngredients(IIngredients ingredients)
 	{
 		ingredients.setInput(GasStack.class, recipe.getInput().ingredient);
 		ingredients.setOutput(GasStack.class, recipe.getOutput().output);
