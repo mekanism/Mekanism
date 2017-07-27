@@ -1567,6 +1567,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
+	public boolean sideIsConsumer(EnumFacing side)
+	{
+		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == EnumFacing.DOWN;
+	}
+
+
+	@Override
 	public TileComponentSecurity getSecurity() 
 	{
 		return securityComponent;

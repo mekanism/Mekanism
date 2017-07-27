@@ -446,6 +446,9 @@ public final class TransporterPathfinder
 			}
 
 			double maxSearchDistance = start.distanceTo(finalNode) * 2;
+			ArrayList<EnumFacing> directionsToCheck = new ArrayList<>();
+			Coord4D[] neighbors = new Coord4D[EnumFacing.VALUES.length];
+			TileEntity[] neighborEntities = new TileEntity[neighbors.length];
 
 			while(!openSet.isEmpty())
 			{
@@ -469,13 +472,34 @@ public final class TransporterPathfinder
 				openSet.remove(currentNode);
 				closedSet.add(currentNode);
 
+				TileEntity currentNodeTile = currentNode.getTileEntity(worldObj);
+				ILogisticalTransporter currentNodeTransporter = null;
+				if(currentNodeTile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null))
+				{
+					currentNodeTransporter = 
+							CapabilityUtils.getCapability(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+				}
+
+				directionsToCheck.clear();
 				for(EnumFacing direction : EnumFacing.VALUES)
 				{
 					Coord4D neighbor = currentNode.offset(direction);
-
-					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction))
+					neighbors[direction.ordinal()] = neighbor;
+					TileEntity neighborEntity = neighbor.getTileEntity(worldObj);
+					neighborEntities[direction.ordinal()] = neighborEntity;
+					if(currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction))
 					{
-						TileEntity tile = neighbor.getTileEntity(worldObj);
+						directionsToCheck.add(direction);
+					}
+				}
+
+				for(EnumFacing direction : directionsToCheck)
+				{
+					Coord4D neighbor = neighbors[direction.ordinal()];
+
+					if(transportStack.canInsertToTransporter(neighborEntities[direction.ordinal()], direction))
+					{
+						TileEntity tile = neighborEntities[direction.ordinal()];
 						double tentativeG = gScore.get(currentNode) + CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()).getCost();
 
 						if(closedSet.contains(neighbor))
@@ -494,7 +518,7 @@ public final class TransporterPathfinder
 							openSet.add(neighbor);
 						}
 					}
-					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighbor.getTileEntity(worldObj)))
+					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntities[direction.ordinal()]))
 					{
 						side = direction;
 						results = reconstructPath(navMap, currentNode);

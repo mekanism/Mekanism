@@ -65,6 +65,14 @@ repositories {
         name 'tterrag'
         url 'http://maven.tterrag.com/'
     }
+	maven {
+		name 'thiakil.io'
+		url 'https://thiakil.github.io/maven/'
+	}
+	maven {
+		name 'thiakil mirror' //in case GitHub doesn't like maven being hosted in GH Pages
+		url 'http://maven.thiakil.com'
+	}
 }
 
 // Define properties file
@@ -101,6 +109,9 @@ dependencies {
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
     deobfProvided "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}"
+	compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
+		exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
+	}
 }
 
 processResources

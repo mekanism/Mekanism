@@ -70,11 +70,11 @@ public class TileComponentConfig implements ITileComponent
 		SideConfig config = getConfig(type);
 		EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
 		
-		for(int i = 0; i < EnumFacing.VALUES.length; i++)
+		for(EnumFacing sideToCheck : EnumFacing.values())
 		{
-			if(config.get(translatedFacings[i]) == dataIndex)
+			if(config.get(translatedFacings[sideToCheck.ordinal()]) == dataIndex)
 			{
-				ret.add(translatedFacings[i]);
+				ret.add(sideToCheck);
 			}
 		}
 		
@@ -87,8 +87,8 @@ public class TileComponentConfig implements ITileComponent
 		{
 			return false;
 		}
-		
-		return getConfig(type).get(sideToTest) == dataIndex;
+		EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
+		return getConfig(type).get(translatedFacings[sideToTest.ordinal()]) == dataIndex;
 	}
 	
 	public void setCanEject(TransmissionType type, boolean eject)
