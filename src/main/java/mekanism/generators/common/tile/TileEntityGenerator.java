@@ -117,14 +117,9 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 	}
 
 	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
-		return false;
-	}
-
-	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return EnumSet.of(facing);
+		return false;
 	}
 
 	@Override

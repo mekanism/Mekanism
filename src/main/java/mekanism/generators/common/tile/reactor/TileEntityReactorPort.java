@@ -285,12 +285,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
-	{
-		return EnumSet.allOf(EnumFacing.class);
-	}
-
-	@Override
 	public boolean sideIsOutput(EnumFacing side) {
 		return true;
 	}

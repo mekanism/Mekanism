@@ -77,12 +77,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
-	{
-		return EnumSet.noneOf(EnumFacing.class);
-	}
-
-	@Override
 	public boolean sideIsOutput(EnumFacing side)
 	{
 		return false;

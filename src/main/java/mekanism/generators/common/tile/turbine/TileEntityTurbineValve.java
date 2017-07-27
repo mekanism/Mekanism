@@ -73,32 +73,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 	
 	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side)
 	{
 		if(structure != null)
 		{
-			EnumSet<EnumFacing> set = EnumSet.allOf(EnumFacing.class);
-			
-			for(EnumFacing side : EnumFacing.VALUES)
-			{
-				if(structure.locations.contains(Coord4D.get(this).offset(side)))
-				{
-					set.remove(side);
-				}
-			}
-			
-			return set;
-		}
-		
-		return EnumSet.noneOf(EnumFacing.class);
-	}
-
-	@Override
-	public boolean sideIsOutput(EnumFacing side) {
-		if (structure != null)
-		{
 			return !structure.locations.contains(Coord4D.get(this).offset(side));
 		}
+		
 		return false;
 	}
 
