@@ -105,6 +105,8 @@ dependencies {
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
 	compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
 		exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
+        exclude module: "jei_1.11.2"
+        exclude module: "Hwyla"
 	}
 }
 
