@@ -474,16 +474,16 @@ item.ObsidianHoe.name=Obsydianowa motyka
 item.ObsidianSword.name=Obsydianowy miecz
 
 //Lapis Lazuli
-item.LazuliHelmet.name=Lazurytowy hełm
-item.LazuliChestplate.name=Lazurytowy napierśnik
-item.LazuliLeggings.name=Lazurytowe nogawice
-item.LazuliBoots.name=Lazurytowe buty
-item.LazuliPaxel.name=Lazurytowy paxel
-item.LazuliPickaxe.name=Lazurytowy kilof
-item.LazuliAxe.name=Lazurytowa siekiera
-item.LazuliShovel.name=Lazurytowa łopata
-item.LazuliHoe.name=Lazurytowa motyka
-item.LazuliSword.name=Lazurytowy miecz
+item.LapisLazuliHelmet.name=Lazurytowy hełm
+item.LapisLazuliChestplate.name=Lazurytowy napierśnik
+item.LapisLazuliLeggings.name=Lazurytowe nogawice
+item.LapisLazuliBoots.name=Lazurytowe buty
+item.LapisLazuliPaxel.name=Lazurytowy paxel
+item.LapisLazuliPickaxe.name=Lazurytowy kilof
+item.LapisLazuliAxe.name=Lazurytowa siekiera
+item.LapisLazuliShovel.name=Lazurytowa łopata
+item.LapisLazuliHoe.name=Lazurytowa motyka
+item.LapisLazuliSword.name=Lazurytowy miecz
 
 //Osmium
 item.OsmiumHelmet.name=Osmowy hełm

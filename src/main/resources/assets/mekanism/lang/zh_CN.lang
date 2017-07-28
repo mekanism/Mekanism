@@ -1028,16 +1028,16 @@ item.ObsidianHoe.name=黑曜石锄头
 item.ObsidianSword.name=黑曜石剑
 
 //Lapis Lazuli
-item.LazuliHelmet.name=青金石头盔
-item.LazuliChestplate.name=青金石胸甲
-item.LazuliLeggings.name=青金石护腿
-item.LazuliBoots.name=青金石靴子
-item.LazuliPaxel.name=青金石镐尖斧
-item.LazuliPickaxe.name=青金石镐
-item.LazuliAxe.name=青金石斧头
-item.LazuliShovel.name=青金石铲子
-item.LazuliHoe.name=青金石锄头
-item.LazuliSword.name=青金石剑
+item.LapisLazuliHelmet.name=青金石头盔
+item.LapisLazuliChestplate.name=青金石胸甲
+item.LapisLazuliLeggings.name=青金石护腿
+item.LapisLazuliBoots.name=青金石靴子
+item.LapisLazuliPaxel.name=青金石镐尖斧
+item.LapisLazuliPickaxe.name=青金石镐
+item.LapisLazuliAxe.name=青金石斧头
+item.LapisLazuliShovel.name=青金石铲子
+item.LapisLazuliHoe.name=青金石锄头
+item.LapisLazuliSword.name=青金石剑
 
 //Osmium
 item.OsmiumHelmet.name=锇头盔

@@ -1014,16 +1014,16 @@ item.ObsidianHoe.name=Обсидиановая мотыга
 item.ObsidianSword.name=Обсидиановый меч
 
 //Lapis Lazuli
-item.LazuliHelmet.name=Лазуритовый шлем
-item.LazuliChestplate.name=Лазуритовая кираса
-item.LazuliLeggings.name=Лазуритовые поножи
-item.LazuliBoots.name=Лазуритовые ботинки
-item.LazuliPaxel.name=Лазуритовый мульти-инcтрумент
-item.LazuliPickaxe.name=Лазуритовая кирка
-item.LazuliAxe.name=Лазуритовый топор
-item.LazuliShovel.name=Лазуритовая лопата
-item.LazuliHoe.name=Лазуритовая мотыга
-item.LazuliSword.name=Лазуритовый меч
+item.LapisLazuliHelmet.name=Лазуритовый шлем
+item.LapisLazuliChestplate.name=Лазуритовая кираса
+item.LapisLazuliLeggings.name=Лазуритовые поножи
+item.LapisLazuliBoots.name=Лазуритовые ботинки
+item.LapisLazuliPaxel.name=Лазуритовый мульти-инcтрумент
+item.LapisLazuliPickaxe.name=Лазуритовая кирка
+item.LapisLazuliAxe.name=Лазуритовый топор
+item.LapisLazuliShovel.name=Лазуритовая лопата
+item.LapisLazuliHoe.name=Лазуритовая мотыга
+item.LapisLazuliSword.name=Лазуритовый меч
 
 //Osmium
 item.OsmiumHelmet.name=Осмиевый шлем

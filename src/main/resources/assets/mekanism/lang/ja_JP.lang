@@ -1015,16 +1015,16 @@ item.ObsidianHoe.name=黒曜石のクワ
 item.ObsidianSword.name=黒曜石の剣
 
 //Lapis Lazuli
-item.LazuliHelmet.name=ラピスラズリのヘルメット
-item.LazuliChestplate.name=ラピスラズリのチェストプレート
-item.LazuliLeggings.name=ラピスラズリのレギンス
-item.LazuliBoots.name=ラピスラズリのブーツ
-item.LazuliPaxel.name=ラピスラズリのパクセル
-item.LazuliPickaxe.name=ラピスラズリのピッケル
-item.LazuliAxe.name=ラピスラズリの斧
-item.LazuliShovel.name=ラピスラズリのシャベル
-item.LazuliHoe.name=ラピスラズリのクワ
-item.LazuliSword.name=ラピスラズリの剣
+item.LapisLazuliHelmet.name=ラピスラズリのヘルメット
+item.LapisLazuliChestplate.name=ラピスラズリのチェストプレート
+item.LapisLazuliLeggings.name=ラピスラズリのレギンス
+item.LapisLazuliBoots.name=ラピスラズリのブーツ
+item.LapisLazuliPaxel.name=ラピスラズリのパクセル
+item.LapisLazuliPickaxe.name=ラピスラズリのピッケル
+item.LapisLazuliAxe.name=ラピスラズリの斧
+item.LapisLazuliShovel.name=ラピスラズリのシャベル
+item.LapisLazuliHoe.name=ラピスラズリのクワ
+item.LapisLazuliSword.name=ラピスラズリの剣
 
 //Osmium
 item.OsmiumHelmet.name=オスミウムのヘルメット
