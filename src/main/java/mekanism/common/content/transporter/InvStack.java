@@ -31,7 +31,8 @@ public final class InvStack
 		slotIDs = new ArrayList<Integer>();
 		side = facing;
 
-		appendStack(id, stack);
+		if (stack != null)
+			appendStack(id, stack);
 	}
 
 	public ItemStack getStack()
@@ -56,6 +57,8 @@ public final class InvStack
 
 	public void appendStack(int id, ItemStack stack)
 	{
+		if (stack == null)
+			return;
 		slotIDs.add(id);
 		itemStacks.add(stack);
 	}
@@ -109,6 +112,7 @@ public final class InvStack
 
 	public void use()
 	{
-		use(getStack().stackSize);
+		if (getStack() != null)
+			use(getStack().stackSize);
 	}
 }

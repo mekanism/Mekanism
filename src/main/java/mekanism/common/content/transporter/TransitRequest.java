@@ -148,7 +148,7 @@ public class TransitRequest
 		
 		public ItemStack getRejected(ItemStack orig)
 		{
-			return StackUtils.size(orig, orig.stackSize - stack.stackSize);
+			return StackUtils.size(orig, orig.stackSize - (stack != null ? stack.stackSize : 0));
 		}
 		
 		public InvStack getInvStack(TileEntity tile, EnumFacing side)
