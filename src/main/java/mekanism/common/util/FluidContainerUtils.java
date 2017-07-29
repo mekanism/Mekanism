@@ -123,8 +123,7 @@ public final class FluidContainerUtils
 	public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, ItemStack[] inventory, FluidStack stored, int needed, int inSlot, int outSlot, final FluidChecker checker)
 	{
 		final Fluid storedFinal = stored != null ? stored.getFluid() : null;
-		final ItemStack input = StackUtils.size(inventory[inSlot].copy(), 1);
-		
+
 		FluidStack ret = extractFluid(needed, inventory, inSlot, new FluidChecker() {
 			@Override
 			public boolean isValid(Fluid f)
@@ -132,22 +131,7 @@ public final class FluidContainerUtils
 				return (checker == null || checker.isValid(f)) && (storedFinal == null || storedFinal == f);
 			}
 		});
-		
-		ItemStack inputCopy = input.copy();
-		
-		if(inputCopy.stackSize == 0)
-		{
-			inputCopy = null;
-		}
-		
-		if(FluidUtil.getFluidContained(inputCopy) == null && inputCopy != null)
-		{
-			if(inventory[outSlot] != null && (!ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy) || inventory[outSlot].stackSize == inventory[outSlot].getMaxStackSize()))
-			{
-				return stored;
-			}
-		}
-		
+
 		if(ret != null)
 		{
 			if(stored == null)
@@ -157,37 +141,29 @@ public final class FluidContainerUtils
 			else {
 				stored.amount += ret.amount;
 			}
-			
+
 			needed -= ret.amount;
-			
+
 			tileEntity.markDirty();
 		}
-		
-		if(FluidUtil.getFluidContained(inputCopy) == null || needed == 0)
+
+		if(FluidUtil.getFluidContained(inventory[inSlot]) == null || needed == 0)
 		{
-			if(inputCopy != null)
+			if (inventory[inSlot].stackSize > 0)
 			{
-				if(inventory[outSlot] == null)
-				{
-					inventory[outSlot] = inputCopy;
-				}
-				else if(ItemHandlerHelper.canItemStacksStack(inventory[outSlot], inputCopy))
-				{
+				if (inventory[outSlot] == null) {
+					inventory[outSlot] = inventory[inSlot].copy();
+					inventory[inSlot] = null;
+				} else if (inventory[outSlot].isItemEqual(inventory[inSlot]) && ItemStack.areItemStackTagsEqual(inventory[inSlot], inventory[outSlot])){
 					inventory[outSlot].stackSize++;
+					inventory[inSlot] = null;
 				}
-			}
-			
-			inventory[inSlot].stackSize--;
-			
-			if(inventory[inSlot].stackSize == 0)
-			{
+				tileEntity.markDirty();
+			} else {
 				inventory[inSlot] = null;
+
+				tileEntity.markDirty();
 			}
-			
-			tileEntity.markDirty();
-		}
-		else {
-			inventory[inSlot] = inputCopy;
 		}
 		
 		return stored;
