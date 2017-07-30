@@ -8,7 +8,15 @@
   },
   "variants": {
     "normal": [{}],
-    "inventory": [{}]
+    "inventory": [{}],
+    "active": {
+      "false": {},
+      "true": {
+        "textures": {
+          "all": "mekanism:blocks/induction_port_output"
+        }
+      }
+    }
   }
 }
 

@@ -10,13 +10,17 @@
   },
   "variants": {
     "normal": [{}],
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "east":  {"y": 90},
-      "west":  {"y": -90}
-    },
-    "inventory": [{}]
+    "inventory": [{}],
+    "active": {
+      "false": {},
+      "true": {
+        "textures": {
+          "sides": "mekanismgenerators:blocks/reactor_frame",
+          "front": "mekanismgenerators:blocks/reactor_frame",
+          "up": "mekanismgenerators:blocks/reactor_controller_on"
+        }
+      }
+    }
   }
 }
 

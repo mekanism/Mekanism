@@ -242,7 +242,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 			if(this == stateOffset.getBlock()) {
 				int metaOffset = stateOffset.getBlock().getMetaFromState(stateOffset);
 				ReactorBlockType typeOffset = ReactorBlockType.get(getReactorBlock(), metaOffset);
-				if (typeOffset == ReactorBlockType.REACTOR_GLASS || type == ReactorBlockType.LASER_FOCUS_MATRIX) {
+				if (typeOffset == ReactorBlockType.REACTOR_GLASS || typeOffset == ReactorBlockType.LASER_FOCUS_MATRIX) {
 					return false;
 				}
 			}
