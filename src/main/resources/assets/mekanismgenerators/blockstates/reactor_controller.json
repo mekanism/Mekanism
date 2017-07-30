@@ -5,7 +5,7 @@
     "textures": {
       "sides": "mekanismgenerators:blocks/reactor_frame",
       "front": "mekanismgenerators:blocks/reactor_frame",
-      "top": "mekanismgenerators:blocks/reactor_controller"
+      "up": "mekanismgenerators:blocks/reactor_controller"
     }
   },
   "variants": {
