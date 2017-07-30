@@ -5,6 +5,24 @@
         "layer":"SOLID",
         "textures":[
             "mekanism:blocks/dynamic_tank-ctm"
-        ]
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:basicblock",
+                    "predicate":
+                    {
+                        "type": "dynamic_tank"
+                    }
+                },
+                {
+                    "block": "mekanism:basicblock",
+                    "predicate":
+                    {
+                        "type": "dynamic_valve"
+                    }
+                }
+            ]
+        }
     }
 }
