@@ -137,7 +137,7 @@ public class Pos3D extends Vec3d
 	 */
 	public Pos3D translate(double x, double y, double z)
 	{
-		return new Pos3D(x + x, y + y, z + z);
+		return new Pos3D(this.x + x, this.y + y, this.z + z);
 	}
 
 	/**
