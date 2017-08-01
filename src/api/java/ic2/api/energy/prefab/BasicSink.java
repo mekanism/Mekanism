@@ -96,17 +96,23 @@ public class BasicSink extends BasicEnergyTile implements IEnergySink {
 	public BasicSink(TileEntity parent, double capacity, int tier) {
 		super(parent, capacity);
 
+		if (tier < 0) throw new IllegalArgumentException("invalid tier: "+tier);
+
 		this.tier = tier;
 	}
 
 	public BasicSink(ILocatable parent, double capacity, int tier) {
 		super(parent, capacity);
 
+		if (tier < 0) throw new IllegalArgumentException("invalid tier: "+tier);
+
 		this.tier = tier;
 	}
 
 	public BasicSink(World world, BlockPos pos, double capacity, int tier) {
 		super(world, pos, capacity);
+
+		if (tier < 0) throw new IllegalArgumentException("invalid tier: "+tier);
 
 		this.tier = tier;
 	}
@@ -117,6 +123,8 @@ public class BasicSink extends BasicEnergyTile implements IEnergySink {
 	 * @param tier IC2 Tier.
 	 */
 	public void setSinkTier(int tier) {
+		if (tier < 0) throw new IllegalArgumentException("invalid tier: "+tier);
+
 		this.tier = tier;
 	}
 

@@ -5,8 +5,8 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.security.ISecurityTile;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -18,7 +18,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = IC2Integration.MODID),
 })
 public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData, ISecurityTile
 {

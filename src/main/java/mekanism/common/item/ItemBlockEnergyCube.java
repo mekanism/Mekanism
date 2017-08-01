@@ -24,6 +24,7 @@ import mekanism.common.base.ITierItem;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -56,7 +57,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.api.energy.IEnergyContainerItem;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = IC2Integration.MODID)
 })
 public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem, ISecurityItem, ITierItem
 {
@@ -324,7 +325,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     }
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);

@@ -220,7 +220,7 @@ abstract class BasicEnergyTile implements ILocatable, IEnergyTile {
 	 * @return true if energy was transferred
 	 */
 	public boolean charge(ItemStack stack) {
-		if (stack == null || stack.isEmpty() || !Info.isIc2Available() || getWorldObj().isRemote) return false;
+		if (stack == null || !Info.isIc2Available() || getWorldObj().isRemote) return false;
 
 		double amount = ElectricItem.manager.charge(stack, energyStored, Math.max(getSinkTier(), getSourceTier()), false, false);
 
@@ -237,7 +237,7 @@ abstract class BasicEnergyTile implements ILocatable, IEnergyTile {
 	 * @return true if energy was transferred
 	 */
 	public boolean discharge(ItemStack stack, double limit) {
-		if (stack == null || stack.isEmpty() || !Info.isIc2Available() || getWorldObj().isRemote) return false;
+		if (stack == null || !Info.isIc2Available() || getWorldObj().isRemote) return false;
 
 		double amount = capacity - energyStored;
 		if (amount <= 0) return false;

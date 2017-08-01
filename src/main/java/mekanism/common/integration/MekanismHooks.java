@@ -16,6 +16,7 @@ import mekanism.common.Resource;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.computer.CCPeripheral;
 import mekanism.common.integration.computer.OCDriver;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.storagedrawer.StorageDrawerRecipeHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
@@ -48,10 +49,10 @@ public final class MekanismHooks
 
 	public void hook()
 	{
-		if(Loader.isModLoaded("CoFHCore")) CoFHCoreLoaded = true;
-		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
-		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
-		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
+		if(Loader.isModLoaded("cofhcore")) CoFHCoreLoaded = true;
+		if(Loader.isModLoaded("ic2")) IC2Loaded = true;
+		if(Loader.isModLoaded("railcraft")) RailcraftLoaded = true;
+		if(Loader.isModLoaded("thermalexpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
 		if(Loader.isModLoaded("tesla")) TeslaLoaded = true;
@@ -86,7 +87,7 @@ public final class MekanismHooks
 		}
 	}
 
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void hookIC2Recipes()
 	{
 		for(MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes())
@@ -140,7 +141,7 @@ public final class MekanismHooks
 		} catch(Exception e) {}
 	}
 
-	@Method(modid = "OpenComputers")
+	@Method(modid = "opencomputers")
 	public void loadOCDrivers()
 	{
 		try {

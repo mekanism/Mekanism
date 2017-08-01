@@ -8,6 +8,7 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -25,7 +26,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = IC2Integration.MODID)
 })
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData
 {
@@ -243,7 +244,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
 		IAdvancedBoundingBlock inv = getInv();
@@ -334,7 +335,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double getDemandedEnergy()
 	{
 		IAdvancedBoundingBlock inv = getInv();
@@ -342,7 +343,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
 	{
 		IAdvancedBoundingBlock inv = getInv();
@@ -355,7 +356,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getSinkTier()
 	{
 		IAdvancedBoundingBlock inv = getInv();

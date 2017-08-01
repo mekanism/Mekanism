@@ -19,6 +19,9 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 	public BasicSinkSource(TileEntity parent, double capacity, int sinkTier, int sourceTier) {
 		super(parent, capacity);
 
+		if (sinkTier < 0) throw new IllegalArgumentException("invalid sink tier: "+sinkTier);
+		if (sourceTier < 0) throw new IllegalArgumentException("invalid source tier: "+sourceTier);
+
 		this.sinkTier = sinkTier;
 		this.sourceTier = sourceTier;
 		double power = EnergyNet.instance.getPowerFromTier(sourceTier);
@@ -29,6 +32,9 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 	public BasicSinkSource(ILocatable parent, double capacity, int sinkTier, int sourceTier) {
 		super(parent, capacity);
 
+		if (sinkTier < 0) throw new IllegalArgumentException("invalid sink tier: "+sinkTier);
+		if (sourceTier < 0) throw new IllegalArgumentException("invalid source tier: "+sourceTier);
+
 		this.sinkTier = sinkTier;
 		this.sourceTier = sourceTier;
 		double power = EnergyNet.instance.getPowerFromTier(sourceTier);
@@ -38,6 +44,9 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 
 	public BasicSinkSource(World world, BlockPos pos, double capacity, int sinkTier, int sourceTier) {
 		super(world, pos, capacity);
+
+		if (sinkTier < 0) throw new IllegalArgumentException("invalid sink tier: "+sinkTier);
+		if (sourceTier < 0) throw new IllegalArgumentException("invalid source tier: "+sourceTier);
 
 		this.sinkTier = sinkTier;
 		this.sourceTier = sourceTier;
@@ -52,6 +61,8 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 	 * @param tier IC2 Tier.
 	 */
 	public void setSinkTier(int tier) {
+		if (tier < 0) throw new IllegalArgumentException("invalid tier: "+tier);
+
 		this.sinkTier = tier;
 	}
 
@@ -61,6 +72,8 @@ public abstract class BasicSinkSource extends BasicEnergyTile implements IEnergy
 	 * @param tier IC2 Tier.
 	 */
 	public void setSourceTier(int tier) {
+		if (tier < 0) throw new IllegalArgumentException("invalid tier: "+tier);
+
 		double power = EnergyNet.instance.getPowerFromTier(tier);
 
 		if (getCapacity() < power) setCapacity(power);

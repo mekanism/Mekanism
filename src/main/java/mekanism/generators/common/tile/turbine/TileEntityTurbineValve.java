@@ -7,9 +7,6 @@ import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
-
-import java.util.EnumSet;
-
 import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IEnergyWrapper;
@@ -20,6 +17,7 @@ import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
@@ -89,7 +87,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		return false;
 	}
 	
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void register()
 	{
 		if(!world.isRemote)
@@ -111,7 +109,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		}
 	}
 
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void deregister()
 	{
 		if(!world.isRemote)
@@ -207,35 +205,35 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getSinkTier()
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getSourceTier()
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void setStored(int energy)
 	{
 		setEnergy(energy*general.FROM_IC2);
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int addEnergy(int amount)
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
 		return canOutputEnergy(side);
@@ -248,49 +246,49 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
 		return false;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
 		return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getStored()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getCapacity()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getOutput()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double getDemandedEnergy()
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double getOfferedEnergy()
 	{
 		return Math.min(getEnergy(), getMaxOutput())*general.TO_IC2;
@@ -303,21 +301,21 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double getOutputEnergyUnitsPerTick()
 	{
 		return getMaxOutput()*general.TO_IC2;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		return amount;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void drawEnergy(double amount)
 	{
 		if(structure != null)
