@@ -80,50 +80,21 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			}
 		}
 	}
-	
+
 	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side) 
 	{
 		if(structure != null && mode)
 		{
-			EnumSet<EnumFacing> set = EnumSet.allOf(EnumFacing.class);
-			
-			for(EnumFacing side : EnumFacing.VALUES)
-			{
-				if(structure.locations.contains(Coord4D.get(this).offset(side)))
-				{
-					set.remove(side);
-				}
-			}
-			
-			return set;
-		}
-		
-		return EnumSet.noneOf(EnumFacing.class);
-	}
-
-	@Override
-	public boolean sideIsOutput(EnumFacing side) {
-		if (structure != null && mode)
-		{
 			return !structure.locations.contains(Coord4D.get(this).offset(side));
 		}
+		
 		return false;
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		if(structure != null && !mode)
-		{
-			return EnumSet.allOf(EnumFacing.class);
-		}
-		
-		return EnumSet.noneOf(EnumFacing.class);
-	}
-
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
 		return (structure != null && !mode);
 	}
 

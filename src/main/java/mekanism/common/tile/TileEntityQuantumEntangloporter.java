@@ -60,8 +60,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();
-
-	public static final EnumSet<EnumFacing> nothing = EnumSet.noneOf(EnumFacing.class);
 	
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
@@ -367,32 +365,24 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side) 
 	{
-		return !hasFrequency() ? nothing : configComponent.getSidesForData(TransmissionType.ENERGY, facing, 2);
-	}
-
-	@Override
-	public boolean sideIsOutput(EnumFacing side) {
-		if (!hasFrequency())
+		if(!hasFrequency())
 		{
 			return false;
 		}
+		
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return !hasFrequency() ? nothing : configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
-	}
-
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
-		if (!hasFrequency())
+		if(!hasFrequency())
 		{
 			return false;
 		}
+		
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
 	}
 

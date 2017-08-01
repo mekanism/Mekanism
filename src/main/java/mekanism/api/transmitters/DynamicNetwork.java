@@ -212,6 +212,11 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			transmittersAdded.add(transmitter);
 		}
 		
+		for(IGridTransmitter<A, N> transmitter : net.transmittersToAdd)
+		{
+			transmittersToAdd.add(transmitter);
+		}
+		
 		possibleAcceptors.putAll(net.possibleAcceptors);
 		
 		for(Entry<Coord4D, EnumSet<EnumFacing>> entry : net.acceptorDirections.entrySet())
@@ -394,7 +399,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public void queueClientUpdate(Collection<IGridTransmitter<A, N>> newTransmitters)
 	{
 		transmittersAdded.addAll(newTransmitters);
-		updateDelay = 3;
+		updateDelay = 5;
 	}
 
 	public static class TransmittersAddedEvent extends Event

@@ -170,13 +170,8 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return EnumSet.of(EnumFacing.DOWN, facing.getOpposite());
-	}
-
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
 		return side == EnumFacing.DOWN || side == facing.getOpposite();
 	}
 

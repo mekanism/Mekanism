@@ -1,13 +1,16 @@
 package mekanism.common.util;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
 
 import cofh.redstoneflux.api.IEnergyConnection;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
@@ -39,17 +42,20 @@ public final class CableUtils
 	 * @param sides - set of sides to check
 	 * @return boolean[] of adjacent connections
 	 */
-	public static boolean[] getConnections(TileEntity tileEntity, Set<EnumFacing> sides)
+	public static boolean[] getConnections(TileEntity tileEntity, Function<EnumFacing, Boolean> sideFunction)
 	{
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 		Coord4D coord = Coord4D.get(tileEntity);
 
-		for(EnumFacing side : sides)
+		for(EnumFacing side : EnumFacing.values())
 		{
-			TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
-
-			connectable[side.ordinal()] = isValidAcceptorOnSide(tileEntity, tile, side);
-			connectable[side.ordinal()] |= isCable(tile);
+			if(sideFunction.apply(side))
+			{
+				TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
+	
+				connectable[side.ordinal()] = isValidAcceptorOnSide(tileEntity, tile, side);
+				connectable[side.ordinal()] |= isCable(tile);
+			}
 		}
 
 		return connectable;
@@ -185,9 +191,9 @@ public final class CableUtils
 			if(energyToSend > 0)
 			{
 				List<EnumFacing> outputtingSides = new LinkedList<>();
-				boolean[] connectable = getConnections((TileEntity)emitter, emitter.getOutputtingSides());
+				boolean[] connectable = getConnections((TileEntity)emitter, side -> emitter.sideIsOutput(side));
 
-				for(EnumFacing side : emitter.getOutputtingSides())
+				for(EnumFacing side : EnumFacing.values())
 				{
 					if(connectable[side.ordinal()])
 					{

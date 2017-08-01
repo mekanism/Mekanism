@@ -102,24 +102,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side) 
 	{
-		return EnumSet.noneOf(EnumFacing.class);
-	}
-
-	@Override
-	public boolean sideIsOutput(EnumFacing side) {
 		return false;
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return EnumSet.allOf(EnumFacing.class);
-	}
-
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
 		return true;
 	}
 

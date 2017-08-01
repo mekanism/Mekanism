@@ -39,15 +39,10 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		
 		guiLocation = location;
 	}
-	
-	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
-	{
-		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
-	}
 
 	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
+	public boolean sideIsConsumer(EnumFacing side)
+	{
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
 	}
 
