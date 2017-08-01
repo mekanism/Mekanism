@@ -62,6 +62,10 @@ repositories {
         url 'https://mod-buildcraft.com/maven/'
     }
     maven {
+        name 'tterrag'
+        url 'http://maven.tterrag.com/'
+    }
+    maven {
         name 'ic2'
         url 'http://maven.ic2.player.to'
     }
@@ -107,6 +111,8 @@ dependencies {
     compile "li.cil.oc:OpenComputers:MC${config.minecraft_version}-${config.opencomputers_version}:api"
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
+    deobfProvided "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}:api"
+    runtime "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}"
     compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
     compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
         exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon

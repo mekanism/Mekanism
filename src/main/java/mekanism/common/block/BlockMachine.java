@@ -6,9 +6,6 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.render.ctm.CTMBlockRenderContext;
-import mekanism.client.render.ctm.CTMData;
-import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
@@ -134,10 +131,8 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockMachine extends BlockContainer implements ICTMBlock
+public abstract class BlockMachine extends BlockContainer
 {
-	public CTMData[] ctmData = new CTMData[16];
-	
 	private static final AxisAlignedBB CHARGEPAD_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
 	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 	private static final AxisAlignedBB LASER_BOUNDS = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
@@ -149,8 +144,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		setHardness(3.5F);
 		setResistance(16F);
 		setCreativeTab(Mekanism.tabMekanism);
-		
-		initCTMs();
 	}
 
 	public static BlockMachine getBlockMachine(MachineBlock block)
@@ -166,21 +159,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 	}
 
 	public abstract MachineBlock getMachineBlock();
-	
-	@SideOnly(Side.CLIENT)
-    @Override
-    public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
-	{
-        if(stateIn.getBlock() == null || stateIn.getMaterial() == Material.AIR) 
-        {
-            return stateIn;
-        }
-        
-        IExtendedBlockState state = (IExtendedBlockState)stateIn;
-        CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
-
-        return state.withProperty(BlockStateBasic.ctmProperty, ctx);
-    }
 
 	@Override
 	public BlockStateContainer createBlockState()
@@ -229,18 +207,6 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 		}
 		
 		return state;
-	}
-	
-	public void initCTMs()
-	{
-		switch(getMachineBlock())
-		{
-			case MACHINE_BLOCK_1:
-				ctmData[11] = new CTMData(BasicBlockType.TELEPORTER_FRAME, MachineType.TELEPORTER);
-				
-				break;
-			default:
-		}
 	}
 
 	@Override
@@ -1042,20 +1008,7 @@ public abstract class BlockMachine extends BlockContainer implements ICTMBlock
 				return true;
 		}
 	}
-	
-	@Override
-	public CTMData getCTMData(IBlockState state)
-	{
-		return ctmData[state.getBlock().getMetaFromState(state)];
-	}
-	
-	@Override
-	public String getOverrideTexture(IBlockState state, EnumFacing side)
-	{
-		return null;
-	}
-	
-	@Override
+
 	public PropertyEnum<MachineType> getTypeProperty()
 	{
 		return getMachineBlock().getProperty();

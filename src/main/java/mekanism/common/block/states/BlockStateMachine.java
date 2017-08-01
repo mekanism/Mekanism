@@ -82,7 +82,7 @@ public class BlockStateMachine extends ExtendedBlockState
 
 	public BlockStateMachine(BlockMachine block, PropertyEnum typeProperty)
 	{
-		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
+		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[] {});
 	}
 
 	public enum MachineBlock

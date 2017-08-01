@@ -3,8 +3,8 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/ctm/thermal_evaporation_block",
-      "front": "mekanism:blocks/ctm/thermal_evaporation_controller"
+      "sides": "mekanism:blocks/thermal_evaporation_block",
+      "front": "mekanism:blocks/thermal_evaporation_controller"
     }
   },
   "variants": {
@@ -15,7 +15,16 @@
       "east":  {"y": 90},
       "west":  {"y": -90}
     },
-    "inventory": [{}]
+    "inventory": [{}],
+    "active": {
+      "false": {},
+      "true": {
+        "textures": {
+          "sides": "mekanism:blocks/thermal_evaporation_block",
+          "front": "mekanism:blocks/thermal_evaporation_controller_on"
+        }
+      }
+    }
   }
 }
 

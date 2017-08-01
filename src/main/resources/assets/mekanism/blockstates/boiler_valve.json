@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanism:blocks/ctm/boiler_valve"
+      "all": "mekanism:blocks/boiler_valve"
     }
   },
   "variants": {

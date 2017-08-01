@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanismgenerators:blocks/ctm/turbine_vent"
+      "all": "mekanismgenerators:blocks/turbine_vent"
     }
   },
   "variants": {
