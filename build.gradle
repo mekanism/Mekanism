@@ -64,6 +64,7 @@ repositories {
     maven {
         name 'ic2'
         url 'http://maven.ic2.player.to'
+    }
     maven {
         name 'thiakil.io'
         url 'https://thiakil.github.io/maven/'
