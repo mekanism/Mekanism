@@ -125,7 +125,9 @@ processResources
 }
 
 task coreJar(type: Jar) {
-    baseName = 'Mekanism'
+	archiveName = "Mekanism-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "core"
 
     from('etc/core') {
         include '*.info'
@@ -138,7 +140,9 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    baseName = 'MekanismTools'
+	archiveName = "MekanismTools-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "tools"
 
     from('etc/tools') {
         include '*.info'
@@ -151,7 +155,9 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    baseName = 'MekanismGenerators'
+	archiveName = "MekanismGenerators-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "generators"
 
     from('etc/generators') {
         include '*.info'
@@ -163,28 +169,72 @@ task generatorsJar(type: Jar) {
     }
 }
 
-coreJar.dependsOn('reobfJar')
-toolsJar.dependsOn('reobfJar')
-generatorsJar.dependsOn('reobfJar')
-
 task MDKZip(type: Zip) {
-    baseName = 'MDK'
+    archiveName = "MDK-${project.version}.zip"
     from sourceSets.main.java.srcDirs
     include 'mekanism/api/**'
+	classifier "mdk"
 }
 
-task releaseJars(type: Copy) {
-    from coreJar
-    from toolsJar
-    from generatorsJar
-    from MDKZip
-    rename '-(.*)jar', '.jar'
-    rename '-(.*)zip', '.zip'
-    into '.'
+task apiJar(type: Jar) {
+	classifier "api"
+	baseName "Mekanism"
+	dependsOn "sourceMainJava"
+	include 'mekanism/api/**'
+	from sourceSets.main.java.srcDirs
+	from sourceSets.main.output
+}
+
+artifacts {
+    archives apiJar
+	archives coreJar
+	archives toolsJar
+	archives generatorsJar
+	archives MDKZip
 }
 
 task fullBuild(type: Delete) {
     delete jar
+	dependsOn "build"
 }
 
-fullBuild.dependsOn('releaseJars')
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+uploadArchives {
+    if(System.getenv("LOCAL_MAVEN") != null) {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    if (System.getenv("MAVEN_ARTIFACT") != null) {
+                        artifactId = System.getenv("MAVEN_ARTIFACT")
+                    } else {
+                        artifactId = "Mekanism"
+                    }
+                    project {
+                        name "Mekanism"
+                        packaging 'jar'
+                        description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
+                        url 'http://aidancbrady.com/mekanism/'
+                        scm {
+                            url 'https://github.com/aidancbrady/Mekanism.git'
+                        }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/aidancbrady/Mekanism/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'MIT'
+                                distribution 'repo'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
