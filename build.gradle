@@ -169,33 +169,25 @@ task generatorsJar(type: Jar) {
     }
 }
 
-task MDKZip(type: Zip) {
-    archiveName = "MDK-${project.version}.zip"
-    from sourceSets.main.java.srcDirs
-    include 'mekanism/api/**'
-	classifier "mdk"
-}
-
 task apiJar(type: Jar) {
-	classifier "api"
-	baseName "Mekanism"
-	dependsOn "sourceMainJava"
-	include 'mekanism/api/**'
-	from sourceSets.main.java.srcDirs
-	from sourceSets.main.output
+    classifier "api"
+    baseName "Mekanism"
+    dependsOn "sourceMainJava"
+    include 'mekanism/api/**'
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.output
 }
 
 artifacts {
     archives apiJar
-	archives coreJar
-	archives toolsJar
-	archives generatorsJar
-	archives MDKZip
+    archives coreJar
+    archives toolsJar
+    archives generatorsJar
 }
 
 task fullBuild(type: Delete) {
     delete jar
-	dependsOn "build"
+    dependsOn "build"
 }
 
 apply plugin: 'maven'
