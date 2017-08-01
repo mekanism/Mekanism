@@ -107,7 +107,7 @@ dependencies {
     compile "li.cil.oc:OpenComputers:MC${config.minecraft_version}-${config.opencomputers_version}:api"
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
-    compile "net.industrial-craft:industrial-craft2:${config.ic2_version}:api"
+    compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
     compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
         exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
         exclude module: "jei_1.11.2"
