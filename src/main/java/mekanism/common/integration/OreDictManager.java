@@ -2,7 +2,6 @@ package mekanism.common.integration;
 
 import ic2.api.recipe.Recipes;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -25,14 +25,13 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictManager
 {
-	private static final List<String> minorCompat = Arrays.asList("Nickel", "Aluminum", "Uranium", "Draconium");
+	private static final List<String> minorCompat = Arrays.asList("Nickel", "Aluminum", "Uranium", "Draconium", "Platinum", "Iridium");
 	
 	public static void init()
 	{
@@ -288,7 +287,7 @@ public final class OreDictManager
 		} catch(Exception e) {}
 	}
 	
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public static void addIC2BronzeRecipe()
 	{
 		try {

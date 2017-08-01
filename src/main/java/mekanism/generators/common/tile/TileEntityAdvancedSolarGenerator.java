@@ -20,13 +20,8 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side)
 	{
-		return EnumSet.of(facing);
-	}
-
-	@Override
-	public boolean sideIsOutput(EnumFacing side) {
 		return side == facing;
 	}
 

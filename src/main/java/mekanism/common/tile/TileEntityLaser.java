@@ -119,13 +119,8 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 	}
 	
 	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return EnumSet.of(facing.getOpposite());
-	}
-
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
 		return side == facing.getOpposite();
 	}
 

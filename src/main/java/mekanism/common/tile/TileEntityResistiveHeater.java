@@ -123,15 +123,10 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 			}
 		}
 	}
-	
-	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
-	{
-		return EnumSet.of(MekanismUtils.getLeft(facing), MekanismUtils.getRight(facing));
-	}
 
 	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
+	public boolean sideIsConsumer(EnumFacing side)
+	{
 		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
 	}
 

@@ -65,14 +65,18 @@ repositories {
         name 'tterrag'
         url 'http://maven.tterrag.com/'
     }
-	maven {
-		name 'thiakil.io'
-		url 'https://thiakil.github.io/maven/'
-	}
-	maven {
-		name 'thiakil mirror' //in case GitHub doesn't like maven being hosted in GH Pages
-		url 'http://maven.thiakil.com'
-	}
+    maven {
+        name 'ic2'
+        url 'http://maven.ic2.player.to'
+    }
+    maven {
+        name 'thiakil.io'
+        url 'https://thiakil.github.io/maven/'
+    }
+    maven {
+        name 'thiakil mirror' //in case GitHub doesn't like maven being hosted in GH Pages
+        url 'http://maven.thiakil.com'
+    }
 }
 
 // Define properties file
@@ -109,9 +113,12 @@ dependencies {
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
     deobfProvided "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}"
-	compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
-		exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
-	}
+    compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
+    compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
+        exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
+        exclude module: "jei_1.11.2"
+        exclude module: "Hwyla"
+    }
 }
 
 processResources
@@ -124,7 +131,9 @@ processResources
 }
 
 task coreJar(type: Jar) {
-    baseName = 'Mekanism'
+	archiveName = "Mekanism-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "core"
 
     from('etc/core') {
         include '*.info'
@@ -137,7 +146,9 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    baseName = 'MekanismTools'
+	archiveName = "MekanismTools-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "tools"
 
     from('etc/tools') {
         include '*.info'
@@ -150,7 +161,9 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    baseName = 'MekanismGenerators'
+	archiveName = "MekanismGenerators-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "generators"
 
     from('etc/generators') {
         include '*.info'
@@ -162,28 +175,64 @@ task generatorsJar(type: Jar) {
     }
 }
 
-coreJar.dependsOn('reobfJar')
-toolsJar.dependsOn('reobfJar')
-generatorsJar.dependsOn('reobfJar')
-
-task MDKZip(type: Zip) {
-    baseName = 'MDK'
-    from sourceSets.main.java.srcDirs
+task apiJar(type: Jar) {
+    classifier "api"
+    baseName "Mekanism"
+    dependsOn "sourceMainJava"
     include 'mekanism/api/**'
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.output
 }
 
-task releaseJars(type: Copy) {
-    from coreJar
-    from toolsJar
-    from generatorsJar
-    from MDKZip
-    rename '-(.*)jar', '.jar'
-    rename '-(.*)zip', '.zip'
-    into '.'
+artifacts {
+    archives apiJar
+    archives coreJar
+    archives toolsJar
+    archives generatorsJar
 }
 
 task fullBuild(type: Delete) {
     delete jar
+    dependsOn "build"
 }
 
-fullBuild.dependsOn('releaseJars')
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+uploadArchives {
+    if(System.getenv("LOCAL_MAVEN") != null) {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    if (System.getenv("MAVEN_ARTIFACT") != null) {
+                        artifactId = System.getenv("MAVEN_ARTIFACT")
+                    } else {
+                        artifactId = "Mekanism"
+                    }
+                    project {
+                        name "Mekanism"
+                        packaging 'jar'
+                        description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
+                        url 'http://aidancbrady.com/mekanism/'
+                        scm {
+                            url 'https://github.com/aidancbrady/Mekanism.git'
+                        }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/aidancbrady/Mekanism/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'MIT'
+                                distribution 'repo'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

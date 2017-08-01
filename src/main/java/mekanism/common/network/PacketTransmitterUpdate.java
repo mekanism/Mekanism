@@ -39,6 +39,11 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
+		if(player == null)
+		{
+			return null;
+		}
+		
 		PacketHandler.handlePacket(new Runnable() {
 			@Override
 			public void run()

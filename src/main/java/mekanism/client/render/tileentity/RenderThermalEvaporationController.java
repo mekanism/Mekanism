@@ -19,37 +19,67 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+import java.util.Arrays;
 
 @SideOnly(Side.CLIENT)
 public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController>
 {
-	private static Map<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>>();
+	private static HashMap<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<Fluid, DisplayInteger[]>();
+	private static final int LEVELS = 16;
+	private static final int ALL_LEVELS = LEVELS + 2;
+	private static final int RING_INDEX = ALL_LEVELS-2;
+	private static final int CONCAVE_INDEX = ALL_LEVELS-1;
 
 	@Override
 	public void renderTileEntityAt(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage)
 	{
 		if(tileEntity.structured && tileEntity.inputTank.getFluid() != null)
 		{
-			SalinationRenderData data = new SalinationRenderData();
-
-			data.height = tileEntity.height-2;
-			data.side = tileEntity.facing;
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			
-			if(data.height >= 1 && tileEntity.inputTank.getCapacity() > 0)
+			if(tileEntity.height-2 >= 1 && tileEntity.inputTank.getCapacity() > 0)
 			{
 				push();
 
 				FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
-
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
+				DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid().getFluid());
 
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.inputTank.getFluid().getFluid());
+				float levels = Math.min(((float)tileEntity.inputTank.getFluidAmount()/tileEntity.inputTank.getCapacity()), 1);
+				levels *= (tileEntity.height-2);
 
-				float tankFillPercentage = Math.min(((float)tileEntity.inputTank.getFluidAmount()/tileEntity.inputTank.getCapacity()), 1);
+				int partialLevels = (int)((levels-(int)levels)*16);
 
-				displayList[(int)(tankFillPercentage * ((float)getStages(data.height)-1))].render();
+				switch(tileEntity.facing)
+				{
+					case SOUTH:
+						GlStateManager.translate(-1, 0, -1);
+						break;
+					case EAST:
+						GlStateManager.translate(-1, 0, 0);
+						break;
+					case WEST:
+						GlStateManager.translate(0, 0, -1);
+						break;
+					default:
+						break;
+				}
+
+				GlStateManager.translate(0, 0.01, 0);
+
+				if((int)levels>0)
+				{
+					displayList[CONCAVE_INDEX].render();
+					GlStateManager.translate(0, 1, 0);
+
+					for(int i = 1; i < (int)levels; i++)
+					{
+						displayList[RING_INDEX].render();
+						GlStateManager.translate(0, 1, 0);
+					}
+				}
+				displayList[partialLevels].render();
 
 				MekanismRenderer.glowOff();
 
@@ -74,114 +104,63 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger[] getListAndRender(SalinationRenderData data, Fluid fluid)
+
+	private DisplayInteger[] getListAndRender(Fluid fluid)
 	{
-		if(cachedCenterFluids.containsKey(data) && cachedCenterFluids.get(data).containsKey(fluid))
+		if(cachedCenterFluids.containsKey(fluid))
 		{
-			return cachedCenterFluids.get(data).get(fluid);
+			return cachedCenterFluids.get(fluid);
 		}
 
-		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.WATER;
-		toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
+		DisplayInteger[] displays = new DisplayInteger[ALL_LEVELS];
 
-		final int stages = getStages(data.height);
-		DisplayInteger[] displays = new DisplayInteger[stages];
-
-		if(cachedCenterFluids.containsKey(data))
-		{
-			cachedCenterFluids.get(data).put(fluid, displays);
-		}
-		else {
-			HashMap<Fluid, DisplayInteger[]> map = new HashMap<Fluid, DisplayInteger[]>();
-			map.put(fluid, displays);
-			cachedCenterFluids.put(data, map);
-		}
+		Model3D model = new Model3D();
+		model.baseBlock = fluid.getBlock();
+		model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
 		MekanismRenderer.colorFluid(fluid);
 
-		for(int i = 0; i < stages; i++)
+		if(fluid.getStill() == null)
 		{
-			displays[i] = DisplayInteger.createAndStart();
-
-			if(fluid.getStill() != null)
+			DisplayInteger empty = DisplayInteger.createAndStart();
+			DisplayInteger.endList();
+			Arrays.fill(displays, 0, LEVELS, empty);
+		}
+		else {
+			model.setSideRender(EnumFacing.DOWN, false);
+			
+			for(int i = 0; i < LEVELS; i++)
 			{
-				switch(data.side)
-				{
-					case NORTH:
-						toReturn.minX = 0 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = 0 + .01;
-
-						toReturn.maxX = 2 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 2 - .01;
-						break;
-					case SOUTH:
-						toReturn.minX = -1 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = -1 + .01;
-
-						toReturn.maxX = 1 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 1 - .01;
-						break;
-					case WEST:
-						toReturn.minX = 0 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = -1 + .01;
-
-						toReturn.maxX = 2 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 1 - .01;
-						break;
-					case EAST:
-						toReturn.minX = -1 + .01;
-						toReturn.minY = 0 + .01;
-						toReturn.minZ = 0 + .01;
-
-						toReturn.maxX = 1 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
-						toReturn.maxZ = 2 - .01;
-						break;
-				}
-
-				MekanismRenderer.renderObject(toReturn);
+				displays[i] = generateLevel(i, model);
 			}
-
-			displays[i].endList();
+			
+			model.setSideRender(EnumFacing.UP, false);
+			displays[RING_INDEX] = generateLevel(LEVELS-1, model);
+			model.setSideRender(EnumFacing.DOWN, true);
+			displays[CONCAVE_INDEX] = generateLevel(LEVELS-1, model);
 		}
 
 		MekanismRenderer.resetColor();
-
+		cachedCenterFluids.put(fluid, displays);
+		
 		return displays;
 	}
 
-	private int getStages(int height)
+	private DisplayInteger generateLevel(int height, Model3D model)
 	{
-		return height*(TankUpdateProtocol.FLUID_PER_TANK/10);
-	}
+		DisplayInteger displayInteger = DisplayInteger.createAndStart();
 
-	public static class SalinationRenderData
-	{
-		public int height;
-		public EnumFacing side;
+		model.minX = 0 + .01;
+		model.minY = 0;
+		model.minZ = 0 + .01;
+		model.maxX = 2 - .01;
+		model.maxY = (float)height/(float)(LEVELS-1) + (height==0?.02:0);
+		model.maxZ = 2 - .01;
 
-		@Override
-		public int hashCode()
-		{
-			int code = 1;
-			code = 31 * code + height;
-			return code;
-		}
+		MekanismRenderer.renderObject(model);
+		DisplayInteger.endList();
 
-		@Override
-		public boolean equals(Object data)
-		{
-			return data instanceof SalinationRenderData && ((SalinationRenderData)data).height == height &&
-					((SalinationRenderData)data).side == side;
-		}
+		return displayInteger;
 	}
 
 	public static void resetDisplayInts()

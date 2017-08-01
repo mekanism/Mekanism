@@ -19,6 +19,7 @@ import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -34,7 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 
-@Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2")
+@Interface(iface = "ic2.api.tile.IWrenchable", modid = IC2Integration.MODID)
 public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IChunkLoadHandler, IFrequencyHandler, ITickable
 {
 	/** The direction this block is facing. */

@@ -206,15 +206,10 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		return controlType;
 	}
-	
-	@Override
-	public EnumSet<EnumFacing> getConsumingSides()
-	{
-		return EnumSet.of(facing.getOpposite());
-	}
 
 	@Override
-	public boolean sideIsConsumer(EnumFacing side) {
+	public boolean sideIsConsumer(EnumFacing side)
+	{
 		return side == facing.getOpposite();
 	}
 
