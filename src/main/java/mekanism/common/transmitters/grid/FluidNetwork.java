@@ -242,7 +242,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer,  didTransfer));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer, didTransfer));
 				needsUpdate = false;
 			}
 

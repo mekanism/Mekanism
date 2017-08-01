@@ -246,10 +246,10 @@ public class TransmitterNetworkRegistry
 
 		public void start()
 		{
-			iterate(startPoint.coord(), null);
+			iterate(startPoint.coord());
 		}
 
-		public void iterate(Coord4D from, EnumFacing fromDirection)
+		public void iterate(Coord4D from)
 		{
 			if(iterated.contains(from))
 			{
@@ -269,14 +269,11 @@ public class TransmitterNetworkRegistry
 					
 					for(EnumFacing direction : EnumFacing.VALUES)
 					{
-						if(direction != fromDirection)
+						Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);
+						
+						if(directionCoord != null && !iterated.contains(directionCoord))
 						{
-							Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);
-							
-							if(!(directionCoord == null || iterated.contains(directionCoord)))
-							{
-								iterate(directionCoord, direction.getOpposite());
-							}
+							iterate(directionCoord);
 						}
 					}
 				}
