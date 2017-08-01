@@ -43,18 +43,15 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 				push();
 
 				FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
-
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
-
 				DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid().getFluid());
 
 				float levels = Math.min(((float)tileEntity.inputTank.getFluidAmount()/tileEntity.inputTank.getCapacity()), 1);
-
 				levels *= (tileEntity.height-2);
 
 				int partialLevels = (int)((levels-(int)levels)*16);
 
-				switch (tileEntity.facing)
+				switch(tileEntity.facing)
 				{
 					case SOUTH:
 						GlStateManager.translate(-1, 0, -1);
@@ -65,6 +62,8 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 					case WEST:
 						GlStateManager.translate(0, 0, -1);
 						break;
+					default:
+						break;
 				}
 
 				GlStateManager.translate(0, 0.01, 0);
@@ -74,7 +73,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 					displayList[CONCAVE_INDEX].render();
 					GlStateManager.translate(0, 1, 0);
 
-					for (int i = 1; i < (int)levels; i++)
+					for(int i = 1; i < (int)levels; i++)
 					{
 						displayList[RING_INDEX].render();
 						GlStateManager.translate(0, 1, 0);
@@ -127,13 +126,14 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 			DisplayInteger.endList();
 			Arrays.fill(displays, 0, LEVELS, empty);
 		}
-		else
-		{
+		else {
 			model.setSideRender(EnumFacing.DOWN, false);
-			for (int i = 0; i < LEVELS; i++)
+			
+			for(int i = 0; i < LEVELS; i++)
 			{
 				displays[i] = generateLevel(i, model);
 			}
+			
 			model.setSideRender(EnumFacing.UP, false);
 			displays[RING_INDEX] = generateLevel(LEVELS-1, model);
 			model.setSideRender(EnumFacing.DOWN, true);
@@ -142,6 +142,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
 		MekanismRenderer.resetColor();
 		cachedCenterFluids.put(fluid, displays);
+		
 		return displays;
 	}
 
@@ -166,5 +167,4 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 	{
 		cachedCenterFluids.clear();
 	}
-
 }
