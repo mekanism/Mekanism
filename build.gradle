@@ -61,14 +61,17 @@ repositories {
         name 'buildcraft'
         url 'https://mod-buildcraft.com/maven/'
     }
-	maven {
-		name 'thiakil.io'
-		url 'https://thiakil.github.io/maven/'
-	}
-	maven {
-		name 'thiakil mirror' //in case GitHub doesn't like maven being hosted in GH Pages
-		url 'http://maven.thiakil.com'
-	}
+    maven {
+        name 'ic2'
+        url 'http://maven.ic2.player.to'
+    maven {
+        name 'thiakil.io'
+        url 'https://thiakil.github.io/maven/'
+    }
+    maven {
+        name 'thiakil mirror' //in case GitHub doesn't like maven being hosted in GH Pages
+        url 'http://maven.thiakil.com'
+    }
 }
 
 // Define properties file
@@ -103,11 +106,12 @@ dependencies {
     compile "li.cil.oc:OpenComputers:MC${config.minecraft_version}-${config.opencomputers_version}:api"
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
-	compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
-		exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
+    compile "net.industrial-craft:industrial-craft2:${config.ic2_version}:api"
+    compile ("com.jaquadro.minecraft.storagedrawers:StorageDrawers:${config.minecraft_version}-${config.storagedrawers_version}:api") {
+        exclude module: "Chameleon" // we only use the API, which doesn't need Chameleon
         exclude module: "jei_1.11.2"
         exclude module: "Hwyla"
-	}
+    }
 }
 
 processResources
