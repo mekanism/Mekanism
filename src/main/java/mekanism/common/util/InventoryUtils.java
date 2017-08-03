@@ -385,6 +385,10 @@ public final class InventoryUtils
 
 	public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, EnumFacing side, boolean force)
 	{
+		if (itemStack == null){
+			return false;
+		}
+
 		if(force && tileEntity instanceof TileEntityLogisticalSorter)
 		{
 			return ((TileEntityLogisticalSorter)tileEntity).canSendHome(itemStack);

@@ -153,7 +153,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 					TransitRequest request = TransitRequest.getTopStacks(back, facing.getOpposite(), 64, new StrictFilterFinder());
 					TransitResponse response = emitItemToTransporter(front, request, color, 0);
 					
-					if(response != null)
+					if(response != null && !response.isEmpty())
 					{
 						response.getInvStack(back, facing).use(response.stack.stackSize);
 						back.markDirty();
