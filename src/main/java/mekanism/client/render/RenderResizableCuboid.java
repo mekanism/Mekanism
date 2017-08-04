@@ -161,7 +161,8 @@ public class RenderResizableCuboid {
         wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
 
         for (EnumFacing face : EnumFacing.values()) {
-            renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
+            if(cube.shouldSideRender(face))
+                renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
         }
 
         tess.draw();

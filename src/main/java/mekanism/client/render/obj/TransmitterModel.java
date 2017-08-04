@@ -9,8 +9,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
-import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.config.MekanismConfig.client;
@@ -39,6 +39,7 @@ import net.minecraftforge.client.model.obj.OBJModel.Group;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,9 +50,9 @@ import com.google.common.collect.Lists;
 
 public class TransmitterModel extends OBJBakedModelBase
 {
-	private static Set<TransmitterModel> modelInstances = new HashSet<TransmitterModel>();
+	private static Set<TransmitterModel> modelInstances = new HashSet<>();
 	
-	private Map<Integer, List<BakedQuad>> modelCache = new HashMap<Integer, List<BakedQuad>>();
+	private Map<Integer, List<BakedQuad>> modelCache = new HashMap<>();
 	private TransmitterModel itemCache;
 	
 	private IBlockState tempState;
@@ -83,7 +84,7 @@ public class TransmitterModel extends OBJBakedModelBase
 	    {
 			if(itemCache == null)
 			{
-				List<String> visible = new ArrayList<String>();
+				List<String> visible = new ArrayList<>();
 				
 				for(EnumFacing side : EnumFacing.values())
 				{
@@ -270,8 +271,30 @@ public class TransmitterModel extends OBJBakedModelBase
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
-        return Pair.of(this, CTMModelFactory.transforms.get(cameraTransformType).getMatrix());
+        return Pair.of(this, transforms.get(cameraTransformType).getMatrix());
     }
+
+	// Copy from old CTM
+	public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
+			.put(TransformType.GUI,                         get(0, 0, 0, 30, 225, 0, 0.625f))
+			.put(TransformType.THIRD_PERSON_RIGHT_HAND,     get(0, 2.5f, 0, 75, 45, 0, 0.375f))
+			.put(TransformType.THIRD_PERSON_LEFT_HAND,      get(0, 2.5f, 0, 75, 45, 0, 0.375f))
+			.put(TransformType.FIRST_PERSON_RIGHT_HAND,     get(0, 0, 0, 0, 45, 0, 0.4f))
+			.put(TransformType.FIRST_PERSON_LEFT_HAND,      get(0, 0, 0, 0, 225, 0, 0.4f))
+			.put(TransformType.GROUND,                      get(0, 2, 0, 0, 0, 0, 0.25f))
+			.put(TransformType.HEAD,                        get(0, 0, 0, 0, 0, 0, 1))
+			.put(TransformType.FIXED,                       get(0, 0, 0, 0, 0, 0, 1))
+			.put(TransformType.NONE,                        get(0, 0, 0, 0, 0, 0, 0))
+			.build();
+
+	private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s)
+	{
+		return new TRSRTransformation(
+				new Vector3f(tx / 16, ty / 16, tz / 16),
+				TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
+				new Vector3f(s, s, s),
+				null);
+	}
 	
 	public static void registerIcons(TextureMap map)
 	{

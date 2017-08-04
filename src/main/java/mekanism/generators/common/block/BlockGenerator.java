@@ -3,9 +3,6 @@ package mekanism.generators.common.block;
 import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.client.render.ctm.CTMBlockRenderContext;
-import mekanism.client.render.ctm.CTMData;
-import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
@@ -82,10 +79,8 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
+public abstract class BlockGenerator extends BlockContainer
 {
-	public CTMData[] ctmData = new CTMData[16];
-	
 	public Random machineRand = new Random();
 	
 	private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
@@ -97,8 +92,6 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
-		
-		initCTMs();
 	}
 	
 	public static BlockGenerator getGeneratorBlock(GeneratorBlock block)
@@ -114,36 +107,6 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 	}
 
 	public abstract GeneratorBlock getGeneratorBlock();
-	
-	public void initCTMs()
-	{
-		switch(getGeneratorBlock())
-		{
-			case GENERATOR_BLOCK_1:
-				ctmData[9] = new CTMData(GeneratorType.ELECTROMAGNETIC_COIL);
-				ctmData[10] = new CTMData(GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VALVE, GeneratorType.TURBINE_VENT);
-				ctmData[11] = new CTMData(GeneratorType.TURBINE_VALVE, GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VENT);
-				ctmData[12] = new CTMData(GeneratorType.TURBINE_VENT, GeneratorType.TURBINE_CASING, GeneratorType.TURBINE_VALVE);
-				ctmData[13] = new CTMData(GeneratorType.SATURATING_CONDENSER);
-				
-				break;
-		}
-	}
-	
-	@SideOnly(Side.CLIENT)
-    @Override
-    public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
-	{
-        if(stateIn.getBlock() == null || stateIn.getMaterial() == Material.AIR) 
-        {
-            return stateIn;
-        }
-        
-        IExtendedBlockState state = (IExtendedBlockState)stateIn;
-        CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
-
-        return state.withProperty(BlockStateBasic.ctmProperty, ctx);
-    }
 	
 	@Override
 	public BlockStateContainer createBlockState()
@@ -760,20 +723,7 @@ public abstract class BlockGenerator extends BlockContainer implements ICTMBlock
 		
 		return false;
 	}
-	
-	@Override
-	public CTMData getCTMData(IBlockState state)
-	{
-		return ctmData[state.getBlock().getMetaFromState(state)];
-	}
-	
-	@Override
-	public String getOverrideTexture(IBlockState state, EnumFacing side)
-	{
-		return null;
-	}
-	
-	@Override
+
 	public PropertyEnum<GeneratorType> getTypeProperty()
 	{
 		return getGeneratorBlock().getProperty();

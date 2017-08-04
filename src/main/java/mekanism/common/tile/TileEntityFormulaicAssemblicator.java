@@ -267,11 +267,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 			{
 				if(!inventory.get(i).isEmpty())
 				{
-					ItemStack stack = inventory.get(i);
+					ItemStack stack = inventory.get(i).copy();
 					
 					inventory.get(i).shrink(1);
 					
-					if(stack.getCount() == 0 && stack.getItem().hasContainerItem(stack))
+					if(inventory.get(i).getCount() == 0 && stack.getItem().hasContainerItem(stack))
 					{
 						ItemStack container = stack.getItem().getContainerItem(stack);
 

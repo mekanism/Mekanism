@@ -65,6 +65,14 @@ repositories {
         name 'buildcraft'
         url 'https://mod-buildcraft.com/maven/'
     }
+    maven {
+        name 'tterrag'
+        url 'http://maven.tterrag.com/'
+    }
+    maven {
+        name 'ic2'
+        url 'http://maven.ic2.player.to'
+    }
 }
 
 // Define properties file
@@ -96,11 +104,14 @@ dependencies {
     deobfProvided "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}:api"
 	runtime "mezz.jei:jei_${config.minecraft_version}:${config.jei_version}"
     compile "net.darkhax.tesla:Tesla-${config.minecraft_version}:${config.tesla_version}"
-    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api" // Not updated yet
+    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
     compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "cofh:RedstoneFlux:${config.minecraft_version}-${config.redstoneflux_version}:universal"
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
+    deobfProvided "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}:api"
+    runtime "team.chisel.ctm:CTM:MC${config.minecraft_version}-${config.ctm_version}"
+    compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
 }
 
 processResources
@@ -113,7 +124,9 @@ processResources
 }
 
 task coreJar(type: Jar) {
-    baseName = 'Mekanism'
+	archiveName = "Mekanism-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "core"
 
     from('etc/core') {
         include '*.info'
@@ -126,7 +139,9 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    baseName = 'MekanismTools'
+	archiveName = "MekanismTools-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "tools"
 
     from('etc/tools') {
         include '*.info'
@@ -139,7 +154,9 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    baseName = 'MekanismGenerators'
+	archiveName = "MekanismGenerators-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "generators"
 
     from('etc/generators') {
         include '*.info'
@@ -151,28 +168,64 @@ task generatorsJar(type: Jar) {
     }
 }
 
-coreJar.dependsOn('reobfJar')
-toolsJar.dependsOn('reobfJar')
-generatorsJar.dependsOn('reobfJar')
-
-task MDKZip(type: Zip) {
-    baseName = 'MDK'
-    from sourceSets.main.java.srcDirs
+task apiJar(type: Jar) {
+    classifier "api"
+    baseName "Mekanism"
+    dependsOn "sourceMainJava"
     include 'mekanism/api/**'
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.output
 }
 
-task releaseJars(type: Copy) {
-    from coreJar
-    from toolsJar
-    from generatorsJar
-    from MDKZip
-    rename '-(.*)jar', '.jar'
-    rename '-(.*)zip', '.zip'
-    into '.'
+artifacts {
+    archives apiJar
+    archives coreJar
+    archives toolsJar
+    archives generatorsJar
 }
 
 task fullBuild(type: Delete) {
     delete jar
+    dependsOn "build"
 }
 
-fullBuild.dependsOn('releaseJars')
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+uploadArchives {
+    if(System.getenv("LOCAL_MAVEN") != null) {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    if (System.getenv("MAVEN_ARTIFACT") != null) {
+                        artifactId = System.getenv("MAVEN_ARTIFACT")
+                    } else {
+                        artifactId = "Mekanism"
+                    }
+                    project {
+                        name "Mekanism"
+                        packaging 'jar'
+                        description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
+                        url 'http://aidancbrady.com/mekanism/'
+                        scm {
+                            url 'https://github.com/aidancbrady/Mekanism.git'
+                        }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/aidancbrady/Mekanism/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'MIT'
+                                distribution 'repo'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

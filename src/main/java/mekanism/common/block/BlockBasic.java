@@ -6,9 +6,6 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.render.ctm.CTMBlockRenderContext;
-import mekanism.client.render.ctm.CTMData;
-import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
@@ -18,7 +15,6 @@ import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
@@ -69,7 +65,6 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -109,18 +104,14 @@ import buildcraft.api.tools.IToolWrench;
  * @author AidanBrady
  *
  */
-public abstract class BlockBasic extends Block implements ICTMBlock
+public abstract class BlockBasic extends Block
 {
-	public CTMData[][] ctmData = new CTMData[16][4];
-	
 	public BlockBasic()
 	{
 		super(Material.IRON);
 		setHardness(5F);
 		setResistance(20F);
 		setCreativeTab(Mekanism.tabMekanism);
-		
-		initCTMs();
 	}
 
 	public static BlockBasic getBlockBasic(BasicBlock block)
@@ -207,21 +198,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		
 		return state;
 	}
-	
-	@SideOnly(Side.CLIENT)
-    @Override
-    public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
-	{
-        if(stateIn.getBlock() == null || stateIn.getMaterial() == Material.AIR) 
-        {
-            return stateIn;
-        }
-        
-        IExtendedBlockState state = (IExtendedBlockState)stateIn;
-        CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
-
-        return state.withProperty(BlockStateBasic.ctmProperty, ctx);
-    }
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos)
@@ -260,40 +236,6 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		
 		return blockResistance;
     }
-
-	public void initCTMs()
-	{
-		switch(getBasicBlock())
-		{
-			case BASIC_BLOCK_1:
-				ctmData[7][0] = new CTMData(BasicBlockType.TELEPORTER_FRAME, MachineType.TELEPORTER);
-				ctmData[9][0] = new CTMData(BasicBlockType.DYNAMIC_TANK, BasicBlockType.DYNAMIC_VALVE);
-				ctmData[10][0] = new CTMData(BasicBlockType.STRUCTURAL_GLASS);
-				ctmData[11][0] = new CTMData(BasicBlockType.DYNAMIC_TANK, BasicBlockType.DYNAMIC_VALVE);
-
-				ctmData[14][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
-				ctmData[15][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
-
-				break;
-			case BASIC_BLOCK_2:
-				ctmData[0][0] = new CTMData(BasicBlockType.THERMAL_EVAPORATION_BLOCK, BasicBlockType.THERMAL_EVAPORATION_VALVE, BasicBlockType.THERMAL_EVAPORATION_CONTROLLER);
-				ctmData[1][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
-				ctmData[2][0] = new CTMData(BasicBlockType.INDUCTION_CASING, BasicBlockType.INDUCTION_PORT);
-				ctmData[3][0] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[3][1] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[3][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[3][3] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[4][0] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[4][1] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[4][2] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[4][3] = new CTMData(BasicBlockType.INDUCTION_CELL, BasicBlockType.INDUCTION_PROVIDER).setRenderConvexConnections();
-				ctmData[5][0] = new CTMData(BasicBlockType.SUPERHEATING_ELEMENT).setRenderConvexConnections();
-				ctmData[7][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
-				ctmData[8][0] = new CTMData(BasicBlockType.BOILER_CASING, BasicBlockType.BOILER_VALVE);
-
-				break;
-		}
-	}
 
 	@Override
 	public int damageDropped(IBlockState state)
@@ -962,12 +904,9 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		if(BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS)
+		if(BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS && BasicBlockType.get(world.getBlockState(pos.offset(side))) == BasicBlockType.STRUCTURAL_GLASS)
 		{
-			if(!ctmData[10][0].shouldRenderSide(world, pos.offset(side), side))
-			{
-				return false;
-			}
+			return false;
 		}
 		
 		return super.shouldSideBeRendered(state, world, pos, side);
@@ -1013,43 +952,7 @@ public abstract class BlockBasic extends Block implements ICTMBlock
 		
 		return false;
 	}
-	
-	@Override
-	public CTMData getCTMData(IBlockState state)
-	{
-		return ctmData[state.getBlock().getMetaFromState(state)][0];
-	}
-	
-	@Override
-	public String getOverrideTexture(IBlockState state, EnumFacing side)
-	{
-		BasicBlockType type = state.getValue(getTypeProperty());
-		
-		if(type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
-		{
-			return type.getName() + "_" + state.getValue(BlockStateBasic.tierProperty).getName();
-		}
-		
-		if(type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER)
-		{
-			if(side == state.getValue(BlockStateFacing.facingProperty))
-			{
-				return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_on" : "");
-			}
-			else {
-				return "thermal_evaporation_block";
-			}
-		}
-		
-		if(type == BasicBlockType.INDUCTION_PORT)
-		{
-			return type.getName() + (state.getValue(BlockStateBasic.activeProperty) ? "_output" : "");
-		}
-		
-		return null;
-	}
-	
-	@Override
+
 	public PropertyEnum<BasicBlockType> getTypeProperty()
 	{
 		return getBasicBlock().getProperty();

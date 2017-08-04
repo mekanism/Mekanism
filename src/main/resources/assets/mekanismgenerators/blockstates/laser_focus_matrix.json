@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanismgenerators:blocks/ctm/laser_focus_matrix"
+      "all": "mekanismgenerators:blocks/laser_focus_matrix"
     }
   },
   "variants": {

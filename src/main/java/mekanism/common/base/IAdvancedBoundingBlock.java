@@ -7,6 +7,7 @@ import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.security.ISecurityTile;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -17,9 +18,9 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux"),
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux")
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux"),
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = IC2Integration.MODID),
 })
 public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData, ISecurityTile
 {

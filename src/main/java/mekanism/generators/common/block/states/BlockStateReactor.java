@@ -34,7 +34,7 @@ public class BlockStateReactor extends ExtendedBlockState
 	
 	public BlockStateReactor(BlockReactor block, PropertyEnum<ReactorBlockType> typeProperty)
 	{
-		super(block, new IProperty[] {typeProperty, activeProperty}, new IUnlistedProperty[] {BlockStateBasic.ctmProperty});
+		super(block, new IProperty[] {typeProperty, activeProperty}, new IUnlistedProperty[] {});
 	}
 	
 	public static enum ReactorBlock
@@ -86,12 +86,12 @@ public class BlockStateReactor extends ExtendedBlockState
 	
 	public static enum ReactorBlockType implements IStringSerializable
 	{
-		REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController.class, false),
+		REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController.class, true),
 		REACTOR_FRAME(ReactorBlock.REACTOR_BLOCK, 1, "ReactorFrame", -1, TileEntityReactorFrame.class, false),
-		REACTOR_PORT(ReactorBlock.REACTOR_BLOCK, 2, "ReactorPort", -1, TileEntityReactorPort.class, false),
+		REACTOR_PORT(ReactorBlock.REACTOR_BLOCK, 2, "ReactorPort", -1, TileEntityReactorPort.class, true),
 		REACTOR_LOGIC_ADAPTER(ReactorBlock.REACTOR_BLOCK, 3, "ReactorLogicAdapter", 15, TileEntityReactorLogicAdapter.class, false),
 		REACTOR_GLASS(ReactorBlock.REACTOR_GLASS, 0, "ReactorGlass", -1, TileEntityReactorGlass.class, false),
-		LASER_FOCUS_MATRIX(ReactorBlock.REACTOR_GLASS, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class, true);
+		LASER_FOCUS_MATRIX(ReactorBlock.REACTOR_GLASS, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class, false);
 	
 		public ReactorBlock blockType;
 		public int meta;
@@ -164,6 +164,11 @@ public class BlockStateReactor extends ExtendedBlockState
 		{
 			return new ItemStack(blockType.getBlock(), amount, meta);
 		}
+
+		public boolean hasActiveTexture()
+		{
+			return activable;
+		}
 	}
 	
 	public static class ReactorBlockStateMapper extends StateMapperBase
@@ -175,6 +180,13 @@ public class BlockStateReactor extends ExtendedBlockState
 			ReactorBlockType type = state.getValue(block.getTypeProperty());
 			StringBuilder builder = new StringBuilder();
 			String nameOverride = null;
+
+			if(type.hasActiveTexture())
+			{
+				builder.append(activeProperty.getName());
+				builder.append("=");
+				builder.append(state.getValue(activeProperty));
+			}
 
 			if(builder.length() == 0)
 			{

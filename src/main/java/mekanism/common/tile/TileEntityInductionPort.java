@@ -10,7 +10,6 @@ import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -23,6 +22,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
@@ -44,9 +44,9 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2")
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = IC2Integration.MODID),
+	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = IC2Integration.MODID),
+	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = IC2Integration.MODID)
 })
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState
 {
@@ -98,7 +98,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		return (structure != null && !mode);
 	}
 
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void register()
 	{
 		if(!world.isRemote)
@@ -120,7 +120,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		}
 	}
 
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void deregister()
 	{
 		if(!world.isRemote)
@@ -285,28 +285,28 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getSinkTier()
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getSourceTier()
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void setStored(int energy)
 	{
 		setEnergy(energy*general.FROM_IC2);
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int addEnergy(int amount)
 	{
 		double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy()-getEnergy()), amount*general.FROM_IC2);
@@ -316,7 +316,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
 		return canOutputEnergy(side);
@@ -329,49 +329,49 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
 		return sideIsConsumer(direction);
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
 		return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getStored()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getCapacity()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public int getOutput()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double getDemandedEnergy()
 	{
 		return (getMaxEnergy() - getEnergy())*general.TO_IC2;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double getOfferedEnergy()
 	{
 		return Math.min(getEnergy(), getMaxOutput())*general.TO_IC2;
@@ -384,14 +384,14 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double getOutputEnergyUnitsPerTick()
 	{
 		return getMaxOutput()*general.TO_IC2;
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
@@ -404,7 +404,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public void drawEnergy(double amount)
 	{
 		if(structure != null)

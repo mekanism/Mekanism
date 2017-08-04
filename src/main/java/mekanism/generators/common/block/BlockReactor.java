@@ -1,11 +1,7 @@
 package mekanism.generators.common.block;
 
-import mekanism.client.render.ctm.CTMBlockRenderContext;
-import mekanism.client.render.ctm.CTMData;
-import mekanism.client.render.ctm.ICTMBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
@@ -39,14 +35,12 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
 
-public abstract class BlockReactor extends Block implements ICTMBlock, ITileEntityProvider
+public abstract class BlockReactor extends Block implements ITileEntityProvider
 {
-	public CTMData[] ctmData = new CTMData[16];
 
 	public BlockReactor()
 	{
@@ -54,8 +48,6 @@ public abstract class BlockReactor extends Block implements ICTMBlock, ITileEnti
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
-		
-		initCTMs();
 	}
 	
 	public static BlockReactor getReactorBlock(ReactorBlock block)
@@ -89,41 +81,6 @@ public abstract class BlockReactor extends Block implements ICTMBlock, ITileEnti
 		
 		return state;
 	}
-	
-	public void initCTMs()
-	{
-		switch(getReactorBlock())
-		{
-			case REACTOR_BLOCK:
-				ctmData[0] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[1] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[2] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[3] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				ctmData[4] = new CTMData(ReactorBlockType.REACTOR_CONTROLLER, ReactorBlockType.REACTOR_FRAME, ReactorBlockType.REACTOR_PORT, ReactorBlockType.REACTOR_LOGIC_ADAPTER);
-				
-				break;
-			case REACTOR_GLASS:
-				ctmData[0] = new CTMData(ReactorBlockType.REACTOR_GLASS, ReactorBlockType.LASER_FOCUS_MATRIX);
-				ctmData[1] = new CTMData(ReactorBlockType.REACTOR_GLASS, ReactorBlockType.LASER_FOCUS_MATRIX);
-				
-				break;
-		}
-	}
-	
-	@SideOnly(Side.CLIENT)
-    @Override
-    public IBlockState getExtendedState(IBlockState stateIn, IBlockAccess w, BlockPos pos) 
-	{
-        if(stateIn.getBlock() == null || stateIn.getMaterial() == Material.AIR) 
-        {
-            return stateIn;
-        }
-        
-        IExtendedBlockState state = (IExtendedBlockState)stateIn;
-        CTMBlockRenderContext ctx = new CTMBlockRenderContext(w, pos);
-
-        return state.withProperty(BlockStateBasic.ctmProperty, ctx);
-    }
 	
 	@Override
 	public BlockStateContainer createBlockState()
@@ -280,9 +237,13 @@ public abstract class BlockReactor extends Block implements ICTMBlock, ITileEnti
 		
 		if(type == ReactorBlockType.REACTOR_GLASS || type == ReactorBlockType.LASER_FOCUS_MATRIX)
 		{
-			if(!ctmData[meta].shouldRenderSide(world, pos.offset(side), side))
-			{
-				return false;
+			IBlockState stateOffset = world.getBlockState(pos.offset(side));
+			if(this == stateOffset.getBlock()) {
+				int metaOffset = stateOffset.getBlock().getMetaFromState(stateOffset);
+				ReactorBlockType typeOffset = ReactorBlockType.get(getReactorBlock(), metaOffset);
+				if (typeOffset == ReactorBlockType.REACTOR_GLASS || typeOffset == ReactorBlockType.LASER_FOCUS_MATRIX) {
+					return false;
+				}
 			}
 		}
 			
@@ -353,37 +314,7 @@ public abstract class BlockReactor extends Block implements ICTMBlock, ITileEnti
 
 		return itemStack;
 	}
-	
-	@Override
-	public CTMData getCTMData(IBlockState state)
-	{
-		return ctmData[state.getBlock().getMetaFromState(state)];
-	}
-	
-	@Override
-	public String getOverrideTexture(IBlockState state, EnumFacing side)
-	{
-		ReactorBlockType type = state.getValue(getTypeProperty());
-		
-		if(type == ReactorBlockType.REACTOR_CONTROLLER)
-		{
-			if(side == EnumFacing.UP)
-			{
-				return type.getName() + (state.getValue(BlockStateReactor.activeProperty) ? "_on" : "");
-			}
-			else {
-				return "reactor_frame";
-			}
-		}
-		else if(type == ReactorBlockType.REACTOR_PORT)
-		{
-			return type.getName() + (state.getValue(BlockStateReactor.activeProperty) ? "_output" : "");
-		}
-		
-		return null;
-	}
-	
-	@Override
+
 	public PropertyEnum<ReactorBlockType> getTypeProperty()
 	{
 		return getReactorBlock().getProperty();

@@ -71,7 +71,6 @@ import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.ctm.CTMRegistry;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
@@ -279,7 +278,6 @@ public class ClientProxy extends CommonProxy
 		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean();
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
-		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
 		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
 		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
 		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
@@ -1111,8 +1109,7 @@ public class ClientProxy extends CommonProxy
 		MekanismRenderer.init();
 		
 		ModelLoaderRegistry.registerLoader(MekanismOBJLoader.INSTANCE);
-		
-		MinecraftForge.EVENT_BUS.register(new CTMRegistry());
+
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(MekanismOBJLoader.INSTANCE);
 		
@@ -1152,11 +1149,6 @@ public class ClientProxy extends CommonProxy
 				return new RenderFlame(manager);
 			}
 		});
-		
-		CTMRegistry.registerCTMs("mekanism", "dynamic_tank", "structural_glass", "dynamic_valve", "teleporter", "teleporter_frame", "induction_casing", "induction_port", "induction_port_output",
-				"induction_cell_basic", "induction_cell_advanced", "induction_cell_elite", "induction_cell_ultimate", "induction_provider_basic", "induction_provider_advanced", "induction_provider_elite",
-				"induction_provider_ultimate", "thermal_evaporation_controller", "thermal_evaporation_controller_on", "thermal_evaporation_valve", "superheating_element", "superheating_element_on",
-				"boiler_casing", "boiler_valve", "thermal_evaporation_valve", "thermal_evaporation_block");
 	}
 
 	@Override

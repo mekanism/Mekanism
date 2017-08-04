@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.util.ItemDataUtils;
@@ -33,7 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2"),
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = "redstoneflux")
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = "redstoneflux"),
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = IC2Integration.MODID)
 })
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
@@ -177,7 +179,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);

@@ -1,0 +1,35 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "type":"CTM",
+        "layer":"SOLID",
+        "textures":[
+            "mekanism:blocks/thermal_evaporation_controller-ctm"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:basicblock2",
+                    "predicate":
+                    {
+                        "type": "thermal_evaporation_block"
+                    }
+                },
+                {
+                    "block": "mekanism:basicblock",
+                    "predicate":
+                    {
+                        "type": "thermal_evaporation_controller"
+                    }
+                },
+                {
+                    "block": "mekanism:basicblock",
+                    "predicate":
+                    {
+                        "type": "thermal_evaporation_valve"
+                    }
+                }
+            ]
+        }
+    }
+}

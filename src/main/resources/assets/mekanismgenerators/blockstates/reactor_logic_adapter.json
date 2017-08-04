@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:basic_cube",
     "textures": {
-      "all": "mekanismgenerators:blocks/ctm/reactor_logic_adapter"
+      "all": "mekanismgenerators:blocks/reactor_logic_adapter"
     }
   },
   "variants": {

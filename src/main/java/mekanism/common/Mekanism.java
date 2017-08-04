@@ -29,13 +29,11 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.IModule;
-import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
-import mekanism.common.config.TypeConfigManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
@@ -132,7 +130,6 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -153,7 +150,7 @@ import com.mojang.authlib.GameProfile;
  * @author AidanBrady
  *
  */
-@Mod(modid = "mekanism", name = "Mekanism", version = "9.3.3", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "mekanism", name = "Mekanism", version = "9.3.4", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies =	"required-after:forge@[14.21.0.2373,);" +
 						"after:redstoneflux;" +
 						"after:mcmultipart;" +
@@ -189,7 +186,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(9, 3, 3);
+	public static Version versionNumber = new Version(9, 3, 4);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");

@@ -216,6 +216,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								if(set.cardinality() == 0)
 								{
 									it.remove();
+									break;
 								}
 								
 								next = index + 1;
@@ -233,6 +234,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								if(set.cardinality() == 0)
 								{
 									it.remove();
+									break;
 								}
 								
 								next = index + 1;

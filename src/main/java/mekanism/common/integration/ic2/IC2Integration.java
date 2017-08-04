@@ -12,7 +12,9 @@ import net.minecraftforge.fml.common.Optional.Method;
 
 public class IC2Integration 
 {
-	@Method(modid = "IC2")
+	public static final String MODID = "ic2";
+	
+	@Method(modid = IC2Integration.MODID)
 	public static boolean isOutputter(TileEntity tileEntity, EnumFacing side)
 	{
 		IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
@@ -25,7 +27,7 @@ public class IC2Integration
 		return false;
 	}
 	
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public static boolean isAcceptor(TileEntity orig, TileEntity tileEntity, EnumFacing side)
 	{
 		IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
@@ -41,7 +43,7 @@ public class IC2Integration
 		return false;
 	}
 	
-	@Method(modid = "IC2")
+	@Method(modid = IC2Integration.MODID)
 	public static double emitEnergy(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending)
 	{
 		IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());

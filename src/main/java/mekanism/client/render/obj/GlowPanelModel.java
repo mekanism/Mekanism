@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import mekanism.api.EnumColor;
-import mekanism.client.render.ctm.CTMModelFactory;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.state.IBlockState;
@@ -29,8 +29,8 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.Face;
-import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
 import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -41,8 +41,8 @@ import com.google.common.collect.Lists;
 
 public class GlowPanelModel extends OBJBakedModelBase
 {
-	private static Map<Integer, List<BakedQuad>> glowPanelCache = new HashMap<Integer, List<BakedQuad>>();
-	private static Map<Integer, GlowPanelModel> glowPanelItemCache = new HashMap<Integer, GlowPanelModel>();
+	private static Map<Integer, List<BakedQuad>> glowPanelCache = new HashMap<>();
+	private static Map<Integer, GlowPanelModel> glowPanelItemCache = new HashMap<>();
 	
 	private IBlockState tempState;
 	private ItemStack tempStack;
@@ -163,8 +163,6 @@ public class GlowPanelModel extends OBJBakedModelBase
 		
 		return null;
 	}
-
-	private Pair<IBakedModel, Matrix4f> thirdPersonTransform;
     
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType)
@@ -172,7 +170,7 @@ public class GlowPanelModel extends OBJBakedModelBase
     	if(transformType == TransformType.GUI)
     	{
     		GlStateManager.rotate(180, 1, 0, 0);
-    		ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.transforms.get(transformType).getMatrix());
+    		ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
     		GlStateManager.translate(0.65F, 0.45F, 0.0F);
     		GlStateManager.rotate(90, 1, 0, 0);
     		GlStateManager.scale(1.6F, 1.6F, 1.6F);
@@ -185,12 +183,34 @@ public class GlowPanelModel extends OBJBakedModelBase
     	}
     	else if(transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) 
         {
-    		ForgeHooksClient.multiplyCurrentGlMatrix(CTMModelFactory.transforms.get(transformType).getMatrix());
+    		ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
         	GlStateManager.translate(0.0F, 0.3F, 0.2F);
         	
         	return Pair.of(this, null);
         }
         
-        return Pair.of(this, CTMModelFactory.transforms.get(transformType).getMatrix());
+        return Pair.of(this, transforms.get(transformType).getMatrix());
     }
+
+	// Copy from old CTM
+	public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
+			.put(TransformType.GUI,                         get(0, 0, 0, 30, 225, 0, 0.625f))
+			.put(TransformType.THIRD_PERSON_RIGHT_HAND,     get(0, 2.5f, 0, 75, 45, 0, 0.375f))
+			.put(TransformType.THIRD_PERSON_LEFT_HAND,      get(0, 2.5f, 0, 75, 45, 0, 0.375f))
+			.put(TransformType.FIRST_PERSON_RIGHT_HAND,     get(0, 0, 0, 0, 45, 0, 0.4f))
+			.put(TransformType.FIRST_PERSON_LEFT_HAND,      get(0, 0, 0, 0, 225, 0, 0.4f))
+			.put(TransformType.GROUND,                      get(0, 2, 0, 0, 0, 0, 0.25f))
+			.put(TransformType.HEAD,                        get(0, 0, 0, 0, 0, 0, 1))
+			.put(TransformType.FIXED,                       get(0, 0, 0, 0, 0, 0, 1))
+			.put(TransformType.NONE,                        get(0, 0, 0, 0, 0, 0, 0))
+			.build();
+
+	private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s)
+	{
+		return new TRSRTransformation(
+				new Vector3f(tx / 16, ty / 16, tz / 16),
+				TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
+				new Vector3f(s, s, s),
+				null);
+	}
 }

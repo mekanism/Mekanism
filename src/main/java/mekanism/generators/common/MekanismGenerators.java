@@ -44,7 +44,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
-@Mod(modid = "mekanismgenerators", name = "MekanismGenerators", version = "9.3.3", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "mekanismgenerators", name = "MekanismGenerators", version = "9.3.4", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 @Mod.EventBusSubscriber()
 public class MekanismGenerators implements IModule
 {
@@ -55,7 +55,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(9, 3, 3);
+	public static Version versionNumber = new Version(9, 3, 4);
 	
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 
