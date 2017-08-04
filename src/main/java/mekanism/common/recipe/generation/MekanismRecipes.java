@@ -18,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class MekanismRecipes {
     public static void generate() {
@@ -219,14 +220,12 @@ public class MekanismRecipes {
         for (int i = 0; i < EnumColor.DYES.length; i++) {
             recipeGenerator.addShapelessRecipe(new ItemStack(MekanismItems.Balloon, 2, i), Items.LEATHER, Items.STRING, "dye" + EnumColor.DYES[i].dyeName);
 
-            for (int j = 0; j < EnumColor.DYES.length; j++) {
-                recipeGenerator.addShapelessRecipe(new ItemStack(MekanismItems.Balloon, 1, i), new ItemStack(MekanismItems.Balloon, 1, j), "dye" + EnumColor.DYES[i].dyeName);
-                recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName);
-                recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName);
-                recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName);
-                recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName);
-                recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPanel, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPanel, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName);
-            }
+            recipeGenerator.addShapelessRecipe(new ItemStack(MekanismItems.Balloon, 1, i), new ItemStack(MekanismItems.Balloon, 1, OreDictionary.WILDCARD_VALUE), "dye" + EnumColor.DYES[i].dyeName);
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPanel, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPanel, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
 
             recipeGenerator.addShapelessRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 3, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.GLOWSTONE_DUST));
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), " P ", "POP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'O', "dustOsmium");
