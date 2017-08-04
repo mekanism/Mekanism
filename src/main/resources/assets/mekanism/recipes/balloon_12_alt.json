@@ -6,7 +6,7 @@
   "ingredients": [
     {
       "item": "mekanism:balloon",
-      "data": 0
+      "data": 32767
     },
     {
       "ore": "dyeLightBlue",

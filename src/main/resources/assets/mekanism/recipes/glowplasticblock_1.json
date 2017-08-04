@@ -13,7 +13,7 @@
   "key": {
     "P": {
       "item": "mekanism:glowplasticblock",
-      "data": 0
+      "data": 32767
     },
     "D": {
       "ore": "dyeRed",
