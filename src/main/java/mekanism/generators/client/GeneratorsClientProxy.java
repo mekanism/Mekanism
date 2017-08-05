@@ -1,7 +1,5 @@
 package mekanism.generators.client;
 
-import java.io.IOException;
-
 import mekanism.client.render.MekanismRenderer;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
@@ -119,7 +117,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	}
 	
 	@SubscribeEvent
-    public void onModelBake(ModelBakeEvent event) throws IOException 
+    public void onModelBake(ModelBakeEvent event)
     {
 		for(String s : CUSTOM_RENDERS)
 		{

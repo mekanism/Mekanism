@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 
 public interface ITierItem 
 {
-	public BaseTier getBaseTier(ItemStack stack);
+	BaseTier getBaseTier(ItemStack stack);
 	
-	public void setBaseTier(ItemStack stack, BaseTier tier);
+	void setBaseTier(ItemStack stack, BaseTier tier);
 }

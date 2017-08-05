@@ -36,7 +36,7 @@ public class ChemicalDissolutionChamberRecipeWrapper extends BaseRecipeWrapper
 	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
-		List<String> currenttip = new ArrayList<String>();
+		List<String> currenttip = new ArrayList<>();
 		
 		if(mouseX >= 6-3 && mouseX <= 22-3 && mouseY >= 5-3 && mouseY <= 63-3)
 		{

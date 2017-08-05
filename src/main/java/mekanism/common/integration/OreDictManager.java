@@ -317,31 +317,30 @@ public final class OreDictManager
 		}
 
 		List<ItemStack> registeredOres = OreDictionary.getOres("logWood");
-		
-		for(int i = 0; i < registeredOres.size(); i++)
-		{
-			ItemStack logEntry = registeredOres.get(i);
 
-			if(logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+		for (ItemStack logEntry : registeredOres)
+		{
+			if (logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{
-				for(int j = 0; j < 16; j++)
+				for (int j = 0; j < 16; j++)
 				{
 					ItemStack log = new ItemStack(logEntry.getItem(), 1, j);
 					tempCrafting.setInventorySlotContents(0, log);
 					ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
 
-					if(!resultEntry.isEmpty())
+					if (!resultEntry.isEmpty())
 					{
 						RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6), new ItemStack(MekanismItems.Sawdust), 1);
 					}
 				}
 			}
-			else {
+			else
+			{
 				ItemStack log = StackUtils.size(logEntry, 1);
 				tempCrafting.setInventorySlotContents(0, log);
 				ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
 
-				if(!resultEntry.isEmpty())
+				if (!resultEntry.isEmpty())
 				{
 					RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6), new ItemStack(MekanismItems.Sawdust), 1);
 				}

@@ -12,7 +12,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -82,10 +81,10 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 			
 			((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 		
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
 		
-		return new ActionResult(EnumActionResult.PASS, stack);
+		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
 	
 	@Override

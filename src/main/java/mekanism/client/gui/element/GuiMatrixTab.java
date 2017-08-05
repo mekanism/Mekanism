@@ -83,7 +83,7 @@ public class GuiMatrixTab extends GuiElement
 		}
 	}
 	
-	public static enum MatrixTab
+	public enum MatrixTab
 	{
 		MAIN("GuiEnergyTab.png", 49, "gui.main"),
 		STAT("GuiStatsTab.png", 50, "gui.stats");
@@ -92,7 +92,7 @@ public class GuiMatrixTab extends GuiElement
 		private int guiId;
 		private String desc;
 		
-		private MatrixTab(String s, int id, String s1)
+		MatrixTab(String s, int id, String s1)
 		{
 			path = s;
 			guiId = id;

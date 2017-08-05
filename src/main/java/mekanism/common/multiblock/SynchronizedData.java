@@ -9,7 +9,7 @@ import net.minecraft.util.NonNullList;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>>
 {
-	public Set<Coord4D> locations = new HashSet<Coord4D>();
+	public Set<Coord4D> locations = new HashSet<>();
 
 	public int volLength;
 
@@ -32,7 +32,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 	
 	public boolean destroyed;
 	
-	public Set<Coord4D> internalLocations = new HashSet<Coord4D>();
+	public Set<Coord4D> internalLocations = new HashSet<>();
 	
 	public NonNullList<ItemStack> getInventory()
 	{

@@ -36,16 +36,16 @@ public interface IFactory
 	 * @param itemStack - stack to check
 	 * @return RecipeType ordinal
 	 */
-	public int getRecipeType(ItemStack itemStack);
+    int getRecipeType(ItemStack itemStack);
 
 	/**
 	 * Sets the recipe type of this Smelting Factory to a new value.
 	 * @param type - RecipeType ordinal
 	 * @param itemStack - stack to set
 	 */
-	public void setRecipeType(int type, ItemStack itemStack);
+    void setRecipeType(int type, ItemStack itemStack);
 
-	public static enum RecipeType implements IStringSerializable
+	enum RecipeType implements IStringSerializable
 	{
 		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, false, false, Recipe.ENERGIZED_SMELTER),
 		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, false, false, Recipe.ENRICHMENT_CHAMBER),
@@ -266,7 +266,7 @@ public interface IFactory
 			return type;
 		}
 
-		private RecipeType(String s, String s1, MachineType t, boolean b, boolean b1, Recipe r)
+		RecipeType(String s, String s1, MachineType t, boolean b, boolean b1, Recipe r)
 		{
 			name = s;
 			sound = new ResourceLocation("mekanism", "tile.machine." + s1);

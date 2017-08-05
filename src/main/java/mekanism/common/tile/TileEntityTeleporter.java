@@ -65,7 +65,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public AxisAlignedBB teleportBounds = null;
 
-	public Set<UUID> didTeleport = new HashSet<UUID>();
+	public Set<UUID> didTeleport = new HashSet<>();
 
 	public int teleDelay = 0;
 
@@ -75,8 +75,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	
 	public Frequency frequency;
 	
-	public List<Frequency> publicCache = new ArrayList<Frequency>();
-	public List<Frequency> privateCache = new ArrayList<Frequency>();
+	public List<Frequency> publicCache = new ArrayList<>();
+	public List<Frequency> privateCache = new ArrayList<>();
 
 	/** This teleporter's current status. */
 	public byte status = 0;
@@ -145,7 +145,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(shouldRender != prevShouldRender)
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(40D));
 			}
 
 			prevShouldRender = shouldRender;
@@ -261,14 +261,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public void cleanTeleportCache()
 	{
-		List<UUID> list = new ArrayList<UUID>();
+		List<UUID> list = new ArrayList<>();
 		
-		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, teleportBounds))
+		for(Entity e : world.getEntitiesWithinAABB(Entity.class, teleportBounds))
 		{
 			list.add(e.getPersistentID());
 		}
-		
-		Set<UUID> teleportCopy = (Set<UUID>)((HashSet<UUID>)didTeleport).clone();
+
+		Set<UUID> teleportCopy = new HashSet<>(didTeleport);
 
 		for(UUID id : teleportCopy)
 		{
@@ -302,11 +302,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	/**
-	 * 1: yes
-	 * 2: no frame
-	 * 3: no link found
-	 * 4: not enough electricity
-	 * @return
+	 * @return 1: yes, 2: no frame, 3: no link found, 4: not enough electricity
 	 */
 	public byte canTeleport()
 	{
@@ -502,7 +498,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	public List<Entity> getToTeleport()
 	{
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, teleportBounds);
-		List<Entity> ret = new ArrayList<Entity>();
+		List<Entity> ret = new ArrayList<>();
 
 		for(Entity entity : entities)
 		{
@@ -775,7 +771,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	@Override
 	public Set<ChunkPos> getChunkSet()
 	{
-		Set<ChunkPos> ret = new HashSet<ChunkPos>();
+		Set<ChunkPos> ret = new HashSet<>();
 		
 		ret.add(new Chunk3D(Coord4D.get(this)).getPos());
 		

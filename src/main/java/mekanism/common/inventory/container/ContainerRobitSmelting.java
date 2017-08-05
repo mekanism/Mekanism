@@ -64,21 +64,21 @@ public class ContainerRobitSmelting extends Container
 	{
 		super.detectAndSendChanges();
 
-		for(int i = 0; i < listeners.size(); ++i)
+		for (IContainerListener listener : listeners)
 		{
-			IContainerListener icrafting = (IContainerListener)listeners.get(i);
+			IContainerListener icrafting = listener;
 
-			if(lastCookTime != robit.furnaceCookTime)
+			if (lastCookTime != robit.furnaceCookTime)
 			{
 				icrafting.sendWindowProperty(this, 0, robit.furnaceCookTime);
 			}
 
-			if(lastBurnTime != robit.furnaceBurnTime)
+			if (lastBurnTime != robit.furnaceBurnTime)
 			{
 				icrafting.sendWindowProperty(this, 1, robit.furnaceBurnTime);
 			}
 
-			if(lastItemBurnTime != robit.currentItemBurnTime)
+			if (lastItemBurnTime != robit.currentItemBurnTime)
 			{
 				icrafting.sendWindowProperty(this, 2, robit.currentItemBurnTime);
 			}

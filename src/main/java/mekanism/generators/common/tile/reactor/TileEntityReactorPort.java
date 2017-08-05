@@ -3,7 +3,6 @@ package mekanism.generators.common.tile.reactor;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -11,7 +10,6 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
@@ -452,7 +450,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -469,7 +467,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 			fluidEject = !fluidEject;
 			String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
 			player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			markDirty();
 		}
 		

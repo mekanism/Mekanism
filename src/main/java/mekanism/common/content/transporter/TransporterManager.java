@@ -23,12 +23,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.IItemHandler;
 
 public class TransporterManager
 {
-	public static Map<Coord4D, Set<TransporterStack>> flowingStacks = new HashMap<Coord4D, Set<TransporterStack>>();
+	public static Map<Coord4D, Set<TransporterStack>> flowingStacks = new HashMap<>();
 	
 	public static void reset()
 	{
@@ -37,7 +36,7 @@ public class TransporterManager
 
 	public static void add(TransporterStack stack)
 	{
-		Set<TransporterStack> set = new HashSet<TransporterStack>();
+		Set<TransporterStack> set = new HashSet<>();
 		set.add(stack);
 		
 		if(flowingStacks.get(stack.getDest()) == null)
@@ -59,7 +58,7 @@ public class TransporterManager
 
 	public static List<TransporterStack> getStacksToDest(Coord4D dest)
 	{
-		List<TransporterStack> ret = new ArrayList<TransporterStack>();
+		List<TransporterStack> ret = new ArrayList<>();
 
 		if(flowingStacks.containsKey(dest))
 		{

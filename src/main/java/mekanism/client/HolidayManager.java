@@ -17,8 +17,8 @@ public final class HolidayManager
 	private static Calendar calendar = Calendar.getInstance();
 	private static Minecraft mc = Minecraft.getMinecraft();
 
-	public static List<Holiday> holidays = new ArrayList<Holiday>();
-	private static List<Holiday> holidaysNotified = new ArrayList<Holiday>();
+	public static List<Holiday> holidays = new ArrayList<>();
+	private static List<Holiday> holidaysNotified = new ArrayList<>();
 
 	public static void init()
 	{
@@ -161,7 +161,7 @@ public final class HolidayManager
 		}
 	}
 
-	public static enum Month
+	public enum Month
 	{
 		JANUARY("January"),
 		FEBRUARY("February"),
@@ -178,7 +178,7 @@ public final class HolidayManager
 
 		private final String name;
 
-		private Month(String n)
+		Month(String n)
 		{
 			name = n;
 		}
@@ -233,7 +233,7 @@ public final class HolidayManager
 
 		for(int i = 0; i < amount; i++)
 		{
-			builder.append(colors[i%colors.length] + "-");
+			builder.append(colors[i % colors.length]).append("-");
 		}
 
 		return builder.toString();

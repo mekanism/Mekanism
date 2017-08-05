@@ -5,5 +5,5 @@ import net.minecraft.item.ItemStack;
 
 public interface IUpgradeItem 
 {
-	public Upgrade getUpgradeType(ItemStack stack);
+	Upgrade getUpgradeType(ItemStack stack);
 }

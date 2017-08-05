@@ -169,7 +169,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		tier = GasTankTier.values()[upgradeTier.ordinal()];
 		gasTank.setMaxGas(tier.storage);
 		
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		markDirty();
 		
 		return true;
@@ -285,7 +285,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), (EntityPlayerMP)player);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), (EntityPlayerMP)player);
 			}
 
 			return;

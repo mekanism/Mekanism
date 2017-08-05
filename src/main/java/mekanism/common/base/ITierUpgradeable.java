@@ -4,5 +4,5 @@ import mekanism.common.Tier.BaseTier;
 
 public interface ITierUpgradeable 
 {
-	public boolean upgrade(BaseTier upgradeTier);
+	boolean upgrade(BaseTier upgradeTier);
 }

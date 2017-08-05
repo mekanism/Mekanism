@@ -25,7 +25,7 @@ public class GuiGraph extends GuiElement
 	public int currentScale = 10;
 	public boolean fixedScale = false;
 	
-	public List<Integer> graphData = new ArrayList<Integer>();
+	public List<Integer> graphData = new ArrayList<>();
 	
 	public GraphDataHandler dataHandler;
 	
@@ -143,8 +143,8 @@ public class GuiGraph extends GuiElement
 		}
 	}
 	
-	public static interface GraphDataHandler
+	public interface GraphDataHandler
 	{
-		public String getDataDisplay(int data);
+		String getDataDisplay(int data);
 	}
 }

@@ -115,7 +115,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork
 			for(IPartSlot slot : container.getParts().keySet())
 			{
 				TileEntity part = container.getPartTile(slot)
-						.map(multiPartTile -> multiPartTile.getTileEntity())
+						.map(IMultipartTile::getTileEntity)
 						.orElse(null);
 				
 				if(part instanceof ITileNetwork)

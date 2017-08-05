@@ -22,9 +22,9 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEntityBoilerCasing>
 {
-	private static Map<RenderData, DisplayInteger[]> cachedLowerFluids = new HashMap<RenderData, DisplayInteger[]>();
-	private static Map<RenderData, DisplayInteger> cachedUpperFluids = new HashMap<RenderData, DisplayInteger>();
-	private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<ValveRenderData, DisplayInteger>();
+	private static Map<RenderData, DisplayInteger[]> cachedLowerFluids = new HashMap<>();
+	private static Map<RenderData, DisplayInteger> cachedUpperFluids = new HashMap<>();
+	private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 	
 	private Fluid STEAM = FluidRegistry.getFluid("steam");
 	private Fluid WATER = FluidRegistry.WATER;

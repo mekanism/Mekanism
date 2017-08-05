@@ -31,7 +31,7 @@ public final class MinerUtils
 			return block.getDrops(world, obj.getPos(), state, 0);
 		}
 		else {
-			List<ItemStack> ret = new ArrayList<ItemStack>();
+			List<ItemStack> ret = new ArrayList<>();
 			Item item = Item.getItemFromBlock(block);
 			int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
 			ret.add(new ItemStack(item, 1, meta));

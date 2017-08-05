@@ -19,7 +19,7 @@ public class BlockStatePlastic extends BlockStateContainer
 		super(block, colorProperty);
 	}
 
-	public static enum PlasticBlockType implements IStringSerializable
+	public enum PlasticBlockType implements IStringSerializable
 	{
 		PLASTIC,
 		SLICK,

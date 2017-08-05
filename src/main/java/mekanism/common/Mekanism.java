@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,7 +121,6 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -189,16 +187,16 @@ public class Mekanism
 	public static Version versionNumber = new Version(9, 3, 4);
 	
 	/** MultiblockManagers for various structrures */
-	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
-	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("inductionMatrix");
-	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<SynchronizedBoilerData>("thermoelectricBoiler");
+	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank");
+	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<>("inductionMatrix");
+	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>("thermoelectricBoiler");
 	
 	/** FrequencyManagers for various networks */
 	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
-	public static Map<UUID, FrequencyManager> privateTeleporters = new HashMap<UUID, FrequencyManager>();
+	public static Map<UUID, FrequencyManager> privateTeleporters = new HashMap<>();
 
 	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
-	public static Map<UUID, FrequencyManager> privateEntangloporters = new HashMap<UUID, FrequencyManager>();
+	public static Map<UUID, FrequencyManager> privateEntangloporters = new HashMap<>();
 
 	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
 
@@ -206,7 +204,7 @@ public class Mekanism
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
 
 	/** List of Mekanism modules loaded */
-	public static List<IModule> modulesLoaded = new ArrayList<IModule>();
+	public static List<IModule> modulesLoaded = new ArrayList<>();
 
 	/** The latest version number which is received from the Mekanism server */
 	public static String latestVersionNumber;
@@ -218,7 +216,7 @@ public class Mekanism
 	public static VoiceServerManager voiceManager;
 
 	/** A list of the usernames of players who have donated to Mekanism. */
-	public static List<String> donators = new ArrayList<String>();
+	public static List<String> donators = new ArrayList<>();
 
 	/** The server's world tick handler. */
 	public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
@@ -234,10 +232,10 @@ public class Mekanism
 	
 	public static KeySync keyMap = new KeySync();
 	
-	public static Set<String> jetpackOn = new HashSet<>();
-	public static Set<String> gasmaskOn = new HashSet<>();
-	public static Set<String> freeRunnerOn = new HashSet<>();
-	public static Set<String> flamethrowerActive = new HashSet<>();
+	public static final Set<String> jetpackOn = new HashSet<>();
+	public static final Set<String> gasmaskOn = new HashSet<>();
+	public static final Set<String> freeRunnerOn = new HashSet<>();
+	public static final Set<String> flamethrowerActive = new HashSet<>();
 	
 	public static Set<Coord4D> activeVibrators = new HashSet<>();
 	
@@ -496,18 +494,15 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedObsidian), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 80));
         
         //Fuels
-        GameRegistry.registerFuelHandler(new IFuelHandler() {
-			@Override
-			public int getBurnTime(ItemStack fuel)
-			{
-				if(fuel.isItemEqual(new ItemStack(MekanismBlocks.BasicBlock, 1, 3)))
-				{
-					return 200*8*9;
-				}
-				
-				return 0;
-			}
-		});
+        GameRegistry.registerFuelHandler(fuel ->
+		{
+            if(fuel.isItemEqual(new ItemStack(MekanismBlocks.BasicBlock, 1, 3)))
+            {
+                return 200*8*9;
+            }
+
+            return 0;
+        });
 
 		//Fuel Gases
 		FuelHandler.addGas(MekanismFluids.Hydrogen, 1, general.FROM_H2);
@@ -650,9 +645,8 @@ public class Mekanism
 		//Load cached furnace recipes
 		Recipe.ENERGIZED_SMELTER.get().clear();
 		
-		for(Object obj : FurnaceRecipes.instance().getSmeltingList().entrySet())
+		for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
 		{
-			Map.Entry<ItemStack, ItemStack> entry = (Map.Entry<ItemStack, ItemStack>)obj;
 			SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
 			Recipe.ENERGIZED_SMELTER.put(recipe);
 		}
@@ -929,22 +923,20 @@ public class Mekanism
 		if(event.getChunk() != null && !event.getWorld().isRemote)
 		{
 			Map copy = (Map)((HashMap)event.getChunk().getTileEntityMap()).clone();
-			 
-			for(Iterator iter = copy.values().iterator(); iter.hasNext();)
+
+			for (Object obj : copy.values())
 			{
-				Object obj = iter.next();
-	        	 
-				if(obj instanceof TileEntity)
+				if (obj instanceof TileEntity)
 				{
-					TileEntity tileEntity = (TileEntity)obj;
-	
-					if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
+					TileEntity tileEntity = (TileEntity) obj;
+
+					if (tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
 					{
-						((TileEntityElectricBlock)tileEntity).register();
+						((TileEntityElectricBlock) tileEntity).register();
 					}
-					else if(tileEntity instanceof IChunkLoadHandler)
+					else if (tileEntity instanceof IChunkLoadHandler)
 					{
-						((IChunkLoadHandler)tileEntity).onChunkLoad();
+						((IChunkLoadHandler) tileEntity).onChunkLoad();
 					}
 				}
 			}

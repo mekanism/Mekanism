@@ -24,7 +24,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -59,7 +58,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 				return;
 			}
 			
-			Set<TransporterStack> remove = new HashSet<TransporterStack>();
+			Set<TransporterStack> remove = new HashSet<>();
 
 			getTileEntity().pullItems();
 

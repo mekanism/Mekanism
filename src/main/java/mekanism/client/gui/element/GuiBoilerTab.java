@@ -83,7 +83,7 @@ public class GuiBoilerTab extends GuiElement
 		}
 	}
 	
-	public static enum BoilerTab
+	public enum BoilerTab
 	{
 		MAIN("GuiGasesTab.png", 54, "gui.main"),
 		STAT("GuiStatsTab.png", 55, "gui.stats");
@@ -92,7 +92,7 @@ public class GuiBoilerTab extends GuiElement
 		private int guiId;
 		private String desc;
 		
-		private BoilerTab(String s, int id, String s1)
+		BoilerTab(String s, int id, String s1)
 		{
 			path = s;
 			guiId = id;

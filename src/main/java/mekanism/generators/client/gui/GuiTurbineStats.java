@@ -1,10 +1,7 @@
 package mekanism.generators.client.gui;
 
-import java.util.List;
-
 import mekanism.api.EnumColor;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
@@ -33,18 +30,14 @@ public class GuiTurbineStats extends GuiMekanism
 		super(tentity, new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
-				
-				return ListUtils.asList(
-						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+
+            return ListUtils.asList(
+                    LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+                    LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier) + "/t");
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
 	}
 	
 	@Override

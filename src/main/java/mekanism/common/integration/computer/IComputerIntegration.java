@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
  */
 public interface IComputerIntegration extends IInventory
 {
-    public String[] getMethods();
+    String[] getMethods();
 
-    public Object[] invoke(int method, Object[] args) throws Exception;
+    Object[] invoke(int method, Object[] args) throws Exception;
 }

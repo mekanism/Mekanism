@@ -2,5 +2,5 @@ package mekanism.common.frequency;
 
 public interface IFrequencyHandler 
 {
-	public Frequency getFrequency(FrequencyManager manager);
+	Frequency getFrequency(FrequencyManager manager);
 }

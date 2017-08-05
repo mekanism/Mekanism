@@ -67,8 +67,8 @@ public class MekanismTools implements IModule
 	public static ArmorMaterial armorGLOWSTONE;
 	public static ArmorMaterial armorSTEEL;
 	
-	public static Map<ToolMaterial, Float> AXE_DAMAGE = new HashMap<ToolMaterial, Float>();
-	public static Map<ToolMaterial, Float> AXE_SPEED = new HashMap<ToolMaterial, Float>();
+	public static Map<ToolMaterial, Float> AXE_DAMAGE = new HashMap<>();
+	public static Map<ToolMaterial, Float> AXE_SPEED = new HashMap<>();
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
@@ -374,13 +374,13 @@ public class MekanismTools implements IModule
 	}
 
 	@Override
-	public void writeConfig(ByteBuf dataStream) throws IOException
+	public void writeConfig(ByteBuf dataStream)
 	{
 		dataStream.writeDouble(tools.armorSpawnRate);
 	}
 
 	@Override
-	public void readConfig(ByteBuf dataStream) throws IOException
+	public void readConfig(ByteBuf dataStream)
 	{
 		tools.armorSpawnRate = dataStream.readDouble();
 	}

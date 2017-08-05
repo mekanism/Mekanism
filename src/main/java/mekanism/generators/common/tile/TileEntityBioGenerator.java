@@ -168,7 +168,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	/**
 	 * Gets the scaled fuel level for the GUI.
 	 * @param i - multiplier
-	 * @return
+	 * @return Scaled fuel level
 	 */
 	public int getScaledFuelLevel(int i)
 	{
@@ -199,7 +199,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(bioFuelSlot.fluidStored);

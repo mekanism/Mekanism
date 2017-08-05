@@ -7,7 +7,7 @@ import net.minecraft.util.EnumFacing;
 
 public class CapabilityWrapperManager<IMPL, WRAPPER>
 {
-	public Map<EnumFacing, WRAPPER> wrappers = new HashMap<EnumFacing, WRAPPER>();
+	public Map<EnumFacing, WRAPPER> wrappers = new HashMap<>();
 	
 	public Class<IMPL> typeClass;
 	public Class<WRAPPER> wrapperClass;

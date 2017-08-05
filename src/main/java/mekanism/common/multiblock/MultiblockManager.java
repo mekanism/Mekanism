@@ -14,12 +14,12 @@ import net.minecraft.world.World;
 
 public class MultiblockManager<T extends SynchronizedData<T>>
 {
-	private static Set<MultiblockManager> managers = new HashSet<MultiblockManager>();
+	private static Set<MultiblockManager> managers = new HashSet<>();
 	
 	public String name;
 	
 	/** A map containing references to all multiblock inventory caches. */
-	public Map<String, MultiblockCache<T>> inventories = new HashMap<String, MultiblockCache<T>>();
+	public Map<String, MultiblockCache<T>> inventories = new HashMap<>();
 	
 	public MultiblockManager(String s)
 	{
@@ -72,8 +72,8 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 
 	public void tickSelf(World world)
 	{
-		ArrayList<String> idsToKill = new ArrayList<String>();
-		HashMap<String, HashSet<Coord4D>> tilesToKill = new HashMap<String, HashSet<Coord4D>>();
+		ArrayList<String> idsToKill = new ArrayList<>();
+		HashMap<String, HashSet<Coord4D>> tilesToKill = new HashMap<>();
 
 		for(Map.Entry<String, MultiblockCache<T>> entry : inventories.entrySet())
 		{
@@ -89,7 +89,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 					{
 						if(!tilesToKill.containsKey(inventoryID))
 						{
-							tilesToKill.put(inventoryID, new HashSet<Coord4D>());
+							tilesToKill.put(inventoryID, new HashSet<>());
 						}
 
 						tilesToKill.get(inventoryID).add(obj);

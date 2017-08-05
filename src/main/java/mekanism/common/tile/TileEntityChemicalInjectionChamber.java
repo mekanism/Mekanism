@@ -4,7 +4,6 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
@@ -14,6 +13,7 @@ import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.GasUtils;
@@ -37,7 +37,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<AdvancedMachineInput, InjectionRecipe> getRecipes()
 	{
 		return Recipe.CHEMICAL_INJECTION_CHAMBER.get();
 	}

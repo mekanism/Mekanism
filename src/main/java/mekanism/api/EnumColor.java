@@ -44,7 +44,7 @@ public enum EnumColor implements IStringSerializable
 	
 	public String dyeName;
 
-	private EnumColor(String s, String n, String dye, int[] rgb, int meta)
+	EnumColor(String s, String n, String dye, int[] rgb, int meta)
 	{
 		code = s;
 		unlocalizedName = n;

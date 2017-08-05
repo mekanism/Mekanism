@@ -30,7 +30,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer<TileEntityEnergy
 	private ModelEnergyCube model = new ModelEnergyCube();
 	private ModelEnergyCore core = new ModelEnergyCore();
 	
-	public static Map<EnergyCubeTier, ResourceLocation> resources = new HashMap<EnergyCubeTier, ResourceLocation>();
+	public static Map<EnergyCubeTier, ResourceLocation> resources = new HashMap<>();
 	public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube.png");
 	public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png");
 

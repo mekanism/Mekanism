@@ -7,5 +7,5 @@ public interface ITransmitter
 	 *
 	 * @return TransmissionType this transmitter uses
 	 */
-	public TransmissionType getTransmissionType();
+    TransmissionType getTransmissionType();
 }

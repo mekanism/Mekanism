@@ -14,7 +14,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 public final class ItemRegistryUtils 
 {
-	private static final Map<String, String> modIDMap = new HashMap<String, String>();
+	private static final Map<String, String> modIDMap = new HashMap<>();
 	
 	private static void populateMap()
 	{
@@ -46,14 +46,8 @@ public final class ItemRegistryUtils
 		
 		String modId = itemResourceLocation.getResourceDomain();
 		String lowercaseModId = modId.toLowerCase(Locale.ENGLISH);
-		String modName = modIDMap.get(lowercaseModId);
-		
-		if(modName == null) 
-		{
-			modName = WordUtils.capitalize(modId);
-			modIDMap.put(lowercaseModId, modName);
-		}
-		
+		String modName = modIDMap.computeIfAbsent(lowercaseModId, k -> WordUtils.capitalize(modId));
+
 		return modName;
 	}
 }

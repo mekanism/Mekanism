@@ -58,7 +58,7 @@ public class RotaryCondensentratorRecipeWrapper extends BaseRecipeWrapper
 	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
-		List<String> currenttip = new ArrayList<String>();
+		List<String> currenttip = new ArrayList<>();
 		
 		if(mouseX >= 26-3 && mouseX <= 42-3 && mouseY >= 14-12 && mouseY <= 72-12)
 		{

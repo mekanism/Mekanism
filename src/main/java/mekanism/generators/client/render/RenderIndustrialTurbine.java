@@ -19,14 +19,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
+public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntityTurbineCasing>
 {
 	private Fluid STEAM = FluidRegistry.getFluid("steam");
 	
 	@Override
-	public void render(TileEntity tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
-		renderAModelAt((TileEntityTurbineCasing)tileEntity, x, y, z, partialTick, destroyStage);
+		renderAModelAt(tileEntity, x, y, z, partialTick, destroyStage);
 	}
 
 	public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage)

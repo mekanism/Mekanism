@@ -1,9 +1,6 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import mekanism.api.energy.IEnergizedItem;
@@ -25,12 +22,9 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.GameData;
 
 public class RecipeUtils 
 {
@@ -228,7 +222,7 @@ public class RecipeUtils
 
 		if(BlockStateMachine.MachineType.get(toReturn) != null && BlockStateMachine.MachineType.get(toReturn).supportsUpgrades)
 		{
-			Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
+			Map<Upgrade, Integer> upgrades = new HashMap<>();
 
 			for(int i = 0; i < 9; i++)
 			{

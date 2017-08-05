@@ -8,7 +8,6 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -27,7 +26,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 {
 	public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
 	
-	public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<Integer, ModelResourceLocation>();
+	public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 	
 	public ItemWalkieTalkie()
 	{
@@ -47,10 +46,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 	
 	public static ModelResourceLocation getModel(int channel)
 	{
-		if(CHANNEL_MODELS.get(channel) == null)
-		{
-			CHANNEL_MODELS.put(channel, new ModelResourceLocation("mekanism:WalkieTalkie_ch" + channel, "inventory"));
-		}
+		CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation("mekanism:WalkieTalkie_ch" + c, "inventory"));
 		
 		return CHANNEL_MODELS.get(channel);
 	}
@@ -64,10 +60,10 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 		{
 			setOn(itemStack, !getOn(itemStack));
 			
-			return new ActionResult(EnumActionResult.SUCCESS, itemStack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 		}
 
-		return new ActionResult(EnumActionResult.PASS, itemStack);
+		return new ActionResult<>(EnumActionResult.PASS, itemStack);
 	}
 	
 	@Override
@@ -105,7 +101,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 	}
 
 	@Override
-	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

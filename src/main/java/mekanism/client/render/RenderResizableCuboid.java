@@ -66,7 +66,7 @@ public class RenderResizableCuboid {
 
         private final VertexFormatElement element;
 
-        private EnumShadeType(VertexFormatElement element) {
+        EnumShadeType(VertexFormatElement element) {
             this.element = element;
         }
     }

@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter;
 
-import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumActionResult;

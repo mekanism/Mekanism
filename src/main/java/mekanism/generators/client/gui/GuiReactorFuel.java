@@ -2,15 +2,11 @@ package mekanism.generators.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -47,40 +43,12 @@ public class GuiReactorFuel extends GuiMekanism
 	{
 		super(new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				return tileEntity.isFormed() ? ListUtils.asList(
-						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler()
-		{
-			@Override
-			public GasTank getTank()
-			{
-				return tentity.deuteriumTank;
-			}
-		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 25, 64));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler()
-		{
-			@Override
-			public GasTank getTank()
-			{
-				return tentity.fuelTank;
-			}
-		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 79, 50));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler()
-		{
-			@Override
-			public GasTank getTank()
-			{
-				return tentity.tritiumTank;
-			}
-		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 133, 64));
+		guiElements.add(new GuiEnergyInfo(() -> tileEntity.isFormed() ? ListUtils.asList(
+                LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList(), this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
+		guiElements.add(new GuiGasGauge(() -> tentity.deuteriumTank, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 25, 64));
+		guiElements.add(new GuiGasGauge(() -> tentity.fuelTank, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 79, 50));
+		guiElements.add(new GuiGasGauge(() -> tentity.tritiumTank, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 133, 64));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -194,7 +162,7 @@ public class GuiReactorFuel extends GuiMekanism
 			int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
 			toUse -= toUse%2;
 			
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(toUse);
 

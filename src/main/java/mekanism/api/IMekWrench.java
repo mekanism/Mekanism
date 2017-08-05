@@ -6,5 +6,5 @@ import net.minecraft.util.math.BlockPos;
 
 public interface IMekWrench
 {
-	public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos);
+	boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos);
 }

@@ -1,11 +1,6 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
-import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyGauge;
-import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiMatrixTab;
 import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
@@ -33,14 +28,7 @@ public class GuiMatrixStats extends GuiMekanism
 		super(tentity, new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiMatrixTab(this, tileEntity, MatrixTab.MAIN, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
-		guiElements.add(new GuiEnergyGauge(new IEnergyInfoHandler()
-		{
-			@Override
-			public IStrictEnergyStorage getEnergyStorage()
-			{
-				return tileEntity;
-			}
-		}, GuiEnergyGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 6, 13));
+		guiElements.add(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 6, 13));
 		guiElements.add(new GuiRateBar(this, new IRateInfoHandler()
 		{
 			@Override
@@ -69,17 +57,10 @@ public class GuiMatrixStats extends GuiMekanism
 				return tileEntity.structure.lastOutput/tileEntity.structure.transferCap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 38, 13));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				return ListUtils.asList(
-						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-						LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t",
-						LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
+		guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
+                LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+                LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t",
+                LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
 	}
 
 	@Override

@@ -122,7 +122,7 @@ public class InventoryFrequency extends Frequency
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		super.write(data);
 		

@@ -21,14 +21,10 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
-import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
-
-import java.util.List;
 
 public class PRCRecipeCategory extends BaseRecipeCategory
 {
@@ -131,12 +127,6 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		
 		fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlay);
 		fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
-		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-			@Override
-			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
-			{
-				tooltip.remove(1);
-			}
-		});
+		fluidStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

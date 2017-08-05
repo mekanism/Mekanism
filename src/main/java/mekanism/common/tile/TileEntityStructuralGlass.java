@@ -76,7 +76,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 	{
 		public IMultiblock found;
 		
-		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		public Set<Coord4D> iterated = new HashSet<>();
 		
 		public void loop(Coord4D pos)
 		{

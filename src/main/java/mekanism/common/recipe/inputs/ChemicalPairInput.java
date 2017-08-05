@@ -67,8 +67,7 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput>
 	}
 
 	/**
-	 * If this is a valid ChemicalPair
-	 * @return
+	 * @return True if this is a valid ChemicalPair
 	 */
 	@Override
 	public boolean isValid()

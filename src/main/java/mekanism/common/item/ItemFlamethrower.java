@@ -12,8 +12,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -185,7 +183,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
     	ItemDataUtils.setInt(stack, "mode", mode.ordinal());
     }
 
-    public static enum FlamethrowerMode
+    public enum FlamethrowerMode
     {
         COMBAT("tooltip.flamethrower.combat", EnumColor.YELLOW),
         HEAT("tooltip.flamethrower.heat", EnumColor.ORANGE),
@@ -194,7 +192,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
         private String unlocalized;
         private EnumColor color;
 
-        private FlamethrowerMode(String s, EnumColor c)
+        FlamethrowerMode(String s, EnumColor c)
         {
             unlocalized = s;
             color = c;

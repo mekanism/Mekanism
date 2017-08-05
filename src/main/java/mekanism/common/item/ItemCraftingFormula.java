@@ -45,9 +45,9 @@ public class ItemCraftingFormula extends ItemMekanism
 		}
 	}
 	
-	private void addIngredientDetails(NonNullList<ItemStack> inv, List list)
+	private void addIngredientDetails(NonNullList<ItemStack> inv, List<String> list)
 	{
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 		
 		for(ItemStack stack : inv)
 		{
@@ -94,10 +94,10 @@ public class ItemCraftingFormula extends ItemMekanism
 				((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 			}
 			
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
 		
-		return new ActionResult(EnumActionResult.PASS, stack);
+		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
 	
 	@Override

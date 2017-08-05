@@ -53,8 +53,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 	{
 		if(structure.volHeight >= 3)
 		{
-			Set<Coord4D> dispersers = new HashSet<Coord4D>();
-			Set<Coord4D> elements = new HashSet<Coord4D>();
+			Set<Coord4D> dispersers = new HashSet<>();
+			Set<Coord4D> elements = new HashSet<>();
 			
 			for(Coord4D coord : innerNodes)
 			{

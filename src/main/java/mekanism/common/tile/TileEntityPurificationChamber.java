@@ -10,6 +10,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.GasUtils;
@@ -26,7 +27,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<AdvancedMachineInput, PurificationRecipe> getRecipes()
 	{
 		return Recipe.PURIFICATION_CHAMBER.get();
 	}

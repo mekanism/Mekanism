@@ -29,7 +29,6 @@ import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;

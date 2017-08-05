@@ -12,7 +12,7 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 {
 	public ItemMekanismPaxel(ToolMaterial toolMaterial)
 	{
-		super(4, -2.4F, toolMaterial, new HashSet<Block>());
+		super(4, -2.4F, toolMaterial, new HashSet<>());
 	}
 
 	@Override

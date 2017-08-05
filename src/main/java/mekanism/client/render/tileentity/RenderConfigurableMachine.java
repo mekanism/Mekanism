@@ -32,7 +32,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 {
 	private Minecraft mc = FMLClientHandler.instance().getClient();
 
-	private HashMap<EnumFacing, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<EnumFacing, HashMap<TransmissionType, DisplayInteger>>();
+	private HashMap<EnumFacing, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<>();
 
 	public RenderConfigurableMachine()
 	{
@@ -119,7 +119,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 			cachedOverlays.get(side).put(type, display);
 		}
 		else {
-			HashMap<TransmissionType, DisplayInteger> map = new HashMap<TransmissionType, DisplayInteger>();
+			HashMap<TransmissionType, DisplayInteger> map = new HashMap<>();
 			map.put(type, display);
 			cachedOverlays.put(side, map);
 		}
@@ -195,7 +195,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 		}
 
 		MekanismRenderer.renderObject(toReturn);
-		display.endList();
+		DisplayInteger.endList();
 
 		return display;
 	}

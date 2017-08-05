@@ -49,7 +49,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 	
 	protected ImmutableMap<String, TextureAtlasSprite> textureMap;
 	
-	protected HashMap<TransformType, Matrix4f> transformationMap = new HashMap<TransformType, Matrix4f>();
+	protected HashMap<TransformType, Matrix4f> transformationMap = new HashMap<>();
 	
 	public OBJBakedModelBase(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) 
 	{
@@ -73,11 +73,11 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
     		return ImmutableList.of();
     	}
     	
-    	List<BakedQuad> bakedQuads = new ArrayList<BakedQuad>();
+    	List<BakedQuad> bakedQuads = new ArrayList<>();
     	
         Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
         Optional<TRSRTransformation> transform = Optional.empty();
-        Map<Face, String> groupNameMap = new HashMap<Face, String>();
+        Map<Face, String> groupNameMap = new HashMap<>();
         
         for(Group g : getModel().getMatLib().getGroups().values())
         {
@@ -176,7 +176,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
         return quadList;
     }
 	
-	public static final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite, VertexFormat format, float[] color)
+	public static void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite, VertexFormat format, float[] color)
 	{
 		for(int e = 0; e < format.getElementCount(); e++)
 		{

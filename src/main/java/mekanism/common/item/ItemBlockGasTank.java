@@ -36,7 +36,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -123,7 +122,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			
 			if(!world.isRemote)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 			}
 		}
 

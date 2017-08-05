@@ -6,9 +6,9 @@ import net.minecraft.util.EnumHand;
 
 public interface IMultiblock<T extends SynchronizedData<T>>
 {
-	public T getSynchronizedData();
+	T getSynchronizedData();
 	
-	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack);
+	boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack);
 	
-	public void doUpdate();
+	void doUpdate();
 }

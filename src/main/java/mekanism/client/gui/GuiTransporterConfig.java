@@ -36,7 +36,7 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(Side.CLIENT)
 public class GuiTransporterConfig extends GuiMekanism
 {
-	public Map<Integer, GuiPos> slotPosMap = new HashMap<Integer, GuiPos>();
+	public Map<Integer, GuiPos> slotPosMap = new HashMap<>();
 	
 	public ISideConfiguration configurable;
 

@@ -9,7 +9,6 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.Range4D;
-import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
@@ -50,7 +49,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public FluidTank inputTank = new FluidTank(0);
 	public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
 
-	public Set<Coord4D> tankParts = new HashSet<Coord4D>();
+	public Set<Coord4D> tankParts = new HashSet<>();
 	public IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
 	public boolean temperatureSet = false;
@@ -149,7 +148,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			{
 				if(Math.abs((float)inputTank.getFluidAmount()/inputTank.getCapacity()-prevScale) > 0.01)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 					prevScale = (float)inputTank.getFluidAmount()/inputTank.getCapacity();
 				}
 			}
@@ -198,7 +197,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 				
 				if(structured != clientStructured)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 					clientStructured = structured;
 				}
 				
@@ -594,13 +593,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 				
 				if(structured)
 				{
-					Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
-						@Override
-						public boolean isNode(TileEntity tile)
-						{
-							return tile instanceof TileEntityThermalEvaporationBlock;
-						}
-					});
+					Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityThermalEvaporationBlock);
 				}
 				
 				clientStructured = structured;

@@ -21,6 +21,6 @@ public class DefaultLaserReceptor implements ILaserReceptor
 	
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(ILaserReceptor.class, new NullStorage<ILaserReceptor>(), DefaultLaserReceptor.class);
+        CapabilityManager.INSTANCE.register(ILaserReceptor.class, new NullStorage<>(), DefaultLaserReceptor.class);
     }
 }

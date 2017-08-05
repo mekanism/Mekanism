@@ -3,7 +3,6 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -87,7 +86,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					clientActive = isActive;
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 			
@@ -146,7 +145,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = general.UPDATE_DELAY;
 			clientActive = active;
@@ -179,7 +178,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

@@ -25,43 +25,40 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				if(message.packetType == PersonalChestPacketType.SERVER_OPEN)
-				{
-					try {
-						if(message.isBlock)
-						{
-							TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)message.coord4D.getTileEntity(player.world);
-							MekanismUtils.openPersonalChestGui((EntityPlayerMP)player, tileEntity, null, true);
-						}
-						else {
-							ItemStack stack = player.getHeldItem(message.currentHand);
-		
-							if(MachineType.get(stack) == MachineType.PERSONAL_CHEST)
-							{
-								InventoryPersonalChest inventory = new InventoryPersonalChest(player, message.currentHand);
-								MekanismUtils.openPersonalChestGui((EntityPlayerMP)player, null, inventory, false);
-							}
-						}
-					} catch(Exception e) {
-						Mekanism.logger.error("Error while handling electric chest open packet.");
-						e.printStackTrace();
-					}
-				}
-				else if(message.packetType == PersonalChestPacketType.CLIENT_OPEN)
-				{
-					try {
-						Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock, message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos(), message.currentHand);
-					} catch(Exception e) {
-						Mekanism.logger.error("Error while handling electric chest open packet.");
-						e.printStackTrace();
-					}
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+            if(message.packetType == PersonalChestPacketType.SERVER_OPEN)
+            {
+                try {
+                    if(message.isBlock)
+                    {
+                        TileEntityPersonalChest tileEntity = (TileEntityPersonalChest)message.coord4D.getTileEntity(player.world);
+                        MekanismUtils.openPersonalChestGui((EntityPlayerMP)player, tileEntity, null, true);
+                    }
+                    else {
+                        ItemStack stack = player.getHeldItem(message.currentHand);
+
+                        if(MachineType.get(stack) == MachineType.PERSONAL_CHEST)
+                        {
+                            InventoryPersonalChest inventory = new InventoryPersonalChest(player, message.currentHand);
+                            MekanismUtils.openPersonalChestGui((EntityPlayerMP)player, null, inventory, false);
+                        }
+                    }
+                } catch(Exception e) {
+                    Mekanism.logger.error("Error while handling electric chest open packet.");
+                    e.printStackTrace();
+                }
+            }
+            else if(message.packetType == PersonalChestPacketType.CLIENT_OPEN)
+            {
+                try {
+                    Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock, message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos(), message.currentHand);
+                } catch(Exception e) {
+                    Mekanism.logger.error("Error while handling electric chest open packet.");
+                    e.printStackTrace();
+                }
+            }
+        }, player);
 		
 		return null;
 	}
@@ -187,7 +184,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 		}
 	}
 	
-	public static enum PersonalChestPacketType
+	public enum PersonalChestPacketType
 	{
 		CLIENT_OPEN,
 		SERVER_OPEN

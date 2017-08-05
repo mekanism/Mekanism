@@ -29,8 +29,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -112,7 +110,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									if(config instanceof TileEntityBasicBlock)
 									{
 										TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-										Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+										Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 									}
 								}
 								else {
@@ -284,7 +282,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		return getState(stack) == ConfiguratorMode.WRENCH;
 	}
 	
-	public static enum ConfiguratorMode
+	public enum ConfiguratorMode
 	{
 		CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.localize() + ")", EnumColor.BRIGHT_GREEN, true),
 		CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.localize() + ")", EnumColor.BRIGHT_GREEN, true),
@@ -300,7 +298,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		private EnumColor color;
 		private boolean configurating;
 		
-		private ConfiguratorMode(String s, String s1, EnumColor c, boolean b)
+		ConfiguratorMode(String s, String s1, EnumColor c, boolean b)
 		{
 			name = s;
 			info = s1;
@@ -344,7 +342,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

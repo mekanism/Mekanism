@@ -6,7 +6,6 @@ import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -188,7 +187,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
 
 		clientActive = active;

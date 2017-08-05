@@ -4,7 +4,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.Resource;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 

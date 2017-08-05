@@ -106,7 +106,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			return;
 		}
 		
-		ArrayList data = new ArrayList();
+		ArrayList<Object> data = new ArrayList<>();
 		data.add(0);
 		data.add(freq);
 		data.add(!privateMode);
@@ -126,7 +126,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			return;
 		}
 		
-		List<String> text = new ArrayList<String>();
+		List<String> text = new ArrayList<>();
 		
 		if(privateMode)
 		{
@@ -269,7 +269,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			{
 				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
 				
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(1);
 				data.add(freq.name);
 				data.add(freq.publicFreq);

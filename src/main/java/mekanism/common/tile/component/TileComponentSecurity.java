@@ -17,7 +17,6 @@ import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.UsernameCache;
 
 public class TileComponentSecurity implements ITileComponent
 {

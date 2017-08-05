@@ -28,7 +28,7 @@ public enum Upgrade
 	private int maxStack;
 	private EnumColor color;
 	
-	private Upgrade(String s, int max, EnumColor c)
+	Upgrade(String s, int max, EnumColor c)
 	{
 		name = s;
 		maxStack = max;
@@ -83,7 +83,7 @@ public enum Upgrade
 	
 	public List<String> getInfo(TileEntity tile)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		
 		if(tile instanceof IUpgradeTile)
 		{
@@ -101,7 +101,7 @@ public enum Upgrade
 	
 	public List<String> getMultScaledInfo(IUpgradeTile tile)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		
 		if(canMultiply())
 		{
@@ -115,7 +115,7 @@ public enum Upgrade
 	
 	public List<String> getExpScaledInfo(IUpgradeTile tile)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		
 		if(canMultiply())
 		{
@@ -129,7 +129,7 @@ public enum Upgrade
 	
 	public static Map<Upgrade, Integer> buildMap(NBTTagCompound nbtTags)
 	{
-		Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
+		Map<Upgrade, Integer> upgrades = new HashMap<>();
 		
 		if(nbtTags != null)
 		{
@@ -172,8 +172,8 @@ public enum Upgrade
 		return compound;
 	}
 	
-	public static interface IUpgradeInfoHandler
+	public interface IUpgradeInfoHandler
 	{
-		public List<String> getInfo(Upgrade upgrade);
+		List<String> getInfo(Upgrade upgrade);
 	}
 }

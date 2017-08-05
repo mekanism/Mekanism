@@ -1,12 +1,7 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
-import mekanism.api.gas.GasTank;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -42,28 +37,13 @@ public class GuiChemicalDissolutionChamber extends GuiMekanism
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png")));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png")));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png")));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.injectTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 5, 4));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.outputTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 133, 13));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png")));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.injectTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 5, 4));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 133, 13));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 154, 4).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 25, 35));

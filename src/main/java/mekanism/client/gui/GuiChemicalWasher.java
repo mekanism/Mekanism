@@ -1,15 +1,9 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
-import mekanism.api.gas.GasTank;
 import mekanism.client.gui.element.GuiBucketIO;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiProgress;
@@ -28,7 +22,6 @@ import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -48,36 +41,14 @@ public class GuiChemicalWasher extends GuiMekanism
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
 		guiElements.add(new GuiBucketIO(this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()
-		{
-			@Override
-			public FluidTank getTank()
-			{
-				return tileEntity.fluidTank;
-			}
-		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 5, 4));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.inputTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 26, 13));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.outputTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 133, 13));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
+		guiElements.add(new GuiFluidGauge(() -> tileEntity.fluidTank, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 5, 4));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 26, 13));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 133, 13));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 154, 4).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 154, 55).with(SlotOverlay.MINUS));

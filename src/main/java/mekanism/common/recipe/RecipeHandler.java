@@ -3,7 +3,6 @@ package mekanism.common.recipe;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,12 +72,12 @@ public final class RecipeHandler
 	public static void removeRecipe(Recipe recipeMap, MachineRecipe recipe)
 	{
 		List<MachineInput> toRemove = new ArrayList<>();
-		
-		for(Iterator iter = recipeMap.get().keySet().iterator(); iter.hasNext();)
+
+		for (Object o : recipeMap.get().keySet())
 		{
-			MachineInput iterInput = (MachineInput)iter.next();
-			
-			if(iterInput.testEquality(recipe.getInput()))
+			MachineInput iterInput = (MachineInput) o;
+
+			if (iterInput.testEquality(recipe.getInput()))
 			{
 				toRemove.add(iterInput);
 			}
@@ -558,7 +557,7 @@ public final class RecipeHandler
 		return recipe;
 	}
 
-	public static enum Recipe
+	public enum Recipe
 	{
 		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.blockName, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
 		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.blockName, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
@@ -587,7 +586,7 @@ public final class RecipeHandler
 		private Class<? extends MachineOutput> outputClass;
 		private Class<? extends MachineRecipe> recipeClass;
 
-		private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe)
+		<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe)
 		{
 			recipeName = name;
 			

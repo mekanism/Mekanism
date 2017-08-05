@@ -81,7 +81,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	
 	public static List<ItemStack> getInfuseStacks(InfuseType type)
 	{
-		List<ItemStack> ret = new ArrayList<ItemStack>();
+		List<ItemStack> ret = new ArrayList<>();
 
 		for(Map.Entry<ItemStack, InfuseObject> obj : InfuseRegistry.getObjectMap().entrySet())
 		{

@@ -14,7 +14,7 @@ public enum TransmissionType
 	private String name;
 	private String transmission;
 	
-	private TransmissionType(String n, String t)
+	TransmissionType(String n, String t)
 	{
 		name = n;
 		transmission = t;

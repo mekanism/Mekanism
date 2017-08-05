@@ -112,8 +112,8 @@ public class GuiGasGauge extends GuiGauge<Gas>
 		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() : LangUtils.localize("gui.empty");
 	}
 
-	public static interface IGasInfoHandler
+	public interface IGasInfoHandler
 	{
-		public GasTank getTank();
+		GasTank getTank();
 	}
 }

@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class MultiblockCache<T extends SynchronizedData<T>>
 {
-	public HashSet<Coord4D> locations = new HashSet<Coord4D>();
+	public HashSet<Coord4D> locations = new HashSet<>();
 	
 	public abstract void apply(T data);
 	

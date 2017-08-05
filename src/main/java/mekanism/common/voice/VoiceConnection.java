@@ -48,7 +48,7 @@ public class VoiceConnection extends Thread
 				while(username == null && retryCount <= 100)
 				{
 					try {
-						List l = Collections.synchronizedList((List)((ArrayList)server.getPlayerList().getPlayers()).clone());
+						List l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
 						for(Object obj : l)
 						{
@@ -93,33 +93,29 @@ public class VoiceConnection extends Thread
 		}
 
 		//Main client listen thread
-		new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				while(open)
-				{
-					try {
-						short byteCount = VoiceConnection.this.input.readShort();
-						byte[] audioData = new byte[byteCount];
-						VoiceConnection.this.input.readFully(audioData);
+		new Thread(() ->
+        {
+            while(open)
+            {
+                try {
+                    short byteCount = VoiceConnection.this.input.readShort();
+                    byte[] audioData = new byte[byteCount];
+                    VoiceConnection.this.input.readFully(audioData);
 
-						if(byteCount > 0)
-						{
-							Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
-						}
-					} catch(Exception e) {
-						open = false;
-					}
-				}
+                    if(byteCount > 0)
+                    {
+                        Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
+                    }
+                } catch(Exception e) {
+                    open = false;
+                }
+            }
 
-				if(!open)
-				{
-					kill();
-				}
-			}
-		}).start();
+            if(!open)
+            {
+                kill();
+            }
+        }).start();
 	}
 
 	public void kill()

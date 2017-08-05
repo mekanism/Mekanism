@@ -1,11 +1,9 @@
 package mekanism.generators.client.gui;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -39,16 +37,9 @@ public class GuiWindGenerator extends GuiMekanism
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				return ListUtils.asList(
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGenerationMin*tileEntity.currentMultiplier : 0) + "/t",
-						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
+		guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
+                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGenerationMin*tileEntity.currentMultiplier : 0) + "/t",
+                LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png"), 164, 15));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png"), 142, 34).with(SlotOverlay.POWER));
 	}

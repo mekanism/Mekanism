@@ -46,12 +46,9 @@ public class GuiHeatInfo extends GuiElement
 	{
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134)
 		{
-			List<String> info = new ArrayList<String>();
-			
-			for(String s : infoHandler.getInfo())
-			{
-				info.add(s);
-			}
+			List<String> info = new ArrayList<>();
+
+			info.addAll(infoHandler.getInfo());
 			
 			info.add(LangUtils.localize("gui.unit") + ": " + general.tempUnit);
 			displayTooltips(info, xAxis, yAxis);

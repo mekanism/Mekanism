@@ -144,7 +144,7 @@ public class Coord4D
 	 * Writes this Coord4D's data to an ArrayList for packet transfer.
 	 * @param data - the ArrayList to add the data to
 	 */
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(x);
 		data.add(y);
@@ -299,10 +299,9 @@ public class Coord4D
 	}
 
 	/**
-	 * Whether or not the defined side of this Coord4D is visible.
 	 * @param side - side to check
 	 * @param world - world this Coord4D is in
-	 * @return
+	 * @return Whether or not the defined side of this Coord4D is visible.
 	 */
 	public boolean sideVisible(EnumFacing side, IBlockAccess world)
 	{

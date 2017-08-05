@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.Tier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
@@ -14,6 +13,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import java.util.Arrays;
 
 public class ContainerFactory extends Container
 {
@@ -256,10 +257,7 @@ public class ContainerFactory extends Container
 	{
 		if(!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockMachine)
 		{
-			for(RecipeType type : RecipeType.values())
-			{
-				return itemStack.isItemEqual(type.getStack());
-			}
+			return Arrays.stream(RecipeType.values()).findFirst().filter(type -> itemStack.isItemEqual(type.getStack())).isPresent();
 		}
 
 		return false;

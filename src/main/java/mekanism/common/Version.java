@@ -40,11 +40,8 @@ public class Version
 	}
 
 	/**
-	 * 1: greater than
-	 * 0: equal to
-	 * -1: less than
-	 * @param version
-	 * @return
+	 * @param version Version to check against
+	 * @return 1: greater than, 0: equal to, -1: less than
 	 */
 	public byte comparedState(Version version)
 	{
@@ -60,17 +57,7 @@ public class Version
 			}
 			else if(version.minor == minor)
 			{
-				if(version.build > build)
-				{
-					return -1;
-				}
-				else if(version.build == build)
-				{
-					return 0;
-				}
-				else {
-					return 1;
-				}
+				return (byte) Integer.compare(build, version.build);
 			}
 			else {
 				return 1;

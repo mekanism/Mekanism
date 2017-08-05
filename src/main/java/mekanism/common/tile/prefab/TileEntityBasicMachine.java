@@ -1,7 +1,5 @@
 package mekanism.common.tile.prefab;
 
-import java.util.EnumSet;
-
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IElectricMachine;

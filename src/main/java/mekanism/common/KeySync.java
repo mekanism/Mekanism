@@ -12,11 +12,11 @@ public class KeySync
 	public static int ASCEND = 0;
 	public static int DESCEND = 1;
 
-	public Map<EntityPlayer, KeySet> keys = new HashMap<EntityPlayer, KeySet>();
+	public Map<EntityPlayer, KeySet> keys = new HashMap<>();
 
 	public static class KeySet
 	{
-		public Set<Integer> keysActive = new HashSet<Integer>();
+		public Set<Integer> keysActive = new HashSet<>();
 
 		public KeySet(int key)
 		{

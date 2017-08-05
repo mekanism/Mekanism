@@ -9,23 +9,23 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface ISoundSource
 {
 	@SideOnly(Side.CLIENT)
-	public ResourceLocation getSoundLocation();
+    ResourceLocation getSoundLocation();
 
 	@SideOnly(Side.CLIENT)
-	public float getVolume();
+    float getVolume();
 
 	@SideOnly(Side.CLIENT)
-	public float getFrequency();
+    float getFrequency();
 
 	@SideOnly(Side.CLIENT)
-	public Vec3d getSoundPosition();
+    Vec3d getSoundPosition();
 
 	@SideOnly(Side.CLIENT)
-	public boolean shouldRepeat();
+    boolean shouldRepeat();
 
 	@SideOnly(Side.CLIENT)
-	public int getRepeatDelay();
+    int getRepeatDelay();
 
 	@SideOnly(Side.CLIENT)
-	public AttenuationType getAttenuation();
+    AttenuationType getAttenuation();
 }

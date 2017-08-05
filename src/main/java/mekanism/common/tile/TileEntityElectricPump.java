@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +80,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public int operatingTicks;
 
 	/** The nodes that have full sources near them or in them */
-	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> recurringNodes = new HashSet<>();
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;

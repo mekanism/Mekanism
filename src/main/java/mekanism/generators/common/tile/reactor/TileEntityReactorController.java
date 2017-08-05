@@ -5,10 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
@@ -22,7 +20,6 @@ import mekanism.generators.common.FusionReactor;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -118,7 +115,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			
 			if(!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50D));
 				clientBurning = getReactor().isBurning();
 				clientTemp = getReactor().getPlasmaTemp();
 			}
@@ -257,13 +254,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			{
 				if(getReactor() == null || !((FusionReactor)getReactor()).formed)
 				{
-					Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
-						@Override
-						public boolean isNode(TileEntity tile)
-						{
-							return tile instanceof TileEntityReactorBlock;
-						}
-					});
+					Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityReactorBlock);
 				}
 				
 				if(getReactor() == null)
@@ -272,7 +263,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 					MekanismUtils.updateBlock(world, getPos());
 				}
 				
-				((FusionReactor)getReactor()).formed = true;
+				getReactor().formed = true;
 				getReactor().setPlasmaTemp(dataStream.readDouble());
 				getReactor().setCaseTemp(dataStream.readDouble());
 				getReactor().setInjectionRate(dataStream.readInt());

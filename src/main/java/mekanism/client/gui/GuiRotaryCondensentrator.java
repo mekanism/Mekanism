@@ -2,16 +2,11 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.gas.GasTank;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -33,7 +28,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -60,28 +54,13 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 154, 4).with(SlotOverlay.POWER));
 		
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
-			@Override
-			public FluidTank getTank()
-			{
-				return tileEntity.fluidTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 133, 13));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.gasTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 25, 13));
+		guiElements.add(new GuiEnergyInfo(() ->
+		{
+            String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
+		guiElements.add(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 133, 13));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.gasTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 25, 13));
 
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
@@ -174,7 +153,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 			if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
 			{
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(0);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

@@ -92,7 +92,7 @@ public class GuiProgress extends GuiElement
 		public int textureX;
 		public int textureY;
 
-		private ProgressBar(int w, int h, int u, int v)
+		ProgressBar(int w, int h, int u, int v)
 		{
 			width = w;
 			height = h;

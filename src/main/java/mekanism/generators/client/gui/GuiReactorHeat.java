@@ -2,17 +2,12 @@ package mekanism.generators.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyGauge;
-import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiNumberGauge;
 import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
@@ -37,7 +32,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -52,16 +46,9 @@ public class GuiReactorHeat extends GuiMekanism
 	{
 		super(new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				return tileEntity.isFormed() ? ListUtils.asList(
-						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
+		guiElements.add(new GuiEnergyInfo(() -> tileEntity.isFormed() ? ListUtils.asList(
+                LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList(), this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
 		{
 			@Override
@@ -138,30 +125,9 @@ public class GuiReactorHeat extends GuiMekanism
 				return (tileEntity.getCaseTemp() > 0 && tileEntity.waterTank.getFluidAmount() > 0 && tileEntity.steamTank.getFluidAmount() < tileEntity.steamTank.getCapacity()) ? 1 : 0;
 			}
 		}, ProgressBar.SMALL_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 81, 90));
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()
-		{
-			@Override
-			public FluidTank getTank()
-			{
-				return tentity.waterTank;
-			}
-		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 115, 84));
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()
-		{
-			@Override
-			public FluidTank getTank()
-			{
-				return tentity.steamTank;
-			}
-		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 151, 84));
-		guiElements.add(new GuiEnergyGauge(new IEnergyInfoHandler()
-		{
-			@Override
-			public IStrictEnergyStorage getEnergyStorage()
-			{
-				return tileEntity;
-			}
-		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 115, 46));
+		guiElements.add(new GuiFluidGauge(() -> tentity.waterTank, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 115, 84));
+		guiElements.add(new GuiFluidGauge(() -> tentity.steamTank, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 151, 84));
+		guiElements.add(new GuiEnergyGauge(() -> tileEntity, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 115, 46));
 		guiElements.add(new GuiFuelTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 		guiElements.add(new GuiStatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 	}

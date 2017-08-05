@@ -137,9 +137,9 @@ public abstract class GuiElement
 
 	public abstract void mouseClicked(int xAxis, int yAxis, int button);
 	
-	public static interface IInfoHandler
+	public interface IInfoHandler
 	{
-		public List<String> getInfo();
+		List<String> getInfo();
 	}
 
 	public static class Rectangle4i

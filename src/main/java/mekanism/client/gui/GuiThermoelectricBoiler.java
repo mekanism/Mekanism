@@ -1,10 +1,7 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
 import mekanism.client.gui.element.GuiBoilerTab;
 import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
@@ -66,15 +63,12 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 				return (double)tileEntity.structure.lastMaxBoil/cap;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiThermoelectricBoiler.png"), 144, 13));
-		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, false, unit);
-				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermoelectricBoiler.png")));
+		guiElements.add(new GuiHeatInfo(() ->
+        {
+            TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, false, unit);
+            return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermoelectricBoiler.png")));
 	}
 	
 	@Override

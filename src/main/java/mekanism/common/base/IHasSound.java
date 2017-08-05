@@ -11,8 +11,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface IHasSound
 {
 	@SideOnly(Side.CLIENT)
-	public SoundWrapper getSound();
+    SoundWrapper getSound();
 
 	@SideOnly(Side.CLIENT)
-	public boolean shouldPlaySound();
+    boolean shouldPlaySound();
 }

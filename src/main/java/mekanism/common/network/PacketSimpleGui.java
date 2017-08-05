@@ -24,37 +24,34 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessage>
 {
-	public static List<IGuiProvider> handlers = new ArrayList<IGuiProvider>();
+	public static List<IGuiProvider> handlers = new ArrayList<>();
 	
 	@Override
 	public IMessage onMessage(SimpleGuiMessage message, MessageContext context) 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				if(!player.world.isRemote)
-				{
-					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
-		
-					if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
-					{
-						if(message.guiId == -1)
-						{
-							return;
-						}
-		
-						SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP)player, player.world, message.coord4D);
-					}
-				}
-				else {
-					FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
-					player.openContainer.windowId = message.windowId;
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+            if(!player.world.isRemote)
+            {
+                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
+
+                if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
+                {
+                    if(message.guiId == -1)
+                    {
+                        return;
+                    }
+
+                    SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP)player, player.world, message.coord4D);
+                }
+            }
+            else {
+                FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
+                player.openContainer.windowId = message.windowId;
+            }
+        }, player);
 		
 		return null;
 	}

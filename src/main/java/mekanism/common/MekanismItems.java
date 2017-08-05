@@ -96,7 +96,7 @@ public class MekanismItems
 
 	/**
 	 * Adds and registers all items.
-	 * @param registry
+	 * @param registry Forge registry to add the items to
 	 */
 	public static void registerItems(IForgeRegistry<Item> registry)
 	{

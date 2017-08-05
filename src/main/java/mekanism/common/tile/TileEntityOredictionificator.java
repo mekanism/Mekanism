@@ -40,7 +40,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 {
 	public static final int MAX_LENGTH = 24;
 	
-	public HashList<OredictionificatorFilter> filters = new HashList<OredictionificatorFilter>();
+	public HashList<OredictionificatorFilter> filters = new HashList<>();
 	
 	public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
 	
@@ -67,7 +67,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
 				}
 			}
 			
@@ -289,7 +289,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		return data;
 	}
 
-	public ArrayList getGenericPacket(ArrayList<Object> data)
+	public ArrayList<Object> getGenericPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -302,7 +302,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 	}
 
-	public ArrayList getFilterPacket(ArrayList<Object> data)
+	public ArrayList<Object> getFilterPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -323,7 +323,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	{
 		if(!world.isRemote)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
 	}
 	

@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer
 {
 	/** A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids. */
-	public Set<ValveData> valveViewing = new HashSet<ValveData>();
+	public Set<ValveData> valveViewing = new HashSet<>();
 
 	/** The capacity this tank has on the client-side. */
 	public int clientWaterCapacity;
@@ -179,7 +179,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	{
 		if(!player.isSneaking() && structure != null)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			player.openGui(Mekanism.instance, 54, world, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
@@ -253,7 +253,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 			{
 				data.add(structure.clientHot);
 				
-				Set<ValveData> toSend = new HashSet<ValveData>();
+				Set<ValveData> toSend = new HashSet<>();
 
 				for(ValveData valveData : structure.valves)
 				{

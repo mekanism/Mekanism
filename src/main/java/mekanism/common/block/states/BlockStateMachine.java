@@ -1,8 +1,6 @@
 package mekanism.common.block.states;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import mekanism.common.Mekanism;

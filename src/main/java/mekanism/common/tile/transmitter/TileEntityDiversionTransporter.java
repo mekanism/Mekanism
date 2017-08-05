@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -128,7 +127,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 		notifyTileChange();
 		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 		Coord4D coord = new Coord4D(getPos(), getWorld());
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<Object>())), new Range4D(coord));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<>())), new Range4D(coord));
 
 		return EnumActionResult.SUCCESS;
 	}

@@ -21,7 +21,7 @@ public class GuiScrollList extends GuiElement
 	public int xPosition;
 	public int yPosition;
 	
-	public List<String> textEntries = new ArrayList<String>();
+	public List<String> textEntries = new ArrayList<>();
 	
 	public int dragOffset = 0;
 	

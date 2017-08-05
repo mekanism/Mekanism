@@ -141,7 +141,7 @@ public class ThreadClientUpdate extends Thread
 		}
 	}
 
-	private void createTemp() throws IOException
+	private void createTemp()
 	{
 		if(!tempDir.exists())
 		{
@@ -149,7 +149,7 @@ public class ThreadClientUpdate extends Thread
 		}
 	}
 
-	private void deleteTemp() throws IOException
+	private void deleteTemp()
 	{
 		if(tempDir.exists())
 		{
@@ -172,7 +172,7 @@ public class ThreadClientUpdate extends Thread
 
 	private void prepareForDownload()
 	{
-		File[] modsList = new File(new StringBuilder().append(Mekanism.proxy.getMinecraftDir()).append(File.separator + "mods").toString()).listFiles();
+		File[] modsList = new File(String.valueOf(Mekanism.proxy.getMinecraftDir()) + File.separator + "mods").listFiles();
 
 		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 		{

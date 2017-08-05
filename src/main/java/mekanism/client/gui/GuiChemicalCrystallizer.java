@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasTank;
 import mekanism.api.gas.OreGas;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
@@ -54,7 +51,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 
 	public int stackIndex = 0;
 
-	public List<ItemStack> iterStacks = new ArrayList<ItemStack>();
+	public List<ItemStack> iterStacks = new ArrayList<>();
 
 	public GuiChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tentity)
 	{
@@ -67,21 +64,12 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 160, 23));
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.inputTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 4));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 4));
 		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 64).with(SlotOverlay.PLUS));
 		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 154, 4).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 130, 56));
@@ -220,13 +208,13 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 	{
 		if(iterStacks == null)
 		{
-			iterStacks = new ArrayList<ItemStack>();
+			iterStacks = new ArrayList<>();
 		}
 		else {
 			iterStacks.clear();
 		}
 
-		List<String> keys = new ArrayList<String>();
+		List<String> keys = new ArrayList<>();
 
 		for(String s : OreDictionary.getOreNames())
 		{

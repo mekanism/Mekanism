@@ -3,7 +3,6 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
@@ -181,7 +180,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(seesSun);

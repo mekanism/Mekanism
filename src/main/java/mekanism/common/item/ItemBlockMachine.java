@@ -396,7 +396,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				factory.setRecipeType(recipeType);
 				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
 				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 			}
 
 			if(tileEntity instanceof ISustainedTank)
@@ -494,7 +494,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		        
 		        if(pos == null)
 		        {
-		            return new ActionResult(EnumActionResult.FAIL, itemstack);
+		            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
 		        }
 				else {
 				    if(pos.typeOfHit == RayTraceResult.Type.BLOCK)
@@ -503,14 +503,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		
 				        if(!world.provider.canMineBlock(entityplayer, coord.getPos()))
 				        {
-				            return new ActionResult(EnumActionResult.FAIL, itemstack);
+				            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
 				        }
 		
 				        if(!entityplayer.isSneaking())
 				        {
 				            if(!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack))
 				            {
-				                return new ActionResult(EnumActionResult.FAIL, itemstack);
+				                return new ActionResult<>(EnumActionResult.FAIL, itemstack);
 				            }
 				            
 				            FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
@@ -521,7 +521,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				        		
 				        		if(fluid.amount > needed)
 				        		{
-				        			return new ActionResult(EnumActionResult.FAIL, itemstack);
+				        			return new ActionResult<>(EnumActionResult.FAIL, itemstack);
 				        		}
 				        		
 				        		if(getFluidStack(itemstack) == null)
@@ -542,14 +542,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 							
 							if(stored == null || stored.amount < Fluid.BUCKET_VOLUME)
 							{
-								return new ActionResult(EnumActionResult.FAIL, itemstack);
+								return new ActionResult<>(EnumActionResult.FAIL, itemstack);
 							}
 							
 							Coord4D trans = coord.offset(pos.sideHit);
 	
 				            if(!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack))
 				            {
-				            	return new ActionResult(EnumActionResult.FAIL, itemstack);
+				            	return new ActionResult<>(EnumActionResult.FAIL, itemstack);
 				            }
 	
 				            if(tryPlaceContainedLiquid(world, itemstack, trans.getPos()) && !entityplayer.capabilities.isCreativeMode)
@@ -562,7 +562,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				        }
 				    }
 		
-			        return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+			        return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 		        }
 	    	}
 			else {
@@ -570,7 +570,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			}
     	}
 
-		return new ActionResult(EnumActionResult.PASS, itemstack);
+		return new ActionResult<>(EnumActionResult.PASS, itemstack);
 	}
 
 	@Override
@@ -966,7 +966,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
     
     @Override
-	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

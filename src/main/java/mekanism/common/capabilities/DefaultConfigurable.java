@@ -26,6 +26,6 @@ public class DefaultConfigurable implements IConfigurable
 
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(IConfigurable.class, new NullStorage<IConfigurable>(), DefaultConfigurable.class);
+        CapabilityManager.INSTANCE.register(IConfigurable.class, new NullStorage<>(), DefaultConfigurable.class);
     }
 }

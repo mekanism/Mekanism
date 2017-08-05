@@ -15,17 +15,17 @@ public interface ISideConfiguration
 	 * Gets the tile's configuration component.
 	 * @return the tile's configuration component
 	 */
-	public TileComponentConfig getConfig();
+    TileComponentConfig getConfig();
 
 	/**
 	 * Gets this machine's current orientation.
 	 * @return machine's current orientation
 	 */
-	public EnumFacing getOrientation();
+    EnumFacing getOrientation();
 
 	/**
 	 * Gets this machine's ejector.
-	 * @return
+	 * @return this machine's ejector
 	 */
-	public TileComponentEjector getEjector();
+    TileComponentEjector getEjector();
 }

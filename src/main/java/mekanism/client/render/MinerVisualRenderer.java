@@ -21,7 +21,7 @@ public final class MinerVisualRenderer
 {
 	private static Minecraft mc = Minecraft.getMinecraft();
 	
-	private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<MinerRenderData, DisplayInteger>();
+	private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 	
 	private static final double offset = 0.01;
 	
@@ -51,7 +51,7 @@ public final class MinerVisualRenderer
 		DisplayInteger display = DisplayInteger.createAndStart();
 		cachedVisuals.put(data, display);
 		
-		List<Model3D> models = new ArrayList<Model3D>();
+		List<Model3D> models = new ArrayList<>();
 		
 		for(int x = -data.radius; x <= data.radius; x++)
 		{
@@ -72,7 +72,7 @@ public final class MinerVisualRenderer
 			MekanismRenderer.renderObject(model);
 		}
 		
-		display.endList();
+		DisplayInteger.endList();
 		
 		return display;
 	}

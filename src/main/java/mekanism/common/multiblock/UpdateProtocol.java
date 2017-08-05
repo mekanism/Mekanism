@@ -16,9 +16,9 @@ import net.minecraft.world.World;
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
 	/** The multiblock nodes that have already been iterated over. */
-	public Set<Coord4D> iteratedNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> iteratedNodes = new HashSet<>();
 	
-	public Set<Coord4D> innerNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> innerNodes = new HashSet<>();
 
 	/** The structures found, all connected by some nodes to the pointer. */
 	public T structureFound = null;
@@ -33,7 +33,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 	/**
 	 * Recursively loops through each node connected to the given TileEntity.
-	 * @param tile - the TileEntity to loop over
+	 * @param coord - the TileEntity coords to loop over
 	 */
 	public void loopThrough(Coord4D coord)
 	{
@@ -46,7 +46,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		boolean rightBlocks = true;
 		boolean rightFrame = true;
 
-		Set<Coord4D> locations = new HashSet<Coord4D>();
+		Set<Coord4D> locations = new HashSet<>();
 
 		int xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 
@@ -271,11 +271,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Whether or not the block at the specified location is an air block.
 	 * @param x - x coordinate
 	 * @param y - y coordinate
 	 * @param z - z coordinate
-	 * @return
+	 * @return Whether or not the block at the specified location is an air block.
 	 */
 	protected boolean isAir(int x, int y, int z)
 	{
@@ -288,11 +287,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Whether or not the block at the specified location is a viable node for a multiblock structure.
 	 * @param x - x coordinate
 	 * @param y - y coordinate
 	 * @param z - z coordinate
-	 * @return
+	 * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
 	 */
 	public boolean isViableNode(int x, int y, int z)
 	{
@@ -315,9 +313,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Whether or not the block at the specified location is a viable node for a multiblock structure.
 	 * @param pos - coordinates
-	 * @return
+	 * @return Whether or not the block at the specified location is a viable node for a multiblock structure.
 	 */
 	public boolean isViableNode(BlockPos pos)
 	{
@@ -345,13 +342,13 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * If the block at the specified location is on the minimum of all angles of this multiblock structure, and the one to use for the
-	 * actual calculation.
+	 *
 	 * @param obj - location to check
 	 * @param xmin - minimum x value
 	 * @param ymin - minimum y value
 	 * @param zmin - minimum z value
-	 * @return
+	 * @return If the block at the specified location is on the minimum of all angles of this multiblock structure, and the one to use for the
+	 * actual calculation.
 	 */
 	private boolean isCorrectCorner(Coord4D obj, int xmin, int ymin, int zmin)
 	{
@@ -364,7 +361,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Whether or not the block at the specified location is considered a frame on the multiblock structure.
 	 * @param obj - location to check
 	 * @param xmin - minimum x value
 	 * @param xmax - maximum x value
@@ -372,7 +368,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 * @param ymax - maximum y value
 	 * @param zmin - minimum z value
 	 * @param zmax - maximum z value
-	 * @return
+	 * @return Whether or not the block at the specified location is considered a frame on the multiblock structure.
 	 */
 	private boolean isFrame(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
@@ -407,11 +403,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Whether or not the block at the specified location serves as a frame for a multiblock structure.
 	 * @param x - x coordinate
 	 * @param y - y coordinate
 	 * @param z - z coordinate
-	 * @return
+	 * @return Whether or not the block at the specified location serves as a frame for a multiblock structure.
 	 */
 	protected abstract boolean isValidFrame(int x, int y, int z);
 	
@@ -497,7 +492,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				}
 			}
 
-			List<String> idsFound = new ArrayList<String>();
+			List<String> idsFound = new ArrayList<>();
 			String idToUse = null;
 
 			for(Coord4D obj : structureFound.locations)
@@ -511,7 +506,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			}
 
 			MultiblockCache<T> cache = getNewCache();
-			List<ItemStack> rejectedItems = new ArrayList<ItemStack>();
+			List<ItemStack> rejectedItems = new ArrayList<>();
 
 			if(!idsFound.isEmpty())
 			{
@@ -544,7 +539,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			
 			onFormed();
 			
-			List<IStructuralMultiblock> structures = new ArrayList<IStructuralMultiblock>();
+			List<IStructuralMultiblock> structures = new ArrayList<>();
 			Coord4D toUse = null;
 
 			for(Coord4D obj : structureFound.locations)
@@ -605,7 +600,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	public class NodeCounter
 	{
-		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		public Set<Coord4D> iterated = new HashSet<>();
 		
 		public NodeChecker checker;
 		

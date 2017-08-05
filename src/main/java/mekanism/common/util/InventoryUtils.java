@@ -4,7 +4,6 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;

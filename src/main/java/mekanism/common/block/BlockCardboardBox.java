@@ -55,7 +55,7 @@ public class BlockCardboardBox extends BlockContainer
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return state.getValue(storageProperty) == true ? 1 : 0;
+		return state.getValue(storageProperty) ? 1 : 0;
 	}
 
 	@Override

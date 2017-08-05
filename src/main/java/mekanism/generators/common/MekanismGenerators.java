@@ -14,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
-import mekanism.common.config.TypeConfigManager;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockManager;
@@ -57,7 +56,7 @@ public class MekanismGenerators implements IModule
 	/** MekanismGenerators version number */
 	public static Version versionNumber = new Version(9, 3, 4);
 	
-	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
+	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
@@ -152,7 +151,7 @@ public class MekanismGenerators implements IModule
 	}
 	
 	@Override
-	public void writeConfig(ByteBuf dataStream) throws IOException
+	public void writeConfig(ByteBuf dataStream)
 	{
 		dataStream.writeDouble(generators.advancedSolarGeneration);
 		dataStream.writeDouble(generators.bioGeneration);
@@ -181,7 +180,7 @@ public class MekanismGenerators implements IModule
 	}
 
 	@Override
-	public void readConfig(ByteBuf dataStream) throws IOException
+	public void readConfig(ByteBuf dataStream)
 	{
 		generators.advancedSolarGeneration = dataStream.readDouble();
 		generators.bioGeneration = dataStream.readDouble();

@@ -19,36 +19,33 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-		        if(message.packetType == FlamethrowerPacket.UPDATE)
-		        {
-		            if(message.value)
-		            {
-		                Mekanism.flamethrowerActive.add(message.username);
-		            }
-		            else {
-		                Mekanism.flamethrowerActive.remove(message.username);
-		            }
-		
-		            if(!player.world.isRemote)
-		            {
-		                Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.username, message.value), player.world.provider.getDimension());
-		            }
-		        }
-		        else if(message.packetType == FlamethrowerPacket.MODE)
-		        {
-		            ItemStack stack = player.getHeldItem(message.currentHand);
-		
-		            if(!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower)
-		            {
-		                ((ItemFlamethrower)stack.getItem()).incrementMode(stack);
-		            }
-		        }
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+if(message.packetType == FlamethrowerPacket.UPDATE)
+{
+if(message.value)
+{
+Mekanism.flamethrowerActive.add(message.username);
+}
+else {
+Mekanism.flamethrowerActive.remove(message.username);
+}
+
+if(!player.world.isRemote)
+{
+Mekanism.packetHandler.sendToDimension(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.username, message.value), player.world.provider.getDimension());
+}
+}
+else if(message.packetType == FlamethrowerPacket.MODE)
+{
+ItemStack stack = player.getHeldItem(message.currentHand);
+
+if(!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower)
+{
+((ItemFlamethrower)stack.getItem()).incrementMode(stack);
+}
+}
+        }, player);
 		
 		return null;
 	}
@@ -110,9 +107,9 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 		}
 	}
 
-    public static enum FlamethrowerPacket
+    public enum FlamethrowerPacket
     {
         UPDATE,
-        MODE;
+        MODE
     }
 }

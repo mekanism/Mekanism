@@ -15,12 +15,12 @@ public interface IStrictEnergyAcceptor
 	 * @param simulate - if the operation should be simulated
 	 * @return energy used
 	 */
-	public double acceptEnergy(EnumFacing side, double amount, boolean simulate);
+    double acceptEnergy(EnumFacing side, double amount, boolean simulate);
 
 	/**
 	 * Whether or not this tile entity can accept energy from a certain side.
 	 * @param side - side to check
 	 * @return if tile entity accepts energy
 	 */
-	public boolean canReceiveEnergy(EnumFacing side);
+    boolean canReceiveEnergy(EnumFacing side);
 }

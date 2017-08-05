@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.UsernameCache;
 
 public class Frequency
 {
@@ -25,7 +24,7 @@ public class Frequency
 	
 	public boolean publicFreq;
 	
-	public Set<Coord4D> activeCoords = new HashSet<Coord4D>();
+	public Set<Coord4D> activeCoords = new HashSet<>();
 	
 	public Frequency(String n, UUID uuid)
 	{

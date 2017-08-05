@@ -21,8 +21,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTank>
 {
-	private static Map<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<Fluid, DisplayInteger[]>();
-	private static Map<Fluid, DisplayInteger[]> cachedValveFluids = new HashMap<Fluid, DisplayInteger[]>();
+	private static Map<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<>();
+	private static Map<Fluid, DisplayInteger[]> cachedValveFluids = new HashMap<>();
 	
 	private static int stages = 1400;
 

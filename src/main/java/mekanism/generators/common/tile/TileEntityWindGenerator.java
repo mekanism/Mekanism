@@ -70,7 +70,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

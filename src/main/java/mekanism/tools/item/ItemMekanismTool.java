@@ -10,7 +10,6 @@ import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;

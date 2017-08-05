@@ -6,7 +6,6 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -179,11 +178,11 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 
 		if(!playerIn.capabilities.isCreativeMode && !flag)
 		{
-			return !flag ? new ActionResult(EnumActionResult.FAIL, itemStackIn) : new ActionResult(EnumActionResult.PASS, itemStackIn);
+			return !flag ? new ActionResult<>(EnumActionResult.FAIL, itemStackIn) : new ActionResult<>(EnumActionResult.PASS, itemStackIn);
 		}
 		else {
 			playerIn.setActiveHand(hand);
-			return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
 		}
 	}
 
@@ -204,7 +203,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 	}
 	
 	@Override
-	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

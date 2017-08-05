@@ -103,7 +103,7 @@ public final class MekanismUtils
 {
 	public static final EnumFacing[] SIDE_DIRS = new EnumFacing[] {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 
-	public static final Map<String, Class<?>> classesFound = new HashMap<String, Class<?>>();
+	public static final Map<String, Class<?>> classesFound = new HashMap<>();
 
 	private static final List<UUID> warnedFails = new ArrayList<>();
 
@@ -117,7 +117,7 @@ public final class MekanismUtils
 			{
 				if(!Mekanism.latestVersionNumber.equals("null"))
 				{
-					ArrayList<IModule> list = new ArrayList<IModule>();
+					ArrayList<IModule> list = new ArrayList<>();
 
 					for(IModule module : Mekanism.modulesLoaded)
 					{
@@ -180,7 +180,7 @@ public final class MekanismUtils
 	public static List<String> getHTML(String urlToRead)
 	{
 		String line;
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 
 		try {
 			URL url = new URL(urlToRead);
@@ -374,8 +374,8 @@ public final class MekanismUtils
 
 	/**
 	 * Checks if a machine is in it's active state.
-	 * @param world
-	 * @param pos
+	 * @param world World of the machine to check
+	 * @param pos The position of the machine
 	 * @return if machine is active
 	 */
 	public static boolean isActive(IBlockAccess world, BlockPos pos)
@@ -395,7 +395,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the left side of a certain orientation.
-	 * @param orientation
+	 * @param orientation Current orientation of the machine
 	 * @return left side
 	 */
 	public static EnumFacing getLeft(EnumFacing orientation)
@@ -405,7 +405,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the right side of a certain orientation.
-	 * @param orientation
+	 * @param orientation Current orientation of the machine
 	 * @return right side
 	 */
 	public static EnumFacing getRight(EnumFacing orientation)
@@ -415,7 +415,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the opposite side of a certain orientation.
-	 * @param orientation
+	 * @param orientation Current orientation of the machine
 	 * @return opposite side
 	 */
 	public static EnumFacing getBack(EnumFacing orientation)
@@ -811,7 +811,7 @@ public final class MekanismUtils
 	/**
 	 * Updates a block's light value and marks it for a render update.
 	 * @param world - world the block is in
-	 * @param pos
+	 * @param pos Position of the block
 	 */
 	public static void updateBlock(World world, BlockPos pos)
 	{
@@ -1258,8 +1258,8 @@ public final class MekanismUtils
 				renderer = stack.getItem().getFontRenderer(stack);
 			}
 			
-			List<String> words = new ArrayList<String>();
-			List<String> lines = new ArrayList<String>();
+			List<String> words = new ArrayList<>();
+			List<String> lines = new ArrayList<>();
 			
 			String currentWord = "";
 			
@@ -1292,14 +1292,10 @@ public final class MekanismUtils
 					}
 					
 					currentLine += word;
-					
-					continue;
 				}
 				else {
 					lines.add(currentLine);
 					currentLine = word;
-					
-					continue;
 				}
 			}
 			
@@ -1313,7 +1309,7 @@ public final class MekanismUtils
 			t.printStackTrace();
 		}
 		
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 	/**
@@ -1560,7 +1556,7 @@ public final class MekanismUtils
 		return ret != null ? ret : "<???>";
 	}
 
-	public static enum ResourceType
+	public enum ResourceType
 	{
 		GUI("gui"),
 		GUI_ELEMENT("gui/elements"),
@@ -1573,7 +1569,7 @@ public final class MekanismUtils
 
 		private String prefix;
 
-		private ResourceType(String s)
+		ResourceType(String s)
 		{
 			prefix = s;
 		}

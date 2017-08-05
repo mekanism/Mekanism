@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,7 +19,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe>
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<ItemStackInput, CrusherRecipe> getRecipes()
 	{
 		return Recipe.CRUSHER.get();
 	}

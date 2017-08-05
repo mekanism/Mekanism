@@ -18,5 +18,5 @@ public interface IAlloyInteraction
 	 * @param stack - the stack of alloy being right-clicked
 	 * @param tierOrdinal - the ordinal tier of the alloy (1 = advanced, 2 = elite, 3 = ultimate) 
 	 */
-	public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal);
+    void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal);
 }

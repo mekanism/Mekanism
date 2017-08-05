@@ -2,10 +2,8 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -55,14 +53,11 @@ public class GuiFactory extends GuiMekanism
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiSortingTab(this, tileEntity, tileEntity.tier.guiLocation));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.lastUsage);
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, tileEntity.tier.guiLocation));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.lastUsage);
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, tileEntity.tier.guiLocation));
 	}
 
 	@Override
@@ -172,7 +167,7 @@ public class GuiFactory extends GuiMekanism
 				
 				if(!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 				{
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(1);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

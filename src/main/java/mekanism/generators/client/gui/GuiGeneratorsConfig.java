@@ -26,7 +26,7 @@ public class GuiGeneratorsConfig extends GuiConfig
 	
 	private static List<IConfigElement> getConfigElements()
 	{
-		List<IConfigElement> list = new ArrayList<IConfigElement>();
+		List<IConfigElement> list = new ArrayList<>();
 		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.general"), "mekanism.configgui.ctgy.generators.general", GeneralEntry.class));
 		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.generators"), "mekanism.configgui.ctgy.generators.generators", GeneratorsEntry.class));
 		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.generators.generation"), "mekanism.configgui.ctgy.generators.generation", GenerationEntry.class));

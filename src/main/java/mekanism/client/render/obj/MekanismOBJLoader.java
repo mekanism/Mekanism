@@ -1,15 +1,11 @@
 package mekanism.client.render.obj;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.vecmath.Matrix4f;
 
 import mekanism.client.render.obj.MekanismOBJModel.OBJModelType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -36,14 +32,14 @@ public class MekanismOBJLoader implements ICustomModelLoader
 {
 	public static final MekanismOBJLoader INSTANCE = new MekanismOBJLoader();
 	
-	private final Map<ResourceLocation, MekanismOBJModel> modelCache = new HashMap<ResourceLocation, MekanismOBJModel>();
+	private final Map<ResourceLocation, MekanismOBJModel> modelCache = new HashMap<>();
 	
 	public static final ImmutableMap<String, String> flipData = ImmutableMap.of("flip-v", String.valueOf(true));
 	
 	public static final String[] OBJ_RENDERS = new String[] {"glow_panel"};
 	
 	@SubscribeEvent
-    public void onModelBake(ModelBakeEvent event) throws IOException 
+    public void onModelBake(ModelBakeEvent event)
     {
 		GlowPanelModel.forceRebake();
 		
@@ -62,13 +58,7 @@ public class MekanismOBJLoader implements ICustomModelLoader
 	public OBJBakedModel createBakedObjItemModel(IBakedModel existingModel, String name, IModelState state, VertexFormat format)
 	{
 		try {
-			Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
-				@Override
-				public TextureAtlasSprite apply(ResourceLocation location)
-				{
-					return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-				}
-			};
+			Function<ResourceLocation, TextureAtlasSprite> textureGetter = location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
 			
 			ResourceLocation modelLocation = new ResourceLocation(name);
 			OBJModel objModel = (OBJModel)OBJLoader.INSTANCE.loadModel(modelLocation);
@@ -91,7 +81,7 @@ public class MekanismOBJLoader implements ICustomModelLoader
 			
 			builder.put("missingno", missing);
 			
-			return new GlowPanelModel(existingModel, objModel, state, format, builder.build(), new HashMap<TransformType, Matrix4f>());
+			return new GlowPanelModel(existingModel, objModel, state, format, builder.build(), new HashMap<>());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

@@ -13,7 +13,6 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
-import mekanism.common.config.TypeConfigManager;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -147,7 +146,7 @@ import net.minecraftforge.fml.relauncher.FMLInjectionData;
  */
 public class CommonProxy implements IGuiProvider
 {
-	protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<EntityPlayer>(null);
+	protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<>(null);
 
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
@@ -623,7 +622,7 @@ public class CommonProxy implements IGuiProvider
 	{
 		EntityPlayer player = FakePlayerFactory.get(world, Mekanism.gameProfile);
 
-		return new WeakReference<EntityPlayer>(player);
+		return new WeakReference<>(player);
 	}
 
 	private WeakReference<EntityPlayer> createNewPlayer(WorldServer world, double x, double y, double z)
@@ -634,7 +633,7 @@ public class CommonProxy implements IGuiProvider
 		player.posY = y;
 		player.posZ = z;
 		
-		return new WeakReference<EntityPlayer>(player);
+		return new WeakReference<>(player);
 	}
 
 	public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world) 

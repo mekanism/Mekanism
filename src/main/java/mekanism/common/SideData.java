@@ -62,7 +62,7 @@ public class SideData
 	public FluidTankInfo[] getFluidTankInfo(ITankManager manager)
 	{
 		Object[] tanks = manager.getTanks();
-		List<FluidTankInfo> infos = new ArrayList<FluidTankInfo>();
+		List<FluidTankInfo> infos = new ArrayList<>();
 		
 		if(tanks == null)
 		{
@@ -92,10 +92,10 @@ public class SideData
 		return (GasTank)tanks[0];
 	}
 	
-	public static enum IOState
+	public enum IOState
 	{
 		INPUT,
 		OUTPUT,
-		OFF;
+		OFF
 	}
 }

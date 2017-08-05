@@ -39,7 +39,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -85,7 +84,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		
 		tier = BinTier.values()[upgradeTier.ordinal()];
 		
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		markDirty();
 		
 		return true;
@@ -466,7 +465,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(!world.isRemote)
 		{
 			MekanismUtils.saveChunk(this);
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			prevCount = getItemCount();
 			sortStacks();
 		}
@@ -611,7 +610,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 
 			clientActive = active;
 		}

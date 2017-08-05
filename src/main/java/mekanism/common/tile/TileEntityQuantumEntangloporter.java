@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -58,8 +57,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public double lastTransferLoss;
 	public double lastEnvironmentLoss;
 	
-	public List<Frequency> publicCache = new ArrayList<Frequency>();
-	public List<Frequency> privateCache = new ArrayList<Frequency>();
+	public List<Frequency> publicCache = new ArrayList<>();
+	public List<Frequency> privateCache = new ArrayList<>();
 	
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
@@ -410,7 +409,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxEnergy()
 	{
-		return !hasFrequency() ? 0 : frequency.MAX_ENERGY;
+		return !hasFrequency() ? 0 : InventoryFrequency.MAX_ENERGY;
 	}
 
 	@Override

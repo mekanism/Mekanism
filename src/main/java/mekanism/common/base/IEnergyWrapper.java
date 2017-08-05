@@ -25,9 +25,9 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 })
 public interface IEnergyWrapper extends IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, IStrictEnergyOutputter, IInventory
 {
-	public boolean sideIsOutput(EnumFacing side);
+	boolean sideIsOutput(EnumFacing side);
 
-	public boolean sideIsConsumer(EnumFacing side);
+	boolean sideIsConsumer(EnumFacing side);
 
-	public double getMaxOutput();
+	double getMaxOutput();
 }

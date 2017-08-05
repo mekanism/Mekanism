@@ -14,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
-import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -53,7 +52,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	}
 
 	@Override
-	public HeatNetwork createNetworkByMerging(Collection networks)
+	public HeatNetwork createNetworkByMerging(Collection<HeatNetwork> networks)
 	{
 		return new HeatNetwork(networks);
 	}
@@ -121,7 +120,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	public void sendTemp()
 	{
 		Coord4D coord = new Coord4D(getPos(), getWorld());
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList())), new Range4D(coord));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<>())), new Range4D(coord));
 	}
 	
 	@Override

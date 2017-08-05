@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -78,10 +77,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 {
 	public static int[] EJECT_INV;
 
-	public Map<Chunk3D, BitSet> oresToMine = new HashMap<Chunk3D, BitSet>();
-	public Map<Integer, MinerFilter> replaceMap = new HashMap<Integer, MinerFilter>();
+	public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
+	public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
 
-	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
+	public HashList<MinerFilter> filters = new HashList<>();
 
 	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
@@ -149,7 +148,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(getActive())
 		{
-			for(EntityPlayer player : (HashSet<EntityPlayer>)playersUsing.clone())
+			for(EntityPlayer player : new HashSet<>(playersUsing))
 			{
 				if(player.openContainer instanceof ContainerNull || player.openContainer instanceof ContainerFilter)
 				{
@@ -331,7 +330,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getSmallPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getSmallPacket(new ArrayList<>())), (EntityPlayerMP)player);
 				}
 			}
 
@@ -646,7 +645,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(!world.isRemote)
 		{
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), (EntityPlayerMP)player);
 		}
 	}
 
@@ -790,7 +789,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
 			}
 
 			return;
@@ -1013,7 +1012,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public ArrayList getFilterPacket(ArrayList<Object> data)
+	public ArrayList<Object> getFilterPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -1094,7 +1093,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 
 			clientActive = active;
 		}
@@ -1415,7 +1414,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		for(EntityPlayer player : playersUsing)
 		{
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<Object>())), (EntityPlayerMP)player);
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
 		}
 		
 		return null;
@@ -1600,6 +1599,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public Set<ChunkPos> getChunkSet()
 	{
-		return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(t -> t.getPos()).collect(Collectors.toSet());
+		return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(Chunk3D::getPos).collect(Collectors.toSet());
 	}
 }

@@ -84,7 +84,7 @@ public class GuiTurbineTab extends GuiElement
 		}
 	}
 	
-	public static enum TurbineTab
+	public enum TurbineTab
 	{
 		MAIN("GuiGasesTab.png", 6, "gui.main"),
 		STAT("GuiStatsTab.png", 7, "gui.stats");
@@ -93,7 +93,7 @@ public class GuiTurbineTab extends GuiElement
 		private int guiId;
 		private String desc;
 		
-		private TurbineTab(String s, int id, String s1)
+		TurbineTab(String s, int id, String s1)
 		{
 			path = s;
 			guiId = id;

@@ -31,26 +31,23 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			return null;
 		}
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-				
-				if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
-				{
-					ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
-					
-					try {
-						network.handlePacketData(message.storedBuffer);
-					} catch(Exception e) {
-						e.printStackTrace();
-					}
-					
-					message.storedBuffer.release();
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+		{
+            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+            if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
+            {
+                ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+
+                try {
+                    network.handlePacketData(message.storedBuffer);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+                message.storedBuffer.release();
+            }
+        }, player);
 		
 		return null;
 	}

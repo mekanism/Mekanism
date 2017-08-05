@@ -35,40 +35,37 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				if(!player.world.isRemote)
-				{
-					World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
-		
-					if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
-					{
-						LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
-					}
-				}
-				else {
-					if(message.coord4D.getTileEntity(player.world) instanceof TileEntityLogisticalSorter)
-					{
-						try {
-							if(message.packetType == SorterGuiPacket.CLIENT)
-							{
-								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), -1));
-							}
-							else if(message.packetType == SorterGuiPacket.CLIENT_INDEX)
-							{
-								FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), message.index));
-							}
-		
-							player.openContainer.windowId = message.windowId;
-						} catch(Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+            if(!player.world.isRemote)
+            {
+                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
+
+                if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+                {
+                    LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
+                }
+            }
+            else {
+                if(message.coord4D.getTileEntity(player.world) instanceof TileEntityLogisticalSorter)
+                {
+                    try {
+                        if(message.packetType == SorterGuiPacket.CLIENT)
+                        {
+                            FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), -1));
+                        }
+                        else if(message.packetType == SorterGuiPacket.CLIENT_INDEX)
+                        {
+                            FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.world, message.coord4D.getPos(), message.index));
+                        }
+
+                        player.openContainer.windowId = message.windowId;
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, player);
 		
 		return null;
 	}
@@ -241,7 +238,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 		}
 	}
 	
-	public static enum SorterGuiPacket
+	public enum SorterGuiPacket
 	{
 		SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
 	}

@@ -8,11 +8,11 @@ import net.minecraft.util.EnumHand;
 
 public interface IStructuralMultiblock 
 {
-	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack);
+	boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack);
 	
-	public boolean canInterface(TileEntity controller);
+	boolean canInterface(TileEntity controller);
 	
-	public void setController(Coord4D coord);
+	void setController(Coord4D coord);
 	
-	public void doUpdate();
+	void doUpdate();
 }

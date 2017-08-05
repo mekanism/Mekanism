@@ -7,9 +7,6 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.util.RecipeUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 public class IMCHandler

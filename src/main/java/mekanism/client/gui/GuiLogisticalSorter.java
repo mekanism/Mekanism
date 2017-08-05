@@ -82,9 +82,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 	public int stackSwitch = 0;
 
-	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<TOreDictFilter, StackData>();
+	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<>();
 
-	public Map<TModIDFilter, StackData> modIDStacks = new HashMap<TModIDFilter, StackData>();
+	public Map<TModIDFilter, StackData> modIDStacks = new HashMap<>();
 
 	public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter entity)
 	{
@@ -186,8 +186,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 			}
 		}
 
-		final Set<TOreDictFilter> oreDictFilters = new HashSet<TOreDictFilter>();
-		final Set<TModIDFilter> modIDFilters = new HashSet<TModIDFilter>();
+		final Set<TOreDictFilter> oreDictFilters = new HashSet<>();
+		final Set<TModIDFilter> modIDFilters = new HashSet<>();
 
 		for(int i = 0; i < 4; i++)
 		{
@@ -261,7 +261,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 							if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 							{
 								// Process up button click
-								final ArrayList data = new ArrayList();
+								final ArrayList<Object> data = new ArrayList<>();
 								data.add(3);
 								data.add(getFilterIndex() + i);
 
@@ -277,7 +277,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 							if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 							{
 								// Process down button click
-								final ArrayList data = new ArrayList();
+								final ArrayList<Object> data = new ArrayList<>();
 								data.add(4);
 								data.add(getFilterIndex() + i);
 
@@ -317,7 +317,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			// Check for auto eject button
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
 			{
-				final ArrayList data = new ArrayList();
+				final ArrayList<Object> data = new ArrayList<>();
 				data.add(1);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -327,7 +327,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			// Check for round robin button
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
 			{
-				final ArrayList data = new ArrayList();
+				final ArrayList<Object> data = new ArrayList<>();
 				data.add(2);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -343,7 +343,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		// Check for default colour button
 		if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
 		{
-			final ArrayList data = new ArrayList();
+			final ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(mouseBtn);
 

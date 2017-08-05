@@ -23,7 +23,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
-	public Set<ValveData> valves = new HashSet<ValveData>();
+	public Set<ValveData> valves = new HashSet<>();
 	
 	public boolean needsRenderUpdate()
 	{

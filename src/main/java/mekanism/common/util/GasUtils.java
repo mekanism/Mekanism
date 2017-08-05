@@ -136,7 +136,7 @@ public final class GasUtils
 			return 0;
 		}
 		
-		List<IGasHandler> availableAcceptors = new ArrayList<IGasHandler>();
+		List<IGasHandler> availableAcceptors = new ArrayList<>();
 		IGasHandler[] possibleAcceptors = getConnectedAcceptors(from, sides);
 		
 		for(int i = 0; i < possibleAcceptors.length; i++)

@@ -106,7 +106,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			
 			if(sendDesc)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 				sendDesc = false;
 			}
 		}
@@ -576,7 +576,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
 	public List<EnumFacing> getConnections(ConnectionType type)
 	{
-		List<EnumFacing> sides = new ArrayList<EnumFacing>();
+		List<EnumFacing> sides = new ArrayList<>();
 
 		for(EnumFacing side : EnumFacing.values())
 		{
@@ -726,7 +726,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		return super.getCapability(capability, facing);
 	}
 
-	public static enum ConnectionType implements IStringSerializable
+	public enum ConnectionType implements IStringSerializable
 	{
 		NORMAL,
 		PUSH,

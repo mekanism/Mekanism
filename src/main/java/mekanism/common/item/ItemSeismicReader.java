@@ -41,7 +41,7 @@ public class ItemSeismicReader extends ItemEnergized
 				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.needsEnergy")));
 			}
 			
-			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 		}
 		else if(!MekanismUtils.isChunkVibrated(chunk))
 		{
@@ -50,7 +50,7 @@ public class ItemSeismicReader extends ItemEnergized
 				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.seismicReader.noVibrations")));
 			}
 			
-			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 		}
 		
 		if(!entityplayer.capabilities.isCreativeMode)
@@ -60,6 +60,6 @@ public class ItemSeismicReader extends ItemEnergized
 		
 		entityplayer.openGui(Mekanism.instance, 38, world, hand.ordinal(), 0, 0);
 
-		return new ActionResult(EnumActionResult.PASS, itemstack);
+		return new ActionResult<>(EnumActionResult.PASS, itemstack);
 	}
 }

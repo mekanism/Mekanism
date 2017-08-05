@@ -714,7 +714,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

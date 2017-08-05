@@ -20,42 +20,39 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				if(message.packetType == JetpackPacket.UPDATE)
-				{
-					if(message.value)
-					{
-						Mekanism.jetpackOn.add(message.username);
-					}
-					else {
-						Mekanism.jetpackOn.remove(message.username);
-					}
-		
-					if(!player.world.isRemote)
-					{
-						Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
-					}
-				}
-				else if(message.packetType == JetpackPacket.MODE)
-				{
-					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-		
-					if(!stack.isEmpty() && stack.getItem() instanceof ItemJetpack)
-					{
-						if(!message.value)
-						{
-							((ItemJetpack)stack.getItem()).incrementMode(stack);
-						}
-						else {
-							((ItemJetpack)stack.getItem()).setMode(stack, JetpackMode.DISABLED);
-						}
-					}
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+            if(message.packetType == JetpackPacket.UPDATE)
+            {
+                if(message.value)
+                {
+                    Mekanism.jetpackOn.add(message.username);
+                }
+                else {
+                    Mekanism.jetpackOn.remove(message.username);
+                }
+
+                if(!player.world.isRemote)
+                {
+                    Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
+                }
+            }
+            else if(message.packetType == JetpackPacket.MODE)
+            {
+                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+
+                if(!stack.isEmpty() && stack.getItem() instanceof ItemJetpack)
+                {
+                    if(!message.value)
+                    {
+                        ((ItemJetpack)stack.getItem()).incrementMode(stack);
+                    }
+                    else {
+                        ((ItemJetpack)stack.getItem()).setMode(stack, JetpackMode.DISABLED);
+                    }
+                }
+            }
+        }, player);
 		
 		return null;
 	}
@@ -136,10 +133,10 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 		}
 	}
 	
-	public static enum JetpackPacket
+	public enum JetpackPacket
 	{
 		UPDATE,
 		FULL,
-		MODE;
-	}
+		MODE
+    }
 }

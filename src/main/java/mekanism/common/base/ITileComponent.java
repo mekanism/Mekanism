@@ -8,15 +8,15 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface ITileComponent
 {
-	public void tick();
+	void tick();
 
-	public void read(NBTTagCompound nbtTags);
+	void read(NBTTagCompound nbtTags);
 
-	public void read(ByteBuf dataStream);
+	void read(ByteBuf dataStream);
 
-	public void write(NBTTagCompound nbtTags);
+	void write(NBTTagCompound nbtTags);
 
-	public void write(ArrayList<Object> data);
+	void write(ArrayList<Object> data);
 	
-	public void invalidate();
+	void invalidate();
 }

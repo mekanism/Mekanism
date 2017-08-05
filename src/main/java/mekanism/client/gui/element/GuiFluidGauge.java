@@ -132,8 +132,8 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 		return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid()) + ": " + amountStr : LangUtils.localize("gui.empty");
 	}
 
-	public static interface IFluidInfoHandler
+	public interface IFluidInfoHandler
 	{
-		public FluidTank getTank();
+		FluidTank getTank();
 	}
 }

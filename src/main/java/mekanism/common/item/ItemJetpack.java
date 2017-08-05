@@ -22,7 +22,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -225,7 +224,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		list.add(filled);
 	}
 
-	public static enum JetpackMode
+	public enum JetpackMode
 	{
 		NORMAL("tooltip.jetpack.regular", EnumColor.DARK_GREEN),
 		HOVER("tooltip.jetpack.hover", EnumColor.DARK_AQUA),
@@ -234,7 +233,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		private String unlocalized;
 		private EnumColor color;
 
-		private JetpackMode(String s, EnumColor c)
+		JetpackMode(String s, EnumColor c)
 		{
 			unlocalized = s;
 			color = c;

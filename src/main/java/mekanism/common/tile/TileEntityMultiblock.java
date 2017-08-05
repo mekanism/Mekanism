@@ -16,7 +16,6 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -122,7 +121,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 					}
 				}
 
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			}
 
 			prevStructure = structure != null;
@@ -165,7 +164,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 		}

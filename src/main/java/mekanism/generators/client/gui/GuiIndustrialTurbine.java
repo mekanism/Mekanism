@@ -2,11 +2,9 @@ package mekanism.generators.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRateBar;
@@ -69,18 +67,14 @@ public class GuiIndustrialTurbine extends GuiMekanism
 				return (double)tileEntity.structure.lastSteamInput/rate;
 			}
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png"), 40, 13));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
-				
-				return ListUtils.asList(
-						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png")));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+
+            return ListUtils.asList(
+                    LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+                    LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier) + "/t");
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png")));
 	}
 	
 	@Override
@@ -184,7 +178,7 @@ public class GuiIndustrialTurbine extends GuiMekanism
 
 		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add((byte)0);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

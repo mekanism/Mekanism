@@ -20,8 +20,9 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 	 * This should return true if the input matches this one,
 	 * IGNORING AMOUNTS.
 	 * Allows usage of HashMap optimisation to get recipes.
-	 * @param other
-	 * @return
+	 *
+	 * @param other The other input to check
+	 * @return True if input matches this one, IGNORING AMOUNTS!
 	 */
 	public abstract boolean testEquality(INPUT other);
 	

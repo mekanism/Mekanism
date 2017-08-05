@@ -142,7 +142,7 @@ public class Gas
 
 	/**
 	 * Sets this gas's icon.
-	 * @param i - IIcon to associate with this Gas
+	 * @param map - IIcon to associate with this Gas
 	 * @return this Gas object
 	 */
 	public Gas registerIcon(TextureMap map)

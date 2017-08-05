@@ -1,18 +1,15 @@
 package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +21,7 @@ import java.util.Arrays;
 @SideOnly(Side.CLIENT)
 public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController>
 {
-	private static HashMap<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<Fluid, DisplayInteger[]>();
+	private static HashMap<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<>();
 	private static final int LEVELS = 16;
 	private static final int ALL_LEVELS = LEVELS + 2;
 	private static final int RING_INDEX = ALL_LEVELS-2;

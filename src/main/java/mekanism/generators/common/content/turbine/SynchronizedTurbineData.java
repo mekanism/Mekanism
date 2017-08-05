@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData>
 {
-	public static Map<String, Float> clientRotationMap = new HashMap<String, Float>();
+	public static Map<String, Float> clientRotationMap = new HashMap<>();
 	
 	public static final float ROTATION_THRESHOLD = 0.001F;
 	

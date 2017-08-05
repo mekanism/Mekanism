@@ -19,16 +19,16 @@ public final class InvStack
 	public InvStack(TileEntity inv, EnumFacing facing)
 	{
 		tileEntity = inv;
-		itemStacks = new ArrayList<ItemStack>();
-		slotIDs = new ArrayList<Integer>();
+		itemStacks = new ArrayList<>();
+		slotIDs = new ArrayList<>();
 		side = facing;
 	}
 
 	public InvStack(TileEntity inv, int id, ItemStack stack, EnumFacing facing)
 	{
 		tileEntity = inv;
-		itemStacks = new ArrayList<ItemStack>();
-		slotIDs = new ArrayList<Integer>();
+		itemStacks = new ArrayList<>();
+		slotIDs = new ArrayList<>();
 		side = facing;
 
 		appendStack(id, stack);

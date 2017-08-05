@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityTurbineRotor extends TileEntityBasicBlock
 {
-	public List<Coord4D> rotors = new ArrayList<Coord4D>();
+	public List<Coord4D> rotors = new ArrayList<>();
 	
 	public boolean hasComplex;
 	
@@ -53,12 +53,12 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		}
 		
 		buildRotors();
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 	}
 	
 	private void buildRotors()
 	{
-		List<Coord4D> newRotors = new ArrayList<Coord4D>();
+		List<Coord4D> newRotors = new ArrayList<>();
 		int newBlades = 0;
 		boolean complex = false;
 		String id = null;
@@ -117,7 +117,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 				rotor.hasComplex = false;
 			}
 			
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rotor.getNetworkedData(new ArrayList())), new Range4D(coord));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rotor.getNetworkedData(new ArrayList<>())), new Range4D(coord));
 		}
 	}
 	
@@ -151,7 +151,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		
 		if(getHousedBlades() != prev)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
 	}
 	
@@ -223,7 +223,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

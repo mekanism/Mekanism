@@ -56,7 +56,7 @@ public class MekanismOBJModel extends OBJModel
         return ret;
     }
 	
-	public static enum OBJModelType
+	public enum OBJModelType
 	{
 		GLOW_PANEL,
 		TRANSMITTER

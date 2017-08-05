@@ -5,7 +5,7 @@ import net.minecraft.util.EnumFacing;
 
 public interface IBlockableConnection
 {
-	public boolean canConnectMutual(EnumFacing side);
+	boolean canConnectMutual(EnumFacing side);
 	
-	public boolean canConnect(EnumFacing side);
+	boolean canConnect(EnumFacing side);
 }

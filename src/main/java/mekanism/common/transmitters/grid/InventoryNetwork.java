@@ -14,7 +14,6 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -41,7 +40,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 	
 	public List<AcceptorData> calculateAcceptors(TransitRequest request, EnumColor color)
 	{
-		List<AcceptorData> toReturn = new ArrayList<AcceptorData>();
+		List<AcceptorData> toReturn = new ArrayList<>();
 		
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{

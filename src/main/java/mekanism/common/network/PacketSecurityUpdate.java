@@ -14,7 +14,6 @@ import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
-import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -78,7 +77,7 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 			}
 			else if(packetType == SecurityPacket.FULL)
 			{
-				List<SecurityFrequency> frequencies = new ArrayList<SecurityFrequency>();
+				List<SecurityFrequency> frequencies = new ArrayList<>();
 				
 				for(Frequency frequency : Mekanism.securityFrequencies.getFrequencies())
 				{
@@ -133,9 +132,9 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 		}
 	}
 	
-	public static enum SecurityPacket
+	public enum SecurityPacket
 	{
 		UPDATE,
-		FULL;
-	}
+		FULL
+    }
 }

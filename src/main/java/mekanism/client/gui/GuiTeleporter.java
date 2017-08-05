@@ -75,8 +75,8 @@ public class GuiTeleporter extends GuiMekanism
 	public Frequency clientFreq;
 	public byte clientStatus;
 	
-	public List<Frequency> clientPublicCache = new ArrayList<Frequency>();
-	public List<Frequency> clientPrivateCache = new ArrayList<Frequency>();
+	public List<Frequency> clientPublicCache = new ArrayList<>();
+	public List<Frequency> clientPrivateCache = new ArrayList<>();
 	
 	public boolean isInit = true;
 
@@ -205,7 +205,7 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(tileEntity != null)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(freq);
 			data.add(!privateMode);
@@ -231,7 +231,7 @@ public class GuiTeleporter extends GuiMekanism
 			return;
 		}
 		
-		List<String> text = new ArrayList<String>();
+		List<String> text = new ArrayList<>();
 		
 		if(privateMode)
 		{
@@ -387,7 +387,7 @@ public class GuiTeleporter extends GuiMekanism
 				
 				if(tileEntity != null)
 				{
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(1);
 					data.add(freq.name);
 					data.add(freq.publicFreq);

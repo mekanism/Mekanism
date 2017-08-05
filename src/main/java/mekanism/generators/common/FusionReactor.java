@@ -37,8 +37,8 @@ import net.minecraftforge.fluids.FluidTank;
 public class FusionReactor
 {
 	public TileEntityReactorController controller;
-	public Set<TileEntityReactorBlock> reactorBlocks = new HashSet<TileEntityReactorBlock>();
-	public Set<IHeatTransfer> heatTransfers = new HashSet<IHeatTransfer>();
+	public Set<TileEntityReactorBlock> reactorBlocks = new HashSet<>();
+	public Set<IHeatTransfer> heatTransfers = new HashSet<>();
 
 	//Current stores of temperature - internally uses ambient-relative kelvin units
 	public double plasmaTemperature;
@@ -311,7 +311,7 @@ public class FusionReactor
 		
 		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimension());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList<>())), controller.getWorld().provider.getDimension());
 		}
 	}
 
@@ -348,7 +348,7 @@ public class FusionReactor
 		
 		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimension());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList<>())), controller.getWorld().provider.getDimension());
 		}
 	}
 

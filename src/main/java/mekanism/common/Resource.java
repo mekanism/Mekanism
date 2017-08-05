@@ -12,7 +12,7 @@ public enum Resource
 
 	private String name;
 
-	private Resource(String s)
+	Resource(String s)
 	{
 		name = s;
 	}

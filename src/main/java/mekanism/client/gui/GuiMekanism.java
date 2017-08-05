@@ -25,7 +25,7 @@ import org.lwjgl.input.Mouse;
 
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
-	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
+	public Set<GuiElement> guiElements = new HashSet<>();
 
 	private TileEntityContainerBlock tileEntity;
 

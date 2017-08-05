@@ -29,7 +29,7 @@ public class TileComponentChunkLoader implements ITileComponent
 	
 	public Ticket chunkTicket;
 	
-	public Set<ChunkPos> chunkSet = new HashSet<ChunkPos>();
+	public Set<ChunkPos> chunkSet = new HashSet<>();
 	
 	public Coord4D prevCoord;
 	

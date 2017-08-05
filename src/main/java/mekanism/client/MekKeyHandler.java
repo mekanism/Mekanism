@@ -15,8 +15,8 @@ public abstract class MekKeyHandler
 	/**
 	 * Pass an array of keybindings and a repeat flag for each one
 	 *
-	 * @param bindings
-	 * @param rep
+	 * @param bindings Bindings to set
+	 * @param rep Repeat flags for bindings
 	 */
 	public MekKeyHandler(KeyBinding[] bindings, boolean[] rep)
 	{
@@ -30,7 +30,7 @@ public abstract class MekKeyHandler
 	 * Register the keys into the system. You will do your own keyboard
 	 * management elsewhere. No events will fire if you use this method
 	 *
-	 * @param  bindings
+	 * @param bindings Bindings to set
 	 */
 	public MekKeyHandler(KeyBinding[] bindings)
 	{

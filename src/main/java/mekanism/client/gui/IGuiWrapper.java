@@ -7,13 +7,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public interface IGuiWrapper
 {
-	public void drawTexturedRect(int x, int y, int u, int v, int w, int h);
+	void drawTexturedRect(int x, int y, int u, int v, int w, int h);
 
-	public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h);
+	void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h);
 
-	public void displayTooltip(String s, int xAxis, int yAxis);
+	void displayTooltip(String s, int xAxis, int yAxis);
 
-	public void displayTooltips(List<String> list, int xAxis, int yAxis);
+	void displayTooltips(List<String> list, int xAxis, int yAxis);
 
-	public FontRenderer getFont();
+	FontRenderer getFont();
 }

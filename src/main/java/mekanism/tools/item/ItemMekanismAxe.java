@@ -7,7 +7,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

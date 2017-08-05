@@ -2,10 +2,8 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -56,14 +54,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, guiLocation));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, guiLocation));
 		guiElements.add(new GuiPowerBar(this, tileEntity, guiLocation, 159, 15));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, guiLocation));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, guiLocation));
 		guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 151, 75).with(SlotOverlay.POWER));
 		
 		ySize+=64;
@@ -256,7 +251,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(4);
 
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -270,7 +265,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 						{
 							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							
-							ArrayList data = new ArrayList();
+							ArrayList<Object> data = new ArrayList<>();
 							data.add(1);
 		
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -281,7 +276,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
-						ArrayList data = new ArrayList();
+						ArrayList<Object> data = new ArrayList<>();
 						data.add(2);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -291,7 +286,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
-						ArrayList data = new ArrayList();
+						ArrayList<Object> data = new ArrayList<>();
 						data.add(3);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -305,7 +300,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(0);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -315,7 +310,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(5);
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

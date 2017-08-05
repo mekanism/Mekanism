@@ -17,7 +17,7 @@ public final class StackUtils
 			return null;
 		}
 
-		List<ItemStack> ret = new ArrayList<ItemStack>();
+		List<ItemStack> ret = new ArrayList<>();
 
 		if(stack.getCount() == 1)
 		{
@@ -78,7 +78,7 @@ public final class StackUtils
 
 	public static List<ItemStack> even(ItemStack stack1, ItemStack stack2)
 	{
-		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+		ArrayList<ItemStack> ret = new ArrayList<>();
 
 		if(getSize(stack1) == getSize(stack2) || Math.abs(getSize(stack1)-getSize(stack2)) == 1)
 		{
@@ -168,7 +168,7 @@ public final class StackUtils
 	
 	public static List<ItemStack> getMergeRejects(NonNullList<ItemStack> orig, NonNullList<ItemStack> toAdd)
 	{
-		List<ItemStack> ret = new ArrayList<ItemStack>();
+		List<ItemStack> ret = new ArrayList<>();
 		
 		for(int i = 0; i < toAdd.size(); i++)
 		{

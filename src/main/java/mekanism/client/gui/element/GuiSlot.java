@@ -90,7 +90,7 @@ public class GuiSlot extends GuiElement
 		public int textureX;
 		public int textureY;
 
-		private SlotType(int w, int h, int x, int y)
+		SlotType(int w, int h, int x, int y)
 		{
 			width = w;
 			height = h;
@@ -115,7 +115,7 @@ public class GuiSlot extends GuiElement
 		public int textureX;
 		public int textureY;
 
-		private SlotOverlay(int w, int h, int x, int y)
+		SlotOverlay(int w, int h, int x, int y)
 		{
 			width = w;
 			height = h;

@@ -73,7 +73,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 		}
@@ -92,7 +92,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

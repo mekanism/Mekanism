@@ -5,14 +5,13 @@ import java.util.Set;
 
 import mekanism.api.util.BlockInfo;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class MekanismAPI
 {
 	//Add a BlockInfo value here if you don't want a certain block to be picked up by cardboard boxes
-	private static Set<BlockInfo> cardboardBoxIgnore = new HashSet<BlockInfo>();
+	private static Set<BlockInfo> cardboardBoxIgnore = new HashSet<>();
 	
 	/** Mekanism debug mode */
 	public static boolean debug = false;

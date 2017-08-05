@@ -28,26 +28,23 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
 			return null;
 		}
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				ItemStack stack = player.getHeldItem(message.currentHand);
-				
-				if(!stack.isEmpty() && stack.getItem() instanceof IItemNetwork)
-				{
-					IItemNetwork network = (IItemNetwork)stack.getItem();
-					
-					try {
-						network.handlePacketData(stack, message.storedBuffer);
-					} catch(Exception e) {
-						e.printStackTrace();
-					}
-					
-					message.storedBuffer.release();
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+            ItemStack stack = player.getHeldItem(message.currentHand);
+
+            if(!stack.isEmpty() && stack.getItem() instanceof IItemNetwork)
+            {
+                IItemNetwork network = (IItemNetwork)stack.getItem();
+
+                try {
+                    network.handlePacketData(stack, message.storedBuffer);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+                message.storedBuffer.release();
+            }
+        }, player);
 		
 		return null;
 	}

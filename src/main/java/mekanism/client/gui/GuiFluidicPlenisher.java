@@ -1,11 +1,7 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
-import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -22,7 +18,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -44,21 +39,12 @@ public class GuiFluidicPlenisher extends GuiMekanism
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 27, 50));
 		guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 142, 34).with(SlotOverlay.POWER));
 		guiElements.add(new GuiPowerBar(this, tileEntity, guiLocation, 164, 15));
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
-			@Override
-			public FluidTank getTank()
-			{
-				return tileEntity.fluidTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, guiLocation, 6, 13));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, guiLocation));
+		guiElements.add(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, guiLocation, 6, 13));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, guiLocation));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, guiLocation));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, guiLocation));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, guiLocation));

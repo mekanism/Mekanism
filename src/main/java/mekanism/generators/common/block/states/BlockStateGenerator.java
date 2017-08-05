@@ -1,13 +1,10 @@
 package mekanism.generators.common.block.states;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
-import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
@@ -55,7 +52,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty}, new IUnlistedProperty[] {});
 	}
 
-	public static enum GeneratorBlock
+	public enum GeneratorBlock
 	{
 		GENERATOR_BLOCK_1;
 
@@ -99,7 +96,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		}
 	}
 	
-	public static enum GeneratorType implements IStringSerializable, IBlockType
+	public enum GeneratorType implements IStringSerializable, IBlockType
 	{
 		HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true, Plane.HORIZONTAL, false),
 		SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true, Plane.HORIZONTAL, false),
@@ -125,7 +122,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 	
-		private GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate, boolean hasActiveTexture)
+		GeneratorType(GeneratorBlock block, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model, Predicate<EnumFacing> predicate, boolean hasActiveTexture)
 		{
 			blockType = block;
 			meta = i;
@@ -140,7 +137,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		
 		public static List<GeneratorType> getGeneratorsForConfig()
 		{
-			List<GeneratorType> ret = new ArrayList<GeneratorType>();
+			List<GeneratorType> ret = new ArrayList<>();
 
 			for(GeneratorType type : GeneratorType.values())
 			{

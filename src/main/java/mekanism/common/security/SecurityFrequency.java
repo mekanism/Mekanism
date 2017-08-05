@@ -12,7 +12,6 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class SecurityFrequency extends Frequency
@@ -29,7 +28,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super("Security", uuid);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 	}
 	
@@ -69,7 +68,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super.read(nbtTags);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 		
 		override = nbtTags.getBoolean("override");
@@ -87,7 +86,7 @@ public class SecurityFrequency extends Frequency
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		super.write(data);
 		
@@ -107,7 +106,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super.read(dataStream);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 		
 		override = dataStream.readBoolean();

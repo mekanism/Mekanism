@@ -2,11 +2,9 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -59,14 +57,11 @@ public class GuiDigitalMiner extends GuiMekanism
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 163, 23));
 		guiElements.add(new GuiVisualsTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.getPerTick());
-				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+		guiElements.add(new GuiEnergyInfo(() ->
+        {
+            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.getPerTick());
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 151, 5).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 143, 26));
@@ -116,14 +111,14 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			ArrayList<Object> data = new ArrayList<Object>();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(3);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 		}
 		else if(guibutton.id == 1)
 		{
-			ArrayList<Object> data = new ArrayList<Object>();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(4);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -308,7 +303,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<Object>();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(0);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -318,7 +313,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<Object>();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(1);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -328,7 +323,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<Object>();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(5);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -338,7 +333,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<Object>();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(9);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

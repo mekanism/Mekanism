@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -80,7 +79,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 			
@@ -170,7 +169,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

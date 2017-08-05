@@ -3,7 +3,6 @@ package mekanism.common.item;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
@@ -53,7 +52,7 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem
 
 		private String name;
 
-		private PlasticItem(String itemName)
+		PlasticItem(String itemName)
 		{
 			name = itemName;
 		}

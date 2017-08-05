@@ -17,7 +17,7 @@ public class BlockStateOre extends BlockStateContainer
 		super(block, typeProperty);
 	}
 
-	public static enum EnumOreType implements IStringSerializable
+	public enum EnumOreType implements IStringSerializable
 	{
 		OSMIUM,
 		COPPER,

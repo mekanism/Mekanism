@@ -34,7 +34,7 @@ public class ElectrolyticSeparatorRecipeWrapper extends BaseRecipeWrapper
 	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
-		List<String> currenttip = new ArrayList<String>();
+		List<String> currenttip = new ArrayList<>();
 		
 		if(mouseX >= 59-4 && mouseX <= 75-4 && mouseY >= 19-9 && mouseY <= 47-9)
 		{

@@ -38,7 +38,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 	
 	private Render<Entity> renderer = (Render<Entity>)Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
 	
-	private static HashMap<EnumFacing, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<EnumFacing, HashMap<Integer, DisplayInteger>>();
+	private static HashMap<EnumFacing, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<>();
 	
 	private static TextureAtlasSprite gunpowderIcon;
 	private static TextureAtlasSprite torchOffIcon;
@@ -163,7 +163,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 			cachedOverlays.get(side).put(mode, display);
 		}
 		else {
-			HashMap<Integer, DisplayInteger> map = new HashMap<Integer, DisplayInteger>();
+			HashMap<Integer, DisplayInteger> map = new HashMap<>();
 			map.put(mode, display);
 			cachedOverlays.put(side, map);
 		}
@@ -243,7 +243,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 		}
 
 		MekanismRenderer.renderObject(toReturn);
-		display.endList();
+		DisplayInteger.endList();
 
 		return display;
 	}
