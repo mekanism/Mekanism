@@ -929,22 +929,20 @@ public class Mekanism
 		if(event.getChunk() != null && !event.getWorld().isRemote)
 		{
 			Map copy = (Map)((HashMap)event.getChunk().getTileEntityMap()).clone();
-			 
-			for(Iterator iter = copy.values().iterator(); iter.hasNext();)
+
+			for (Object obj : copy.values())
 			{
-				Object obj = iter.next();
-	        	 
-				if(obj instanceof TileEntity)
+				if (obj instanceof TileEntity)
 				{
-					TileEntity tileEntity = (TileEntity)obj;
-	
-					if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
+					TileEntity tileEntity = (TileEntity) obj;
+
+					if (tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
 					{
-						((TileEntityElectricBlock)tileEntity).register();
+						((TileEntityElectricBlock) tileEntity).register();
 					}
-					else if(tileEntity instanceof IChunkLoadHandler)
+					else if (tileEntity instanceof IChunkLoadHandler)
 					{
-						((IChunkLoadHandler)tileEntity).onChunkLoad();
+						((IChunkLoadHandler) tileEntity).onChunkLoad();
 					}
 				}
 			}

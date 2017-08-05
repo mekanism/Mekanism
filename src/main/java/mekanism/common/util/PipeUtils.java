@@ -95,12 +95,10 @@ public final class PipeUtils
 		
 		List<IFluidHandler> availableAcceptors = new ArrayList<IFluidHandler>();
 		IFluidHandler[] possibleAcceptors = getConnectedAcceptors(from);
-		
-		for(int i = 0; i < possibleAcceptors.length; i++)
+
+		for (IFluidHandler handler : possibleAcceptors)
 		{
-			IFluidHandler handler = possibleAcceptors[i];
-			
-			if(handler != null && canFill(handler, stack))
+			if (handler != null && canFill(handler, stack))
 			{
 				availableAcceptors.add(handler);
 			}

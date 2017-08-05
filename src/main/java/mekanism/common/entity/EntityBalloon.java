@@ -151,11 +151,25 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 			if(ticksExisted == 1)
 			{
-				dataManager.set(IS_LATCHED, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0)));
-				dataManager.set(LATCHED_X, new Integer(latched != null ? latched.x : 0));
-				dataManager.set(LATCHED_Y, new Integer(latched != null ? latched.y : 0));
-				dataManager.set(LATCHED_Z, new Integer(latched != null ? latched.z : 0));
-				dataManager.set(LATCHED_ID, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1));
+				byte isLatched;
+				if (latched != null)
+				{
+					isLatched = (byte) 1;
+				}
+				else if (latchedEntity != null)
+				{
+					isLatched = (byte) 2;
+				}
+				else
+				{
+					isLatched = (byte) 0;
+				}
+
+				dataManager.set(IS_LATCHED, isLatched);
+				dataManager.set(LATCHED_X, latched != null ? latched.x : 0);
+				dataManager.set(LATCHED_Y, latched != null ? latched.y : 0);
+				dataManager.set(LATCHED_Z, latched != null ? latched.z : 0);
+				dataManager.set(LATCHED_ID, latchedEntity != null ? latchedEntity.getEntityId() : -1);
 			}
 		}
 

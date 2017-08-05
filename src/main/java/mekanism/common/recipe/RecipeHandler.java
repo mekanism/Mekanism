@@ -73,12 +73,12 @@ public final class RecipeHandler
 	public static void removeRecipe(Recipe recipeMap, MachineRecipe recipe)
 	{
 		List<MachineInput> toRemove = new ArrayList<>();
-		
-		for(Iterator iter = recipeMap.get().keySet().iterator(); iter.hasNext();)
+
+		for (Object o : recipeMap.get().keySet())
 		{
-			MachineInput iterInput = (MachineInput)iter.next();
-			
-			if(iterInput.testEquality(recipe.getInput()))
+			MachineInput iterInput = (MachineInput) o;
+
+			if (iterInput.testEquality(recipe.getInput()))
 			{
 				toRemove.add(iterInput);
 			}
