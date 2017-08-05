@@ -6,17 +6,17 @@
   },
   "pattern": [
     " P ",
-    "PDP",
+    "PSP",
     " P "
   ],
   "type": "mekanism:ore_shaped",
   "key": {
     "P": {
-      "item": "mekanism:slickplasticblock",
-      "data": 32767
+      "item": "mekanism:plasticblock",
+      "data": 10
     },
-    "D": {
-      "ore": "dyeLime",
+    "S": {
+      "ore": "slimeball",
       "type": "forge:ore_dict"
     }
   }

@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:roadplasticblock",
+    "data": 3,
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:roadplasticblock",
+      "data": 32767
+    },
+    "D": {
+      "ore": "dyeBrown",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:plasticfence",
+    "data": 7,
+    "count": 3
+  },
+  "pattern": [
+    "BSB",
+    "BSB"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "mekanism:plasticblock",
+      "data": 7
+    },
+    "S": {
+      "item": "mekanism:polyethene",
+      "data": 3
+    }
+  }
+}

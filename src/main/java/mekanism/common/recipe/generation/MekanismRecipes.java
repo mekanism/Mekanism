@@ -208,28 +208,46 @@ public class MekanismRecipes {
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Polyethene, 1, 1), "PP", "PP", 'P', new ItemStack(MekanismItems.Polyethene, 1, 0));
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Polyethene, 1, 2), "PPP", "P P", "PPP", 'P', new ItemStack(MekanismItems.Polyethene, 1, 0));
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Polyethene, 1, 3), "R", "R", 'R', new ItemStack(MekanismItems.Polyethene, 1, 1));
+
+        //Creation of plastic block and glow panel with colors
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 15), "SSS", "S S", "SSS", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2));
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPanel, 2, 15), "PSP", "S S", "GSG", 'P', "paneGlass", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2), 'G', "dustGlowstone");
-        recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticFence, 3, 15), "BSB", "BSB", 'B', new ItemStack(MekanismBlocks.PlasticBlock, 1, 15), 'S', new ItemStack(MekanismItems.Polyethene, 1, 3));
-
         for (int i = 0; i < EnumColor.DYES.length - 1; i++) {
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i), "SSS", "SDS", "SSS", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2), 'D', "dye" + EnumColor.DYES[i].dyeName);
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPanel, 2, i), "PSP", "SDS", "GSG", 'P', "paneGlass", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2), 'D', "dye" + EnumColor.DYES[i].dyeName, 'G', "dustGlowstone");
         }
 
         for (int i = 0; i < EnumColor.DYES.length; i++) {
-            recipeGenerator.addShapelessRecipe(new ItemStack(MekanismItems.Balloon, 2, i), Items.LEATHER, Items.STRING, "dye" + EnumColor.DYES[i].dyeName);
+            /*
+             * Balloon
+             * Plastic block
+             * Slick
+             * Glow
+             * Reinforced
+             * Road
+             * Panel
+             * Fence
+             */
 
+            //Creation
+            recipeGenerator.addShapelessRecipe(new ItemStack(MekanismItems.Balloon, 2, i), Items.LEATHER, Items.STRING, "dye" + EnumColor.DYES[i].dyeName);
+            //Plastic block creation is separate
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i), " P ", "PSP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'S', "slimeball");
+            recipeGenerator.addShapelessRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 3, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.GLOWSTONE_DUST));
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), " P ", "POP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'O', "dustOsmium");
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 3, i), "SSS", "PPP", "SSS", 'S', Blocks.SAND, 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i));
+            //Panel creation is separate
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticFence, 3, i), "BSB", "BSB", 'B', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'S', new ItemStack(MekanismItems.Polyethene, 1, 3));
+
+            //Recolor
             recipeGenerator.addShapelessRecipe(new ItemStack(MekanismItems.Balloon, 1, i), new ItemStack(MekanismItems.Balloon, 1, OreDictionary.WILDCARD_VALUE), "dye" + EnumColor.DYES[i].dyeName);
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.RoadPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
             recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.GlowPanel, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPanel, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
-
-            recipeGenerator.addShapelessRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 3, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.GLOWSTONE_DUST));
-            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), " P ", "POP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'O', "dustOsmium");
-            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 3, i), "SSS", "PPP", "SSS", 'S', Blocks.SAND, 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i));
+            recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.PlasticFence, 4, i), " P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticFence, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName);
         }
     }
 }

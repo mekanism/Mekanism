@@ -6,17 +6,17 @@
   },
   "pattern": [
     " P ",
-    "POP",
+    "PDP",
     " P "
   ],
   "type": "mekanism:ore_shaped",
   "key": {
     "P": {
-      "item": "mekanism:plasticblock",
-      "data": 0
+      "item": "mekanism:reinforcedplasticblock",
+      "data": 32767
     },
-    "O": {
-      "ore": "dustOsmium",
+    "D": {
+      "ore": "dyeBlack",
       "type": "forge:ore_dict"
     }
   }

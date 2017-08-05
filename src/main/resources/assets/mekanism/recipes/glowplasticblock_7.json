@@ -2,22 +2,24 @@
   "result": {
     "item": "mekanism:glowplasticblock",
     "data": 7,
-    "count": 4
+    "count": 3
   },
-  "pattern": [
-    " P ",
-    "PDP",
-    " P "
-  ],
-  "type": "mekanism:ore_shaped",
-  "key": {
-    "P": {
-      "item": "mekanism:glowplasticblock",
-      "data": 32767
+  "ingredients": [
+    {
+      "item": "mekanism:plasticblock",
+      "data": 7
     },
-    "D": {
-      "ore": "dyeLightGray",
-      "type": "forge:ore_dict"
+    {
+      "item": "mekanism:plasticblock",
+      "data": 7
+    },
+    {
+      "item": "mekanism:plasticblock",
+      "data": 7
+    },
+    {
+      "item": "minecraft:glowstone_dust"
     }
-  }
+  ],
+  "type": "minecraft:crafting_shapeless"
 }
