@@ -25,7 +25,7 @@ public interface ISideConfiguration
 
 	/**
 	 * Gets this machine's ejector.
-	 * @return
+	 * @return this machine's ejector
 	 */
     TileComponentEjector getEjector();
 }

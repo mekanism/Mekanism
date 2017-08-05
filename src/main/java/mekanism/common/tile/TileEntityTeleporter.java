@@ -302,11 +302,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	}
 
 	/**
-	 * 1: yes
-	 * 2: no frame
-	 * 3: no link found
-	 * 4: not enough electricity
-	 * @return
+	 * @return 1: yes, 2: no frame, 3: no link found, 4: not enough electricity
 	 */
 	public byte canTeleport()
 	{

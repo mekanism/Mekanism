@@ -39,7 +39,7 @@ public final class CableUtils
 	/**
 	 * Gets the adjacent connections to a TileEntity, from a subset of its sides.
 	 * @param tileEntity - center TileEntity
-	 * @param sides - set of sides to check
+	 * @param sideFunction - set of sides to check
 	 * @return boolean[] of adjacent connections
 	 */
 	public static boolean[] getConnections(TileEntity tileEntity, Function<EnumFacing, Boolean> sideFunction)

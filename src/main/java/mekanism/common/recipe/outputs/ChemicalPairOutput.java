@@ -38,8 +38,7 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput>
 	}
 
 	/**
-	 * If this is a valid ChemicalPair
-	 * @return
+	 * @return True if this is a valid ChemicalPair
 	 */
 	public boolean isValid()
 	{

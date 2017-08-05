@@ -11,7 +11,7 @@ public interface ISustainedTank
 {
 	/**
 	 * Sets the tank tag list to a new value.
-	 * @param nbtTags - NBTTagList value to set
+	 * @param fluidStack - Fluidstack to apply to
 	 * @param data - ItemStack parameter if using on item
 	 */
     void setFluidStack(FluidStack fluidStack, Object... data);

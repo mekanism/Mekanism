@@ -40,11 +40,8 @@ public class Version
 	}
 
 	/**
-	 * 1: greater than
-	 * 0: equal to
-	 * -1: less than
-	 * @param version
-	 * @return
+	 * @param version Version to check against
+	 * @return 1: greater than, 0: equal to, -1: less than
 	 */
 	public byte comparedState(Version version)
 	{

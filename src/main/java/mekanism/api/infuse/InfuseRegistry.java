@@ -20,7 +20,7 @@ public class InfuseRegistry
 
 	/**
 	 * Registers an InfuseType into the registry. Call this in PreInit!
-	 * @param infuse
+	 * @param infuse InfuseType to register
 	 */
 	public static void registerInfuseType(InfuseType infuse)
 	{

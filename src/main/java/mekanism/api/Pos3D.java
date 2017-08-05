@@ -102,7 +102,7 @@ public class Pos3D extends Vec3d
 
 	/**
 	 * Creates a new Pos3D from the motion of an entity.
-	 * @param entity
+	 * @param entity Entitiy to get the motion from
 	 * @return Pos3D representing the motion of the given entity
 	 */
 	public static Pos3D fromMotion(Entity entity)

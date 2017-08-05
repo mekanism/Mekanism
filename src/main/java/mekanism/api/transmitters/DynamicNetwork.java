@@ -307,7 +307,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
     /**
      * Override this if things can have variable capacity along the network.
-     * @return An 'average' value of capacity. Calculate it how you will.
+     * An 'average' value of capacity. Calculate it how you will.
      */
 	protected synchronized void updateMeanCapacity() 
 	{

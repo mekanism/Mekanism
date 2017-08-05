@@ -11,15 +11,14 @@ public interface IGasItem
 {
 	/**
 	 * Gets the rate of transfer this item can handle.
-	 * @return
+	 * @return The transfer rate of what the item can handle.
 	 */
     int getRate(ItemStack itemstack);
 
 	/**
 	 * Adds a defined amount of a certain gas to an item.
 	 * @param itemstack - the itemstack to add gas to
-	 * @param type - the type of gas to add
-	 * @param amount - the amount of gas to add
+	 * @param stack - the type and amount of gas to add
 	 * @return the gas that was accepted by the item
 	 */
     int addGas(ItemStack itemstack, GasStack stack);
@@ -27,7 +26,6 @@ public interface IGasItem
 	/**
 	 * Removes the defined amount of a certain gas from the item.
 	 * @param itemstack - the itemstack to remove gas from
-	 * @param type - the type of gas to remove
 	 * @param amount - the amount of gas to remove
 	 * @return the gas that was removed by the item
 	 */
@@ -51,24 +49,21 @@ public interface IGasItem
 
 	/**
 	 * Get the gas of a declared type.
-	 * @param type - type of gas
-	 * @param data - ItemStack parameter if necessary
+	 * @param itemstack - ItemStack parameter
 	 * @return gas stored
 	 */
     GasStack getGas(ItemStack itemstack);
 
 	/**
 	 * Set the gas of a declared type to a new amount;
-	 * @param type - type of gas
-	 * @param data - ItemStack parameter if necessary
-	 * @param amount - amount to store
+	 * @param itemstack - ItemStack parameter
+	 * @param stack - the type and amount of gas to add
 	 */
     void setGas(ItemStack itemstack, GasStack stack);
 
 	/**
 	 * Gets the maximum amount of gas this tile entity can store.
-	 * @param type - type of gas
-	 * @param data - ItemStack parameter if necessary
+	 * @param itemstack - ItemStack parameter
 	 * @return maximum gas
 	 */
     int getMaxGas(ItemStack itemstack);

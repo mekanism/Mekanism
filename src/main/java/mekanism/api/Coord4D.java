@@ -299,10 +299,9 @@ public class Coord4D
 	}
 
 	/**
-	 * Whether or not the defined side of this Coord4D is visible.
 	 * @param side - side to check
 	 * @param world - world this Coord4D is in
-	 * @return
+	 * @return Whether or not the defined side of this Coord4D is visible.
 	 */
 	public boolean sideVisible(EnumFacing side, IBlockAccess world)
 	{

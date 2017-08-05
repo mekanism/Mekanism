@@ -374,8 +374,8 @@ public final class MekanismUtils
 
 	/**
 	 * Checks if a machine is in it's active state.
-	 * @param world
-	 * @param pos
+	 * @param world World of the machine to check
+	 * @param pos The position of the machine
 	 * @return if machine is active
 	 */
 	public static boolean isActive(IBlockAccess world, BlockPos pos)
@@ -395,7 +395,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the left side of a certain orientation.
-	 * @param orientation
+	 * @param orientation Current orientation of the machine
 	 * @return left side
 	 */
 	public static EnumFacing getLeft(EnumFacing orientation)
@@ -405,7 +405,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the right side of a certain orientation.
-	 * @param orientation
+	 * @param orientation Current orientation of the machine
 	 * @return right side
 	 */
 	public static EnumFacing getRight(EnumFacing orientation)
@@ -415,7 +415,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the opposite side of a certain orientation.
-	 * @param orientation
+	 * @param orientation Current orientation of the machine
 	 * @return opposite side
 	 */
 	public static EnumFacing getBack(EnumFacing orientation)
@@ -811,7 +811,7 @@ public final class MekanismUtils
 	/**
 	 * Updates a block's light value and marks it for a render update.
 	 * @param world - world the block is in
-	 * @param pos
+	 * @param pos Position of the block
 	 */
 	public static void updateBlock(World world, BlockPos pos)
 	{

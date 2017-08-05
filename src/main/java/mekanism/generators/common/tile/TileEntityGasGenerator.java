@@ -199,7 +199,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	/**
 	 * Gets the scaled gas level for the GUI.
 	 * @param i - multiplier
-	 * @return
+	 * @return Scaled gas level
 	 */
 	public int getScaledGasLevel(int i)
 	{

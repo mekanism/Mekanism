@@ -226,7 +226,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	/**
 	 * Gets the scaled fuel level for the GUI.
 	 * @param i - multiplier
-	 * @return
+	 * @return Scaled fuel level
 	 */
 	public int getScaledFuelLevel(int i)
 	{
