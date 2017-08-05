@@ -757,65 +757,81 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.Polyethene, 1, 3),
 			"R", "R", Character.valueOf('R'), new ItemStack(MekanismItems.Polyethene, 1, 1)
 		));
+
+		//Creation of plastic block and glow panel with colors
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 15),
-			"SSS", "S S", "SSS", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2)
+				"SSS", "S S", "SSS", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2)
 		));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPanel, 2, 15),
-			"PSP", "S S", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2), Character.valueOf('G'), "dustGlowstone"
+				"PSP", "S S", "GSG", 'P', "paneGlass", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2), 'G', "dustGlowstone"
 		));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticFence, 3, 15),
-			"BSB", "BSB", Character.valueOf('B'), new ItemStack(MekanismBlocks.PlasticBlock, 1, 15), Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 3)
-		));
-
-		for(int i = 0; i < EnumColor.DYES.length-1; i++)
-		{
+		for (int i = 0; i < EnumColor.DYES.length - 1; i++) {
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i),
-				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
+					"SSS", "SDS", "SSS", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2), 'D', "dye" + EnumColor.DYES[i].dyeName
 			));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPanel, 2, i),
-				"PSP", "SDS", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName, Character.valueOf('G'), "dustGlowstone"
+					"PSP", "SDS", "GSG", 'P', "paneGlass", 'S', new ItemStack(MekanismItems.Polyethene, 1, 2), 'D', "dye" + EnumColor.DYES[i].dyeName, 'G', "dustGlowstone"
 			));
 		}
 
-		for(int i = 0; i < EnumColor.DYES.length; i++)
-        {
+		for (int i = 0; i < EnumColor.DYES.length; i++) {
+            /*
+             * Balloon
+             * Plastic block
+             * Slick
+             * Glow
+             * Reinforced
+             * Road
+             * Panel
+             * Fence
+             */
+
+			//Creation
 			CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismItems.Balloon, 2, i),
-				Items.LEATHER, Items.STRING, "dye" + EnumColor.DYES[i].dyeName
+					Items.LEATHER, Items.STRING, "dye" + EnumColor.DYES[i].dyeName
 			));
-
-			for(int j = 0; j < EnumColor.DYES.length; j++)
-			{
-				CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismItems.Balloon, 1, i),
-					new ItemStack(MekanismItems.Balloon, 1, j), "dye" + EnumColor.DYES[i].dyeName
-				));
-
-				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i),
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.PlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
-				));
-				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i),
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
-				));
-				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 4, i),
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.GlowPlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
-				));
-				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i),
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
-				));
-				CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPanel, 4, i),
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.GlowPanel, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
-				));
-			}
-
-			CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 3, i),
-				new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.GLOWSTONE_DUST)
+			//Plastic block creation is separate
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i),
+					" P ", "PSP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'S', "slimeball"
 			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 3, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.GLOWSTONE_DUST)));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i),
-				" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), Character.valueOf('O'), "dustOsmium"
+					" P ", "POP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'O', "dustOsmium"
 			));
 			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 3, i),
-				"SSS", "PPP", "SSS", Character.valueOf('S'), Blocks.SAND, Character.valueOf('P'), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i)
+					"SSS", "PPP", "SSS", 'S', Blocks.SAND, 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i)
 			));
-        }
+			//Panel creation is separate
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticFence, 3, i),
+					"BSB", "BSB", 'B', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'S', new ItemStack(MekanismItems.Polyethene, 1, 3)
+			));
+
+			//Recolor
+			CraftingManager.getInstance().getRecipeList().add(new ShapelessMekanismRecipe(new ItemStack(MekanismItems.Balloon, 1, i),
+					new ItemStack(MekanismItems.Balloon, 1, OreDictionary.WILDCARD_VALUE), "dye" + EnumColor.DYES[i].dyeName
+			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName
+			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName
+			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 4, i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName
+			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName
+			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 4, i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.RoadPlasticBlock, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName
+			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.GlowPanel, 4, i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPanel, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName
+			));
+			CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.PlasticFence, 4, i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticFence, 1, OreDictionary.WILDCARD_VALUE), 'D', "dye" + EnumColor.DYES[i].dyeName
+			));
+		}
 	
 		//Furnace Recipes
 		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismBlocks.OreBlock, 1, 0), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
