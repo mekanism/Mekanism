@@ -151,7 +151,7 @@ public class MekanismGenerators implements IModule
 	}
 	
 	@Override
-	public void writeConfig(ByteBuf dataStream) throws IOException
+	public void writeConfig(ByteBuf dataStream)
 	{
 		dataStream.writeDouble(generators.advancedSolarGeneration);
 		dataStream.writeDouble(generators.bioGeneration);
@@ -180,7 +180,7 @@ public class MekanismGenerators implements IModule
 	}
 
 	@Override
-	public void readConfig(ByteBuf dataStream) throws IOException
+	public void readConfig(ByteBuf dataStream)
 	{
 		generators.advancedSolarGeneration = dataStream.readDouble();
 		generators.bioGeneration = dataStream.readDouble();

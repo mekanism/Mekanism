@@ -374,13 +374,13 @@ public class MekanismTools implements IModule
 	}
 
 	@Override
-	public void writeConfig(ByteBuf dataStream) throws IOException
+	public void writeConfig(ByteBuf dataStream)
 	{
 		dataStream.writeDouble(tools.armorSpawnRate);
 	}
 
 	@Override
-	public void readConfig(ByteBuf dataStream) throws IOException
+	public void readConfig(ByteBuf dataStream)
 	{
 		tools.armorSpawnRate = dataStream.readDouble();
 	}
