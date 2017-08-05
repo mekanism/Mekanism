@@ -72,7 +72,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 			}
 		}
 		
-		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 	}
 
 	public static double calculateEnergyCost(Entity entity, Coord4D coords)

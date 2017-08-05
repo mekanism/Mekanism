@@ -54,7 +54,7 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 
                     for(EntityPlayer iterPlayer : sorter.playersUsing)
                     {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)iterPlayer);
                     }
                 }
                 else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
@@ -77,7 +77,7 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 
                     for(EntityPlayer iterPlayer : miner.playersUsing)
                     {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)iterPlayer);
                     }
                 }
                 else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
@@ -100,7 +100,7 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 
                     for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
                     {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)iterPlayer);
                     }
                 }
             }
@@ -177,7 +177,7 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 	
 			dataStream.writeBoolean(delete);
 	
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 	
 			if(type == 0)
 			{

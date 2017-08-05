@@ -81,10 +81,10 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 			
 			((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 		
-			return new ActionResult(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
 		
-		return new ActionResult(EnumActionResult.PASS, stack);
+		return new ActionResult<>(EnumActionResult.PASS, stack);
 	}
 	
 	@Override

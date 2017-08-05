@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderTurbineRotor extends TileEntitySpecialRenderer
+public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurbineRotor>
 {
 	public static boolean internalRender = false;
 	
@@ -24,9 +24,9 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 	private static final float BASE_SPEED = 512F;
 
 	@Override
-	public void render(TileEntity tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
+	public void render(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
-		renderAModelAt((TileEntityTurbineRotor)tileEntity, x, y, z, partialTick);
+		renderAModelAt(tileEntity, x, y, z, partialTick);
 	}
 
 	private void renderAModelAt(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick)

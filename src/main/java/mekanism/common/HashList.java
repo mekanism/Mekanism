@@ -101,7 +101,7 @@ public class HashList<T> implements Iterable<T>
 	@Override
 	public HashList<T> clone()
 	{
-		return new HashList((ArrayList)list.clone());
+		return new HashList<>(new ArrayList<>(list));
 	}
 	
 	public void swap(int source, int target)

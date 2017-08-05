@@ -257,7 +257,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public void writeFrequencies(ArrayList data)
+	public void writeFrequencies(ArrayList<Object> data)
 	{
 		data.add(frequencies.size());
 		

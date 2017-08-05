@@ -160,7 +160,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 	
 				for(EntityPlayer player : tile.playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)player);
 				}
 			}
 		}

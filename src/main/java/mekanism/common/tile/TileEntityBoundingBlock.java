@@ -35,7 +35,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		{
 			mainPos = pos;
 
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
 	}
 
@@ -71,7 +71,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 				}
 
 				prevPower = power;
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			}
 		}
 	}

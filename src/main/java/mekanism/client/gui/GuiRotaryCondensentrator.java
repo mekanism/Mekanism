@@ -153,7 +153,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 			if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
 			{
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(0);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

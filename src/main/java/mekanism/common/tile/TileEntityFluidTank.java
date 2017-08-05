@@ -97,7 +97,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		tier = FluidTankTier.values()[upgradeTier.ordinal()];
 		fluidTank.setCapacity(tier.storage);
 		
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		markDirty();
 		
 		return true;
@@ -182,7 +182,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			if(needsPacket)
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50));
 			}
 			
 			needsPacket = false;

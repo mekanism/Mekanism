@@ -95,7 +95,7 @@ public class GuiGasTank extends GuiMekanism
 
 		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

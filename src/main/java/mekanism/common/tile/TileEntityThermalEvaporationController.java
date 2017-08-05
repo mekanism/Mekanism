@@ -197,7 +197,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 				
 				if(structured != clientStructured)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 					clientStructured = structured;
 				}
 				

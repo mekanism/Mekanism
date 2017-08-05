@@ -67,7 +67,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
 				}
 			}
 			
@@ -289,7 +289,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		return data;
 	}
 
-	public ArrayList getGenericPacket(ArrayList<Object> data)
+	public ArrayList<Object> getGenericPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -302,7 +302,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 	}
 
-	public ArrayList getFilterPacket(ArrayList<Object> data)
+	public ArrayList<Object> getFilterPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

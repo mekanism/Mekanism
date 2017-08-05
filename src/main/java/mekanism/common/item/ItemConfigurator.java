@@ -110,7 +110,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									if(config instanceof TileEntityBasicBlock)
 									{
 										TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-										Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+										Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 									}
 								}
 								else {

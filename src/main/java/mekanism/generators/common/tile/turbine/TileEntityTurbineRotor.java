@@ -53,7 +53,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		}
 		
 		buildRotors();
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 	}
 	
 	private void buildRotors()
@@ -117,7 +117,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 				rotor.hasComplex = false;
 			}
 			
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rotor.getNetworkedData(new ArrayList())), new Range4D(coord));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, rotor.getNetworkedData(new ArrayList<>())), new Range4D(coord));
 		}
 	}
 	
@@ -151,7 +151,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		
 		if(getHousedBlades() != prev)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
 	}
 	
@@ -223,7 +223,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

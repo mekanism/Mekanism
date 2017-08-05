@@ -77,7 +77,7 @@ public class GuiSortingTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84)
 			{
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(0);
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

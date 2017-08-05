@@ -645,9 +645,8 @@ public class Mekanism
 		//Load cached furnace recipes
 		Recipe.ENERGIZED_SMELTER.get().clear();
 		
-		for(Object obj : FurnaceRecipes.instance().getSmeltingList().entrySet())
+		for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
 		{
-			Map.Entry<ItemStack, ItemStack> entry = (Map.Entry<ItemStack, ItemStack>)obj;
 			SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
 			Recipe.ENERGIZED_SMELTER.put(recipe);
 		}

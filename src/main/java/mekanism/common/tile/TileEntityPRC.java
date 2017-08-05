@@ -311,7 +311,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<PressurizedInput, PressurizedRecipe> getRecipes()
 	{
 		return null;
 	}

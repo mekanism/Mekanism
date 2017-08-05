@@ -8,6 +8,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.block.Block;
@@ -23,7 +24,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<Combin
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<AdvancedMachineInput, CombinerRecipe> getRecipes()
 	{
 		return Recipe.COMBINER.get();
 	}

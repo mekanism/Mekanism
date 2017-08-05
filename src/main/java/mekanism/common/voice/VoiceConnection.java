@@ -48,7 +48,7 @@ public class VoiceConnection extends Thread
 				while(username == null && retryCount <= 100)
 				{
 					try {
-						List l = Collections.synchronizedList((List)((ArrayList)server.getPlayerList().getPlayers()).clone());
+						List l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
 						for(Object obj : l)
 						{

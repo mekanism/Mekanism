@@ -169,7 +169,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(toUse);
 
@@ -192,7 +192,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(1);
 			data.add(toUse);
 
@@ -208,7 +208,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		{
 			int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
 
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(2);
 			data.add(toUse);
 

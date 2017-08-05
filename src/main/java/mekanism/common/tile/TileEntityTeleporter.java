@@ -145,7 +145,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(shouldRender != prevShouldRender)
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(40D));
 			}
 
 			prevShouldRender = shouldRender;
@@ -263,12 +263,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		List<UUID> list = new ArrayList<>();
 		
-		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, teleportBounds))
+		for(Entity e : world.getEntitiesWithinAABB(Entity.class, teleportBounds))
 		{
 			list.add(e.getPersistentID());
 		}
-		
-		Set<UUID> teleportCopy = (Set<UUID>)((HashSet<UUID>)didTeleport).clone();
+
+		Set<UUID> teleportCopy = new HashSet<>(didTeleport);
 
 		for(UUID id : teleportCopy)
 		{

@@ -121,7 +121,7 @@ public class GuiResistiveHeater extends GuiMekanism
 		{
 			int toUse = Integer.parseInt(energyUsageField.getText());
 
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

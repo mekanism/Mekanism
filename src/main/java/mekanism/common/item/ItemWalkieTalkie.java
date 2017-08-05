@@ -60,10 +60,10 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 		{
 			setOn(itemStack, !getOn(itemStack));
 			
-			return new ActionResult(EnumActionResult.SUCCESS, itemStack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 		}
 
-		return new ActionResult(EnumActionResult.PASS, itemStack);
+		return new ActionResult<>(EnumActionResult.PASS, itemStack);
 	}
 	
 	@Override

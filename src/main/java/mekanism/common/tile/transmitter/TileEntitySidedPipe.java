@@ -106,7 +106,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			
 			if(sendDesc)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 				sendDesc = false;
 			}
 		}

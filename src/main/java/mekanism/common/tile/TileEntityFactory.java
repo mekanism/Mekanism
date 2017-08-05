@@ -230,7 +230,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		factory.upgraded = true;
 		
 		factory.markDirty();
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(factory)));
 		
 		return true;
 	}

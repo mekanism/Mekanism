@@ -134,7 +134,7 @@ public class TransmitterNetworkRegistry
 
 	public void assignOrphans()
 	{
-		orphanTransmitters = (HashMap<Coord4D, IGridTransmitter>)newOrphanTransmitters.clone();
+		orphanTransmitters = new HashMap<>(newOrphanTransmitters);
 		newOrphanTransmitters.clear();
 		
 		if(MekanismAPI.debug && !orphanTransmitters.isEmpty())
@@ -142,7 +142,7 @@ public class TransmitterNetworkRegistry
 			logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
 		}
 		
-		for(IGridTransmitter orphanTransmitter : ((Map<Coord4D, IGridTransmitter>)orphanTransmitters.clone()).values())
+		for(IGridTransmitter orphanTransmitter : (new HashMap<>(orphanTransmitters)).values())
 		{
 			DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
 			

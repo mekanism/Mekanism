@@ -86,7 +86,7 @@ public class SecurityFrequency extends Frequency
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		super.write(data);
 		

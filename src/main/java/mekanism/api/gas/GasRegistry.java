@@ -75,7 +75,7 @@ public class GasRegistry
 	 */
 	public static List<Gas> getRegisteredGasses()
 	{
-		return (List<Gas>)registeredGasses.clone();
+		return new ArrayList<>(registeredGasses);
 	}
 
 	/**

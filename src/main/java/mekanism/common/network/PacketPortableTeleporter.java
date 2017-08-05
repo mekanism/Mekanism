@@ -304,7 +304,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 				
 				buffer.writeByte(status);
 				
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(publicCache.size());
 				
 				for(Frequency freq : publicCache)

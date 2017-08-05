@@ -126,7 +126,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

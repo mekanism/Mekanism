@@ -199,7 +199,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(bioFuelSlot.fluidStored);

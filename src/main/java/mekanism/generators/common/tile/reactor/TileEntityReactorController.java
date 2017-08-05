@@ -115,7 +115,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			
 			if(!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50D));
 				clientBurning = getReactor().isBurning();
 				clientTemp = getReactor().getPlasmaTemp();
 			}
@@ -263,7 +263,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 					MekanismUtils.updateBlock(world, getPos());
 				}
 				
-				((FusionReactor)getReactor()).formed = true;
+				getReactor().formed = true;
 				getReactor().setPlasmaTemp(dataStream.readDouble());
 				getReactor().setCaseTemp(dataStream.readDouble());
 				getReactor().setInjectionRate(dataStream.readInt());

@@ -178,11 +178,11 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 
 		if(!playerIn.capabilities.isCreativeMode && !flag)
 		{
-			return !flag ? new ActionResult(EnumActionResult.FAIL, itemStackIn) : new ActionResult(EnumActionResult.PASS, itemStackIn);
+			return !flag ? new ActionResult<>(EnumActionResult.FAIL, itemStackIn) : new ActionResult<>(EnumActionResult.PASS, itemStackIn);
 		}
 		else {
 			playerIn.setActiveHand(hand);
-			return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
 		}
 	}
 

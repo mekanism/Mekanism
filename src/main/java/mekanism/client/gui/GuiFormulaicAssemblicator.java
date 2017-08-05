@@ -251,7 +251,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(4);
 
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -265,7 +265,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 						{
 							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							
-							ArrayList data = new ArrayList();
+							ArrayList<Object> data = new ArrayList<>();
 							data.add(1);
 		
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -276,7 +276,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
-						ArrayList data = new ArrayList();
+						ArrayList<Object> data = new ArrayList<>();
 						data.add(2);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -286,7 +286,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
-						ArrayList data = new ArrayList();
+						ArrayList<Object> data = new ArrayList<>();
 						data.add(3);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -300,7 +300,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(0);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -310,7 +310,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 					
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(5);
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

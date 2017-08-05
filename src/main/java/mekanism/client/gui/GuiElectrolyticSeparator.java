@@ -84,7 +84,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 
 		if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add((byte)0);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -92,7 +92,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 		}
 		else if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add((byte)1);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

@@ -205,7 +205,7 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(tileEntity != null)
 		{
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(freq);
 			data.add(!privateMode);
@@ -387,7 +387,7 @@ public class GuiTeleporter extends GuiMekanism
 				
 				if(tileEntity != null)
 				{
-					ArrayList data = new ArrayList();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(1);
 					data.add(freq.name);
 					data.add(freq.publicFreq);

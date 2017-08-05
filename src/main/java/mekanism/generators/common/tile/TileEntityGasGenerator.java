@@ -258,7 +258,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

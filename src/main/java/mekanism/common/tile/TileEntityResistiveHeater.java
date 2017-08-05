@@ -118,7 +118,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 			
 			if(packet)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			}
 		}
 	}
@@ -201,7 +201,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		

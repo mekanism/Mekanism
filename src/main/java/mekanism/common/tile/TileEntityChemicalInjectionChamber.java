@@ -13,6 +13,7 @@ import mekanism.common.SideData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.GasUtils;
@@ -36,7 +37,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<AdvancedMachineInput, InjectionRecipe> getRecipes()
 	{
 		return Recipe.CHEMICAL_INJECTION_CHAMBER.get();
 	}

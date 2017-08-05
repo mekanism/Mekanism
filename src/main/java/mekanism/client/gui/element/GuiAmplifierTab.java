@@ -78,7 +78,7 @@ public class GuiAmplifierTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 			{
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(3);
 				
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

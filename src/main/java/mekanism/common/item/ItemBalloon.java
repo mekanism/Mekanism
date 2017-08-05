@@ -95,7 +95,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 			itemstack.shrink(1);
 		}
 
-		return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 	}
 
 	@Override

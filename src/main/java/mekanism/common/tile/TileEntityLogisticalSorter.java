@@ -168,7 +168,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -401,7 +401,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		return data;
 	}
 
-	public ArrayList getGenericPacket(ArrayList<Object> data)
+	public ArrayList<Object> getGenericPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -425,7 +425,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	}
 
-	public ArrayList getFilterPacket(ArrayList<Object> data)
+	public ArrayList<Object> getFilterPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -787,7 +787,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			}
 			else if(method == 5)
 			{
-				if(arguments.length != 2 || !(arguments[0] instanceof String) | !(arguments[1] instanceof String))
+				if(arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof String))
 				{
 					return new Object[] {"Invalid parameters."};
 				}

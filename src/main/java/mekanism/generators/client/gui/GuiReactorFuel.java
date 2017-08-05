@@ -162,7 +162,7 @@ public class GuiReactorFuel extends GuiMekanism
 			int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
 			toUse -= toUse%2;
 			
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(toUse);
 

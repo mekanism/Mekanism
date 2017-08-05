@@ -148,7 +148,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(getActive())
 		{
-			for(EntityPlayer player : (HashSet<EntityPlayer>)playersUsing.clone())
+			for(EntityPlayer player : new HashSet<>(playersUsing))
 			{
 				if(player.openContainer instanceof ContainerNull || player.openContainer instanceof ContainerFilter)
 				{
@@ -645,7 +645,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(!world.isRemote)
 		{
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), (EntityPlayerMP)player);
 		}
 	}
 
@@ -1012,7 +1012,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public ArrayList getFilterPacket(ArrayList<Object> data)
+	public ArrayList<Object> getFilterPacket(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 

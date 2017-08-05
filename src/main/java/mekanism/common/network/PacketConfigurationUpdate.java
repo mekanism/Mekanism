@@ -62,7 +62,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                     }
 
                     tile.markDirty();
-                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList<>())), new Range4D(message.coord4D));
                 }
                 else if(message.packetType == ConfigurationPacket.EJECT_COLOR)
                 {
@@ -103,7 +103,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 
                 for(EntityPlayer p : ((TileEntityBasicBlock)config).playersUsing)
                 {
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList())), (EntityPlayerMP)p);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData(new ArrayList<>())), (EntityPlayerMP)p);
                 }
             }
         }, player);

@@ -190,10 +190,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
 				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
 			}
 			
-			return new ActionResult(EnumActionResult.SUCCESS, itemstack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 		}
 
-		return new ActionResult(EnumActionResult.PASS, itemstack);
+		return new ActionResult<>(EnumActionResult.PASS, itemstack);
 	}
 
 	@Override

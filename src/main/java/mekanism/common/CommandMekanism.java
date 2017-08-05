@@ -35,9 +35,9 @@ public class CommandMekanism extends CommandBase
 	}
 
 	@Override
-	public List getAliases()
+	public List<String> getAliases()
 	{
-		return Arrays.asList(new String[] {"mekanism", "mek"});
+		return Arrays.asList("mekanism", "mek");
 	}
 
 	@Override

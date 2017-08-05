@@ -52,7 +52,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	}
 
 	@Override
-	public HeatNetwork createNetworkByMerging(Collection networks)
+	public HeatNetwork createNetworkByMerging(Collection<HeatNetwork> networks)
 	{
 		return new HeatNetwork(networks);
 	}
@@ -120,7 +120,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	public void sendTemp()
 	{
 		Coord4D coord = new Coord4D(getPos(), getWorld());
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList())), new Range4D(coord));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<>())), new Range4D(coord));
 	}
 	
 	@Override

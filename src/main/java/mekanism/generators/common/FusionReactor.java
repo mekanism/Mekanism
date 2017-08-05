@@ -311,7 +311,7 @@ public class FusionReactor
 		
 		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimension());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList<>())), controller.getWorld().provider.getDimension());
 		}
 	}
 
@@ -348,7 +348,7 @@ public class FusionReactor
 		
 		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.getDimension());
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList<>())), controller.getWorld().provider.getDimension());
 		}
 	}
 
