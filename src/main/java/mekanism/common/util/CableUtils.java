@@ -191,7 +191,7 @@ public final class CableUtils
 			if(energyToSend > 0)
 			{
 				List<EnumFacing> outputtingSides = new LinkedList<>();
-				boolean[] connectable = getConnections((TileEntity)emitter, side -> emitter.sideIsOutput(side));
+				boolean[] connectable = getConnections((TileEntity)emitter, emitter::sideIsOutput);
 
 				for(EnumFacing side : EnumFacing.values())
 				{

@@ -42,7 +42,7 @@ public class GuiOredictionificator extends GuiMekanism
 {
 	public TileEntityOredictionificator tileEntity;
 	
-	public Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<OredictionificatorFilter, ItemStack>();
+	public Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<>();
 	
 	public boolean isDragging = false;
 

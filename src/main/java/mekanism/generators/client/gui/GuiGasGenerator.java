@@ -38,22 +38,10 @@ public class GuiGasGenerator extends GuiMekanism
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				return ListUtils.asList(
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate*tileEntity.clientUsed) + "/t",
-						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.fuelTank;
-			}
-		}, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png"), 55, 18));
+		guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
+                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate*tileEntity.clientUsed) + "/t",
+                LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.fuelTank, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png"), 55, 18));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png"), 164, 15));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png"), 16, 34).with(SlotOverlay.MINUS));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png"), 142, 34).with(SlotOverlay.POWER));

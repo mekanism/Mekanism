@@ -62,7 +62,7 @@ public class SideData
 	public FluidTankInfo[] getFluidTankInfo(ITankManager manager)
 	{
 		Object[] tanks = manager.getTanks();
-		List<FluidTankInfo> infos = new ArrayList<FluidTankInfo>();
+		List<FluidTankInfo> infos = new ArrayList<>();
 		
 		if(tanks == null)
 		{

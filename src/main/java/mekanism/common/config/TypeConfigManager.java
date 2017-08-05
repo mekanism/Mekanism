@@ -9,7 +9,7 @@ import net.minecraft.item.crafting.CraftingManager;
 
 public class TypeConfigManager 
 {
-	private Map<String, Boolean> config = new HashMap<String, Boolean>();
+	private Map<String, Boolean> config = new HashMap<>();
 	
 	public boolean isEnabled(String type)
 	{

@@ -11,7 +11,7 @@ import mekanism.common.config.MekanismConfig.general;
 
 public class VoiceServerManager
 {
-	public Set<VoiceConnection> connections = new HashSet<VoiceConnection>();
+	public Set<VoiceConnection> connections = new HashSet<>();
 
 	public ServerSocket serverSocket;
 
@@ -100,9 +100,9 @@ public class VoiceServerManager
 					connections.add(connection);
 
 					Mekanism.logger.info("VoiceServer: Accepted new connection.");
-				} catch(SocketException e) {
-				} catch(NullPointerException e) {
-				} catch(Exception e) {
+				} catch(SocketException | NullPointerException e) {
+				}
+				catch(Exception e) {
 					Mekanism.logger.error("VoiceServer: Error while accepting connection.");
 					e.printStackTrace();
 				}

@@ -14,7 +14,7 @@ import buildcraft.api.fuels.IFuel;
 
 public class FuelHandler
 {
-	public static HashMap<String, FuelGas> fuels = new HashMap<String, FuelGas>();
+	public static HashMap<String, FuelGas> fuels = new HashMap<>();
 
 	public static void addGas(Gas gas, int burnTicks, double energyPerMilliBucket)
 	{

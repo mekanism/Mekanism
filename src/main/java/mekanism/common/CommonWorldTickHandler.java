@@ -25,12 +25,12 @@ public class CommonWorldTickHandler
 	{
 		if(chunkRegenMap == null) 
 		{
-			chunkRegenMap = new HashMap<Integer, Queue<ChunkPos>>();
+			chunkRegenMap = new HashMap<>();
 		}
 
 		if(!chunkRegenMap.containsKey(dimensionId))
 		{
-			LinkedList<ChunkPos> list = new LinkedList<ChunkPos>();
+			LinkedList<ChunkPos> list = new LinkedList<>();
 			list.add(chunkCoord);
 			chunkRegenMap.put(dimensionId, list);
 		}

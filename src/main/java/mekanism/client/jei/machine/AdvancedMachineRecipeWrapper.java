@@ -34,7 +34,7 @@ public abstract class AdvancedMachineRecipeWrapper extends BaseRecipeWrapper
 	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
-		List<String> currenttip = new ArrayList<String>();
+		List<String> currenttip = new ArrayList<>();
 		
 		if(mouseX >= 33 && mouseX <= 39 && mouseY >= 22 && mouseY <= 34)
 		{

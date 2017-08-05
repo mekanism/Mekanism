@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityTurbineRotor extends TileEntityBasicBlock
 {
-	public List<Coord4D> rotors = new ArrayList<Coord4D>();
+	public List<Coord4D> rotors = new ArrayList<>();
 	
 	public boolean hasComplex;
 	
@@ -58,7 +58,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 	
 	private void buildRotors()
 	{
-		List<Coord4D> newRotors = new ArrayList<Coord4D>();
+		List<Coord4D> newRotors = new ArrayList<>();
 		int newBlades = 0;
 		boolean complex = false;
 		String id = null;

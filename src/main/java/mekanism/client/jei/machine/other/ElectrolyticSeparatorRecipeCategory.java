@@ -125,13 +125,6 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 		
 		fluidStacks.init(0, true, 2, 2, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlay);
 		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
-		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-
-			@Override
-			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
-			{
-				tooltip.remove(1);
-			}
-		});
+		fluidStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

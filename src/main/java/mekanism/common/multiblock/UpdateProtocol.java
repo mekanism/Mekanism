@@ -16,9 +16,9 @@ import net.minecraft.world.World;
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
 	/** The multiblock nodes that have already been iterated over. */
-	public Set<Coord4D> iteratedNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> iteratedNodes = new HashSet<>();
 	
-	public Set<Coord4D> innerNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> innerNodes = new HashSet<>();
 
 	/** The structures found, all connected by some nodes to the pointer. */
 	public T structureFound = null;
@@ -46,7 +46,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		boolean rightBlocks = true;
 		boolean rightFrame = true;
 
-		Set<Coord4D> locations = new HashSet<Coord4D>();
+		Set<Coord4D> locations = new HashSet<>();
 
 		int xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 
@@ -497,7 +497,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				}
 			}
 
-			List<String> idsFound = new ArrayList<String>();
+			List<String> idsFound = new ArrayList<>();
 			String idToUse = null;
 
 			for(Coord4D obj : structureFound.locations)
@@ -511,7 +511,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			}
 
 			MultiblockCache<T> cache = getNewCache();
-			List<ItemStack> rejectedItems = new ArrayList<ItemStack>();
+			List<ItemStack> rejectedItems = new ArrayList<>();
 
 			if(!idsFound.isEmpty())
 			{
@@ -544,7 +544,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			
 			onFormed();
 			
-			List<IStructuralMultiblock> structures = new ArrayList<IStructuralMultiblock>();
+			List<IStructuralMultiblock> structures = new ArrayList<>();
 			Coord4D toUse = null;
 
 			for(Coord4D obj : structureFound.locations)
@@ -605,7 +605,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	public class NodeCounter
 	{
-		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		public Set<Coord4D> iterated = new HashSet<>();
 		
 		public NodeChecker checker;
 		

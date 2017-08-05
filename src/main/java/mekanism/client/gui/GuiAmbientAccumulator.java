@@ -22,13 +22,7 @@ public class GuiAmbientAccumulator extends GuiMekanism
 		super(tile, new ContainerNull(player, tile));
 		tileEntity = tile;
 
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.collectedGas;
-			}
-		}, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 26, 16));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.collectedGas, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 26, 16));
 	}
 
 	@Override

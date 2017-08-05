@@ -68,10 +68,10 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 				
 				Coord4D complex = null;
 				
-				Set<Coord4D> turbines = new HashSet<Coord4D>();
-				Set<Coord4D> dispersers = new HashSet<Coord4D>();
-				Set<Coord4D> coils = new HashSet<Coord4D>();
-				Set<Coord4D> condensers = new HashSet<Coord4D>();
+				Set<Coord4D> turbines = new HashSet<>();
+				Set<Coord4D> dispersers = new HashSet<>();
+				Set<Coord4D> coils = new HashSet<>();
+				Set<Coord4D> condensers = new HashSet<>();
 				
 				//Scan for complex
 				for(Coord4D coord : innerNodes)

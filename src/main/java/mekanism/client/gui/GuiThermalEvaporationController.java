@@ -33,29 +33,14 @@ public class GuiThermalEvaporationController extends GuiMekanism
 		super(tentity, new ContainerThermalEvaporationController(inventory, tentity));
 		tileEntity = tentity;
 		
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
-			@Override
-			public FluidTank getTank()
-			{
-				return tileEntity.inputTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"), 6, 13));
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
-			@Override
-			public FluidTank getTank()
-			{
-				return tileEntity.outputTank;
-			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"), 152, 13));
-		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.totalLoss*unit.intervalSize, false, unit);
-				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png")));
+		guiElements.add(new GuiFluidGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"), 6, 13));
+		guiElements.add(new GuiFluidGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png"), 152, 13));
+		guiElements.add(new GuiHeatInfo(() ->
+		{
+            TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.totalLoss*unit.intervalSize, false, unit);
+            return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiThermalEvaporationController.png")));
 	}
 
 	@Override

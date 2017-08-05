@@ -58,8 +58,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public double lastTransferLoss;
 	public double lastEnvironmentLoss;
 	
-	public List<Frequency> publicCache = new ArrayList<Frequency>();
-	public List<Frequency> privateCache = new ArrayList<Frequency>();
+	public List<Frequency> publicCache = new ArrayList<>();
+	public List<Frequency> privateCache = new ArrayList<>();
 	
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;

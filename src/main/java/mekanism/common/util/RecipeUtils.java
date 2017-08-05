@@ -228,7 +228,7 @@ public class RecipeUtils
 
 		if(BlockStateMachine.MachineType.get(toReturn) != null && BlockStateMachine.MachineType.get(toReturn).supportsUpgrades)
 		{
-			Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
+			Map<Upgrade, Integer> upgrades = new HashMap<>();
 
 			for(int i = 0; i < 9; i++)
 			{

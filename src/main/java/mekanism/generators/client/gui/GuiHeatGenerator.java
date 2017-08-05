@@ -42,36 +42,20 @@ public class GuiHeatGenerator extends GuiMekanism
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				return ListUtils.asList(
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.producingEnergy) + "/t",
-						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
-		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
-			@Override
-			public FluidTank getTank()
-			{
-				return tileEntity.lavaTank;
-			}
-		}, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 55, 18));
+		guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
+                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.producingEnergy) + "/t",
+                LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
+		guiElements.add(new GuiFluidGauge(() -> tileEntity.lavaTank, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 55, 18));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 164, 15));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 16, 34));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png"), 142, 34).with(SlotOverlay.POWER));
-		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
-				String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, false, unit);
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, false, unit);
-				return ListUtils.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t", LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
+		guiElements.add(new GuiHeatInfo(() ->
+        {
+            TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+            String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, false, unit);
+            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, false, unit);
+            return ListUtils.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t", LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
 	}
 
 	@Override

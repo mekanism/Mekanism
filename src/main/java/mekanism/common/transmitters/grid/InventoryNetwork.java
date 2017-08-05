@@ -41,7 +41,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 	
 	public List<AcceptorData> calculateAcceptors(TransitRequest request, EnumColor color)
 	{
-		List<AcceptorData> toReturn = new ArrayList<AcceptorData>();
+		List<AcceptorData> toReturn = new ArrayList<>();
 		
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{

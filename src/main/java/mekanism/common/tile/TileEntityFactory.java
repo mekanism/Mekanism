@@ -403,7 +403,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
 			int[] inputSlots = null;
 
-			List<InvID> invStacks = new ArrayList<InvID>();
+			List<InvID> invStacks = new ArrayList<>();
 
 			if(tier == FactoryTier.BASIC)
 			{

@@ -47,7 +47,7 @@ public final class TransporterPathfinder
 
 		public Destination find()
 		{
-			ArrayList<Coord4D> ret = new ArrayList<Coord4D>();
+			ArrayList<Coord4D> ret = new ArrayList<>();
 			ret.add(start);
 			
 			if(transportStack.idleDir == null)
@@ -233,7 +233,7 @@ public final class TransporterPathfinder
 
 	public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, int min)
 	{
-		List<Destination> paths = new ArrayList<Destination>();
+		List<Destination> paths = new ArrayList<>();
 		InventoryNetwork network = start.getTransmitterNetwork();
 		
 		if(network == null)
@@ -329,7 +329,7 @@ public final class TransporterPathfinder
 	{
 		List<Destination> paths = getPaths(start, stack, request, min);
 
-		Map<Coord4D, Destination> destPaths = new HashMap<Coord4D, Destination>();
+		Map<Coord4D, Destination> destPaths = new HashMap<>();
 
 		for(Destination d : paths)
 		{
@@ -339,7 +339,7 @@ public final class TransporterPathfinder
 			}
 		}
 
-		List<Destination> dests = new ArrayList<Destination>();
+		List<Destination> dests = new ArrayList<>();
 		dests.addAll(destPaths.values());
 
 		Collections.sort(dests);
@@ -409,15 +409,15 @@ public final class TransporterPathfinder
 
 			transportStack = stack;
 
-			openSet = new HashSet<Coord4D>();
-			closedSet = new HashSet<Coord4D>();
+			openSet = new HashSet<>();
+			closedSet = new HashSet<>();
 
-			navMap = new HashMap<Coord4D, Coord4D>();
+			navMap = new HashMap<>();
 
-			gScore = new HashMap<Coord4D, Double>();
-			fScore = new HashMap<Coord4D, Double>();
+			gScore = new HashMap<>();
+			fScore = new HashMap<>();
 
-			results = new ArrayList<Coord4D>();
+			results = new ArrayList<>();
 
 			find(start);
 		}
@@ -532,7 +532,7 @@ public final class TransporterPathfinder
 
 		private ArrayList<Coord4D> reconstructPath(HashMap<Coord4D, Coord4D> naviMap, Coord4D currentNode)
 		{
-			ArrayList<Coord4D> path = new ArrayList<Coord4D>();
+			ArrayList<Coord4D> path = new ArrayList<>();
 
 			path.add(currentNode);
 
@@ -548,7 +548,7 @@ public final class TransporterPathfinder
 
 		public ArrayList<Coord4D> getPath()
 		{
-			ArrayList<Coord4D> path = new ArrayList<Coord4D>();
+			ArrayList<Coord4D> path = new ArrayList<>();
 			path.add(finalNode);
 			path.addAll(results);
 

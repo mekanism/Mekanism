@@ -29,7 +29,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super("Security", uuid);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 	}
 	
@@ -69,7 +69,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super.read(nbtTags);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 		
 		override = nbtTags.getBoolean("override");
@@ -107,7 +107,7 @@ public class SecurityFrequency extends Frequency
 	{
 		super.read(dataStream);
 		
-		trusted = new HashList<String>();
+		trusted = new HashList<>();
 		securityMode = SecurityMode.PUBLIC;
 		
 		override = dataStream.readBoolean();

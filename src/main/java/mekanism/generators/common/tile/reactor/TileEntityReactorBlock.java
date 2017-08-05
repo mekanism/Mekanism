@@ -133,7 +133,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock
 	{
 		public TileEntityReactorController found;
 		
-		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		public Set<Coord4D> iterated = new HashSet<>();
 		
 		public void loop(Coord4D pos)
 		{

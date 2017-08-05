@@ -25,7 +25,7 @@ public class Frequency
 	
 	public boolean publicFreq;
 	
-	public Set<Coord4D> activeCoords = new HashSet<Coord4D>();
+	public Set<Coord4D> activeCoords = new HashSet<>();
 	
 	public Frequency(String n, UUID uuid)
 	{

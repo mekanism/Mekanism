@@ -30,48 +30,45 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 	{
 		WorldServer worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
 		
-		worldServer.addScheduledTask(new Runnable() {
-			@Override
-			public void run()
-			{
-				if(worldServer != null)
-				{
-					if(message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
-					{
-						TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)message.coord4D.getTileEntity(worldServer);
-		
-						sorter.filters.add(message.tFilter);
-		
-						for(EntityPlayer iterPlayer : sorter.playersUsing)
-						{
-							Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
-						}
-					}
-					else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
-					{
-						TileEntityDigitalMiner miner = (TileEntityDigitalMiner)message.coord4D.getTileEntity(worldServer);
-		
-						miner.filters.add(message.mFilter);
-		
-						for(EntityPlayer iterPlayer : miner.playersUsing)
-						{
-							Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
-						}
-					}
-					else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
-					{
-						TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
-						
-						oredictionificator.filters.add(message.oFilter);
-						
-						for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
-						{
-							Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
-						}
-					}
-				}
-			}
-		});
+		worldServer.addScheduledTask(() ->
+        {
+            if(worldServer != null)
+            {
+                if(message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+                {
+                    TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)message.coord4D.getTileEntity(worldServer);
+
+                    sorter.filters.add(message.tFilter);
+
+                    for(EntityPlayer iterPlayer : sorter.playersUsing)
+                    {
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+                    }
+                }
+                else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+                {
+                    TileEntityDigitalMiner miner = (TileEntityDigitalMiner)message.coord4D.getTileEntity(worldServer);
+
+                    miner.filters.add(message.mFilter);
+
+                    for(EntityPlayer iterPlayer : miner.playersUsing)
+                    {
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+                    }
+                }
+                else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
+                {
+                    TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
+
+                    oredictionificator.filters.add(message.oFilter);
+
+                    for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
+                    {
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+                    }
+                }
+            }
+        });
 		
 		return null;
 	}

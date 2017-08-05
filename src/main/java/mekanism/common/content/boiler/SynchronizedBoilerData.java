@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer
 {
-	public static Map<String, Boolean> clientHotMap = new HashMap<String, Boolean>();
+	public static Map<String, Boolean> clientHotMap = new HashMap<>();
 	
 	public static double CASING_INSULATION_COEFFICIENT = 1;
 	public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
@@ -52,7 +52,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	
 	public Coord4D upperRenderLocation;
 
-	public Set<ValveData> valves = new HashSet<ValveData>();
+	public Set<ValveData> valves = new HashSet<>();
 	
 	/**
 	 * @return how much heat energy is needed to convert one unit of water into steam

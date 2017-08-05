@@ -45,9 +45,9 @@ public class TileComponentEjector implements ITileComponent
 
 	public int tickDelay = 0;
 
-	public Map<TransmissionType, SideData> sideData = new HashMap<TransmissionType, SideData>();
+	public Map<TransmissionType, SideData> sideData = new HashMap<>();
 
-	public Map<TransmissionType, int[]> trackers = new HashMap<TransmissionType, int[]>();
+	public Map<TransmissionType, int[]> trackers = new HashMap<>();
 	
 	public static final int GAS_OUTPUT = 256;
 	public static final int FLUID_OUTPUT = 256;
@@ -78,7 +78,7 @@ public class TileComponentEjector implements ITileComponent
 
 	private List<EnumFacing> getTrackedOutputs(TransmissionType type, int index, List<EnumFacing> dirs)
 	{
-		List<EnumFacing> sides = new ArrayList<EnumFacing>();
+		List<EnumFacing> sides = new ArrayList<>();
 
 		for(int i = trackers.get(type)[index]+1; i <= trackers.get(type)[index]+6; i++)
 		{
@@ -150,7 +150,7 @@ public class TileComponentEjector implements ITileComponent
 	
 	public List<EnumFacing> getOutputSides(TransmissionType type, SideData data)
 	{
-		List<EnumFacing> outputSides = new ArrayList<EnumFacing>();
+		List<EnumFacing> outputSides = new ArrayList<>();
 		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
 
 		SideConfig sideConfig = configurable.getConfig().getConfig(type);

@@ -12,15 +12,15 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictCache
 {
-	public static HashMap<ItemInfo, List<String>> cachedKeys = new HashMap<ItemInfo, List<String>>();
-	public static HashMap<String, List<ItemStack>> oreDictStacks = new HashMap<String, List<ItemStack>>();
-	public static HashMap<String, List<ItemStack>> modIDStacks = new HashMap<String, List<ItemStack>>();
+	public static HashMap<ItemInfo, List<String>> cachedKeys = new HashMap<>();
+	public static HashMap<String, List<ItemStack>> oreDictStacks = new HashMap<>();
+	public static HashMap<String, List<ItemStack>> modIDStacks = new HashMap<>();
 
 	public static List<String> getOreDictName(ItemStack check)
 	{
 		if(check.isEmpty())
 		{
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 
 		ItemInfo info = ItemInfo.get(check);
@@ -33,7 +33,7 @@ public final class OreDictCache
 
 		int[] idsFound = OreDictionary.getOreIDs(check);
 
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 
 		for(Integer id : idsFound)
 		{
@@ -52,7 +52,7 @@ public final class OreDictCache
 			return oreDictStacks.get(oreName);
 		}
 
-		List<String> keys = new ArrayList<String>();
+		List<String> keys = new ArrayList<>();
 
 		for(String s : OreDictionary.getOreNames())
 		{
@@ -88,7 +88,7 @@ public final class OreDictCache
 			}
 		}
 		
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 
 		for(String key : keys)
 		{
@@ -115,7 +115,7 @@ public final class OreDictCache
 			return modIDStacks.get(modName);
 		}
 		
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 
 		for(String key : OreDictionary.getOreNames())
 		{

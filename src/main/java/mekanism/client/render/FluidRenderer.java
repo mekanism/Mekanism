@@ -20,8 +20,8 @@ public final class FluidRenderer
 {
 	private static final int BLOCK_STAGES = 1000;
 	
-	private static Map<RenderData, DisplayInteger[]> cachedCenterFluids = new HashMap<RenderData, DisplayInteger[]>();
-	private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<ValveRenderData, DisplayInteger>();
+	private static Map<RenderData, DisplayInteger[]> cachedCenterFluids = new HashMap<>();
+	private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 	
 	public static void translateToOrigin(Coord4D origin)
 	{

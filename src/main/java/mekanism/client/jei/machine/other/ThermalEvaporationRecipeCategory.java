@@ -72,12 +72,6 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 		fluidStacks.set(0, tempRecipe.recipeInput.ingredient);
 		fluidStacks.set(1, tempRecipe.recipeOutput.output);
 		
-		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-			@Override
-			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
-			{
-				tooltip.remove(1);
-			}
-		});
+		fluidStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

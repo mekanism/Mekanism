@@ -34,7 +34,7 @@ public class ChemicalInfuserRecipeWrapper extends BaseRecipeWrapper
 	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
-		List<String> currenttip = new ArrayList<String>();
+		List<String> currenttip = new ArrayList<>();
 		
 		if(mouseX >= 26-3 && mouseX <= 42-3 && mouseY >= 14-3 && mouseY <= 72-3)
 		{

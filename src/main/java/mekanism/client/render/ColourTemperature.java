@@ -7,7 +7,7 @@ import mekanism.common.ColourRGBA;
 
 public class ColourTemperature extends ColourRGBA
 {
-	public static HashMap<Integer, ColourTemperature> cache = new HashMap<Integer, ColourTemperature>();
+	public static HashMap<Integer, ColourTemperature> cache = new HashMap<>();
 
 	public double temp;
 

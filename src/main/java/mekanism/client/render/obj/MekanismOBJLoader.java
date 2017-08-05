@@ -36,7 +36,7 @@ public class MekanismOBJLoader implements ICustomModelLoader
 {
 	public static final MekanismOBJLoader INSTANCE = new MekanismOBJLoader();
 	
-	private final Map<ResourceLocation, MekanismOBJModel> modelCache = new HashMap<ResourceLocation, MekanismOBJModel>();
+	private final Map<ResourceLocation, MekanismOBJModel> modelCache = new HashMap<>();
 	
 	public static final ImmutableMap<String, String> flipData = ImmutableMap.of("flip-v", String.valueOf(true));
 	
@@ -62,13 +62,7 @@ public class MekanismOBJLoader implements ICustomModelLoader
 	public OBJBakedModel createBakedObjItemModel(IBakedModel existingModel, String name, IModelState state, VertexFormat format)
 	{
 		try {
-			Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
-				@Override
-				public TextureAtlasSprite apply(ResourceLocation location)
-				{
-					return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-				}
-			};
+			Function<ResourceLocation, TextureAtlasSprite> textureGetter = location -> Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
 			
 			ResourceLocation modelLocation = new ResourceLocation(name);
 			OBJModel objModel = (OBJModel)OBJLoader.INSTANCE.loadModel(modelLocation);
@@ -91,7 +85,7 @@ public class MekanismOBJLoader implements ICustomModelLoader
 			
 			builder.put("missingno", missing);
 			
-			return new GlowPanelModel(existingModel, objModel, state, format, builder.build(), new HashMap<TransformType, Matrix4f>());
+			return new GlowPanelModel(existingModel, objModel, state, format, builder.build(), new HashMap<>());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

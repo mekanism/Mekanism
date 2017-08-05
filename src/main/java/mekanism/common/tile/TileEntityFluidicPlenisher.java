@@ -170,7 +170,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			}
 		}
 		
-		Set<Coord4D> toRemove = new HashSet<Coord4D>();
+		Set<Coord4D> toRemove = new HashSet<>();
 		
 		for(Coord4D coord : activeNodes)
 		{

@@ -171,7 +171,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 	}
 	
-	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
+	public Set<GuiElement> guiElements = new HashSet<>();
 	
 	public void addGuiElements() {}
 	

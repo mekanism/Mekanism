@@ -160,7 +160,7 @@ public class TransmitterNetworkRegistry
 	{
 		if(startOrphan.isValid() && startOrphan.isOrphan())
 		{
-			OrphanPathFinder<A, N> finder = new OrphanPathFinder<A, N>(startOrphan);
+			OrphanPathFinder<A, N> finder = new OrphanPathFinder<>(startOrphan);
 			finder.start();
 			N network;
 			

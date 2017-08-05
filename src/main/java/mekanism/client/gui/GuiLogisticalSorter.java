@@ -82,9 +82,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 	public int stackSwitch = 0;
 
-	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<TOreDictFilter, StackData>();
+	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<>();
 
-	public Map<TModIDFilter, StackData> modIDStacks = new HashMap<TModIDFilter, StackData>();
+	public Map<TModIDFilter, StackData> modIDStacks = new HashMap<>();
 
 	public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter entity)
 	{
@@ -186,8 +186,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 			}
 		}
 
-		final Set<TOreDictFilter> oreDictFilters = new HashSet<TOreDictFilter>();
-		final Set<TModIDFilter> modIDFilters = new HashSet<TModIDFilter>();
+		final Set<TOreDictFilter> oreDictFilters = new HashSet<>();
+		final Set<TModIDFilter> modIDFilters = new HashSet<>();
 
 		for(int i = 0; i < 4; i++)
 		{

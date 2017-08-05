@@ -35,7 +35,7 @@ public class TransporterStack
 	
 	public EnumFacing idleDir = null;
 
-	private List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
+	private List<Coord4D> pathToTarget = new ArrayList<>();
 
 	public Coord4D originalLocation;
 	public Coord4D homeLocation;

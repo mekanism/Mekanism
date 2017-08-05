@@ -24,7 +24,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 {
 	private ModelBioGenerator model = new ModelBioGenerator();
 
-	private Map<EnumFacing, DisplayInteger[]> energyDisplays = new HashMap<EnumFacing, DisplayInteger[]>();
+	private Map<EnumFacing, DisplayInteger[]> energyDisplays = new HashMap<>();
 
 	private static final int stages = 40;
 

@@ -19,27 +19,24 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-				
-				if(tileEntity instanceof ITankManager)
-				{
-					try {
-						Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
-						
-						if(tank != null)
-						{
-							DropperHandler.useDropper(player, tank, message.mouseButton);
-						}
-					} catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+            if(tileEntity instanceof ITankManager)
+            {
+                try {
+                    Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
+
+                    if(tank != null)
+                    {
+                        DropperHandler.useDropper(player, tank, message.mouseButton);
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, player);
 		
 		return null;
 	}

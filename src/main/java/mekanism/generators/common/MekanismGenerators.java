@@ -57,7 +57,7 @@ public class MekanismGenerators implements IModule
 	/** MekanismGenerators version number */
 	public static Version versionNumber = new Version(9, 3, 4);
 	
-	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
+	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
 
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)

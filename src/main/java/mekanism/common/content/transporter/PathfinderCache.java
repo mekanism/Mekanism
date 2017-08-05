@@ -10,7 +10,7 @@ import net.minecraft.util.EnumFacing;
 
 public class PathfinderCache 
 {
-	public static Map<PathData, List<Coord4D>> cachedPaths = new HashMap<PathData, List<Coord4D>>();
+	public static Map<PathData, List<Coord4D>> cachedPaths = new HashMap<>();
 	
 	public static void onChanged(Coord4D location)
 	{

@@ -145,24 +145,20 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
 			int upgraded = 0;
 			Object[] array = ((LinkedHashSet)getTransmitter().getTransmitterNetwork().transmitters.clone()).toArray();
 			
-			Arrays.sort(array, new Comparator() {
-				@Override
-				public int compare(Object o1, Object o2) 
-				{
-					if(o1 instanceof IGridTransmitter && o2 instanceof IGridTransmitter)
-					{
-						Coord4D thisCoord = new Coord4D(getPos(), getWorld());
-						
-						Coord4D o1Coord = ((IGridTransmitter)o1).coord();
-						Coord4D o2Coord = ((IGridTransmitter)o2).coord();
-						
-						return o1Coord.distanceTo(thisCoord) > o2Coord.distanceTo(thisCoord) ? 1 : 
-							(o1Coord.distanceTo(thisCoord) < o2Coord.distanceTo(thisCoord) ? -1 : 0);
-					}
-					
-					return 0;
-				}
-			});
+			Arrays.sort(array, (o1, o2) ->
+			{
+                if(o1 instanceof IGridTransmitter && o2 instanceof IGridTransmitter)
+                {
+                    Coord4D thisCoord = new Coord4D(getPos(), getWorld());
+
+                    Coord4D o1Coord = ((IGridTransmitter)o1).coord();
+                    Coord4D o2Coord = ((IGridTransmitter)o2).coord();
+
+                    return Integer.compare(o1Coord.distanceTo(thisCoord), o2Coord.distanceTo(thisCoord));
+                }
+
+                return 0;
+            });
 			
 			for(Object iter : array)
 			{

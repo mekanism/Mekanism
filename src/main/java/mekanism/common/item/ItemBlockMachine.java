@@ -396,7 +396,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				factory.setRecipeType(recipeType);
 				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
 				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 			}
 
 			if(tileEntity instanceof ISustainedTank)
@@ -966,7 +966,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
     
     @Override
-	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

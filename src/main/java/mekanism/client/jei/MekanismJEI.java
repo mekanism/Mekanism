@@ -206,7 +206,7 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipeHandlers(new BaseRecipeHandler(prcCategory, PRCRecipeWrapper.class));
 		addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, prcCategory, PressurizedRecipe.class, PRCRecipeCategory.class, PRCRecipeWrapper.class);
 		
-		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<RotaryCondensentratorRecipeWrapper>();
+		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<>();
 		
 		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		registry.addRecipeCategories(rotaryCondensentratorCategory);

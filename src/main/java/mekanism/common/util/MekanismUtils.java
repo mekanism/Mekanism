@@ -103,7 +103,7 @@ public final class MekanismUtils
 {
 	public static final EnumFacing[] SIDE_DIRS = new EnumFacing[] {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 
-	public static final Map<String, Class<?>> classesFound = new HashMap<String, Class<?>>();
+	public static final Map<String, Class<?>> classesFound = new HashMap<>();
 
 	private static final List<UUID> warnedFails = new ArrayList<>();
 
@@ -117,7 +117,7 @@ public final class MekanismUtils
 			{
 				if(!Mekanism.latestVersionNumber.equals("null"))
 				{
-					ArrayList<IModule> list = new ArrayList<IModule>();
+					ArrayList<IModule> list = new ArrayList<>();
 
 					for(IModule module : Mekanism.modulesLoaded)
 					{
@@ -180,7 +180,7 @@ public final class MekanismUtils
 	public static List<String> getHTML(String urlToRead)
 	{
 		String line;
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 
 		try {
 			URL url = new URL(urlToRead);
@@ -1258,8 +1258,8 @@ public final class MekanismUtils
 				renderer = stack.getItem().getFontRenderer(stack);
 			}
 			
-			List<String> words = new ArrayList<String>();
-			List<String> lines = new ArrayList<String>();
+			List<String> words = new ArrayList<>();
+			List<String> lines = new ArrayList<>();
 			
 			String currentWord = "";
 			
@@ -1309,7 +1309,7 @@ public final class MekanismUtils
 			t.printStackTrace();
 		}
 		
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 	/**

@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter>
 {
-	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<Integer, DisplayInteger>();
+	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
 
 	@Override
 	public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)

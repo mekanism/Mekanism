@@ -17,8 +17,8 @@ public final class HolidayManager
 	private static Calendar calendar = Calendar.getInstance();
 	private static Minecraft mc = Minecraft.getMinecraft();
 
-	public static List<Holiday> holidays = new ArrayList<Holiday>();
-	private static List<Holiday> holidaysNotified = new ArrayList<Holiday>();
+	public static List<Holiday> holidays = new ArrayList<>();
+	private static List<Holiday> holidaysNotified = new ArrayList<>();
 
 	public static void init()
 	{

@@ -189,16 +189,16 @@ public class Mekanism
 	public static Version versionNumber = new Version(9, 3, 4);
 	
 	/** MultiblockManagers for various structrures */
-	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
-	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("inductionMatrix");
-	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<SynchronizedBoilerData>("thermoelectricBoiler");
+	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank");
+	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<>("inductionMatrix");
+	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<>("thermoelectricBoiler");
 	
 	/** FrequencyManagers for various networks */
 	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
-	public static Map<UUID, FrequencyManager> privateTeleporters = new HashMap<UUID, FrequencyManager>();
+	public static Map<UUID, FrequencyManager> privateTeleporters = new HashMap<>();
 
 	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
-	public static Map<UUID, FrequencyManager> privateEntangloporters = new HashMap<UUID, FrequencyManager>();
+	public static Map<UUID, FrequencyManager> privateEntangloporters = new HashMap<>();
 
 	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
 
@@ -206,7 +206,7 @@ public class Mekanism
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
 
 	/** List of Mekanism modules loaded */
-	public static List<IModule> modulesLoaded = new ArrayList<IModule>();
+	public static List<IModule> modulesLoaded = new ArrayList<>();
 
 	/** The latest version number which is received from the Mekanism server */
 	public static String latestVersionNumber;
@@ -218,7 +218,7 @@ public class Mekanism
 	public static VoiceServerManager voiceManager;
 
 	/** A list of the usernames of players who have donated to Mekanism. */
-	public static List<String> donators = new ArrayList<String>();
+	public static List<String> donators = new ArrayList<>();
 
 	/** The server's world tick handler. */
 	public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
@@ -496,18 +496,15 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedObsidian), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 80));
         
         //Fuels
-        GameRegistry.registerFuelHandler(new IFuelHandler() {
-			@Override
-			public int getBurnTime(ItemStack fuel)
-			{
-				if(fuel.isItemEqual(new ItemStack(MekanismBlocks.BasicBlock, 1, 3)))
-				{
-					return 200*8*9;
-				}
-				
-				return 0;
-			}
-		});
+        GameRegistry.registerFuelHandler(fuel ->
+		{
+            if(fuel.isItemEqual(new ItemStack(MekanismBlocks.BasicBlock, 1, 3)))
+            {
+                return 200*8*9;
+            }
+
+            return 0;
+        });
 
 		//Fuel Gases
 		FuelHandler.addGas(MekanismFluids.Hydrogen, 1, general.FROM_H2);

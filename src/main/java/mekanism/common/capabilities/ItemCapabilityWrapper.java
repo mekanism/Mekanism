@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemCapabilityWrapper implements ICapabilityProvider
 {
-	private List<ItemCapability> capabilities = new ArrayList<ItemCapability>();
+	private List<ItemCapability> capabilities = new ArrayList<>();
 	
 	protected final ItemStack itemStack;
 	

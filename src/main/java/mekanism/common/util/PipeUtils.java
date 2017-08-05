@@ -93,7 +93,7 @@ public final class PipeUtils
 			return 0;
 		}
 		
-		List<IFluidHandler> availableAcceptors = new ArrayList<IFluidHandler>();
+		List<IFluidHandler> availableAcceptors = new ArrayList<>();
 		IFluidHandler[] possibleAcceptors = getConnectedAcceptors(from);
 
 		for (IFluidHandler handler : possibleAcceptors)

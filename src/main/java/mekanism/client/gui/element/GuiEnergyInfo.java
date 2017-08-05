@@ -47,7 +47,7 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 		{
-			List<String> info = new ArrayList<String>();
+			List<String> info = new ArrayList<>();
 			
 			for(String s : infoHandler.getInfo())
 			{

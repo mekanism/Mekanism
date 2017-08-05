@@ -26,7 +26,7 @@ public class ChemicalInjectionChamberRecipeWrapper extends AdvancedMachineRecipe
 	{
 		if(gasType == MekanismFluids.SulfuricAcid)
 		{
-			List<ItemStack> fuels = new ArrayList<ItemStack>();
+			List<ItemStack> fuels = new ArrayList<>();
 			fuels.addAll(OreDictionary.getOres("dustSulfur"));
 			fuels.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, MekanismFluids.SulfuricAcid));
 			
@@ -38,13 +38,13 @@ public class ChemicalInjectionChamberRecipeWrapper extends AdvancedMachineRecipe
 		}
 		else if(gasType == MekanismFluids.HydrogenChloride)
 		{
-			List<ItemStack> fuels = new ArrayList<ItemStack>();
+			List<ItemStack> fuels = new ArrayList<>();
 			fuels.addAll(OreDictionary.getOres("dustSalt"));
 			fuels.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, MekanismFluids.HydrogenChloride));
 			
 			return fuels;
 		}
 
-		return new ArrayList<ItemStack>();
+		return new ArrayList<>();
 	}
 }

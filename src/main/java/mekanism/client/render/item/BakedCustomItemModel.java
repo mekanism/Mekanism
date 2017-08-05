@@ -406,7 +406,7 @@ public class BakedCustomItemModel implements IBakedModel
 	{
 		if(side != null)
 		{
-			List<BakedQuad> faceQuads = new LinkedList<BakedQuad>();
+			List<BakedQuad> faceQuads = new LinkedList<>();
 			
 			if(Block.getBlockFromItem(stack.getItem()) != null)
 			{
@@ -425,7 +425,7 @@ public class BakedCustomItemModel implements IBakedModel
 		}
 		
 		Tessellator tessellator = Tessellator.getInstance();
-		List<BakedQuad> generalQuads = new LinkedList<BakedQuad>();
+		List<BakedQuad> generalQuads = new LinkedList<>();
 
 		//Test if the current thread has a Context loaded (we don't use it so no need to import its type)
 		Object contextCapabilities;

@@ -75,8 +75,8 @@ public class GuiTeleporter extends GuiMekanism
 	public Frequency clientFreq;
 	public byte clientStatus;
 	
-	public List<Frequency> clientPublicCache = new ArrayList<Frequency>();
-	public List<Frequency> clientPrivateCache = new ArrayList<Frequency>();
+	public List<Frequency> clientPublicCache = new ArrayList<>();
+	public List<Frequency> clientPrivateCache = new ArrayList<>();
 	
 	public boolean isInit = true;
 
@@ -231,7 +231,7 @@ public class GuiTeleporter extends GuiMekanism
 			return;
 		}
 		
-		List<String> text = new ArrayList<String>();
+		List<String> text = new ArrayList<>();
 		
 		if(privateMode)
 		{

@@ -83,7 +83,7 @@ public class Range4D
 	
 	public Set<Chunk3D> getIntersectingChunks()
 	{
-		Set<Chunk3D> set = new HashSet<Chunk3D>();
+		Set<Chunk3D> set = new HashSet<>();
 		
 		for(int chunkX = xMin >> 4; chunkX <= xMax-1 >> 4; chunkX++)
 		{	

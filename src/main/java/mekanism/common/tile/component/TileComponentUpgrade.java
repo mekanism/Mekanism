@@ -23,9 +23,9 @@ public class TileComponentUpgrade implements ITileComponent
 	/** How long it takes this machine to install an upgrade. */
 	public static int UPGRADE_TICKS_REQUIRED = 40;
 	
-	private Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
+	private Map<Upgrade, Integer> upgrades = new HashMap<>();
 	
-	private Set<Upgrade> supported = new HashSet<Upgrade>();
+	private Set<Upgrade> supported = new HashSet<>();
 
 	/** The inventory slot the upgrade slot of this component occupies. */
 	private int upgradeSlot;
@@ -77,7 +77,7 @@ public class TileComponentUpgrade implements ITileComponent
 
 						tileEntity.inventory.get(upgradeSlot).shrink(1);
 
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<Object>())), new Range4D(Coord4D.get(tileEntity)));
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 						tileEntity.markDirty();
 					}
 				}

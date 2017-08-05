@@ -25,34 +25,31 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				if(message.packetType == SecurityPacketType.BLOCK)
-				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-					
-					if(tileEntity instanceof ISecurityTile)
-					{
-						UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
-						
-						if(owner != null && player.getUniqueID().equals(owner))
-						{
-							((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
-						}
-					}
-				}
-				else {
-					ItemStack stack = player.getHeldItem(message.currentHand);
-					
-					if(stack.getItem() instanceof ISecurityItem)
-					{
-						((ISecurityItem)stack.getItem()).setSecurity(stack, message.value);
-					}
-				}
-			}
-		}, player);
+		PacketHandler.handlePacket(() ->
+        {
+            if(message.packetType == SecurityPacketType.BLOCK)
+            {
+                TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+                if(tileEntity instanceof ISecurityTile)
+                {
+                    UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
+
+                    if(owner != null && player.getUniqueID().equals(owner))
+                    {
+                        ((ISecurityTile)tileEntity).getSecurity().setMode(message.value);
+                    }
+                }
+            }
+            else {
+                ItemStack stack = player.getHeldItem(message.currentHand);
+
+                if(stack.getItem() instanceof ISecurityItem)
+                {
+                    ((ISecurityItem)stack.getItem()).setSecurity(stack, message.value);
+                }
+            }
+        }, player);
 		
 		return null;
 	}

@@ -15,9 +15,9 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 {
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	
-	public Set<Coord4D> cells = new HashSet<Coord4D>();
+	public Set<Coord4D> cells = new HashSet<>();
 	
-	public Set<Coord4D> providers = new HashSet<Coord4D>();
+	public Set<Coord4D> providers = new HashSet<>();
 	
 	public double remainingInput;
 	public double lastInput;

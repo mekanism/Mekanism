@@ -47,7 +47,7 @@ public class ItemCraftingFormula extends ItemMekanism
 	
 	private void addIngredientDetails(NonNullList<ItemStack> inv, List list)
 	{
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 		
 		for(ItemStack stack : inv)
 		{

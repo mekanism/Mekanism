@@ -204,7 +204,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 	}
 	
 	@Override
-	public void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception 
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

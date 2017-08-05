@@ -29,6 +29,6 @@ public class PurificationChamberRecipeWrapper extends AdvancedMachineRecipeWrapp
 			return ListUtils.asList(new ItemStack(Items.FLINT), MekanismUtils.getFullGasTank(GasTankTier.BASIC, MekanismFluids.Oxygen));
 		}
 
-		return new ArrayList<ItemStack>();
+		return new ArrayList<>();
 	}
 }

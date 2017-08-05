@@ -87,7 +87,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			return;
 		}
 		
-		ArrayList<Object> data = new ArrayList<Object>();
+		ArrayList<Object> data = new ArrayList<>();
 		data.add(0);
 		data.add(trusted);
 		
@@ -101,7 +101,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			return;
 		}
 		
-		List<String> text = new ArrayList<String>();
+		List<String> text = new ArrayList<>();
 		
 		if(tileEntity.frequency != null)
 		{
@@ -155,7 +155,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				}
 				
-				ArrayList<Object> data = new ArrayList<Object>();
+				ArrayList<Object> data = new ArrayList<>();
 				
 				if(xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75)
 				{
@@ -235,7 +235,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			{
 				if(tileEntity != null)
 				{
-					ArrayList<Object> data = new ArrayList<Object>();
+					ArrayList<Object> data = new ArrayList<>();
 					data.add(1);
 					data.add(tileEntity.frequency.trusted.get(selection));
 					

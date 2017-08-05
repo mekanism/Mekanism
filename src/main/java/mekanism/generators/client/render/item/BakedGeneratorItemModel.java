@@ -133,7 +133,7 @@ public class BakedGeneratorItemModel implements IBakedModel
 		
 		MekanismRenderer.pauseRenderer(tessellator);
 		
-		List<BakedQuad> generalQuads = new LinkedList<BakedQuad>();
+		List<BakedQuad> generalQuads = new LinkedList<>();
 		
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);

@@ -66,8 +66,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 	public int stackSwitch = 0;
 
-	public Map<MOreDictFilter, StackData> oreDictStacks = new HashMap<MOreDictFilter, StackData>();
-	public Map<MModIDFilter, StackData> modIDStacks = new HashMap<MModIDFilter, StackData>();
+	public Map<MOreDictFilter, StackData> oreDictStacks = new HashMap<>();
+	public Map<MModIDFilter, StackData> modIDStacks = new HashMap<>();
 
 	public float scroll;
 
@@ -167,8 +167,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			}
 		}
 
-		Set<MOreDictFilter> oreDictFilters = new HashSet<MOreDictFilter>();
-		Set<MModIDFilter> modIDFilters = new HashSet<MModIDFilter>();
+		Set<MOreDictFilter> oreDictFilters = new HashSet<>();
+		Set<MModIDFilter> modIDFilters = new HashSet<>();
 
 		for(int i = 0; i < 4; i++)
 		{

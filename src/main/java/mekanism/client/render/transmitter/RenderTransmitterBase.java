@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> extends TileEntitySpecialRenderer<T>
 {
 	private static OBJModel contentsModel;
-	private static Map<String, IBakedModel> contentsMap = new HashMap<String, IBakedModel>();
+	private static Map<String, IBakedModel> contentsMap = new HashMap<>();
 	
 	protected Minecraft mc = Minecraft.getMinecraft();
 	
@@ -88,7 +88,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 	
 	public static HashMap<String, IBakedModel> buildModelMap(OBJModel objModel) 
 	{
-		HashMap<String, IBakedModel> modelParts = new HashMap<String, IBakedModel>();
+		HashMap<String, IBakedModel> modelParts = new HashMap<>();
 
 		if(!objModel.getMatLib().getGroups().keySet().isEmpty())
 		{
@@ -116,14 +116,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 	}
 	
 	/* Credit to Eternal Energy */
-	public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = new Function<ResourceLocation, TextureAtlasSprite>() 
-	{
-		@Override
-		public TextureAtlasSprite apply(ResourceLocation location) 
-		{
-			return DummyAtlasTextureFlipV.instance;
-		}
-	};
+	public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
     
     private static class DummyAtlasTextureFlipV extends TextureAtlasSprite 
     {

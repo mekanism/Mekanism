@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public final class Tier
 {
-	private static List<ITier> tierTypes = new ArrayList<ITier>();
+	private static List<ITier> tierTypes = new ArrayList<>();
 	
 	private static boolean initiated = false;
 	

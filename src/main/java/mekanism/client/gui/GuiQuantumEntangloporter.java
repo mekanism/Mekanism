@@ -126,7 +126,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			return;
 		}
 		
-		List<String> text = new ArrayList<String>();
+		List<String> text = new ArrayList<>();
 		
 		if(privateMode)
 		{

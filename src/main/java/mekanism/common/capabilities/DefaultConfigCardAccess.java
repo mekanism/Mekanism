@@ -8,6 +8,6 @@ public class DefaultConfigCardAccess implements IConfigCardAccess
 {
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(IConfigCardAccess.class, new NullStorage<IConfigCardAccess>(), DefaultConfigCardAccess.class);
+        CapabilityManager.INSTANCE.register(IConfigCardAccess.class, new NullStorage<>(), DefaultConfigCardAccess.class);
     }
 }

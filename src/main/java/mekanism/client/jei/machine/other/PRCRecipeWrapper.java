@@ -38,7 +38,7 @@ public class PRCRecipeWrapper extends BaseRecipeWrapper
 	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
-		List<String> currenttip = new ArrayList<String>();
+		List<String> currenttip = new ArrayList<>();
 		
 		if(mouseX >= 29-3 && mouseX <= 45-3 && mouseY >= 11-12 && mouseY <= 69-12)
 		{

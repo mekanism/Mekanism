@@ -27,9 +27,9 @@ public class FrequencyManager
 
 	public static boolean loaded;
 	
-	private static Set<FrequencyManager> managers = new HashSet<FrequencyManager>();
+	private static Set<FrequencyManager> managers = new HashSet<>();
 	
-	private Set<Frequency> frequencies = new HashSet<Frequency>();
+	private Set<Frequency> frequencies = new HashSet<>();
 	
 	private FrequencyDataHandler dataHandler;
 	
@@ -269,7 +269,7 @@ public class FrequencyManager
 	
 	public Set<Frequency> readFrequencies(ByteBuf dataStream)
 	{
-		Set<Frequency> ret = new HashSet<Frequency>();
+		Set<Frequency> ret = new HashSet<>();
 		int size = dataStream.readInt();
 		
 		try {
@@ -341,7 +341,7 @@ public class FrequencyManager
 				
 				NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
 				
-				loadedFrequencies = new HashSet<Frequency>();
+				loadedFrequencies = new HashSet<>();
 				
 				for(int i = 0; i < list.tagCount(); i++)
 				{

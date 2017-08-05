@@ -131,12 +131,6 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		
 		fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlay);
 		fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
-		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-			@Override
-			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
-			{
-				tooltip.remove(1);
-			}
-		});
+		fluidStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

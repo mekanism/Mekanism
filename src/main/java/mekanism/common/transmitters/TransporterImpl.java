@@ -59,7 +59,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 				return;
 			}
 			
-			Set<TransporterStack> remove = new HashSet<TransporterStack>();
+			Set<TransporterStack> remove = new HashSet<>();
 
 			getTileEntity().pullItems();
 

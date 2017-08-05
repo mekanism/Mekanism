@@ -44,100 +44,97 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			return null;
 		}
 		
-		PacketHandler.handlePacket(new Runnable() {
-			@Override
-			public void run()
-			{
-				if(message.packetType == PacketType.UPDATE)
-				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+		PacketHandler.handlePacket(() ->
+        {
+            if(message.packetType == PacketType.UPDATE)
+            {
+                TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
-					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
-					{
-						IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-						DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
-						network.register();
-						transmitter.setTransmitterNetwork(network);
-						
-						for(Coord4D coord : message.transmitterCoords)
-						{
-							TileEntity tile = coord.getTileEntity(player.world);
+                if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+                {
+                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+                    DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
+                    network.register();
+                    transmitter.setTransmitterNetwork(network);
 
-							if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
-							{
-								CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).setTransmitterNetwork(network);
-							}
-						}
-						
-						network.updateCapacity();
-					}
-				}
-				
-				if(client.opaqueTransmitters || message.coord4D == null || player == null)
-				{
-					return;
-				}
-				
-				if(message.packetType == PacketType.ENERGY)
-				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-					
-					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
-					{
-						IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-						
-						if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.ENERGY)
-						{
-							((IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork>)transmitter).getTransmitterNetwork().clientEnergyScale = message.power;
-						}
-					}
-				}
-				else if(message.packetType == PacketType.GAS)
-				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+                    for(Coord4D coord : message.transmitterCoords)
+                    {
+                        TileEntity tile = coord.getTileEntity(player.world);
 
-					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
-					{
-						IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-						
-						if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.GAS)
-						{
-							GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork>)transmitter).getTransmitterNetwork();
+                        if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+                        {
+                            CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).setTransmitterNetwork(network);
+                        }
+                    }
 
-							if(message.gasType != null)
-							{
-								net.refGas = message.gasType;
-							}
+                    network.updateCapacity();
+                }
+            }
 
-							net.buffer = message.gasStack;
-							net.didTransfer = message.didGasTransfer;
-						}
-					}
-				}
-				else if(message.packetType == PacketType.FLUID)
-				{
-					TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+            if(client.opaqueTransmitters || message.coord4D == null || player == null)
+            {
+                return;
+            }
 
-					if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
-					{
-						IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-						
-						if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.FLUID)
-						{
-							FluidNetwork net = ((IGridTransmitter<IFluidHandler, FluidNetwork>)transmitter).getTransmitterNetwork();
+            if(message.packetType == PacketType.ENERGY)
+            {
+                TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
-							if(message.fluidType != null)
-							{
-								net.refFluid = message.fluidType;
-							}
+                if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+                {
+                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
-							net.buffer = message.fluidStack;
-							net.didTransfer = message.didFluidTransfer;
-						}
-					}
-				}
-			}
-		}, player);
+                    if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.ENERGY)
+                    {
+                        ((IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork>)transmitter).getTransmitterNetwork().clientEnergyScale = message.power;
+                    }
+                }
+            }
+            else if(message.packetType == PacketType.GAS)
+            {
+                TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+                if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+                {
+                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+
+                    if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.GAS)
+                    {
+                        GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork>)transmitter).getTransmitterNetwork();
+
+                        if(message.gasType != null)
+                        {
+                            net.refGas = message.gasType;
+                        }
+
+                        net.buffer = message.gasStack;
+                        net.didTransfer = message.didGasTransfer;
+                    }
+                }
+            }
+            else if(message.packetType == PacketType.FLUID)
+            {
+                TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+                if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+                {
+                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+
+                    if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.FLUID)
+                    {
+                        FluidNetwork net = ((IGridTransmitter<IFluidHandler, FluidNetwork>)transmitter).getTransmitterNetwork();
+
+                        if(message.fluidType != null)
+                        {
+                            net.refFluid = message.fluidType;
+                        }
+
+                        net.buffer = message.fluidStack;
+                        net.didTransfer = message.didFluidTransfer;
+                    }
+                }
+            }
+        }, player);
 		
 		return null;
 	}

@@ -140,7 +140,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		
 		public static List<GeneratorType> getGeneratorsForConfig()
 		{
-			List<GeneratorType> ret = new ArrayList<GeneratorType>();
+			List<GeneratorType> ret = new ArrayList<>();
 
 			for(GeneratorType type : GeneratorType.values())
 			{

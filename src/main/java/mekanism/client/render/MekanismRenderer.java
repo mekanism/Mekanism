@@ -68,7 +68,7 @@ public class MekanismRenderer
 	
 	public static float GAS_RENDER_BASE = 0.2F;
 	
-	public static Map<TransmissionType, TextureAtlasSprite> overlays = new HashMap<TransmissionType, TextureAtlasSprite>();
+	public static Map<TransmissionType, TextureAtlasSprite> overlays = new HashMap<>();
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -87,7 +87,7 @@ public class MekanismRenderer
 
 	public static TextureAtlasSprite missingIcon;
 
-	public static Map<FluidType, Map<Fluid, TextureAtlasSprite>> textureMap = new HashMap<FluidType, Map<Fluid, TextureAtlasSprite>>();
+	public static Map<FluidType, Map<Fluid, TextureAtlasSprite>> textureMap = new HashMap<>();
 
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
@@ -144,7 +144,7 @@ public class MekanismRenderer
 		if(item instanceof IMetaItem)
 		{
 			IMetaItem metaItem = (IMetaItem)item;
-			List<ModelResourceLocation> variants = new ArrayList<ModelResourceLocation>();
+			List<ModelResourceLocation> variants = new ArrayList<>();
 			
 			for(int i = 0; i < metaItem.getVariants(); i++)
 			{
@@ -174,7 +174,7 @@ public class MekanismRenderer
 
 		for(FluidType type : FluidType.values()) 
 		{
-			textureMap.put(type, new HashMap<Fluid, TextureAtlasSprite>());
+			textureMap.put(type, new HashMap<>());
 		}
 
 		for(Fluid fluid : FluidRegistry.getRegisteredFluids().values()) 
@@ -222,7 +222,7 @@ public class MekanismRenderer
 		
 		Map<Fluid, TextureAtlasSprite> map = textureMap.get(type);
 		
-		return map.containsKey(fluid) ? map.get(fluid) : missingIcon;
+		return map.getOrDefault(fluid, missingIcon);
 	}
 	
 	private static VertexFormat prevFormat = null;

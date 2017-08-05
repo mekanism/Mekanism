@@ -30,7 +30,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	public ItemStack itemStack;
 
-	private ArrayList<Pair<Integer, Block>> blockList = new ArrayList<Pair<Integer, Block>>();
+	private ArrayList<Pair<Integer, Block>> blockList = new ArrayList<>();
 
 	public Coord4D pos;
 

@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager
 {
 	/** A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids. */
-	public Set<ValveData> valveViewing = new HashSet<ValveData>();
+	public Set<ValveData> valveViewing = new HashSet<>();
 
 	/** The capacity this tank has on the client-side. */
 	public int clientCapacity;
@@ -204,7 +204,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			
 			if(isRendering)
 			{
-				Set<ValveData> toSend = new HashSet<ValveData>();
+				Set<ValveData> toSend = new HashSet<>();
 
 				for(ValveData valveData : structure.valves)
 				{

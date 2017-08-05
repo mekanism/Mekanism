@@ -78,13 +78,6 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 		
 		fluidStacks.init(0, true, 6-xOffset, 5-yOffset, 16, 58, 1000, false, fluidOverlay);
 		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
-		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-
-			@Override
-			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
-			{
-				tooltip.remove(1);
-			}
-		});
+		fluidStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

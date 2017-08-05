@@ -24,7 +24,7 @@ import java.util.Arrays;
 @SideOnly(Side.CLIENT)
 public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController>
 {
-	private static HashMap<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<Fluid, DisplayInteger[]>();
+	private static HashMap<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<>();
 	private static final int LEVELS = 16;
 	private static final int ALL_LEVELS = LEVELS + 2;
 	private static final int RING_INDEX = ALL_LEVELS-2;

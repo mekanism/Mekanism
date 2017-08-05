@@ -576,7 +576,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
 	public List<EnumFacing> getConnections(ConnectionType type)
 	{
-		List<EnumFacing> sides = new ArrayList<EnumFacing>();
+		List<EnumFacing> sides = new ArrayList<>();
 
 		for(EnumFacing side : EnumFacing.values())
 		{

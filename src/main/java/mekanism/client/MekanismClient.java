@@ -21,8 +21,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class MekanismClient extends Mekanism
 {
-	public static Map<UUID, SecurityData> clientSecurityMap = new HashMap<UUID, SecurityData>();
-	public static Map<UUID, String> clientUUIDMap = new HashMap<UUID, String>();
+	public static Map<UUID, SecurityData> clientSecurityMap = new HashMap<>();
+	public static Map<UUID, String> clientUUIDMap = new HashMap<>();
 	
 	public static VoiceClient voiceClient;
 

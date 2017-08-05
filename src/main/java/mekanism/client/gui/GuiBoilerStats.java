@@ -37,29 +37,14 @@ public class GuiBoilerStats extends GuiMekanism
 		super(tentity, new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png")));
-		guiElements.add(new GuiHeatInfo(new IInfoHandler() {
-			@Override
-			public List<String> getInfo()
-			{
-				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, false, unit);
-				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png")));
-		guiElements.add(boilGraph = new GuiGraph(this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png"), 8, 83, 160, 36, new GraphDataHandler() {
-			@Override
-			public String getDataDisplay(int data)
-			{
-				return LangUtils.localize("gui.boilRate") + ": " + data + " mB/t";
-			}
-		}));
-		guiElements.add(maxGraph = new GuiGraph(this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png"), 8, 122, 160, 36, new GraphDataHandler() {
-			@Override
-			public String getDataDisplay(int data)
-			{
-				return LangUtils.localize("gui.maxBoil") + ": " + data + " mB/t";
-			}
-		}));
+		guiElements.add(new GuiHeatInfo(() ->
+        {
+            TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, false, unit);
+            return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png")));
+		guiElements.add(boilGraph = new GuiGraph(this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png"), 8, 83, 160, 36, data -> LangUtils.localize("gui.boilRate") + ": " + data + " mB/t"));
+		guiElements.add(maxGraph = new GuiGraph(this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png"), 8, 122, 160, 36, data -> LangUtils.localize("gui.maxBoil") + ": " + data + " mB/t"));
 		maxGraph.enableFixedScale((int)((tentity.structure.superheatingElements*general.superheatingHeatTransfer)/SynchronizedBoilerData.getHeatEnthalpy()));
 	}
 	

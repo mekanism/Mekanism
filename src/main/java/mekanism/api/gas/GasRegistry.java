@@ -7,7 +7,7 @@ import net.minecraftforge.fluids.Fluid;
 
 public class GasRegistry
 {
-	private static ArrayList<Gas> registeredGasses = new ArrayList<Gas>();
+	private static ArrayList<Gas> registeredGasses = new ArrayList<>();
 
 	/**
 	 * Register a new gas into GasRegistry.

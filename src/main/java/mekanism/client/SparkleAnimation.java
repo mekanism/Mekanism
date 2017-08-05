@@ -22,7 +22,7 @@ public class SparkleAnimation
 
 	public Random random = new Random();
 
-	public Set<Coord4D> iteratedNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> iteratedNodes = new HashSet<>();
 	
 	public INodeChecker nodeChecker;
 
@@ -44,26 +44,23 @@ public class SparkleAnimation
 		} catch(Exception e) {}
 		
 		try {
-			new Thread() {
-				@Override
-				public void run()
-				{
-					World world = pointer.getWorld();
-					
-					for(Coord4D coord : iteratedNodes)
-					{
-						for(int i = 0; i < 6; i++)
-						{
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + -.01, coord.z + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + 1.01, coord.z + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + -.01, 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + 1.01, 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + -.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + 1.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
-						}
-					}
-				}
-			}.start();
+			new Thread(() ->
+			{
+                World world = pointer.getWorld();
+
+                for(Coord4D coord : iteratedNodes)
+                {
+                    for(int i = 0; i < 6; i++)
+                    {
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + -.01, coord.z + random.nextDouble(), 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + 1.01, coord.z + random.nextDouble(), 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + -.01, 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + 1.01, 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + -.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + 1.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
+                    }
+                }
+            }).start();
 		} catch(Exception e) {}
 	}
 

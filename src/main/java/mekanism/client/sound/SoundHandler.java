@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SoundHandler
 {
-	public static Map<String, Map<String, IResettableSound>> soundMaps = new HashMap<String, Map<String, IResettableSound>>();
+	public static Map<String, Map<String, IResettableSound>> soundMaps = new HashMap<>();
 
 	public static Map<ISound, String> invPlayingSounds;
 
@@ -105,13 +105,7 @@ public class SoundHandler
 
 	public static Map<String, IResettableSound> getMap(String name)
 	{
-		Map<String, IResettableSound> map = soundMaps.get(name);
-		
-		if(map == null)
-		{
-			map = new HashMap<String, IResettableSound>();
-			soundMaps.put(name, map);
-		}
+		Map<String, IResettableSound> map = soundMaps.computeIfAbsent(name, k -> new HashMap<>());
 
 		return map;
 	}

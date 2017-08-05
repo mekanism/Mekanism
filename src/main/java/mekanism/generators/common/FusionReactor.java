@@ -37,8 +37,8 @@ import net.minecraftforge.fluids.FluidTank;
 public class FusionReactor
 {
 	public TileEntityReactorController controller;
-	public Set<TileEntityReactorBlock> reactorBlocks = new HashSet<TileEntityReactorBlock>();
-	public Set<IHeatTransfer> heatTransfers = new HashSet<IHeatTransfer>();
+	public Set<TileEntityReactorBlock> reactorBlocks = new HashSet<>();
+	public Set<IHeatTransfer> heatTransfers = new HashSet<>();
 
 	//Current stores of temperature - internally uses ambient-relative kelvin units
 	public double plasmaTemperature;
