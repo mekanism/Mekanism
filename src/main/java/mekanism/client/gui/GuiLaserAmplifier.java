@@ -58,7 +58,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			@Override
 			public double getMaxLevel()
 			{
-				return tileEntity.MAX_ENERGY;
+				return TileEntityLaserAmplifier.MAX_ENERGY;
 			}
 
 			@Override

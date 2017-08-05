@@ -141,7 +141,7 @@ public class ThreadClientUpdate extends Thread
 		}
 	}
 
-	private void createTemp() throws IOException
+	private void createTemp()
 	{
 		if(!tempDir.exists())
 		{
@@ -149,7 +149,7 @@ public class ThreadClientUpdate extends Thread
 		}
 	}
 
-	private void deleteTemp() throws IOException
+	private void deleteTemp()
 	{
 		if(tempDir.exists())
 		{

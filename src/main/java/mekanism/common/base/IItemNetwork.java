@@ -5,5 +5,5 @@ import net.minecraft.item.ItemStack;
 
 public interface IItemNetwork 
 {
-	void handlePacketData(ItemStack stack, ByteBuf dataStream) throws Exception;
+	void handlePacketData(ItemStack stack, ByteBuf dataStream);
 }

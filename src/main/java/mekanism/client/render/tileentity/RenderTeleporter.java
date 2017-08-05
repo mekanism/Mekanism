@@ -119,7 +119,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTelepo
 		}
 
 		MekanismRenderer.renderObject(toReturn);
-		display.endList();
+		DisplayInteger.endList();
 
 		return display;
 	}

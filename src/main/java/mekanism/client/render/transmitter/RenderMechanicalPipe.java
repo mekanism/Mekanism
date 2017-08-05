@@ -258,7 +258,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 			}
 
 			MekanismRenderer.renderObject(toReturn);
-			displays[i].endList();
+			DisplayInteger.endList();
 		}
 
 		return displays;

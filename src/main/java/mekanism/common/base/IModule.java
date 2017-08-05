@@ -30,13 +30,13 @@ public interface IModule
 	 * Writes this module's configuration to a ConfigSync packet.
 	 * @param dataStream - the ByteBuf of the sync packet
 	 */
-    void writeConfig(ByteBuf dataStream) throws IOException;
+    void writeConfig(ByteBuf dataStream);
 
 	/**
 	 * Reads this module's configuration from the original ConfigSync packet.
 	 * @param dataStream - the incoming ByteBuf of the sync packet
 	 */
-    void readConfig(ByteBuf dataStream) throws IOException;
+    void readConfig(ByteBuf dataStream);
 	
 	/**
 	 * Called when the player returns to the main menu.

@@ -121,7 +121,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 										teleporter.didTeleport.add(player.getPersistentID());
 										teleporter.teleDelay = 5;
 										
-										item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
+										item.setEnergy(itemstack, item.getEnergy(itemstack) - ItemPortableTeleporter.calculateEnergyCost(player, coords));
 										
 										if(player instanceof EntityPlayerMP)
 										{
@@ -197,7 +197,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 			}
 			else {
 				Coord4D coords = given.getClosestCoords(new Coord4D(player));
-				double energyNeeded = item.calculateEnergyCost(player, coords);
+				double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
 				
 				if(energyNeeded > item.getEnergy(itemstack))
 				{

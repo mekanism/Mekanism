@@ -1292,14 +1292,10 @@ public final class MekanismUtils
 					}
 					
 					currentLine += word;
-					
-					continue;
 				}
 				else {
 					lines.add(currentLine);
 					currentLine = word;
-					
-					continue;
 				}
 			}
 			

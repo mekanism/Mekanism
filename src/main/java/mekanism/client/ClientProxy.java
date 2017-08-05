@@ -1089,7 +1089,7 @@ public class ClientProxy extends CommonProxy
 	}
 	
 	@SubscribeEvent
-    public void onModelBake(ModelBakeEvent event) throws IOException 
+    public void onModelBake(ModelBakeEvent event)
     {
 		for(String s : CUSTOM_RENDERS)
 		{

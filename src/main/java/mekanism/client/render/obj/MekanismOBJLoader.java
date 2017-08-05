@@ -43,7 +43,7 @@ public class MekanismOBJLoader implements ICustomModelLoader
 	public static final String[] OBJ_RENDERS = new String[] {"glow_panel"};
 	
 	@SubscribeEvent
-    public void onModelBake(ModelBakeEvent event) throws IOException 
+    public void onModelBake(ModelBakeEvent event)
     {
 		GlowPanelModel.forceRebake();
 		

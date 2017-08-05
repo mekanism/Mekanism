@@ -410,7 +410,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxEnergy()
 	{
-		return !hasFrequency() ? 0 : frequency.MAX_ENERGY;
+		return !hasFrequency() ? 0 : InventoryFrequency.MAX_ENERGY;
 	}
 
 	@Override

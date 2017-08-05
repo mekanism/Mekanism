@@ -243,7 +243,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 		}
 
 		MekanismRenderer.renderObject(toReturn);
-		display.endList();
+		DisplayInteger.endList();
 
 		return display;
 	}

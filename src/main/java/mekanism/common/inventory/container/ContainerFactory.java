@@ -15,6 +15,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import java.util.Arrays;
+
 public class ContainerFactory extends Container
 {
 	private TileEntityFactory tileEntity;
@@ -256,10 +258,7 @@ public class ContainerFactory extends Container
 	{
 		if(!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockMachine)
 		{
-			for(RecipeType type : RecipeType.values())
-			{
-				return itemStack.isItemEqual(type.getStack());
-			}
+			return Arrays.stream(RecipeType.values()).findFirst().filter(type -> itemStack.isItemEqual(type.getStack())).isPresent();
 		}
 
 		return false;

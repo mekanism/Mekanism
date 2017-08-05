@@ -155,7 +155,6 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
             if(!transmitter.isValid())
             {
                 iter.remove();
-                continue;
             }
         }
 

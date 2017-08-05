@@ -72,7 +72,7 @@ public final class MinerVisualRenderer
 			MekanismRenderer.renderObject(model);
 		}
 		
-		display.endList();
+		DisplayInteger.endList();
 		
 		return display;
 	}

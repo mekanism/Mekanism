@@ -100,7 +100,7 @@ public final class FluidRenderer
 			MekanismRenderer.renderObject(toReturn);
 		}
 
-		display.endList();
+		DisplayInteger.endList();
 
 		return display;
 	}
@@ -228,7 +228,7 @@ public final class FluidRenderer
 			MekanismRenderer.renderObject(toReturn);
 		}
 		
-		display.endList();
+		DisplayInteger.endList();
 
 		return display;
 	}

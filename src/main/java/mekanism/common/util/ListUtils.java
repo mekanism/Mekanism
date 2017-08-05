@@ -152,12 +152,7 @@ public class ListUtils
 
 	public static <V> V getTop(List<V> list)
 	{
-		for(V obj : list)
-		{
-			return obj;
-		}
-
-		return null;
+		return list.stream().findFirst().orElse(null);
 	}
 
 	public static <V> List<V> asList(Set<V> set)
