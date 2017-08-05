@@ -12,7 +12,6 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class SecurityFrequency extends Frequency

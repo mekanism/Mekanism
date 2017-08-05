@@ -6,7 +6,6 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;

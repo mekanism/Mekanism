@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import java.util.EnumSet;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.common.base.IBoundingBlock;

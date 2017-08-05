@@ -202,11 +202,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			transmitters.add(transmitter);
 			transmittersAdded.add(transmitter);
 		}
-		
-		for(IGridTransmitter<A, N> transmitter : net.transmittersToAdd)
-		{
-			transmittersToAdd.add(transmitter);
-		}
+
+		transmittersToAdd.addAll(net.transmittersToAdd);
 		
 		possibleAcceptors.putAll(net.possibleAcceptors);
 		

@@ -6,7 +6,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;

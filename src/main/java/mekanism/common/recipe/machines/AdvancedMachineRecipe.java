@@ -1,7 +1,6 @@
 package mekanism.common.recipe.machines;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;

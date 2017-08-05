@@ -4,7 +4,6 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;

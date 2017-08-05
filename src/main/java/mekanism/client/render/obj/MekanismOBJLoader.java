@@ -1,15 +1,11 @@
 package mekanism.client.render.obj;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.vecmath.Matrix4f;
 
 import mekanism.client.render.obj.MekanismOBJModel.OBJModelType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;

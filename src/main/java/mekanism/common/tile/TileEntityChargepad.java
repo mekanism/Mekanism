@@ -6,7 +6,6 @@ import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 

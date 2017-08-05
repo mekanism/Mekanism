@@ -60,17 +60,7 @@ public class Version
 			}
 			else if(version.minor == minor)
 			{
-				if(version.build > build)
-				{
-					return -1;
-				}
-				else if(version.build == build)
-				{
-					return 0;
-				}
-				else {
-					return 1;
-				}
+				return (byte) Integer.compare(build, version.build);
 			}
 			else {
 				return 1;

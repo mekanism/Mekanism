@@ -233,7 +233,7 @@ public final class HolidayManager
 
 		for(int i = 0; i < amount; i++)
 		{
-			builder.append(colors[i%colors.length] + "-");
+			builder.append(colors[i % colors.length]).append("-");
 		}
 
 		return builder.toString();

@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.reactor;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 

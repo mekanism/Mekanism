@@ -1,8 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiMatrixTab;
 import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;

@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.Iterator;
 
 import mekanism.api.Coord4D;

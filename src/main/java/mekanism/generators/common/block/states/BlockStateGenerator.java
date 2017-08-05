@@ -1,13 +1,10 @@
 package mekanism.generators.common.block.states;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
-import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;

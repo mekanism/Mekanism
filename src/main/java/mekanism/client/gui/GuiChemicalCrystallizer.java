@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasTank;
 import mekanism.api.gas.OreGas;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;

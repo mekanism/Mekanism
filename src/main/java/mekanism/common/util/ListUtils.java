@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -50,10 +51,7 @@ public class ListUtils
 	{
 		List<V> toReturn = new ArrayList<>();
 
-		for(V obj : list)
-		{
-			toReturn.add(obj);
-		}
+		toReturn.addAll(list);
 
 		return toReturn;
 	}
@@ -62,15 +60,8 @@ public class ListUtils
 	{
 		List<V> newList = new ArrayList<>();
 
-		for(V obj : listOne)
-		{
-			newList.add(obj);
-		}
-
-		for(V obj : listTwo)
-		{
-			newList.add(obj);
-		}
+		newList.addAll(listOne);
+		newList.addAll(listTwo);
 
 		return newList;
 	}
@@ -141,10 +132,7 @@ public class ListUtils
 				toAdd--;
 			}
 
-			for(V obj : removed)
-			{
-				list.remove(obj);
-			}
+			list.removeAll(removed);
 		}
 
 		return toReturn;
@@ -168,11 +156,8 @@ public class ListUtils
 	public static <V> ArrayList<V> asArrayList(V... values)
 	{
 		ArrayList<V> ret = new ArrayList<>();
-		
-		for(V value : values)
-		{
-			ret.add(value);
-		}
+
+		Collections.addAll(ret, values);
 		
 		return ret;
 	}

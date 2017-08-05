@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.Tier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;

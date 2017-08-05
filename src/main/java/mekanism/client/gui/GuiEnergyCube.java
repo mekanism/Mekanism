@@ -1,11 +1,6 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
-import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyGauge;
-import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;

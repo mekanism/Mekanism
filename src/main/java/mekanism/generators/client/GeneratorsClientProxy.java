@@ -1,7 +1,5 @@
 package mekanism.generators.client;
 
-import java.io.IOException;
-
 import mekanism.client.render.MekanismRenderer;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;

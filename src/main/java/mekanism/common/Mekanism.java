@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,7 +121,6 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -234,10 +232,10 @@ public class Mekanism
 	
 	public static KeySync keyMap = new KeySync();
 	
-	public static Set<String> jetpackOn = new HashSet<>();
-	public static Set<String> gasmaskOn = new HashSet<>();
-	public static Set<String> freeRunnerOn = new HashSet<>();
-	public static Set<String> flamethrowerActive = new HashSet<>();
+	public static final Set<String> jetpackOn = new HashSet<>();
+	public static final Set<String> gasmaskOn = new HashSet<>();
+	public static final Set<String> freeRunnerOn = new HashSet<>();
+	public static final Set<String> flamethrowerActive = new HashSet<>();
 	
 	public static Set<Coord4D> activeVibrators = new HashSet<>();
 	

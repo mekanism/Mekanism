@@ -2,8 +2,6 @@ package mekanism.common.base;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
-
 import mekanism.common.Version;
 
 /**

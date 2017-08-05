@@ -1,8 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.api.gas.GasTank;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityAmbientAccumulator;

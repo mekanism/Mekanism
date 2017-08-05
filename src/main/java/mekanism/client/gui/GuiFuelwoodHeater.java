@@ -1,8 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.List;
-
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;

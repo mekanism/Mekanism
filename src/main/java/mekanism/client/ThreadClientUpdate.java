@@ -172,7 +172,7 @@ public class ThreadClientUpdate extends Thread
 
 	private void prepareForDownload()
 	{
-		File[] modsList = new File(new StringBuilder().append(Mekanism.proxy.getMinecraftDir()).append(File.separator + "mods").toString()).listFiles();
+		File[] modsList = new File(String.valueOf(Mekanism.proxy.getMinecraftDir()) + File.separator + "mods").listFiles();
 
 		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 		{

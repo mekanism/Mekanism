@@ -21,7 +21,6 @@ import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.transmitters.grid.InventoryNetwork.AcceptorData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;

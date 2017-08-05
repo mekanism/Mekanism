@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;

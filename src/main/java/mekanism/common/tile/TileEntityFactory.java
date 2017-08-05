@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -36,8 +35,6 @@ import mekanism.common.base.SoundWrapper;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -47,8 +44,6 @@ import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -190,11 +185,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		factory.soundURL = soundURL;
 		
 		//Factory
-		
-		for(int i = 0; i < tier.processes; i++)
-		{
-			factory.progress[i] = progress[i];
-		}
+
+		System.arraycopy(progress, 0, factory.progress, 0, tier.processes);
 		
 		factory.recipeTicks = recipeTicks;
 		factory.clientActive = clientActive;

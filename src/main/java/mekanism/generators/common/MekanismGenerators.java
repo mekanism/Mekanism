@@ -14,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
-import mekanism.common.config.TypeConfigManager;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockManager;

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.util.LangUtils;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;

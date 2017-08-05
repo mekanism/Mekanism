@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.UsernameCache;
 
 public class Frequency
 {

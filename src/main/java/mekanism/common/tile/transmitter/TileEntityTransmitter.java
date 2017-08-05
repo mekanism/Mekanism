@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 
 import mekanism.api.Coord4D;

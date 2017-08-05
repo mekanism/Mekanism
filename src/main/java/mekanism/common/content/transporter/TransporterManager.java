@@ -23,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.IItemHandler;
 
 public class TransporterManager

@@ -149,18 +149,12 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 	public void sendDataResponse(Frequency given, World world, EntityPlayer player, ItemPortableTeleporter item, ItemStack itemstack, EnumHand hand)
 	{
 		List<Frequency> publicFreqs = new ArrayList<>();
-		
-		for(Frequency f : getManager(null, world).getFrequencies())
-		{
-			publicFreqs.add(f);
-		}
+
+		publicFreqs.addAll(getManager(null, world).getFrequencies());
 		
 		List<Frequency> privateFreqs = new ArrayList<>();
-		
-		for(Frequency f : getManager(player.getUniqueID(), world).getFrequencies())
-		{
-			privateFreqs.add(f);
-		}
+
+		privateFreqs.addAll(getManager(player.getUniqueID(), world).getFrequencies());
 		
 		byte status = 3;
 		

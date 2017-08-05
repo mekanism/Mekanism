@@ -5,10 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
@@ -22,7 +20,6 @@ import mekanism.generators.common.FusionReactor;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;

@@ -1,10 +1,7 @@
 package mekanism.generators.client.gui;
 
-import java.util.List;
-
 import mekanism.api.EnumColor;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
