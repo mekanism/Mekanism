@@ -55,8 +55,8 @@ public class GuiEnergyGauge extends GuiGauge
 		return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils.getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()) : LangUtils.localize("gui.empty");
 	}
 
-	public static interface IEnergyInfoHandler
+	public interface IEnergyInfoHandler
 	{
-		public IStrictEnergyStorage getEnergyStorage();
+		IStrictEnergyStorage getEnergyStorage();
 	}
 }

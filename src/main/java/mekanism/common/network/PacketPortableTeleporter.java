@@ -407,12 +407,12 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 		}
 	}
 	
-	public static enum PortableTeleporterPacketType
+	public enum PortableTeleporterPacketType
 	{
 		DATA_REQUEST,
 		DATA_RESPONSE,
 		SET_FREQ,
 		DEL_FREQ,
-		TELEPORT;
-	}
+		TELEPORT
+    }
 }

@@ -37,7 +37,7 @@ public class BlockStateReactor extends ExtendedBlockState
 		super(block, new IProperty[] {typeProperty, activeProperty}, new IUnlistedProperty[] {});
 	}
 	
-	public static enum ReactorBlock
+	public enum ReactorBlock
 	{
 		REACTOR_BLOCK,
 		REACTOR_GLASS;
@@ -84,7 +84,7 @@ public class BlockStateReactor extends ExtendedBlockState
 		}
 	}
 	
-	public static enum ReactorBlockType implements IStringSerializable
+	public enum ReactorBlockType implements IStringSerializable
 	{
 		REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController.class, true),
 		REACTOR_FRAME(ReactorBlock.REACTOR_BLOCK, 1, "ReactorFrame", -1, TileEntityReactorFrame.class, false),
@@ -100,7 +100,7 @@ public class BlockStateReactor extends ExtendedBlockState
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean activable;
 	
-		private ReactorBlockType(ReactorBlock b, int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass, boolean activeState)
+		ReactorBlockType(ReactorBlock b, int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass, boolean activeState)
 		{
 			blockType = b;
 			meta = i;

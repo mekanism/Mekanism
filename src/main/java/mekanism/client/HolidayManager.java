@@ -161,7 +161,7 @@ public final class HolidayManager
 		}
 	}
 
-	public static enum Month
+	public enum Month
 	{
 		JANUARY("January"),
 		FEBRUARY("February"),
@@ -178,7 +178,7 @@ public final class HolidayManager
 
 		private final String name;
 
-		private Month(String n)
+		Month(String n)
 		{
 			name = n;
 		}

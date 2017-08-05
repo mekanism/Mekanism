@@ -187,7 +187,7 @@ public abstract class GuiGauge<T> extends GuiElement
 		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
 	
-	public static enum Type
+	public enum Type
 	{
 		STANDARD(null, 18, 60, 0, 0, 1, "GuiGaugeStandard.png"),
 		STANDARD_YELLOW(EnumColor.YELLOW, 18, 60, 0, 60, 1, "GuiGaugeStandard.png"),
@@ -213,7 +213,7 @@ public abstract class GuiGauge<T> extends GuiElement
 		public int number;
 		public String textureLocation;
 
-		private Type(EnumColor c, int w, int h, int tx, int ty, int n, String t)
+		Type(EnumColor c, int w, int h, int tx, int ty, int n, String t)
 		{
 			color = c;
 			width = w;

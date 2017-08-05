@@ -6,9 +6,9 @@ import net.minecraft.item.ItemStack;
 
 public interface IOwnerItem
 {
-	public UUID getOwnerUUID(ItemStack stack);
+	UUID getOwnerUUID(ItemStack stack);
 	
-	public void setOwnerUUID(ItemStack stack, UUID owner);
+	void setOwnerUUID(ItemStack stack, UUID owner);
 	
-	public boolean hasOwner(ItemStack stack);
+	boolean hasOwner(ItemStack stack);
 }

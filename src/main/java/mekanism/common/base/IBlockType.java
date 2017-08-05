@@ -6,7 +6,7 @@ package mekanism.common.base;
 
 public interface IBlockType
 {
-	public String getBlockName();
+	String getBlockName();
 	
 //	public Collection<ShapedMekanismRecipe> getRecipes();
 //
@@ -14,5 +14,5 @@ public interface IBlockType
 //
 //	public void addRecipe(ShapedMekanismRecipe recipe);
 	
-	public boolean isEnabled();
+	boolean isEnabled();
 }

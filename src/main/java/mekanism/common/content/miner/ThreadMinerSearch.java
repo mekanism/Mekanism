@@ -154,7 +154,7 @@ public class ThreadMinerSearch extends Thread
 		state = State.IDLE;
 	}
 
-	public static enum State
+	public enum State
 	{
 		IDLE("Not ready"),
 		SEARCHING("Searching"),
@@ -163,7 +163,7 @@ public class ThreadMinerSearch extends Thread
 
 		public String desc;
 
-		private State(String s)
+		State(String s)
 		{
 			desc = s;
 		}

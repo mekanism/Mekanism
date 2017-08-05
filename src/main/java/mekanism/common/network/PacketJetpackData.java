@@ -136,10 +136,10 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 		}
 	}
 	
-	public static enum JetpackPacket
+	public enum JetpackPacket
 	{
 		UPDATE,
 		FULL,
-		MODE;
-	}
+		MODE
+    }
 }

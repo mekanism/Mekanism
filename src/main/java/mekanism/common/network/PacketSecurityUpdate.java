@@ -133,9 +133,9 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 		}
 	}
 	
-	public static enum SecurityPacket
+	public enum SecurityPacket
 	{
 		UPDATE,
-		FULL;
-	}
+		FULL
+    }
 }

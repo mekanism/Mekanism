@@ -1560,7 +1560,7 @@ public final class MekanismUtils
 		return ret != null ? ret : "<???>";
 	}
 
-	public static enum ResourceType
+	public enum ResourceType
 	{
 		GUI("gui"),
 		GUI_ELEMENT("gui/elements"),
@@ -1573,7 +1573,7 @@ public final class MekanismUtils
 
 		private String prefix;
 
-		private ResourceType(String s)
+		ResourceType(String s)
 		{
 			prefix = s;
 		}

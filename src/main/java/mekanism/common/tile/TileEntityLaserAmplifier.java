@@ -412,7 +412,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		return super.getCapability(capability, facing);
 	}
 	
-	public static enum RedstoneOutput
+	public enum RedstoneOutput
 	{
 		OFF("off"),
 		ENTITY_DETECTION("entityDetection"),
@@ -420,7 +420,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		
 		private String unlocalizedName;
 		
-		private RedstoneOutput(String name)
+		RedstoneOutput(String name)
 		{
 			unlocalizedName = name;
 		}

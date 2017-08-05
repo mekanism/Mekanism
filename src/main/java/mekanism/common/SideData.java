@@ -92,10 +92,10 @@ public class SideData
 		return (GasTank)tanks[0];
 	}
 	
-	public static enum IOState
+	public enum IOState
 	{
 		INPUT,
 		OUTPUT,
-		OFF;
+		OFF
 	}
 }

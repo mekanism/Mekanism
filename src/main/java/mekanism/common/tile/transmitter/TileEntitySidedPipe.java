@@ -726,7 +726,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		return super.getCapability(capability, facing);
 	}
 
-	public static enum ConnectionType implements IStringSerializable
+	public enum ConnectionType implements IStringSerializable
 	{
 		NORMAL,
 		PUSH,

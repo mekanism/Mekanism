@@ -5,7 +5,7 @@ package mekanism.common.util;
  */
 public class UnitDisplayUtils
 {
-	public static enum ElectricUnit
+	public enum ElectricUnit
 	{
 		JOULES("Joule", "J"),
 		REDSTONE_FLUX("Redstone Flux", "RF"),
@@ -15,7 +15,7 @@ public class UnitDisplayUtils
 		public String name;
 		public String symbol;
 
-		private ElectricUnit(String s, String s1)
+		ElectricUnit(String s, String s1)
 		{
 			name = s;
 			symbol = s1;
@@ -27,7 +27,7 @@ public class UnitDisplayUtils
 		}
 	}
 
-	public static enum TemperatureUnit
+	public enum TemperatureUnit
 	{
 		KELVIN("Kelvin", "K", 0, 1),
 		CELSIUS("Celsius", "°C", 273.15, 1),
@@ -40,7 +40,7 @@ public class UnitDisplayUtils
 		public double zeroOffset;
 		public double intervalSize;
 
-		private TemperatureUnit(String s, String s1, double offset, double size)
+		TemperatureUnit(String s, String s1, double offset, double size)
 		{
 			name = s;
 			symbol = s1;
@@ -60,7 +60,7 @@ public class UnitDisplayUtils
 	}
 
 	/** Metric system of measurement. */
-	public static enum MeasurementUnit
+	public enum MeasurementUnit
 	{
 		FEMTO("Femto", "f", 0.000000000000001D),
 		PICO("Pico", "p", 0.000000000001D),
@@ -86,7 +86,7 @@ public class UnitDisplayUtils
 		/** Point by which a number is consider to be of this unit */
 		public double value;
 
-		private MeasurementUnit(String s, String s1, double v)
+		MeasurementUnit(String s, String s1, double v)
 		{
 			name = s;
 			symbol = s1;
@@ -281,7 +281,7 @@ public class UnitDisplayUtils
 		return roundDecimals(d, 2);
 	}
 
-	public static enum EnergyType
+	public enum EnergyType
 	{
 		J,
 		RF,
@@ -289,7 +289,7 @@ public class UnitDisplayUtils
 		T
 	}
 
-	public static enum TempType
+	public enum TempType
 	{
 		K,
 		C,

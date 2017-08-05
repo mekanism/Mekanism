@@ -180,12 +180,12 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 		}
 	}
 	
-	public static enum RobitPacketType
+	public enum RobitPacketType
 	{
 		GUI,
 		FOLLOW,
 		NAME,
 		GO_HOME,
-		DROP_PICKUP;
-	}
+		DROP_PICKUP
+    }
 }

@@ -50,7 +50,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty}, new IUnlistedProperty[] {});
 	}
 
-	public static enum BasicBlock
+	public enum BasicBlock
 	{
 		BASIC_BLOCK_1,
 		BASIC_BLOCK_2;
@@ -81,7 +81,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		}
 	}
 
-	public static enum BasicBlockType implements IStringSerializable
+	public enum BasicBlockType implements IStringSerializable
 	{
 		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
 		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false, Predicates.<EnumFacing>alwaysFalse(), false, false, true),
@@ -121,7 +121,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		public boolean tiers;
 		public boolean isBeaconBase;
 
-		private BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase)
+		BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase)
 		{
 			blockType = block;
 			meta = metadata;

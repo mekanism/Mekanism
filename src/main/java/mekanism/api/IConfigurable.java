@@ -17,7 +17,7 @@ public interface IConfigurable
 	 * @param side - the side the block was clicked on
 	 * @return action that was performed
 	 */
-	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side);
+    EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side);
 
 	/**
 	 * Called when a player right clicks this block with a Configurator.
@@ -25,5 +25,5 @@ public interface IConfigurable
 	 * @param side - the side the block was clicked on
 	 * @return action that was performed
 	 */
-	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side);
+    EnumActionResult onRightClick(EntityPlayer player, EnumFacing side);
 }

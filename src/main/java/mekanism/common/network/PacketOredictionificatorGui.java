@@ -219,7 +219,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 		}
 	}
 	
-	public static enum OredictionificatorGuiPacket
+	public enum OredictionificatorGuiPacket
 	{
 		SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
 	}

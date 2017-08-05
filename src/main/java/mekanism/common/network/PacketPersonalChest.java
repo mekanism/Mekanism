@@ -187,7 +187,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
 		}
 	}
 	
-	public static enum PersonalChestPacketType
+	public enum PersonalChestPacketType
 	{
 		CLIENT_OPEN,
 		SERVER_OPEN

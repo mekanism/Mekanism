@@ -110,9 +110,9 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 		}
 	}
 
-    public static enum FlamethrowerPacket
+    public enum FlamethrowerPacket
     {
         UPDATE,
-        MODE;
+        MODE
     }
 }

@@ -8,59 +8,59 @@ import net.minecraft.world.World;
 
 public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter
 {
-	public boolean hasTransmitterNetwork();
+	boolean hasTransmitterNetwork();
 
 	/**
 	 * Gets the network currently in use by this transmitter segment.
 	 * @return network this transmitter is using
 	 */
-	public N getTransmitterNetwork();
+    N getTransmitterNetwork();
 
 	/**
 	 * Sets this transmitter segment's network to a new value.
 	 * @param network - network to set to
 	 */
-	public void setTransmitterNetwork(N network);
+    void setTransmitterNetwork(N network);
 	
-	public void setRequestsUpdate();
+	void setRequestsUpdate();
 
-	public int getTransmitterNetworkSize();
+	int getTransmitterNetworkSize();
 
-	public int getTransmitterNetworkAcceptorSize();
+	int getTransmitterNetworkAcceptorSize();
 
-	public String getTransmitterNetworkNeeded();
+	String getTransmitterNetworkNeeded();
 
-	public String getTransmitterNetworkFlow();
+	String getTransmitterNetworkFlow();
 
-	public String getTransmitterNetworkBuffer();
+	String getTransmitterNetworkBuffer();
 
-	public double getTransmitterNetworkCapacity();
+	double getTransmitterNetworkCapacity();
 
-	public int getCapacity();
+	int getCapacity();
 
-	public World world();
+	World world();
 	
-	public Coord4D coord();
+	Coord4D coord();
 
-	public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
+	Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
 
-	public A getAcceptor(EnumFacing side);
+	A getAcceptor(EnumFacing side);
 
-	public boolean isValid();
+	boolean isValid();
 
-	public boolean isOrphan();
+	boolean isOrphan();
 
-	public void setOrphan(boolean orphaned);
+	void setOrphan(boolean orphaned);
 
-	public N createEmptyNetwork();
+	N createEmptyNetwork();
 
-	public N mergeNetworks(Collection<N> toMerge);
+	N mergeNetworks(Collection<N> toMerge);
 
-	public N getExternalNetwork(Coord4D from);
+	N getExternalNetwork(Coord4D from);
 
-	public void takeShare();
+	void takeShare();
 
-    public void updateShare();
+    void updateShare();
 
-	public Object getBuffer();
+	Object getBuffer();
 }

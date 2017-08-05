@@ -205,7 +205,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		}
 	}
 	
-	public static enum ReactorLogic
+	public enum ReactorLogic
 	{
 		DISABLED("disabled", new ItemStack(Items.GUNPOWDER)),
 		READY("ready", new ItemStack(Items.REDSTONE)),
@@ -215,7 +215,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		private String name;
 		private ItemStack renderStack;
 		
-		private ReactorLogic(String s, ItemStack stack)
+		ReactorLogic(String s, ItemStack stack)
 		{
 			name = s;
 			renderStack = stack;

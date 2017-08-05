@@ -115,10 +115,10 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 		}
 	}
 	
-	public static enum ScubaTankPacket
+	public enum ScubaTankPacket
 	{
 		UPDATE,
 		FULL,
-		MODE;
-	}
+		MODE
+    }
 }

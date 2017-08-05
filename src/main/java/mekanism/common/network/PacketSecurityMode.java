@@ -115,7 +115,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 		}
 	}
 	
-	public static enum SecurityPacketType
+	public enum SecurityPacketType
 	{
 		BLOCK,
 		ITEM

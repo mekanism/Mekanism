@@ -143,8 +143,8 @@ public class GuiGraph extends GuiElement
 		}
 	}
 	
-	public static interface GraphDataHandler
+	public interface GraphDataHandler
 	{
-		public String getDataDisplay(int data);
+		String getDataDisplay(int data);
 	}
 }

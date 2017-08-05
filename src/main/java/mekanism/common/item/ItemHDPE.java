@@ -53,7 +53,7 @@ public class ItemHDPE extends ItemMekanism implements IMetaItem
 
 		private String name;
 
-		private PlasticItem(String itemName)
+		PlasticItem(String itemName)
 		{
 			name = itemName;
 		}

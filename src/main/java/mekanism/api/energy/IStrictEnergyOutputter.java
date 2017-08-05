@@ -15,12 +15,12 @@ public interface IStrictEnergyOutputter
 	 * @param simulate - if the operation should be simulated
 	 * @return energy sent
 	 */
-	public double pullEnergy(EnumFacing side, double amount, boolean simulate);
+    double pullEnergy(EnumFacing side, double amount, boolean simulate);
 
 	/**
 	 * Whether or not this tile entity can output energy on a specific side.
 	 * @param side - side to check
 	 * @return if the tile entity outputs energy
 	 */
-	public boolean canOutputEnergy(EnumFacing side);
+    boolean canOutputEnergy(EnumFacing side);
 }

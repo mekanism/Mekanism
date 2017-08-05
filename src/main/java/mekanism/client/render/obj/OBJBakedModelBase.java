@@ -176,7 +176,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
         return quadList;
     }
 	
-	public static final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite, VertexFormat format, float[] color)
+	public static void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite, VertexFormat format, float[] color)
 	{
 		for(int e = 0; e < format.getElementCount(); e++)
 		{

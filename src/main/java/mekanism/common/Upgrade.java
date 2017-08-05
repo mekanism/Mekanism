@@ -28,7 +28,7 @@ public enum Upgrade
 	private int maxStack;
 	private EnumColor color;
 	
-	private Upgrade(String s, int max, EnumColor c)
+	Upgrade(String s, int max, EnumColor c)
 	{
 		name = s;
 		maxStack = max;
@@ -172,8 +172,8 @@ public enum Upgrade
 		return compound;
 	}
 	
-	public static interface IUpgradeInfoHandler
+	public interface IUpgradeInfoHandler
 	{
-		public List<String> getInfo(Upgrade upgrade);
+		List<String> getInfo(Upgrade upgrade);
 	}
 }

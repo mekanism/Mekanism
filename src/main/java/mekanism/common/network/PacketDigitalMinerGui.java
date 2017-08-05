@@ -268,7 +268,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 		}
 	}
 	
-	public static enum MinerGuiPacket
+	public enum MinerGuiPacket
 	{
 		SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
 	}

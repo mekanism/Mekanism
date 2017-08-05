@@ -24,15 +24,15 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 })
 public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData, ISecurityTile
 {
-	public int[] getBoundSlots(BlockPos location, EnumFacing side);
+	int[] getBoundSlots(BlockPos location, EnumFacing side);
 
-	public boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack);
+	boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack);
 
-	public boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing side);
+	boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing side);
 	
-	public boolean canBoundReceiveEnergy(BlockPos location, EnumFacing side);
+	boolean canBoundReceiveEnergy(BlockPos location, EnumFacing side);
 
-	public void onPower();
+	void onPower();
 
-	public void onNoPower();
+	void onNoPower();
 }

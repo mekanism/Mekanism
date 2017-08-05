@@ -31,7 +31,7 @@ public class SoundHandler
 
 	public static Minecraft mc = Minecraft.getMinecraft();
 
-	public static enum Channel
+	public enum Channel
 	{
 		JETPACK("jetpack", JetpackSound.class),
 		GASMASK("gasMask", GasMaskSound.class),
@@ -40,7 +40,7 @@ public class SoundHandler
 		String channelName;
 		Class<? extends PlayerSound> soundClass;
 
-		private Channel(String name, Class<? extends PlayerSound> clazz)
+		Channel(String name, Class<? extends PlayerSound> clazz)
 		{
 			channelName = name;
 			soundClass = clazz;

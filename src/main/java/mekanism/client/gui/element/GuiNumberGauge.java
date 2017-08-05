@@ -42,14 +42,14 @@ public class GuiNumberGauge extends GuiGauge
 	}
 
 
-	public static interface INumberInfoHandler
+	public interface INumberInfoHandler
 	{
-		public TextureAtlasSprite getIcon();
+		TextureAtlasSprite getIcon();
 
-		public double getLevel();
+		double getLevel();
 
-		public double getMaxLevel();
+		double getMaxLevel();
 
-		public String getText(double level);
+		String getText(double level);
 	}
 }

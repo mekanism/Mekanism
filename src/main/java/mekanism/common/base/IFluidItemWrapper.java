@@ -5,11 +5,11 @@ import net.minecraftforge.fluids.FluidStack;
 
 public interface IFluidItemWrapper 
 {
-	public FluidStack getFluid(ItemStack container);
+	FluidStack getFluid(ItemStack container);
 	
-	public int getCapacity(ItemStack container);
+	int getCapacity(ItemStack container);
 	
-	public int fill(ItemStack container, FluidStack resource, boolean doFill);
+	int fill(ItemStack container, FluidStack resource, boolean doFill);
 	
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain);
+	FluidStack drain(ItemStack container, int maxDrain, boolean doDrain);
 }

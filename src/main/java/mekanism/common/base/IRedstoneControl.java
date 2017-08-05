@@ -4,7 +4,7 @@ import mekanism.common.util.LangUtils;
 
 public interface IRedstoneControl
 {
-	public static enum RedstoneControl
+	enum RedstoneControl
 	{
 		DISABLED("control.disabled"),
 		HIGH("control.high"),
@@ -18,7 +18,7 @@ public interface IRedstoneControl
 			return LangUtils.localize(display);
 		}
 
-		private RedstoneControl(String s)
+		RedstoneControl(String s)
 		{
 			display = s;
 		}
@@ -28,28 +28,28 @@ public interface IRedstoneControl
 	 * Gets the RedstoneControl type from this block.
 	 * @return this block's RedstoneControl type
 	 */
-	public RedstoneControl getControlType();
+    RedstoneControl getControlType();
 
 	/**
 	 * Sets this block's RedstoneControl type to a new value.
 	 * @param type - RedstoneControl type to set
 	 */
-	public void setControlType(RedstoneControl type);
+    void setControlType(RedstoneControl type);
 
 	/**
 	 * If the block is getting powered or not by redstone (indirectly).
 	 * @return if the block is getting powered indirectly
 	 */
-	public boolean isPowered();
+    boolean isPowered();
 
 	/**
 	 * If the block was getting powered or not by redstone, last tick.
 	 * Used for PULSE mode.
 	 */
-	public boolean wasPowered();
+    boolean wasPowered();
 
 	/**
 	 * If the machine can be pulsed.
 	 */
-	public boolean canPulse();
+    boolean canPulse();
 }

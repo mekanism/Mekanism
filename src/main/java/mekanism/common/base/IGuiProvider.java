@@ -15,7 +15,7 @@ public interface IGuiProvider
 	 * @param pos - gui's position
 	 * @return the Container of the GUI
 	 */
-	public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos);
+    Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos);
 	
 	/**
 	 * Get the actual interface for a GUI. Client-only.
@@ -25,5 +25,5 @@ public interface IGuiProvider
 	 * @param pos - gui's position
 	 * @return the GuiScreen of the GUI
 	 */
-	public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos);
+    Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos);
 }

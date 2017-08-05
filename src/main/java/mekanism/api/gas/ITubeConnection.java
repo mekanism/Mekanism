@@ -14,5 +14,5 @@ public interface ITubeConnection
 	 * @param side - orientation to check
 	 * @return if a tube can connect
 	 */
-	public boolean canTubeConnect(EnumFacing side);
+    boolean canTubeConnect(EnumFacing side);
 }

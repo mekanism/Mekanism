@@ -299,7 +299,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		}
 	}
 	
-	public static enum PacketType
+	public enum PacketType
 	{
 		UPDATE,
 		ENERGY,

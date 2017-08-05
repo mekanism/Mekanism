@@ -97,7 +97,7 @@ public class InfuseRegistry
 	 * Gets the private map for InfuseObjects.
 	 * @return private InfuseObject map
 	 */
-	public static final Map<ItemStack, InfuseObject> getObjectMap()
+	public static Map<ItemStack, InfuseObject> getObjectMap()
 	{
 		return infuseObjects;
 	}
@@ -106,7 +106,7 @@ public class InfuseRegistry
 	 * Gets the private map for InfuseTypes.
 	 * @return private InfuseType map
 	 */
-	public static final Map<String, InfuseType> getInfuseMap()
+	public static Map<String, InfuseType> getInfuseMap()
 	{
 		return infuseTypes;
 	}

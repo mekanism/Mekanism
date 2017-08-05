@@ -6,9 +6,9 @@ import mekanism.common.util.LangUtils;
 
 public interface ISecurityTile 
 {
-	public TileComponentSecurity getSecurity();
+	TileComponentSecurity getSecurity();
 	
-	public enum SecurityMode
+	enum SecurityMode
 	{
 		PUBLIC("security.public", EnumColor.BRIGHT_GREEN),
 		PRIVATE("security.private", EnumColor.RED),
@@ -22,7 +22,7 @@ public interface ISecurityTile
 			return color + LangUtils.localize(display);
 		}
 
-		private SecurityMode(String s, EnumColor c)
+		SecurityMode(String s, EnumColor c)
 		{
 			display = s;
 			color = c;

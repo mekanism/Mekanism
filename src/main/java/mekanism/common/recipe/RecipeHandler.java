@@ -558,7 +558,7 @@ public final class RecipeHandler
 		return recipe;
 	}
 
-	public static enum Recipe
+	public enum Recipe
 	{
 		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.blockName, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
 		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.blockName, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
@@ -587,7 +587,7 @@ public final class RecipeHandler
 		private Class<? extends MachineOutput> outputClass;
 		private Class<? extends MachineRecipe> recipeClass;
 
-		private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe)
+		<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe)
 		{
 			recipeName = name;
 			

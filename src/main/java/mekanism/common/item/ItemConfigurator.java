@@ -284,7 +284,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		return getState(stack) == ConfiguratorMode.WRENCH;
 	}
 	
-	public static enum ConfiguratorMode
+	public enum ConfiguratorMode
 	{
 		CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.localize() + ")", EnumColor.BRIGHT_GREEN, true),
 		CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.localize() + ")", EnumColor.BRIGHT_GREEN, true),
@@ -300,7 +300,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		private EnumColor color;
 		private boolean configurating;
 		
-		private ConfiguratorMode(String s, String s1, EnumColor c, boolean b)
+		ConfiguratorMode(String s, String s1, EnumColor c, boolean b)
 		{
 			name = s;
 			info = s1;

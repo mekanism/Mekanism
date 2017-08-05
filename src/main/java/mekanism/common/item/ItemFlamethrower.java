@@ -185,7 +185,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
     	ItemDataUtils.setInt(stack, "mode", mode.ordinal());
     }
 
-    public static enum FlamethrowerMode
+    public enum FlamethrowerMode
     {
         COMBAT("tooltip.flamethrower.combat", EnumColor.YELLOW),
         HEAT("tooltip.flamethrower.heat", EnumColor.ORANGE),
@@ -194,7 +194,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
         private String unlocalized;
         private EnumColor color;
 
-        private FlamethrowerMode(String s, EnumColor c)
+        FlamethrowerMode(String s, EnumColor c)
         {
             unlocalized = s;
             color = c;

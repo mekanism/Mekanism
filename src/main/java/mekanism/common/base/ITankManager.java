@@ -12,9 +12,9 @@ import net.minecraftforge.fluids.FluidUtil;
 
 public interface ITankManager 
 {
-	public Object[] getTanks();
+	Object[] getTanks();
 	
-	public static class DropperHandler
+	class DropperHandler
 	{
 		public static void useDropper(EntityPlayer player, Object tank, int button)
 		{

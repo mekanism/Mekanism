@@ -42,7 +42,7 @@ public class BlockStateTransmitter extends ExtendedBlockState
 		private boolean transparencyRender;
 		private boolean tiers;
 
-		private TransmitterType(String name, Size s, TransmissionType type, boolean transparency, boolean b)
+		TransmitterType(String name, Size s, TransmissionType type, boolean transparency, boolean b)
 		{
 			unlocalizedName = name;
 			size = s;
@@ -82,14 +82,14 @@ public class BlockStateTransmitter extends ExtendedBlockState
 			return tiers;
 		}
 
-		public static enum Size
+		public enum Size
 		{
 			SMALL(6),
 			LARGE(8);
 
 			public int centerSize;
 
-			private Size(int size)
+			Size(int size)
 			{
 				centerSize = size;
 			}

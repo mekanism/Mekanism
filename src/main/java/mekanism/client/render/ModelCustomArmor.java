@@ -195,7 +195,7 @@ public class ModelCustomArmor extends ModelBiped
 		return false;
 	}
 
-	public static enum ArmorModel
+	public enum ArmorModel
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
 		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
@@ -212,7 +212,7 @@ public class ModelCustomArmor extends ModelBiped
 		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
 		public static ModelFreeRunners freeRunnersModel = new ModelFreeRunners();
 
-		private ArmorModel(int i, ResourceLocation r)
+		ArmorModel(int i, ResourceLocation r)
 		{
 			armorSlot = i;
 			resource = r;

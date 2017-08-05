@@ -57,7 +57,7 @@ public class MekanismRenderer
 	public enum FluidType
 	{
 		STILL,
-		FLOWING;
+		FLOWING
 	}
 	
 	public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
@@ -552,8 +552,8 @@ public class MekanismRenderer
     	return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
     
-    public static interface ICustomBlockIcon
+    public interface ICustomBlockIcon
     {
-    	public ResourceLocation getIcon(ItemStack stack, int side);
+    	ResourceLocation getIcon(ItemStack stack, int side);
     }
 }

@@ -222,7 +222,7 @@ public final class FluidContainerUtils
 		return stack;
 	}
 	
-	public static enum ContainerEditMode
+	public enum ContainerEditMode
 	{
 		BOTH("fluidedit.both"),
 		FILL("fluidedit.fill"),
@@ -235,7 +235,7 @@ public final class FluidContainerUtils
 			return LangUtils.localize(display);
 		}
 
-		private ContainerEditMode(String s)
+		ContainerEditMode(String s)
 		{
 			display = s;
 		}

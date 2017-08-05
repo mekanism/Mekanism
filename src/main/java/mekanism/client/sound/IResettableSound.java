@@ -7,5 +7,5 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public interface IResettableSound extends ITickableSound
 {
-	public void reset();
+	void reset();
 }

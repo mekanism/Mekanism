@@ -345,7 +345,7 @@ public class TransporterStack
 		return getPath().get(0);
 	}
 
-	public static enum Path
+	public enum Path
 	{
 		DEST, HOME, NONE
 	}

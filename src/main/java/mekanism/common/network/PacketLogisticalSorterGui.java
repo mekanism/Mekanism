@@ -241,7 +241,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 		}
 	}
 	
-	public static enum SorterGuiPacket
+	public enum SorterGuiPacket
 	{
 		SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
 	}

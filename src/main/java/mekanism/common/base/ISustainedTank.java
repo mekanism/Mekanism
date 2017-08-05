@@ -14,19 +14,19 @@ public interface ISustainedTank
 	 * @param nbtTags - NBTTagList value to set
 	 * @param data - ItemStack parameter if using on item
 	 */
-	public void setFluidStack(FluidStack fluidStack, Object... data);
+    void setFluidStack(FluidStack fluidStack, Object... data);
 
 	/**
 	 * Gets the tank tag list from an item or block.
 	 * @param data - ItemStack parameter if using on item
 	 * @return inventory tag list
 	 */
-	public FluidStack getFluidStack(Object... data);
+    FluidStack getFluidStack(Object... data);
 
 	/**
 	 * Whether or not this block or item has an internal tank.
 	 * @param data - ItemStack parameter if using on item
 	 * @return if the block or item has an internal tank
 	 */
-	public boolean hasTank(Object... data);
+    boolean hasTank(Object... data);
 }
