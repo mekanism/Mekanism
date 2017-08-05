@@ -535,6 +535,35 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
+	public ItemStack decrStackSize(int slotID, int amount)
+	{
+		if(hasFrequency() && slotID == 0)
+		{
+			ItemStack itemstack = frequency.storedItem.splitStack(amount);
+
+			if (frequency.storedItem.stackSize == 0)
+			{
+				frequency.storedItem = null;
+			}
+
+			return itemstack;
+		}
+		return null;
+	}
+
+	@Override
+	public ItemStack removeStackFromSlot(int slotID)
+	{
+		if(hasFrequency() && slotID == 0)
+		{
+			ItemStack is = frequency.storedItem;
+			frequency.storedItem = null;
+			return is;
+		}
+		return null;
+	}
+
+	@Override
 	public double getTemp() 
 	{
 		return hasFrequency() ? frequency.temperature : 0;
