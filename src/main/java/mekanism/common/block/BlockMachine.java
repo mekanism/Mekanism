@@ -19,13 +19,12 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
@@ -36,6 +35,7 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -78,7 +78,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -914,6 +913,15 @@ public abstract class BlockMachine extends BlockContainer
 		{
 			IFactory factoryItem = (IFactory)itemStack.getItem();
 			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType.ordinal(), itemStack);
+		}
+
+		if (tileEntity instanceof TileEntityQuantumEntangloporter)
+		{
+			InventoryFrequency frequency = ((TileEntityQuantumEntangloporter) tileEntity).frequency;
+			if (frequency != null)
+			{
+				ItemDataUtils.setCompound(itemStack, "entangleporter_frequency", frequency.getIdentity().serialise());
+			}
 		}
 
 		return itemStack;

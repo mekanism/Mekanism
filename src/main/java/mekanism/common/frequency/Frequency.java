@@ -13,6 +13,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.UsernameCache;
 
+import javax.annotation.Nullable;
+
 public class Frequency
 {
 	public static final String TELEPORTER = "Teleporter";
@@ -146,5 +148,37 @@ public class Frequency
 	{
 		return obj instanceof Frequency && ((Frequency)obj).name.equals(name) 
 				&& ((Frequency)obj).ownerUUID.equals(ownerUUID) && ((Frequency)obj).publicFreq == publicFreq;
+	}
+
+	public Identity getIdentity(){
+		return new Identity(this.name, this.publicFreq);
+	}
+
+	public static class Identity {
+		public String name;
+		public boolean publicFreq;
+
+		private Identity(String name, boolean publicFreq)
+		{
+			this.name = name;
+			this.publicFreq = publicFreq;
+		}
+
+		@Nullable
+		public static Identity load(NBTTagCompound data)
+		{
+			if (!data.getString("name").isEmpty()){
+				return new Identity(data.getString("name"), data.getBoolean("publicFreq"));
+			}
+			return null;
+		}
+
+		public NBTTagCompound serialise()
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("name", this.name);
+			tag.setBoolean("publicFreq", this.publicFreq);
+			return tag;
+		}
 	}
 }
