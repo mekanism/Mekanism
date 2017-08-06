@@ -192,7 +192,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	
 	public int getUpgradedUsage(SeparatorRecipe recipe)
 	{
-		int possibleProcess
+		int possibleProcess;
 		
 		if(leftTank.getGasType() == recipe.recipeOutput.leftGas.getGas())
 		{
