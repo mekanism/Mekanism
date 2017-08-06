@@ -285,16 +285,6 @@ public class Mekanism
 	 */
 	public void addRecipes()
 	{
-		if(false) // Generate JSON files from code, disabled.
-		{
-			MekanismRecipes.generate();
-			MekanismToolsRecipes.generate();
-			MekanismGeneratorRecipes.generate();
-		}
-
-		//Add the bin recipe system to the CraftingManager
-//		CraftingManager.getInstance().getRecipeList().add(new BinRecipe());
-	
 		//Furnace Recipes
 		GameRegistry.addSmelting(new ItemStack(MekanismBlocks.OreBlock, 1, 0), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
 		GameRegistry.addSmelting(new ItemStack(MekanismBlocks.OreBlock, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 5), 1.0F);
@@ -514,11 +504,6 @@ public class Mekanism
 
 		//Fuel Gases
 		FuelHandler.addGas(MekanismFluids.Hydrogen, 1, general.FROM_H2);
-		
-		//RecipeSorter registrations
-//		RecipeSorter.register("mekanism_shaped", ShapedMekanismRecipe.class, Category.SHAPED, "");
-//		RecipeSorter.register("mekanism_shapeless", ShapelessMekanismRecipe.class, Category.SHAPELESS, "");
-//		RecipeSorter.register("bin", BinRecipe.class, Category.SHAPELESS, "");
 	}
 
 	/**

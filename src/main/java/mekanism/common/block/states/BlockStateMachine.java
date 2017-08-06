@@ -167,7 +167,6 @@ public class BlockStateMachine extends ExtendedBlockState
 		public boolean isElectric;
 		public boolean hasModel;
 		public boolean supportsUpgrades;
-//		public Collection<ShapedMekanismRecipe> blockRecipes = new HashSet<ShapedMekanismRecipe>();
 		public Predicate<EnumFacing> facingPredicate;
 		public boolean activable;
 		public Tier.FactoryTier factoryTier;
