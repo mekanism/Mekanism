@@ -55,6 +55,7 @@ import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
+import mekanism.common.recipe.BinRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.generation.MekanismGeneratorRecipes;
@@ -104,6 +105,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -267,9 +269,15 @@ public class Mekanism
 	}
 
 	@SubscribeEvent
-	public static void registerSound(RegistryEvent.Register<SoundEvent> event)
+	public static void registerSounds(RegistryEvent.Register<SoundEvent> event)
 	{
 		MekanismSounds.register(event.getRegistry());
+	}
+	
+	@SubscribeEvent
+	public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
+	{
+		event.getRegistry().register(new BinRecipe());
 	}
 
 	/**
