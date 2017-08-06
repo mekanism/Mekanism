@@ -88,7 +88,7 @@ public abstract class GuiGauge<T> extends GuiElement
 		
 		while(scale > 0)
 		{
-			int renderRemaining = 0;
+			int renderRemaining;
 
 			if(scale > 16)
 			{

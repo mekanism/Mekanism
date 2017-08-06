@@ -3,8 +3,6 @@ package mekanism.generators.common;
 import buildcraft.api.mj.MjAPI;
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
-
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;

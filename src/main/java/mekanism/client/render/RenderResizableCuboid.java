@@ -489,7 +489,7 @@ public class RenderResizableCuboid {
             double[] arr = points[i];
             for (int j = 0; j < arr.length; j++) {
                 double d = arr[j];
-                int used = 0;
+                int used;
                 if (j == 3 || j == 6) {// Shade or unused
                     used = (int) d;
                 } else {

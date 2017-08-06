@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.item.ItemControlCircuit;
 import mekanism.generators.common.block.states.BlockStateGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

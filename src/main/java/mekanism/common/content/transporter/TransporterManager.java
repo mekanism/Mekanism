@@ -461,7 +461,7 @@ public class TransporterManager
 						}
 						
 						int amountRemaining = ((TileEntityBin)tileEntity).getMaxStoredCount()-copy.binAmount;
-						ItemStack ret = null;
+						ItemStack ret;
 						
 						if(toInsert.getCount() <= amountRemaining)
 						{

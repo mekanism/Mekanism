@@ -210,7 +210,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			
 			int xPos = 25;
 			int yPos = 7 + (i*12);
-			int yRender = 0;
+			int yRender;
 			
 			if(upgrade == selectedType)
 			{

@@ -1,7 +1,6 @@
 package mekanism.common.recipe;
 
 import com.google.gson.JsonObject;
-import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;

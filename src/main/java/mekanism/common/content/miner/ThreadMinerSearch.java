@@ -92,7 +92,7 @@ public class ThreadMinerSearch extends Thread
 				if(info.block != null && !tileEntity.getWorld().isAirBlock(new BlockPos(x, y, z)) && state.getBlockHardness(tileEntity.getWorld(), new BlockPos(x, y, z)) >= 0)
 				{
 					MinerFilter filterFound = null;
-					boolean canFilter = false;
+					boolean canFilter;
 	
 					if(acceptedItems.containsKey(info))
 					{

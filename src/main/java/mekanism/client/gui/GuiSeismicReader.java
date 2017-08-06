@@ -156,10 +156,8 @@ public class GuiSeismicReader extends GuiScreen
 			}
 			
 			String capitalised = renderString.substring(0, 1).toUpperCase() + renderString.substring(1);
-			float renderScale = 1.0f;
 			int lengthX = fontRenderer.getStringWidth(capitalised);
-
-			renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
+			float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(guiWidth + 72, guiHeight + 16, 0);

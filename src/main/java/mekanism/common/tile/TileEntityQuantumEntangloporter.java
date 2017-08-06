@@ -765,7 +765,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public Set<ChunkPos> getChunkSet()
 	{
-		Set<ChunkPos> ret = new HashSet<ChunkPos>();
+		Set<ChunkPos> ret = new HashSet<>();
 
 		ret.add(new Chunk3D(Coord4D.get(this)).getPos());
 

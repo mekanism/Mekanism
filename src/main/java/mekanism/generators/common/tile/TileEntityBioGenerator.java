@@ -243,7 +243,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		{
 			if(resource.getFluid() == FluidRegistry.getFluid("bioethanol"))
 			{
-				int fuelTransfer = 0;
+				int fuelTransfer;
 				int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
 				int attemptTransfer = resource.amount;
 

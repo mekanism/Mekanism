@@ -2,7 +2,6 @@ package mekanism.api.transmitters;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;

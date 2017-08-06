@@ -3,6 +3,7 @@ package mekanism.common.integration.multipart;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import io.netty.buffer.ByteBuf;
 import mcmultipart.api.container.IMultipartContainer;
@@ -58,11 +59,15 @@ public class MultipartTileNetworkJoiner implements ITileNetwork
 		{
 			for(IPartSlot slot : container.getParts().keySet())
 			{
-				int tileIndex = tileList.indexOf(container.getPartTile(slot).get().getTileEntity());
-				if(tileIndex >= 0)
+				Optional<IMultipartTile> partTile = container.getPartTile(slot);
+				if(partTile.isPresent())
 				{
-					byte slotValue = slot instanceof EnumFaceSlot ? (byte)((EnumFaceSlot)slot).ordinal() : 6;
-					tileSideMap.put(slotValue, tileList.get(tileIndex));
+					int tileIndex = tileList.indexOf(partTile.get().getTileEntity());
+					if (tileIndex >= 0)
+					{
+						byte slotValue = slot instanceof EnumFaceSlot ? (byte) ((EnumFaceSlot) slot).ordinal() : 6;
+						tileSideMap.put(slotValue, tileList.get(tileIndex));
+					}
 				}
 			}
 		}

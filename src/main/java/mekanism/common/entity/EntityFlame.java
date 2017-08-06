@@ -238,7 +238,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			return false;
 		}
 		
-		ItemStack result = ItemStack.EMPTY;
+		ItemStack result;
 		
 		try {
 			result = FurnaceRecipes.instance().getSmeltingResult(block.getStack(world));

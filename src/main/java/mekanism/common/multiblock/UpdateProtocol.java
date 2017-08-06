@@ -37,8 +37,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public void loopThrough(Coord4D coord)
 	{
-		World world = pointer.getWorld();
-
 		int origX = coord.x, origY = coord.y, origZ = coord.z;
 
 		boolean isCorner = true;
@@ -51,8 +49,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		int xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0;
 
 		int x = 0, y = 0, z = 0;
-
-		int volume = 0;
 
 		if((isViableNode(origX + 1, origY, origZ) && isViableNode(origX - 1, origY, origZ)) ||
 				(isViableNode(origX, origY + 1, origZ) && isViableNode(origX, origY - 1, origZ)) ||
@@ -163,8 +159,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 									innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorld().provider.getDimension()));
 								}
 							}
-
-							volume++;
 						}
 					}
 					
@@ -180,8 +174,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				}
 			}
 		}
-
-		volume += locations.size();
 
 		if(Math.abs(xmax-xmin)+1 <= 18 && Math.abs(ymax-ymin)+1 <= 18 && Math.abs(zmax-zmin)+1 <= 18)
 		{

@@ -84,7 +84,7 @@ public class GuiDynamicTank extends GuiMekanism
 
 		while(true)
 		{
-			int renderRemaining = 0;
+			int renderRemaining;
 
 			if(scale > 16)
 			{

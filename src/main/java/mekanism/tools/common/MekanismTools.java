@@ -2,7 +2,6 @@ package mekanism.tools.common;
 
 import io.netty.buffer.ByteBuf;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

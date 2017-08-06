@@ -99,7 +99,7 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A,N>> extends Transmitt
 		{
 			IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 			
-			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()));
+			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()))
 			{
 				return ((IGridTransmitter<A, N>)transmitter).getTransmitterNetwork();
 			}

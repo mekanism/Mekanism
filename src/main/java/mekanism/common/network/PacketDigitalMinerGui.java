@@ -114,7 +114,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 	
 		public static void openServerGui(MinerGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i)
 		{
-			Container container = null;
+			Container container;
 	
 			playerMP.closeContainer();
 

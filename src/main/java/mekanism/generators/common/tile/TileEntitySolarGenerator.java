@@ -118,11 +118,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public double getProduction()
 	{
-		double ret = 0;
-
 		if(seesSun)
 		{
-			ret = GENERATION_RATE;
+			double ret = GENERATION_RATE;
 
 			if(MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
 			{

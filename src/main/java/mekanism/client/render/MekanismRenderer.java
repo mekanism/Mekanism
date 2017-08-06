@@ -39,7 +39,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -539,12 +538,7 @@ public class MekanismRenderer
     
     public static float getPartialTick()
     {
-    	try {
-    		Timer t = (Timer)ReflectionUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, ObfuscatedNames.Minecraft_timer);
-    		return t.renderPartialTicks;
-    	} catch(Exception e) {}
-    	
-    	return 0;
+    	return Minecraft.getMinecraft().getRenderPartialTicks();
     }
     
     public static ResourceLocation getBlocksTexture()

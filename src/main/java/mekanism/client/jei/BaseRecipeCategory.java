@@ -115,7 +115,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 
 		while(true)
 		{
-			int renderRemaining = 0;
+			int renderRemaining;
 
 			if(scale > 16)
 			{

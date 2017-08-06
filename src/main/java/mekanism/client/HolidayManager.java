@@ -17,7 +17,7 @@ public final class HolidayManager
 	private static Calendar calendar = Calendar.getInstance();
 	private static Minecraft mc = Minecraft.getMinecraft();
 
-	public static List<Holiday> holidays = new ArrayList<>();
+	private static List<Holiday> holidays = new ArrayList<>();
 	private static List<Holiday> holidaysNotified = new ArrayList<>();
 
 	public static void init()
@@ -115,23 +115,25 @@ public final class HolidayManager
 		@Override
 		public ResourceLocation filterSound(ResourceLocation sound)
 		{
-			if(sound.toString().contains("machine.enrichment"))
+			String soundResourceLocationString = sound.toString();
+
+			if(soundResourceLocationString.contains("machine.enrichment"))
 			{
 				return new ResourceLocation(sound.toString().replace("machine.enrichment", nutcracker[0]));
 			}
-			else if(sound.equals("machine.metalinfuser"))
+			else if(soundResourceLocationString.contains("machine.metalinfuser"))
 			{
 				return new ResourceLocation(sound.toString().replace("machine.metalinfuser", nutcracker[1]));
 			}
-			else if(sound.equals("machine.purification"))
+			else if(soundResourceLocationString.contains("machine.purification"))
 			{
 				return new ResourceLocation(sound.toString().replace("machine.purification", nutcracker[2]));
 			}
-			else if(sound.equals("machine.smelter"))
+			else if(soundResourceLocationString.contains("machine.smelter"))
 			{
 				return new ResourceLocation(sound.toString().replace("machine.smelter", nutcracker[3]));
 			}
-			else if(sound.equals("machine.dissolution"))
+			else if(soundResourceLocationString.contains("machine.dissolution"))
 			{
 				return new ResourceLocation(sound.toString().replace("machine.dissolution", nutcracker[4]));
 			}

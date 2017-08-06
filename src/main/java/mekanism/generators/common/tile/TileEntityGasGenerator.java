@@ -93,7 +93,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 			{
 				setActive(true);
 				
-				FuelGas fuel = null;
+				FuelGas fuel;
 				
 				if(fuelTank.getStored() != 0)
 				{
