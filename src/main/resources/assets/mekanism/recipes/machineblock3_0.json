@@ -11,7 +11,7 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "mekanism:machine_enabled",
+      "type": "mekanism:recipe_enabled",
       "machineType": "QuantumEntangloporter"
     }
   ],
@@ -21,8 +21,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "ore": "circuitUltimate",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITULTIMATE"
     },
     "T": {
       "item": "mekanism:teleportationcore"

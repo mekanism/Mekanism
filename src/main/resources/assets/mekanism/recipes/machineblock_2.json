@@ -11,7 +11,7 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "mekanism:machine_enabled",
+      "type": "mekanism:recipe_enabled",
       "machineType": "Combiner"
     }
   ],
@@ -25,8 +25,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "ore": "circuitElite",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITELITE"
     },
     "I": {
       "item": "mekanism:basicblock",

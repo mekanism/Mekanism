@@ -1,0 +1,118 @@
+[
+  {
+    "conditions": [
+      {
+        "type": "mekanism:recipe_enabled",
+        "circuitOredict": ""
+      }
+    ],
+    "name" : "CIRCUITBASIC",
+    "ingredient" : {
+      "type" : "forge:ore_dict",
+      "ore" : "circuitBasic"
+    }
+  },
+  {
+    "conditions": [
+      {
+        "type": "forge:not",
+        "value": {
+          "type": "mekanism:recipe_enabled",
+          "circuitOredict": ""
+        }
+      }
+    ],
+    "name": "CIRCUITBASIC",
+    "ingredient" : {
+      "item" : "mekanism:controlcircuit",
+      "data" : 0
+    }
+  },
+  {
+    "conditions": [
+      {
+        "type": "mekanism:recipe_enabled",
+        "circuitOredict": ""
+      }
+    ],
+    "name" : "CIRCUITADVANCED",
+    "ingredient" : {
+      "type" : "forge:ore_dict",
+      "ore" : "circuitAdvanced"
+    }
+  },
+  {
+    "conditions": [
+      {
+        "type": "forge:not",
+        "value": {
+          "type": "mekanism:recipe_enabled",
+          "circuitOredict": ""
+        }
+      }
+    ],
+    "name": "CIRCUITADVANCED",
+    "ingredient" : {
+      "item" : "mekanism:controlcircuit",
+      "data" : 1
+    }
+  },
+  {
+    "conditions": [
+      {
+        "type": "mekanism:recipe_enabled",
+        "circuitOredict": ""
+      }
+    ],
+    "name" : "CIRCUITELITE",
+    "ingredient" : {
+      "type" : "forge:ore_dict",
+      "ore" : "circuitElite"
+    }
+  },
+  {
+    "conditions": [
+      {
+        "type": "forge:not",
+        "value": {
+          "type": "mekanism:recipe_enabled",
+          "circuitOredict": ""
+        }
+      }
+    ],
+    "name": "CIRCUITELITE",
+    "ingredient" : {
+      "item" : "mekanism:controlcircuit",
+      "data" : 2
+    }
+  },
+  {
+    "conditions": [
+      {
+        "type": "mekanism:recipe_enabled",
+        "circuitOredict": ""
+      }
+    ],
+    "name" : "CIRCUITULTIMATE",
+    "ingredient" : {
+      "type" : "forge:ore_dict",
+      "ore" : "circuitUltimate"
+    }
+  },
+  {
+    "conditions": [
+      {
+        "type": "forge:not",
+        "value": {
+          "type": "mekanism:recipe_enabled",
+          "circuitOredict": ""
+        }
+      }
+    ],
+    "name": "CIRCUITULTIMATE",
+    "ingredient" : {
+      "item" : "mekanism:controlcircuit",
+      "data" : 3
+    }
+  }
+]

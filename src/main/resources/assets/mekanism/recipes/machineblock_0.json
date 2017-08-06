@@ -11,7 +11,7 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "mekanism:machine_enabled",
+      "type": "mekanism:recipe_enabled",
       "machineType": "EnrichmentChamber"
     }
   ],
@@ -21,8 +21,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "ore": "circuitBasic",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITBASIC"
     },
     "i": {
       "ore": "ingotIron",

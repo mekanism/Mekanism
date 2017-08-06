@@ -11,8 +11,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "C": {
-      "ore": "circuitUltimate",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITULTIMATE"
     },
     "T": {
       "nbt": {

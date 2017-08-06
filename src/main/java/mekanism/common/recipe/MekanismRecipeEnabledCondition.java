@@ -1,6 +1,7 @@
 package mekanism.common.recipe;
 
 import com.google.gson.JsonObject;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
@@ -8,6 +9,11 @@ import net.minecraftforge.common.crafting.JsonContext;
 
 import java.util.function.BooleanSupplier;
 
+/**
+ * Used as a condition in mekanism _factories.json
+ *
+ * WARNING: Only one of these values could apply!
+ */
 public class MekanismRecipeEnabledCondition implements IConditionFactory
 {
     @Override
@@ -23,6 +29,11 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory
             return () -> MekanismConfig.generators.generatorsManager.isEnabled(JsonUtils.getString(json, "generatorType"));
         }
 
-        throw new IllegalStateException("Config defined with machine_enabled condition without a machine/generator type!");
+        if(JsonUtils.hasField(json, "circuitOredict"))
+        {
+            return () -> MekanismConfig.general.controlCircuitOreDict;
+        }
+
+        throw new IllegalStateException("Config defined with recipe_enabled condition without a valid field defined! Valid values: \"machineType\", \"generatorType\" and \"circuitOredict\"");
     }
 }

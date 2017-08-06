@@ -23,8 +23,7 @@
       "type": "mekanism:item_nbt"
     },
     "C": {
-      "ore": "circuitUltimate",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITULTIMATE"
     },
     "E": {
       "nbt": {

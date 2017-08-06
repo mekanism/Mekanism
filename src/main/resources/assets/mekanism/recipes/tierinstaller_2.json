@@ -15,8 +15,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "ore": "circuitElite",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITELITE"
     },
     "g": {
       "ore": "ingotGold",

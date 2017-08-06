@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.item.ItemControlCircuit;
 import mekanism.generators.common.block.states.BlockStateGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -84,20 +85,20 @@ public class RecipeGenerator {
             return;
         }
 
-        // Add machine_enabled condition to all available machine types.
+        // Add recipe_enabled condition to all available machine types.
         BlockStateMachine.MachineType machineType = BlockStateMachine.MachineType.get(result);
         if(machineType != null) {
             Map<String, String> condition = new HashMap<>();
-            condition.put("type", "mekanism:machine_enabled");
+            condition.put("type", "mekanism:recipe_enabled");
             condition.put("machineType", machineType.blockName);
             json.put("conditions", new Object[]{condition});
         }
 
-        // Add machine_enabled condition to generator types which can be disabled.
+        // Add recipe_enabled condition to generator types which can be disabled.
         BlockStateGenerator.GeneratorType generatorType = BlockStateGenerator.GeneratorType.get(result);
         if(generatorType != null && result.getItemDamage() <= BlockStateGenerator.GeneratorType.WIND_GENERATOR.meta) {
             Map<String, String> condition = new HashMap<>();
-            condition.put("type", "mekanism:machine_enabled");
+            condition.put("type", "mekanism:recipe_enabled");
             condition.put("generatorType", generatorType.blockName);
             json.put("conditions", new Object[]{condition});
         }
@@ -205,10 +206,22 @@ public class RecipeGenerator {
             return ret;
         }
         if (thing instanceof String) {
+            String oredict = (String) thing;
             Map<String, Object> ret = new HashMap<>();
 
-            ret.put("type", "forge:ore_dict");
-            ret.put("ore", thing);
+            //Filter circuits as they could be disabled -> Redirect the actual value to _constants.json with #OREDICTNAME
+            if(oredict != null && (oredict.equals("circuitBasic") ||
+                    oredict.equals("circuitAdvanced") ||
+                    oredict.equals("circuitElite") ||
+                    oredict.equals("circuitUltimate")))
+            {
+                ret.put("item", "#" + oredict.toUpperCase());
+            }
+            else
+            {
+                ret.put("type", "forge:ore_dict");
+                ret.put("ore", oredict);
+            }
 
             return ret;
         }

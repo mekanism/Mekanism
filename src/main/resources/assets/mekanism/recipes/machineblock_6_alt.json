@@ -15,14 +15,13 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "mekanism:machine_enabled",
+      "type": "mekanism:recipe_enabled",
       "machineType": "Factory"
     }
   ],
   "key": {
     "C": {
-      "ore": "circuitAdvanced",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITADVANCED"
     },
     "E": {
       "ore": "alloyAdvanced",

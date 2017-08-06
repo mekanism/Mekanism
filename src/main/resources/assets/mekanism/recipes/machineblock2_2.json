@@ -11,7 +11,7 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "mekanism:machine_enabled",
+      "type": "mekanism:recipe_enabled",
       "machineType": "ChemicalInfuser"
     }
   ],
@@ -24,8 +24,7 @@
       "data": 9
     },
     "C": {
-      "ore": "circuitBasic",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITBASIC"
     },
     "G": {
       "nbt": {

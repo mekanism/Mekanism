@@ -11,7 +11,7 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "mekanism:machine_enabled",
+      "type": "mekanism:recipe_enabled",
       "machineType": "DigitalMiner"
     }
   ],
@@ -20,8 +20,7 @@
       "item": "mekanism:atomicalloy"
     },
     "C": {
-      "ore": "circuitBasic",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITBASIC"
     },
     "S": {
       "item": "mekanism:machineblock",

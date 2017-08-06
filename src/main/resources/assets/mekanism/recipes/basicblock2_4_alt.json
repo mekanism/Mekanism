@@ -23,8 +23,7 @@
       "type": "mekanism:item_nbt"
     },
     "C": {
-      "ore": "circuitAdvanced",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITADVANCED"
     },
     "E": {
       "nbt": {

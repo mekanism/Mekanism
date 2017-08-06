@@ -7,6 +7,6 @@
     "item_nbt": "mekanism.common.recipe.MekanismIngredient$IngredientFactory"
   },
   "conditions": {
-    "machine_enabled": "mekanism.common.recipe.MekanismRecipeEnabledCondition"
+    "recipe_enabled": "mekanism.common.recipe.MekanismRecipeEnabledCondition"
   }
 }

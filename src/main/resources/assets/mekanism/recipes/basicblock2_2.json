@@ -12,8 +12,7 @@
   "type": "mekanism:ore_shaped",
   "key": {
     "C": {
-      "ore": "circuitElite",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITELITE"
     },
     "I": {
       "item": "mekanism:basicblock2",

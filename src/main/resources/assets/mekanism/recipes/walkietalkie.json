@@ -14,8 +14,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "ore": "circuitBasic",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITBASIC"
     },
     "O": {
       "ore": "ingotOsmium",

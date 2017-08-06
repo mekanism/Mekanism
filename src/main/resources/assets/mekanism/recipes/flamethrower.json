@@ -19,8 +19,7 @@
       "item": "minecraft:flint_and_steel"
     },
     "C": {
-      "ore": "circuitAdvanced",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITADVANCED"
     },
     "T": {
       "ore": "ingotTin",

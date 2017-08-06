@@ -15,7 +15,7 @@
   "type": "mekanism:ore_shaped",
   "conditions": [
     {
-      "type": "mekanism:machine_enabled",
+      "type": "mekanism:recipe_enabled",
       "machineType": "Factory"
     }
   ],
@@ -25,8 +25,7 @@
       "type": "forge:ore_dict"
     },
     "C": {
-      "ore": "circuitElite",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITELITE"
     },
     "g": {
       "ore": "ingotGold",

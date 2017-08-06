@@ -15,8 +15,7 @@
       "item": "mekanism:enrichedalloy"
     },
     "C": {
-      "ore": "circuitBasic",
-      "type": "forge:ore_dict"
+      "item": "#CIRCUITBASIC"
     },
     "S": {
       "ore": "ingotSteel",
