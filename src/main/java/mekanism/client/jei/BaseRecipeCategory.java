@@ -3,11 +3,18 @@ package mekanism.client.jei;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiIngredientGroup;
+import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -26,6 +33,8 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 {
 	public static final GuiDummy gui = new GuiDummy();
 	
+	public IGuiHelper guiHelper;
+	
 	public String recipeName;
 	public String unlocalizedName;
 	
@@ -33,12 +42,17 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public ResourceLocation guiLocation;
 	
 	public ProgressBar progressBar;
+	public ITickTimer timer;
 	
 	public int xOffset = 28;
 	public int yOffset = 16;
 	
-	public BaseRecipeCategory(String gui, String name, String unlocalized, ProgressBar progress)
+	public IDrawable fluidOverlayLarge;
+	public IDrawable fluidOverlaySmall;
+	
+	public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized, ProgressBar progress)
 	{
+		guiHelper = helper;
 		guiTexture = gui;
 		guiLocation = new ResourceLocation(guiTexture);
 		
@@ -46,6 +60,11 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		
 		recipeName = name;
 		unlocalizedName = unlocalized;
+		
+		timer = helper.createTickTimer(20, 20, false);
+		
+		fluidOverlayLarge = guiHelper.createDrawable(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16, 59);
+		fluidOverlaySmall = guiHelper.createDrawable(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16, 29);
 		
 		addGuiElements();
 	}
@@ -187,5 +206,17 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public List getTooltipStrings(int mouseX, int mouseY) 
 	{
 		return Collections.emptyList();
+	}
+	
+	protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, GasStack stack, boolean overlay)
+	{
+		if(stack == null) return;
+		
+		IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;
+		
+		GasStackRenderer renderer = new GasStackRenderer(stack.amount, false, width, height, overlay ? fluidOverlay : null);
+		group.init(slot, input, renderer, x, y, width, height, 0, 0);
+		group.set(slot, stack);
+		group.addTooltipCallback((index, isInput, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

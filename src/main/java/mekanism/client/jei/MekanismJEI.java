@@ -1,5 +1,9 @@
 package mekanism.client.jei;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -93,29 +97,30 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @JEIPlugin
 public class MekanismJEI implements IModPlugin
 {
-	public static ISubtypeInterpreter NBT_INTERPRETER = itemStack -> {
-        String ret = Integer.toString(itemStack.getMetadata());
-
-        if(itemStack.getItem() instanceof ITierItem)
-        {
-            ret += ":" + ((ITierItem)itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
-        }
-
-        if(itemStack.getItem() instanceof IFactory)
-        {
-            ret += ":" + RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
-        }
-
-        return ret.isEmpty() ? null : ret.toLowerCase();
-    };
+	public static GasStackRenderer GAS_RENDERER;
+	
+	public static ISubtypeInterpreter NBT_INTERPRETER = new ISubtypeInterpreter() {
+		@Override
+		public String getSubtypeInfo(ItemStack itemStack) 
+		{
+			String ret = Integer.toString(itemStack.getMetadata());
+			
+			if(itemStack.getItem() instanceof ITierItem)
+			{
+				ret += ":" + ((ITierItem)itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
+			}
+			
+			if(itemStack.getItem() instanceof IFactory)
+			{
+				ret += ":" + RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
+			}
+			
+			return ret.isEmpty() ? null : ret.toLowerCase();
+		}
+	};
 	
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistry registry)
@@ -134,8 +139,8 @@ public class MekanismJEI implements IModPlugin
 	@Override
 	public void registerIngredients(IModIngredientRegistration registry)
 	{
-		List<GasStack> list = GasRegistry.getRegisteredGasses().stream().filter(Gas::isVisible).map(g -> new GasStack(g, Fluid.BUCKET_VOLUME)).collect(Collectors.toList());
-		registry.register(GasStack.class, list, new GasStackHelper(), new GasStackRenderer());
+		List<GasStack> list = GasRegistry.getRegisteredGasses().stream().filter(g -> g.isVisible()).map(g -> new GasStack(g, Fluid.BUCKET_VOLUME)).collect(Collectors.toList());
+		registry.register(GasStack.class, list, new GasStackHelper(), GAS_RENDERER = new GasStackRenderer());
 	}
 	
 	@Override
@@ -145,68 +150,72 @@ public class MekanismJEI implements IModPlugin
 		
 		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(MekanismItems.ItemProxy));
 		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(MekanismBlocks.BoundingBlock));
-
-		registerBasicMachine(registry, Recipe.ENRICHMENT_CHAMBER, "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE, EnrichmentRecipeWrapper.class);
-		registerBasicMachine(registry, Recipe.CRUSHER, "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH, CrusherRecipeWrapper.class);
-
-		registerAdvancedMachine(registry, Recipe.COMBINER, "tile.MachineBlock.Combiner.name", ProgressBar.STONE, CombinerRecipeWrapper.class);
-		registerAdvancedMachine(registry, Recipe.PURIFICATION_CHAMBER, "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED, PurificationChamberRecipeWrapper.class);
-		registerAdvancedMachine(registry, Recipe.OSMIUM_COMPRESSOR, "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED, OsmiumCompressorRecipeWrapper.class);
-		registerAdvancedMachine(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, "nei.chemicalInjectionChamber", ProgressBar.YELLOW, ChemicalInjectionChamberRecipeWrapper.class);
-
-		registerChanceMachine(registry, Recipe.PRECISION_SAWMILL, "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE, PrecisionSawmillRecipeWrapper.class);
-
-		MetallurgicInfuserRecipeCategory metallurgicInfuserCategory = new MetallurgicInfuserRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(metallurgicInfuserCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(metallurgicInfuserCategory, MetallurgicInfuserRecipeWrapper.class));
-		addRecipes(registry, Recipe.METALLURGIC_INFUSER, metallurgicInfuserCategory, MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeCategory.class, MetallurgicInfuserRecipeWrapper.class);
-
-		ChemicalCrystallizerRecipeCategory chemicalCrystallizerCategory = new ChemicalCrystallizerRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(chemicalCrystallizerCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(chemicalCrystallizerCategory, ChemicalCrystallizerRecipeWrapper.class));
-		addRecipes(registry, Recipe.CHEMICAL_CRYSTALLIZER, chemicalCrystallizerCategory, CrystallizerRecipe.class, ChemicalCrystallizerRecipeCategory.class, ChemicalCrystallizerRecipeWrapper.class);
-
-		ChemicalDissolutionChamberRecipeCategory chemicalDissolutionChamberCategory = new ChemicalDissolutionChamberRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(chemicalDissolutionChamberCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(chemicalDissolutionChamberCategory, ChemicalDissolutionChamberRecipeWrapper.class));
-		addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, chemicalDissolutionChamberCategory, DissolutionRecipe.class, ChemicalDissolutionChamberRecipeCategory.class, ChemicalDissolutionChamberRecipeWrapper.class);
-
-		ChemicalInfuserRecipeCategory chemicalInfuserCategory = new ChemicalInfuserRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(chemicalInfuserCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(chemicalInfuserCategory, ChemicalInfuserRecipeWrapper.class));
-		addRecipes(registry, Recipe.CHEMICAL_INFUSER, chemicalInfuserCategory, ChemicalInfuserRecipe.class, ChemicalInfuserRecipeCategory.class, ChemicalInfuserRecipeWrapper.class);
-
-		ChemicalOxidizerRecipeCategory chemicalOxidizerCategory = new ChemicalOxidizerRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(chemicalOxidizerCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(chemicalOxidizerCategory, ChemicalOxidizerRecipeWrapper.class));
-		addRecipes(registry, Recipe.CHEMICAL_OXIDIZER, chemicalOxidizerCategory, OxidationRecipe.class, ChemicalOxidizerRecipeCategory.class, ChemicalOxidizerRecipeWrapper.class);
-
-		ChemicalWasherRecipeCategory chemicalWasherCategory = new ChemicalWasherRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(chemicalWasherCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(chemicalWasherCategory, ChemicalWasherRecipeWrapper.class));
-		addRecipes(registry, Recipe.CHEMICAL_WASHER, chemicalWasherCategory, WasherRecipe.class, ChemicalWasherRecipeCategory.class, ChemicalWasherRecipeWrapper.class);
-
-		SolarNeutronRecipeCategory solarNeutronCategory = new SolarNeutronRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(solarNeutronCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(solarNeutronCategory, SolarNeutronRecipeWrapper.class));
-		addRecipes(registry, Recipe.SOLAR_NEUTRON_ACTIVATOR, solarNeutronCategory, SolarNeutronRecipe.class, SolarNeutronRecipeCategory.class, SolarNeutronRecipeWrapper.class);
-
-		ElectrolyticSeparatorRecipeCategory electrolyticSeparatorCategory = new ElectrolyticSeparatorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(electrolyticSeparatorCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(electrolyticSeparatorCategory, ElectrolyticSeparatorRecipeWrapper.class));
-		addRecipes(registry, Recipe.ELECTROLYTIC_SEPARATOR, electrolyticSeparatorCategory, SeparatorRecipe.class, ElectrolyticSeparatorRecipeCategory.class, ElectrolyticSeparatorRecipeWrapper.class);
-
-		ThermalEvaporationRecipeCategory thermalEvaporationCategory = new ThermalEvaporationRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(thermalEvaporationCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(thermalEvaporationCategory, ThermalEvaporationRecipeWrapper.class));
-		addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, thermalEvaporationCategory, ThermalEvaporationRecipe.class, ThermalEvaporationRecipeCategory.class, ThermalEvaporationRecipeWrapper.class);
-
-		PRCRecipeCategory prcCategory = new PRCRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(prcCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(prcCategory, PRCRecipeWrapper.class));
-		addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, prcCategory, PressurizedRecipe.class, PRCRecipeCategory.class, PRCRecipeWrapper.class);
 		
-		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<>();
+		try {
+			registerBasicMachine(registry, Recipe.ENRICHMENT_CHAMBER, "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE, EnrichmentRecipeWrapper.class);
+			registerBasicMachine(registry, Recipe.CRUSHER, "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH, CrusherRecipeWrapper.class);
+			
+			registerAdvancedMachine(registry, Recipe.COMBINER, "tile.MachineBlock.Combiner.name", ProgressBar.STONE, CombinerRecipeWrapper.class);
+			registerAdvancedMachine(registry, Recipe.PURIFICATION_CHAMBER, "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED, PurificationChamberRecipeWrapper.class);
+			registerAdvancedMachine(registry, Recipe.OSMIUM_COMPRESSOR, "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED, OsmiumCompressorRecipeWrapper.class);
+			registerAdvancedMachine(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, "nei.chemicalInjectionChamber", ProgressBar.YELLOW, ChemicalInjectionChamberRecipeWrapper.class);
+			
+			registerChanceMachine(registry, Recipe.PRECISION_SAWMILL, "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE, PrecisionSawmillRecipeWrapper.class);
+			
+			MetallurgicInfuserRecipeCategory metallurgicInfuserCategory = new MetallurgicInfuserRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(metallurgicInfuserCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(metallurgicInfuserCategory, MetallurgicInfuserRecipeWrapper.class));
+			addRecipes(registry, Recipe.METALLURGIC_INFUSER, metallurgicInfuserCategory, MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeCategory.class, MetallurgicInfuserRecipeWrapper.class);
+			
+			ChemicalCrystallizerRecipeCategory chemicalCrystallizerCategory = new ChemicalCrystallizerRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(chemicalCrystallizerCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(chemicalCrystallizerCategory, ChemicalCrystallizerRecipeWrapper.class));
+			addRecipes(registry, Recipe.CHEMICAL_CRYSTALLIZER, chemicalCrystallizerCategory, CrystallizerRecipe.class, ChemicalCrystallizerRecipeCategory.class, ChemicalCrystallizerRecipeWrapper.class);
+			
+			ChemicalDissolutionChamberRecipeCategory chemicalDissolutionChamberCategory = new ChemicalDissolutionChamberRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(chemicalDissolutionChamberCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(chemicalDissolutionChamberCategory, ChemicalDissolutionChamberRecipeWrapper.class));
+			addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, chemicalDissolutionChamberCategory, DissolutionRecipe.class, ChemicalDissolutionChamberRecipeCategory.class, ChemicalDissolutionChamberRecipeWrapper.class);
+			
+			ChemicalInfuserRecipeCategory chemicalInfuserCategory = new ChemicalInfuserRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(chemicalInfuserCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(chemicalInfuserCategory, ChemicalInfuserRecipeWrapper.class));
+			addRecipes(registry, Recipe.CHEMICAL_INFUSER, chemicalInfuserCategory, ChemicalInfuserRecipe.class, ChemicalInfuserRecipeCategory.class, ChemicalInfuserRecipeWrapper.class);
+			
+			ChemicalOxidizerRecipeCategory chemicalOxidizerCategory = new ChemicalOxidizerRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(chemicalOxidizerCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(chemicalOxidizerCategory, ChemicalOxidizerRecipeWrapper.class));
+			addRecipes(registry, Recipe.CHEMICAL_OXIDIZER, chemicalOxidizerCategory, OxidationRecipe.class, ChemicalOxidizerRecipeCategory.class, ChemicalOxidizerRecipeWrapper.class);
+			
+			ChemicalWasherRecipeCategory chemicalWasherCategory = new ChemicalWasherRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(chemicalWasherCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(chemicalWasherCategory, ChemicalWasherRecipeWrapper.class));
+			addRecipes(registry, Recipe.CHEMICAL_WASHER, chemicalWasherCategory, WasherRecipe.class, ChemicalWasherRecipeCategory.class, ChemicalWasherRecipeWrapper.class);
+			
+			SolarNeutronRecipeCategory solarNeutronCategory = new SolarNeutronRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(solarNeutronCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(solarNeutronCategory, SolarNeutronRecipeWrapper.class));
+			addRecipes(registry, Recipe.SOLAR_NEUTRON_ACTIVATOR, solarNeutronCategory, SolarNeutronRecipe.class, SolarNeutronRecipeCategory.class, SolarNeutronRecipeWrapper.class);
+			
+			ElectrolyticSeparatorRecipeCategory electrolyticSeparatorCategory = new ElectrolyticSeparatorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(electrolyticSeparatorCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(electrolyticSeparatorCategory, ElectrolyticSeparatorRecipeWrapper.class));
+			addRecipes(registry, Recipe.ELECTROLYTIC_SEPARATOR, electrolyticSeparatorCategory, SeparatorRecipe.class, ElectrolyticSeparatorRecipeCategory.class, ElectrolyticSeparatorRecipeWrapper.class);
+			
+			ThermalEvaporationRecipeCategory thermalEvaporationCategory = new ThermalEvaporationRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(thermalEvaporationCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(thermalEvaporationCategory, ThermalEvaporationRecipeWrapper.class));
+			addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, thermalEvaporationCategory, ThermalEvaporationRecipe.class, ThermalEvaporationRecipeCategory.class, ThermalEvaporationRecipeWrapper.class);
+			
+			PRCRecipeCategory prcCategory = new PRCRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+			registry.addRecipeCategories(prcCategory);
+			registry.addRecipeHandlers(new BaseRecipeHandler(prcCategory, PRCRecipeWrapper.class));
+			addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, prcCategory, PressurizedRecipe.class, PRCRecipeCategory.class, PRCRecipeWrapper.class);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<RotaryCondensentratorRecipeWrapper>();
 		
 		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		registry.addRecipeCategories(rotaryCondensentratorCategory);
@@ -269,7 +278,7 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipeCategoryCraftingItem(type.getStack(), "mekanism." + type.getName());
 	}
 	
-	private void registerBasicMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends MachineRecipeWrapper> wrapper)
+	private void registerBasicMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends MachineRecipeWrapper> wrapper) throws Exception
 	{
 		MachineRecipeCategory category = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), recipe.name().toLowerCase(), unlocalized, bar);
 		
@@ -279,7 +288,7 @@ public class MekanismJEI implements IModPlugin
 		addRecipes(registry, recipe, category, BasicMachineRecipe.class, MachineRecipeCategory.class, wrapper);
 	}
 	
-	private void registerAdvancedMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends AdvancedMachineRecipeWrapper> wrapper)
+	private void registerAdvancedMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends AdvancedMachineRecipeWrapper> wrapper) throws Exception
 	{
 		AdvancedMachineRecipeCategory category = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), recipe.name().toLowerCase(), unlocalized, bar);
 		
@@ -289,7 +298,7 @@ public class MekanismJEI implements IModPlugin
 		addRecipes(registry, recipe, category, AdvancedMachineRecipe.class, AdvancedMachineRecipeCategory.class, wrapper);
 	}
 	
-	private void registerChanceMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends ChanceMachineRecipeWrapper> wrapper)
+	private void registerChanceMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends ChanceMachineRecipeWrapper> wrapper) throws Exception
 	{
 		ChanceMachineRecipeCategory category = new ChanceMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), recipe.name().toLowerCase(), unlocalized, bar);
 		
@@ -299,19 +308,15 @@ public class MekanismJEI implements IModPlugin
 		addRecipes(registry, recipe, category, ChanceMachineRecipe.class, ChanceMachineRecipeCategory.class, wrapper);
 	}
 	
-	private void addRecipes(IModRegistry registry, Recipe type, IRecipeCategory cat, Class recipe, Class category, Class<? extends IRecipeWrapper> wrapper)
+	private void addRecipes(IModRegistry registry, Recipe type, IRecipeCategory cat, Class recipe, Class category, Class<? extends IRecipeWrapper> wrapper) throws Exception
 	{
-		List<IRecipeWrapper> recipes = new ArrayList<>();
+		List<IRecipeWrapper> recipes = new ArrayList<IRecipeWrapper>();
 		
 		for(Object obj : type.get().values())
 		{
 			if(obj instanceof MachineRecipe)
 			{
-				try {
-					recipes.add(wrapper.getConstructor(recipe, category).newInstance(obj, cat));
-				} catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-					throw new IllegalStateException("Cannot find JEI wrapper constructor!");
-				}
+				recipes.add(wrapper.getConstructor(recipe, category).newInstance(obj, cat));
 			}
 		}
 		

@@ -1,15 +1,14 @@
 package mekanism.client.jei.machine;
 
+import java.util.List;
+
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AdvancedMachineRecipeWrapper extends BaseRecipeWrapper
 {
@@ -24,24 +23,11 @@ public abstract class AdvancedMachineRecipeWrapper extends BaseRecipeWrapper
 	}
 
 	@Override
-	public void getIngredients(IIngredients ingredients)
+	public void getIngredients(IIngredients ingredients) 
 	{
 		ingredients.setInput(ItemStack.class, ((AdvancedMachineInput)recipe.getInput()).itemStack);
+		ingredients.setInput(GasStack.class, new GasStack(((AdvancedMachineInput)recipe.getInput()).gasType, 1));
 		ingredients.setOutput(ItemStack.class, ((ItemStackOutput)recipe.getOutput()).output);
-	}
-	
-	@Nullable
-	@Override
-	public List<String> getTooltipStrings(int mouseX, int mouseY)
-	{
-		List<String> currenttip = new ArrayList<>();
-		
-		if(mouseX >= 33 && mouseX <= 39 && mouseY >= 22 && mouseY <= 34)
-		{
-			currenttip.add(((AdvancedMachineInput)recipe.getInput()).gasType.getLocalizedName());
-		}
-		
-		return currenttip;
 	}
 	
 	@Override

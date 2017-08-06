@@ -17,18 +17,15 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 {
-	public IGuiHelper guiHelper;
-	
 	public String recipeName;
 	public String unlocalizedName;
 	
@@ -36,15 +33,10 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 	
 	public AdvancedMachineRecipe tempRecipe;
 	
-	public ITickTimer timer;
-	
 	public AdvancedMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
-		super("mekanism:gui/GuiAdvancedMachine.png", name, unlocalized, progress);
+		super(helper, "mekanism:gui/GuiAdvancedMachine.png", name, unlocalized, progress);
 		
-		guiHelper = helper;
-		
-		timer = helper.createTickTimer(20, 20, false);
 		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), 28, 16, 144, 54);
 	}
 	
@@ -72,28 +64,15 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 			}
 		}, progressBar, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 77, 37));
 	}
-	
-	@Override
-	public void drawExtras(Minecraft minecraft)
-	{
-		super.drawExtras(minecraft);
-		
-		AdvancedMachineInput input = (AdvancedMachineInput)tempRecipe.getInput();
-		
-		if(input.gasType != null)
-		{
-			displayGauge(33, 21, 6, 12, new GasStack(input.gasType, 1));
-		}
-	}
 
 	@Override
-	public IDrawable getBackground()
+	public IDrawable getBackground() 
 	{
 		return background;
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof AdvancedMachineRecipeWrapper)
 		{
@@ -111,5 +90,9 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.set(0, input.itemStack);
 		itemStacks.set(1, ((ItemStackOutput)tempRecipe.recipeOutput).output);
 		itemStacks.set(2, ((AdvancedMachineRecipeWrapper)recipeWrapper).getFuelStacks(input.gasType));
+		
+		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		
+		initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(input.gasType, 1), false);
 	}
 }

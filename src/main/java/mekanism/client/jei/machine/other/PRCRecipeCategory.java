@@ -1,5 +1,8 @@
 package mekanism.client.jei.machine.other;
 
+import java.util.List;
+
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGasGauge;
 import mekanism.client.gui.element.GuiGauge;
@@ -18,41 +21,34 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
+import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 public class PRCRecipeCategory extends BaseRecipeCategory
 {
-	public IGuiHelper guiHelper;
-	
 	public IDrawable background;
-	public IDrawable fluidOverlay;
 	
 	public GuiGasGauge gasInput;
 	public GuiGasGauge gasOutput;
 	
 	public PressurizedRecipe tempRecipe;
 	
-	public ITickTimer timer;
-	
 	public PRCRecipeCategory(IGuiHelper helper)
 	{
-		super("mekanism:gui/nei/GuiPRC.png", "pressurized_reaction_chamber", "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM);
-		
-		guiHelper = helper;
-		
-		timer = helper.createTickTimer(20, 20, false);
-		
+		super(helper, "mekanism:gui/nei/GuiPRC.png", "pressurized_reaction_chamber", "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM);
+	
 		xOffset = 3;
 		yOffset = 11;
 		
 		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), xOffset, yOffset, 170, 68);
-		fluidOverlay = guiHelper.createDrawable(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16, 59);
 	}
 	
 	@Override
@@ -84,31 +80,13 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft)
-	{
-		super.drawExtras(minecraft);
-
-		if(tempRecipe.getInput().getGas() != null)
-		{
-			gasInput.setDummyType(tempRecipe.getInput().getGas().getGas());
-			gasInput.renderScale(0, 0, -xOffset, -yOffset);
-		}
-
-		if(tempRecipe.getOutput().getGasOutput() != null)
-		{
-			gasOutput.setDummyType(tempRecipe.getOutput().getGasOutput().getGas());
-			gasOutput.renderScale(0, 0, -xOffset, -yOffset);
-		}
-	}
-	
-	@Override
-	public IDrawable getBackground()
+	public IDrawable getBackground() 
 	{
 		return background;
 	}
 	
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
 		if(recipeWrapper instanceof PRCRecipeWrapper)
 		{
@@ -125,8 +103,13 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
-		fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlay);
+		fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlayLarge);
 		fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
-		fluidStacks.addTooltipCallback((slotIndex, input, ingredient, tooltip) -> tooltip.remove(1));
+		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
+		
+		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		
+		initGas(gasStacks, 0, true, 29-xOffset, 11-yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
+		initGas(gasStacks, 1, false, 141-xOffset, 41-yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);
 	}
 }

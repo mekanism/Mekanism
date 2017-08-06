@@ -33,22 +33,14 @@ import java.util.Map;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 {
-	public IGuiHelper guiHelper;
-	
 	public IDrawable background;
 	
 	public MetallurgicInfuserRecipe tempRecipe;
 	
-	public ITickTimer timer;
-	
 	public MetallurgicInfuserRecipeCategory(IGuiHelper helper)
 	{
-		super("mekanism:gui/GuiMetallurgicInfuser.png", "metallurgic_infuser", "tile.MachineBlock.MetallurgicInfuser.name", ProgressBar.MEDIUM);
-		
-		guiHelper = helper;
-		
-		timer = helper.createTickTimer(20, 20, false);
-		
+		super(helper, "mekanism:gui/GuiMetallurgicInfuser.png", "metallurgic_infuser", "tile.MachineBlock.MetallurgicInfuser.name", ProgressBar.MEDIUM);
+
 		xOffset = 5;
 		yOffset = 16;
 		

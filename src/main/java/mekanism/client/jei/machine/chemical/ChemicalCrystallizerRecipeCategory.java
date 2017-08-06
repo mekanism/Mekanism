@@ -5,9 +5,9 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -15,22 +15,14 @@ import net.minecraft.util.ResourceLocation;
 
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 {
-	public IGuiHelper guiHelper;
-	
 	public IDrawable background;
 	
 	public CrystallizerRecipe tempRecipe;
 	
-	public ITickTimer timer;
-	
 	public ChemicalCrystallizerRecipeCategory(IGuiHelper helper)
 	{
-		super("mekanism:gui/nei/GuiChemicalCrystallizer.png", "chemical_crystallizer", "tile.MachineBlock2.ChemicalCrystallizer.name", null);
-		
-		guiHelper = helper;
-		
-		timer = helper.createTickTimer(20, 20, false);
-		
+		super(helper, "mekanism:gui/nei/GuiChemicalCrystallizer.png", "chemical_crystallizer", "tile.MachineBlock2.ChemicalCrystallizer.name", null);
+
 		xOffset = 5;
 		yOffset = 3;
 		
@@ -41,16 +33,9 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 	public void drawExtras(Minecraft minecraft) 
 	{
 		super.drawExtras(minecraft);
-		
-		GasStack gas = tempRecipe.getInput().ingredient;
 
 		float f = (float)timer.getValue() / 20F;
 		drawTexturedRect(53-xOffset, 61-yOffset, 176, 63, (int)(48*f), 8);
-
-		if(gas != null)
-		{
-			displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, gas);
-		}
 	}
 	
 	@Override
@@ -70,7 +55,10 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		
 		itemStacks.init(0, false, 130-xOffset, 56-yOffset);
-
 		itemStacks.set(0, tempRecipe.getOutput().output);
+		
+		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		
+		initGas(gasStacks, 0, true, 6-xOffset, 5-yOffset, 16, 58, tempRecipe.getInput().ingredient, true);
 	}
 }
