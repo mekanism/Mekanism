@@ -21,6 +21,8 @@ public class ContainerUpgradeManagement extends Container
 	public ContainerUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile)
 	{
 		tileEntity = tile;
+
+		//Bit of a hack I guess, but we need to give it access to the inventory list, not the Frequency
 		IInventory upgradeInv;
 		if (tileEntity instanceof TileEntityQuantumEntangloporter)
 		{
