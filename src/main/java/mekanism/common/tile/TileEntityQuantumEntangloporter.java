@@ -3,9 +3,11 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.Gas;
@@ -16,20 +18,17 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData.IOState;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITankManager;
+import mekanism.common.Upgrade;
+import mekanism.common.base.*;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
-import mekanism.common.tile.component.TileComponentConfig;
-import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.component.*;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -39,17 +38,20 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile
+public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile
 {
 	public InventoryFrequency frequency;
 	
@@ -64,6 +66,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public TileComponentEjector ejectorComponent;
 	public TileComponentConfig configComponent;
 	public TileComponentSecurity securityComponent;
+	public TileComponentChunkLoader chunkLoaderComponent;
+	public TileComponentUpgrade upgradeComponent;
+
+	private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
 
 	public TileEntityQuantumEntangloporter()
 	{
@@ -82,7 +88,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 		}
 
-		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
 		
 		configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[] {0};
 		configComponent.getOutputs(TransmissionType.FLUID).get(2).availableSlots = new int[] {0};
@@ -94,6 +100,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
 		
 		securityComponent = new TileComponentSecurity(this);
+		chunkLoaderComponent = new TileComponentChunkLoader(this);
+
+		upgradeComponent = new TileComponentUpgrade(this, 0);
+		upgradeComponent.clearSupportedTypes();
+		upgradeComponent.setSupported(Upgrade.ANCHOR);
 	}
 
 	@Override
@@ -241,6 +252,21 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			frequency = new InventoryFrequency(nbtTags.getCompoundTag("frequency"));
 			frequency.valid = false;
 		}
+
+		NBTTagList tagList = nbtTags.getTagList("upgradesInv", Constants.NBT.TAG_COMPOUND);
+		inventory = NonNullList.withSize(INV_SIZE, ItemStack.EMPTY);
+
+		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+		{
+			NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+			byte slotID = tagCompound.getByte("Slot");
+
+			if(slotID >= 0 && slotID < inventory.size())
+			{
+				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+			}
+		}
+
 	}
 
 	@Override
@@ -254,6 +280,21 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			frequency.write(frequencyTag);
 			nbtTags.setTag("frequency", frequencyTag);
 		}
+
+		//Upgrades inventory
+		NBTTagList tagList = new NBTTagList();
+		for(int slotCount = 0; slotCount < inventory.size(); slotCount++)
+		{
+			ItemStack stackInSlot = inventory.get(slotCount);
+			if(!stackInSlot.isEmpty())
+			{
+				NBTTagCompound tagCompound = new NBTTagCompound();
+				tagCompound.setByte("Slot", (byte)slotCount);
+				stackInSlot.writeToNBT(tagCompound);
+				tagList.appendTag(tagCompound);
+			}
+		}
+		nbtTags.setTag("upgradesInv", tagList);
 		
 		return nbtTags;
 	}
@@ -410,7 +451,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxEnergy()
 	{
-		return !hasFrequency() ? 0 : frequency.MAX_ENERGY;
+		return !hasFrequency() ? 0 : InventoryFrequency.MAX_ENERGY;
 	}
 
 	@Override
@@ -705,5 +746,27 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			default:
 				throw new NoSuchMethodException();
 		}
+	}
+
+	@Override
+	public TileComponentChunkLoader getChunkLoader()
+	{
+		return chunkLoaderComponent;
+	}
+
+	@Override
+	public Set<ChunkPos> getChunkSet()
+	{
+		Set<ChunkPos> ret = new HashSet<ChunkPos>();
+
+		ret.add(new Chunk3D(Coord4D.get(this)).getPos());
+
+		return ret;
+	}
+
+	@Override
+	public TileComponentUpgrade getComponent()
+	{
+		return this.upgradeComponent;
 	}
 }

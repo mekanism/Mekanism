@@ -35,6 +35,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.ic2.IC2ItemManager;
@@ -46,6 +47,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ItemDataUtils;
@@ -241,6 +243,15 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + EnumColor.GREY + LangUtils.transYesNo(getBucketMode(itemstack)));
 			}
 
+			if (type == MachineType.QUANTUM_ENTANGLOPORTER)
+			{
+				Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemstack, "entangleporter_frequency"));
+				if (freq != null)
+				{
+					list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": "+EnumColor.GREY + freq.name + " (" + LangUtils.localize(freq.publicFreq ? "security.public" : "security.private") + ")");
+				}
+			}
+
 			if(type.isElectric)
 			{
 				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
@@ -412,6 +423,15 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(tileEntity instanceof TileEntityElectricBlock)
 			{
 				((TileEntityElectricBlock)tileEntity).electricityStored = getEnergy(stack);
+			}
+
+			if (tileEntity instanceof TileEntityQuantumEntangloporter && ItemDataUtils.hasData(stack, "entangleporter_frequency"))
+			{
+				Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
+				if (freq != null)
+				{
+					((TileEntityQuantumEntangloporter) tileEntity).setFrequency(freq.name, freq.publicFreq);
+				}
 			}
 
 			return true;
