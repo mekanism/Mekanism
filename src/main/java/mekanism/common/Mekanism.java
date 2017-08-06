@@ -150,7 +150,7 @@ import com.mojang.authlib.GameProfile;
  * @author AidanBrady
  *
  */
-@Mod(modid = "mekanism", name = "Mekanism", version = "9.3.4", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "mekanism", name = "Mekanism", version = "9.4.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies =	"required-after:forge@[14.21.0.2373,);" +
 						"after:redstoneflux;" +
 						"after:mcmultipart;" +
@@ -186,7 +186,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(9, 3, 4);
+	public static Version versionNumber = new Version(9, 4, 0);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank");
