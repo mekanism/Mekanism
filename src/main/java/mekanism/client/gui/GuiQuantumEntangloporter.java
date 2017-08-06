@@ -9,6 +9,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
@@ -61,6 +62,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png")));
 		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png")));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, resource));
 		
 		if(tileEntity.frequency != null)
 		{

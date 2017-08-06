@@ -55,6 +55,7 @@ public class TileComponentUpgrade implements ITileComponent
 		upgradeTicks = upgrade.upgradeTicks;
 	}
 
+	// This SHOULD continue to directly use te.inventory, as it is needed for Entangleporter upgrades, since it messes with IInventory.
 	@Override
 	public void tick()
 	{
