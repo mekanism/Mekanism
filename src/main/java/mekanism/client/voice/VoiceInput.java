@@ -13,11 +13,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class VoiceInput extends Thread
 {
-	public VoiceClient voiceClient;
+	private VoiceClient voiceClient;
 
-	public DataLine.Info microphone;
+	private DataLine.Info microphone;
 
-	public TargetDataLine targetLine;
+	private TargetDataLine targetLine;
 
 	public VoiceInput(VoiceClient client)
 	{
@@ -32,6 +32,11 @@ public class VoiceInput extends Thread
 	public void run()
 	{
 		try {
+			if(!AudioSystem.isLineSupported(microphone))
+			{
+				Mekanism.logger.info("No audio system available.");
+				return;
+			}
 			targetLine = ((TargetDataLine)AudioSystem.getLine(microphone));
 			targetLine.open(voiceClient.format, 2200);
 			targetLine.start();
@@ -82,14 +87,16 @@ public class VoiceInput extends Thread
 
 			audioInput.close();
 		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while running client input thread.");
-			e.printStackTrace();
+			Mekanism.logger.error("VoiceServer: Error while running client input thread.", e);
 		}
 	}
 
 	public void close()
 	{
-		targetLine.flush();
-		targetLine.close();
+		if(targetLine != null)
+		{
+			targetLine.flush();
+			targetLine.close();
+		}
 	}
 }
