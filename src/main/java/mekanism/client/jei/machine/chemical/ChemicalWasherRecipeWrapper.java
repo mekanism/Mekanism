@@ -33,24 +33,6 @@ public class ChemicalWasherRecipeWrapper extends BaseRecipeWrapper
 		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
 	}
 	
-	@Nullable
-	@Override
-	public List<String> getTooltipStrings(int mouseX, int mouseY)
-	{
-		List<String> currenttip = new ArrayList<String>();
-		
-		if(mouseX >= 27-3 && mouseX <= 43-3 && mouseY >= 14-3 && mouseY <= 72-3)
-		{
-			currenttip.add(LangUtils.localizeGasStack(recipe.getInput().ingredient));
-		}
-		else if(mouseX >= 134-3 && mouseX <= 150-3 && mouseY >= 14-3 && mouseY <= 72-3)
-		{
-			currenttip.add(LangUtils.localizeGasStack(recipe.getOutput().output));
-		}
-		
-		return currenttip;
-	}
-	
 	@Override
 	public ChemicalWasherRecipeCategory getCategory()
 	{

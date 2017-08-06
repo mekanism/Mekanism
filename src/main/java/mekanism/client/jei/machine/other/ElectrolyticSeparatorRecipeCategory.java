@@ -1,8 +1,6 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGasGauge;
 import mekanism.client.gui.element.GuiGauge;
@@ -21,42 +19,30 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
+import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITickTimer;
-import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 {
-	public IGuiHelper guiHelper;
-	
 	public IDrawable background;
-	public IDrawable fluidOverlay;
 	
 	public GuiGasGauge leftGas;
 	public GuiGasGauge rightGas;
 	
 	public SeparatorRecipe tempRecipe;
 	
-	public ITickTimer timer;
-	
 	public ElectrolyticSeparatorRecipeCategory(IGuiHelper helper)
 	{
-		super("mekanism:gui/GuiElectrolyticSeparator.png", "electrolytic_separator", "tile.MachineBlock2.ElectrolyticSeparator.name", ProgressBar.BI);
-		
-		guiHelper = helper;
-		
-		timer = helper.createTickTimer(20, 20, false);
+		super(helper, "mekanism:gui/GuiElectrolyticSeparator.png", "electrolytic_separator", "tile.MachineBlock2.ElectrolyticSeparator.name", ProgressBar.BI);
 		
 		xOffset = 4;
 		yOffset = 9;
 		
 		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), xOffset, yOffset, 167, 62);
-		fluidOverlay = guiHelper.createDrawable(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16, 59);
 	}
 	
 	@Override
@@ -89,26 +75,6 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft) 
-	{
-		super.drawExtras(minecraft);
-		
-		if(tempRecipe.getOutput().leftGas != null)
-		{
-			leftGas.setDummyType(tempRecipe.getOutput().leftGas.getGas());
-			leftGas.renderScale(0, 0, -xOffset, -yOffset);
-		}
-
-		if(tempRecipe.getOutput().rightGas != null)
-		{
-			rightGas.setDummyType(tempRecipe.getOutput().rightGas.getGas());
-			rightGas.renderScale(0, 0, -xOffset, -yOffset);
-		}
-		
-		changeTexture(guiLocation);
-	}
-	
-	@Override
 	public IDrawable getBackground() 
 	{
 		return background;
@@ -124,15 +90,13 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
-		fluidStacks.init(0, true, 2, 2, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlay);
+		fluidStacks.init(0, true, 2, 2, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlayLarge);
 		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
-		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-
-			@Override
-			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip) 
-			{
-				tooltip.remove(1);
-			}
-		});
+		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
+		
+		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		
+		initGas(gasStacks, 0, false, 59-xOffset, 19-yOffset, 16, 28, tempRecipe.recipeOutput.leftGas, true);
+		initGas(gasStacks, 1, false, 101-xOffset, 19-yOffset, 16, 28, tempRecipe.recipeOutput.rightGas, true);
 	}
 }

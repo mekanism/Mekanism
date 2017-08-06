@@ -26,21 +26,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class MachineRecipeCategory extends BaseRecipeCategory
 {
-	public IGuiHelper guiHelper;
-	
 	public IDrawable background;
 	
 	public BasicMachineRecipe tempRecipe;
 	
-	public ITickTimer timer;
-	
 	public MachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
-		super("mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress);
-		
-		guiHelper = helper;
-		
-		timer = helper.createTickTimer(20, 20, false);
+		super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress);
 		
 		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), 28, 16, 144, 54);
 	}

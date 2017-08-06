@@ -31,20 +31,6 @@ public class ChemicalCrystallizerRecipeWrapper extends BaseRecipeWrapper
 		ingredients.setOutput(ItemStack.class, recipe.recipeOutput.output);
 	}
 	
-	@Nullable
-	@Override
-	public List<String> getTooltipStrings(int mouseX, int mouseY)
-	{
-		List<String> currenttip = new ArrayList<String>();
-		
-		if(mouseX >= 1 && mouseX <= 17 && mouseY >= 5-3 && mouseY <= 63-3)
-		{
-			currenttip.add(LangUtils.localizeGasStack(recipe.getInput().ingredient));
-		}
-		
-		return currenttip;
-	}
-	
 	@Override
 	public ChemicalCrystallizerRecipeCategory getCategory()
 	{

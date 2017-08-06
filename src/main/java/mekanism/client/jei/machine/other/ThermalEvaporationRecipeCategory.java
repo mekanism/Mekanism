@@ -18,28 +18,18 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 {
-	public IGuiHelper guiHelper;
-	
 	public IDrawable background;
-	public IDrawable fluidOverlay;
 	
 	public ThermalEvaporationRecipe tempRecipe;
 	
-	public ITickTimer timer;
-	
 	public ThermalEvaporationRecipeCategory(IGuiHelper helper)
 	{
-		super("mekanism:gui/nei/GuiThermalEvaporationController.png", "thermal_evaporation_plant", "gui.thermalEvaporationController.short", null);
-		
-		guiHelper = helper;
-		
-		timer = helper.createTickTimer(20, 20, false);
-		
+		super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png", "thermal_evaporation_plant", "gui.thermalEvaporationController.short", null);
+
 		xOffset = 3;
 		yOffset = 12;
 		
 		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), xOffset, yOffset, 170, 62);
-		fluidOverlay = guiHelper.createDrawable(new ResourceLocation(guiTexture), 176, 0, 16, 59);
 	}
 	
 	@Override
@@ -66,18 +56,11 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
-		fluidStacks.init(0, true, 7-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlay);
-		fluidStacks.init(1, false, 153-xOffset, 14-yOffset, 16, 58, tempRecipe.getOutput().output.amount, false, fluidOverlay);
+		fluidStacks.init(0, true, 7-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlayLarge);
+		fluidStacks.init(1, false, 153-xOffset, 14-yOffset, 16, 58, tempRecipe.getOutput().output.amount, false, fluidOverlayLarge);
 		
 		fluidStacks.set(0, tempRecipe.recipeInput.ingredient);
 		fluidStacks.set(1, tempRecipe.recipeOutput.output);
-		
-		fluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>() {
-			@Override
-			public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip) 
-			{
-				tooltip.remove(1);
-			}
-		});
+		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

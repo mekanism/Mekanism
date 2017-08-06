@@ -1,10 +1,6 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -53,20 +49,6 @@ public class RotaryCondensentratorRecipeWrapper extends BaseRecipeWrapper
 	{
 		FontRenderer fontRendererObj = minecraft.fontRendererObj;
 		fontRendererObj.drawString(condensentrating ? LangUtils.localize("gui.condensentrating") : LangUtils.localize("gui.decondensentrating"), 6-3, 74-12, 0x404040, false);
-	}
-	
-	@Nullable
-	@Override
-	public List<String> getTooltipStrings(int mouseX, int mouseY)
-	{
-		List<String> currenttip = new ArrayList<String>();
-		
-		if(mouseX >= 26-3 && mouseX <= 42-3 && mouseY >= 14-12 && mouseY <= 72-12)
-		{
-			currenttip.add(gasType.getLocalizedName());
-		}
-		
-		return currenttip;
 	}
 	
 	@Override
