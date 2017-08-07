@@ -2,6 +2,7 @@ package mekanism.common.integration.tesla;
 
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.MekanismHooks;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -11,9 +12,9 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"),
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaProducer", modid = "tesla"),
-	@Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla")
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = MekanismHooks.TESLA_MOD_ID),
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaProducer", modid = MekanismHooks.TESLA_MOD_ID),
+	@Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = MekanismHooks.TESLA_MOD_ID)
 })
 public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaProducer
 {
@@ -28,28 +29,28 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
 	}
 
 	@Override
-	@Method(modid = "tesla")
+	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long getStoredPower() 
 	{
 		return (long)Math.round(tileEntity.getEnergy()*general.TO_TESLA);
 	}
 
 	@Override
-	@Method(modid = "tesla")
+	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long getCapacity() 
 	{
 		return (long)Math.round(tileEntity.getMaxEnergy()*general.TO_TESLA);
 	}
 	
 	@Override
-	@Method(modid = "tesla")
+	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long takePower(long power, boolean simulated) 
 	{
 		return rfToTesla(tileEntity.extractEnergy(side, teslaToRF(power), simulated));
 	}
 	
 	@Override
-	@Method(modid = "tesla")
+	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long givePower(long power, boolean simulated) 
 	{
 		return rfToTesla(tileEntity.receiveEnergy(side, teslaToRF(power), simulated));

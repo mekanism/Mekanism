@@ -18,6 +18,7 @@ import mekanism.common.SideData;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -52,7 +53,7 @@ import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 
 @InterfaceList({
-	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
+	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = MekanismHooks.BUILDCRAFT_MOD_ID)
 })
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer, IItemNetwork
 {
@@ -259,14 +260,14 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	@Method(modid = "BuildCraft")
+	@Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
 	public boolean canWrench(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace)
 	{
 		return canUseWrench(wrench, player, rayTrace.getBlockPos());
 	}
 
 	@Override
-	@Method(modid = "BuildCraft")
+	@Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
 	public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {}
 
 	@Override

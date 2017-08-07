@@ -15,9 +15,9 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
@@ -87,7 +87,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		return false;
 	}
 	
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void register()
 	{
 		if(!world.isRemote)
@@ -109,7 +109,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		}
 	}
 
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void deregister()
 	{
 		if(!world.isRemote)
@@ -205,35 +205,35 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getSinkTier()
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getSourceTier()
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void setStored(int energy)
 	{
 		setEnergy(energy*general.FROM_IC2);
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int addEnergy(int amount)
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
 		return canOutputEnergy(side);
@@ -246,49 +246,49 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
 		return false;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
 		return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getStored()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getCapacity()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getOutput()
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput()*general.TO_IC2));
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double getDemandedEnergy()
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double getOfferedEnergy()
 	{
 		return Math.min(getEnergy(), getMaxOutput())*general.TO_IC2;
@@ -301,21 +301,21 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double getOutputEnergyUnitsPerTick()
 	{
 		return getMaxOutput()*general.TO_IC2;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		return amount;
 	}
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void drawEnergy(double amount)
 	{
 		if(structure != null)

@@ -12,8 +12,8 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.util.ItemDataUtils;
@@ -45,7 +45,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.api.energy.IEnergyContainerItem;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = IC2Integration.MODID)
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
 public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
@@ -207,7 +207,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     }
 
 	@Override
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);

@@ -16,7 +16,6 @@ import mekanism.common.Resource;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.computer.CCPeripheral;
 import mekanism.common.integration.computer.OCDriver;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.integration.storagedrawer.StorageDrawerRecipeHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
@@ -35,6 +34,21 @@ import dan200.computercraft.api.ComputerCraftAPI;
  */
 public final class MekanismHooks
 {
+	public static final String COFH_CORE_MOD_ID = "cofhcore";
+	public static final String IC2_MOD_ID = "ic2";
+	public static final String RAILCRAFT_MOD_ID = "railcraft";
+	public static final String THERMALEXPANSION_MOD_ID = "thermalexpansion";
+	public static final String COMPUTERCRAFT_MOD_ID = "computercraft";
+	public static final String APPLIED_ENERGISTICS_2_MOD_ID = "appliedenergistics2";
+	public static final String TESLA_MOD_ID = "tesla";
+	public static final String MCMULTIPART_MOD_ID = "mcmultipart";
+	public static final String METALLURGY_3_CORE_MOD_ID = "Metallurgy3Core";
+	public static final String METALLURGY_3_BASE_MOD_ID = "Metallurgy3Base";
+	public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
+	public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
+	public static final String WAILA_MOD_ID = "Waila";
+	public static final String BUILDCRAFT_MOD_ID = "BuildCraft";
+
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
 	public boolean CoFHCoreLoaded = false;
@@ -49,20 +63,20 @@ public final class MekanismHooks
 
 	public void hook()
 	{
-		if(Loader.isModLoaded("cofhcore")) CoFHCoreLoaded = true;
-		if(Loader.isModLoaded("ic2")) IC2Loaded = true;
-		if(Loader.isModLoaded("railcraft")) RailcraftLoaded = true;
-		if(Loader.isModLoaded("thermalexpansion")) TELoaded = true;
-		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
-		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
-		if(Loader.isModLoaded("tesla")) TeslaLoaded = true;
-		if(Loader.isModLoaded("mcmultipart")) MCMPLoaded = true;
+		if(Loader.isModLoaded(COFH_CORE_MOD_ID)) CoFHCoreLoaded = true;
+		if(Loader.isModLoaded(IC2_MOD_ID)) IC2Loaded = true;
+		if(Loader.isModLoaded(RAILCRAFT_MOD_ID)) RailcraftLoaded = true;
+		if(Loader.isModLoaded(THERMALEXPANSION_MOD_ID)) TELoaded = true;
+		if(Loader.isModLoaded(COMPUTERCRAFT_MOD_ID)) CCLoaded = true;
+		if(Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID)) AE2Loaded = true;
+		if(Loader.isModLoaded(TESLA_MOD_ID)) TeslaLoaded = true;
+		if(Loader.isModLoaded(MCMULTIPART_MOD_ID)) MCMPLoaded = true;
 		
-		if(Loader.isModLoaded("Metallurgy3Core"))
+		if(Loader.isModLoaded(METALLURGY_3_CORE_MOD_ID))
 		{
 			MetallurgyCoreLoaded = true;
 
-			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
+			if(Loader.isModLoaded(METALLURGY_3_BASE_MOD_ID)) MetallurgyBaseLoaded = true;
 		}
 
 		if(IC2Loaded)
@@ -87,7 +101,7 @@ public final class MekanismHooks
 		}
 	}
 
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void hookIC2Recipes()
 	{
 		for(MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes())
@@ -133,7 +147,7 @@ public final class MekanismHooks
 		} catch(Exception e) {}
 	}
 
-	@Method(modid = "ComputerCraft")
+	@Method(modid = COMPUTERCRAFT_MOD_ID)
 	public void loadCCPeripheralProviders()
 	{
 		try {
@@ -141,7 +155,7 @@ public final class MekanismHooks
 		} catch(Exception e) {}
 	}
 
-	@Method(modid = "opencomputers")
+	@Method(modid = OPENCOMPUTERS_MOD_ID)
 	public void loadOCDrivers()
 	{
 		try {
@@ -160,26 +174,26 @@ public final class MekanismHooks
 		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
 	}
 	
-	@Method(modid = "appliedenergistics2")
+	@Method(modid = APPLIED_ENERGISTICS_2_MOD_ID)
 	public void registerAE2P2P() 
 	{
 		for(TransmitterType type : TransmitterType.values())
 		{
 			if(type.getTransmission().equals(TransmissionType.ITEM))
 			{
-				FMLInterModComms.sendMessage("appliedenergistics2", "add-p2p-attunement-item", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
+				FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
 				continue;
 			}
 			
 			if(type.getTransmission().equals(TransmissionType.FLUID))
 			{
-				FMLInterModComms.sendMessage("appliedenergistics2", "add-p2p-attunement-fluid", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
+				FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
 				continue;
 			}
 			
 			if(type.getTransmission().equals(TransmissionType.ENERGY))
 			{
-				FMLInterModComms.sendMessage("appliedenergistics2", "add-p2p-attunement-forge-power", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
+				FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-forge-power", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
 				continue;
 			}
 
