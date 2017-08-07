@@ -1,11 +1,9 @@
 package mekanism.client.jei.machine;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -28,21 +26,8 @@ public abstract class AdvancedMachineRecipeWrapper extends BaseRecipeWrapper
 	public void getIngredients(IIngredients ingredients) 
 	{
 		ingredients.setInput(ItemStack.class, ((AdvancedMachineInput)recipe.getInput()).itemStack);
+		ingredients.setInput(GasStack.class, new GasStack(((AdvancedMachineInput)recipe.getInput()).gasType, 1));
 		ingredients.setOutput(ItemStack.class, ((ItemStackOutput)recipe.getOutput()).output);
-	}
-	
-	@Nullable
-	@Override
-	public List<String> getTooltipStrings(int mouseX, int mouseY)
-	{
-		List<String> currenttip = new ArrayList<String>();
-		
-		if(mouseX >= 33 && mouseX <= 39 && mouseY >= 22 && mouseY <= 34)
-		{
-			currenttip.add(((AdvancedMachineInput)recipe.getInput()).gasType.getLocalizedName());
-		}
-		
-		return currenttip;
 	}
 	
 	@Override

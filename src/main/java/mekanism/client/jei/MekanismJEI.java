@@ -102,6 +102,8 @@ import net.minecraftforge.fluids.Fluid;
 @JEIPlugin
 public class MekanismJEI extends BlankModPlugin
 {
+	public static GasStackRenderer GAS_RENDERER;
+	
 	public static ISubtypeInterpreter NBT_INTERPRETER = new ISubtypeInterpreter() {
 		@Override
 		public String getSubtypeInfo(ItemStack itemStack) 
@@ -140,7 +142,7 @@ public class MekanismJEI extends BlankModPlugin
 	public void registerIngredients(IModIngredientRegistration registry)
 	{
 		List<GasStack> list = GasRegistry.getRegisteredGasses().stream().filter(g -> g.isVisible()).map(g -> new GasStack(g, Fluid.BUCKET_VOLUME)).collect(Collectors.toList());
-		registry.register(GasStack.class, list, new GasStackHelper(), new GasStackRenderer());
+		registry.register(GasStack.class, list, new GasStackHelper(), GAS_RENDERER = new GasStackRenderer());
 	}
 	
 	@Override

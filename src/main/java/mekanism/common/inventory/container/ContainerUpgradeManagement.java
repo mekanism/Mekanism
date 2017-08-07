@@ -2,13 +2,17 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.inventory.InventoryList;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class ContainerUpgradeManagement extends Container
 {
@@ -17,7 +21,19 @@ public class ContainerUpgradeManagement extends Container
 	public ContainerUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile)
 	{
 		tileEntity = tile;
-		addSlotToContainer(new SlotMachineUpgrade((TileEntityContainerBlock)tile, tileEntity.getComponent().getUpgradeSlot(), 154, 7));
+
+		//Bit of a hack I guess, but we need to give it access to the inventory list, not the Frequency
+		IInventory upgradeInv;
+		if (tileEntity instanceof TileEntityQuantumEntangloporter)
+		{
+			upgradeInv = new InventoryList(((TileEntityQuantumEntangloporter) tileEntity).inventory, (TileEntity) tileEntity);
+		}
+		else
+		{
+			upgradeInv = (TileEntityContainerBlock)tile;
+		}
+
+		addSlotToContainer(new SlotMachineUpgrade(upgradeInv, tileEntity.getComponent().getUpgradeSlot(), 154, 7));
 		
 		int slotY;
 
