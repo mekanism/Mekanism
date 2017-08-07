@@ -1,5 +1,6 @@
 package mekanism.common.integration.computer;
 
+import mekanism.common.integration.MekanismHooks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +15,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 /**
  * Created by aidancbrady on 7/20/15.
  */
-@Optional.Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
+@Optional.Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
 public class CCPeripheral implements IPeripheral
 {
     public IComputerIntegration computerTile;
@@ -25,21 +26,21 @@ public class CCPeripheral implements IPeripheral
     }
 
     @Override
-    @Optional.Method(modid = "ComputerCraft")
+    @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public String getType()
     {
         return computerTile.getName();
     }
 
     @Override
-    @Optional.Method(modid = "ComputerCraft")
+    @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public String[] getMethodNames()
     {
         return computerTile.getMethods();
     }
 
     @Override
-    @Optional.Method(modid = "ComputerCraft")
+    @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
     {
         try {
@@ -53,15 +54,15 @@ public class CCPeripheral implements IPeripheral
     }
 
     @Override
-    @Optional.Method(modid = "ComputerCraft")
+    @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public void attach(IComputerAccess computer) {}
 
     @Override
-    @Optional.Method(modid = "ComputerCraft")
+    @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public void detach(IComputerAccess computer) {}
 
     @Override
-    @Optional.Method(modid = "ComputerCraft")
+    @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public boolean equals(IPeripheral other)
     {
         return this == other;

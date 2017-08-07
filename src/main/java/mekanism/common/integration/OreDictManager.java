@@ -13,7 +13,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
-import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -287,7 +286,7 @@ public final class OreDictManager
 		} catch(Exception e) {}
 	}
 	
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public static void addIC2BronzeRecipe()
 	{
 		try {

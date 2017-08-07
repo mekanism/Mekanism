@@ -785,15 +785,15 @@ public class Mekanism
 		addEntities();
 		
 		//Integrate with Waila
-		FMLInterModComms.sendMessage("Waila", "register", "mekanism.common.integration.WailaDataProvider.register");
+		FMLInterModComms.sendMessage(MekanismHooks.WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
 
 		//Integrate with OpenComputers
-		if(Loader.isModLoaded("OpenComputers"))
+		if(Loader.isModLoaded(MekanismHooks.OPENCOMPUTERS_MOD_ID))
 		{
 			hooks.loadOCDrivers();
 		}
 
-		if(Loader.isModLoaded("appliedenergistics2"))
+		if(Loader.isModLoaded(MekanismHooks.APPLIED_ENERGISTICS_2_MOD_ID))
 		{
 			hooks.registerAE2P2P();
 		}

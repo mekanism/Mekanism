@@ -6,15 +6,15 @@ import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.MekanismHooks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Method;
 
 public class IC2Integration 
 {
-	public static final String MODID = "ic2";
-	
-	@Method(modid = IC2Integration.MODID)
+
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public static boolean isOutputter(TileEntity tileEntity, EnumFacing side)
 	{
 		IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
@@ -27,7 +27,7 @@ public class IC2Integration
 		return false;
 	}
 	
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public static boolean isAcceptor(TileEntity orig, TileEntity tileEntity, EnumFacing side)
 	{
 		IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
@@ -43,7 +43,7 @@ public class IC2Integration
 		return false;
 	}
 	
-	@Method(modid = IC2Integration.MODID)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public static double emitEnergy(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending)
 	{
 		IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());

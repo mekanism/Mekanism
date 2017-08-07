@@ -27,10 +27,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
-@Interface(iface = "mcp.mobius.waila.api.IWailaDataProvider", modid = "Waila")
+@Interface(iface = "mcp.mobius.waila.api.IWailaDataProvider", modid = MekanismHooks.WAILA_MOD_ID)
 public class WailaDataProvider implements IWailaDataProvider
 {
-	@Method(modid = "Waila")
+	@Method(modid = MekanismHooks.WAILA_MOD_ID)
 	public static void register(IWailaRegistrar registrar)
 	{
 		WailaDataProvider provider = new WailaDataProvider();
@@ -47,14 +47,14 @@ public class WailaDataProvider implements IWailaDataProvider
 	}
 	
 	@Override
-	@Method(modid = "Waila")
+	@Method(modid = MekanismHooks.WAILA_MOD_ID)
 	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	@Method(modid = "Waila")
+	@Method(modid = MekanismHooks.WAILA_MOD_ID)
 	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
 		TileEntity tile = accessor.getTileEntity();
@@ -102,21 +102,21 @@ public class WailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	@Method(modid = "Waila")
+	@Method(modid = MekanismHooks.WAILA_MOD_ID)
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
 		return currenttip;
 	}
 
 	@Override
-	@Method(modid = "Waila")
+	@Method(modid = MekanismHooks.WAILA_MOD_ID)
 	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
 		return currenttip;
 	}
 
 	@Override
-	@Method(modid = "Waila")
+	@Method(modid = MekanismHooks.WAILA_MOD_ID)
 	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos)
 	{
 		return tag;
