@@ -23,6 +23,7 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
 import mekanism.common.integration.tesla.TeslaCableIntegration;
 import mekanism.common.transmitters.grid.EnergyNetwork;
@@ -39,7 +40,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional;
 
 @Optional.InterfaceList(
-	@Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux")
+	@Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 )
 public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver
 {
@@ -259,28 +260,28 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	}
 
 	@Override
-	@Optional.Method(modid = "redstoneflux")
+	@Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		return maxReceive - (int)Math.round(Math.min(Integer.MAX_VALUE, takeEnergy(maxReceive*general.FROM_RF, !simulate)*general.TO_RF));
 	}
 
 	@Override
-	@Optional.Method(modid = "redstoneflux")
+	@Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return canConnect(from);
 	}
 
 	@Override
-	@Optional.Method(modid = "redstoneflux")
+	@Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
 	}
 
 	@Override
-	@Optional.Method(modid = "redstoneflux")
+	@Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));

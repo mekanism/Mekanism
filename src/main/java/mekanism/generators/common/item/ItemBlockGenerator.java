@@ -73,7 +73,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 
 @InterfaceList({
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = "redstoneflux"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
 public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem, ISecurityItem
@@ -365,7 +365,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canReceive(theItem))
@@ -385,7 +385,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canSend(theItem))
@@ -405,14 +405,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getEnergyStored(ItemStack theItem)
 	{
 		return (int)(getEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
 		return (int)(getMaxEnergy(theItem)*general.TO_RF);

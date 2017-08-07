@@ -33,8 +33,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @InterfaceList({
-	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2"),
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = "redstoneflux"),
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
@@ -128,7 +128,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canReceive(theItem))

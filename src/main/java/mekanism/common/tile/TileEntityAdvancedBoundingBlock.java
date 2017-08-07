@@ -26,8 +26,8 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = "redstoneflux"),
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = "redstoneflux"),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData
@@ -259,7 +259,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		IAdvancedBoundingBlock inv = getInv();
@@ -272,7 +272,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		IAdvancedBoundingBlock inv = getInv();
@@ -285,14 +285,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return canReceiveEnergy(from);
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getEnergyStored(EnumFacing from)
 	{
 		IAdvancedBoundingBlock inv = getInv();
@@ -305,7 +305,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "redstoneflux")
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getMaxEnergyStored(EnumFacing from)
 	{
 		IAdvancedBoundingBlock inv = getInv();
