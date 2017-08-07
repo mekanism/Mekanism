@@ -45,7 +45,7 @@ public interface IFactory
 	 */
     void setRecipeType(int type, ItemStack itemStack);
 
-	enum RecipeType implements IStringSerializable
+	public static enum RecipeType implements IStringSerializable
 	{
 		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, false, false, Recipe.ENERGIZED_SMELTER),
 		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, false, false, Recipe.ENRICHMENT_CHAMBER),
