@@ -41,7 +41,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
-@Mod(modid = "mekanismgenerators", name = "MekanismGenerators", version = "9.4.0", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "mekanismgenerators", name = "MekanismGenerators", version = "9.4.0", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory", acceptedMinecraftVersions = "[1.12,)")
 @Mod.EventBusSubscriber()
 public class MekanismGenerators implements IModule
 {
