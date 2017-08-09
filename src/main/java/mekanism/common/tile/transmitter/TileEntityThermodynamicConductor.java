@@ -106,6 +106,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 		super.readFromNBT(nbtTags);
 
 		temperature = nbtTags.getDouble("temperature");
+		if(nbtTags.hasKey("tier")) tier = Tier.ConductorTier.values()[nbtTags.getInteger("tier")];
 	}
 
 	@Override
@@ -114,6 +115,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setDouble("temperature", temperature);
+		nbtTags.setInteger("tier", tier.ordinal());
 		
 		return nbtTags;
 	}
