@@ -73,6 +73,7 @@ public class MekanismConfig
 		public static boolean allowChunkloading;
 		public static boolean allowProtection = true;
 		public static int portableTeleporterDelay;
+		public static double quantumEntangloporterEnergyTransfer;
 	}
 
 	public static class client
