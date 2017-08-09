@@ -81,6 +81,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.allowChunkloading);
 			dataStream.writeBoolean(general.allowProtection);
 			dataStream.writeInt(general.portableTeleporterDelay);
+			dataStream.writeDouble(general.quantumEntangloporterEnergyTransfer);
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
@@ -177,6 +178,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.allowChunkloading = dataStream.readBoolean();
 			general.allowProtection = dataStream.readBoolean();
 			general.portableTeleporterDelay = dataStream.readInt();
+			general.quantumEntangloporterEnergyTransfer = dataStream.readDouble();
 			
 			for(MachineType type : BlockStateMachine.MachineType.getValidMachines())
 			{
