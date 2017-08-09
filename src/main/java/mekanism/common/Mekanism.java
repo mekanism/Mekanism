@@ -151,7 +151,7 @@ import com.mojang.authlib.GameProfile;
  *
  */
 @Mod(modid = "mekanism", name = "Mekanism", version = "9.4.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
-		acceptedMinecraftVersions = "[1.12,)",
+		acceptedMinecraftVersions = "[1.12,1.13)",
 		dependencies =	"required-after:forge@[14.21.0.2373,);" +
 						"after:redstoneflux;" +
 						"after:mcmultipart;" +
