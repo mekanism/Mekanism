@@ -67,6 +67,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -1380,17 +1382,8 @@ public final class MekanismUtils
 			return new ItemStack(dmgItems.get(0).getItem(), 1, solve);
 		}
 
-//		List<IRecipe> list = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
-//
-//		for(IRecipe recipe : list)
-//		{
-//			if(recipe.matches(inv, world))
-//			{
-//				return recipe.getCraftingResult(inv);
-//			}
-//		}
-
-		return ItemStack.EMPTY;
+		IRecipe potentialResult = CraftingManager.findMatchingRecipe(inv, world);
+		return potentialResult != null ? potentialResult.getRecipeOutput() : ItemStack.EMPTY;
 	}
 	
 	/**
