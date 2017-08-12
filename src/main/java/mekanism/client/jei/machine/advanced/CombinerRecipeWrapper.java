@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine.advanced;
 
 import mekanism.api.gas.Gas;
-import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.util.ListUtils;
@@ -12,9 +11,9 @@ import java.util.List;
 
 public class CombinerRecipeWrapper extends AdvancedMachineRecipeWrapper
 {
-	public CombinerRecipeWrapper(AdvancedMachineRecipe r, AdvancedMachineRecipeCategory c)
+	public CombinerRecipeWrapper(AdvancedMachineRecipe r)
 	{
-		super(r, c);
+		super(r);
 	}
 	
 	@Override

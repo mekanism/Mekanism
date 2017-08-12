@@ -29,12 +29,9 @@ import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
-import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
 import mekanism.client.jei.machine.BaseRecipeHandler;
 import mekanism.client.jei.machine.ChanceMachineRecipeCategory;
-import mekanism.client.jei.machine.ChanceMachineRecipeWrapper;
 import mekanism.client.jei.machine.MachineRecipeCategory;
-import mekanism.client.jei.machine.MachineRecipeWrapper;
 import mekanism.client.jei.machine.advanced.ChemicalInjectionChamberRecipeWrapper;
 import mekanism.client.jei.machine.advanced.CombinerRecipeWrapper;
 import mekanism.client.jei.machine.advanced.OsmiumCompressorRecipeWrapper;
@@ -75,16 +72,20 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.AdvancedMachineRecipe;
-import mekanism.common.recipe.machines.BasicMachineRecipe;
-import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
+import mekanism.common.recipe.machines.CombinerRecipe;
+import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.recipe.machines.EnrichmentRecipe;
+import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.recipe.machines.PressurizedRecipe;
+import mekanism.common.recipe.machines.PurificationRecipe;
+import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
@@ -95,7 +96,6 @@ import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
-import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
@@ -161,21 +161,21 @@ public class MekanismJEI implements IModPlugin
 		SolarNeutronRecipeCategory solarNeutronCategory = new SolarNeutronRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		ThermalEvaporationRecipeCategory thermalEvaporationCategory = new ThermalEvaporationRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 
-//		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryCombiner = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.COMBINER.name().toLowerCase(), "tile.MachineBlock.Combiner.name", ProgressBar.STONE);
-//		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryPurificationChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PURIFICATION_CHAMBER.name().toLowerCase(), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED);
-//		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryOsmiumCompressor = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.OSMIUM_COMPRESSOR.name().toLowerCase(), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED);
-//		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryChemicalInjectionChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CHEMICAL_INJECTION_CHAMBER.name().toLowerCase(), "nei.chemicalInjectionChamber", ProgressBar.YELLOW);
+		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryCombiner = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.COMBINER.name().toLowerCase(), "tile.MachineBlock.Combiner.name", ProgressBar.STONE);
+		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryPurificationChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PURIFICATION_CHAMBER.name().toLowerCase(), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED);
+		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryOsmiumCompressor = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.OSMIUM_COMPRESSOR.name().toLowerCase(), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED);
+		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryChemicalInjectionChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CHEMICAL_INJECTION_CHAMBER.name().toLowerCase(), "nei.chemicalInjectionChamber", ProgressBar.YELLOW);
 
-//		ChanceMachineRecipeCategory chanceMachineRecipeCategoryPrecisionSawmill = new ChanceMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PRECISION_SAWMILL.name().toLowerCase(), "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE);
+		ChanceMachineRecipeCategory chanceMachineRecipeCategoryPrecisionSawmill = new ChanceMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PRECISION_SAWMILL.name().toLowerCase(), "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE);
 
-//		MachineRecipeCategory machineRecipeCategoryEnrichment = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.ENRICHMENT_CHAMBER.name().toLowerCase(), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE);
-//		MachineRecipeCategory machineRecipeCategoryCrusher = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CRUSHER.name().toLowerCase(), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH);
+		MachineRecipeCategory machineRecipeCategoryEnrichment = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.ENRICHMENT_CHAMBER.name().toLowerCase(), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE);
+		MachineRecipeCategory machineRecipeCategoryCrusher = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CRUSHER.name().toLowerCase(), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH);
 
 		registry.addRecipeCategories(chemicalCrystallizerCategory, chemicalDissolutionChamberCategory, chemicalInfuserCategory, chemicalOxidizerCategory,
 				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, /*rotaryCondensentratorCategory,*/ solarNeutronCategory,
-				thermalEvaporationCategory/*, advancedMachineRecipeCategoryCombiner, advancedMachineRecipeCategoryPurificationChamber, advancedMachineRecipeCategoryOsmiumCompressor,
+				thermalEvaporationCategory, advancedMachineRecipeCategoryCombiner, advancedMachineRecipeCategoryPurificationChamber, advancedMachineRecipeCategoryOsmiumCompressor,
 				advancedMachineRecipeCategoryChemicalInjectionChamber, chanceMachineRecipeCategoryPrecisionSawmill, machineRecipeCategoryEnrichment,
-				machineRecipeCategoryCrusher*/
+				machineRecipeCategoryCrusher
 		);
 	}
 
@@ -187,24 +187,26 @@ public class MekanismJEI implements IModPlugin
 		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(MekanismItems.ItemProxy));
 		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(MekanismBlocks.BoundingBlock));
 
-		//TODO Update these to new JEI API
-		try
-		{
-			registerBasicMachine(registry, Recipe.ENRICHMENT_CHAMBER, "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE, EnrichmentRecipeWrapper.class);
-			registerBasicMachine(registry, Recipe.CRUSHER, "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH, CrusherRecipeWrapper.class);
+		registry.handleRecipes(EnrichmentRecipe.class, EnrichmentRecipeWrapper::new, "mekanism.enrichment_chamber");
+		addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, EnrichmentRecipe.class, EnrichmentRecipeWrapper.class, "mekanism.enrichment_chamber");
 
-			registerAdvancedMachine(registry, Recipe.COMBINER, "tile.MachineBlock.Combiner.name", ProgressBar.STONE, CombinerRecipeWrapper.class);
-			registerAdvancedMachine(registry, Recipe.PURIFICATION_CHAMBER, "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED, PurificationChamberRecipeWrapper.class);
-			registerAdvancedMachine(registry, Recipe.OSMIUM_COMPRESSOR, "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED, OsmiumCompressorRecipeWrapper.class);
-			registerAdvancedMachine(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, "nei.chemicalInjectionChamber", ProgressBar.YELLOW, ChemicalInjectionChamberRecipeWrapper.class);
+		registry.handleRecipes(CrusherRecipe.class, CrusherRecipeWrapper::new, "mekanism.crusher");
+		addRecipes(registry, Recipe.CRUSHER, CrusherRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
 
-			registerChanceMachine(registry, Recipe.PRECISION_SAWMILL, "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE, PrecisionSawmillRecipeWrapper.class);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		//-TODO
+		registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, "mekanism.combiner");
+		addRecipes(registry, Recipe.COMBINER, CombinerRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
+
+		registry.handleRecipes(PurificationRecipe.class, PurificationChamberRecipeWrapper::new, "mekanism.purification_chamber");
+		addRecipes(registry, Recipe.PURIFICATION_CHAMBER, PurificationRecipe.class, PurificationChamberRecipeWrapper.class, "mekanism.purification_chamber");
+
+		registry.handleRecipes(OsmiumCompressorRecipe.class, OsmiumCompressorRecipeWrapper::new, "mekanism.osmium_compressor");
+		addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, OsmiumCompressorRecipe.class, OsmiumCompressorRecipeWrapper.class, "mekanism.osmium_compressor");
+
+		registry.handleRecipes(InjectionRecipe.class, ChemicalInjectionChamberRecipeWrapper::new, "mekanism.chemical_injection_chamber");
+		addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, InjectionRecipe.class, ChemicalInjectionChamberRecipeWrapper.class, "mekanism.chemical_injection_chamber");
+
+		registry.handleRecipes(SawmillRecipe.class, PrecisionSawmillRecipeWrapper::new, "mekanism.precision_sawmill");
+		addRecipes(registry, Recipe.PRECISION_SAWMILL, SawmillRecipe.class, PrecisionSawmillRecipeWrapper.class, "mekanism.precision_sawmill");
 
 		registry.handleRecipes(MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper::new, "mekanism.metallurgic_infuser");
 		addRecipes(registry, Recipe.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper.class, "mekanism.metallurgic_infuser");
@@ -305,36 +307,6 @@ public class MekanismJEI implements IModPlugin
 	{
 		registry.addRecipeCatalyst(type.getStack(), "mekanism." + type.getName());
 	}
-	
-	private void registerBasicMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends MachineRecipeWrapper> wrapper) throws Exception
-	{
-		MachineRecipeCategory category = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), recipe.name().toLowerCase(), unlocalized, bar);
-		
-		registry.addRecipeCategories(category);
-		registry.addRecipeHandlers(new BaseRecipeHandler(category, wrapper));
-		
-		addRecipes(registry, recipe, category, BasicMachineRecipe.class, MachineRecipeCategory.class, wrapper);
-	}
-	
-	private void registerAdvancedMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends AdvancedMachineRecipeWrapper> wrapper) throws Exception
-	{
-		AdvancedMachineRecipeCategory category = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), recipe.name().toLowerCase(), unlocalized, bar);
-
-		registry.addRecipeCategories(category);
-		registry.addRecipeHandlers(new BaseRecipeHandler(category, wrapper));
-		
-		addRecipes(registry, recipe, category, AdvancedMachineRecipe.class, AdvancedMachineRecipeCategory.class, wrapper);
-	}
-	
-	private void registerChanceMachine(IModRegistry registry, Recipe recipe, String unlocalized, ProgressBar bar, Class<? extends ChanceMachineRecipeWrapper> wrapper) throws Exception
-	{
-		ChanceMachineRecipeCategory category = new ChanceMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), recipe.name().toLowerCase(), unlocalized, bar);
-		
-		registry.addRecipeCategories(category);
-		registry.addRecipeHandlers(new BaseRecipeHandler(category, wrapper));
-		
-		addRecipes(registry, recipe, category, ChanceMachineRecipe.class, ChanceMachineRecipeCategory.class, wrapper);
-	}
 
 	private void addRecipes(IModRegistry registry, Recipe type, Class recipe, Class<? extends IRecipeWrapper> wrapper, String recipeCategoryUid)
 	{
@@ -357,21 +329,5 @@ public class MekanismJEI implements IModPlugin
 		}
 
 		registry.addRecipes(recipes, recipeCategoryUid);
-	}
-
-	@Deprecated //Will be removed soon!
-	private void addRecipes(IModRegistry registry, Recipe type, IRecipeCategory cat, Class recipe, Class category, Class<? extends IRecipeWrapper> wrapper) throws Exception
-	{
-		List<IRecipeWrapper> recipes = new ArrayList<>();
-		
-		for(Object obj : type.get().values())
-		{
-			if(obj instanceof MachineRecipe)
-			{
-				recipes.add(wrapper.getConstructor(recipe, category).newInstance(obj, cat));
-			}
-		}
-		
-		registry.addRecipes(recipes);
 	}
 }

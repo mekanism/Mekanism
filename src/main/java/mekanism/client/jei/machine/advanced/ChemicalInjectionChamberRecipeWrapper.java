@@ -1,7 +1,6 @@
 package mekanism.client.jei.machine.advanced;
 
 import mekanism.api.gas.Gas;
-import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Tier.GasTankTier;
@@ -16,9 +15,9 @@ import java.util.List;
 
 public class ChemicalInjectionChamberRecipeWrapper extends AdvancedMachineRecipeWrapper
 {
-	public ChemicalInjectionChamberRecipeWrapper(AdvancedMachineRecipe r, AdvancedMachineRecipeCategory c)
+	public ChemicalInjectionChamberRecipeWrapper(AdvancedMachineRecipe r)
 	{
-		super(r, c);
+		super(r);
 	}
 	
 	@Override
