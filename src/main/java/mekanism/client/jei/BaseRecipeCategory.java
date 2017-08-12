@@ -6,8 +6,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,9 +19,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +38,8 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	
 	public String guiTexture;
 	public ResourceLocation guiLocation;
-	
+
+	@Nullable
 	public ProgressBar progressBar;
 	public ITickTimer timer;
 	
@@ -50,7 +49,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public IDrawable fluidOverlayLarge;
 	public IDrawable fluidOverlaySmall;
 	
-	public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized, ProgressBar progress)
+	public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized, @Nullable ProgressBar progress)
 	{
 		guiHelper = helper;
 		guiTexture = gui;
@@ -121,63 +120,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	public FontRenderer getFont()
 	{
 		return null;
-	}
-	
-	public void displayGauge(int length, int xPos, int yPos, int overlayX, int overlayY, int scale, FluidStack fluid, GasStack gas)
-	{
-		if(fluid == null && gas == null)
-		{
-			return;
-		}
-
-		int start = 0;
-
-		while(true)
-		{
-			int renderRemaining;
-
-			if(scale > 16)
-			{
-				renderRemaining = 16;
-				scale -= 16;
-			}
-			else {
-				renderRemaining = scale;
-				scale = 0;
-			}
-
-			changeTexture(MekanismRenderer.getBlocksTexture());
-
-			if(fluid != null)
-			{
-				gui.drawTexturedModalRect(xPos, yPos + length - renderRemaining - start, MekanismRenderer.getFluidTexture(fluid.getFluid(), FluidType.STILL), 16, 16 - (16 - renderRemaining));
-			}
-			else if(gas != null)
-			{
-				gui.drawTexturedModalRect(xPos, yPos + length - renderRemaining - start, gas.getGas().getSprite(), 16, 16 - (16 - renderRemaining));
-			}
-
-			start+=16;
-
-			if(renderRemaining == 0 || scale == 0)
-			{
-				break;
-			}
-		}
-
-		changeTexture(guiLocation);
-		gui.drawTexturedModalRect(xPos, yPos, overlayX, overlayY, 16, length+1);
-	}
-	
-	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
-	{
-		if(gas == null)
-		{
-			return;
-		}
-
-		changeTexture(MekanismRenderer.getBlocksTexture());
-		gui.drawTexturedModalRect(xPos, yPos, gas.getGas().getSprite(), sizeX, sizeY);
 	}
 	
 	public String stripTexture()

@@ -24,11 +24,14 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public AdvancedMachineRecipe tempRecipe;
+	private IDrawable background;
+
+	@Nullable
+	private AdvancedMachineRecipe tempRecipe;
 	
 	public AdvancedMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
@@ -73,7 +76,12 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof AdvancedMachineRecipeWrapper)
 		{
-			tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		AdvancedMachineInput input = (AdvancedMachineInput)tempRecipe.recipeInput;

@@ -1,16 +1,13 @@
 package mekanism.client.jei.machine.other;
 
 import mekanism.api.gas.GasStack;
-import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class SolarNeutronRecipeWrapper implements IRecipeWrapper
 {
-	public SolarNeutronRecipe recipe;
-	
-	public SolarNeutronRecipeCategory category;
+	private SolarNeutronRecipe recipe;
 	
 	public SolarNeutronRecipeWrapper(SolarNeutronRecipe r)
 	{
@@ -22,5 +19,10 @@ public class SolarNeutronRecipeWrapper implements IRecipeWrapper
 	{
 		ingredients.setInput(GasStack.class, recipe.getInput().ingredient);
 		ingredients.setOutput(GasStack.class, recipe.getOutput().output);
+	}
+
+	public SolarNeutronRecipe getRecipe()
+	{
+		return recipe;
 	}
 }

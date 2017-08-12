@@ -14,11 +14,14 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public DissolutionRecipe tempRecipe;
+	private IDrawable background;
+
+	@Nullable
+	private DissolutionRecipe tempRecipe;
 	
 	public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper)
 	{
@@ -50,7 +53,12 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof ChemicalDissolutionChamberRecipeWrapper)
 		{
-			tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();

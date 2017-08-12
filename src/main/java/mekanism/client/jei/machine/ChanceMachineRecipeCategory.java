@@ -22,11 +22,14 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public ChanceMachineRecipe tempRecipe;
+	private IDrawable background;
+
+	@Nullable
+	private ChanceMachineRecipe tempRecipe;
 	
 	public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
@@ -70,7 +73,12 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof ChanceMachineRecipeWrapper)
 		{
-			tempRecipe = ((ChanceMachineRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((ChanceMachineRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();

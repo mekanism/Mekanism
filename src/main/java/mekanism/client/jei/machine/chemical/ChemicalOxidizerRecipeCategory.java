@@ -21,13 +21,16 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
+	private IDrawable background;
+
+	@Nullable
+	private OxidationRecipe tempRecipe;
 	
-	public OxidationRecipe tempRecipe;
-	
-	public GuiGasGauge gasOutput;
+	private GuiGasGauge gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 133, 13);
 	
 	public ChemicalOxidizerRecipeCategory(IGuiHelper helper)
 	{
@@ -42,7 +45,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 133, 13));
+		guiElements.add(gasOutput);
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 25, 35));
 
@@ -67,7 +70,12 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof ChemicalOxidizerRecipeWrapper)
 		{
-			tempRecipe = ((ChemicalOxidizerRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((ChemicalOxidizerRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();

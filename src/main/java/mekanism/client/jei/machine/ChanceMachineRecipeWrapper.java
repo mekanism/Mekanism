@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class ChanceMachineRecipeWrapper implements IRecipeWrapper
 {
-	public ChanceMachineRecipe recipe;
+	private ChanceMachineRecipe recipe;
 	
 	public ChanceMachineRecipeWrapper(ChanceMachineRecipe r)
 	{
@@ -39,5 +39,10 @@ public class ChanceMachineRecipeWrapper implements IRecipeWrapper
 			FontRenderer fontRendererObj = minecraft.fontRenderer;
 			fontRendererObj.drawString(Math.round(output.secondaryChance*100) + "%", 104, 41, 0x404040, false);
 		}
+	}
+
+	public ChanceMachineRecipe getRecipe()
+	{
+		return recipe;
 	}
 }

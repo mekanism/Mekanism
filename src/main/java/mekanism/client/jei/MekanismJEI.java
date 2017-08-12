@@ -240,7 +240,7 @@ public class MekanismJEI implements IModPlugin
 
 
 		//TODO Update these to new JEI API
-		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<RotaryCondensentratorRecipeWrapper>();
+		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<>();
 		
 		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		registry.addRecipeCategories(rotaryCondensentratorCategory);

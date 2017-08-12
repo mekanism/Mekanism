@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class ChemicalWasherRecipeWrapper implements IRecipeWrapper
 {
-	public WasherRecipe recipe;
+	private WasherRecipe recipe;
 	
 	public ChemicalWasherRecipeWrapper(WasherRecipe r)
 	{
@@ -22,5 +22,10 @@ public class ChemicalWasherRecipeWrapper implements IRecipeWrapper
 		ingredients.setInput(FluidStack.class, new FluidStack(FluidRegistry.WATER, 1000));
 		ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
 		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
+	}
+
+	public WasherRecipe getRecipe()
+	{
+		return recipe;
 	}
 }

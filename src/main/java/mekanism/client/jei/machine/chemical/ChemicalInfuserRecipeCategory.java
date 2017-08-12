@@ -12,11 +12,14 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public ChemicalInfuserRecipe tempRecipe;
+	private IDrawable background;
+
+	@Nullable
+	private ChemicalInfuserRecipe tempRecipe;
 	
 	public ChemicalInfuserRecipeCategory(IGuiHelper helper)
 	{
@@ -48,7 +51,12 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof ChemicalInfuserRecipeWrapper)
 		{
-			tempRecipe = ((ChemicalInfuserRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((ChemicalInfuserRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);

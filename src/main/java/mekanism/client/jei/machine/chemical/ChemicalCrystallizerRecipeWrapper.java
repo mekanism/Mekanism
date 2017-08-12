@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class ChemicalCrystallizerRecipeWrapper implements IRecipeWrapper
 {
-	public CrystallizerRecipe recipe;
+	private CrystallizerRecipe recipe;
 	
 	public ChemicalCrystallizerRecipeWrapper(CrystallizerRecipe r)
 	{
@@ -20,5 +20,10 @@ public class ChemicalCrystallizerRecipeWrapper implements IRecipeWrapper
 	{
 		ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
 		ingredients.setOutput(ItemStack.class, recipe.recipeOutput.output);
+	}
+
+	public CrystallizerRecipe getRecipe()
+	{
+		return recipe;
 	}
 }

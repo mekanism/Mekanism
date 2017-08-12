@@ -26,14 +26,17 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nullable;
+
 public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public GuiGasGauge leftGas;
-	public GuiGasGauge rightGas;
-	
-	public SeparatorRecipe tempRecipe;
+	private IDrawable background;
+
+	private GuiGasGauge leftGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 18);
+	private GuiGasGauge rightGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18);
+
+	@Nullable
+	private SeparatorRecipe tempRecipe;
 	
 	public ElectrolyticSeparatorRecipeCategory(IGuiHelper helper)
 	{
@@ -49,9 +52,7 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 	public void addGuiElements()
 	{
 		guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 5, 10));
-		leftGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 18);
 		guiElements.add(leftGas);
-		rightGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18);
 		guiElements.add(rightGas);
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -87,7 +88,12 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof ElectrolyticSeparatorRecipeWrapper)
 		{
-			tempRecipe = ((ElectrolyticSeparatorRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((ElectrolyticSeparatorRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();

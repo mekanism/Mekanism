@@ -20,11 +20,14 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class MachineRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public BasicMachineRecipe tempRecipe;
+	private IDrawable background;
+
+	@Nullable
+	private BasicMachineRecipe tempRecipe;
 	
 	public MachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
@@ -68,7 +71,12 @@ public class MachineRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof MachineRecipeWrapper)
 		{
-			tempRecipe = ((MachineRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((MachineRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();

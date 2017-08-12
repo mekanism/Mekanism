@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 
 public class MachineRecipeWrapper implements IRecipeWrapper
 {
-	public BasicMachineRecipe recipe;
+	private BasicMachineRecipe recipe;
 	
 	public MachineRecipeWrapper(BasicMachineRecipe r)
 	{
@@ -21,5 +21,10 @@ public class MachineRecipeWrapper implements IRecipeWrapper
 	{
 		ingredients.setInput(ItemStack.class, ((ItemStackInput)recipe.getInput()).ingredient);
 		ingredients.setOutput(ItemStack.class, ((ItemStackOutput)recipe.getOutput()).output);
+	}
+
+	public BasicMachineRecipe getRecipe()
+	{
+		return recipe;
 	}
 }

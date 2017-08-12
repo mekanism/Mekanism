@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 public abstract class AdvancedMachineRecipeWrapper implements IRecipeWrapper
 {
-	public AdvancedMachineRecipe recipe;
+	private AdvancedMachineRecipe recipe;
 	
 	public AdvancedMachineRecipeWrapper(AdvancedMachineRecipe r)
 	{
@@ -29,4 +29,9 @@ public abstract class AdvancedMachineRecipeWrapper implements IRecipeWrapper
 	}
 	
 	public abstract List<ItemStack> getFuelStacks(Gas gasType);
+
+	public AdvancedMachineRecipe getRecipe()
+	{
+		return recipe;
+	}
 }

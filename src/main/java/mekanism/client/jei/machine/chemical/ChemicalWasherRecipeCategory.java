@@ -8,20 +8,20 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nullable;
+
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public WasherRecipe tempRecipe;
-	
-	public ITickTimer timer;
+	private IDrawable background;
+
+	@Nullable
+	private WasherRecipe tempRecipe;
 	
 	public ChemicalWasherRecipeCategory(IGuiHelper helper)
 	{
@@ -52,7 +52,12 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof ChemicalWasherRecipeWrapper)
 		{
-			tempRecipe = ((ChemicalWasherRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((ChemicalWasherRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();

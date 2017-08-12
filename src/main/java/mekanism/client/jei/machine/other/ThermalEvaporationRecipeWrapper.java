@@ -7,7 +7,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class ThermalEvaporationRecipeWrapper implements IRecipeWrapper
 {
-	public ThermalEvaporationRecipe recipe;
+	private ThermalEvaporationRecipe recipe;
 	
 	public ThermalEvaporationRecipeWrapper(ThermalEvaporationRecipe r)
 	{
@@ -19,5 +19,10 @@ public class ThermalEvaporationRecipeWrapper implements IRecipeWrapper
 	{
 		ingredients.setInput(FluidStack.class, recipe.getInput().ingredient);
 		ingredients.setOutput(FluidStack.class, recipe.getOutput().output);
+	}
+
+	public ThermalEvaporationRecipe getRecipe()
+	{
+		return recipe;
 	}
 }

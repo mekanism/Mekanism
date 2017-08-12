@@ -13,11 +13,14 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public CrystallizerRecipe tempRecipe;
+	private IDrawable background;
+
+	@Nullable
+	private CrystallizerRecipe tempRecipe;
 	
 	public ChemicalCrystallizerRecipeCategory(IGuiHelper helper)
 	{
@@ -49,7 +52,12 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof ChemicalCrystallizerRecipeWrapper)
 		{
-			tempRecipe = ((ChemicalCrystallizerRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((ChemicalCrystallizerRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();

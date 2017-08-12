@@ -1,7 +1,5 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.List;
-
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGasGauge;
@@ -16,30 +14,27 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.machines.PressurizedRecipe;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITickTimer;
-import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nullable;
 
 public class PRCRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
+	private IDrawable background;
 	
-	public GuiGasGauge gasInput;
-	public GuiGasGauge gasOutput;
-	
-	public PressurizedRecipe tempRecipe;
+	private GuiGasGauge gasInput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10);
+	private GuiGasGauge gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40);
+
+	@Nullable
+	private PressurizedRecipe tempRecipe;
 	
 	public PRCRecipeCategory(IGuiHelper helper)
 	{
@@ -59,9 +54,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 115, 34));
 		
 		guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, guiLocation, 5, 10));
-		gasInput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10);
 		guiElements.add(gasInput);
-		gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40);
 		guiElements.add(gasOutput);
 
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
@@ -92,7 +85,12 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 	{
 		if(recipeWrapper instanceof PRCRecipeWrapper)
 		{
-			tempRecipe = ((PRCRecipeWrapper)recipeWrapper).recipe;
+			tempRecipe = ((PRCRecipeWrapper)recipeWrapper).getRecipe();
+		}
+
+		if(tempRecipe == null)
+		{
+			return;
 		}
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
