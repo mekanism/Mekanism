@@ -58,7 +58,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(0, true, 25-xOffset, 35-yOffset);
 		itemStacks.set(0, tempRecipe.getInput().ingredient);
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 6-xOffset, 5-yOffset, 16, 58, new GasStack(MekanismFluids.SulfuricAcid, 1), true);
 		initGas(gasStacks, 1, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.getOutput().output, true);

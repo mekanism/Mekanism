@@ -49,8 +49,10 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 	public void addGuiElements()
 	{
 		guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 5, 10));
-		guiElements.add(leftGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 18));
-		guiElements.add(rightGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18));
+		leftGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 18);
+		guiElements.add(leftGas);
+		rightGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18);
+		guiElements.add(rightGas);
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
 			public double getLevel()
@@ -94,7 +96,7 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
 		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, false, 59-xOffset, 19-yOffset, 16, 28, tempRecipe.recipeOutput.leftGas, true);
 		initGas(gasStacks, 1, false, 101-xOffset, 19-yOffset, 16, 28, tempRecipe.recipeOutput.rightGas, true);

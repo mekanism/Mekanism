@@ -75,7 +75,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(0, true, 25-xOffset, 35-yOffset);
 		itemStacks.set(0, tempRecipe.getInput().ingredient);
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.recipeOutput.output, true);
 	}

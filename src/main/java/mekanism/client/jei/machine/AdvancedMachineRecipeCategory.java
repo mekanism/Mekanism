@@ -26,9 +26,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 {
-	public String recipeName;
-	public String unlocalizedName;
-	
 	public IDrawable background;
 	
 	public AdvancedMachineRecipe tempRecipe;
@@ -91,7 +88,7 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.set(1, ((ItemStackOutput)tempRecipe.recipeOutput).output);
 		itemStacks.set(2, ((AdvancedMachineRecipeWrapper)recipeWrapper).getFuelStacks(input.gasType));
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(input.gasType, 1), false);
 	}

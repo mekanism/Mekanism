@@ -50,7 +50,7 @@ public class SolarNeutronRecipeCategory extends BaseRecipeCategory
 			tempRecipe = ((SolarNeutronRecipeWrapper)recipeWrapper).recipe;
 		}
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 26-xOffset, 14-yOffset, 16, 58, tempRecipe.recipeInput.ingredient, true);
 		initGas(gasStacks, 1, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.recipeOutput.output, true);

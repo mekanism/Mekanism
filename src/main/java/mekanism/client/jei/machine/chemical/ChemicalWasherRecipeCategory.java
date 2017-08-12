@@ -61,7 +61,7 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
 		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 27-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().ingredient, true);
 		initGas(gasStacks, 1, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.getOutput().output, true);

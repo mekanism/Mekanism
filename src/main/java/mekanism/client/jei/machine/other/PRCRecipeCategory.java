@@ -59,8 +59,10 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 115, 34));
 		
 		guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, guiLocation, 5, 10));
-		guiElements.add(gasInput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10));
-		guiElements.add(gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40));
+		gasInput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10);
+		guiElements.add(gasInput);
+		gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40);
+		guiElements.add(gasOutput);
 
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -107,7 +109,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
 		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 29-xOffset, 11-yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
 		initGas(gasStacks, 1, false, 141-xOffset, 41-yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);

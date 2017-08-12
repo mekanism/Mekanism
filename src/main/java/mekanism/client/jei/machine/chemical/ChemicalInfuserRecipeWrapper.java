@@ -3,20 +3,17 @@ package mekanism.client.jei.machine.chemical;
 import java.util.Arrays;
 
 import mekanism.api.gas.GasStack;
-import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 
-public class ChemicalInfuserRecipeWrapper extends BaseRecipeWrapper
+public class ChemicalInfuserRecipeWrapper implements IRecipeWrapper
 {
 	public ChemicalInfuserRecipe recipe;
 	
-	public ChemicalInfuserRecipeCategory category;
-	
-	public ChemicalInfuserRecipeWrapper(ChemicalInfuserRecipe r, ChemicalInfuserRecipeCategory c)
+	public ChemicalInfuserRecipeWrapper(ChemicalInfuserRecipe r)
 	{
 		recipe = r;
-		category = c;
 	}
 	
 	@Override
@@ -24,11 +21,5 @@ public class ChemicalInfuserRecipeWrapper extends BaseRecipeWrapper
 	{
 		ingredients.setInputs(GasStack.class, Arrays.asList(recipe.recipeInput.leftGas, recipe.recipeInput.rightGas));
 		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
-	}
-	
-	@Override
-	public ChemicalInfuserRecipeCategory getCategory()
-	{
-		return category;
 	}
 }

@@ -8,7 +8,6 @@ import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 

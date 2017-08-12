@@ -58,7 +58,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 		}
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		fluidStacks.init(0, !tempRecipe.condensentrating, 134-xOffset, 14-yOffset, 16, 58, 1000, false, fluidOverlayLarge);
 		

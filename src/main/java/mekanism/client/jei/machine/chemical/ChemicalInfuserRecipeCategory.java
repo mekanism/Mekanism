@@ -51,7 +51,7 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 			tempRecipe = ((ChemicalInfuserRecipeWrapper)recipeWrapper).recipe;
 		}
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 26-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().leftGas, true);
 		initGas(gasStacks, 1, true, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().rightGas, true);
