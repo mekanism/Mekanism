@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper
 {
-	private MetallurgicInfuserRecipe recipe;
+	private final MetallurgicInfuserRecipe recipe;
 	
 	public MetallurgicInfuserRecipeWrapper(MetallurgicInfuserRecipe r)
 	{

@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class PRCRecipeWrapper implements IRecipeWrapper
 {
-	private PressurizedRecipe recipe;
+	private final PressurizedRecipe recipe;
 	
 	public PRCRecipeWrapper(PressurizedRecipe r)
 	{

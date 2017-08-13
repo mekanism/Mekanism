@@ -7,7 +7,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class SolarNeutronRecipeWrapper implements IRecipeWrapper
 {
-	private SolarNeutronRecipe recipe;
+	private final SolarNeutronRecipe recipe;
 	
 	public SolarNeutronRecipeWrapper(SolarNeutronRecipe r)
 	{

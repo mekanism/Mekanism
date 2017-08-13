@@ -5,6 +5,8 @@ import java.util.List;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
+import javax.annotation.Nullable;
+
 public interface IGuiWrapper
 {
 	void drawTexturedRect(int x, int y, int u, int v, int w, int h);
@@ -15,5 +17,6 @@ public interface IGuiWrapper
 
 	void displayTooltips(List<String> list, int xAxis, int yAxis);
 
+	@Nullable
 	FontRenderer getFont();
 }

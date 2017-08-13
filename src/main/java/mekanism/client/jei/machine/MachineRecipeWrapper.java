@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 
 public class MachineRecipeWrapper implements IRecipeWrapper
 {
-	private BasicMachineRecipe recipe;
+	private final BasicMachineRecipe recipe;
 	
 	public MachineRecipeWrapper(BasicMachineRecipe r)
 	{

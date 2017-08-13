@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 
 public abstract class AdvancedMachineRecipeWrapper implements IRecipeWrapper
 {
-	private AdvancedMachineRecipe recipe;
+	private final AdvancedMachineRecipe recipe;
 	
 	public AdvancedMachineRecipeWrapper(AdvancedMachineRecipe r)
 	{

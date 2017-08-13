@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 
 public class MachineRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private BasicMachineRecipe tempRecipe;
@@ -69,15 +69,12 @@ public class MachineRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
-		if(recipeWrapper instanceof MachineRecipeWrapper)
-		{
-			tempRecipe = ((MachineRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof MachineRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((MachineRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

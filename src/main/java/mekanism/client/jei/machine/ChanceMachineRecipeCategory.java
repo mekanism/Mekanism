@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private ChanceMachineRecipe tempRecipe;
@@ -71,15 +71,12 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
-		if(recipeWrapper instanceof ChanceMachineRecipeWrapper)
-		{
-			tempRecipe = ((ChanceMachineRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ChanceMachineRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ChanceMachineRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

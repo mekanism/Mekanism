@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private CrystallizerRecipe tempRecipe;
@@ -50,15 +50,12 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ChemicalCrystallizerRecipeWrapper)
-		{
-			tempRecipe = ((ChemicalCrystallizerRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ChemicalCrystallizerRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ChemicalCrystallizerRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

@@ -29,7 +29,6 @@ import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
-import mekanism.client.jei.machine.BaseRecipeHandler;
 import mekanism.client.jei.machine.ChanceMachineRecipeCategory;
 import mekanism.client.jei.machine.MachineRecipeCategory;
 import mekanism.client.jei.machine.advanced.ChemicalInjectionChamberRecipeWrapper;
@@ -72,6 +71,9 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.AdvancedMachineRecipe;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.recipe.machines.CrusherRecipe;
@@ -157,7 +159,7 @@ public class MekanismJEI implements IModPlugin
 		ElectrolyticSeparatorRecipeCategory electrolyticSeparatorCategory = new ElectrolyticSeparatorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		MetallurgicInfuserRecipeCategory metallurgicInfuserCategory = new MetallurgicInfuserRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		PRCRecipeCategory prcCategory = new PRCRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-//		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
+		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		SolarNeutronRecipeCategory solarNeutronCategory = new SolarNeutronRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		ThermalEvaporationRecipeCategory thermalEvaporationCategory = new ThermalEvaporationRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 
@@ -172,7 +174,7 @@ public class MekanismJEI implements IModPlugin
 		MachineRecipeCategory machineRecipeCategoryCrusher = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CRUSHER.name().toLowerCase(), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH);
 
 		registry.addRecipeCategories(chemicalCrystallizerCategory, chemicalDissolutionChamberCategory, chemicalInfuserCategory, chemicalOxidizerCategory,
-				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, /*rotaryCondensentratorCategory,*/ solarNeutronCategory,
+				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, rotaryCondensentratorCategory, solarNeutronCategory,
 				thermalEvaporationCategory, advancedMachineRecipeCategoryCombiner, advancedMachineRecipeCategoryPurificationChamber, advancedMachineRecipeCategoryOsmiumCompressor,
 				advancedMachineRecipeCategoryChemicalInjectionChamber, chanceMachineRecipeCategoryPrecisionSawmill, machineRecipeCategoryEnrichment,
 				machineRecipeCategoryCrusher
@@ -188,25 +190,25 @@ public class MekanismJEI implements IModPlugin
 		registry.getJeiHelpers().getIngredientBlacklist().addIngredientToBlacklist(new ItemStack(MekanismBlocks.BoundingBlock));
 
 		registry.handleRecipes(EnrichmentRecipe.class, EnrichmentRecipeWrapper::new, "mekanism.enrichment_chamber");
-		addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, EnrichmentRecipe.class, EnrichmentRecipeWrapper.class, "mekanism.enrichment_chamber");
+		addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, BasicMachineRecipe.class, EnrichmentRecipeWrapper.class, "mekanism.enrichment_chamber");
 
 		registry.handleRecipes(CrusherRecipe.class, CrusherRecipeWrapper::new, "mekanism.crusher");
-		addRecipes(registry, Recipe.CRUSHER, CrusherRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
+		addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
 
 		registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, "mekanism.combiner");
-		addRecipes(registry, Recipe.COMBINER, CombinerRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
+		addRecipes(registry, Recipe.COMBINER, AdvancedMachineRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
 
 		registry.handleRecipes(PurificationRecipe.class, PurificationChamberRecipeWrapper::new, "mekanism.purification_chamber");
-		addRecipes(registry, Recipe.PURIFICATION_CHAMBER, PurificationRecipe.class, PurificationChamberRecipeWrapper.class, "mekanism.purification_chamber");
+		addRecipes(registry, Recipe.PURIFICATION_CHAMBER, AdvancedMachineRecipe.class, PurificationChamberRecipeWrapper.class, "mekanism.purification_chamber");
 
 		registry.handleRecipes(OsmiumCompressorRecipe.class, OsmiumCompressorRecipeWrapper::new, "mekanism.osmium_compressor");
-		addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, OsmiumCompressorRecipe.class, OsmiumCompressorRecipeWrapper.class, "mekanism.osmium_compressor");
+		addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, AdvancedMachineRecipe.class, OsmiumCompressorRecipeWrapper.class, "mekanism.osmium_compressor");
 
 		registry.handleRecipes(InjectionRecipe.class, ChemicalInjectionChamberRecipeWrapper::new, "mekanism.chemical_injection_chamber");
-		addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, InjectionRecipe.class, ChemicalInjectionChamberRecipeWrapper.class, "mekanism.chemical_injection_chamber");
+		addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, AdvancedMachineRecipe.class, ChemicalInjectionChamberRecipeWrapper.class, "mekanism.chemical_injection_chamber");
 
 		registry.handleRecipes(SawmillRecipe.class, PrecisionSawmillRecipeWrapper::new, "mekanism.precision_sawmill");
-		addRecipes(registry, Recipe.PRECISION_SAWMILL, SawmillRecipe.class, PrecisionSawmillRecipeWrapper.class, "mekanism.precision_sawmill");
+		addRecipes(registry, Recipe.PRECISION_SAWMILL, ChanceMachineRecipe.class, PrecisionSawmillRecipeWrapper.class, "mekanism.precision_sawmill");
 
 		registry.handleRecipes(MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper::new, "mekanism.metallurgic_infuser");
 		addRecipes(registry, Recipe.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper.class, "mekanism.metallurgic_infuser");
@@ -238,26 +240,18 @@ public class MekanismJEI implements IModPlugin
 		registry.handleRecipes(PressurizedRecipe.class, PRCRecipeWrapper::new, "mekanism.pressurized_reaction_chamber");
 		addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, PressurizedRecipe.class, PRCRecipeWrapper.class, "mekanism.pressurized_reaction_chamber");
 
-
-		//TODO Update these to new JEI API
 		List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<>();
-		
-		RotaryCondensentratorRecipeCategory rotaryCondensentratorCategory = new RotaryCondensentratorRecipeCategory(registry.getJeiHelpers().getGuiHelper());
-		registry.addRecipeCategories(rotaryCondensentratorCategory);
-		registry.addRecipeHandlers(new BaseRecipeHandler(rotaryCondensentratorCategory, RotaryCondensentratorRecipeWrapper.class));
 		
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
 			if(gas.hasFluid())
 			{
-				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, true, rotaryCondensentratorCategory));
-				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, false, rotaryCondensentratorCategory));
+				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, true));
+				condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, false));
 			}
 		}
-		//-TODO
-		
-		registry.addRecipes(condensentratorRecipes, rotaryCondensentratorCategory.getUid());
-		
+		registry.addRecipes(condensentratorRecipes, "mekanism.rotary_condensentrator");
+
 		registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, "mekanism.enrichment_chamber");
 		registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, "mekanism.crusher");
 		registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, "mekanism.combiner");

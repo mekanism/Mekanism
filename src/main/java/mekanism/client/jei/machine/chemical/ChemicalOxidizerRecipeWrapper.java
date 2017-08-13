@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class ChemicalOxidizerRecipeWrapper implements IRecipeWrapper
 {
-	private OxidationRecipe recipe;
+	private final OxidationRecipe recipe;
 	
 	public ChemicalOxidizerRecipeWrapper(OxidationRecipe r)
 	{

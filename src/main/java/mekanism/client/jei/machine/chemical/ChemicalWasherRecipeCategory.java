@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private WasherRecipe tempRecipe;
@@ -50,15 +50,12 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ChemicalWasherRecipeWrapper)
-		{
-			tempRecipe = ((ChemicalWasherRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ChemicalWasherRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ChemicalWasherRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		

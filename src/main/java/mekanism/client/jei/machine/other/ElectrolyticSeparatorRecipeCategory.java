@@ -30,10 +30,7 @@ import javax.annotation.Nullable;
 
 public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
-
-	private GuiGasGauge leftGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 18);
-	private GuiGasGauge rightGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18);
+	private final IDrawable background;
 
 	@Nullable
 	private SeparatorRecipe tempRecipe;
@@ -52,8 +49,8 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 	public void addGuiElements()
 	{
 		guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 5, 10));
-		guiElements.add(leftGas);
-		guiElements.add(rightGas);
+		guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 18));
+		guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18));
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
 			public double getLevel()
@@ -86,15 +83,12 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ElectrolyticSeparatorRecipeWrapper)
-		{
-			tempRecipe = ((ElectrolyticSeparatorRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ElectrolyticSeparatorRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ElectrolyticSeparatorRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		

@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 
 public class ChemicalDissolutionChamberRecipeWrapper implements IRecipeWrapper
 {
-	private DissolutionRecipe recipe;
+	private final DissolutionRecipe recipe;
 	
 	public ChemicalDissolutionChamberRecipeWrapper(DissolutionRecipe r)
 	{

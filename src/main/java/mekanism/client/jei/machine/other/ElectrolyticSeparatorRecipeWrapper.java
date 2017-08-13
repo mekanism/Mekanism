@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class ElectrolyticSeparatorRecipeWrapper implements IRecipeWrapper
 {
-	private SeparatorRecipe recipe;
+	private final SeparatorRecipe recipe;
 	
 	public ElectrolyticSeparatorRecipeWrapper(SeparatorRecipe r)
 	{

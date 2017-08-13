@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class ChemicalCrystallizerRecipeWrapper implements IRecipeWrapper
 {
-	private CrystallizerRecipe recipe;
+	private final CrystallizerRecipe recipe;
 	
 	public ChemicalCrystallizerRecipeWrapper(CrystallizerRecipe r)
 	{

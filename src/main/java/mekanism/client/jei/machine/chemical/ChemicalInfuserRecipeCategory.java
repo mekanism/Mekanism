@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private ChemicalInfuserRecipe tempRecipe;
@@ -49,15 +49,12 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ChemicalInfuserRecipeWrapper)
-		{
-			tempRecipe = ((ChemicalInfuserRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ChemicalInfuserRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ChemicalInfuserRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		

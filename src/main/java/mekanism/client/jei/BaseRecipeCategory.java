@@ -29,25 +29,27 @@ import java.util.Set;
 
 public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 {
-	public static final GuiDummy gui = new GuiDummy();
+	private static final GuiDummy gui = new GuiDummy();
 	
-	public IGuiHelper guiHelper;
+	protected IGuiHelper guiHelper;
 	
-	public String recipeName;
-	public String unlocalizedName;
+	private String recipeName;
+	private String unlocalizedName;
 	
-	public String guiTexture;
-	public ResourceLocation guiLocation;
+	protected String guiTexture;
+	protected ResourceLocation guiLocation;
 
 	@Nullable
-	public ProgressBar progressBar;
-	public ITickTimer timer;
+	protected ProgressBar progressBar;
+	protected ITickTimer timer;
 	
-	public int xOffset = 28;
-	public int yOffset = 16;
+	protected int xOffset = 28;
+	protected int yOffset = 16;
 	
-	public IDrawable fluidOverlayLarge;
-	public IDrawable fluidOverlaySmall;
+	protected IDrawable fluidOverlayLarge;
+	protected IDrawable fluidOverlaySmall;
+
+	protected Set<GuiElement> guiElements = new HashSet<>();
 	
 	public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized, @Nullable ProgressBar progress)
 	{
@@ -132,8 +134,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 	}
 	
-	public Set<GuiElement> guiElements = new HashSet<>();
-	
 	public void addGuiElements() {}
 	
 	public static class GuiDummy extends Gui {}
@@ -150,7 +150,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		return Collections.emptyList();
 	}
 	
-	protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, GasStack stack, boolean overlay)
+	protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nullable GasStack stack, boolean overlay)
 	{
 		if(stack == null) return;
 		

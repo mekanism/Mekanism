@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 
 public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private DissolutionRecipe tempRecipe;
@@ -51,15 +51,12 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ChemicalDissolutionChamberRecipeWrapper)
-		{
-			tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ChemicalDissolutionChamberRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

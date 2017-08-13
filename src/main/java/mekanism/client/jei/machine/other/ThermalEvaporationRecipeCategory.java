@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 
 public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private ThermalEvaporationRecipe tempRecipe;
@@ -47,15 +47,12 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ThermalEvaporationRecipeWrapper)
-		{
-			tempRecipe = ((ThermalEvaporationRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ThermalEvaporationRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ThermalEvaporationRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		

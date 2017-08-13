@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 
 public class SolarNeutronRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private SolarNeutronRecipe tempRecipe;
@@ -48,15 +48,12 @@ public class SolarNeutronRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof SolarNeutronRecipeWrapper)
-		{
-			tempRecipe = ((SolarNeutronRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof SolarNeutronRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((SolarNeutronRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		

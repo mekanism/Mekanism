@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class ChanceMachineRecipeWrapper implements IRecipeWrapper
 {
-	private ChanceMachineRecipe recipe;
+	private final ChanceMachineRecipe recipe;
 	
 	public ChanceMachineRecipeWrapper(ChanceMachineRecipe r)
 	{

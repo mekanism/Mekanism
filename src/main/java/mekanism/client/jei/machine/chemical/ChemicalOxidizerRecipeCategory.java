@@ -25,12 +25,10 @@ import javax.annotation.Nullable;
 
 public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private OxidationRecipe tempRecipe;
-	
-	private GuiGasGauge gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 133, 13);
 	
 	public ChemicalOxidizerRecipeCategory(IGuiHelper helper)
 	{
@@ -45,7 +43,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(gasOutput);
+		guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 133, 13));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 25, 35));
 
@@ -68,15 +66,12 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ChemicalOxidizerRecipeWrapper)
-		{
-			tempRecipe = ((ChemicalOxidizerRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof ChemicalOxidizerRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((ChemicalOxidizerRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

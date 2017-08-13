@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private MetallurgicInfuserRecipe tempRecipe;
@@ -111,15 +111,12 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
-		if(recipeWrapper instanceof MetallurgicInfuserRecipeWrapper)
-		{
-			tempRecipe = ((MetallurgicInfuserRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof MetallurgicInfuserRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((MetallurgicInfuserRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

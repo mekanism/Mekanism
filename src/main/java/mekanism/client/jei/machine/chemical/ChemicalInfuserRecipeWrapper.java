@@ -9,7 +9,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class ChemicalInfuserRecipeWrapper implements IRecipeWrapper
 {
-	private ChemicalInfuserRecipe recipe;
+	private final ChemicalInfuserRecipe recipe;
 	
 	public ChemicalInfuserRecipeWrapper(ChemicalInfuserRecipe r)
 	{

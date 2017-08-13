@@ -28,10 +28,7 @@ import javax.annotation.Nullable;
 
 public class PRCRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
-	
-	private GuiGasGauge gasInput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10);
-	private GuiGasGauge gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40);
+	private final IDrawable background;
 
 	@Nullable
 	private PressurizedRecipe tempRecipe;
@@ -54,8 +51,8 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 115, 34));
 		
 		guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, guiLocation, 5, 10));
-		guiElements.add(gasInput);
-		guiElements.add(gasOutput);
+		guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10));
+		guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40));
 
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -83,15 +80,12 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof PRCRecipeWrapper)
-		{
-			tempRecipe = ((PRCRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof PRCRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((PRCRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

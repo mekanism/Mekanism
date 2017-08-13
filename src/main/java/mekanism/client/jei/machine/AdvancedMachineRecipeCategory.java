@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 
 public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 {
-	private IDrawable background;
+	private final IDrawable background;
 
 	@Nullable
 	private AdvancedMachineRecipe tempRecipe;
@@ -74,15 +74,12 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof AdvancedMachineRecipeWrapper)
-		{
-			tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).getRecipe();
-		}
-
-		if(tempRecipe == null)
+		if(!(recipeWrapper instanceof AdvancedMachineRecipeWrapper))
 		{
 			return;
 		}
+
+		tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).getRecipe();
 		
 		AdvancedMachineInput input = (AdvancedMachineInput)tempRecipe.recipeInput;
 		
