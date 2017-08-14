@@ -104,7 +104,7 @@ public class CommonPlayerTickHandler
 
 			if(player instanceof EntityPlayerMP)
 			{
-				ReflectionUtils.setPrivateValue(((EntityPlayerMP)player).connection, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
+				((EntityPlayerMP)player).connection.floatingTickCount =  0;
 			}
 
 			jetpack.useGas(stack);
