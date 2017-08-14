@@ -80,9 +80,10 @@ public final class InvStack
 				}
 				else {
 					ItemStack ret = stack.copy();
-					ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - stack.stackSize;
+					int toUse = Math.min(amount, stack.stackSize);
+					ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - toUse;
 					inventory.setInventorySlotContents(slotIDs.get(i), ret);
-					amount -= stack.stackSize;
+					amount -= toUse;
 				}
 				
 				if(amount == 0)
