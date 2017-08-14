@@ -150,6 +150,10 @@ task coreJar(type: Jar) {
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismtools/**', 'assets/mekanismgenerators/**', 'mcmod.info'
     }
+
+    manifest {
+        attributes 'FMLAT': 'mekanism_at.cfg'
+    }
 }
 
 task toolsJar(type: Jar) {
