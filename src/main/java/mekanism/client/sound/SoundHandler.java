@@ -122,12 +122,7 @@ public class SoundHandler
 	//Fudge required because sound thread gets behind and the biMap crashes when rapidly toggling sounds.
 	public static Map<ISound, String> getSoundMap()
 	{
-		if(invPlayingSounds == null)
-		{
-			invPlayingSounds = getSoundManager().invPlayingSounds;
-		}
-		
-		return invPlayingSounds;
+		return mc.getSoundHandler().sndManager.invPlayingSounds;
 	}
 
 	public static boolean canRestartSound(ITickableSound sound)

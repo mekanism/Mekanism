@@ -484,8 +484,7 @@ public class ClientTickHandler
 		NetworkPlayerInfo info = player.getPlayerInfo();
 
 		if (info != null) {
-			Map<MinecraftProfileTexture.Type, ResourceLocation> map = info.playerTextures;
-			map.put(MinecraftProfileTexture.Type.CAPE, cape);
+			info.playerTextures.put(MinecraftProfileTexture.Type.CAPE, cape);
 		}
 	}
 

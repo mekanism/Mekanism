@@ -258,7 +258,7 @@ public class MekanismRenderer
 	
 	public static boolean isDrawing(Tessellator tess)
 	{
-		return isDrawing(tess.getBuffer());
+		return tess.getBuffer().isDrawing;
 	}
 	
 	public static boolean isDrawing(VertexBuffer buffer)
@@ -537,9 +537,7 @@ public class MekanismRenderer
     
     public static float getPartialTick()
     {
-    	Timer t = Minecraft.getMinecraft().timer;
-    	return t.renderPartialTicks;
-
+    	return Minecraft.getMinecraft().timer.renderPartialTicks;
     }
     
     public static ResourceLocation getBlocksTexture()

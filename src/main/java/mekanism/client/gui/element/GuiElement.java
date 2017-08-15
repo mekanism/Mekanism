@@ -44,8 +44,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			GuiContainer guiC = ((GuiContainer)guiObj);
-			guiC.xSize += xSize;
+			((GuiContainer)guiObj).xSize += xSize;
 		}
 	}
 
@@ -53,8 +52,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			GuiContainer guiC = ((GuiContainer)guiObj);
-			guiC.ySize += ySize;
+			((GuiContainer)guiObj).ySize += ySize;
 		}
 	}
 	
@@ -62,8 +60,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			GuiContainer guiC = ((GuiContainer)guiObj);
-			guiC.guiLeft += guiLeft;
+			((GuiContainer)guiObj).guiLeft += guiLeft;
 		}
 	}
 	
@@ -71,8 +68,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			GuiContainer guiC = ((GuiContainer)guiObj);
-			guiC.guiTop += guiTop;
+			((GuiContainer)guiObj).guiTop += guiTop;
 		}
 	}
 	
