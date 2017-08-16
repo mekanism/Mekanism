@@ -3,21 +3,18 @@ package mekanism.client.jei.machine.other;
 import java.util.Arrays;
 
 import mekanism.api.gas.GasStack;
-import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ElectrolyticSeparatorRecipeWrapper extends BaseRecipeWrapper
+public class ElectrolyticSeparatorRecipeWrapper implements IRecipeWrapper
 {
-	public SeparatorRecipe recipe;
+	private final SeparatorRecipe recipe;
 	
-	public ElectrolyticSeparatorRecipeCategory category;
-	
-	public ElectrolyticSeparatorRecipeWrapper(SeparatorRecipe r, ElectrolyticSeparatorRecipeCategory c)
+	public ElectrolyticSeparatorRecipeWrapper(SeparatorRecipe r)
 	{
 		recipe = r;
-		category = c;
 	}
 	
 	@Override
@@ -26,10 +23,9 @@ public class ElectrolyticSeparatorRecipeWrapper extends BaseRecipeWrapper
 		ingredients.setInput(FluidStack.class, recipe.recipeInput.ingredient);
 		ingredients.setOutputs(GasStack.class, Arrays.asList(recipe.recipeOutput.leftGas, recipe.recipeOutput.rightGas));
 	}
-	
-	@Override
-	public ElectrolyticSeparatorRecipeCategory getCategory()
+
+	public SeparatorRecipe getRecipe()
 	{
-		return category;
+		return recipe;
 	}
 }

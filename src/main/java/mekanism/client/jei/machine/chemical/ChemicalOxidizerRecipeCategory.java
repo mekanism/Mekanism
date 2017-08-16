@@ -21,13 +21,14 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public OxidationRecipe tempRecipe;
-	
-	public GuiGasGauge gasOutput;
+	private final IDrawable background;
+
+	@Nullable
+	private OxidationRecipe tempRecipe;
 	
 	public ChemicalOxidizerRecipeCategory(IGuiHelper helper)
 	{
@@ -42,7 +43,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 133, 13));
+		guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 133, 13));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 25, 35));
 
@@ -65,17 +66,19 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ChemicalOxidizerRecipeWrapper)
+		if(!(recipeWrapper instanceof ChemicalOxidizerRecipeWrapper))
 		{
-			tempRecipe = ((ChemicalOxidizerRecipeWrapper)recipeWrapper).recipe;
+			return;
 		}
+
+		tempRecipe = ((ChemicalOxidizerRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		
 		itemStacks.init(0, true, 25-xOffset, 35-yOffset);
 		itemStacks.set(0, tempRecipe.getInput().ingredient);
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.recipeOutput.output, true);
 	}

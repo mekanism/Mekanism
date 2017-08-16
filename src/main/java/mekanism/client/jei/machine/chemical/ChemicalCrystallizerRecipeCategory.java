@@ -13,11 +13,14 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public CrystallizerRecipe tempRecipe;
+	private final IDrawable background;
+
+	@Nullable
+	private CrystallizerRecipe tempRecipe;
 	
 	public ChemicalCrystallizerRecipeCategory(IGuiHelper helper)
 	{
@@ -47,17 +50,19 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ChemicalCrystallizerRecipeWrapper)
+		if(!(recipeWrapper instanceof ChemicalCrystallizerRecipeWrapper))
 		{
-			tempRecipe = ((ChemicalCrystallizerRecipeWrapper)recipeWrapper).recipe;
+			return;
 		}
+
+		tempRecipe = ((ChemicalCrystallizerRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		
 		itemStacks.init(0, false, 130-xOffset, 56-yOffset);
 		itemStacks.set(0, tempRecipe.getOutput().output);
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 6-xOffset, 5-yOffset, 16, 58, tempRecipe.getInput().ingredient, true);
 	}

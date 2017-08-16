@@ -6,8 +6,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -21,9 +19,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -31,26 +29,29 @@ import java.util.Set;
 
 public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 {
-	public static final GuiDummy gui = new GuiDummy();
+	private static final GuiDummy gui = new GuiDummy();
 	
-	public IGuiHelper guiHelper;
+	protected IGuiHelper guiHelper;
 	
-	public String recipeName;
-	public String unlocalizedName;
+	private String recipeName;
+	private String unlocalizedName;
 	
-	public String guiTexture;
-	public ResourceLocation guiLocation;
+	protected String guiTexture;
+	protected ResourceLocation guiLocation;
+
+	@Nullable
+	protected ProgressBar progressBar;
+	protected ITickTimer timer;
 	
-	public ProgressBar progressBar;
-	public ITickTimer timer;
+	protected int xOffset = 28;
+	protected int yOffset = 16;
 	
-	public int xOffset = 28;
-	public int yOffset = 16;
+	protected IDrawable fluidOverlayLarge;
+	protected IDrawable fluidOverlaySmall;
+
+	protected Set<GuiElement> guiElements = new HashSet<>();
 	
-	public IDrawable fluidOverlayLarge;
-	public IDrawable fluidOverlaySmall;
-	
-	public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized, ProgressBar progress)
+	public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized, @Nullable ProgressBar progress)
 	{
 		guiHelper = helper;
 		guiTexture = gui;
@@ -123,63 +124,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		return null;
 	}
 	
-	public void displayGauge(int length, int xPos, int yPos, int overlayX, int overlayY, int scale, FluidStack fluid, GasStack gas)
-	{
-		if(fluid == null && gas == null)
-		{
-			return;
-		}
-
-		int start = 0;
-
-		while(true)
-		{
-			int renderRemaining;
-
-			if(scale > 16)
-			{
-				renderRemaining = 16;
-				scale -= 16;
-			}
-			else {
-				renderRemaining = scale;
-				scale = 0;
-			}
-
-			changeTexture(MekanismRenderer.getBlocksTexture());
-
-			if(fluid != null)
-			{
-				gui.drawTexturedModalRect(xPos, yPos + length - renderRemaining - start, MekanismRenderer.getFluidTexture(fluid.getFluid(), FluidType.STILL), 16, 16 - (16 - renderRemaining));
-			}
-			else if(gas != null)
-			{
-				gui.drawTexturedModalRect(xPos, yPos + length - renderRemaining - start, gas.getGas().getSprite(), 16, 16 - (16 - renderRemaining));
-			}
-
-			start+=16;
-
-			if(renderRemaining == 0 || scale == 0)
-			{
-				break;
-			}
-		}
-
-		changeTexture(guiLocation);
-		gui.drawTexturedModalRect(xPos, yPos, overlayX, overlayY, 16, length+1);
-	}
-	
-	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
-	{
-		if(gas == null)
-		{
-			return;
-		}
-
-		changeTexture(MekanismRenderer.getBlocksTexture());
-		gui.drawTexturedModalRect(xPos, yPos, gas.getGas().getSprite(), sizeX, sizeY);
-	}
-	
 	public String stripTexture()
 	{
 		return guiTexture.replace("mekanism:gui/", "");
@@ -189,8 +133,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	{
 		Minecraft.getMinecraft().renderEngine.bindTexture(texture);
 	}
-	
-	public Set<GuiElement> guiElements = new HashSet<>();
 	
 	public void addGuiElements() {}
 	
@@ -208,7 +150,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 		return Collections.emptyList();
 	}
 	
-	protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, GasStack stack, boolean overlay)
+	protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nullable GasStack stack, boolean overlay)
 	{
 		if(stack == null) return;
 		

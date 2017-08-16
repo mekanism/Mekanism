@@ -1,23 +1,20 @@
 package mekanism.client.jei.machine.other;
 
-import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class MetallurgicInfuserRecipeWrapper extends BaseRecipeWrapper
+public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper
 {
-	public MetallurgicInfuserRecipe recipe;
+	private final MetallurgicInfuserRecipe recipe;
 	
-	public MetallurgicInfuserRecipeCategory category;
-	
-	public MetallurgicInfuserRecipeWrapper(MetallurgicInfuserRecipe r, MetallurgicInfuserRecipeCategory c)
+	public MetallurgicInfuserRecipeWrapper(MetallurgicInfuserRecipe r)
 	{
 		recipe = r;
-		category = c;
 	}
 	
 	@Override
@@ -30,10 +27,9 @@ public class MetallurgicInfuserRecipeWrapper extends BaseRecipeWrapper
 		ingredients.setInputLists(ItemStack.class, Arrays.asList(inputStacks, infuseStacks));
 		ingredients.setOutput(ItemStack.class, recipe.recipeOutput.output);
 	}
-	
-	@Override
-	public MetallurgicInfuserRecipeCategory getCategory()
+
+	public MetallurgicInfuserRecipe getRecipe()
 	{
-		return category;
+		return recipe;
 	}
 }

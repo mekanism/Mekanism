@@ -12,11 +12,14 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class SolarNeutronRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public SolarNeutronRecipe tempRecipe;
+	private final IDrawable background;
+
+	@Nullable
+	private SolarNeutronRecipe tempRecipe;
 	
 	public SolarNeutronRecipeCategory(IGuiHelper helper)
 	{
@@ -45,12 +48,14 @@ public class SolarNeutronRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof SolarNeutronRecipeWrapper)
+		if(!(recipeWrapper instanceof SolarNeutronRecipeWrapper))
 		{
-			tempRecipe = ((SolarNeutronRecipeWrapper)recipeWrapper).recipe;
+			return;
 		}
+
+		tempRecipe = ((SolarNeutronRecipeWrapper)recipeWrapper).getRecipe();
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 26-xOffset, 14-yOffset, 16, 58, tempRecipe.recipeInput.ingredient, true);
 		initGas(gasStacks, 1, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.recipeOutput.output, true);

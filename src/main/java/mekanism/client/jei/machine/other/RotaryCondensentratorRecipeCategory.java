@@ -13,11 +13,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nullable;
+
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public RotaryCondensentratorRecipeWrapper tempRecipe;
+	private final IDrawable background;
+
+	@Nullable
+	private RotaryCondensentratorRecipeWrapper tempRecipe;
 	
 	public RotaryCondensentratorRecipeCategory(IGuiHelper helper)
 	{
@@ -33,6 +36,11 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 	public void drawExtras(Minecraft minecraft)
 	{
 		super.drawExtras(minecraft);
+
+		if(tempRecipe == null)
+		{
+			return;
+		}
 		
 		if(tempRecipe.condensentrating)
 		{
@@ -52,13 +60,15 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
-		if(recipeWrapper instanceof RotaryCondensentratorRecipeWrapper)
+		if(!(recipeWrapper instanceof RotaryCondensentratorRecipeWrapper))
 		{
-			tempRecipe = (RotaryCondensentratorRecipeWrapper)recipeWrapper;
+			return;
 		}
+
+		tempRecipe = (RotaryCondensentratorRecipeWrapper)recipeWrapper;
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		fluidStacks.init(0, !tempRecipe.condensentrating, 134-xOffset, 14-yOffset, 16, 58, 1000, false, fluidOverlayLarge);
 		

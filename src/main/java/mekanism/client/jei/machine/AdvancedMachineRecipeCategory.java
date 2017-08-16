@@ -24,14 +24,14 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 {
-	public String recipeName;
-	public String unlocalizedName;
-	
-	public IDrawable background;
-	
-	public AdvancedMachineRecipe tempRecipe;
+	private final IDrawable background;
+
+	@Nullable
+	private AdvancedMachineRecipe tempRecipe;
 	
 	public AdvancedMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
@@ -74,10 +74,12 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof AdvancedMachineRecipeWrapper)
+		if(!(recipeWrapper instanceof AdvancedMachineRecipeWrapper))
 		{
-			tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).recipe;
+			return;
 		}
+
+		tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).getRecipe();
 		
 		AdvancedMachineInput input = (AdvancedMachineInput)tempRecipe.recipeInput;
 		
@@ -91,7 +93,7 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.set(1, ((ItemStackOutput)tempRecipe.recipeOutput).output);
 		itemStacks.set(2, ((AdvancedMachineRecipeWrapper)recipeWrapper).getFuelStacks(input.gasType));
 		
-		IGuiIngredientGroup gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		
 		initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(input.gasType, 1), false);
 	}

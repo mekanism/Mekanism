@@ -1,26 +1,24 @@
 package mekanism.client.jei.machine.other;
 
-import java.util.List;
-
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITickTimer;
-import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nullable;
 
 public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public ThermalEvaporationRecipe tempRecipe;
+	private final IDrawable background;
+
+	@Nullable
+	private ThermalEvaporationRecipe tempRecipe;
 	
 	public ThermalEvaporationRecipeCategory(IGuiHelper helper)
 	{
@@ -49,10 +47,12 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
 	{
-		if(recipeWrapper instanceof ThermalEvaporationRecipeWrapper)
+		if(!(recipeWrapper instanceof ThermalEvaporationRecipeWrapper))
 		{
-			tempRecipe = ((ThermalEvaporationRecipeWrapper)recipeWrapper).recipe;
+			return;
 		}
+
+		tempRecipe = ((ThermalEvaporationRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		

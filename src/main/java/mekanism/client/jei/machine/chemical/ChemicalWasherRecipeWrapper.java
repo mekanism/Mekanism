@@ -1,28 +1,19 @@
 package mekanism.client.jei.machine.chemical;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import mekanism.api.gas.GasStack;
-import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.WasherRecipe;
-import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ChemicalWasherRecipeWrapper extends BaseRecipeWrapper
+public class ChemicalWasherRecipeWrapper implements IRecipeWrapper
 {
-	public WasherRecipe recipe;
+	private final WasherRecipe recipe;
 	
-	public ChemicalWasherRecipeCategory category;
-	
-	public ChemicalWasherRecipeWrapper(WasherRecipe r, ChemicalWasherRecipeCategory c)
+	public ChemicalWasherRecipeWrapper(WasherRecipe r)
 	{
 		recipe = r;
-		category = c;
 	}
 	
 	@Override
@@ -32,10 +23,9 @@ public class ChemicalWasherRecipeWrapper extends BaseRecipeWrapper
 		ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
 		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
 	}
-	
-	@Override
-	public ChemicalWasherRecipeCategory getCategory()
+
+	public WasherRecipe getRecipe()
 	{
-		return category;
+		return recipe;
 	}
 }

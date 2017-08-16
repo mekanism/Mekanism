@@ -1,20 +1,17 @@
 package mekanism.client.jei.machine.other;
 
-import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ThermalEvaporationRecipeWrapper extends BaseRecipeWrapper
+public class ThermalEvaporationRecipeWrapper implements IRecipeWrapper
 {
-	public ThermalEvaporationRecipe recipe;
+	private final ThermalEvaporationRecipe recipe;
 	
-	public ThermalEvaporationRecipeCategory category;
-	
-	public ThermalEvaporationRecipeWrapper(ThermalEvaporationRecipe r, ThermalEvaporationRecipeCategory c)
+	public ThermalEvaporationRecipeWrapper(ThermalEvaporationRecipe r)
 	{
 		recipe = r;
-		category = c;
 	}
 
 	@Override
@@ -23,10 +20,9 @@ public class ThermalEvaporationRecipeWrapper extends BaseRecipeWrapper
 		ingredients.setInput(FluidStack.class, recipe.getInput().ingredient);
 		ingredients.setOutput(FluidStack.class, recipe.getOutput().output);
 	}
-	
-	@Override
-	public ThermalEvaporationRecipeCategory getCategory()
+
+	public ThermalEvaporationRecipe getRecipe()
 	{
-		return category;
+		return recipe;
 	}
 }

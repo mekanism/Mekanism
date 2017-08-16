@@ -4,6 +4,7 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
@@ -11,16 +12,13 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 
-public class ChanceMachineRecipeWrapper extends BaseRecipeWrapper
+public class ChanceMachineRecipeWrapper implements IRecipeWrapper
 {
-	public ChanceMachineRecipe recipe;
+	private final ChanceMachineRecipe recipe;
 	
-	public ChanceMachineRecipeCategory category;
-	
-	public ChanceMachineRecipeWrapper(ChanceMachineRecipe r, ChanceMachineRecipeCategory c)
+	public ChanceMachineRecipeWrapper(ChanceMachineRecipe r)
 	{
 		recipe = r;
-		category = c;
 	}
 	
 	@Override
@@ -42,10 +40,9 @@ public class ChanceMachineRecipeWrapper extends BaseRecipeWrapper
 			fontRendererObj.drawString(Math.round(output.secondaryChance*100) + "%", 104, 41, 0x404040, false);
 		}
 	}
-	
-	@Override
-	public ChanceMachineRecipeCategory getCategory()
+
+	public ChanceMachineRecipe getRecipe()
 	{
-		return category;
+		return recipe;
 	}
 }

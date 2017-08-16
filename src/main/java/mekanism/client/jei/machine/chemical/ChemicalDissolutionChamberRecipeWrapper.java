@@ -1,22 +1,19 @@
 package mekanism.client.jei.machine.chemical;
 
 import mekanism.api.gas.GasStack;
-import mekanism.client.jei.machine.BaseRecipeWrapper;
 import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
-public class ChemicalDissolutionChamberRecipeWrapper extends BaseRecipeWrapper
+public class ChemicalDissolutionChamberRecipeWrapper implements IRecipeWrapper
 {
-	public DissolutionRecipe recipe;
+	private final DissolutionRecipe recipe;
 	
-	public ChemicalDissolutionChamberRecipeCategory category;
-	
-	public ChemicalDissolutionChamberRecipeWrapper(DissolutionRecipe r, ChemicalDissolutionChamberRecipeCategory c)
+	public ChemicalDissolutionChamberRecipeWrapper(DissolutionRecipe r)
 	{
 		recipe = r;
-		category = c;
 	}
 	
 	@Override
@@ -26,10 +23,9 @@ public class ChemicalDissolutionChamberRecipeWrapper extends BaseRecipeWrapper
 		ingredients.setInput(ItemStack.class, recipe.recipeInput.ingredient);
 		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
 	}
-	
-	@Override
-	public ChemicalDissolutionChamberRecipeCategory getCategory()
+
+	public DissolutionRecipe getRecipe()
 	{
-		return category;
+		return recipe;
 	}
 }

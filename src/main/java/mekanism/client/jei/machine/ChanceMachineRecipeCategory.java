@@ -18,16 +18,18 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
+
 public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 {
-	public IDrawable background;
-	
-	public ChanceMachineRecipe tempRecipe;
+	private final IDrawable background;
+
+	@Nullable
+	private ChanceMachineRecipe tempRecipe;
 	
 	public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
@@ -69,10 +71,12 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
-		if(recipeWrapper instanceof ChanceMachineRecipeWrapper)
+		if(!(recipeWrapper instanceof ChanceMachineRecipeWrapper))
 		{
-			tempRecipe = ((ChanceMachineRecipeWrapper)recipeWrapper).recipe;
+			return;
 		}
+
+		tempRecipe = ((ChanceMachineRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		
