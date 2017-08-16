@@ -4,8 +4,6 @@ import java.awt.Rectangle;
 import java.util.List;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.ObfuscatedNames;
-import mekanism.common.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -46,12 +44,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int size = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
-				ReflectionUtils.setPrivateValue(guiObj, size + xSize, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).xSize += xSize;
 		}
 	}
 
@@ -59,12 +52,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int size = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
-				ReflectionUtils.setPrivateValue(guiObj, size + ySize, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).ySize += ySize;
 		}
 	}
 	
@@ -72,12 +60,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int left = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-				ReflectionUtils.setPrivateValue(guiObj, left + guiLeft, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).guiLeft += guiLeft;
 		}
 	}
 	
@@ -85,12 +68,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int top = (Integer)ReflectionUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-				ReflectionUtils.setPrivateValue(guiObj, top + guiTop, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).guiTop += guiTop;
 		}
 	}
 	

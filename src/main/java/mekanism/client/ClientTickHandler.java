@@ -4,7 +4,6 @@ import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
 import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
 import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +20,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.frequency.Frequency;
@@ -45,7 +43,6 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ReflectionUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -484,17 +481,11 @@ public class ClientTickHandler
 	
 	public static void setCape(AbstractClientPlayer player, ResourceLocation cape)
 	{
-		try {
-			Method m = ReflectionUtils.getPrivateMethod(AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_getPlayerInfo);
-			Object obj = m.invoke(player);
-			
-			if(obj instanceof NetworkPlayerInfo)
-			{
-				NetworkPlayerInfo info = (NetworkPlayerInfo)obj;
-				Map<MinecraftProfileTexture.Type, ResourceLocation> map = (Map<MinecraftProfileTexture.Type, ResourceLocation>)ReflectionUtils.getPrivateValue(info, NetworkPlayerInfo.class, ObfuscatedNames.NetworkPlayerInfo_playerTextures);
-				map.put(MinecraftProfileTexture.Type.CAPE, cape);
-			}
-		} catch(Exception e) {}
+		NetworkPlayerInfo info = player.getPlayerInfo();
+
+		if (info != null) {
+			info.playerTextures.put(MinecraftProfileTexture.Type.CAPE, cape);
+		}
 	}
 
 	public static void killDeadNetworks()

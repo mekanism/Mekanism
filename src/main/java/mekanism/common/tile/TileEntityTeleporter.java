@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +13,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
@@ -35,7 +33,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.ReflectionUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -437,12 +434,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 			if(e != null)
 			{
-				try {
-					Method m = ReflectionUtils.getPrivateMethod(Entity.class, ObfuscatedNames.Entity_copyDataFromOld, Entity.class);
-					m.invoke(e, entity);
-				} catch(Exception exception) {
-					exception.printStackTrace();
-				}
+				e.copyDataFromOld(entity);
 				
 				world.spawnEntity(e);
 				teleporter.didTeleport.add(e.getPersistentID());
