@@ -687,12 +687,12 @@ public class Mekanism
 		//Set the mod's configuration
 		configuration = new Configuration(config);
 
+		//Register tier information
+		Tier.init();
+
 		//Load configuration
 		proxy.loadConfiguration();
 		proxy.onConfigSync(false);
-
-        //Register tier information
-        Tier.init();
 
 		if(config.getAbsolutePath().contains("voltz"))
 		{
