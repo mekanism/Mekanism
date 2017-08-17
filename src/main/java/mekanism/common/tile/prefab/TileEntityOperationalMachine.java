@@ -77,6 +77,9 @@ public class TileEntityOperationalMachine extends TileEntityMachine
 
 		switch(upgrade)
 		{
+			case ENERGY:
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades
+				break;
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);

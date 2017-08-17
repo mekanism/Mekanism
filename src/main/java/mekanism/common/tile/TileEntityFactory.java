@@ -1053,6 +1053,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
 		switch(upgrade)
 		{
+			case ENERGY:
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades
+				break;
 			case GAS:
 				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 				break;

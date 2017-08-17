@@ -126,6 +126,8 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 		{
 			clientActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			energyPerTick = dataStream.readDouble();
+			maxEnergy = dataStream.readDouble();
 	
 			if(updateDelay == 0 && clientActive != isActive)
 			{
@@ -143,6 +145,8 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 
 		data.add(isActive);
 		data.add(controlType.ordinal());
+		data.add(energyPerTick);
+		data.add(maxEnergy);
 
 		return data;
 	}
