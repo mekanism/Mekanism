@@ -28,19 +28,6 @@ public class FuelHandler
 			return fuels.get(gas.getName());
 		}
 
-		if(BCPresent() && gas.hasFluid() && BuildcraftFuelRegistry.fuel != null)
-		{
-			IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(new FluidStack(gas.getFluid(), 1));
-			
-			if(bcFuel != null)
-			{
-				FuelGas fuel = new FuelGas(bcFuel);
-				fuels.put(gas.getName(), fuel);
-				
-				return fuel;
-			}
-		}
-
 		return null;
 	}
 
@@ -55,14 +42,6 @@ public class FuelHandler
 			energyPerTick = energyDensity / duration;
 		}
 
-		public FuelGas(IFuel bcFuel)
-		{
-			burnTicks = bcFuel.getTotalBurningTime() / Fluid.BUCKET_VOLUME;
-
-			// getPowerPerCycle returns value in 1 BuildCraft micro MJ
-			// 1 BuildCraft MJ equals 20 RF
-			energyPerTick = bcFuel.getPowerPerCycle() / (double) MjAPI.MJ * 20 * general.FROM_RF;
-		}
 	}
 
 	public static boolean BCPresent()

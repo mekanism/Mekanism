@@ -112,19 +112,6 @@ public class MekanismGenerators implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		if(FuelHandler.BCPresent() && BuildcraftFuelRegistry.fuel != null)
-		{
-			for(IFuel s : BuildcraftFuelRegistry.fuel.getFuels())
-			{
-				if(s.getFluid() != null && !GasRegistry.containsGas(s.getFluid().getFluid().getName()))
-				{
-					GasRegistry.register(new Gas(s.getFluid().getFluid()));
-				}
-			}
-
-			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (long)(240 * general.TO_RF / 20 * MjAPI.MJ), 40 * Fluid.BUCKET_VOLUME);
-		}
-		
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
 			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
