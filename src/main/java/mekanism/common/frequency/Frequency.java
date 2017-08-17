@@ -150,11 +150,13 @@ public class Frequency
 				&& ((Frequency)obj).ownerUUID.equals(ownerUUID) && ((Frequency)obj).publicFreq == publicFreq;
 	}
 
-	public Identity getIdentity(){
-		return new Identity(this.name, this.publicFreq);
+	public Identity getIdentity()
+	{
+		return new Identity(name, publicFreq);
 	}
 
-	public static class Identity {
+	public static class Identity 
+	{
 		public String name;
 		public boolean publicFreq;
 
@@ -167,17 +169,19 @@ public class Frequency
 		@Nullable
 		public static Identity load(NBTTagCompound data)
 		{
-			if (!data.getString("name").isEmpty()){
+			if(!data.getString("name").isEmpty())
+			{
 				return new Identity(data.getString("name"), data.getBoolean("publicFreq"));
 			}
+			
 			return null;
 		}
 
-		public NBTTagCompound serialise()
+		public NBTTagCompound serialize()
 		{
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("name", this.name);
-			tag.setBoolean("publicFreq", this.publicFreq);
+			tag.setString("name", name);
+			tag.setBoolean("publicFreq", publicFreq);
 			return tag;
 		}
 	}

@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
+import mekanism.common.frequency.Frequency;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.security.IOwnerItem;
@@ -36,8 +37,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		
 		if(getFrequency(itemstack) != null)
 		{
-			list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(itemstack));
-			list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + (isPrivateMode(itemstack) ? "private" : "public")));
+			list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + getFrequency(itemstack).name);
+			list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public")));
 		}
 		
 		super.addInformation(itemstack, entityplayer, list, flag);
@@ -112,7 +113,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 	public void setOwnerUUID(ItemStack stack, UUID owner) 
 	{
 		setFrequency(stack, null);
-		setPrivateMode(stack, false);
 		
 		if(owner == null)
 		{
@@ -129,34 +129,24 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		return true;
 	}
 	
-	public boolean isPrivateMode(ItemStack stack) 
-	{
-		return ItemDataUtils.getBoolean(stack, "private");
-	}
-
-	public void setPrivateMode(ItemStack stack, boolean isPrivate) 
-	{
-		ItemDataUtils.setBoolean(stack, "private", isPrivate);
-	}
-	
-	public String getFrequency(ItemStack stack) 
+	public Frequency.Identity getFrequency(ItemStack stack) 
 	{
 		if(ItemDataUtils.hasData(stack, "frequency"))
 		{
-			return ItemDataUtils.getString(stack, "frequency");
+			return Frequency.Identity.load(ItemDataUtils.getCompound(stack, "frequency"));
 		}
 		
 		return null;
 	}
 
-	public void setFrequency(ItemStack stack, String frequency) 
+	public void setFrequency(ItemStack stack, Frequency frequency) 
 	{
-		if(frequency == null || frequency.isEmpty())
+		if(frequency == null)
 		{
 			ItemDataUtils.removeData(stack, "frequency");
 			return;
 		}
 		
-		ItemDataUtils.setString(stack, "frequency", frequency);
+		ItemDataUtils.setCompound(stack, "frequency", frequency.getIdentity().serialize());
 	}
 }

@@ -35,8 +35,8 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
@@ -216,6 +216,17 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				int cap = FluidTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
 				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap + " mB"));
 			}
+			
+			if(type == MachineType.QUANTUM_ENTANGLOPORTER)
+			{
+				Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemstack, "entangleporter_frequency"));
+				
+				if(freq != null)
+				{
+					list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": " + EnumColor.GREY + freq.name);
+					list.add(EnumColor.INDIGO + LangUtils.localize("gui.mode") + ": " + EnumColor.GREY + LangUtils.localize("gui." + (!freq.publicFreq ? "private" : "public")));
+				}
+			}
 
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDesc") + ".");
@@ -241,15 +252,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(type == MachineType.FLUID_TANK)
 			{
 				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + EnumColor.GREY + LangUtils.transYesNo(getBucketMode(itemstack)));
-			}
-
-			if (type == MachineType.QUANTUM_ENTANGLOPORTER)
-			{
-				Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemstack, "entangleporter_frequency"));
-				if (freq != null)
-				{
-					list.add(EnumColor.INDIGO + LangUtils.localize("gui.frequency") + ": "+EnumColor.GREY + freq.name + " (" + LangUtils.localize(freq.publicFreq ? "security.public" : "security.private") + ")");
-				}
 			}
 
 			if(type.isElectric)
@@ -425,12 +427,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				((TileEntityElectricBlock)tileEntity).electricityStored = getEnergy(stack);
 			}
 
-			if (tileEntity instanceof TileEntityQuantumEntangloporter && ItemDataUtils.hasData(stack, "entangleporter_frequency"))
+			if(!world.isRemote && tileEntity instanceof TileEntityQuantumEntangloporter && ItemDataUtils.hasData(stack, "entangleporter_frequency"))
 			{
 				Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
-				if (freq != null)
+				
+				if(freq != null)
 				{
-					((TileEntityQuantumEntangloporter) tileEntity).setFrequency(freq.name, freq.publicFreq);
+					((TileEntityQuantumEntangloporter)tileEntity).setFrequency(freq.name, freq.publicFreq);
 				}
 			}
 

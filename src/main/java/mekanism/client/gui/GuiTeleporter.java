@@ -139,8 +139,8 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(item.getFrequency(stack) != null)
 		{
-			privateMode = item.isPrivateMode(itemStack);
-			setFrequency(item.getFrequency(stack));
+			privateMode = !item.getFrequency(stack).publicFreq;
+			setFrequency(item.getFrequency(stack).name);
 		}
 		else {
 			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
