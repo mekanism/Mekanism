@@ -914,12 +914,13 @@ public abstract class BlockMachine extends BlockContainer
 			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType.ordinal(), itemStack);
 		}
 
-		if (tileEntity instanceof TileEntityQuantumEntangloporter)
+		if(tileEntity instanceof TileEntityQuantumEntangloporter)
 		{
-			InventoryFrequency frequency = ((TileEntityQuantumEntangloporter) tileEntity).frequency;
-			if (frequency != null)
+			InventoryFrequency frequency = ((TileEntityQuantumEntangloporter)tileEntity).frequency;
+			
+			if(frequency != null)
 			{
-				ItemDataUtils.setCompound(itemStack, "entangleporter_frequency", frequency.getIdentity().serialise());
+				ItemDataUtils.setCompound(itemStack, "entangleporter_frequency", frequency.getIdentity().serialize());
 			}
 		}
 
