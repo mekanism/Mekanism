@@ -26,7 +26,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import java.util.HashMap;
 import java.util.Map;
 
-@ZenClass("mods.mekanism.crystallizer")
+@ZenClass("mods.mekanism.chemical.crystallizer")
 @ModOnly("mtlib")
 @ZenRegister
 public class ChemicalCrystallizer

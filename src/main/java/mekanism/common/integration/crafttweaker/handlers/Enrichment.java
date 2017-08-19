@@ -45,18 +45,18 @@ public class Enrichment
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput)
+    public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput)
     {
-        if (itemOutput == null)
+        if (itemInput == null)
         {
             LogHelper.logError(String.format("Required parameters missing for %s recipe.", NAME));
         }
 
-        if (itemInput == null)
-            itemInput = IngredientAny.INSTANCE;
+        if (itemOutput == null)
+            itemOutput = IngredientAny.INSTANCE;
 
 
-        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), itemOutput, itemInput));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), itemInput, itemOutput));
     }
 
     private static class Remove extends RemoveMekanismRecipe
@@ -64,7 +64,7 @@ public class Enrichment
         private IIngredient itemOutput;
         private IIngredient itemInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput)
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemInput, IIngredient itemOutput)
         {
             super(name, map);
             this.itemOutput = itemOutput;

@@ -3,6 +3,8 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.mtlib.helpers.InputHelper;
 import com.blamejared.mtlib.helpers.LogHelper;
 import com.blamejared.mtlib.helpers.StackHelper;
+import crafttweaker.annotations.ModOnly;
+import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.api.liquid.ILiquidStack;
@@ -22,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ZenClass("mods.mekanism.thermalevaporation")
+@ModOnly("mtlib")
+@ZenRegister
 public class ThermalEvaporation
 {
     public static final String NAME = "Mekanism Solar Evaporation";

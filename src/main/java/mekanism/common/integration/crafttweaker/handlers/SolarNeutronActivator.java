@@ -1,6 +1,8 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
 import com.blamejared.mtlib.helpers.LogHelper;
+import crafttweaker.annotations.ModOnly;
+import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
@@ -22,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ZenClass("mods.mekanism.solarneutronactivator")
+@ModOnly("mtlib")
+@ZenRegister
 public class SolarNeutronActivator
 {
     public static final String NAME = "Mekanism Solar Neutron Activator";
