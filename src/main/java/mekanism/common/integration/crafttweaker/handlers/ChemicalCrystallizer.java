@@ -9,6 +9,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -44,7 +45,7 @@ public class ChemicalCrystallizer
 
         CrystallizerRecipe recipe = new CrystallizerRecipe(GasHelper.toGas(gasInput), InputHelper.toStack(itemOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get(), recipe));
     }
 
     @ZenMethod
@@ -59,28 +60,47 @@ public class ChemicalCrystallizer
         if (gasInput == null)
             gasInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get(), itemOutput, gasInput));
+    }
 
-        for (Map.Entry<GasInput, CrystallizerRecipe> entry : ((Map<GasInput, CrystallizerRecipe>) RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemOutput;
+        private IIngredient gasInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient gasInput)
         {
-            IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
-
-            if (!StackHelper.matches(itemOutput, outputItem))
-                continue;
-            if (!GasHelper.matches(gasInput, inputGas))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            super(name, map);
+            this.itemOutput = itemOutput;
+            this.gasInput = gasInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(), itemOutput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<GasInput, CrystallizerRecipe> entry : ((Map<GasInput, CrystallizerRecipe>) RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get()).entrySet())
+            {
+                IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+                if (!GasHelper.matches(gasInput, inputGas))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(), itemOutput.toString()));
+            }
         }
     }
 }

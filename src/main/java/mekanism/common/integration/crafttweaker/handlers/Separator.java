@@ -9,6 +9,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.api.liquid.ILiquidStack;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -44,7 +45,7 @@ public class Separator
 
         SeparatorRecipe recipe = new SeparatorRecipe(InputHelper.toFluid(liquidInput), energy, GasHelper.toGas(leftGasOutput), GasHelper.toGas(rightGasOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get(), recipe));
     }
 
     @ZenMethod
@@ -61,31 +62,52 @@ public class Separator
         if (rightGasInput == null)
             leftGasInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get(), liquidInput, leftGasInput, rightGasInput));
+    }
 
-        for (Map.Entry<FluidInput, SeparatorRecipe> entry : ((Map<FluidInput, SeparatorRecipe>) RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient liquidInput;
+        private IIngredient leftGasInput;
+        private IIngredient rightGasInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient liquidInput, IIngredient leftGasInput, IIngredient rightGasInput)
         {
-            ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().ingredient);
-            IGasStack outputItemLeft = new CraftTweakerGasStack(entry.getValue().recipeOutput.leftGas);
-            IGasStack outputItemRight = new CraftTweakerGasStack(entry.getValue().recipeOutput.rightGas);
-
-            if (!StackHelper.matches(liquidInput, inputLiquid))
-                continue;
-            if (!GasHelper.matches(leftGasInput, outputItemLeft))
-                continue;
-            if (!GasHelper.matches(rightGasInput, outputItemRight))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            super(name, map);
+            this.liquidInput = liquidInput;
+            this.leftGasInput = leftGasInput;
+            this.rightGasInput = rightGasInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, liquidInput.toString(), leftGasInput.toString(), rightGasInput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<FluidInput, SeparatorRecipe> entry : ((Map<FluidInput, SeparatorRecipe>) RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get()).entrySet())
+            {
+                ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().ingredient);
+                IGasStack outputItemLeft = new CraftTweakerGasStack(entry.getValue().recipeOutput.leftGas);
+                IGasStack outputItemRight = new CraftTweakerGasStack(entry.getValue().recipeOutput.rightGas);
+
+                if (!StackHelper.matches(liquidInput, inputLiquid))
+                    continue;
+                if (!GasHelper.matches(leftGasInput, outputItemLeft))
+                    continue;
+                if (!GasHelper.matches(rightGasInput, outputItemRight))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, liquidInput.toString(), leftGasInput.toString(), rightGasInput.toString()));
+            }
         }
     }
 }

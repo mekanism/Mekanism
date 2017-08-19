@@ -6,6 +6,7 @@ import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.api.liquid.ILiquidStack;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
@@ -34,7 +35,7 @@ public class ThermalEvaporation
 
         ThermalEvaporationRecipe recipe = new ThermalEvaporationRecipe(InputHelper.toFluid(liquidInput), InputHelper.toFluid(liquidOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get(), recipe));
     }
 
     @ZenMethod
@@ -46,22 +47,41 @@ public class ThermalEvaporation
 
         if(liquidOutput == null) liquidOutput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
 
-        for(Map.Entry<FluidInput, ThermalEvaporationRecipe> entry : ((Map<FluidInput, ThermalEvaporationRecipe>) RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get()).entrySet() ) {
-            ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().ingredient);
-            ILiquidStack outputLiquid = InputHelper.toILiquidStack(entry.getValue().recipeOutput.output);
+    }
 
-            if(!StackHelper.matches(liquidInput, inputLiquid)) continue;
-            if(!StackHelper.matches(liquidOutput, outputLiquid)) continue;
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient liquidInput;
+        private IIngredient liquidOutput;
 
-            recipes.put(entry.getKey(), entry.getValue());
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient liquidInput, IIngredient liquidOutput)
+        {
+            super(name, map);
+            this.liquidInput = liquidInput;
+            this.liquidOutput = liquidOutput;
         }
 
-        if(!recipes.isEmpty()) {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get(), recipes));
-        } else {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, liquidInput.toString(), liquidOutput.toString()));
+        @Override
+        public void addRecipes()
+        {
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for(Map.Entry<FluidInput, ThermalEvaporationRecipe> entry : ((Map<FluidInput, ThermalEvaporationRecipe>) RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get()).entrySet() ) {
+                ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().ingredient);
+                ILiquidStack outputLiquid = InputHelper.toILiquidStack(entry.getValue().recipeOutput.output);
+
+                if(!StackHelper.matches(liquidInput, inputLiquid)) continue;
+                if(!StackHelper.matches(liquidOutput, outputLiquid)) continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if(!recipesToRemove.isEmpty()) {
+                recipes.putAll(recipesToRemove);
+            } else {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, liquidInput.toString(), liquidOutput.toString()));
+            }
         }
     }
 }

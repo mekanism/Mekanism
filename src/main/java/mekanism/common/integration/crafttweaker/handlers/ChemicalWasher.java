@@ -6,6 +6,7 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -41,7 +42,7 @@ public class ChemicalWasher
 
         WasherRecipe recipe = new WasherRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), recipe));
     }
 
     @ZenMethod
@@ -56,28 +57,48 @@ public class ChemicalWasher
         if (gasInput == null)
             gasInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), gasOutput, gasInput));
+    }
 
-        for (Map.Entry<GasInput, WasherRecipe> entry : ((Map<GasInput, WasherRecipe>) RecipeHandler.Recipe.CHEMICAL_WASHER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient gasOutput;
+        private IIngredient gasInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient gasOutput, IIngredient gasInput)
         {
-            IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
-            IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);
+            super(name, map);
 
-            if (!GasHelper.matches(gasInput, inputGas))
-                continue;
-            if (!GasHelper.matches(gasOutput, outputGas))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            this.gasOutput = gasOutput;
+            this.gasInput = gasInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), gasInput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<GasInput, WasherRecipe> entry : ((Map<GasInput, WasherRecipe>) RecipeHandler.Recipe.CHEMICAL_WASHER.get()).entrySet())
+            {
+                IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
+                IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);
+
+                if (!GasHelper.matches(gasInput, inputGas))
+                    continue;
+                if (!GasHelper.matches(gasOutput, outputGas))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), gasInput.toString()));
+            }
         }
     }
 }

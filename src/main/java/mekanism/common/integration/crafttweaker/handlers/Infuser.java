@@ -10,6 +10,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
@@ -46,7 +47,7 @@ public class Infuser
 
         MetallurgicInfuserRecipe recipe = new MetallurgicInfuserRecipe(input, output);
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER.get(), recipe));
     }
 
     @ZenMethod
@@ -63,31 +64,53 @@ public class Infuser
         if (infuseType == null)
             infuseType = "";
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER.get(), itemOutput, itemInput, infuseType));
+    }
 
-        for (Map.Entry<InfusionInput, MetallurgicInfuserRecipe> entry : ((Map<InfusionInput, MetallurgicInfuserRecipe>) RecipeHandler.Recipe.METALLURGIC_INFUSER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemOutput;
+        private IIngredient itemInput;
+        private String infuseType;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput, String infuseType)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().inputStack);
-            String typeInfuse = entry.getKey().infuse.type.name;
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+            super(name, map);
 
-            if (!StackHelper.matches(itemOutput, outputItem))
-                continue;
-            if (!StackHelper.matches(itemInput, inputItem))
-                continue;
-            if (!infuseType.isEmpty() && !infuseType.equalsIgnoreCase(typeInfuse))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            this.itemOutput = itemOutput;
+            this.itemInput = itemInput;
+            this.infuseType = infuseType;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<InfusionInput, MetallurgicInfuserRecipe> entry : ((Map<InfusionInput, MetallurgicInfuserRecipe>) RecipeHandler.Recipe.METALLURGIC_INFUSER.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().inputStack);
+                String typeInfuse = entry.getKey().infuse.type.name;
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+                if (!infuseType.isEmpty() && !infuseType.equalsIgnoreCase(typeInfuse))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            }
         }
     }
 }

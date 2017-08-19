@@ -9,6 +9,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -44,7 +45,7 @@ public class ChemicalDissolution
 
         DissolutionRecipe recipe = new DissolutionRecipe(InputHelper.toStack(itemInput), GasHelper.toGas(gasOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -59,28 +60,48 @@ public class ChemicalDissolution
         if (itemInput == null)
             itemInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get(), gasOutput, itemInput));
+    }
 
-        for (Map.Entry<ItemStackInput, DissolutionRecipe> entry : ((Map<ItemStackInput, DissolutionRecipe>) RecipeHandler.Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient gasOutput;
+        private IIngredient itemInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient gasOutput, IIngredient itemInput)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
-            IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);
+            super(name, map);
 
-            if (!GasHelper.matches(gasOutput, outputGas))
-                continue;
-            if (!StackHelper.matches(itemInput, inputItem))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            this.gasOutput = gasOutput;
+            this.itemInput = itemInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), itemInput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<ItemStackInput, DissolutionRecipe> entry : ((Map<ItemStackInput, DissolutionRecipe>) RecipeHandler.Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
+                IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);
+
+                if (!GasHelper.matches(gasOutput, outputGas))
+                    continue;
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), itemInput.toString()));
+            }
         }
     }
 }

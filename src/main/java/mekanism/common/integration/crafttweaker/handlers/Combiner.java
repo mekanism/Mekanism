@@ -10,6 +10,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
 import mekanism.api.gas.GasStack;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -25,6 +26,7 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import javax.imageio.stream.IIOByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ public class Combiner
         ItemStackOutput output = new ItemStackOutput(InputHelper.toStack(itemOutput));
         CombinerRecipe recipe = new CombinerRecipe(input, output);
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER.get(), recipe));
     }
 
     @ZenMethod
@@ -79,31 +81,53 @@ public class Combiner
         if (itemInput == null)
             itemInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.COMBINER.get(), itemOutput, itemInput, gasInput));
+    }
 
-        for (Map.Entry<AdvancedMachineInput, CombinerRecipe> entry : ((Map<AdvancedMachineInput, CombinerRecipe>) RecipeHandler.Recipe.COMBINER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemOutput;
+        private IIngredient itemInput;
+        private IIngredient gasInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient gasInput)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
-            IGasStack inputGas = new CraftTweakerGasStack(new GasStack(entry.getKey().gasType, 1));
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().getOutput().output);
+            super(name, map);
 
-            if (!StackHelper.matches(itemInput, inputItem))
-                continue;
-            if (!GasHelper.matches(gasInput, inputGas))
-                continue;
-            if (!StackHelper.matches(itemOutput, outputItem))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            this.itemOutput = itemOutput;
+            this.itemInput = itemInput;
+            this.gasInput = gasInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, itemInput.toString(), gasInput.toString(), itemOutput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<AdvancedMachineInput, CombinerRecipe> entry : ((Map<AdvancedMachineInput, CombinerRecipe>) RecipeHandler.Recipe.COMBINER.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
+                IGasStack inputGas = new CraftTweakerGasStack(new GasStack(entry.getKey().gasType, 1));
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().getOutput().output);
+
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+                if (!GasHelper.matches(gasInput, inputGas))
+                    continue;
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, itemInput.toString(), gasInput.toString(), itemOutput.toString()));
+            }
         }
     }
 }

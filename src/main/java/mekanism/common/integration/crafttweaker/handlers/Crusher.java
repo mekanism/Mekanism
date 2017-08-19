@@ -9,6 +9,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
@@ -41,7 +42,7 @@ public class Crusher
 
         CrusherRecipe recipe = new CrusherRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CRUSHER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CRUSHER.get(), recipe));
     }
 
     @ZenMethod
@@ -56,28 +57,48 @@ public class Crusher
         if (itemInput == null)
             itemInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CRUSHER.get(), itemOutput, itemInput));
+    }
 
-        for (Map.Entry<ItemStackInput, CrusherRecipe> entry : ((Map<ItemStackInput, CrusherRecipe>) RecipeHandler.Recipe.CRUSHER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemOutput;
+        private IIngredient itemInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+            super(name, map);
 
-            if (!StackHelper.matches(itemOutput, outputItem))
-                continue;
-            if (!StackHelper.matches(itemInput, inputItem))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            this.itemOutput = itemOutput;
+            this.itemInput = itemInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.CRUSHER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<ItemStackInput, CrusherRecipe> entry : ((Map<ItemStackInput, CrusherRecipe>) RecipeHandler.Recipe.CRUSHER.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            }
         }
     }
 }

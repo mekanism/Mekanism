@@ -10,6 +10,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.api.liquid.ILiquidStack;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -50,7 +51,7 @@ public class Reaction
 
         PressurizedRecipe recipe = new PressurizedRecipe(input, output, energy, duration);
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -69,37 +70,63 @@ public class Reaction
         if (gasInput == null)
             gasInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get(), itemOutput, gasOutput, itemInput, liquidInput, gasInput));
+    }
 
-        for (Map.Entry<PressurizedInput, PressurizedRecipe> entry : ((Map<PressurizedInput, PressurizedRecipe>) RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemOutput;
+        private IIngredient gasOutput;
+        private IIngredient itemInput;
+        private IIngredient liquidInput;
+        private IIngredient gasInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient gasOutput, IIngredient itemInput, IIngredient liquidInput, IIngredient gasInput)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().getSolid());
-            ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().getFluid());
-            IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().getGas());
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.getItemOutput());
-            IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.getGasOutput());
+            super(name, map);
 
-            if (!StackHelper.matches(itemInput, inputItem))
-                continue;
-            if (!StackHelper.matches(liquidInput, inputLiquid))
-                continue;
-            if (!GasHelper.matches(gasInput, inputGas))
-                continue;
-            if (!StackHelper.matches(itemOutput, outputItem))
-                continue;
-            if (!GasHelper.matches(gasOutput, outputGas))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            this.itemOutput = itemOutput;
+            this.gasOutput = gasOutput;
+            this.itemInput = itemInput;
+            this.liquidInput = liquidInput;
+            this.gasInput = gasInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s, %s, %s, %s and %s. Command ignored!", NAME, itemOutput.toString(), gasOutput.toString(), itemInput.toString(), liquidInput.toString(), gasInput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<PressurizedInput, PressurizedRecipe> entry : ((Map<PressurizedInput, PressurizedRecipe>) RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().getSolid());
+                ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().getFluid());
+                IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().getGas());
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.getItemOutput());
+                IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.getGasOutput());
+
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+                if (!StackHelper.matches(liquidInput, inputLiquid))
+                    continue;
+                if (!GasHelper.matches(gasInput, inputGas))
+                    continue;
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+                if (!GasHelper.matches(gasOutput, outputGas))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s, %s, %s, %s and %s. Command ignored!", NAME, itemOutput.toString(), gasOutput.toString(), itemInput.toString(), liquidInput.toString(), gasInput.toString()));
+            }
         }
     }
 

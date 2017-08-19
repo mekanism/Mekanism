@@ -10,6 +10,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
 import mekanism.api.gas.GasStack;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -46,7 +47,7 @@ public class Purification
 
         PurificationRecipe recipe = new PurificationRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -80,31 +81,53 @@ public class Purification
         if (gasInput == null)
             gasInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), itemOutput, itemInput, gasInput));
+    }
 
-        for (Map.Entry<AdvancedMachineInput, PurificationRecipe> entry : ((Map<AdvancedMachineInput, PurificationRecipe>) RecipeHandler.Recipe.PURIFICATION_CHAMBER.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemOutput;
+        private IIngredient itemInput;
+        private IIngredient gasInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient gasInput)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
-            IGasStack inputGas = new CraftTweakerGasStack(new GasStack(entry.getKey().gasType, 1));
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+            super(name, map);
 
-            if (!StackHelper.matches(itemOutput, outputItem))
-                continue;
-            if (!StackHelper.matches(itemInput, inputItem))
-                continue;
-            if (!GasHelper.matches(gasInput, inputGas))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            this.itemOutput = itemOutput;
+            this.itemInput = itemInput;
+            this.gasInput = gasInput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, itemOutput.toString(), itemInput.toString(), gasInput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<AdvancedMachineInput, PurificationRecipe> entry : ((Map<AdvancedMachineInput, PurificationRecipe>) RecipeHandler.Recipe.PURIFICATION_CHAMBER.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
+                IGasStack inputGas = new CraftTweakerGasStack(new GasStack(entry.getKey().gasType, 1));
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+                if (!GasHelper.matches(gasInput, inputGas))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, itemOutput.toString(), itemInput.toString(), gasInput.toString()));
+            }
         }
     }
 }

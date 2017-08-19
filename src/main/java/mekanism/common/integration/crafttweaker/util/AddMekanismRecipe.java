@@ -16,16 +16,25 @@ import java.util.Map;
 
 public class AddMekanismRecipe extends BaseMapAddition<MachineInput, MachineRecipe>
 {
-    public AddMekanismRecipe(String name, Map<MachineInput, MachineRecipe> map, Map<MachineInput, MachineRecipe> recipes)
-    {
-        super(name, map, recipes);
-    }
+    private MachineRecipe recipe;
 
     public AddMekanismRecipe(String name, Map<MachineInput, MachineRecipe> map, MachineRecipe recipe)
     {
         super(name, map);
+        this.recipe = recipe;
+    }
 
-        recipes.put(recipe.getInput(), recipe);
+    public void addRecipes()
+    {
+        this.recipes.put(recipe.getInput(), recipe);
+    }
+
+    @Override
+    public void apply()
+    {
+        addRecipes();
+
+        super.apply();
     }
 
     @Override

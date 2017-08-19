@@ -9,6 +9,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
@@ -47,7 +48,7 @@ public class Sawmill
 
         SawmillRecipe recipe = new SawmillRecipe(input, output);
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PRECISION_SAWMILL.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PRECISION_SAWMILL.get(), recipe));
     }
 
     @ZenMethod
@@ -64,31 +65,52 @@ public class Sawmill
         if (optionalItemOutput == null)
             optionalItemOutput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.PRECISION_SAWMILL.get(), itemInput, itemOutput, optionalItemOutput));
+    }
 
-        for (Map.Entry<ItemStackInput, SawmillRecipe> entry : ((Map<ItemStackInput, SawmillRecipe>) RecipeHandler.Recipe.PRECISION_SAWMILL.get()).entrySet())
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemInput;
+        private IIngredient itemOutput;
+        private IIngredient optionalItemOutput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemInput, IIngredient itemOutput, IIngredient optionalItemOutput)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.primaryOutput);
-            IItemStack outputItemOptional = InputHelper.toIItemStack(entry.getValue().recipeOutput.secondaryOutput);
-
-            if (!StackHelper.matches(itemOutput, outputItem))
-                continue;
-            if (!StackHelper.matches(itemInput, inputItem))
-                continue;
-            if (!StackHelper.matches(optionalItemOutput, outputItemOptional))
-                continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            super(name, map);
+            this.itemInput = itemInput;
+            this.itemOutput = itemOutput;
+            this.optionalItemOutput = optionalItemOutput;
         }
 
-        if (!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.PRECISION_SAWMILL.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<ItemStackInput, SawmillRecipe> entry : ((Map<ItemStackInput, SawmillRecipe>) RecipeHandler.Recipe.PRECISION_SAWMILL.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.primaryOutput);
+                IItemStack outputItemOptional = InputHelper.toIItemStack(entry.getValue().recipeOutput.secondaryOutput);
+
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+                if (!StackHelper.matches(optionalItemOutput, outputItemOptional))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            }
         }
     }
 }

@@ -9,12 +9,13 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.CrusherRecipe;
+import mekanism.common.recipe.machines.EnrichmentRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
@@ -39,41 +40,64 @@ public class Enrichment
             return;
         }
 
-        CrusherRecipe recipe = new CrusherRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
+        EnrichmentRecipe recipe = new EnrichmentRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput)
     {
-        if(itemOutput == null)
+        if (itemOutput == null)
         {
             LogHelper.logError(String.format("Required parameters missing for %s recipe.", NAME));
         }
 
-        if(itemInput == null) itemInput = IngredientAny.INSTANCE;
+        if (itemInput == null)
+            itemInput = IngredientAny.INSTANCE;
 
-        Map<MachineInput, MachineRecipe> recipes = new HashMap<>();
 
-        for(Map.Entry<ItemStackInput, CrusherRecipe> entry : ((Map<ItemStackInput, CrusherRecipe>) RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get()).entrySet())
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), itemOutput, itemInput));
+    }
+
+    private static class Remove extends RemoveMekanismRecipe
+    {
+        private IIngredient itemOutput;
+        private IIngredient itemInput;
+
+        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput)
         {
-            IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
-            IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
-
-            if(!StackHelper.matches(itemOutput, outputItem)) continue;
-            if(!StackHelper.matches(itemInput, inputItem)) continue;
-
-            recipes.put(entry.getKey(), entry.getValue());
+            super(name, map);
+            this.itemOutput = itemOutput;
+            this.itemInput = itemInput;
         }
 
-        if(!recipes.isEmpty())
+        @Override
+        public void addRecipes()
         {
-            CraftTweakerAPI.apply(new RemoveMekanismRecipe(NAME, RecipeHandler.Recipe.CRUSHER.get(), recipes));
-        }
-        else
-        {
-            LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+
+            for (Map.Entry<ItemStackInput, EnrichmentRecipe> entry : ((Map<ItemStackInput, EnrichmentRecipe>) RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get()).entrySet())
+            {
+                IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
+                IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);
+
+                if (!StackHelper.matches(itemOutput, outputItem))
+                    continue;
+                if (!StackHelper.matches(itemInput, inputItem))
+                    continue;
+
+                recipesToRemove.put(entry.getKey(), entry.getValue());
+            }
+
+            if (!recipesToRemove.isEmpty())
+            {
+                recipes.putAll(recipesToRemove);
+            }
+            else
+            {
+                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, itemInput.toString(), itemOutput.toString()));
+            }
         }
     }
 }
