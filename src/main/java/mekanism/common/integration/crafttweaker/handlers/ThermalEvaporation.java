@@ -1,8 +1,8 @@
 package mekanism.common.integration.crafttweaker.handlers;
+
 import com.blamejared.mtlib.helpers.InputHelper;
 import com.blamejared.mtlib.helpers.LogHelper;
 import com.blamejared.mtlib.helpers.StackHelper;
-import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.api.liquid.ILiquidStack;
@@ -47,7 +47,7 @@ public class ThermalEvaporation
 
         if(liquidOutput == null) liquidOutput = IngredientAny.INSTANCE;
 
-
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get(), liquidInput, liquidOutput));
     }
 
     private static class Remove extends RemoveMekanismRecipe

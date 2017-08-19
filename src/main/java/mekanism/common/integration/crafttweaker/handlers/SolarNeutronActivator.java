@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
 import com.blamejared.mtlib.helpers.LogHelper;
-import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;

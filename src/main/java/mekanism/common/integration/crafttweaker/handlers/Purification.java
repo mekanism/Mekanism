@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.handlers;
 import com.blamejared.mtlib.helpers.InputHelper;
 import com.blamejared.mtlib.helpers.LogHelper;
 import com.blamejared.mtlib.helpers.StackHelper;
-import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
@@ -64,7 +63,7 @@ public class Purification
 
         PurificationRecipe recipe = new PurificationRecipe(input, output);
 
-        CraftTweakerAPI.apply(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
