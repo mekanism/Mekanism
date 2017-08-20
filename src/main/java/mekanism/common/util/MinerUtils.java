@@ -1,20 +1,34 @@
 package mekanism.common.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class MinerUtils
 {
 	public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ICE);
+
+	private static Method getSilkTouchDrop = null;
+	static {
+		try
+		{
+			getSilkTouchDrop = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
+		} catch (ReflectionHelper.UnableToFindMethodException e){
+			Mekanism.logger.error("Unable to find method Block.getSilkTouchDrop");
+		}
+	}
 
 	public static List<ItemStack> getDrops(World world, Coord4D obj, boolean silk)
 	{
@@ -26,20 +40,40 @@ public final class MinerUtils
 			return new LinkedList<>();
 		}
 
-		if(!silk)
+		if(silk && block.canSilkHarvest(world, obj.getPos(), state, null))
 		{
-			return block.getDrops(world, obj.getPos(), state, 0);
-		}
-		else {
-			List<ItemStack> ret = new ArrayList<>();
-			Item item = Item.getItemFromBlock(block);
-			int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
-			ret.add(new ItemStack(item, 1, meta));
-
-			if(specialSilkIDs.contains(block) || (block.getDrops(world, obj.getPos(), state, 0) != null && block.getDrops(world, obj.getPos(), state, 0).size() > 0))
+			List<ItemStack> ret = new ArrayList<ItemStack>();
+			if (getSilkTouchDrop != null)
 			{
+				try
+				{
+					ItemStack it = (ItemStack)getSilkTouchDrop.invoke(block, state);
+					if (!it.isEmpty())
+					{
+						ret.add(it);
+					}
+				} catch (InvocationTargetException|IllegalAccessException e){
+					Mekanism.logger.error("Block.getSilkTouchDrop errored", e);
+				}
+			}
+			else//fallback to old method
+			{
+				Item item = Item.getItemFromBlock(block);
+				int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
+				ret.add(new ItemStack(item, 1, meta));
+			}
+
+			List<ItemStack> blockDrops = block.getDrops(world, obj.getPos(), state, 0);
+
+			if(specialSilkIDs.contains(block) || (blockDrops != null && blockDrops.size() > 0))
+			{
+				net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(ret, world, obj.getPos(), state, 0, 1.0f, true, null);
 				return ret;
 			}
+		} else {
+			List<ItemStack> blockDrops = block.getDrops(world, obj.getPos(), state, 0);
+			net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(blockDrops, world, obj.getPos(), state, 0, 1.0f, true, null);
+			return blockDrops;
 		}
 
 		return new LinkedList<>();
