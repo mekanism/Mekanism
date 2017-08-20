@@ -4,6 +4,7 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class SlotPersonalChest extends Slot
 {
@@ -21,5 +22,16 @@ public class SlotPersonalChest extends Slot
 		}
 		
 		return MachineType.get(inventory.getStackInSlot(getSlotIndex())) != MachineType.PERSONAL_CHEST;
+	}
+
+	@Override
+	public boolean isItemValid(ItemStack stack)
+	{
+		if(MachineType.get(stack) == MachineType.PERSONAL_CHEST)
+		{
+			return false;
+		}
+
+		return super.isItemValid(stack);
 	}
 }
