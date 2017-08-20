@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -46,10 +47,10 @@ public final class MinerUtils
 			{
 				try
 				{
-					ItemStack it = (ItemStack)getSilkTouchDrop.invoke(block, state);
-					if (!it.isEmpty())
+					Object it = getSilkTouchDrop.invoke(block, state);
+					if (it != null && it instanceof ItemStack && !((ItemStack)it).isEmpty())
 					{
-						ret.add(it);
+						ret.add((ItemStack)it);
 					}
 				} catch (InvocationTargetException|IllegalAccessException e){
 					Mekanism.logger.error("Block.getSilkTouchDrop errored", e);
@@ -58,20 +59,29 @@ public final class MinerUtils
 			else//fallback to old method
 			{
 				Item item = Item.getItemFromBlock(block);
-				int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
-				ret.add(new ItemStack(item, 1, meta));
+				if (item != null && item != Items.AIR)
+				{
+					int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
+					ret.add(new ItemStack(item, 1, meta));
+				}
 			}
 
-			List<ItemStack> blockDrops = block.getDrops(world, obj.getPos(), state, 0);
-
-			if(specialSilkIDs.contains(block) || (blockDrops != null && blockDrops.size() > 0))
+			if (ret.size() > 0)
 			{
-				net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(ret, world, obj.getPos(), state, 0, 1.0f, true, null);
-				return ret;
+				List<ItemStack> blockDrops = block.getDrops(world, obj.getPos(), state, 0);
+
+				if(specialSilkIDs.contains(block) || (blockDrops != null && blockDrops.size() > 0))
+				{
+					net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(ret, world, obj.getPos(), state, 0, 1.0f, true, null);
+					return ret;
+				}
 			}
 		} else {
 			List<ItemStack> blockDrops = block.getDrops(world, obj.getPos(), state, 0);
-			net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(blockDrops, world, obj.getPos(), state, 0, 1.0f, true, null);
+			if (blockDrops.size() > 0)
+			{
+				net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(blockDrops, world, obj.getPos(), state, 0, 1.0f, true, null);
+			}
 			return blockDrops;
 		}
 
