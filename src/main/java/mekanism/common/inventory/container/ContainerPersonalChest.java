@@ -48,13 +48,13 @@ public class ContainerPersonalChest extends Container
 		{
 			for(int slotY = 0; slotY < 9; ++slotY)
 			{
-				addSlotToContainer(new SlotPersonalChest(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
+				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
 			}
 		}
 
 		for(slotX = 0; slotX < 9; ++slotX)
 		{
-			addSlotToContainer(new SlotPersonalChest(inventory, slotX, 8 + slotX * 18, 206));
+			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
 		}
 	}
 
@@ -138,18 +138,21 @@ public class ContainerPersonalChest extends Container
 	}
 
 	@Override
-	public ItemStack slotClick(int slotNumber, int destSlot, ClickType clickType, EntityPlayer player)
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player)
 	{
-		if(destSlot >= 0 && destSlot < 9)
+		int hotbarSlotId = slotId-81;
+
+		//Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
+		if(!isBlock && hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId)
 		{
-			ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
-			
+			ItemStack itemStack = player.inventory.getStackInSlot(hotbarSlotId);
+
 			if(!itemStack.isEmpty() && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
 			{
 				return ItemStack.EMPTY;
 			}
 		}
 
-		return super.slotClick(slotNumber, destSlot, clickType, player);
+		return super.slotClick(slotId, dragType, clickType, player);
 	}
 }
