@@ -72,6 +72,8 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -103,26 +105,37 @@ import net.minecraftforge.fluids.Fluid;
 public class MekanismJEI extends BlankModPlugin
 {
 	public static GasStackRenderer GAS_RENDERER;
-	
-	public static ISubtypeInterpreter NBT_INTERPRETER = new ISubtypeInterpreter() {
-		@Override
-		public String getSubtypeInfo(ItemStack itemStack) 
+
+	public static final ISubtypeInterpreter NBT_INTERPRETER = itemStack ->
+	{
+        String ret = Integer.toString(itemStack.getMetadata());
+
+        if(itemStack.getItem() instanceof ITierItem)
+        {
+            ret += ":" + ((ITierItem)itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
+        }
+
+        if(itemStack.getItem() instanceof IFactory)
+        {
+            ret += ":" + RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
+        }
+
+        if(itemStack.getItem() instanceof ItemBlockGasTank)
 		{
-			String ret = Integer.toString(itemStack.getMetadata());
-			
-			if(itemStack.getItem() instanceof ITierItem)
+			GasStack gasStack = ((ItemBlockGasTank)itemStack.getItem()).getGas(itemStack);
+			if (gasStack != null)
 			{
-				ret += ":" + ((ITierItem)itemStack.getItem()).getBaseTier(itemStack).getSimpleName();
+				ret += ":" + gasStack.getGas().getName();
 			}
-			
-			if(itemStack.getItem() instanceof IFactory)
-			{
-				ret += ":" + RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
-			}
-			
-			return ret.isEmpty() ? null : ret.toLowerCase();
 		}
-	};
+
+		if(itemStack.getItem() instanceof ItemBlockEnergyCube)
+		{
+			ret += ":" + (((ItemBlockEnergyCube)itemStack.getItem()).getEnergy(itemStack) > 0 ? "filled" : "empty");
+		}
+
+        return ret.isEmpty() ? null : ret.toLowerCase();
+    };
 	
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistry registry)
