@@ -18,7 +18,7 @@ public class CrafttweakerIntegration
      * Applying to early causes remove to mallfunction as no recipes have been registered.
      * Applying to late causes JEI to not pickup the changes.
      */
-    public static void apply()
+    public static void applyRecipeChanges()
     {
         LATE_REMOVALS.forEach(CraftTweakerAPI::apply);
         LATE_ADDITIONS.forEach(CraftTweakerAPI::apply);
