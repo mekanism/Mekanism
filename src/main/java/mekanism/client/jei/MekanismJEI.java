@@ -70,6 +70,8 @@ import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.inventory.container.ContainerRobitInventory;
+import mekanism.common.item.ItemBlockEnergyCube;
+import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -123,6 +125,20 @@ public class MekanismJEI implements IModPlugin
         {
             ret += ":" + RecipeType.values()[((IFactory)itemStack.getItem()).getRecipeType(itemStack)].getName();
         }
+
+        if(itemStack.getItem() instanceof ItemBlockGasTank)
+		{
+			GasStack gasStack = ((ItemBlockGasTank)itemStack.getItem()).getGas(itemStack);
+			if (gasStack != null)
+			{
+				ret += ":" + gasStack.getGas().getName();
+			}
+		}
+
+		if(itemStack.getItem() instanceof ItemBlockEnergyCube)
+		{
+			ret += ":" + (((ItemBlockEnergyCube)itemStack.getItem()).getEnergy(itemStack) > 0 ? "filled" : "empty");
+		}
 
         return ret.isEmpty() ? null : ret.toLowerCase();
     };
