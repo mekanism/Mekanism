@@ -287,6 +287,12 @@ public final class RecipeHandler
 			HashMap<InfusionInput, MetallurgicInfuserRecipe> recipes = Recipe.METALLURGIC_INFUSER.get();
 
 			MetallurgicInfuserRecipe recipe = recipes.get(input);
+
+			if(recipe == null)
+			{
+				recipe = recipes.get(input.wildCopy());
+			}
+
 			return recipe == null ? null : recipe.copy();
 		}
 
@@ -427,6 +433,12 @@ public final class RecipeHandler
 		if(input.isValid())
 		{
 			RECIPE recipe = recipes.get(input);
+
+			if(recipe == null)
+			{
+				recipe = recipes.get(input.wildCopy());
+			}
+
 			return recipe == null ? null : recipe.copy();
 		}
 
@@ -484,6 +496,12 @@ public final class RecipeHandler
 			HashMap<PressurizedInput, PressurizedRecipe> recipes = Recipe.PRESSURIZED_REACTION_CHAMBER.get();
 
 			PressurizedRecipe recipe = recipes.get(input);
+
+			if(recipe == null)
+			{
+				recipe = recipes.get(input.wildCopy());
+			}
+
 			return recipe == null ? null : recipe.copy();
 		}
 
