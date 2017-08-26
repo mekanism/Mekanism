@@ -61,7 +61,7 @@ public final class StackUtils
 			return check == wild;
 		}
 		
-		return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
+		return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || check.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
 	}
 
 	public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check)

@@ -16,6 +16,7 @@ import mekanism.common.Resource;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.computer.CCPeripheral;
 import mekanism.common.integration.computer.OCDriver;
+import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
@@ -90,6 +91,11 @@ public final class MekanismHooks
 		if(CCLoaded)
 		{
 			loadCCPeripheralProviders();
+		}
+
+		if(Loader.isModLoaded("crafttweaker"))
+		{
+			CrafttweakerIntegration.applyRecipeChanges();
 		}
 	}
 

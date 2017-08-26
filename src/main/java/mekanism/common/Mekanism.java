@@ -817,11 +817,10 @@ public class Mekanism
 	{
 		logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
 
+		OreDictManager.init();
 		hooks.hook();
 		
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
-		
-		OreDictManager.init();
 		
 		logger.info("Hooking complete.");
 	}

@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * An input of a gas, a fluid and an item for the pressurized reaction chamber
@@ -164,5 +165,10 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	public boolean isInstance(Object other)
 	{
 		return other instanceof PressurizedInput;
+	}
+
+	public PressurizedInput wildCopy()
+	{
+		return new PressurizedInput(new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
 	}
 }
