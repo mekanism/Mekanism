@@ -9,6 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ public class InventoryFrequency extends Frequency
 {
 	public static final String ENTANGLOPORTER = "Entangloporter";
 	
-	public static final double MAX_ENERGY = 1000000;
+	public static final double MAX_ENERGY = general.quantumEntangloporterEnergyTransfer;
 	public static final int FLUID_TANK_SIZE = Tier.FluidTankTier.ULTIMATE.output;
 	public static final int GAS_TANK_SIZE = Tier.GasTankTier.ULTIMATE.output;
 

@@ -18,9 +18,7 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.IMetaItem;
-import mekanism.common.util.ReflectionUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -260,12 +258,12 @@ public class MekanismRenderer
 	
 	public static boolean isDrawing(Tessellator tess)
 	{
-		return isDrawing(tess.getBuffer());
+		return tess.getBuffer().isDrawing;
 	}
 	
 	public static boolean isDrawing(VertexBuffer buffer)
 	{
-		return (boolean)ReflectionUtils.getPrivateValue(buffer, VertexBuffer.class, ObfuscatedNames.VertexBuffer_isDrawing);
+		return buffer.isDrawing;
 	}
 
 	public static class Model3D
@@ -539,12 +537,7 @@ public class MekanismRenderer
     
     public static float getPartialTick()
     {
-    	try {
-    		Timer t = (Timer)ReflectionUtils.getPrivateValue(Minecraft.getMinecraft(), Minecraft.class, ObfuscatedNames.Minecraft_timer);
-    		return t.renderPartialTicks;
-    	} catch(Exception e) {}
-    	
-    	return 0;
+    	return Minecraft.getMinecraft().timer.renderPartialTicks;
     }
     
     public static ResourceLocation getBlocksTexture()
