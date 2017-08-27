@@ -18,13 +18,14 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class MinerUtils
 {
+	public static final String[] GET_SILK_TOUCH_DROP = { "getSilkTouchDrop", "func_180643_i" };
 	public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ICE);
 
 	private static Method getSilkTouchDrop = null;
 	static {
 		try
 		{
-			getSilkTouchDrop = ReflectionHelper.findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
+			getSilkTouchDrop = ReflectionHelper.findMethod(Block.class, null, GET_SILK_TOUCH_DROP, IBlockState.class);
 		} catch (ReflectionHelper.UnableToFindMethodException e){
 			Mekanism.logger.error("Unable to find method Block.getSilkTouchDrop");
 		}
@@ -37,18 +38,18 @@ public final class MinerUtils
 
 		if(block == null || block.isAir(state, world, obj.getPos()))
 		{
-			return new ArrayList<ItemStack>();
+			return new ArrayList<>();
 		}
 
 		if(silk && block.canSilkHarvest(world, obj.getPos(), state, null))
 		{
-			List<ItemStack> ret = new ArrayList<ItemStack>();
+			List<ItemStack> ret = new ArrayList<>();
 			if (getSilkTouchDrop != null)
 			{
 				try
 				{
 					Object it = getSilkTouchDrop.invoke(block, state);
-					if (it != null && it instanceof ItemStack && !((ItemStack)it).isEmpty())
+					if (it != null && it instanceof ItemStack && ((ItemStack)it).stackSize > 0)
 					{
 						ret.add((ItemStack)it);
 					}
@@ -59,7 +60,7 @@ public final class MinerUtils
 			else//fallback to old method
 			{
 				Item item = Item.getItemFromBlock(block);
-				if (item != null && item != Items.AIR)
+				if (item != null)
 				{
 					int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
 					ret.add(new ItemStack(item, 1, meta));
@@ -85,6 +86,6 @@ public final class MinerUtils
 			return blockDrops;
 		}
 
-		return new ArrayList<ItemStack>();
+		return new ArrayList<>();
 	}
 }
