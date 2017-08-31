@@ -167,7 +167,7 @@ public final class MekanismUtils
 	{
 		Mekanism.donators.clear();
 
-		for(String s : getHTML("https://dl.dropbox.com/u/90411166/Donators/Mekanism.txt"))
+		for(String s : getHTML("http://aidancbrady.com/data/capes/Mekanism.txt"))
 		{
 			Mekanism.donators.add(s);
 		}

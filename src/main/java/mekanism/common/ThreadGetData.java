@@ -21,7 +21,7 @@ public class ThreadGetData extends Thread
 	@Override
 	public void run()
 	{
-		List<String> ret = MekanismUtils.getHTML("https://dl.dropbox.com/u/90411166/Versions/Mekanism.txt");
+		List<String> ret = MekanismUtils.getHTML("http://aidancbrady.com/data/versions/Mekanism.txt");
 		
 		Mekanism.latestVersionNumber = "null";
 		Mekanism.recentNews = "null";
