@@ -171,7 +171,7 @@ public final class MekanismUtils
 	public static void updateDonators()
 	{
 		Mekanism.donators.clear();
-		Mekanism.donators.addAll(getHTML("https://dl.dropbox.com/u/90411166/Donators/Mekanism.txt"));
+		Mekanism.donators.addAll(getHTML("http://aidancbrady.com/data/capes/Mekanism.txt"));
 	}
 
 	/**
