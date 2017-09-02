@@ -104,7 +104,7 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}"
+    deobfCompile "MCMultiPart2:MCMultiPart:${config.mcmp_version}"
     deobfProvided "mezz.jei:jei_1.12:${config.jei_version}:api"
     runtime "mezz.jei:jei_1.12:${config.jei_version}"
     compile "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
