@@ -229,7 +229,7 @@ public class Gas
 		{
 			if(FluidRegistry.getFluid(name) == null)
 			{
-				fluid = new Fluid(name, getIcon(), getIcon());
+				fluid = new Fluid(name, getIcon(), getIcon()).setGaseous(true);
 				FluidRegistry.registerFluid(fluid);
 			}
 			else {
