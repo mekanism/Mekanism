@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:tierinstaller",
+    "data": 1
+  },
+  "pattern": [
+    "ECE",
+    "oWo",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "item": "#CIRCUITADVANCED"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "W": {
+      "ore": "plankWood",
+      "type": "forge:ore_dict"
+    },
+    "o": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

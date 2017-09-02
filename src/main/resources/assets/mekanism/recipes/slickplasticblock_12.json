@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:slickplasticblock",
+    "data": 12,
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PSP",
+    " P "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:plasticblock",
+      "data": 12
+    },
+    "S": {
+      "ore": "slimeball",
+      "type": "forge:ore_dict"
+    }
+  }
+}

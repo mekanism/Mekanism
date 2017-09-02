@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "mekanism:configurationcard"
+  },
+  "pattern": [
+    " A ",
+    "ACA",
+    " A "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    }
+  }
+}

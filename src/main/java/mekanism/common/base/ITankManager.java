@@ -6,27 +6,27 @@ import mekanism.common.item.ItemGaugeDropper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 
 public interface ITankManager 
 {
-	public Object[] getTanks();
+	Object[] getTanks();
 	
-	public static class DropperHandler
+	class DropperHandler
 	{
 		public static void useDropper(EntityPlayer player, Object tank, int button)
 		{
 			ItemStack stack = player.inventory.getItemStack();
 			
-			if(stack == null || !(stack.getItem() instanceof ItemGaugeDropper))
+			if(stack.isEmpty() || !(stack.getItem() instanceof ItemGaugeDropper))
 			{
 				return;
 			}
 			
 			ItemGaugeDropper dropper = (ItemGaugeDropper)stack.getItem();
 			
-			if(stack != null)
+			if(!stack.isEmpty())
 			{
 				if(tank instanceof GasTank)
 				{
@@ -40,7 +40,7 @@ public interface ITankManager
 					
 					if(button == 0) //Insert gas into dropper
 					{
-						if(dropper.getFluid(stack) != null || gasTank.getGas() == null)
+						if(FluidUtil.getFluidContained(stack) != null || gasTank.getGas() == null)
 						{
 							return;
 						}
@@ -53,11 +53,11 @@ public interface ITankManager
 							dropper.setGas(stack, new GasStack(drawn.getGas(), dropperStored+(drawn != null ? drawn.amount : 0)));
 						}
 						
-						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+						((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 					}
 					else if(button == 1) //Extract gas from dropper
 					{
-						if(dropper.getFluid(stack) != null || gasTank.getNeeded() == 0)
+						if(FluidUtil.getFluidContained(stack) != null || gasTank.getNeeded() == 0)
 						{
 							return;
 						}
@@ -66,7 +66,7 @@ public interface ITankManager
 						toExtract = gasTank.receive(new GasStack(dropper.getGas(stack).getGas(), toExtract), true);
 						dropper.setGas(stack, new GasStack(dropper.getGas(stack).getGas(), dropperStored-toExtract));
 						
-						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+						((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 					}
 					else if(button == 2) //Dump the tank
 					{
@@ -76,9 +76,9 @@ public interface ITankManager
 				else if(tank instanceof FluidTank)
 				{
 					FluidTank fluidTank = (FluidTank)tank;
-					int dropperStored = dropper.getFluid(stack) != null ? dropper.getFluid(stack).amount : 0;
+					int dropperStored = FluidUtil.getFluidContained(stack) != null ? FluidUtil.getFluidContained(stack).amount : 0;
 					
-					if(dropper.getFluid(stack) != null && fluidTank.getFluid() != null && !dropper.getFluid(stack).isFluidEqual(fluidTank.getFluid()))
+					if(FluidUtil.getFluidContained(stack) != null && fluidTank.getFluid() != null && !FluidUtil.getFluidContained(stack).isFluidEqual(fluidTank.getFluid()))
 					{
 						return;
 					}
@@ -91,14 +91,9 @@ public interface ITankManager
 						}
 						
 						int toInsert = Math.min(fluidTank.getFluidAmount(), ItemGaugeDropper.CAPACITY-dropperStored);
-						FluidStack drawn = fluidTank.drain(toInsert, true);
-						
-						if(drawn != null)
-						{
-							dropper.setFluid(stack, new FluidStack(drawn.getFluid(), dropperStored+(drawn != null ? drawn.amount : 0)));
-						}
-						
-						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+						FluidUtil.getFluidHandler(stack).fill(fluidTank.drain(toInsert, true), true);
+
+						((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 					}
 					else if(button == 1) //Extract fluid from dropper
 					{
@@ -108,10 +103,9 @@ public interface ITankManager
 						}
 						
 						int toExtract = Math.min(fluidTank.getCapacity()-fluidTank.getFluidAmount(), dropperStored);
-						toExtract = fluidTank.fill(new FluidStack(dropper.getFluid(stack).getFluid(), toExtract), true);
-						dropper.setFluid(stack, new FluidStack(dropper.getFluid(stack).getFluid(), dropperStored-toExtract));
+						fluidTank.fill(FluidUtil.getFluidHandler(stack).drain(toExtract, true), true);
 						
-						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+						((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
 					}
 					else if(button == 2) //Dump the tank
 					{

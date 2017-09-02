@@ -1,78 +1,76 @@
 package mekanism.common.block;
 
+import static mekanism.common.block.states.BlockStateCardboardBox.storageProperty;
+
 import java.util.Random;
 
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.block.states.BlockStateCardboardBox;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCardboardBox extends BlockContainer
 {
 	private static boolean testingPlace = false;
 	
-	public IIcon[] icons = new IIcon[6];
-
 	public BlockCardboardBox()
 	{
-		super(Material.cloth);
+		super(Material.CLOTH);
 		setCreativeTab(Mekanism.tabMekanism);
 		setHardness(0.5F);
 		setResistance(1F);
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
-	{
-		icons[0] = register.registerIcon("mekanism:CardboardBoxTop");
-		icons[1] = register.registerIcon("mekanism:CardboardBoxSide");
-		icons[2] = register.registerIcon("mekanism:CardboardBoxSideStorage");
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		if(side == 0 || side == 1)
-		{
-			return icons[0];
-		}
-		else {
-			return meta == 0 ? icons[1] : icons[2];
-		}
-	}
 	
 	@Override
-	public boolean isReplaceable(IBlockAccess world, int x, int y, int z)
+	protected BlockStateContainer createBlockState()
+	{
+		return new BlockStateCardboardBox(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return getDefaultState().withProperty(storageProperty, meta == 1);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return state.getValue(storageProperty) ? 1 : 0;
+	}
+
+	@Override
+	public boolean isReplaceable(IBlockAccess world, BlockPos pos)
 	{
 		return testingPlace;
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox);
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
 			if(tileEntity.storedData != null)
 			{
@@ -80,7 +78,7 @@ public class BlockCardboardBox extends BlockContainer
 				
 				testingPlace = true;
 				
-				if(!data.block.canPlaceBlockAt(world, x, y, z))
+				if(!data.block.canPlaceBlockAt(world, pos))
 				{
 					testingPlace = false;
 					return true;
@@ -90,35 +88,41 @@ public class BlockCardboardBox extends BlockContainer
 
 				if(data.block != null)
 				{
-					data.meta = data.block.onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
+					IBlockState newstate = data.block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, data.meta, entityplayer, hand);
+					data.meta = newstate.getBlock().getMetaFromState(newstate);
 				}
 
-				world.setBlock(x, y, z, data.block, data.meta, 3);
+				world.setBlockState(pos, data.block.getStateFromMeta(data.meta), 3);
 
-				if(data.tileTag != null && world.getTileEntity(x, y, z) != null)
+				if(data.tileTag != null && world.getTileEntity(pos) != null)
 				{
-					data.updateLocation(x, y, z);
-					world.getTileEntity(x, y, z).readFromNBT(data.tileTag);
+					data.updateLocation(pos);
+					world.getTileEntity(pos).readFromNBT(data.tileTag);
 				}
 
 				if(data.block != null)
 				{
-					data.block.onBlockPlacedBy(world, x, y, z, entityplayer, new ItemStack(data.block, 1, data.meta));
-					data.block.onPostBlockPlaced(world, x, y, z, data.meta);
+					data.block.onBlockPlacedBy(world, pos, data.block.getStateFromMeta(data.meta), entityplayer, new ItemStack(data.block, 1, data.meta));
 				}
-
+				
 				float motion = 0.7F;
 				double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 				double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 				double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-				EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+				EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-				world.spawnEntityInWorld(entityItem);
+				world.spawnEntity(entityItem);
 			}
 		}
 
 		return false;
+	}
+	
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState state)
+	{
+		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
@@ -127,11 +131,11 @@ public class BlockCardboardBox extends BlockContainer
 		return new TileEntityCardboardBox();
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -140,20 +144,20 @@ public class BlockCardboardBox extends BlockContainer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
-		ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox, 1, world.getBlockMetadata(x, y, z));
+		ItemStack itemStack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
 
 		if(itemStack.getItemDamage() == 1)
 		{
@@ -167,21 +171,21 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 
 	@Override
@@ -191,7 +195,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
 		return null;
 	}
@@ -211,13 +215,13 @@ public class BlockCardboardBox extends BlockContainer
 
 		public BlockData() {}
 
-		public void updateLocation(int x, int y, int z)
+		public void updateLocation(BlockPos pos)
 		{
 			if(tileTag != null)
 			{
-				tileTag.setInteger("x", x);
-				tileTag.setInteger("y", y);
-				tileTag.setInteger("z", z);
+				tileTag.setInteger("x", pos.getX());
+				tileTag.setInteger("y", pos.getY());
+				tileTag.setInteger("z", pos.getZ());
 			}
 		}
 

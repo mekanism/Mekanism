@@ -10,11 +10,10 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 
 public abstract class GuiGauge<T> extends GuiElement
 {
@@ -52,9 +51,14 @@ public abstract class GuiGauge<T> extends GuiElement
 
 	public abstract int getScaledLevel();
 
-	public abstract IIcon getIcon();
+	public abstract TextureAtlasSprite getIcon();
 
 	public abstract String getTooltipText();
+	
+	public int getRenderColor()
+	{
+		return -1;
+	}
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
@@ -84,7 +88,7 @@ public abstract class GuiGauge<T> extends GuiElement
 		
 		while(scale > 0)
 		{
-			int renderRemaining = 0;
+			int renderRemaining;
 
 			if(scale > 16)
 			{
@@ -97,11 +101,18 @@ public abstract class GuiGauge<T> extends GuiElement
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+			
+			if(getRenderColor() != -1)
+			{
+				MekanismRenderer.color(getRenderColor());
+			}
 
 			for(int i = 0; i < number; i++)
 			{
 				guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16*i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
 			}
+			
+			MekanismRenderer.resetColor();
 
 			start+=16;
 
@@ -120,9 +131,9 @@ public abstract class GuiGauge<T> extends GuiElement
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 
-			if(stack != null && stack.getItem() instanceof ItemConfigurator && color != null)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null)
 			{
 				if(guiObj instanceof GuiMekanism && ((GuiMekanism)guiObj).getTileEntity() != null)
 				{
@@ -141,7 +152,7 @@ public abstract class GuiGauge<T> extends GuiElement
 							}
 						}
 						
-						guiObj.displayTooltip(color + data.localize() + " (" + color.getName() + ")", xAxis, yAxis);
+						guiObj.displayTooltip(color + data.localize() + " (" + color.getColoredName() + ")", xAxis, yAxis);
 					}
 				}
 			}
@@ -176,7 +187,7 @@ public abstract class GuiGauge<T> extends GuiElement
 		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
 	
-	public static enum Type
+	public enum Type
 	{
 		STANDARD(null, 18, 60, 0, 0, 1, "GuiGaugeStandard.png"),
 		STANDARD_YELLOW(EnumColor.YELLOW, 18, 60, 0, 60, 1, "GuiGaugeStandard.png"),
@@ -202,7 +213,7 @@ public abstract class GuiGauge<T> extends GuiElement
 		public int number;
 		public String textureLocation;
 
-		private Type(EnumColor c, int w, int h, int tx, int ty, int n, String t)
+		Type(EnumColor c, int w, int h, int tx, int ty, int n, String t)
 		{
 			color = c;
 			width = w;

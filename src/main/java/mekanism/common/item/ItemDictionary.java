@@ -7,9 +7,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class ItemDictionary extends ItemMekanism
@@ -21,48 +27,54 @@ public class ItemDictionary extends ItemMekanism
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(!player.isSneaking())
 		{
-			Block block = world.getBlock(x, y, z);
+			IBlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
 
 			if(block != null)
 			{
 				if(world.isRemote)
 				{
-					ItemStack testStack = new ItemStack(block, 1, world.getBlockMetadata(x, y, z));
+					ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
 					List<String> names = MekanismUtils.getOreDictName(testStack);
 
 					if(!names.isEmpty())
 					{
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
+						player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
 
 						for(String name : names)
 						{
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_GREEN + " - " + name));
+							player.sendMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
 						}
 					}
 					else {
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
+						player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
 					}
 				}
 
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
+		
 		if(entityplayer.isSneaking())
 		{
 			entityplayer.openGui(Mekanism.instance, 0, world, 0, 0, 0);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 		}
 
-		return itemstack;
+		return new ActionResult<>(EnumActionResult.PASS, itemstack);
 	}
 }

@@ -5,36 +5,41 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitterTile;
-
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public final class PipeUtils
 {
 	public static final FluidTankInfo[] EMPTY = new FluidTankInfo[] {};
 
-	public static boolean isValidAcceptorOnSide(TileEntity tile, ForgeDirection side)
+	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
 	{
-		if(tile instanceof ITransmitterTile || !(tile instanceof IFluidHandler))
+		if(tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) || 
+				!CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+		{
 			return false;
-
-		IFluidHandler container = (IFluidHandler)tile;
-		FluidTankInfo[] infoArray = container.getTankInfo(side.getOpposite());
-
-		if(container.canDrain(side.getOpposite(), FluidRegistry.WATER)
-			|| container.canFill(side.getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
-		{
-			return true;
 		}
-		else if(infoArray != null && infoArray.length > 0)
+
+		IFluidHandler container = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+		
+		if(container == null)
 		{
-			for(FluidTankInfo info : infoArray)
+			return false;
+		}
+		
+		IFluidTankProperties[] infoArray = container.getTankProperties();
+
+		if(infoArray != null && infoArray.length > 0)
+		{
+			for(IFluidTankProperties info : infoArray)
 			{
 				if(info != null)
 				{
@@ -42,6 +47,7 @@ public final class PipeUtils
 				}
 			}
 		}
+		
 		return false;
 	}
 
@@ -52,15 +58,21 @@ public final class PipeUtils
 	 */
 	public static IFluidHandler[] getConnectedAcceptors(TileEntity tileEntity)
 	{
+		return getConnectedAcceptors(tileEntity.getPos(), tileEntity.getWorld());
+	}
+
+	public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world)
+	{
 		IFluidHandler[] acceptors = new IFluidHandler[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
-			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitterTile))
+			if(acceptor != null && CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite()))
 			{
-				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
+				IFluidHandler handler = CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite());
+				acceptors[orientation.ordinal()] = handler;
 			}
 		}
 
@@ -74,21 +86,19 @@ public final class PipeUtils
 	 * @param from - the TileEntity to output from
 	 * @return the amount of gas emitted
 	 */
-	public static int emit(List<ForgeDirection> sides, FluidStack stack, TileEntity from)
+	public static int emit(List<EnumFacing> sides, FluidStack stack, TileEntity from)
 	{
 		if(stack == null)
 		{
 			return 0;
 		}
 		
-		List<IFluidHandler> availableAcceptors = new ArrayList<IFluidHandler>();
+		List<IFluidHandler> availableAcceptors = new ArrayList<>();
 		IFluidHandler[] possibleAcceptors = getConnectedAcceptors(from);
-		
-		for(int i = 0; i < possibleAcceptors.length; i++)
+
+		for (IFluidHandler handler : possibleAcceptors)
 		{
-			IFluidHandler handler = possibleAcceptors[i];
-			
-			if(handler != null && handler.canFill(ForgeDirection.getOrientation(i).getOpposite(), stack.getFluid()))
+			if (handler != null && canFill(handler, stack))
 			{
 				availableAcceptors.add(handler);
 			}
@@ -115,11 +125,45 @@ public final class PipeUtils
 					remaining--;
 				}
 				
-				ForgeDirection dir = ForgeDirection.getOrientation(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
-				toSend -= acceptor.fill(dir, new FluidStack(stack.getFluid(), currentSending), true);
+				EnumFacing dir = EnumFacing.getFront(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
+				toSend -= acceptor.fill(copy(stack, currentSending), true);
 			}
 		}
 
 		return prevSending-toSend;
+	}
+	
+	public static FluidStack copy(FluidStack fluid, int amount)
+	{
+		FluidStack ret = fluid.copy();
+		ret.amount = amount;
+		
+		return ret;
+	}
+	
+	public static boolean canFill(IFluidHandler handler, FluidStack stack)
+	{
+		for(IFluidTankProperties props : handler.getTankProperties())
+		{
+			if(props.canFillFluidType(stack))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean canDrain(IFluidHandler handler, FluidStack stack)
+	{
+		for(IFluidTankProperties props : handler.getTankProperties())
+		{
+			if(props.canDrainFluidType(stack))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

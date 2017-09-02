@@ -2,162 +2,130 @@ package mekanism.client.render.tileentity;
 
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityBin;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderBin extends TileEntitySpecialRenderer
+public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 {
-	private final RenderBlocks renderBlocks = new RenderBlocks();
-	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
+	private final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
-		renderAModelAt((TileEntityBin)tileEntity, x, y, z, partialTick);
-	}
+		Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.facing);
 
-	@SuppressWarnings("incomplete-switch")
-	private void renderAModelAt(TileEntityBin tileEntity, double x, double y, double z, float partialTick)
-	{
-		if(tileEntity instanceof TileEntityBin)
-		{
-			String amount = "";
-			ItemStack itemStack = tileEntity.itemType;
-
-			if(itemStack != null)
-			{
-				amount = Integer.toString(tileEntity.clientAmount);
-			}
-
-			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
-
-			if(tileEntity.getWorldObj().getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isSideSolid(tileEntity.getWorldObj(), obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
-			{
-				return;
-			}
-
-			doLight(tileEntity.getWorldObj(), obj);
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
-
-			if(itemStack != null)
-			{
-				GL11.glPushMatrix();
-
-				switch(ForgeDirection.getOrientation(tileEntity.facing))
-				{
-					case NORTH:
-						GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
-						break;
-					case SOUTH:
-						GL11.glTranslated(x + 0.27, y + 0.83, z + 1.01);
-						GL11.glRotatef(180, 0, 1, 0);
-						break;
-					case WEST:
-						GL11.glTranslated(x - 0.01, y + 0.83, z + 0.27);
-						GL11.glRotatef(90, 0, 1, 0);
-						break;
-					case EAST:
-						GL11.glTranslated(x + 1.01, y + 0.83, z + 0.73);
-						GL11.glRotatef(-90, 0, 1, 0);
-						break;
-				}
-
-				float scale = 0.03125F;
-				float scaler = 0.9F;
-
-				GL11.glScalef(scale*scaler, scale*scaler, 0);
-				GL11.glRotatef(180, 0, 0, 1);
-
-				TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
-
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-				renderItem.renderItemAndEffectIntoGUI(func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
-				
-				GL11.glEnable(GL11.GL_LIGHTING);
-				GL11.glPopMatrix();
-			}
-
-			if(amount != "")
-			{
-				renderText(amount, ForgeDirection.getOrientation(tileEntity.facing), 0.02F, x, y - 0.31F, z);
-			}
-		}
-	}
-
-	private void doLight(World world, Coord4D obj)
-	{
-		if(world.getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isOpaqueCube())
+		if(obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite()))
 		{
 			return;
 		}
+		
+		render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
+	}
+	
+	public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z)
+	{
+		String amount = "";
+		
+		if(!itemType.isEmpty())
+		{
+			amount = Integer.toString(clientAmount);
+			
+			if(clientAmount == Integer.MAX_VALUE)
+			{
+				amount = LangUtils.localize("gui.infinite");
+			}
+			
+			GlStateManager.pushMatrix();
 
-		int brightness = world.getLightBrightnessForSkyBlocks(obj.xCoord, obj.yCoord, obj.zCoord, 0);
-		int lightX = brightness % 65536;
-		int lightY = brightness / 65536;
-		float scale = 0.6F;
+			switch(facing)
+			{
+				case NORTH:
+					GL11.glTranslated(x + 0.73, y + 0.83, z - 0.0001);
+					break;
+				case SOUTH:
+					GL11.glTranslated(x + 0.27, y + 0.83, z + 1.0001);
+					GlStateManager.rotate(180, 0, 1, 0);
+					break;
+				case WEST:
+					GL11.glTranslated(x - 0.0001, y + 0.83, z + 0.27);
+					GlStateManager.rotate(90, 0, 1, 0);
+					break;
+				case EAST:
+					GL11.glTranslated(x + 1.0001, y + 0.83, z + 0.73);
+					GlStateManager.rotate(-90, 0, 1, 0);
+					break;
+				default:
+					break;
+			}
 
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightX * scale, lightY * scale);
+			float scale = 0.03125F;
+			float scaler = 0.9F;
+
+			GlStateManager.scale(scale*scaler, scale*scaler, -0.0001F);
+			GlStateManager.rotate(180, 0, 0, 1);
+
+			renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
+			
+			GlStateManager.popMatrix();
+		}
+
+		if(text && !amount.equals(""))
+		{
+			renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
+		}
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private void renderText(String text, ForgeDirection side, float maxScale, double x, double y, double z)
+	private void renderText(String text, EnumFacing side, float maxScale, double x, double y, double z)
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 
-		GL11.glPolygonOffset(-10, -10);
-		GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+		GlStateManager.doPolygonOffset(-10, -10);
+		GlStateManager.enablePolygonOffset();
 
 		float displayWidth = 1 - (2 / 16);
 		float displayHeight = 1 - (2 / 16);
-		GL11.glTranslated(x, y, z);
+		GlStateManager.translate(x, y, z);
 
 		switch(side)
 		{
 			case SOUTH:
-				GL11.glTranslatef(0, 1, 0);
-				GL11.glRotatef(0, 0, 1, 0);
-				GL11.glRotatef(90, 1, 0, 0);
+				GlStateManager.translate(0, 1, 0);
+				GlStateManager.rotate(0, 0, 1, 0);
+				GlStateManager.rotate(90, 1, 0, 0);
 				break;
 			case NORTH:
-				GL11.glTranslatef(1, 1, 1);
-				GL11.glRotatef(180, 0, 1, 0);
-				GL11.glRotatef(90, 1, 0, 0);
+				GlStateManager.translate(1, 1, 1);
+				GlStateManager.rotate(180, 0, 1, 0);
+				GlStateManager.rotate(90, 1, 0, 0);
 				break;
 			case EAST:
-				GL11.glTranslatef(0, 1, 1);
-				GL11.glRotatef(90, 0, 1, 0);
-				GL11.glRotatef(90, 1, 0, 0);
+				GlStateManager.translate(0, 1, 1);
+				GlStateManager.rotate(90, 0, 1, 0);
+				GlStateManager.rotate(90, 1, 0, 0);
 				break;
 			case WEST:
-				GL11.glTranslatef(1, 1, 0);
-				GL11.glRotatef(-90, 0, 1, 0);
-				GL11.glRotatef(90, 1, 0, 0);
+				GlStateManager.translate(1, 1, 0);
+				GlStateManager.rotate(-90, 0, 1, 0);
+				GlStateManager.rotate(90, 1, 0, 0);
 				break;
 		}
 
-		GL11.glTranslatef(displayWidth / 2, 1F, displayHeight / 2);
-		GL11.glRotatef(-90, 1, 0, 0);
+		GlStateManager.translate(displayWidth / 2, 1F, displayHeight / 2);
+		GlStateManager.rotate(-90, 1, 0, 0);
 
-		FontRenderer fontRenderer = func_147498_b();//getFontRenderer();
+		FontRenderer fontRenderer = getFontRenderer();
 
 		int requiredWidth = Math.max(fontRenderer.getStringWidth(text), 1);
 		int lineHeight = fontRenderer.FONT_HEIGHT + 2;
@@ -171,8 +139,8 @@ public class RenderBin extends TileEntitySpecialRenderer
 			scale = Math.min(scale, maxScale);
 		}
 
-		GL11.glScalef(scale, -scale, scale);
-		GL11.glDepthMask(false);
+		GlStateManager.scale(scale, -scale, scale);
+		GlStateManager.depthMask(false);
 
 		int realHeight = (int)Math.floor(displayHeight / scale);
 		int realWidth = (int)Math.floor(displayWidth / scale);
@@ -180,12 +148,12 @@ public class RenderBin extends TileEntitySpecialRenderer
 		int offsetX = (realWidth - requiredWidth) / 2;
 		int offsetY = (realHeight - requiredHeight) / 2;
 
-		GL11.glDisable(GL11.GL_LIGHTING);
+		GlStateManager.disableLighting();
 		fontRenderer.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+		GlStateManager.enableLighting();
+		GlStateManager.depthMask(true);
+		GlStateManager.disablePolygonOffset();
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

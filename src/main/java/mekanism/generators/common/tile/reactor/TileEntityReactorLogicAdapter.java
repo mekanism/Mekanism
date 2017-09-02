@@ -4,20 +4,14 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.common.Mekanism;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IPeripheral
+public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
 {
 	public ReactorLogic logicType = ReactorLogic.DISABLED;
 	
@@ -36,20 +30,19 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			boolean outputting = checkMode();
 			
 			if(outputting != prevOutputting)
 			{
-				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+				world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
 			}
 			
 			prevOutputting = outputting;
 		}
 	}
 	
-	@Override
 	public boolean isFrame()
 	{
 		return false;
@@ -57,7 +50,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	
 	public boolean checkMode()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			return prevOutputting;
 		}
@@ -93,18 +86,20 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("logicType", logicType.ordinal());
 		nbtTags.setBoolean("activeCooled", activeCooled);
+		
+		return nbtTags;
 	}
 	
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 			
@@ -122,13 +117,16 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		super.handlePacketData(dataStream);
 		
-		logicType = ReactorLogic.values()[dataStream.readInt()];
-		activeCooled = dataStream.readBoolean();
-		prevOutputting = dataStream.readBoolean();
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			logicType = ReactorLogic.values()[dataStream.readInt()];
+			activeCooled = dataStream.readBoolean();
+			prevOutputting = dataStream.readBoolean();
+		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -138,39 +136,18 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		return data;
 	}
+
+    private static final String[] methods = new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing", "getIgnitionTemp", 
+    	"getEnergy", "getMaxEnergy", "getWater", "getSteam", "getFuel", "getDeuterium", "getTritium"};
 	
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
+	public String[] getMethods()
 	{
-		return getInventoryName();
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-	
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
-	
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
-	{
-		return new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel"};
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		if(getReactor() == null || !getReactor().isFormed())
 		{
@@ -194,9 +171,9 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			case 6:
 				return new Object[] {getReactor().getInjectionRate()};
 			case 7:
-				if(arguments[0] instanceof Integer)
+				if(arguments[0] instanceof Double)
 				{
-					getReactor().setInjectionRate((Integer)arguments[0]);
+					getReactor().setInjectionRate(((Double)arguments[0]).intValue());
 					return new Object[] {"Injection rate set."};
 				}
 				else {
@@ -205,23 +182,40 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			case 8:
 				return new Object[] {(getReactor().getDeuteriumTank().getStored() >= getReactor().getInjectionRate()/2) &&
 						(getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate()/2)};
+            case 9:
+                return new Object[] {getReactor().getPassiveGeneration(false, true)};
+            case 10:
+            	return new Object[] {getReactor().getIgnitionTemperature(activeCooled)};
+            case 11:
+            	return new Object[] {getReactor().getBufferedEnergy()};
+            case 12:
+            	return new Object[] {getReactor().getBufferSize()};
+            case 13:
+            	return new Object[] {getReactor().getWaterTank().getFluidAmount()};
+            case 14:
+            	return new Object[] {getReactor().getSteamTank().getFluidAmount()};
+            case 15:
+            	return new Object[] {getReactor().getFuelTank().getStored()};
+			case 16:
+				return new Object[] {getReactor().getDeuteriumTank().getStored()};
+			case 17:
+				return new Object[] {getReactor().getTritiumTank().getStored()};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
 	
-	public static enum ReactorLogic
+	public enum ReactorLogic
 	{
-		DISABLED("disabled", new ItemStack(Items.gunpowder)),
-		READY("ready", new ItemStack(Items.redstone)),
-		CAPACITY("capacity", new ItemStack(Items.redstone)),
-		DEPLETED("depleted", new ItemStack(Items.redstone));
+		DISABLED("disabled", new ItemStack(Items.GUNPOWDER)),
+		READY("ready", new ItemStack(Items.REDSTONE)),
+		CAPACITY("capacity", new ItemStack(Items.REDSTONE)),
+		DEPLETED("depleted", new ItemStack(Items.REDSTONE));
 		
 		private String name;
 		private ItemStack renderStack;
 		
-		private ReactorLogic(String s, ItemStack stack)
+		ReactorLogic(String s, ItemStack stack)
 		{
 			name = s;
 			renderStack = stack;

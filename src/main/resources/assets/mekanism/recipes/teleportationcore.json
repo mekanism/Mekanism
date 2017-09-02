@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "mekanism:teleportationcore"
+  },
+  "pattern": [
+    "LAL",
+    "GDG",
+    "LAL"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:atomicalloy"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "ore": "ingotGold",
+      "type": "forge:ore_dict"
+    },
+    "L": {
+      "item": "minecraft:dye",
+      "data": 4
+    }
+  }
+}

@@ -1,8 +1,8 @@
 package mekanism.common.recipe.machines;
 
+import mekanism.api.gas.Gas;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-
 import net.minecraft.item.ItemStack;
 
 public class InjectionRecipe extends AdvancedMachineRecipe<InjectionRecipe>
@@ -12,9 +12,9 @@ public class InjectionRecipe extends AdvancedMachineRecipe<InjectionRecipe>
 		super(input, output);
 	}
 
-	public InjectionRecipe(ItemStack input, String gasName, ItemStack output)
+	public InjectionRecipe(ItemStack input, Gas gas, ItemStack output)
 	{
-		super(input, gasName, output);
+		super(input, gas, output);
 	}
 
 	@Override

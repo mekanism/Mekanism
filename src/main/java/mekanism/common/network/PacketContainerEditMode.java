@@ -1,18 +1,16 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketContainerEditMode implements IMessageHandler<ContainerEditModeMessage, IMessage>
 {
@@ -20,12 +18,16 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
 	public IMessage onMessage(ContainerEditModeMessage message, MessageContext context) 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 		
-		if(tileEntity instanceof IFluidContainerManager)
-		{
-			((IFluidContainerManager)tileEntity).setContainerEditMode(message.value);
-		}
+		PacketHandler.handlePacket(() ->
+        {
+            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+            if(tileEntity instanceof IFluidContainerManager)
+            {
+                ((IFluidContainerManager)tileEntity).setContainerEditMode(message.value);
+            }
+        }, player);
 		
 		return null;
 	}
@@ -46,10 +48,7 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 	
 			dataStream.writeInt(value.ordinal());
 		}

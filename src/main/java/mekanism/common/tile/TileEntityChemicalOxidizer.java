@@ -4,72 +4,49 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.usage;
-import mekanism.api.Range4D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.Mekanism;
-import mekanism.common.Upgrade;
-import mekanism.common.base.ITankManager;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.base.ITankManager;
+import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.OxidationRecipe;
-import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData, ITankManager
+public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ITubeConnection, ISustainedData, ITankManager
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 
 	public static final int MAX_GAS = 10000;
 
-	public int updateDelay;
-
 	public int gasOutput = 256;
-
-	public boolean isActive;
-
-	public boolean clientActive;
-
-	public double prevEnergy;
-
-	public int operatingTicks = 0;
-
-	public int BASE_TICKS_REQUIRED = 100;
-
-	public int ticksRequired = BASE_TICKS_REQUIRED;
-
-	public final double BASE_ENERGY_USAGE = usage.rotaryCondensentratorUsage;
-
-	public double energyUsage = BASE_ENERGY_USAGE;
 
 	public OxidationRecipe cachedRecipe;
 
-	public RedstoneControl controlType = RedstoneControl.DISABLED;
-	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
-
 	public TileEntityChemicalOxidizer()
 	{
-		super("machine.oxidizer", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
-		inventory = new ItemStack[4];
+		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy, usage.rotaryCondensentratorUsage, 3, 100);
+		
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -77,42 +54,21 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && updateDelay > 0)
+		if(!world.isRemote)
 		{
-			updateDelay--;
-
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-			}
-		}
-
-		if(!worldObj.isRemote)
-		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				}
-			}
-
 			ChargeUtils.discharge(1, this);
 
-			if(inventory[2] != null && gasTank.getGas() != null)
+			if(!inventory.get(2).isEmpty() && gasTank.getGas() != null)
 			{
-				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
+				gasTank.draw(GasUtils.addGas(inventory.get(2), gasTank.getGas()), true);
 			}
 			
 			OxidationRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= energyUsage && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - energyUsage);
+				setEnergy(getEnergy() - energyPerTick);
 
 				if(operatingTicks < ticksRequired)
 				{
@@ -137,16 +93,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			if(gasTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
-
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), gasTank.getGas().getGas()))
-					{
-						gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
-					}
-				}
+				gasTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
 			}
 		}
 	}
@@ -167,38 +114,33 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 2)
 		{
-			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+			return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
 		}
 
 		return false;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(facing))
 		{
 			return new int[] {0};
 		}
-		else if(side == 0 || side == 1)
+		else if(side.getAxis() == Axis.Y)
 		{
 			return new int[] {1};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(facing))
 		{
 			return new int[] {2};
 		}
 
 		return InventoryUtils.EMPTY;
-	}
-
-	public double getScaledProgress()
-	{
-		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
 	public OxidationRecipe getRecipe()
@@ -215,7 +157,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 	public ItemStackInput getInput()
 	{
-		return new ItemStackInput(inventory[0]);
+		return new ItemStackInput(inventory.get(0));
 	}
 
 	public boolean canOperate(OxidationRecipe recipe)
@@ -235,29 +177,22 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-		operatingTicks = dataStream.readInt();
-
-		if(dataStream.readBoolean())
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			if(dataStream.readBoolean())
+			{
+				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				gasTank.setGas(null);
+			}
 		}
-		else {
-			gasTank.setGas(null);
-		}
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
-
-		data.add(isActive);
-		data.add(controlType.ordinal());
-		data.add(operatingTicks);
 
 		if(gasTank.getGas() != null)
 		{
@@ -277,21 +212,17 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		super.readFromNBT(nbtTags);
 
-		isActive = nbtTags.getBoolean("isActive");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-		operatingTicks = nbtTags.getInteger("operatingTicks");
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("controlType", controlType.ordinal());
-		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override
@@ -299,68 +230,28 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		return i != 0 && i != 1;
 	}
-	
-	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
-
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
 
 	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-
-	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return side == MekanismUtils.getRight(facing);
 	}
-
+	
 	@Override
-	public RedstoneControl getControlType()
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{
-		return controlType;
+		return capability == Capabilities.TUBE_CONNECTION_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public void setControlType(RedstoneControl type)
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
-		controlType = type;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
-
-	@Override
-	public TileComponentUpgrade getComponent() 
-	{
-		return upgradeComponent;
+		if(capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 
 	@Override
@@ -368,31 +259,14 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		if(gasTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("gasTank", gasTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		gasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("gasTank")));
-	}
-
-	@Override
-	public void recalculateUpgradables(Upgrade upgrade)
-	{
-		super.recalculateUpgradables(upgrade);
-
-		switch(upgrade)
-		{
-			case SPEED:
-				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-			case ENERGY:
-				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-			default:
-				break;
-		}
+		gasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
 	}
 	
 	@Override

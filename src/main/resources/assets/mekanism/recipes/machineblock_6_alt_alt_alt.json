@@ -1,0 +1,43 @@
+{
+  "result": {
+    "nbt": {
+      "recipeType": 3
+    },
+    "item": "mekanism:machineblock",
+    "data": 6,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "ECE",
+    "oOo",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Factory"
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "#CIRCUITADVANCED"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    },
+    "o": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "nbt": {
+        "recipeType": 3
+      },
+      "item": "mekanism:machineblock",
+      "data": 5,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

@@ -1,13 +1,12 @@
 package mekanism.client.gui.element;
 
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiPowerBar extends GuiElement
@@ -19,10 +18,10 @@ public class GuiPowerBar extends GuiElement
 	private int height = 56;
 	private int innerOffsetY = 2;
 
-	private TileEntityElectricBlock tileEntity;
+	private IStrictEnergyStorage tileEntity;
 	private IPowerInfoHandler handler;
 
-	public GuiPowerBar(IGuiWrapper gui, TileEntityElectricBlock tile, ResourceLocation def, int x, int y)
+	public GuiPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
 		
@@ -32,7 +31,7 @@ public class GuiPowerBar extends GuiElement
 			@Override
 			public String getTooltip()
 			{
-				return MekanismUtils.getEnergyDisplay(tileEntity.getEnergy());
+				return MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy());
 			}
 			
 			@Override

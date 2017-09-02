@@ -1,55 +1,63 @@
 package mekanism.generators.common.block;
 
-import java.util.List;
 import java.util.Random;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.util.LangUtils;
+import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsBlocks;
+import mekanism.generators.common.GeneratorsItems;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
-import mekanism.generators.common.tile.TileEntityBioGenerator;
-import mekanism.generators.common.tile.TileEntityGasGenerator;
-import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlock;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
-import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
-
 
 /**
  * Block class for handling multiple generator block IDs.
@@ -58,50 +66,114 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
- * 6: Wind Turbine
+ * 6: Wind Generator
+ * 7: Turbine Rotor
+ * 8: Rotational Complex
+ * 9: Electromagnetic Coil
+ * 10: Turbine Casing
+ * 11: Turbine Valve
+ * 12: Turbine Vent
+ * 13: Saturating Condenser
  * @author AidanBrady
  *
  */
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockGenerator extends BlockContainer implements ISpecialBounds, IPeripheralProvider
+public abstract class BlockGenerator extends BlockContainer
 {
 	public Random machineRand = new Random();
+	
+	private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
+	private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
 
 	public BlockGenerator()
 	{
-		super(Material.iron);
+		super(Material.IRON);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
+	
+	public static BlockGenerator getGeneratorBlock(GeneratorBlock block)
+	{
+		return new BlockGenerator()
+		{
+			@Override
+			public GeneratorBlock getGeneratorBlock()
+			{
+				return block;
+			}
+		};
+	}
+
+	public abstract GeneratorBlock getGeneratorBlock();
+	
+	@Override
+	public BlockStateContainer createBlockState()
+	{
+		return new BlockStateGenerator(this, getTypeProperty());
+	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister register) {}
+	public IBlockState getStateFromMeta(int meta)
+	{
+		GeneratorType type = GeneratorType.get(getGeneratorBlock(), meta & 0xF);
+
+		return getDefaultState().withProperty(getTypeProperty(), type);
+	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public int getMetaFromState(IBlockState state)
+	{
+		GeneratorType type = state.getValue(getTypeProperty());
+		return type.meta;
+	}
+	
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
+		
+		if(tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock)tile).facing != null)
+		{
+			state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).facing);
+		}
+		
+		if(tile instanceof IActiveState)
+		{
+			state = state.withProperty(BlockStateGenerator.activeProperty, ((IActiveState)tile).getActive());
+		}
+		
+		return state;
+	}
+
+	@Override
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
+			
+			if(tileEntity instanceof IMultiblock)
+			{
+				((IMultiblock)tileEntity).doUpdate();
+			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
 			}
 		}
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
-		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int side = MathHelper.floor((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(entityliving.rotationPitch);
 		int change = 3;
 
-		if(!GeneratorType.getFromMetadata(world.getBlockMetadata(x, y, z)).hasModel && tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
+		if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
 		{
 			if(height >= 65)
 			{
@@ -125,26 +197,31 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		}
 
 		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
 			((IBoundingBlock)tileEntity).onPlace();
 		}
+		
+		if(!world.isRemote && tileEntity instanceof IMultiblock)
+		{
+			((IMultiblock)tileEntity).doUpdate();
+		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if(general.enableAmbientLighting)
+		if(client.enableAmbientLighting)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 
 			if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return general.ambientLightingLevel;
+					return client.ambientLightingLevel;
 				}
 			}
 		}
@@ -154,92 +231,101 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return state.getBlock().getMetaFromState(state);
+	}
+	
+	@Override
+	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item i, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
 	{
-		list.add(new ItemStack(i, 1, 0));
-		list.add(new ItemStack(i, 1, 1));
-		list.add(new ItemStack(i, 1, 3));
-		list.add(new ItemStack(i, 1, 4));
-		list.add(new ItemStack(i, 1, 5));
-		list.add(new ItemStack(i, 1, 6));
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random random)
-	{
-		int metadata = world.getBlockMetadata(x, y, z);
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
-		if(MekanismUtils.isActive(world, x, y, z))
+		for(GeneratorType type : GeneratorType.values())
 		{
-			float xRandom = (float)x + 0.5F;
-			float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-			float zRandom = (float)z + 0.5F;
+			if(type.isEnabled())
+			{
+				list.add(new ItemStack(this, 1, type.meta));
+			}
+		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random)
+	{
+		GeneratorType type = GeneratorType.get(state.getBlock(), state.getBlock().getMetaFromState(state));
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		
+		if(MekanismUtils.isActive(world, pos))
+		{
+			float xRandom = (float)pos.getX() + 0.5F;
+			float yRandom = (float)pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+			float zRandom = (float)pos.getZ() + 0.5F;
 			float iRandom = 0.52F;
 			float jRandom = random.nextFloat() * 0.6F - 0.3F;
 
-			if(tileEntity.facing == 4)
+			if(tileEntity.facing == EnumFacing.WEST)
 			{
-				switch(GeneratorType.getFromMetadata(metadata))
+				switch(type)
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom + iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle("smoke", x+.25, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.25, pos.getY()+.2, pos.getZ()+.5, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
 				}
 			}
-			else if(tileEntity.facing == 5)
+			else if(tileEntity.facing == EnumFacing.EAST)
 			{
-				switch(GeneratorType.getFromMetadata(metadata))
+				switch(type)
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom - iRandom), (double)yRandom, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom + iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom + iRandom), (double)yRandom + 0.5F, (double)(zRandom - jRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle("smoke", x+.75, y+.2, z+.5, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.75, pos.getY()+.2, pos.getZ()+.5, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
 				}
 			}
-			else if(tileEntity.facing == 2)
+			else if(tileEntity.facing == EnumFacing.NORTH)
 			{
-				switch(GeneratorType.getFromMetadata(metadata))
+				switch(type)
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle("smoke", x+.5, y+.2, z+.25, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.5, pos.getY()+.2, pos.getZ()+.25, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
 				}
 			}
-			else if(tileEntity.facing == 3)
+			else if(tileEntity.facing == EnumFacing.SOUTH)
 			{
-				switch(GeneratorType.getFromMetadata(metadata))
+				switch(type)
 				{
 					case HEAT_GENERATOR:
-						world.spawnParticle("smoke", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-						world.spawnParticle("flame", (double)(xRandom - jRandom), (double)yRandom, (double)(zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.FLAME, (double)(xRandom - jRandom), (double)yRandom + 0.5F, (double)(zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 						break;
 					case BIO_GENERATOR:
-						world.spawnParticle("smoke", x+.5, y+.2, z+.75, 0.0D, 0.0D, 0.0D);
+						world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX()+.5, pos.getY()+.2, pos.getZ()+.75, 0.0D, 0.0D, 0.0D);
 						break;
 					default:
 						break;
@@ -249,109 +335,159 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public boolean canPlaceBlockAt(World world, int x, int y, int z)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
-		//This method doesn't actually seem to be used in MC code...
-		if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		
+		if(!world.isRemote && tileEntity instanceof TileEntityTurbineRotor)
 		{
-			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
-
-			boolean nonAir = false;
-			nonAir |= world.isAirBlock(x, y, z);
-			nonAir |= world.isAirBlock(x, y+1, x);
-
-			for(int xPos=-1;xPos<=1;xPos++)
+			int amount = ((TileEntityTurbineRotor)tileEntity).getHousedBlades();
+			
+			if(amount > 0)
 			{
-				for(int zPos=-1;zPos<=1;zPos++)
-				{
-					nonAir |= world.isAirBlock(x+xPos, y+2, z+zPos);
-				}
+				float motion = 0.7F;
+				double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+				double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+				double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+				EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
+
+				world.spawnEntity(entityItem);
 			}
-
-			return (!nonAir) && canPlace;
 		}
-		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_TURBINE.meta)
-		{
-			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
-
-			boolean nonAir = false;
-
-			for(int yPos = y+1; yPos <= y+4; yPos++)
-			{
-				nonAir |= world.isAirBlock(x, yPos, z);
-			}
-
-			return (!nonAir) && canPlace;
-		}
-
-		return super.canPlaceBlockAt(world, x, y, z);
-	}
-
-	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
-	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
 			((IBoundingBlock)tileEntity).onBreak();
 		}
 
-		super.breakBlock(world, x, y, z, block, meta);
+		super.breakBlock(world, pos, state);
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-
 		if(world.isRemote)
 		{
 			return true;
 		}
 
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
-		int metadata = world.getBlockMetadata(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		int metadata = state.getBlock().getMetaFromState(state);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		if(!stack.isEmpty())
 		{
-			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+			Item tool = stack.getItem();
 
-			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
-				if(entityplayer.isSneaking())
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(state, world, pos, false);
+						
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
+					}
+	
+					int change = tileEntity.facing.rotateY().ordinal();
+	
+					tileEntity.setFacing((short)change);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
-
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
-
-		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(GeneratorsBlocks.Generator, 1, 2)))
+		
+		if(metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta || metadata == GeneratorType.TURBINE_VENT.meta)
 		{
-			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != side)
-			{
-				return false;
-			}
+			return ((IMultiblock)tileEntity).onActivate(entityplayer, hand, stack);
 		}
+		
+		if(metadata == GeneratorType.TURBINE_ROTOR.meta)
+		{
+			TileEntityTurbineRotor rod = (TileEntityTurbineRotor)tileEntity;
+			
+			if(!entityplayer.isSneaking())
+			{
+				if(!stack.isEmpty() && stack.getItem() == GeneratorsItems.TurbineBlade)
+				{
+					if(!world.isRemote && rod.editBlade(true))
+					{
+						if(!entityplayer.capabilities.isCreativeMode)
+						{
+							stack.shrink(1);
+							
+							if(stack.getCount() == 0)
+							{
+								entityplayer.setHeldItem(hand, ItemStack.EMPTY);
+							}
+						}
+					}
+					
+					return true;
+				}
+			}
+			else {
+				if(!world.isRemote)
+				{
+					if(stack.isEmpty())
+					{
+						if(rod.editBlade(false))
+						{
+							if(!entityplayer.capabilities.isCreativeMode)
+							{
+								entityplayer.setHeldItem(hand, new ItemStack(GeneratorsItems.TurbineBlade));
+								entityplayer.inventory.markDirty();
+							}
+						}
+					}
+					else if(stack.getItem() == GeneratorsItems.TurbineBlade)
+					{
+						if(stack.getCount() < stack.getMaxStackSize())
+						{
+							if(rod.editBlade(false))
+							{
+								if(!entityplayer.capabilities.isCreativeMode)
+								{
+									stack.grow(1);
+									entityplayer.inventory.markDirty();
+								}
+							}
+						}
+					}
+				}
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
+		int guiId = GeneratorType.get(getGeneratorBlock(), metadata).guiId;
 
-		if(tileEntity != null)
+		if(guiId != -1 && tileEntity != null)
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(MekanismGenerators.instance, GeneratorType.getFromMetadata(metadata).guiId, world, x, y, z);
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				{
+					entityplayer.openGui(MekanismGenerators.instance, guiId, world, pos.getX(), pos.getY(), pos.getZ());
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
@@ -366,111 +502,128 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata)
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		GeneratorType type = GeneratorType.getFromMetadata(metadata);
-
-		if(type != null)
+		int metadata = state.getBlock().getMetaFromState(state);
+		
+		if(GeneratorType.get(getGeneratorBlock(), metadata) == null)
 		{
-			return type.create();
+			return null;
 		}
 
-		return null;
+		return GeneratorType.get(getGeneratorBlock(), metadata).create();
 	}
 
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
 		return null;
 	}
+	
+	@Override
+	public EnumBlockRenderType getRenderType(IBlockState state)
+	{
+		return EnumBlockRenderType.MODEL;
+	}
 
 	@Override
-	public boolean renderAsNormalBlock()
+	public boolean isOpaqueCube(IBlockState state)
+	{
+		return false;
+	}
+	
+	@Override
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean isOpaqueCube()
+	public BlockRenderLayer getBlockLayer()
 	{
-		return false;
+		return BlockRenderLayer.CUTOUT;
 	}
-
-	@Override
-	public int getRenderType()
-	{
-		return MekanismGenerators.proxy.GENERATOR_RENDER_ID;
-	}
-
+	
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return null;
 	}
-
-	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
-	{
-		int metadata = world.getBlockMetadata(x, y, z);
-
-		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
-		{
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
-		}
-		else {
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-		}
-	}
 	
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		GeneratorType type = GeneratorType.get(state);
 
-		if(!world.isRemote)
+		switch(type)
 		{
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onAdded();
-			}
+			case SOLAR_GENERATOR:
+				return SOLAR_BOUNDS;
+			case TURBINE_ROTOR:
+				return ROTOR_BOUNDS;
+			default:
+				return super.getBoundingBox(state, world, pos);
 		}
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
-		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
+		if(itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock))
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		
 		if(tileEntity == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
+		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
 		}
 
-		IEnergizedItem electricItem = (IEnergizedItem)itemStack.getItem();
-		electricItem.setEnergy(itemStack, tileEntity.electricityStored);
+		if(tileEntity instanceof TileEntityElectricBlock)
+		{
+			IEnergizedItem electricItem = (IEnergizedItem)itemStack.getItem();
+			electricItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
+		}
 
-		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-		inventory.setInventory(tileEntity.getInventory(), itemStack);
+		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).handleInventory())
+		{
+			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
+			inventory.setInventory(((TileEntityContainerBlock)tileEntity).getInventory(), itemStack);
+		}
 		
 		if(tileEntity instanceof ISustainedData)
 		{
@@ -491,11 +644,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		return itemStack;
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -504,20 +657,23 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		GeneratorType type = GeneratorType.get(getGeneratorBlock(), state.getBlock().getMetaFromState(state));
 
-		if(metadata != GeneratorType.SOLAR_GENERATOR.meta && metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta && metadata != GeneratorType.WIND_TURBINE.meta)
+		if(type != GeneratorType.SOLAR_GENERATOR && 
+				type != GeneratorType.ADVANCED_SOLAR_GENERATOR && 
+				type != GeneratorType.WIND_GENERATOR &&
+				type != GeneratorType.TURBINE_ROTOR)
 		{
 			return true;
 		}
@@ -525,99 +681,17 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		return false;
 	}
 
-	public static enum GeneratorType
-	{
-		HEAT_GENERATOR(0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true),
-		SOLAR_GENERATOR(1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true),
-		GAS_GENERATOR(3, "GasGenerator", 3, general.FROM_H2*100, TileEntityGasGenerator.class, true),
-		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
-		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
-		WIND_TURBINE(6, "WindTurbine", 5, 200000, TileEntityWindTurbine.class, true);
-
-		public int meta;
-		public String name;
-		public int guiId;
-		public double maxEnergy;
-		public Class<? extends TileEntity> tileEntityClass;
-		public boolean hasModel;
-
-		private GeneratorType(int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean model)
-		{
-			meta = i;
-			name = s;
-			guiId = j;
-			maxEnergy = k;
-			tileEntityClass = tileClass;
-			hasModel = model;
-		}
-
-		public static GeneratorType getFromMetadata(int meta)
-		{
-			for(GeneratorType type : values())
-			{
-				if(type.meta == meta)
-					return type;
-			}
-			return null;
-		}
-
-		public TileEntity create()
-		{
-			try {
-				return tileEntityClass.newInstance();
-			} catch(Exception e) {
-				Mekanism.logger.error("Unable to indirectly create tile entity.");
-				e.printStackTrace();
-				return null;
-			}
-		}
-		
-		public String getDescription()
-		{
-			return LangUtils.localize("tooltip." + name);
-		}
-		
-		public ItemStack getStack()
-		{
-			return new ItemStack(GeneratorsBlocks.Generator, 1, meta);
-		}
-
-		@Override
-		public String toString()
-		{
-			return Integer.toString(meta);
-		}
-	}
-
 	@Override
-	public void setRenderBounds(Block block, int metadata)
+	public EnumFacing[] getValidRotations(World world, BlockPos pos)
 	{
-		if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
-		{
-			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.65F, 1.0F);
-		}
-		else {
-			block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-		}
-	}
-
-	@Override
-	public boolean doDefaultBoundSetting(int metadata)
-	{
-		return true;
-	}
-
-	@Override
-	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
-	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		ForgeDirection[] valid = new ForgeDirection[6];
+		TileEntity tile = world.getTileEntity(pos);
+		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.VALUES)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{
@@ -630,9 +704,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
@@ -648,17 +722,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		return false;
 	}
 
-	@Override
-	@Method(modid = "ComputerCraft")
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
+	public PropertyEnum<GeneratorType> getTypeProperty()
 	{
-		TileEntity te = world.getTileEntity(x, y, z);
-
-		if(te != null && te instanceof IPeripheral)
-		{
-			return (IPeripheral)te;
-		}
-
-		return null;
+		return getGeneratorBlock().getProperty();
 	}
 }

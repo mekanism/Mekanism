@@ -1,0 +1,33 @@
+{
+  "result": {
+    "nbt": {},
+    "item": "mekanism:scubatank",
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    " C ",
+    "AGA",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

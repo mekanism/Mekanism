@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:ingot",
+    "data": 0,
+    "count": 9
+  },
+  "pattern": [
+    "*"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "item": "mekanism:basicblock",
+      "data": 2
+    }
+  }
+}

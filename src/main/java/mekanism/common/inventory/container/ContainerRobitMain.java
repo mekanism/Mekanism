@@ -2,7 +2,6 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -18,7 +17,7 @@ public class ContainerRobitMain extends Container
 		robit = entity;
 		addSlotToContainer(new SlotDischarge(entity, 27, 153, 17));
 
-		robit.openInventory();
+		robit.openInventory(inventory.player);
 
 		int slotY;
 
@@ -40,18 +39,18 @@ public class ContainerRobitMain extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		robit.closeInventory();
+		robit.closeInventory(entityplayer);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return true;
+		return !robit.isDead;
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

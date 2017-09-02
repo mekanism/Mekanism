@@ -1,24 +1,23 @@
 package mekanism.client.voice;
 
-import mekanism.client.MekanismKeyHandler;
-import mekanism.common.Mekanism;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 
+import mekanism.client.MekanismKeyHandler;
+import mekanism.common.Mekanism;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 @SideOnly(Side.CLIENT)
 public class VoiceInput extends Thread
 {
-	public VoiceClient voiceClient;
+	private VoiceClient voiceClient;
 
-	public DataLine.Info microphone;
+	private DataLine.Info microphone;
 
-	public TargetDataLine targetLine;
+	private TargetDataLine targetLine;
 
 	public VoiceInput(VoiceClient client)
 	{
@@ -33,6 +32,11 @@ public class VoiceInput extends Thread
 	public void run()
 	{
 		try {
+			if(!AudioSystem.isLineSupported(microphone))
+			{
+				Mekanism.logger.info("No audio system available.");
+				return;
+			}
 			targetLine = ((TargetDataLine)AudioSystem.getLine(microphone));
 			targetLine.open(voiceClient.format, 2200);
 			targetLine.start();
@@ -42,11 +46,11 @@ public class VoiceInput extends Thread
 
 			while(voiceClient.running)
 			{
-				if(MekanismKeyHandler.voiceKey.getIsKeyPressed())
+				if(MekanismKeyHandler.voiceKey.isPressed())
 				{
 					targetLine.flush();
 
-					while(voiceClient.running && MekanismKeyHandler.voiceKey.getIsKeyPressed())
+					while(voiceClient.running && MekanismKeyHandler.voiceKey.isPressed())
 					{
 						try {
 							int availableBytes = audioInput.available();
@@ -83,14 +87,16 @@ public class VoiceInput extends Thread
 
 			audioInput.close();
 		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while running client input thread.");
-			e.printStackTrace();
+			Mekanism.logger.error("VoiceServer: Error while running client input thread.", e);
 		}
 	}
 
 	public void close()
 	{
-		targetLine.flush();
-		targetLine.close();
+		if(targetLine != null)
+		{
+			targetLine.flush();
+			targetLine.close();
+		}
 	}
 }

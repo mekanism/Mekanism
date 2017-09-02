@@ -3,51 +3,68 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.EnumHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 {
-	public int MAX_GAS = 24000;
 	public int TRANSFER_RATE = 16;
 
 	public ItemJetpack()
 	{
-		super(EnumHelper.addArmorMaterial("JETPACK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
+		super(EnumHelper.addArmorMaterial("JETPACK", "jetpack", 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), 0, EntityEquipmentSlot.CHEST);
 		setCreativeTab(Mekanism.tabMekanism);
-		setMaxDamage(100);
-		setNoRepair();
 	}
+	
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return true;
+	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
+	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 
@@ -63,20 +80,20 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	}
 
 	@Override
-	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
 	{
-		return armorType == 1;
+		return armorType == EntityEquipmentSlot.CHEST;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		return "mekanism:render/NullArmor.png";
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 
@@ -105,7 +122,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
-		return MAX_GAS;
+		return general.maxJetpackGas;
 	}
 
 	@Override
@@ -122,7 +139,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 			return 0;
 		}
 
-		if(stack.getGas() != GasRegistry.getGas("hydrogen"))
+		if(stack.getGas() != MekanismFluids.Hydrogen)
 		{
 			return 0;
 		}
@@ -147,7 +164,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("hydrogen");
+		return type == MekanismFluids.Hydrogen;
 	}
 
 	@Override
@@ -156,72 +173,34 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		return false;
 	}
 
-	@Override
-	public GasStack getGas(ItemStack itemstack)
-	{
-		if(itemstack.stackTagCompound == null)
-		{
-			return null;
-		}
-
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-
-		if(stored == null)
-		{
-			itemstack.setItemDamage(100);
-		}
-		else {
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-		}
-
-		return stored;
-	}
-	
-	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
-	{
-		return false;
-	}
-
 	public JetpackMode getMode(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null)
-		{
-			return JetpackMode.NORMAL;
-		}
-
-		return JetpackMode.values()[stack.stackTagCompound.getInteger("mode")];
+		return JetpackMode.values()[ItemDataUtils.getInt(stack, "mode")];
 	}
 
 	public void setMode(ItemStack stack, JetpackMode mode)
 	{
-		if(stack.stackTagCompound == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
+		ItemDataUtils.setInt(stack, "mode", mode.ordinal());
+	}
 
-		stack.stackTagCompound.setInteger("mode", mode.ordinal());
+	@Override
+	public GasStack getGas(ItemStack itemstack)
+	{
+		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
 	}
 
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.setItemDamage(100);
-			itemstack.stackTagCompound.removeTag("stored");
+			ItemDataUtils.removeData(itemstack, "stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 
@@ -229,24 +208,23 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		return empty;
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
+		if(!isInCreativeTab(tabs)) return;
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("hydrogen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(MekanismFluids.Hydrogen, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 
-	public static enum JetpackMode
+	public enum JetpackMode
 	{
 		NORMAL("tooltip.jetpack.regular", EnumColor.DARK_GREEN),
 		HOVER("tooltip.jetpack.hover", EnumColor.DARK_AQUA),
@@ -255,7 +233,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		private String unlocalized;
 		private EnumColor color;
 
-		private JetpackMode(String s, EnumColor c)
+		JetpackMode(String s, EnumColor c)
 		{
 			unlocalized = s;
 			color = c;

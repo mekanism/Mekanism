@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/osmium_compressor/OsmiumCompressorRight",
+      "front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFront",
+      "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorRight",
+      "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeft",
+      "south": "mekanism:blocks/osmium_compressor/OsmiumCompressorBack",
+      "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTop",
+      "down": "mekanism:blocks/osmium_compressor/OsmiumCompressorBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/osmium_compressor/OsmiumCompressorFrontOn",
+          "west": "mekanism:blocks/osmium_compressor/OsmiumCompressorRightOn",
+          "east": "mekanism:blocks/osmium_compressor/OsmiumCompressorLeftOn",
+          "south": "mekanism:blocks/osmium_compressor/OsmiumCompressorBackOn",
+          "up": "mekanism:blocks/osmium_compressor/OsmiumCompressorTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

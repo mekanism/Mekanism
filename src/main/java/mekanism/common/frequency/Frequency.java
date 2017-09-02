@@ -5,26 +5,33 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nullable;
 
 public class Frequency
 {
+	public static final String TELEPORTER = "Teleporter";
+	
 	public String name;
-	public String owner;
+	public UUID ownerUUID;
+	public String clientOwner;
 	
 	public boolean valid = true;
 	
 	public boolean publicFreq;
 	
-	public Set<Coord4D> activeCoords = new HashSet<Coord4D>();
+	public Set<Coord4D> activeCoords = new HashSet<>();
 	
-	public Frequency(String n, String o)
+	public Frequency(String n, UUID uuid)
 	{
 		name = n;
-		owner = o;
+		ownerUUID = uuid;
 	}
 	
 	public Frequency(NBTTagCompound nbtTags)
@@ -98,28 +105,30 @@ public class Frequency
 	public void write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setString("name", name);
-		nbtTags.setString("owner", owner);
+		nbtTags.setString("ownerUUID", ownerUUID.toString());
 		nbtTags.setBoolean("publicFreq", publicFreq);
 	}
 
 	protected void read(NBTTagCompound nbtTags)
 	{
 		name = nbtTags.getString("name");
-		owner = nbtTags.getString("owner");
+		ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
 		publicFreq = nbtTags.getBoolean("publicFreq");
 	}
 
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(name);
-		data.add(owner);
+		data.add(ownerUUID.toString());
+		data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
 		data.add(publicFreq);
 	}
 
 	protected void read(ByteBuf dataStream)
 	{
 		name = PacketHandler.readString(dataStream);
-		owner = PacketHandler.readString(dataStream);
+		ownerUUID = UUID.fromString(PacketHandler.readString(dataStream));
+		clientOwner = PacketHandler.readString(dataStream);
 		publicFreq = dataStream.readBoolean();
 	}
 	
@@ -128,7 +137,7 @@ public class Frequency
 	{
 		int code = 1;
 		code = 31 * code + name.hashCode();
-		code = 31 * code + owner.hashCode();
+		code = 31 * code + ownerUUID.hashCode();
 		code = 31 * code + (publicFreq ? 1 : 0);
 		return code;
 	}
@@ -137,6 +146,42 @@ public class Frequency
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Frequency && ((Frequency)obj).name.equals(name) 
-				&& ((Frequency)obj).owner.equals(owner) && ((Frequency)obj).publicFreq == publicFreq;
+				&& ((Frequency)obj).ownerUUID.equals(ownerUUID) && ((Frequency)obj).publicFreq == publicFreq;
+	}
+	
+	public Identity getIdentity()
+	{
+		return new Identity(name, publicFreq);
+	}
+
+	public static class Identity 
+	{
+		public String name;
+		public boolean publicFreq;
+
+		private Identity(String name, boolean publicFreq)
+		{
+			this.name = name;
+			this.publicFreq = publicFreq;
+		}
+
+		@Nullable
+		public static Identity load(NBTTagCompound data)
+		{
+			if(!data.getString("name").isEmpty())
+			{
+				return new Identity(data.getString("name"), data.getBoolean("publicFreq"));
+			}
+			
+			return null;
+		}
+
+		public NBTTagCompound serialize()
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("name", name);
+			tag.setBoolean("publicFreq", publicFreq);
+			return tag;
+		}
 	}
 }

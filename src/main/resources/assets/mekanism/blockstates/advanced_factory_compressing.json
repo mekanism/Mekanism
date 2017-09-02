@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryRight",
+      "front": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryFront",
+      "south": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryBack",
+      "west": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryRight",
+      "east": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryLeft",
+      "up": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryTop",
+      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryFrontOn",
+          "south": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryBackOn",
+          "west": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryRightOn",
+          "east": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryLeftOn",
+          "up": "mekanism:blocks/factory/advanced/compressing/AdvancedCompressingFactoryTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

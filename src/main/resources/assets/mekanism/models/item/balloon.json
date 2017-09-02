@@ -1,0 +1,24 @@
+{
+    "parent": "mekanism:entity/balloon",
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [ 50, 0, -10 ],
+            "translation": [ 0, -1, 2 ],
+            "scale": [ 1.8, 1.8, 1.8 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 50, 0, -10 ],
+            "translation": [ 0, -1, 2 ],
+            "scale": [ 1.8, 1.8, 1.8 ]
+        },
+        "firstperson_righthand": {
+            "translation": [ 0, -6, 0 ],
+            "scale": [ 1.8, 1.8, 1.8 ]
+        },
+        "gui": {
+            "translation": [ 0, -8, 0 ],
+            "scale": [ 0.9375, 0.9375, 0.9375 ],
+            "rotation": [ 30, -45, 0 ]
+        }
+    }
+}

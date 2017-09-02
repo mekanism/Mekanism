@@ -1,48 +1,40 @@
 package mekanism.common.item;
 
-import java.util.List;
-
 import mekanism.common.Mekanism;
 import mekanism.common.Resource;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
+import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.NonNullList;
 
-public class ItemDirtyDust extends ItemMekanism
+public class ItemDirtyDust extends ItemMekanism implements IMetaItem
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public ItemDirtyDust()
 	{
 		super();
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
+	
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(int i = 0; i < Resource.values().length; i++)
-		{
-			icons[i] = register.registerIcon("mekanism:Dirty" + Resource.values()[i].getName() + "Dust");
-		}
+		return "Dirty" + Resource.values()[meta].getName() + "Dust";
+	}
+	
+	@Override
+	public int getVariants()
+	{
+		return Resource.values().length;
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
-		return icons[meta];
-	}
-
-	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
-	{
+		if(!isInCreativeTab(tabs)) return;
 		for(int counter = 0; counter < Resource.values().length; counter++)
 		{
-			itemList.add(new ItemStack(item, 1, counter));
+			itemList.add(new ItemStack(this, 1, counter));
 		}
 	}
 

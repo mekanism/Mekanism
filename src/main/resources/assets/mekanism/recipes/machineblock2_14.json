@@ -1,0 +1,36 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 14
+  },
+  "pattern": [
+    "SSS",
+    "SED",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "LaserAmplifier"
+    }
+  ],
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "ore": "gemDiamond",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:energycube",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

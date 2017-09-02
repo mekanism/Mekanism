@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidianhelmet"
+  },
+  "pattern": [
+    "***",
+    "* *"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotRefinedObsidian",
+      "type": "forge:ore_dict"
+    }
+  }
+}

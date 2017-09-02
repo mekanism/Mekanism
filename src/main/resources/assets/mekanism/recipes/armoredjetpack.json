@@ -1,0 +1,32 @@
+{
+  "result": {
+    "nbt": {},
+    "item": "mekanism:armoredjetpack",
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "D D",
+    "BSB",
+    " J "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "ore": "ingotBronze",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "blockSteel",
+      "type": "forge:ore_dict"
+    },
+    "D": {
+      "ore": "dustDiamond",
+      "type": "forge:ore_dict"
+    },
+    "J": {
+      "nbt": {},
+      "item": "mekanism:jetpack",
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

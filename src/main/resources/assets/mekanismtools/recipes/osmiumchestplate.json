@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanismtools:osmiumchestplate"
+  },
+  "pattern": [
+    "* *",
+    "***",
+    "***"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 /**
  * This file is part of the public ComputerCraft API - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2014. This API may be redistributed unmodified and in full only.
+ * Copyright Daniel Ratcliffe, 2011-2016. This API may be redistributed unmodified and in full only.
  * For help using the API, and posting your mods, visit the forums at computercraft.info.
  */
 
@@ -8,6 +8,8 @@ package dan200.computercraft.api.filesystem;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
+import net.minecraft.world.World;
 
 /**
  * Represents a part of a virtual filesystem that can be mounted onto a computercraft using IComputerAccess.mount() or IComputerAccess.mountWritable(), that can also be written to.

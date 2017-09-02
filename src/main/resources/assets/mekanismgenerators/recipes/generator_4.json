@@ -1,0 +1,37 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 4
+  },
+  "pattern": [
+    "RER",
+    "BCB",
+    "NEN"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "BioGenerator"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    },
+    "B": {
+      "item": "mekanism:biofuel"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "E": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "N": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

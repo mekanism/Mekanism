@@ -4,7 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
+
 
 public class GuiSlot extends GuiElement
 {
@@ -90,7 +90,7 @@ public class GuiSlot extends GuiElement
 		public int textureX;
 		public int textureY;
 
-		private SlotType(int w, int h, int x, int y)
+		SlotType(int w, int h, int x, int y)
 		{
 			width = w;
 			height = h;
@@ -115,7 +115,7 @@ public class GuiSlot extends GuiElement
 		public int textureX;
 		public int textureY;
 
-		private SlotOverlay(int w, int h, int x, int y)
+		SlotOverlay(int w, int h, int x, int y)
 		{
 			width = w;
 			height = h;

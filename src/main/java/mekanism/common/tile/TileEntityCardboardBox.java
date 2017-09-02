@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import mekanism.common.block.BlockCardboardBox.BlockData;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -21,7 +20,7 @@ public class TileEntityCardboardBox extends TileEntity
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -29,11 +28,7 @@ public class TileEntityCardboardBox extends TileEntity
 		{
 			nbtTags.setTag("storedData", storedData.write(new NBTTagCompound()));
 		}
-	}
-
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
+		
+		return nbtTags;
 	}
 }

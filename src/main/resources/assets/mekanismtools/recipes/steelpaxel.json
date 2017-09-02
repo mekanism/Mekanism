@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:steelpaxel"
+  },
+  "pattern": [
+    "XYZ",
+    " I ",
+    " I "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "item": "mekanismtools:steelaxe"
+    },
+    "Y": {
+      "item": "mekanismtools:steelpickaxe"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "mekanismtools:steelshovel"
+    }
+  }
+}

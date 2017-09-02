@@ -2,7 +2,7 @@ defaultTasks 'fullBuild'
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -13,22 +13,71 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
+        inheritOutputDirs = true
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
     maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
-    }
-    maven {
         name 'ForgeFS'
         url 'http://files.minecraftforge.net/maven'
-     }
+    }
+    maven {
+        name 'amadornes'
+        url 'http://maven.amadornes.com/'
+    }
+    maven {
+        name 'prog'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
+    maven {
+        name 'tesla'
+        url 'http://maven.epoxide.org'
+    }
+    maven {
+        name 'curseforge'
+        url 'https://minecraft.curseforge.com/api/maven/'
+    }
+    maven {
+        name 'opencomputers'
+        url 'http://maven.cil.li/'
+    }
+    maven {
+        name 'hwyla'
+        url 'http://tehnut.info/maven'
+    }
+    maven {
+        name 'CoFH Maven'
+        url = 'http://maven.covers1624.net'
+    }
+    maven {
+        name 'buildcraft'
+        url 'https://mod-buildcraft.com/maven/'
+    }
+    maven {
+        name 'tterrag'
+        url 'http://maven.tterrag.com/'
+    }
+    maven {
+        name 'ic2'
+        url 'http://maven.ic2.player.to'
+    }
+    maven {
+        name 'BlameJared - Crafttweaker'
+        url 'http://maven.blamejared.com/'
+    }
 }
-
-apply plugin: 'forge'
 
 // Define properties file
 ext.configFile = file "build.properties"
@@ -40,22 +89,36 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-dependencies {
-    compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
-    compile "codechicken:ForgeMultipart:${config.minecraft_version}-${config.FMP_version}:dev"
-    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
-    compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.CCC_version}:dev"
-}
-
 version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
+    mappings = "${config.mappings_version}"
+    runDir = "run"
+    useDepAts = true
+}
+
+dependencies {
+    deobfCompile "MCMultiPart2:MCMultiPart-exp:${config.mcmp_version}"
+    deobfProvided "mezz.jei:jei_1.12:${config.jei_version}:api"
+    runtime "mezz.jei:jei_1.12:${config.jei_version}"
+    compile "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
+    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
+    compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
+    deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
+    deobfCompile "cofh:RedstoneFlux:1.12-${config.redstoneflux_version}:universal"
+    deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
+    deobfProvided "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}:api"
+    runtime "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}"
+    compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
+    deobfProvided "CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}"
+    runtime "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}"
+    deobfCompile "com.blamejared:MTLib:${config.mtlib_version}"
 }
 
 processResources
@@ -65,74 +128,122 @@ processResources
         exclude 'mcmod.info'
         exclude '**/*.blend*'
     }
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'mekanism_at.cfg'
+    }
 }
 
 task coreJar(type: Jar) {
-    baseName = 'Mekanism'
-
-    manifest {
-        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
-    }
+	archiveName = "Mekanism-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "core"
 
     from('etc/core') {
         include '*.info'
-        expand 'version': config.mod_version, 'mc_version': config.minecraft_version, 'fmp_version': config.FMP_version
+        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mcmod.info'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismtools/**', 'assets/mekanismgenerators/**', 'mcmod.info'
+    }
+
+    manifest {
+        attributes 'FMLAT': 'mekanism_at.cfg'
     }
 }
 
 task toolsJar(type: Jar) {
-    baseName = 'MekanismTools'
+	archiveName = "MekanismTools-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "tools"
 
     from('etc/tools') {
         include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
+        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/tools/**'
+        include 'mekanism/tools/**', 'assets/mekanismtools/**'
     }
 }
 
 task generatorsJar(type: Jar) {
-    baseName = 'MekanismGenerators'
+	archiveName = "MekanismGenerators-${project.version}.jar"
+	dependsOn 'reobfJar'
+	classifier "generators"
 
     from('etc/generators') {
         include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
+        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
-        include 'mekanism/generators/**'
+        include 'mekanism/generators/**', 'assets/mekanismgenerators/**'
     }
 }
 
-coreJar.dependsOn('reobf')
-toolsJar.dependsOn('reobf')
-generatorsJar.dependsOn('reobf')
-
-task MDKZip(type: Zip) {
-    baseName = 'MDK'
-    from sourceSets.main.java.srcDirs
+task apiJar(type: Jar) {
+    classifier "api"
+    baseName "Mekanism"
+    dependsOn "sourceMainJava"
     include 'mekanism/api/**'
+    from sourceSets.main.java.srcDirs
+    from sourceSets.main.output
 }
 
-task releaseJars(type: Copy) {
-    from coreJar
-    from toolsJar
-    from generatorsJar
-    from MDKZip
-    rename '-(.*)jar', '.jar'
-    rename '-(.*)zip', '.zip'
-    into '.'
+artifacts {
+    archives apiJar
+    archives coreJar
+    archives toolsJar
+    archives generatorsJar
 }
 
 task fullBuild(type: Delete) {
     delete jar
+    dependsOn "build"
 }
 
-fullBuild.dependsOn('releaseJars')
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+uploadArchives {
+    if(System.getenv("LOCAL_MAVEN") != null) {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    if (System.getenv("MAVEN_ARTIFACT") != null) {
+                        artifactId = System.getenv("MAVEN_ARTIFACT")
+                    } else {
+                        artifactId = "Mekanism"
+                    }
+                    project {
+                        name "Mekanism"
+                        packaging 'jar'
+                        description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
+                        url 'http://aidancbrady.com/mekanism/'
+                        scm {
+                            url 'https://github.com/aidancbrady/Mekanism.git'
+                        }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/aidancbrady/Mekanism/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'MIT'
+                                distribution 'repo'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

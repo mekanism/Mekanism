@@ -1,13 +1,13 @@
 package mekanism.common.util;
 
-import java.util.Random;
-
+import static java.lang.Math.E;
+import static java.lang.Math.PI;
 import static java.lang.Math.ceil;
-import static java.lang.Math.sqrt;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
-import static java.lang.Math.PI;
-import static java.lang.Math.E;
+import static java.lang.Math.sqrt;
+
+import java.util.Random;
 
 public class StatUtils
 {

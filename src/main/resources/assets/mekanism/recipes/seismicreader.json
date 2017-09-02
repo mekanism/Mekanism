@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "mekanism:seismicreader"
+  },
+  "pattern": [
+    "SLS",
+    "STS",
+    "SSS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "T": {
+      "item": "mekanism:energytablet"
+    },
+    "L": {
+      "item": "minecraft:dye",
+      "data": 4
+    }
+  }
+}

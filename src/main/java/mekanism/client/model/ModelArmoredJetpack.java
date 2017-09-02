@@ -1,9 +1,9 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 
 import org.lwjgl.opengl.GL11;
 
@@ -241,20 +241,21 @@ public class ModelArmoredJetpack extends ModelBase
 		Packdoodad3.render(size);
 		Bottomthruster.render(size);
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
+		GlStateManager.enableCull();
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1, 1, 1, 0.2F);
 
 		WingbladeL.render(size);
 		WingbladeR.render(size);
 
-		GL11.glColor4f(1, 1, 1, 1);
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		MekanismRenderer.resetColor();
+		GlStateManager.disableCull();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 
 		MekanismRenderer.glowOn();
 		light1.render(size);
@@ -262,8 +263,8 @@ public class ModelArmoredJetpack extends ModelBase
 		light3.render(size);
 		Packcore.render(size);
 
-		GL11.glPushMatrix();
-		GL11.glTranslatef(0.0F, 0.0F, -0.0625F);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(0.0F, 0.0F, -0.0625F);
 
 		Rightlight.render(size);
 		Leftlight.render(size);
@@ -276,7 +277,7 @@ public class ModelArmoredJetpack extends ModelBase
 		Rightguardbot.render(size);
 		Leftguardbot.render(size);
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

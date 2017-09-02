@@ -4,8 +4,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public class CrystallizerRecipe extends MachineRecipe<GasInput, ItemStackOutput, CrystallizerRecipe>
 {
@@ -19,12 +19,12 @@ public class CrystallizerRecipe extends MachineRecipe<GasInput, ItemStackOutput,
 		this(new GasInput(input), new ItemStackOutput(output));
 	}
 
-	public boolean canOperate(GasTank gasTank, ItemStack[] inventory)
+	public boolean canOperate(GasTank gasTank, NonNullList<ItemStack> inventory)
 	{
 		return getInput().useGas(gasTank, false, 1) && getOutput().applyOutputs(inventory, 1, false);
 	}
 
-	public void operate(GasTank inputTank, ItemStack[] inventory)
+	public void operate(GasTank inputTank, NonNullList<ItemStack> inventory)
 	{
 		if(getInput().useGas(inputTank, true, 1))
 		{

@@ -1,0 +1,15 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:nothing"
+  },
+  "variants": {
+    "normal": [{}],
+    "advanced": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

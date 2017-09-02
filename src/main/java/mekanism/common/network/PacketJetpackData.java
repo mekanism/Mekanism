@@ -1,18 +1,17 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
-
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IMessage>
 {
@@ -21,36 +20,39 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(message.packetType == JetpackPacket.UPDATE)
-		{
-			if(message.value)
-			{
-				Mekanism.jetpackOn.add(message.username);
-			}
-			else {
-				Mekanism.jetpackOn.remove(message.username);
-			}
+		PacketHandler.handlePacket(() ->
+        {
+            if(message.packetType == JetpackPacket.UPDATE)
+            {
+                if(message.value)
+                {
+                    Mekanism.jetpackOn.add(message.username);
+                }
+                else {
+                    Mekanism.jetpackOn.remove(message.username);
+                }
 
-			if(!player.worldObj.isRemote)
-			{
-				Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.dimensionId);
-			}
-		}
-		else if(message.packetType == JetpackPacket.MODE)
-		{
-			ItemStack stack = player.getEquipmentInSlot(3);
+                if(!player.world.isRemote)
+                {
+                    Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
+                }
+            }
+            else if(message.packetType == JetpackPacket.MODE)
+            {
+                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-			if(stack != null && stack.getItem() instanceof ItemJetpack)
-			{
-				if(!message.value)
-				{
-					((ItemJetpack)stack.getItem()).incrementMode(stack);
-				}
-				else {
-					((ItemJetpack)stack.getItem()).setMode(stack, JetpackMode.DISABLED);
-				}
-			}
-		}
+                if(!stack.isEmpty() && stack.getItem() instanceof ItemJetpack)
+                {
+                    if(!message.value)
+                    {
+                        ((ItemJetpack)stack.getItem()).incrementMode(stack);
+                    }
+                    else {
+                        ((ItemJetpack)stack.getItem()).setMode(stack, JetpackMode.DISABLED);
+                    }
+                }
+            }
+        }, player);
 		
 		return null;
 	}
@@ -131,10 +133,10 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 		}
 	}
 	
-	public static enum JetpackPacket
+	public enum JetpackPacket
 	{
 		UPDATE,
 		FULL,
-		MODE;
-	}
+		MODE
+    }
 }

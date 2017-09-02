@@ -1,34 +1,34 @@
 package mekanism.generators.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.client.sound.ISoundSource;
-import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityNoisyElectricBlock;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.block.states.BlockStateGenerator;
+import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IPeripheral, IActiveState, IHasSound, ISoundSource, IRedstoneControl
+public abstract class TileEntityGenerator extends TileEntityNoisyBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl, ISecurityTile
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -44,6 +44,8 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType;
+	
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	/**
 	 * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
@@ -64,18 +66,18 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		super.onUpdate();
 
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -84,7 +86,19 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					clientActive = isActive;
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+				}
+			}
+			
+			if(!world.isRemote && general.destroyDisabledBlocks)
+			{
+				GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
+				
+				if(type != null && !type.isEnabled())
+				{
+					Mekanism.logger.info("[Mekanism] Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this) + " as according to config.");
+					world.setBlockToAir(getPos());
+					return;
 				}
 			}
 
@@ -102,15 +116,14 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return false;
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
-	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+	public boolean sideIsOutput(EnumFacing side) {
+		return side == facing;
 	}
 
 	/**
@@ -132,33 +145,11 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = general.UPDATE_DELAY;
 			clientActive = active;
 		}
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
-	{
-		return getInventoryName();
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
 	}
 
 	@Override
@@ -172,19 +163,22 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		super.handlePacketData(dataStream);
 
-		clientActive = dataStream.readBoolean();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(updateDelay == 0 && clientActive != isActive)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			updateDelay = general.UPDATE_DELAY;
-			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			clientActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(world, getPos());
+			}
 		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -204,12 +198,14 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		
+		return nbtTags;
 	}
 
 	@Override
@@ -248,5 +244,11 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	public boolean canPulse()
 	{
 		return false;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
 	}
 }

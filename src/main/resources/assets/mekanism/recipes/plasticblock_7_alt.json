@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:plasticblock",
+    "data": 7,
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:plasticblock",
+      "data": 32767
+    },
+    "D": {
+      "ore": "dyeLightGray",
+      "type": "forge:ore_dict"
+    }
+  }
+}

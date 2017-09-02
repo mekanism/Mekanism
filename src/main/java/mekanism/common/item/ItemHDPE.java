@@ -1,19 +1,13 @@
 package mekanism.common.item;
 
-import java.util.List;
-
 import mekanism.common.Mekanism;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
+import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.NonNullList;
 
-public class ItemHDPE extends ItemMekanism
+public class ItemHDPE extends ItemMekanism implements IMetaItem
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public ItemHDPE()
 	{
 		super();
@@ -22,26 +16,24 @@ public class ItemHDPE extends ItemMekanism
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(int i = 0; i < PlasticItem.values().length; i++)
-		{
-			icons[i] = register.registerIcon("mekanism:" + PlasticItem.values()[i].getName());
-		}
+		return PlasticItem.values()[meta].getName();
 	}
-
+	
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public int getVariants()
 	{
-		return icons[meta];
+		return PlasticItem.values().length;
 	}
-
+	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
+		if(!isInCreativeTab(tabs)) return;
 		for(int counter = 0; counter < PlasticItem.values().length; counter++)
 		{
-			itemList.add(new ItemStack(item, 1, counter));
+			itemList.add(new ItemStack(this, 1, counter));
 		}
 	}
 
@@ -60,7 +52,7 @@ public class ItemHDPE extends ItemMekanism
 
 		private String name;
 
-		private PlasticItem(String itemName)
+		PlasticItem(String itemName)
 		{
 			name = itemName;
 		}

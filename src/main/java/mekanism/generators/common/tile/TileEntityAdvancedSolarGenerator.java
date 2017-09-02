@@ -1,16 +1,15 @@
 package mekanism.generators.common.tile;
 
-import java.util.EnumSet;
-
 import mekanism.api.Coord4D;
-import mekanism.api.ISalinationSolar;
-import mekanism.api.MekanismConfig.generators;
+import mekanism.api.IEvaporationSolar;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 
-import net.minecraftforge.common.util.ForgeDirection;
-
-public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, ISalinationSolar
+public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
@@ -19,21 +18,22 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side)
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return side == facing;
 	}
 
 	@Override
 	public void onPlace()
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Coord4D.get(this));
+		Coord4D current = Coord4D.get(this);
+		MekanismUtils.makeBoundingBlock(world, getPos().add(0, 1, 0), current);
 
 		for(int x = -1; x <= 1; x++)
 		{
 			for(int z = -1; z <= 1; z++)
 			{
-				MekanismUtils.makeBoundingBlock(worldObj, xCoord+x, yCoord+2, zCoord+z, Coord4D.get(this));
+				MekanismUtils.makeBoundingBlock(world, getPos().add(x, 2, z), current);
 			}
 		}
 	}
@@ -41,23 +41,40 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	@Override
 	public void onBreak()
 	{
-		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
+		world.setBlockToAir(getPos().add(0, 1, 0));
 
 		for(int x = -1; x <= 1; x++)
 		{
 			for(int z = -1; z <= 1; z++)
 			{
-				worldObj.setBlockToAir(xCoord+x, yCoord+2, zCoord+z);
+				world.setBlockToAir(getPos().add(x, 2, z));
 			}
 		}
 
 		invalidate();
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		world.setBlockToAir(getPos());
 	}
 
 	@Override
 	public boolean seesSun()
 	{
 		return seesSun;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -8,17 +9,20 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -70,8 +74,8 @@ public class GuiUpgradeManagement extends GuiMekanism
 		GL11.glColor4f(1, 1, 1, 1);
 		drawTexturedModalRect(84, 8+getScroll(), 202, 0, 4, 4);
 		
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.upgrades.supported") + ":", 26, 59, 0x404040);
 		
 		if(selectedType == null)
 		{
@@ -98,7 +102,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			if(supported.length > supportedIndex)
 			{
 				renderUpgrade(supported[supportedIndex], 80, 57, 0.8F, true);
-				fontRendererObj.drawString(supported[supportedIndex].getName(), 96, 59, 0x404040);
+				fontRenderer.drawString(supported[supportedIndex].getName(), 96, 59, 0x404040);
 			}
 		}
 		
@@ -119,13 +123,13 @@ public class GuiUpgradeManagement extends GuiMekanism
 			int yPos = 7 + (i*12);
 			int yRender = 0;
 			
-			fontRendererObj.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
+			fontRenderer.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
 			
 			renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
 			
 			if(xAxis >= xPos && xAxis <= xPos+58 && yAxis >= yPos && yAxis <= yPos+12)
 			{
-				func_146283_a(MekanismUtils.splitLines(upgrade.getDescription()), xAxis, yAxis);
+				drawHoveringText(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
 			}
 		}
 
@@ -134,20 +138,20 @@ public class GuiUpgradeManagement extends GuiMekanism
 	
 	private void renderText(String text, int x, int y, float size, boolean scale)
 	{
-		GL11.glPushMatrix();
-		GL11.glScalef(size, size, size);
-		fontRendererObj.drawString(text, scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y, 0x00CD00);
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(size, size, size);
+		fontRenderer.drawString(text, scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y, 0x00CD00);
+		GlStateManager.popMatrix();
 	}
 	
 	private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale)
 	{
-		GL11.glPushMatrix();
-		GL11.glScalef(size, size, size);
-		GL11.glEnable(GL11.GL_LIGHTING);
-		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), type.getStack(), scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		GL11.glPopMatrix();
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(size, size, size);
+		RenderHelper.enableGUIStandardItemLighting();
+		itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y);
+		RenderHelper.disableStandardItemLighting();
+		GlStateManager.popMatrix();
 	}
 
 	@Override
@@ -206,7 +210,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			
 			int xPos = 25;
 			int yPos = 7 + (i*12);
-			int yRender = 0;
+			int yRender;
 			
 			if(upgrade == selectedType)
 			{
@@ -263,9 +267,9 @@ public class GuiUpgradeManagement extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
+	protected void mouseReleased(int mouseX, int mouseY, int type)
 	{
-		super.mouseMovedOrUp(mouseX, mouseY, type);
+		super.mouseReleased(mouseX, mouseY, type);
 
 		if(type == 0 && isDragging)
 		{
@@ -275,7 +279,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 	}
 	
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -301,13 +305,13 @@ public class GuiUpgradeManagement extends GuiMekanism
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
 				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
-                SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
 			}
 			
 			if(selectedType != null && xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
 			}
 			

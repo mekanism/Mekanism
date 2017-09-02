@@ -3,18 +3,16 @@ package mekanism.client.sound;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.common.ObfuscatedNames;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * SoundHandler - a class that handles all Sounds used by Mekanism.
@@ -25,13 +23,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class SoundHandler
 {
-	public static Map<String, Map<String, IResettableSound>> soundMaps = new HashMap<String, Map<String, IResettableSound>>();
+	public static Map<String, Map<String, IResettableSound>> soundMaps = new HashMap<>();
 
 	public static Map<ISound, String> invPlayingSounds;
 
 	public static Minecraft mc = Minecraft.getMinecraft();
 
-	public static enum Channel
+	public enum Channel
 	{
 		JETPACK("jetpack", JetpackSound.class),
 		GASMASK("gasMask", GasMaskSound.class),
@@ -40,7 +38,7 @@ public class SoundHandler
 		String channelName;
 		Class<? extends PlayerSound> soundClass;
 
-		private Channel(String name, Class<? extends PlayerSound> clazz)
+		Channel(String name, Class<? extends PlayerSound> clazz)
 		{
 			channelName = name;
 			soundClass = clazz;
@@ -63,7 +61,7 @@ public class SoundHandler
 
 	public static boolean soundPlaying(EntityPlayer player, Channel channel)
 	{
-		String name = player.getCommandSenderName();
+		String name = player.getName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 
@@ -72,7 +70,7 @@ public class SoundHandler
 
 	public static void addSound(EntityPlayer player, Channel channel, boolean replace)
 	{
-		String name = player.getCommandSenderName();
+		String name = player.getName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 		
@@ -85,7 +83,7 @@ public class SoundHandler
 
 	public static boolean playSound(EntityPlayer player, Channel channel)
 	{
-		String name = player.getCommandSenderName();
+		String name = player.getName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 		
@@ -105,39 +103,20 @@ public class SoundHandler
 
 	public static Map<String, IResettableSound> getMap(String name)
 	{
-		Map<String, IResettableSound> map = soundMaps.get(name);
-		
-		if(map == null)
-		{
-			map = new HashMap<String, IResettableSound>();
-			soundMaps.put(name, map);
-		}
+		Map<String, IResettableSound> map = soundMaps.computeIfAbsent(name, k -> new HashMap<>());
 
 		return map;
 	}
 
 	public static SoundManager getSoundManager()
 	{
-		try {
-			return (SoundManager)MekanismUtils.getPrivateValue(mc.getSoundHandler(), net.minecraft.client.audio.SoundHandler.class, ObfuscatedNames.SoundHandler_sndManager);
-		} catch(Exception e) {
-			return null;
-		}
+		return mc.getSoundHandler().sndManager;
 	}
 
 	//Fudge required because sound thread gets behind and the biMap crashes when rapidly toggling sounds.
 	public static Map<ISound, String> getSoundMap()
 	{
-		if(invPlayingSounds == null)
-		{
-			try {
-				invPlayingSounds = (Map<ISound, String>)MekanismUtils.getPrivateValue(getSoundManager(), net.minecraft.client.audio.SoundManager.class, ObfuscatedNames.SoundManager_invPlayingSounds);
-			} catch(Exception e) {
-				invPlayingSounds = null;
-			}
-		}
-		
-		return invPlayingSounds;
+		return mc.getSoundHandler().sndManager.invPlayingSounds;
 	}
 
 	public static boolean canRestartSound(ITickableSound sound)
@@ -145,9 +124,9 @@ public class SoundHandler
 		return sound.isDonePlaying() && !getSoundMap().containsKey(sound);
 	}
 	
-	public static void playSound(String sound)
+	public static void playSound(SoundEvent sound)
 	{
-        playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation(sound), 1.0F));
+        playSound(PositionedSoundRecord.getMasterRecord(sound, client.baseSoundVolume));
 	}
 
 	public static void playSound(ISound sound)

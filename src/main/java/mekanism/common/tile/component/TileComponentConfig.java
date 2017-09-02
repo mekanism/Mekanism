@@ -11,23 +11,26 @@ import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.SideData.EnergyState;
+import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileComponentConfig implements ITileComponent
 {
+	public static SideData EMPTY = new SideData("Empty", EnumColor.BLACK, InventoryUtils.EMPTY);
+	
 	public TileEntityContainerBlock tileEntity;
 	
-	public Map<Integer, byte[]> sideConfigs = new HashMap<Integer, byte[]>();
-	public Map<Integer, ArrayList<SideData>> sideOutputs = new HashMap<Integer, ArrayList<SideData>>();
-	public Map<Integer, Boolean> ejecting = new HashMap<Integer, Boolean>();
-	public Map<Integer, Boolean> canEject = new HashMap<Integer, Boolean>();
+	private Map<TransmissionType, SideConfig> sideConfigs = new HashMap<>();
+	private Map<TransmissionType, ArrayList<SideData>> sideOutputs = new HashMap<>();
+	private Map<TransmissionType, Boolean> ejecting = new HashMap<>();
+	private Map<TransmissionType, Boolean> canEject = new HashMap<>();
 	
-	public List<TransmissionType> transmissions = new ArrayList<TransmissionType>();
+	public List<TransmissionType> transmissions = new ArrayList<>();
 	
 	public TileComponentConfig(TileEntityContainerBlock tile, TransmissionType... types)
 	{
@@ -56,89 +59,130 @@ public class TileComponentConfig implements ITileComponent
 			transmissions.add(type);
 		}
 		
-		sideOutputs.put(type.ordinal(), new ArrayList<SideData>());
-		ejecting.put(type.ordinal(), false);
-		canEject.put(type.ordinal(), true);
+		sideOutputs.put(type, new ArrayList<>());
+		ejecting.put(type, false);
+		canEject.put(type, true);
 	}
-	
-	public EnumSet<ForgeDirection> getSidesForData(TransmissionType type, int facing, int dataIndex)
+
+	public EnumSet<EnumFacing> getSidesForData(TransmissionType type, EnumFacing facing, int dataIndex)
 	{
-		EnumSet<ForgeDirection> ret = EnumSet.noneOf(ForgeDirection.class);
+		EnumSet<EnumFacing> ret = EnumSet.noneOf(EnumFacing.class);
+		SideConfig config = getConfig(type);
+		EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
 		
-		for(byte b = 0; b < 6; b++)
+		for(EnumFacing sideToCheck : EnumFacing.values())
 		{
-			if(getConfig(type)[b] == dataIndex)
+			if(config.get(translatedFacings[sideToCheck.ordinal()]) == dataIndex)
 			{
-				ret.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(b, facing)));
+				ret.add(sideToCheck);
 			}
 		}
 		
 		return ret;
 	}
+
+	public boolean hasSideForData(TransmissionType type, EnumFacing facing, int dataIndex, EnumFacing sideToTest)
+	{
+		if(sideToTest == null)
+		{
+			return false;
+		}
+		EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
+		return getConfig(type).get(translatedFacings[sideToTest.ordinal()]) == dataIndex;
+	}
 	
 	public void setCanEject(TransmissionType type, boolean eject)
 	{
-		canEject.put(type.ordinal(), eject);
+		canEject.put(type, eject);
 	}
 	
 	public boolean canEject(TransmissionType type)
 	{
-		return canEject.get(type.ordinal());
+		return canEject.get(type);
 	}
 	
 	public void fillConfig(TransmissionType type, int data)
 	{
 		byte sideData = (byte)data;
 		
-		setConfig(type, new byte[] {sideData, sideData, sideData, sideData, sideData, sideData});
+		setConfig(type, sideData, sideData, sideData, sideData, sideData, sideData);
 	}
 	
-	public void setIOEnergyConfig()
+	public void setIOConfig(TransmissionType type)
 	{
-		addOutput(TransmissionType.ENERGY, new SideData("None", EnumColor.GREY, EnergyState.OFF));
-		addOutput(TransmissionType.ENERGY, new SideData("Input", EnumColor.DARK_GREEN, EnergyState.INPUT));
-		addOutput(TransmissionType.ENERGY, new SideData("Output", EnumColor.DARK_RED, EnergyState.OUTPUT));
+		addOutput(type, new SideData("None", EnumColor.GREY, IOState.OFF));
+		addOutput(type, new SideData("Input", EnumColor.DARK_GREEN, IOState.INPUT));
+		addOutput(type, new SideData("Output", EnumColor.DARK_RED, IOState.OUTPUT));
 		
-		setConfig(TransmissionType.ENERGY, new byte[] {1, 1, 2, 1, 1, 1});
+		setConfig(type, new byte[] {1, 1, 2, 1, 1, 1});
 	}
 	
-	public void setInputEnergyConfig()
+	public void setInputConfig(TransmissionType type)
 	{
-		addOutput(TransmissionType.ENERGY, new SideData("None", EnumColor.GREY, EnergyState.OFF));
-		addOutput(TransmissionType.ENERGY, new SideData("Input", EnumColor.DARK_GREEN, EnergyState.INPUT));
+		addOutput(type, new SideData("None", EnumColor.GREY, IOState.OFF));
+		addOutput(type, new SideData("Input", EnumColor.DARK_GREEN, IOState.INPUT));
 		
-		setConfig(TransmissionType.ENERGY, new byte[] {1, 1, 1, 1, 1, 1});
-		setCanEject(TransmissionType.ENERGY, false);
+		fillConfig(type, 1);
+		setCanEject(type, false);
 	}
-	
+
 	public void setConfig(TransmissionType type, byte[] config)
 	{
-		sideConfigs.put(type.ordinal(), config);
+		assert config.length == EnumFacing.VALUES.length;
+		setConfig(type, config[0], config[1], config[2], config[3], config[4], config[5]);
+	}
+
+	public void setConfig(TransmissionType type, byte d, byte u, byte n, byte s, byte w, byte e)
+	{
+		sideConfigs.put(type, new SideConfig(d, u, n, s, w, e));
 	}
 	
 	public void addOutput(TransmissionType type, SideData data)
 	{
-		sideOutputs.get(type.ordinal()).add(data);
+		sideOutputs.get(type).add(data);
 	}
 	
 	public ArrayList<SideData> getOutputs(TransmissionType type)
 	{
-		return sideOutputs.get(type.ordinal());
+		return sideOutputs.get(type);
 	}
 	
-	public byte[] getConfig(TransmissionType type)
+	public SideConfig getConfig(TransmissionType type)
 	{
-		return sideConfigs.get(type.ordinal());
+		return sideConfigs.get(type);
 	}
 	
-	public SideData getOutput(TransmissionType type, int side, int facing)
+	public SideData getOutput(TransmissionType type, EnumFacing side, EnumFacing facing)
 	{
-		return getOutputs(type).get(getConfig(type)[MekanismUtils.getBaseOrientation(side, facing)]);
+		if(side == null)
+		{
+			return EMPTY;
+		}
+		
+		return getOutput(type, MekanismUtils.getBaseOrientation(side, facing));
 	}
 	
-	public SideData getOutput(TransmissionType type, int side)
+	public SideData getOutput(TransmissionType type, EnumFacing side)
 	{
-		return getOutputs(type).get(getConfig(type)[side]);
+		if(side == null)
+		{
+			return EMPTY;
+		}
+
+		SideConfig sideConfig = getConfig(type);
+		int index = sideConfig.get(side);
+		
+		if(index == -1)
+		{
+			return EMPTY;
+		}
+		else if(index > getOutputs(type).size()-1)
+		{
+			sideConfig.set(side, (byte) 0);
+			index = 0;
+		}
+		
+		return getOutputs(type).get(index);
 	}
 	
 	public boolean supports(TransmissionType type)
@@ -156,29 +200,10 @@ public class TileComponentConfig implements ITileComponent
 		{
 			for(TransmissionType type : transmissions)
 			{
-				try {//TODO remove soon
-					if(nbtTags.getByteArray("config" + type.ordinal()).length > 0)
-					{
-						sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
-						ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
-					}
-				} catch(Exception e) {
-					try {
-						byte[] bytes = new byte[6];
-						
-						for(int i = 0; i < 6; i++)
-						{
-							bytes[i] = nbtTags.getByte("config"+i);
-							
-							if(bytes[i] > 0)
-							{
-								bytes[i]--;
-							}
-						}
-						
-						sideConfigs.put(TransmissionType.ITEM.ordinal(), bytes);
-						ejecting.put(TransmissionType.ITEM.ordinal(), nbtTags.getBoolean("ejecting"));
-					} catch(Exception e1) {}
+				if(nbtTags.getByteArray("config" + type.ordinal()).length > 0)
+				{
+					sideConfigs.put(type, new SideConfig(nbtTags.getByteArray("config" + type.ordinal())));
+					ejecting.put(type, nbtTags.getBoolean("ejecting" + type.ordinal()));
 				}
 			}
 		}
@@ -200,9 +225,9 @@ public class TileComponentConfig implements ITileComponent
 		{
 			byte[] array = new byte[6];
 			dataStream.readBytes(array);
-			
-			sideConfigs.put(type.ordinal(), array);
-			ejecting.put(type.ordinal(), dataStream.readBoolean());
+
+			sideConfigs.put(type, new SideConfig(array));
+			ejecting.put(type, dataStream.readBoolean());
 		}
 	}
 
@@ -211,15 +236,15 @@ public class TileComponentConfig implements ITileComponent
 	{
 		for(TransmissionType type : transmissions)
 		{
-			nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type.ordinal()));
-			nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type.ordinal()));
+			nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type).asByteArray());
+			nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type));
 		}
 		
 		nbtTags.setBoolean("sideDataStored", true);
 	}
 
 	@Override
-	public void write(ArrayList data) 
+	public void write(ArrayList<Object> data)
 	{
 		data.add(transmissions.size());
 		
@@ -230,19 +255,22 @@ public class TileComponentConfig implements ITileComponent
 		
 		for(TransmissionType type : transmissions)
 		{
-			data.add(sideConfigs.get(type.ordinal()));
-			data.add(ejecting.get(type.ordinal()));
+			data.add(sideConfigs.get(type).asByteArray());
+			data.add(ejecting.get(type));
 		}
 	}
 	
+	@Override
+	public void invalidate() {}
+	
 	public boolean isEjecting(TransmissionType type)
 	{
-		return ejecting.get(type.ordinal());
+		return ejecting.get(type);
 	}
 
 	public void setEjecting(TransmissionType type, boolean eject)
 	{
-		ejecting.put(type.ordinal(), eject);
+		ejecting.put(type, eject);
 		MekanismUtils.saveChunk(tileEntity);
 	}
 }

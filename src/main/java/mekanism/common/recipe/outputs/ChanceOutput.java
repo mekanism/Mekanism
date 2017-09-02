@@ -2,17 +2,19 @@ package mekanism.common.recipe.outputs;
 
 import java.util.Random;
 
-import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 public class ChanceOutput extends MachineOutput<ChanceOutput>
 {
 	private static Random rand = new Random();
 
-	public ItemStack primaryOutput;
+	public ItemStack primaryOutput = ItemStack.EMPTY;
 
-	public ItemStack secondaryOutput;
+	public ItemStack secondaryOutput = ItemStack.EMPTY;
 
 	public double secondaryChance;
 
@@ -28,8 +30,8 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		primaryOutput = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("primaryOutput"));
-		secondaryOutput = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("secondaryOutput"));
+		primaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("primaryOutput"));
+		secondaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("secondaryOutput"));
 		secondaryChance = nbtTags.getDouble("secondaryChance");
 	}
 
@@ -45,30 +47,30 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 
 	public boolean hasPrimary()
 	{
-		return primaryOutput != null;
+		return !primaryOutput.isEmpty();
 	}
 
 	public boolean hasSecondary()
 	{
-		return secondaryOutput != null;
+		return !secondaryOutput.isEmpty();
 	}
 
-	public boolean applyOutputs(ItemStack[] inventory, int primaryIndex, int secondaryIndex, boolean doEmit)
+	public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex, boolean doEmit)
 	{
 		if(hasPrimary())
 		{
-			if(inventory[primaryIndex] == null)
+			if(inventory.get(primaryIndex).isEmpty())
 			{
 				if(doEmit)
 				{
-					inventory[primaryIndex] = primaryOutput.copy();
+					inventory.set(primaryIndex, primaryOutput.copy());
 				}
 			} 
-			else if(inventory[primaryIndex].isItemEqual(primaryOutput) && inventory[primaryIndex].stackSize + primaryOutput.stackSize <= inventory[primaryIndex].getMaxStackSize())
+			else if(inventory.get(primaryIndex).isItemEqual(primaryOutput) && inventory.get(primaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(primaryIndex).getMaxStackSize())
 			{
 				if(doEmit)
 				{
-					inventory[primaryIndex].stackSize += primaryOutput.stackSize;
+					inventory.get(primaryIndex).grow(primaryOutput.getCount());
 				}
 			}
 			else {
@@ -78,20 +80,20 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 		
 		if(hasSecondary() && (!doEmit || checkSecondary()))
 		{
-			if(inventory[secondaryIndex] == null)
+			if(inventory.get(secondaryIndex).isEmpty())
 			{
 				if(doEmit)
 				{
-					inventory[secondaryIndex] = secondaryOutput.copy();
+					inventory.set(secondaryIndex, secondaryOutput.copy());
 				}
 				
 				return true;
 			} 
-			else if(inventory[secondaryIndex].isItemEqual(secondaryOutput) && inventory[secondaryIndex].stackSize + primaryOutput.stackSize <= inventory[secondaryIndex].getMaxStackSize())
+			else if(inventory.get(secondaryIndex).isItemEqual(secondaryOutput) && inventory.get(secondaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(secondaryIndex).getMaxStackSize())
 			{
 				if(doEmit)
 				{
-					inventory[secondaryIndex].stackSize += secondaryOutput.stackSize;
+					inventory.get(secondaryIndex).grow(secondaryOutput.getCount());
 				}
 				
 				return true;

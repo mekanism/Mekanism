@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class CreativeTabMekanism extends CreativeTabs
@@ -18,8 +17,8 @@ public class CreativeTabMekanism extends CreativeTabs
 	}
 
 	@Override
-	public Item getTabIconItem() 
+	public ItemStack getTabIconItem() 
 	{
-		return MekanismItems.AtomicAlloy;
+		return new ItemStack(MekanismItems.AtomicAlloy);
 	}
 }

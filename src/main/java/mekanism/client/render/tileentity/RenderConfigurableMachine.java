@@ -2,91 +2,85 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
-import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.math.MathHelper;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 @SideOnly(Side.CLIENT)
-public class RenderConfigurableMachine extends TileEntitySpecialRenderer
+public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntitySpecialRenderer<S>
 {
 	private Minecraft mc = FMLClientHandler.instance().getClient();
 
-	private HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<TransmissionType, DisplayInteger>>();
+	private HashMap<EnumFacing, HashMap<TransmissionType, DisplayInteger>> cachedOverlays = new HashMap<>();
 
 	public RenderConfigurableMachine()
 	{
-		field_147501_a = TileEntityRendererDispatcher.instance;
+		rendererDispatcher = TileEntityRendererDispatcher.instance;
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
-		renderAModelAt((ISideConfiguration)tileEntity, x, y, z, partialTick);
-	}
+		GlStateManager.pushMatrix();
 
-	public void renderAModelAt(ISideConfiguration configurable, double x, double y, double z, float partialTick)
-	{
-		GL11.glPushMatrix();
+		EntityPlayer player = mc.player;
+		ItemStack itemStack = player.inventory.getCurrentItem();
+		RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 
-		TileEntity tileEntity = (TileEntity)configurable;
-		EntityPlayer player = mc.thePlayer;
-		World world = mc.thePlayer.worldObj;
-		ItemStack itemStack = player.getCurrentEquippedItem();
-		MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
-
-		if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack).isConfigurating())
+		if(pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack).isConfigurating())
 		{
-			int xPos = MathHelper.floor_double(pos.blockX);
-			int yPos = MathHelper.floor_double(pos.blockY);
-			int zPos = MathHelper.floor_double(pos.blockZ);
+			BlockPos bp = pos.getBlockPos();
 
-			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorldObj().provider.dimensionId);
 			TransmissionType type = ((ItemConfigurator)itemStack.getItem()).getState(itemStack).getTransmission();
 
 			if(configurable.getConfig().supports(type))
 			{
-				if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
+				if(bp.equals(configurable.getPos()))
 				{
-					EnumColor color = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation()).color;
-	
-					push();
-	
-					MekanismRenderer.color(color, 0.6F);
-	
-					bindTexture(MekanismRenderer.getBlocksTexture());
-					GL11.glTranslatef((float)x, (float)y, (float)z);
-	
-					int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), type).display;
-					GL11.glCallList(display);
-	
-					pop();
+					SideData data = configurable.getConfig().getOutput(type, pos.sideHit, configurable.getOrientation());
+					
+					if(data != TileComponentConfig.EMPTY)
+					{
+						push();
+		
+						MekanismRenderer.color(data.color, 0.6F);
+		
+						bindTexture(MekanismRenderer.getBlocksTexture());
+						GlStateManager.translate((float)x, (float)y, (float)z);
+		
+						int display = getOverlayDisplay(pos.sideHit, type).display;
+						GL11.glCallList(display);
+						
+						MekanismRenderer.resetColor();
+		
+						pop();
+					}
 				}
 			}
 		}
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void pop()
@@ -94,12 +88,12 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		GL11.glPopAttrib();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void push()
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
@@ -107,7 +101,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		MekanismRenderer.blendOn();
 	}
 
-	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, TransmissionType type)
+	private DisplayInteger getOverlayDisplay(EnumFacing side, TransmissionType type)
 	{
 		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type))
 		{
@@ -115,7 +109,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.stone;
+		toReturn.baseBlock = Blocks.STONE;
 		toReturn.setTexture(MekanismRenderer.overlays.get(type));
 
 		DisplayInteger display = DisplayInteger.createAndStart();
@@ -125,7 +119,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			cachedOverlays.get(side).put(type, display);
 		}
 		else {
-			HashMap<TransmissionType, DisplayInteger> map = new HashMap<TransmissionType, DisplayInteger>();
+			HashMap<TransmissionType, DisplayInteger> map = new HashMap<>();
 			map.put(type, display);
 			cachedOverlays.put(side, map);
 		}
@@ -135,7 +129,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			case DOWN:
 			{
 				toReturn.minY = -.01;
-				toReturn.maxY = 0;
+				toReturn.maxY = -.001;
 
 				toReturn.minX = 0;
 				toReturn.minZ = 0;
@@ -145,7 +139,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			}
 			case UP:
 			{
-				toReturn.minY = 1;
+				toReturn.minY = 1.001;
 				toReturn.maxY = 1.01;
 
 				toReturn.minX = 0;
@@ -157,7 +151,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			case NORTH:
 			{
 				toReturn.minZ = -.01;
-				toReturn.maxZ = 0;
+				toReturn.maxZ = -.001;
 
 				toReturn.minX = 0;
 				toReturn.minY = 0;
@@ -167,7 +161,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			}
 			case SOUTH:
 			{
-				toReturn.minZ = 1;
+				toReturn.minZ = 1.001;
 				toReturn.maxZ = 1.01;
 
 				toReturn.minX = 0;
@@ -179,7 +173,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			case WEST:
 			{
 				toReturn.minX = -.01;
-				toReturn.maxX = 0;
+				toReturn.maxX = -.001;
 
 				toReturn.minY = 0;
 				toReturn.minZ = 0;
@@ -189,7 +183,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			}
 			case EAST:
 			{
-				toReturn.minX = 1;
+				toReturn.minX = 1.001;
 				toReturn.maxX = 1.01;
 
 				toReturn.minY = 0;
@@ -198,14 +192,10 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				toReturn.maxZ = 1;
 				break;
 			}
-			default:
-			{
-				break;
-			}
 		}
 
 		MekanismRenderer.renderObject(toReturn);
-		display.endList();
+		DisplayInteger.endList();
 
 		return display;
 	}

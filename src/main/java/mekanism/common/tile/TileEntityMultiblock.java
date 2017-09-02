@@ -7,19 +7,25 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityContainerBlock implements IMultiblock<T>
 {
@@ -42,7 +48,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public MultiblockCache cachedData = getNewCache();
 	
 	/** This multiblock segment's cached inventory ID */
-	public int cachedID = -1;
+	public String cachedID = null;
 	
 	public TileEntityMultiblock(String name)
 	{
@@ -52,7 +58,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(structure == null)
 			{
@@ -70,7 +76,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			prevStructure = clientHasStructure;
 		}
 
-		if(playersUsing.size() > 0 && ((worldObj.isRemote && !clientHasStructure) || (!worldObj.isRemote && structure == null)))
+		if(playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote && structure == null)))
 		{
 			for(EntityPlayer player : playersUsing)
 			{
@@ -78,24 +84,24 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure == null)
 			{
 				isRendering = false;
 				
-				if(cachedID != -1)
+				if(cachedID != null)
 				{
 					getManager().updateCache(this);
 				}
 			}
-
+			
 			if(structure == null && ticker == 5)
 			{
-				update();
+				doUpdate();
 			}
 
-			if(prevStructure != (structure != null))
+			if(prevStructure == (structure == null))
 			{
 				if(structure != null && !getSynchronizedData().hasRenderer)
 				{
@@ -104,17 +110,18 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 					sendStructure = true;
 				}
 
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.VALUES)
 				{
-					Coord4D obj = Coord4D.get(this).getFromSide(side);
+					Coord4D obj = Coord4D.get(this).offset(side);
+					TileEntity tile = obj.getTileEntity(world);
 
-					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
+					if(!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
+						obj.getBlock(world).onNeighborChange(world, obj.getPos(), getPos());
 					}
 				}
 
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			}
 
 			prevStructure = structure != null;
@@ -123,7 +130,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				getSynchronizedData().didTick = false;
 
-				if(getSynchronizedData().inventoryID != -1)
+				if(getSynchronizedData().inventoryID != null)
 				{
 					cachedData.sync(getSynchronizedData());
 					cachedID = getSynchronizedData().inventoryID;
@@ -133,9 +140,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		}
 	}
 	
-	public void update()
+	@Override
+	public void doUpdate()
 	{
-		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
+		if(!world.isRemote && (structure == null || !getSynchronizedData().didTick))
 		{
 			getProtocol().doUpdate();
 
@@ -152,11 +160,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 		{
 			for(Coord4D obj : getSynchronizedData().locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(worldObj);
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(world);
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 		}
@@ -171,13 +179,13 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public abstract MultiblockManager<T> getManager();
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isRendering);
 		data.add(structure != null);
-
+		
 		if(structure != null && isRendering)
 		{
 			if(sendStructure)
@@ -191,6 +199,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				data.add(getSynchronizedData().volLength);
 
 				getSynchronizedData().renderLocation.write(data);
+				data.add(getSynchronizedData().inventoryID);
 			}
 			else {
 				data.add(false);
@@ -205,23 +214,27 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	{
 		super.handlePacketData(dataStream);
 
-		if(structure == null)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			structure = getNewStructure();
-		}
-
-		isRendering = dataStream.readBoolean();
-		clientHasStructure = dataStream.readBoolean();
-
-		if(clientHasStructure && isRendering)
-		{
-			if(dataStream.readBoolean())
+			if(structure == null)
 			{
-				getSynchronizedData().volHeight = dataStream.readInt();
-				getSynchronizedData().volWidth = dataStream.readInt();
-				getSynchronizedData().volLength = dataStream.readInt();
-
-				getSynchronizedData().renderLocation = Coord4D.read(dataStream);
+				structure = getNewStructure();
+			}
+	
+			isRendering = dataStream.readBoolean();
+			clientHasStructure = dataStream.readBoolean();
+			
+			if(clientHasStructure && isRendering)
+			{
+				if(dataStream.readBoolean())
+				{
+					getSynchronizedData().volHeight = dataStream.readInt();
+					getSynchronizedData().volWidth = dataStream.readInt();
+					getSynchronizedData().volLength = dataStream.readInt();
+	
+					getSynchronizedData().renderLocation = Coord4D.read(dataStream);
+					getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
+				}
 			}
 		}
 	}
@@ -233,46 +246,38 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 		if(structure == null)
 		{
-			cachedID = nbtTags.getInteger("cachedID");
-
-			if(cachedID != -1)
+			if(nbtTags.hasKey("cachedID"))
 			{
+				cachedID = nbtTags.getString("cachedID");
 				cachedData.load(nbtTags);
 			}
 		}
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("cachedID", cachedID);
-
-		if(cachedID != -1)
+		if(cachedID != null)
 		{
+			nbtTags.setString("cachedID", cachedID);
 			cachedData.save(nbtTags);
 		}
+		
+		return nbtTags;
 	}
 	
 	@Override
-	public ItemStack getStackInSlot(int slotID)
+	protected NonNullList<ItemStack> getInventory()
 	{
-		return structure != null && getSynchronizedData().getInventory() != null ? getSynchronizedData().getInventory()[slotID] : null;
+		return structure != null ? structure.getInventory() : null;
 	}
-
+	
 	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack)
 	{
-		if(structure != null && getSynchronizedData().getInventory() != null)
-		{
-			getSynchronizedData().getInventory()[slotID] = itemstack;
-
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-			{
-				itemstack.stackSize = getInventoryStackLimit();
-			}
-		}
+		return false;
 	}
 	
 	@Override

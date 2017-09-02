@@ -2,8 +2,8 @@ package mekanism.common.recipe.machines;
 
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.ChanceOutput;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<RECIPE>> extends MachineRecipe<ItemStackInput, ChanceOutput, RECIPE>
 {
@@ -12,12 +12,12 @@ public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<REC
 		super(input, output);
 	}
 
-	public boolean canOperate(ItemStack[] inventory, int inputIndex, int primaryIndex, int secondaryIndex)
+	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int primaryIndex, int secondaryIndex)
 	{
 		return getInput().useItemStackFromInventory(inventory, inputIndex, false) && getOutput().applyOutputs(inventory, primaryIndex, secondaryIndex, false);
 	}
 
-	public void operate(ItemStack[] inventory)
+	public void operate(NonNullList<ItemStack> inventory)
 	{
 		if(getInput().useItemStackFromInventory(inventory, 0, true))
 		{

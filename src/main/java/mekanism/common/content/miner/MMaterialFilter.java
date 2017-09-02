@@ -1,10 +1,12 @@
 package mekanism.common.content.miner;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.content.transporter.Finder.MaterialFinder;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -12,21 +14,19 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import io.netty.buffer.ByteBuf;
-
 public class MMaterialFilter extends MinerFilter
 {
-	public ItemStack materialItem;
+	public ItemStack materialItem = ItemStack.EMPTY;
 	
 	public Material getMaterial()
 	{
-		return Block.getBlockFromItem(materialItem.getItem()).getMaterial();
+		return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getItemDamage()).getMaterial();
 	}
 
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		if(itemStack == null || !(itemStack.getItem() instanceof ItemBlock))
+		if(itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock))
 		{
 			return false;
 		}
@@ -50,18 +50,18 @@ public class MMaterialFilter extends MinerFilter
 	{
 		super.read(nbtTags);
 		
-		materialItem = ItemStack.loadItemStackFromNBT(nbtTags);
+		materialItem = InventoryUtils.loadFromNBT(nbtTags);
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(2);
 		
 		super.write(data);
 
 		data.add(MekanismUtils.getID(materialItem));
-		data.add(materialItem.stackSize);
+		data.add(materialItem.getCount());
 		data.add(materialItem.getItemDamage());
 	}
 
@@ -78,7 +78,7 @@ public class MMaterialFilter extends MinerFilter
 	{
 		int code = 1;
 		code = 31 * code + MekanismUtils.getID(materialItem);
-		code = 31 * code + materialItem.stackSize;
+		code = 31 * code + materialItem.getCount();
 		code = 31 * code + materialItem.getItemDamage();
 		return code;
 	}

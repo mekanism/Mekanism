@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 10
+  },
+  "pattern": [
+    "RCR",
+    "GIG",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "EnergizedSmelter"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

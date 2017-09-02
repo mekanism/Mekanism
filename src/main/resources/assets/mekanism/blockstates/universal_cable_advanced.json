@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:transmitter_small.obj.mek",
+    "textures": {
+      "#side": "mekanism:blocks/models/multipart/UniversalCableVerticalAdvanced",
+      "#center": "mekanism:blocks/models/multipart/UniversalCableAdvanced",
+      "#side_opaque": "mekanism:blocks/models/multipart/opaque/UniversalCableVerticalAdvanced",
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/UniversalCableAdvanced"
+    },
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}
+

@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,13 +12,23 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.api.MekanismConfig.usage;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.LangUtils;
@@ -30,146 +39,127 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IPeripheral
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile
 {
 	/** This pump's tank */
 	public FluidTank fluidTank = new FluidTank(10000);
+	
+	/** The type of fluid this pump is pumping */
+	public Fluid activeType;
+	
+	public boolean suckedLastOperation;
+	
+	/** How much energy this machine consumes per-tick. */
+	public double BASE_ENERGY_PER_TICK = usage.electricPumpUsage;
+
+	public double energyPerTick = BASE_ENERGY_PER_TICK;
+
+	/** How many ticks it takes to run an operation. */
+	public int BASE_TICKS_REQUIRED = 20;
+
+	public int ticksRequired = BASE_TICKS_REQUIRED;
+	
+	/** How many ticks this machine has been operating for. */
+	public int operatingTicks;
 
 	/** The nodes that have full sources near them or in them */
-	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> recurringNodes = new HashSet<>();
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
-		inventory = new ItemStack[4];
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 		
-		upgradeComponent.clearSupportedTypes();
 		upgradeComponent.setSupported(Upgrade.FILTER);
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(2, this);
 	
-			if(inventory[0] != null)
+			if(fluidTank.getFluid() != null)
 			{
-				if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+				if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 				{
-					if(inventory[0].getItem() instanceof IFluidContainerItem)
-					{
-						int prev = fluidTank.getFluidAmount();
-						
-						fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[0]), true);
-						
-						if(prev == fluidTank.getFluidAmount() || fluidTank.getFluidAmount() == 0)
-						{
-							if(inventory[1] == null)
-							{
-								inventory[1] = inventory[0].copy();
-								inventory[0] = null;
-								
-								markDirty();
-							}
-						}
-					}
-					else if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
-					{
-						ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
-	
-						if(tempStack != null)
-						{
-							if(inventory[1] == null)
-							{
-								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-	
-								inventory[1] = tempStack;
-								inventory[0].stackSize--;
-	
-								if(inventory[0].stackSize <= 0)
-								{
-									inventory[0] = null;
-								}
-	
-								markDirty();
-							}
-							else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
-							{
-								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-	
-								inventory[1].stackSize++;
-								inventory[0].stackSize--;
-	
-								if(inventory[0].stackSize <= 0)
-								{
-									inventory[0] = null;
-								}
-	
-								markDirty();
-							}
-						}
-					}
+					FluidContainerUtils.handleContainerItemFill(this, fluidTank, 0, 1);
 				}
 			}
 		}
-
-		if(!worldObj.isRemote && ticker % 20 == 0)
+		
+		if(!world.isRemote)
 		{
-			if(MekanismUtils.canFunction(this))
+			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
-				if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount + FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
+				if(suckedLastOperation)
 				{
-					suck(true);
+					setEnergy(getEnergy() - energyPerTick);
+				}
+
+				if((operatingTicks + 1) < ticksRequired)
+				{
+					operatingTicks++;
+				} 
+				else {
+					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount + Fluid.BUCKET_VOLUME <= fluidTank.getCapacity())
+					{
+						if(!suck(true))
+						{
+							suckedLastOperation = false;
+							reset();
+						}
+						else {
+							suckedLastOperation = true;
+						}
+					}
+					else {
+						suckedLastOperation = false;
+					}
+					
+					operatingTicks = 0;
 				}
 			}
 			else {
-				ticker--;
+				suckedLastOperation = false;
 			}
 		}
 
 		super.onUpdate();
 
-		if(fluidTank.getFluid() != null)
+		if(!world.isRemote && fluidTank.getFluid() != null)
 		{
-			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
+
+			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
 			{
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(orientation).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IFluidHandler)
-				{
-					FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(100, fluidTank.getFluidAmount()));
-					fluidTank.drain(((IFluidHandler)tileEntity).fill(orientation.getOpposite(), toDrain, true), true);
-
-					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount <= 0)
-					{
-						break;
-					}
-				}
+				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
+				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256*(upgradeComponent.getUpgrades(Upgrade.SPEED)+1), fluidTank.getFluidAmount()));
+				fluidTank.drain(handler.fill(toDrain, true), true);
 			}
 		}
 	}
@@ -185,24 +175,26 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		Collections.shuffle(tempPumpList);
 
 		//First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALUES)
 		{
-			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
+			Coord4D wrapper = Coord4D.get(this).offset(orientation);
+			FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
-			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+				if(take)
 				{
-					if(take)
+					activeType = fluid.getFluid();
+					recurringNodes.add(wrapper);
+					fluidTank.fill(fluid, true);
+					
+					if(shouldTake(fluid, wrapper))
 					{
-						setEnergy(getEnergy() - usage.electricPumpUsage);
-						recurringNodes.add(wrapper.clone());
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()), true);
-						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
+						world.setBlockToAir(wrapper.getPos());
 					}
-
-					return true;
 				}
+
+				return true;
 			}
 		}
 
@@ -210,42 +202,48 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		//and then add the adjacent block to the recurring list
 		for(Coord4D wrapper : tempPumpList)
 		{
-			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
-			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
-				{
-					if(take)
-					{
-						setEnergy(getEnergy() - usage.electricPumpUsage);
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()), true);
-						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
-					}
+			FluidStack fluid = MekanismUtils.getFluid(world, wrapper, hasFilter());
 
-					return true;
+			if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
+			{
+				if(take)
+				{
+					activeType = fluid.getFluid();
+					fluidTank.fill(fluid, true);
+
+					if(shouldTake(fluid, wrapper))
+					{
+						world.setBlockToAir(wrapper.getPos());
+					}
 				}
+
+				return true;
 			}
 
 			//Add all the blocks surrounding this recurring node to the recurring node list
-			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing orientation : EnumFacing.VALUES)
 			{
-				Coord4D side = wrapper.getFromSide(orientation);
+				Coord4D side = wrapper.offset(orientation);
 
-				if(Coord4D.get(this).distanceTo(side) <= 80)
+				if(Coord4D.get(this).distanceTo(side) <= general.maxPumpRange)
 				{
-					if(MekanismUtils.isFluid(worldObj, side.xCoord, side.yCoord, side.zCoord))
+					fluid = MekanismUtils.getFluid(world, side, hasFilter());
+					
+					if(fluid != null && (activeType == null || fluid.getFluid() == activeType) && (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid)))
 					{
-						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
+						if(take)
 						{
-							if(take)
+							activeType = fluid.getFluid();
+							recurringNodes.add(side);
+							fluidTank.fill(fluid, true);
+							
+							if(shouldTake(fluid, side))
 							{
-								setEnergy(getEnergy() - usage.electricPumpUsage);
-								recurringNodes.add(side);
-								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord, hasFilter()), true);
-								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
+								world.setBlockToAir(side.getPos());
 							}
-
-							return true;
 						}
+
+						return true;
 					}
 				}
 			}
@@ -255,34 +253,51 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		return false;
 	}
+	
+	public void reset()
+	{
+		activeType = null;
+		recurringNodes.clear();
+	}
+	
+	private boolean shouldTake(FluidStack fluid, Coord4D coord)
+	{
+		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater)
+		{
+			return general.pumpWaterSources;
+		}
+		
+		return true;
+	}
 
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
 
-		if(dataStream.readInt() == 1)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
+			if(dataStream.readInt() == 1)
+			{
+				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+			}
+			else {
+				fluidTank.setFluid(null);
+			}
+			
+			controlType = RedstoneControl.values()[dataStream.readInt()];
 		}
-		else {
-			fluidTank.setFluid(null);
-		}
-		
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().fluidID);
+			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
@@ -294,15 +309,18 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public int getScaledFluidLevel(int i)
-	{
-		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
-	}
-
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
+		
+		nbtTags.setInteger("operatingTicks", operatingTicks);
+		nbtTags.setBoolean("suckedLastOperation", suckedLastOperation);
+		
+		if(activeType != null)
+		{
+			nbtTags.setString("activeType", FluidRegistry.getFluidName(activeType));
+		}
 
 		if(fluidTank.getFluid() != null)
 		{
@@ -324,12 +342,22 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			nbtTags.setTag("recurringNodes", recurringList);
 		}
+		
+		return nbtTags;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
+		
+		operatingTicks = nbtTags.getInteger("operatingTicks");
+		suckedLastOperation = nbtTags.getBoolean("suckedLastOperation");
+		
+		if(nbtTags.hasKey("activeType"))
+		{
+			activeType = FluidRegistry.getFluid(nbtTags.getString("activeType"));
+		}
 
 		if(nbtTags.hasKey("fluidTank"))
 		{
@@ -347,7 +375,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				recurringNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -361,7 +389,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		}
 		else if(slotID == 0)
 		{
-			return FluidContainerRegistry.isEmptyContainer(itemstack);
+			return FluidContainerUtils.isFluidContainer(itemstack) && FluidUtil.getFluidContained(itemstack) == null;
 		}
 		else if(slotID == 2)
 		{
@@ -372,7 +400,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -387,9 +415,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side)
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+		return facing.getOpposite() == side;
 	}
 
 	@Override
@@ -399,13 +427,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 1)
+		if(side == EnumFacing.UP)
 		{
 			return new int[] {0};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {1};
 		}
@@ -415,9 +443,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	public FluidTankInfo[] getTankInfo(EnumFacing direction)
 	{
-		if(direction == ForgeDirection.getOrientation(1))
+		if(direction == EnumFacing.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
@@ -444,9 +472,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.getOrientation(1))
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.getFront(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -455,15 +483,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
-		if(from == ForgeDirection.getOrientation(1))
+		if(from == EnumFacing.getFront(1))
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
@@ -472,31 +500,54 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return from == ForgeDirection.getOrientation(1);
+		return from == EnumFacing.getFront(1);
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
-		recurringNodes.clear();
+		reset();
 
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
+		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.pumpReset")));
 
-		return true;
+		return EnumActionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
-		return false;
+		return EnumActionResult.PASS;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+				|| super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)new FluidHandlerWrapper(this, side);
+		}
+		
+		return super.getCapability(capability, side);
 	}
 
 	@Override
@@ -530,46 +581,48 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		return new Object[] {fluidTank};
 	}
 
+	private static final String[] methods = new String[] {"reset"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
+	public String[] getMethods()
 	{
-		return getInventoryName();
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
-	{
-		return new String[] {"reset"};
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
 			case 0:
-				recurringNodes.clear();
+				reset();
 				return new Object[] {"Pump calculation reset."};
 			default:
-				return new Object[] {"Unknown command."};
+				throw new NoSuchMethodException();
 		}
 	}
-
+	
 	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
+	public TileComponentSecurity getSecurity()
 	{
-		return this == other;
+		return securityComponent;
+	}
+	
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
+			default:
+				break;
+		}
 	}
 }

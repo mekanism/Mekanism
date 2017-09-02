@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:glowstonehoe"
+  },
+  "pattern": [
+    "XX",
+    " T",
+    " T"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "ore": "ingotRefinedGlowstone",
+      "type": "forge:ore_dict"
+    }
+  }
+}

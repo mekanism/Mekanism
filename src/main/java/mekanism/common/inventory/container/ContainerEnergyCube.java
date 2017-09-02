@@ -1,19 +1,17 @@
 package mekanism.common.inventory.container;
 
+import ic2.api.item.IElectricItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import ic2.api.item.IElectricItem;
 
 public class ContainerEnergyCube extends Container
 {
@@ -42,7 +40,7 @@ public class ContainerEnergyCube extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 	}
 
 	@Override
@@ -51,19 +49,19 @@ public class ContainerEnergyCube extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -73,19 +71,19 @@ public class ContainerEnergyCube extends Container
 
 			if(ChargeUtils.canBeCharged(slotStack) || ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotStack.getItem() == Items.redstone)
+				if(slotStack.getItem() == Items.REDSTONE)
 				{
 					if(slotID != 1)
 					{
 						if(!mergeItemStack(slotStack, 1, 2, false))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 					else {
 						if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 				}
@@ -100,7 +98,7 @@ public class ContainerEnergyCube extends Container
 								{
 									if(!mergeItemStack(slotStack, 0, 1, false))
 									{
-										return null;
+										return ItemStack.EMPTY;
 									}
 								}
 							}
@@ -109,7 +107,7 @@ public class ContainerEnergyCube extends Container
 						{
 							if(!mergeItemStack(slotStack, 0, 1, false))
 							{
-								return null;
+								return ItemStack.EMPTY;
 							}
 						}
 					}
@@ -121,14 +119,14 @@ public class ContainerEnergyCube extends Container
 							{
 								if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 								{
-									return null;
+									return ItemStack.EMPTY;
 								}
 							}
 						}
 						else {
 							if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 							{
-								return null;
+								return ItemStack.EMPTY;
 							}
 						}
 					}
@@ -136,7 +134,7 @@ public class ContainerEnergyCube extends Container
 					{
 						if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 				}
@@ -146,38 +144,38 @@ public class ContainerEnergyCube extends Container
 				{
 					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > 28)
 				{
 					if(!mergeItemStack(slotStack, 2, 28, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

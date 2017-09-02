@@ -1,67 +1,73 @@
 package mekanism.common.block;
 
-import java.util.List;
-
+import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
-
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 public class BlockPlasticFence extends BlockFence
 {
 	public BlockPlasticFence()
 	{
-		super("mekanism:PlasticFence", Material.clay);
+		super(Material.CLAY, Material.CLAY.getMaterialMapColor());
 		setCreativeTab(Mekanism.tabMekanism);
+	}
+	
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new BlockStateContainer(this, new IProperty[] {NORTH, EAST, WEST, SOUTH, colorProperty});
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState().withProperty(colorProperty, EnumDyeColor.byDyeDamage(meta));
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return state.getValue(colorProperty).getDyeDamage();
 	}
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
     {
         for(int i = 0; i < EnumColor.DYES.length; i++)
         {
-            list.add(new ItemStack(item, 1, i));
+            list.add(new ItemStack(this, 1, i));
         }
-    }
-
-    @Override
-    public int colorMultiplier(IBlockAccess world, int x, int y, int z)
-    {
-        return getRenderColor(world.getBlockMetadata(x, y, z));
-    }
-
-    @Override
-    public int getRenderColor(int meta)
-    {
-        EnumColor colour = EnumColor.DYES[meta];
-        return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
-
-    }
-
-    public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
-    {
-        int meta = world.getBlockMetadata(x, y, z);
-        if (meta != (15 - colour))
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
-            return true;
-        }
-        return false;
     }
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
+	}
+	
+	public static class PlasticFenceStateMapper extends StateMapperBase
+	{
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		{
+			String properties = "east=" + state.getValue(EAST) + ",";
+			properties += "north=" + state.getValue(NORTH) + ",";
+			properties += "south=" + state.getValue(SOUTH) + ",";
+			properties += "west=" + state.getValue(WEST);
+			ResourceLocation baseLocation = new ResourceLocation("mekanism", "PlasticFence");
+			return new ModelResourceLocation(baseLocation, properties);
+		}
 	}
 }

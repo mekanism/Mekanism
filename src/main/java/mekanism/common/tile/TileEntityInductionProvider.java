@@ -5,9 +5,11 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionProvider extends TileEntityBasicBlock
 {
@@ -16,33 +18,34 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	@Override
 	public void onUpdate() {}
 	
-	@Override
-	public boolean canUpdate()
+	public String getName()
 	{
-		return false;
-	}
-	
-	public String getInventoryName()
-	{
-		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionProvider" + tier.getBaseTier().getName() + ".name");
+		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionProvider" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 	
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = InductionProviderTier.values()[dataStream.readInt()];
-
 		super.handlePacketData(dataStream);
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			InductionProviderTier prevTier = tier;
+			tier = InductionProviderTier.values()[dataStream.readInt()];
+	
+			if(prevTier != tier)
+			{
+				MekanismUtils.updateBlock(world, getPos());
+			}
+		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier.ordinal());
-
 		super.getNetworkedData(data);
+		
+		data.add(tier.ordinal());
 
 		return data;
 	}
@@ -56,10 +59,12 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setInteger("tier", tier.ordinal());
+		
+		return nbtTags;
 	}
 }

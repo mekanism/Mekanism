@@ -1,20 +1,36 @@
 package mekanism.common.item;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.base.IItemNetwork;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemElectricBow extends ItemEnergized
+public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 {
 	public ItemElectricBow()
 	{
@@ -23,23 +39,34 @@ public class ItemElectricBow extends ItemEnergized
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
-		super.addInformation(itemstack, entityplayer, list, flag);
+		super.addInformation(itemstack, world, list, flag);
 		
 		list.add(EnumColor.PINK + LangUtils.localize("tooltip.fireMode") + ": " + EnumColor.GREY + LangUtils.transOnOff(getFireState(itemstack)));
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityPlayer player, int itemUseCount)
+	public void onPlayerStoppedUsing(ItemStack itemstack, World world, EntityLivingBase entityLiving, int itemUseCount)
 	{
-		if(getEnergy(itemstack) > 0)
+		if(entityLiving instanceof EntityPlayer && getEnergy(itemstack) > 0)
 		{
-			boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
+			EntityPlayer player = (EntityPlayer)entityLiving;
+			boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
+			ItemStack ammo = findAmmo(player);
+			
+			int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
+            maxItemUse = ForgeEventFactory.onArrowLoose(itemstack, world, player, maxItemUse, !itemstack.isEmpty() || flag);
+			if(maxItemUse < 0) return;
 
-			if(flag || player.inventory.hasItem(Items.arrow))
+			if(flag || !ammo.isEmpty())
 			{
-				int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
+				if(ammo.isEmpty())
+				{
+					ammo = new ItemStack(Items.ARROW);
+				}
+				
 				float f = maxItemUse / 20F;
 				f = (f * f + f * 2.0F) / 3F;
 
@@ -52,34 +79,48 @@ public class ItemElectricBow extends ItemEnergized
 				{
 					f = 1.0F;
 				}
-
-				EntityArrow entityarrow = new EntityArrow(world, player, f * 2.0F);
-
-				if(f == 1.0F)
-				{
-					entityarrow.setIsCritical(true);
-				}
-
-				if(!player.capabilities.isCreativeMode)
-				{
-					setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? 1200 : 120));
-				}
-
-				world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-
-				if(flag)
-				{
-					entityarrow.canBePickedUp = 2;
-				}
-				else {
-					player.inventory.consumeInventoryItem(Items.arrow);
-				}
+				
+				boolean noConsume = flag && itemstack.getItem() instanceof ItemArrow;
 
 				if(!world.isRemote)
 				{
-					world.spawnEntityInWorld(entityarrow);
-					entityarrow.setFire(getFireState(itemstack) ? 60 : 0);
+                    ItemArrow itemarrow = (ItemArrow)(ammo.getItem() instanceof ItemArrow ? ammo.getItem() : Items.ARROW);
+                    EntityArrow entityarrow = itemarrow.createArrow(world, itemstack, player);
+                    entityarrow.setAim(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
+				
+    				if(f == 1.0F)
+    				{
+    					entityarrow.setIsCritical(true);
+    				}
+    				
+    				if(!player.capabilities.isCreativeMode)
+    				{
+    					setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? 1200 : 120));
+    				}
+    				
+    				if(noConsume)
+                    {
+                        entityarrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
+                    }
+    				
+					entityarrow.setFire(getFireState(itemstack) ? 100 : 0);
+    				
+    				world.spawnEntity(entityarrow);
 				}
+				
+				world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+
+                if(!noConsume)
+                {
+                    ammo.shrink(1);
+
+                    if(ammo.getCount() == 0)
+                    {
+                    	player.inventory.deleteStack(ammo);
+                    }
+                }
+
+                player.addStat(StatList.getObjectUseStats(this));
 			}
 		}
 	}
@@ -93,60 +134,81 @@ public class ItemElectricBow extends ItemEnergized
 	@Override
 	public EnumAction getItemUseAction(ItemStack itemstack)
 	{
-		return EnumAction.bow;
+		return EnumAction.BOW;
 	}
+	
+	private ItemStack findAmmo(EntityPlayer player)
+    {
+        if(isArrow(player.getHeldItem(EnumHand.OFF_HAND)))
+        {
+            return player.getHeldItem(EnumHand.OFF_HAND);
+        }
+        else if(isArrow(player.getHeldItem(EnumHand.MAIN_HAND)))
+        {
+            return player.getHeldItem(EnumHand.MAIN_HAND);
+        }
+        else {
+            for(int i = 0; i < player.inventory.getSizeInventory(); ++i)
+            {
+                ItemStack itemstack = player.inventory.getStackInSlot(i);
+
+                if(isArrow(itemstack))
+                {
+                    return itemstack;
+                }
+            }
+
+            return ItemStack.EMPTY;
+        }
+    }
+
+    protected boolean isArrow(ItemStack stack)
+    {
+        return !stack.isEmpty() && stack.getItem() instanceof ItemArrow;
+    }
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
-		if(entityplayer.capabilities.isCreativeMode || entityplayer.inventory.hasItem(Items.arrow))
-		{
-			entityplayer.setItemInUse(itemstack, getMaxItemUseDuration(itemstack));
-		}
+		ItemStack itemStackIn = playerIn.getHeldItem(hand);
+		boolean flag = !findAmmo(playerIn).isEmpty();
 
-		return itemstack;
+		ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(itemStackIn, worldIn, playerIn, hand, flag);
+		if(ret != null) return ret;
+
+		if(!playerIn.capabilities.isCreativeMode && !flag)
+		{
+			return !flag ? new ActionResult<>(EnumActionResult.FAIL, itemStackIn) : new ActionResult<>(EnumActionResult.PASS, itemStackIn);
+		}
+		else {
+			playerIn.setActiveHand(hand);
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
+		}
 	}
 
-	/**
-	 * Sets the bow's fire state in NBT.
-	 * @param itemstack - the bow's itemstack
-	 * @param state - state to change to
-	 */
 	public void setFireState(ItemStack itemstack, boolean state)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemstack.stackTagCompound.setBoolean("fireState", state);
+		ItemDataUtils.setBoolean(itemstack, "fireState", state);
 	}
 
-	/**
-	 * Gets the bow's fire state from NBT.
-	 * @param itemstack - the bow's itemstack
-	 * @return fire state
-	 */
 	public boolean getFireState(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			return false;
-		}
-
-		boolean state = false;
-
-		if(itemstack.stackTagCompound.getTag("fireState") != null)
-		{
-			state = itemstack.stackTagCompound.getBoolean("fireState");
-		}
-
-		return state;
+		return ItemDataUtils.getBoolean(itemstack, "fireState");
 	}
 
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
 		return false;
+	}
+	
+	@Override
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			boolean state = dataStream.readBoolean();
+			setFireState(stack, state);
+		}
 	}
 }

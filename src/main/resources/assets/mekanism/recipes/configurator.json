@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanism:configurator"
+  },
+  "pattern": [
+    " L ",
+    "AEA",
+    " S "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "L": {
+      "item": "minecraft:dye",
+      "data": 4
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:obsidiansword"
+  },
+  "pattern": [
+    "X",
+    "X",
+    "T"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "ore": "ingotRefinedObsidian",
+      "type": "forge:ore_dict"
+    }
+  }
+}

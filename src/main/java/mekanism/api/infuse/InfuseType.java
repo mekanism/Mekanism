@@ -1,7 +1,8 @@
 package mekanism.api.infuse;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 /**
  * The types of infuse currently available in Mekanism.
@@ -10,38 +11,38 @@ import net.minecraft.util.StatCollector;
  */
 public final class InfuseType
 {
-	/** The name of this infusion */
+	/** The name of this infusion. */
 	public String name;
 
-	/** The location of this infuse's GUI texture */
-	public ResourceLocation texture;
+	/** This infuse GUI's icon */
+	public ResourceLocation iconResource;
 
-	/** The infuse's GUI texture X offset. */
-	public int texX;
-
-	/** The infuse's GUI texture Y offset. */
-	public int texY;
+	/** The texture representing this infuse type. */
+	public TextureAtlasSprite sprite;
 
 	/** The unlocalized name of this type. */
 	public String unlocalizedName;
 
-	public InfuseType(String s, ResourceLocation location, int x, int y)
+	public InfuseType(String s, ResourceLocation res)
 	{
 		name = s;
-		texture = location;
-		texX = x;
-		texY = y;
+		iconResource = res;
+	}
+	
+	public void setIcon(TextureAtlasSprite tex)
+	{
+		sprite = tex;
 	}
 
 	public InfuseType setUnlocalizedName(String name)
 	{
-		unlocalizedName = name;
+		unlocalizedName = "infuse." + name;
 
 		return this;
 	}
 
 	public String getLocalizedName()
 	{
-		return StatCollector.translateToLocal(unlocalizedName);
+		return I18n.translateToLocal(unlocalizedName);
 	}
 }

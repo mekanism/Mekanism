@@ -2,90 +2,94 @@ package mekanism.common.block;
 
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityObsidianTNT;
-import mekanism.common.tile.TileEntityObsidianTNT;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockObsidianTNT extends Block
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public BlockObsidianTNT()
 	{
-		super(Material.tnt);
+		super(Material.TNT);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) {}
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	{
+		super.breakBlock(world, pos, state);
+		
+		world.removeTileEntity(pos);
+	}
 
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
+	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
 	{
-		super.onBlockAdded(world, x, y, z);
+		super.onBlockAdded(world, pos, state);
 
-		if(world.isBlockIndirectlyGettingPowered(x, y, z))
+		if(world.isBlockIndirectlyGettingPowered(pos) > 0)
 		{
-			explode(world, x, y, z);
-			world.setBlockToAir(x, y, z);
+			explode(world, pos);
+			world.setBlockToAir(pos);
 		}
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
-		if(world.isBlockIndirectlyGettingPowered(x, y, z))
+		if(world.isBlockIndirectlyGettingPowered(pos) > 0)
 		{
-			explode(world, x, y, z);
-			world.setBlockToAir(x, y, z);
+			explode(world, pos);
+			world.setBlockToAir(pos);
 		}
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion(World world, int x, int y, int z, Explosion explosion)
+	public void onBlockDestroyedByExplosion(World world, BlockPos pos, Explosion explosion)
 	{
 		if(!world.isRemote)
 		{
-			EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
+			EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
 			entity.fuse = world.rand.nextInt(entity.fuse / 4) + entity.fuse / 8;
-			world.spawnEntityInWorld(entity);
+			world.spawnEntity(entity);
 		}
 	}
 
-	public void explode(World world, int x, int y, int z)
+	public void explode(World world, BlockPos pos)
 	{
 		if(!world.isRemote)
 		{
-			EntityObsidianTNT entity = new EntityObsidianTNT(world, x + 0.5F, y + 0.5F, z + 0.5F);
-			world.spawnEntityInWorld(entity);
-			world.playSoundAtEntity(entity, "random.fuse", 1.0F, 1.0F);
+			EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
+			world.spawnEntity(entity);
+			entity.playSound(SoundEvents.ENTITY_TNT_PRIMED, 1.0F, 1.0F);
 		}
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == Items.flint_and_steel)
+		ItemStack stack = entityplayer.getHeldItem(hand);
+		
+		if(!stack.isEmpty() && stack.getItem() == Items.FLINT_AND_STEEL)
 		{
-			explode(world, x, y, z);
-			world.setBlockToAir(x, y, z);
+			explode(world, pos);
+			world.setBlockToAir(pos);
+			
 			return true;
 		}
 		else {
-			return super.onBlockActivated(world, x, y, z, entityplayer, i1, f1, f2, f3);
+			return super.onBlockActivated(world, pos, state, entityplayer, hand, side, hitX, hitY, hitZ);
 		}
 	}
 
@@ -96,37 +100,13 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public boolean hasTileEntity(int metadata)
-	{
-		return true;
-	}
-
-	@Override
-	public TileEntity createTileEntity(World world, int metadata)
-	{
-		return new TileEntityObsidianTNT();
-	}
-
-	@Override
-	public boolean renderAsNormalBlock()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isOpaqueCube()
-	{
-		return false;
-	}
-
-	@Override
-	public int getRenderType()
-	{
-		return -1;
-	}
-
-	@Override
-	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
 	{
 		if(entity instanceof EntityArrow && !world.isRemote)
 		{
@@ -134,8 +114,8 @@ public class BlockObsidianTNT extends Block
 
 			if(entityarrow.isBurning())
 			{
-				explode(world, x, y, z);
-				world.setBlockToAir(x, y, z);
+				explode(world, pos);
+				world.setBlockToAir(pos);
 			}
 		}
 	}

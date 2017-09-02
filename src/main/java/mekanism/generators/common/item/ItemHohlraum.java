@@ -4,16 +4,21 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.common.MekanismFluids;
 import mekanism.common.item.ItemMekanism;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemHohlraum extends ItemMekanism implements IGasItem
 {
@@ -24,12 +29,11 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	{
 		super();
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 	}
 	
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 
@@ -71,7 +75,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 			return 0;
 		}
 
-		if(stack.getGas() != GasRegistry.getGas("fusionFuelDT"))
+		if(stack.getGas() != MekanismFluids.FusionFuel)
 		{
 			return 0;
 		}
@@ -96,7 +100,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("fusionFuelDT");
+		return type == MekanismFluids.FusionFuel;
 	}
 
 	@Override
@@ -106,51 +110,41 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	}
 
 	@Override
-	public GasStack getGas(ItemStack itemstack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			return null;
-		}
-
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-
-		if(stored == null)
-		{
-			itemstack.setItemDamage(100);
-		}
-		else {
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-		}
-
-		return stored;
+		return true;
 	}
 	
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return false;
+		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
+	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
+
+	@Override
+	public GasStack getGas(ItemStack itemstack)
+	{
+		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
 	}
 
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.setItemDamage(100);
-			itemstack.stackTagCompound.removeTag("stored");
+			ItemDataUtils.removeData(itemstack, "stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 
@@ -158,20 +152,20 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	{
 		ItemStack stack = new ItemStack(this);
 		setGas(stack, null);
-		stack.setItemDamage(100);
+		
 		return stack;
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
+		if(!isInCreativeTab(tabs)) return;
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
-		empty.setItemDamage(100);
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("fusionFuelDT"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 }

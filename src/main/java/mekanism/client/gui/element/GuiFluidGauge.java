@@ -2,23 +2,25 @@ package mekanism.client.gui.element;
 
 import java.util.Arrays;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
+
+import org.lwjgl.input.Keyboard;
 
 public class GuiFluidGauge extends GuiGauge<Fluid>
 {
@@ -40,6 +42,17 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	}
 	
 	@Override
+	public int getRenderColor()
+	{
+		if(dummy)
+		{
+			return dummyType.getColor();
+		}
+		
+		return infoHandler.getTank().getFluid().getFluid().getColor();
+	}
+	
+	@Override
 	public TransmissionType getTransmission()
 	{
 		return TransmissionType.FLUID;
@@ -50,13 +63,13 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 			
-			if(guiObj instanceof GuiMekanism && stack != null && stack.getItem() instanceof ItemGaugeDropper)
+			if(guiObj instanceof GuiMekanism && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 			{
 				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				
-				if(tile instanceof ITankManager)
+				if(tile instanceof ITankManager && ((ITankManager)tile).getTanks() != null)
 				{
 					int index = Arrays.asList(((ITankManager)tile).getTanks()).indexOf(infoHandler.getTank());
 					
@@ -81,19 +94,29 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 		{
 			return height-2;
 		}
+
+        if(infoHandler.getTank().getFluid() == null || infoHandler.getTank().getCapacity() == 0)
+        {
+            return 0;
+        }
+        
+        if(infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE)
+        {
+        	return height-2;
+        }
 		
-		return infoHandler.getTank().getFluid() != null ? infoHandler.getTank().getFluidAmount()*(height-2) / infoHandler.getTank().getCapacity() : 0;
+		return infoHandler.getTank().getFluidAmount()*(height-2) / infoHandler.getTank().getCapacity();
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		if(dummy)
 		{
-			return dummyType.getIcon();
+			return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
 		}
 		
-		return infoHandler.getTank().getFluid().getFluid().getIcon();
+		return MekanismRenderer.getFluidTexture(infoHandler.getTank().getFluid().getFluid(), FluidType.STILL);
 	}
 
 	@Override
@@ -104,11 +127,13 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 			return dummyType.getLocalizedName(null);
 		}
 		
-		return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid()) + ": " + infoHandler.getTank().getFluidAmount() + "mB" : LangUtils.localize("gui.empty");
+		String amountStr = (infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : infoHandler.getTank().getFluidAmount() + " mB");
+		
+		return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid()) + ": " + amountStr : LangUtils.localize("gui.empty");
 	}
 
-	public static interface IFluidInfoHandler
+	public interface IFluidInfoHandler
 	{
-		public FluidTank getTank();
+		FluidTank getTank();
 	}
 }

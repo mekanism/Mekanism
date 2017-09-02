@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,40 +10,40 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.element.GuiConfigTypeTab;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 @SideOnly(Side.CLIENT)
 public class GuiSideConfiguration extends GuiMekanism
 {
-	public Map<Integer, GuiPos> slotPosMap = new HashMap<Integer, GuiPos>();
+	public Map<Integer, GuiPos> slotPosMap = new HashMap<>();
 
 	public ISideConfiguration configurable;
 	
 	public TransmissionType currentType;
 	
-	public List<GuiConfigTypeTab> configTabs = new ArrayList<GuiConfigTypeTab>();
+	public List<GuiConfigTypeTab> configTabs = new ArrayList<>();
 
 	public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile)
 	{
@@ -134,19 +135,25 @@ public class GuiSideConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(currentType, i);
+			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
 
-			if(data.color != EnumColor.GREY)
+			if(data != TileComponentConfig.EMPTY)
 			{
-				MekanismRenderer.color(data.color);
-			}
-
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
-			{
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				if(data.color != EnumColor.GREY)
+				{
+					MekanismRenderer.color(data.color);
+				}
+				
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
+				}
+				else {
+					drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				}
 			}
 			else {
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
+				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 28, 14, 14);
 			}
 		}
 
@@ -160,34 +167,37 @@ public class GuiSideConfiguration extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		String title = currentType.localize() + " " + LangUtils.localize("gui.config");
-		fontRendererObj.drawString(title, (xSize/2)-(fontRendererObj.getStringWidth(title)/2), 5, 0x404040);
+		fontRenderer.drawString(title, (xSize/2)-(fontRenderer.getStringWidth(title)/2), 5, 0x404040);
 		
 		if(configurable.getConfig().canEject(currentType))
 		{
-			fontRendererObj.drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
 		}
 		else {
-			fontRendererObj.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
+			fontRenderer.drawString(LangUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
 		}
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
+		fontRenderer.drawString(LangUtils.localize("gui.slots"), 77, 81, 0x787878);
 
 		for(int i = 0; i < slotPosMap.size(); i++)
 		{
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(currentType, i);
+			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
 
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+			if(data != TileComponentConfig.EMPTY)
 			{
-				drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
+				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
+				{
+					drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
+				}
 			}
 		}
 
 		if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -200,14 +210,14 @@ public class GuiSideConfiguration extends GuiMekanism
 
 		TileEntity tile = (TileEntity)configurable;
 
-		if(tile == null || mc.theWorld.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord) == null)
+		if(tile == null || mc.world.getTileEntity(tile.getPos()) == null)
 		{
 			mc.displayGuiScreen(null);
 		}
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -220,14 +230,14 @@ public class GuiSideConfiguration extends GuiMekanism
 		{
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
-				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
-                SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
+				int guiId = Mekanism.proxy.getGuiId(tile.getBlockType(), tile.getBlockMetadata());
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
 			}
 		}
@@ -244,7 +254,7 @@ public class GuiSideConfiguration extends GuiMekanism
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, currentType));
 			}
 		}

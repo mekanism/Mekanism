@@ -6,9 +6,8 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 
 public class GuiEnergyGauge extends GuiGauge
 {
@@ -36,11 +35,16 @@ public class GuiEnergyGauge extends GuiGauge
 	@Override
 	public int getScaledLevel()
 	{
+		if(infoHandler.getEnergyStorage().getEnergy() == Double.MAX_VALUE)
+		{
+			return height-2;
+		}
+		
 		return (int)(infoHandler.getEnergyStorage().getEnergy()*(height-2) / infoHandler.getEnergyStorage().getMaxEnergy());
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		return MekanismRenderer.energyIcon;
 	}
@@ -48,11 +52,11 @@ public class GuiEnergyGauge extends GuiGauge
 	@Override
 	public String getTooltipText()
 	{
-		return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils.getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy()) : LangUtils.localize("gui.empty");
+		return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils.getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()) : LangUtils.localize("gui.empty");
 	}
 
-	public static interface IEnergyInfoHandler
+	public interface IEnergyInfoHandler
 	{
-		public IStrictEnergyStorage getEnergyStorage();
+		IStrictEnergyStorage getEnergyStorage();
 	}
 }

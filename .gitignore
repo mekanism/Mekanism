@@ -1,22 +1,21 @@
 build
 output
-.gradle
 .idea
 *.iml
+*.ipr
+*.iws
+out
 
 Mekanism*.jar
 MDK.zip
 /run
-/gradle
-*.bat
+/.gradle
 *.classpath
 *.project
 /.settings
 /eclipse
-gradlew
 *.txt
 
-*.mtl
 *.blend1
 *.blend2
 /bin

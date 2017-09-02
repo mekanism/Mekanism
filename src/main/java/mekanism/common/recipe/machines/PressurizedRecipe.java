@@ -4,8 +4,9 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.outputs.PressurizedOutput;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -27,6 +28,14 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
 		extraEnergy = energy;
 		ticks = duration;
 	}
+	
+	public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts, NBTTagCompound extraNBT)
+	{
+		super(pressurizedInput, pressurizedProducts);
+
+		extraEnergy = extraNBT.getDouble("extraEnergy");
+		ticks = extraNBT.getInteger("duration");
+	}
 
 	@Override
 	public PressurizedRecipe copy()
@@ -34,12 +43,12 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
 		return new PressurizedRecipe(getInput().copy(), getOutput().copy(), extraEnergy, ticks);
 	}
 
-	public boolean canOperate(ItemStack[] inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank)
+	public boolean canOperate(NonNullList<ItemStack> inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank)
 	{
 		return getInput().use(inventory, 0, inputFluidTank, inputGasTank, false) &&	getOutput().applyOutputs(inventory, 2, outputGasTank, false);
 	}
 
-	public void operate(ItemStack[] inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank)
+	public void operate(NonNullList<ItemStack> inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank)
 	{
 		if(getInput().use(inventory, 0, inputFluidTank, inputGasTank, true))
 		{

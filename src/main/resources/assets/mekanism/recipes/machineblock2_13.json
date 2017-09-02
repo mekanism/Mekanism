@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 13
+  },
+  "pattern": [
+    "RE ",
+    "RCD",
+    "RE "
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Laser"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    },
+    "D": {
+      "ore": "gemDiamond",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    }
+  }
+}

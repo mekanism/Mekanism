@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanismtools:lapislazulihelmet"
+  },
+  "pattern": [
+    "***",
+    "* *"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "item": "minecraft:dye",
+      "data": 4
+    }
+  }
+}

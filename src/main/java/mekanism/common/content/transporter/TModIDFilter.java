@@ -1,26 +1,22 @@
 package mekanism.common.content.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.PacketHandler;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
-import mekanism.common.util.InventoryUtils;
-
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TModIDFilter extends TransporterFilter
 {
 	public String modID;
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return false;
 		}
@@ -29,9 +25,9 @@ public class TModIDFilter extends TransporterFilter
 	}
 
 	@Override
-	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
+	public Finder getFinder()
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new ModIDFinder(modID));
+		return new ModIDFinder(modID);
 	}
 
 	@Override
@@ -52,7 +48,7 @@ public class TModIDFilter extends TransporterFilter
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(3);
 
@@ -88,6 +84,7 @@ public class TModIDFilter extends TransporterFilter
 	public TModIDFilter clone()
 	{
 		TModIDFilter filter = new TModIDFilter();
+		filter.allowDefault = allowDefault;
 		filter.color = color;
 		filter.modID = modID;
 

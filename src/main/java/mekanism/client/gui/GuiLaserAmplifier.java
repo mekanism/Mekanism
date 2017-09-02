@@ -1,13 +1,15 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.element.GuiDetectionTab;
+import mekanism.client.gui.element.GuiAmplifierTab;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiNumberGauge;
 import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
@@ -17,14 +19,13 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.IIcon;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiLaserAmplifier extends GuiMekanism
@@ -43,7 +44,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
 		{
 			@Override
-			public IIcon getIcon()
+			public TextureAtlasSprite getIcon()
 			{
 				return MekanismRenderer.energyIcon;
 			}
@@ -57,17 +58,18 @@ public class GuiLaserAmplifier extends GuiMekanism
 			@Override
 			public double getMaxLevel()
 			{
-				return tileEntity.MAX_ENERGY;
+				return TileEntityLaserAmplifier.MAX_ENERGY;
 			}
 
 			@Override
 			public String getText(double level)
 			{
-				return LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level);
+				return LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level, tileEntity.getMaxEnergy());
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiDetectionTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+		guiElements.add(new GuiAmplifierTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 	}
 
 	@Override
@@ -76,12 +78,12 @@ public class GuiLaserAmplifier extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 55, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 55, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRendererObj.drawString(tileEntity.time > 0 ? LangUtils.localize("gui.delay") + ": " + tileEntity.time + "t" : LangUtils.localize("gui.noDelay"), 26, 30, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.min") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.minThreshold), 26, 45, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.max") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.maxThreshold), 26, 60, 0x404040);
+		fontRenderer.drawString(tileEntity.time > 0 ? LangUtils.localize("gui.delay") + ": " + tileEntity.time + "t" : LangUtils.localize("gui.noDelay"), 26, 30, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.min") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.minThreshold), 26, 45, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.max") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.maxThreshold), 26, 60, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -113,7 +115,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -123,7 +125,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == Keyboard.KEY_ESCAPE)
 		{
@@ -146,7 +148,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || c == '.' || c == 'E' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i))
 		{
 			minField.textboxKeyTyped(c, i);
 			maxField.textboxKeyTyped(c, i);
@@ -167,7 +169,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(toUse);
 
@@ -190,7 +192,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(1);
 			data.add(toUse);
 
@@ -206,7 +208,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		{
 			int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
 
-			ArrayList data = new ArrayList();
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(2);
 			data.add(toUse);
 
@@ -226,18 +228,18 @@ public class GuiLaserAmplifier extends GuiMekanism
 
 		String prevTime = timerField != null ? timerField.getText() : "";
 
-		timerField = new GuiTextField(fontRendererObj, guiWidth + 96, guiHeight + 28, 36, 11);
+		timerField = new GuiTextField(0, fontRenderer, guiWidth + 96, guiHeight + 28, 36, 11);
 		timerField.setMaxStringLength(4);
 		timerField.setText(prevTime);
 
 		String prevMin = minField != null ? minField.getText() : "";
-		minField = new GuiTextField(fontRendererObj, guiWidth + 96, guiHeight + 43, 72, 11);
+		minField = new GuiTextField(1, fontRenderer, guiWidth + 96, guiHeight + 43, 72, 11);
 		minField.setMaxStringLength(10);
 		minField.setText(prevMin);
 
 		String prevMax = maxField != null ? maxField.getText() : "";
 
-		maxField = new GuiTextField(fontRendererObj, guiWidth + 96, guiHeight + 58, 72, 11);
+		maxField = new GuiTextField(2, fontRenderer, guiWidth + 96, guiHeight + 58, 72, 11);
 		maxField.setMaxStringLength(10);
 		maxField.setText(prevMax);
 	}

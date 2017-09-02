@@ -1,0 +1,29 @@
+{
+  "result": {
+    "item": "mekanism:tierinstaller",
+    "data": 3
+  },
+  "pattern": [
+    "RCR",
+    "dWd",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "R": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUITULTIMATE"
+    },
+    "d": {
+      "ore": "gemDiamond",
+      "type": "forge:ore_dict"
+    },
+    "W": {
+      "ore": "plankWood",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:glowplasticblock",
+    "data": 9,
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:glowplasticblock",
+      "data": 32767
+    },
+    "D": {
+      "ore": "dyePink",
+      "type": "forge:ore_dict"
+    }
+  }
+}

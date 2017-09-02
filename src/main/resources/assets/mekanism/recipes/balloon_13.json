@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:balloon",
+    "data": 13,
+    "count": 2
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "ore": "dyeMagenta",
+      "type": "forge:ore_dict"
+    }
+  ],
+  "type": "mekanism:ore_shapeless"
+}

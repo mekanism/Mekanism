@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanism:glowplasticblock",
+    "data": 7,
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "item": "mekanism:plasticblock",
+      "data": 7
+    },
+    {
+      "item": "mekanism:plasticblock",
+      "data": 7
+    },
+    {
+      "item": "mekanism:plasticblock",
+      "data": 7
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

@@ -1,0 +1,19 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:fluid_tank"
+  },
+  "variants": {
+    "normal": [{}],
+    "active": {
+      "true": {"textures": {"all": "mekanism:blocks/models/fluid_tank_on"}},
+      "false": {"textures": {"all": "mekanism:blocks/models/fluid_tank"}}
+    },
+    "inventory": [{
+      "textures": {
+        "all": "mekanism:blocks/models/fluid_tank"
+      }
+    }]
+  }
+}
+

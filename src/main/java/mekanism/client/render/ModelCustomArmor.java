@@ -7,17 +7,16 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ModelCustomArmor extends ModelBiped
@@ -41,18 +40,17 @@ public class ModelCustomArmor extends ModelBiped
 		resetPart(bipedLeftLeg, 0, 0, 0);
 
 		bipedHeadwear.cubeList.clear();
-		bipedEars.cubeList.clear();
-		bipedCloak.cubeList.clear();
 	}
 
 	public void init(Entity entity, float f, float f1, float f2, float f3, float f4, float size)
 	{
 		reset();
 
+		isSneak = entity.isSneaking();
+		isRiding = entity.isRiding();
+
 		if(entity instanceof EntityLivingBase)
 		{
-			isSneak = ((EntityLivingBase)entity).isSneaking();
-			isRiding = ((EntityLivingBase)entity).isRiding();
 			isChild = ((EntityLivingBase)entity).isChild();
 		}
 
@@ -126,8 +124,8 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			if(ModelCustomArmor.this.modelType != null)
 			{
-				GL11.glPushMatrix();
-				GL11.glTranslatef(0, 0, 0.06F);
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(0, 0, 0.06F);
 
 				mc.renderEngine.bindTexture(modelType.resource);
 
@@ -147,27 +145,27 @@ public class ModelCustomArmor extends ModelBiped
 					}
 					else if(biped.modelType == ArmorModel.GASMASK)
 					{
-						GL11.glTranslatef(0, 0, -0.05F);
+						GlStateManager.translate(0, 0, -0.05F);
 						ArmorModel.gasMaskModel.render(0.0625F);
 					}
 					else if(biped.modelType == ArmorModel.FREERUNNERS)
 					{
-						GL11.glScalef(1.02F, 1.02F, 1.02F);
+						GlStateManager.scale(1.02F, 1.02F, 1.02F);
 
 						if(partRender == biped.bipedLeftLeg)
 						{
-							GL11.glTranslatef(-0.1375F, -0.75F, -0.0625F);
+							GlStateManager.translate(-0.1375F, -0.75F, -0.0625F);
 							ArmorModel.freeRunnersModel.renderLeft(0.0625F);
 						}
 						else if(partRender == biped.bipedRightLeg)
 						{
-							GL11.glTranslatef(0.1375F, -0.75F, -0.0625F);
+							GlStateManager.translate(0.1375F, -0.75F, -0.0625F);
 							ArmorModel.freeRunnersModel.renderRight(0.0625F);
 						}
 					}
 				}
 
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 		}
 	}
@@ -197,7 +195,7 @@ public class ModelCustomArmor extends ModelBiped
 		return false;
 	}
 
-	public static enum ArmorModel
+	public enum ArmorModel
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
 		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
@@ -214,24 +212,24 @@ public class ModelCustomArmor extends ModelBiped
 		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
 		public static ModelFreeRunners freeRunnersModel = new ModelFreeRunners();
 
-		private ArmorModel(int i, ResourceLocation r)
+		ArmorModel(int i, ResourceLocation r)
 		{
 			armorSlot = i;
 			resource = r;
 		}
 	}
 
-	public static ModelBiped getGlow(int index)
+	public static ModelBiped getGlow(EntityEquipmentSlot index)
 	{
-		ModelBiped biped = index != 2 ? GLOW_BIG : GLOW_SMALL;
+		ModelBiped biped = index != EntityEquipmentSlot.LEGS ? GLOW_BIG : GLOW_SMALL;
 
-		biped.bipedHead.showModel = index == 0;
-		biped.bipedHeadwear.showModel = index == 0;
-		biped.bipedBody.showModel = index == 1 || index == 2;
-		biped.bipedRightArm.showModel = index == 1;
-		biped.bipedLeftArm.showModel = index == 1;
-		biped.bipedRightLeg.showModel = index == 2 || index == 3;
-		biped.bipedLeftLeg.showModel = index == 2 || index == 3;
+		biped.bipedHead.showModel = index == EntityEquipmentSlot.HEAD;
+		biped.bipedHeadwear.showModel = index == EntityEquipmentSlot.HEAD;
+		biped.bipedBody.showModel = index == EntityEquipmentSlot.CHEST || index == EntityEquipmentSlot.LEGS;
+		biped.bipedRightArm.showModel = index == EntityEquipmentSlot.CHEST;
+		biped.bipedLeftArm.showModel = index == EntityEquipmentSlot.CHEST;
+		biped.bipedRightLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
+		biped.bipedLeftLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
 
 		return biped;
 	}
@@ -246,10 +244,11 @@ public class ModelCustomArmor extends ModelBiped
 		@Override
 		public void render(Entity entity, float par2, float par3, float par4, float par5, float par6, float par7)
 		{
+			isSneak = entity.isSneaking();
+			isRiding = entity.isRiding();
+
 			if(entity instanceof EntityLivingBase)
 			{
-				isSneak = ((EntityLivingBase)entity).isSneaking();
-				isRiding = ((EntityLivingBase)entity).isRiding();
 				isChild = ((EntityLivingBase)entity).isChild();
 			}
 

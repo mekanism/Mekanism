@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:transmitter_small.obj.mek",
+    "textures": {
+      "#side": "mekanism:blocks/models/multipart/PressurizedTubeVerticalUltimate",
+      "#center": "mekanism:blocks/models/multipart/PressurizedTubeUltimate",
+      "#side_opaque": "mekanism:blocks/models/multipart/opaque/PressurizedTubeVerticalUltimate",
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/PressurizedTubeUltimate"
+    },
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}
+

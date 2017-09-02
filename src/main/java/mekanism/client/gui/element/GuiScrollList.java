@@ -7,12 +7,10 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
-
-import codechicken.lib.vec.Rectangle4i;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiScrollList extends GuiElement
@@ -23,7 +21,7 @@ public class GuiScrollList extends GuiElement
 	public int xPosition;
 	public int yPosition;
 	
-	public List<String> textEntries = new ArrayList<String>();
+	public List<String> textEntries = new ArrayList<>();
 	
 	public int dragOffset = 0;
 	
@@ -100,7 +98,7 @@ public class GuiScrollList extends GuiElement
 		{
 			for(int xIter = 0; xIter < xDisplays; xIter++)
 			{
-				int width = (xSize%10 > 0 && xIter == xDisplays ? xSize%10 : 10);
+				int width = (xSize%10 > 0 && xIter == xDisplays-1 ? xSize%10 : 10);
 				guiObj.drawTexturedRect(guiWidth + xPosition + (xIter*10), guiHeight + yPosition + (yIter*10), 0, 0, width, 10);
 			}
 		}
@@ -116,7 +114,7 @@ public class GuiScrollList extends GuiElement
 			
 			for(int xIter = 0; xIter < xDisplays; xIter++)
 			{
-				int width = (xSize%10 > 0 && xIter == xDisplays ? xSize%10 : 10);
+				int width = (xSize%10 > 0 && xIter == xDisplays-1 ? xSize%10 : 10);
 				guiObj.drawTexturedRect(guiWidth + xPosition + (xIter*10), guiHeight + yPosition + (index-scroll)*10, 0, 10, width, 10);
 			}
 		}
@@ -233,9 +231,9 @@ public class GuiScrollList extends GuiElement
 	}
 
 	@Override
-	public void mouseMovedOrUp(int xAxis, int yAxis, int type)
+	public void mouseReleased(int xAxis, int yAxis, int type)
 	{
-		super.mouseMovedOrUp(xAxis, yAxis, type);
+		super.mouseReleased(xAxis, yAxis, type);
 
 		if(type == 0)
 		{
@@ -244,6 +242,18 @@ public class GuiScrollList extends GuiElement
 				dragOffset = 0;
 				isDragging = false;
 			}
+		}
+	}
+	
+	@Override
+	public void mouseWheel(int x, int y, int delta)
+	{
+		super.mouseWheel(x, y, delta);
+		
+		if(x > xPosition && x < xPosition+xSize && y > yPosition && y < yPosition+size*10)
+		{
+			scroll = Math.min(Math.max(scroll - (delta / 120F) * (1F / textEntries.size()), 0), 1); // 120 = DirectInput factor for one notch. Linux/OSX LWGL scale accordingly
+			drawScroll();
 		}
 	}
 }

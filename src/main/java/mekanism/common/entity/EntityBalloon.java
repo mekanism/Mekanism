@@ -7,19 +7,24 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
+import mekanism.common.MekanismSounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityReddustFX;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
@@ -32,6 +37,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	public boolean hasCachedEntity;
 
 	public UUID cachedEntityUUID;
+	
+    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager.<Byte>createKey(EntityBalloon.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> LATCHED_X = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
 
 	public EntityBalloon(World world)
 	{
@@ -40,15 +51,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		ignoreFrustumCheck = true;
 		preventEntitySpawning = true;
 		setPosition(posX + 0.5F, posY + 3F, posZ + 0.5F);
-		yOffset = height / 2.0F;
 		setSize(0.25F, 0.25F);
 		motionY = 0.04;
 
-		dataWatcher.addObject(2, new Byte((byte)0)); /* Is latched */
-		dataWatcher.addObject(3, new Integer(0)); /* Latched X */
-		dataWatcher.addObject(4, new Integer(0)); /* Latched Y */
-		dataWatcher.addObject(5, new Integer(0)); /* Latched Z */
-		dataWatcher.addObject(6, new Integer(-1)); /* Latched entity ID */
+		dataManager.register(IS_LATCHED, (byte)0);
+		dataManager.register(LATCHED_X, 0);
+		dataManager.register(LATCHED_Y, 0);
+		dataManager.register(LATCHED_Z, 0);
+		dataManager.register(LATCHED_ID, -1);
 	}
 
 	public EntityBalloon(World world, double x, double y, double z, EnumColor c)
@@ -66,7 +76,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public EntityBalloon(EntityLivingBase entity, EnumColor c)
 	{
-		this(entity.worldObj);
+		this(entity.world);
 
 		latchedEntity = entity;
 		setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
@@ -77,11 +87,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		color = c;
 
-		dataWatcher.updateObject(2, new Byte((byte)2)); /* Is latched */
-		dataWatcher.updateObject(3, new Integer(0)); /* Latched X */
-		dataWatcher.updateObject(4, new Integer(0)); /* Latched Y */
-		dataWatcher.updateObject(5, new Integer(0)); /* Latched Z */
-		dataWatcher.updateObject(6, new Integer(entity.getEntityId())); /* Latched entity ID */
+		dataManager.set(IS_LATCHED, (byte)2);
+		dataManager.set(LATCHED_ID, entity.getEntityId());
 	}
 
 	public EntityBalloon(World world, Coord4D obj, EnumColor c)
@@ -89,7 +96,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		this(world);
 
 		latched = obj;
-		setPosition(latched.xCoord + 0.5F, latched.yCoord + 2.8F, latched.zCoord + 0.5F);
+		setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
 
 		prevPosX = posX;
 		prevPosY = posY;
@@ -97,11 +104,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		color = c;
 
-		dataWatcher.updateObject(2, new Byte((byte)1)); /* Is latched */
-		dataWatcher.updateObject(3, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
-		dataWatcher.updateObject(4, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
-		dataWatcher.updateObject(5, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
-		dataWatcher.updateObject(6, new Integer(-1)); /* Latched entity ID */
+		dataManager.set(IS_LATCHED, (byte)1);
+		dataManager.set(LATCHED_X, latched != null ? latched.x : 0); /* Latched X */
+		dataManager.set(LATCHED_Y, latched != null ? latched.y : 0); /* Latched Y */
+		dataManager.set(LATCHED_Z, latched != null ? latched.z : 0); /* Latched Z */
 	}
 
 	@Override
@@ -117,19 +123,19 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			return;
 		}
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
-			if(dataWatcher.getWatchableObjectByte(2) == 1)
+			if(dataManager.get(IS_LATCHED) == 1)
 			{
-				latched = new Coord4D(dataWatcher.getWatchableObjectInt(3), dataWatcher.getWatchableObjectInt(4), dataWatcher.getWatchableObjectInt(5), worldObj.provider.dimensionId);
+				latched = new Coord4D((int)dataManager.get(LATCHED_X), (int)dataManager.get(LATCHED_Y), (int)dataManager.get(LATCHED_Z), world.provider.getDimension());
 			}
 			else {
 				latched = null;
 			}
 
-			if(dataWatcher.getWatchableObjectByte(2) == 2)
+			if(dataManager.get(IS_LATCHED) == 2)
 			{
-				latchedEntity = (EntityLivingBase)worldObj.getEntityByID(dataWatcher.getWatchableObjectInt(6));
+				latchedEntity = (EntityLivingBase)world.getEntityByID(dataManager.get(LATCHED_ID));
 			}
 			else {
 				latchedEntity = null;
@@ -145,28 +151,42 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 			if(ticksExisted == 1)
 			{
-				dataWatcher.updateObject(2, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0))); /* Is latched */
-				dataWatcher.updateObject(3, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
-				dataWatcher.updateObject(4, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
-				dataWatcher.updateObject(5, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
-				dataWatcher.updateObject(6, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1)); /* Latched entity ID */
+				byte isLatched;
+				if (latched != null)
+				{
+					isLatched = (byte) 1;
+				}
+				else if (latchedEntity != null)
+				{
+					isLatched = (byte) 2;
+				}
+				else
+				{
+					isLatched = (byte) 0;
+				}
+
+				dataManager.set(IS_LATCHED, isLatched);
+				dataManager.set(LATCHED_X, latched != null ? latched.x : 0);
+				dataManager.set(LATCHED_Y, latched != null ? latched.y : 0);
+				dataManager.set(LATCHED_Z, latched != null ? latched.z : 0);
+				dataManager.set(LATCHED_ID, latchedEntity != null ? latchedEntity.getEntityId() : -1);
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			if(latched != null && (latched.exists(worldObj) && latched.isAirBlock(worldObj)))
+			if(latched != null && (latched.exists(world) && latched.isAirBlock(world)))
 			{
 				latched = null;
 
-				dataWatcher.updateObject(2, (byte)0); /* Is latched */
+				dataManager.set(IS_LATCHED, (byte)0);
 			}
 
-			if(latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead || !worldObj.loadedEntityList.contains(latchedEntity)))
+			if(latchedEntity != null && (latchedEntity.getHealth() <= 0 || latchedEntity.isDead || !world.loadedEntityList.contains(latchedEntity)))
 			{
 				latchedEntity = null;
 
-				dataWatcher.updateObject(2, (byte)0); /* Is latched */
+				dataManager.set(IS_LATCHED, (byte)0);
 			}
 		}
 
@@ -174,7 +194,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			motionY = Math.min(motionY*1.02F, 0.2F);
 
-			moveEntity(motionX, motionY, motionZ);
+			move(MoverType.SELF, motionX, motionY, motionZ);
 
 			motionX *= 0.98;
 			motionZ *= 0.98;
@@ -218,20 +238,18 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	
 	public double getAddedHeight()
 	{
-		return latchedEntity.height + (latchedEntity instanceof EntityPlayer ? 0F : 1.7F);
+		return latchedEntity.height + 0.8;
 	}
 
 	private int getFloor(EntityLivingBase entity)
 	{
-		int xPos = MathHelper.floor_double(entity.posX);
-		int yPos = MathHelper.floor_double(entity.posY);
-		int zPos = MathHelper.floor_double(entity.posZ);
+		BlockPos pos = new BlockPos(entity);
 
-		for(int i = yPos; i > 0; i--)
+		for(BlockPos posi = pos; posi.getY() > 0; posi = posi.down())
 		{
-			if(i < 256 && !worldObj.isAirBlock(xPos, i, zPos))
+			if(posi.getY() < 256 && !world.isAirBlock(posi))
 			{
-				return i+1;
+				return posi.getY()+1+(entity instanceof EntityPlayer ? 1 : 0);
 			}
 		}
 
@@ -240,7 +258,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	private void findCachedEntity()
 	{
-		for(Object obj : worldObj.loadedEntityList)
+		for(Object obj : world.loadedEntityList)
 		{
 			if(obj instanceof EntityLivingBase)
 			{
@@ -256,9 +274,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	private void pop()
 	{
-		worldObj.playSoundAtEntity(this, "mekanism:etc.Pop", 1, 1);
+		playSound(MekanismSounds.POP, 1, 1);
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			for(int i = 0; i < 10; i++)
 			{
@@ -274,9 +292,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	@SideOnly(Side.CLIENT)
 	private void doParticle()
 	{
-		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
+		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 
-		EntityFX fx = new EntityReddustFX(worldObj, pos.xPos, pos.yPos, pos.zPos, 1, 0, 0, 0);
+		Particle fx = new ParticleRedstone.Factory().createParticle(0, world, pos.x, pos.y, pos.z, 0, 0, 0);
 		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
 
 		Minecraft.getMinecraft().effectRenderer.addEffect(fx);
@@ -357,10 +375,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			data.writeByte((byte)1);
 
-			data.writeInt(latched.xCoord);
-			data.writeInt(latched.yCoord);
-			data.writeInt(latched.zCoord);
-			data.writeInt(latched.dimensionId);
+			latched.write(data);
 		}
 		else if(latchedEntity != null)
 		{
@@ -387,7 +402,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		}
 		else if(type == 2)
 		{
-			latchedEntity = (EntityLivingBase)worldObj.getEntityByID(data.readInt());
+			latchedEntity = (EntityLivingBase)world.getEntityByID(data.readInt());
 		}
 		else {
 			latched = null;
@@ -420,14 +435,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	@Override
 	public boolean attackEntityFrom(DamageSource dmgSource, float damage)
 	{
-		if(isEntityInvulnerable())
+		if(isEntityInvulnerable(dmgSource))
 		{
 			return false;
 		}
 		else {
 			setBeenAttacked();
 
-			if(dmgSource != DamageSource.magic && dmgSource != DamageSource.drown && dmgSource != DamageSource.fall)
+			if(dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL)
 			{
 				pop();
 				return true;
@@ -439,17 +454,17 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public boolean isLatched()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			return latched != null || latchedEntity != null;
 		}
 		else {
-			return dataWatcher.getWatchableObjectByte(2) > 0;
+			return dataManager.get(IS_LATCHED) > 0;
 		}
 	}
 
 	public boolean isLatchedToEntity()
 	{
-		return dataWatcher.getWatchableObjectByte(2) == 2 && latchedEntity != null;
+		return dataManager.get(IS_LATCHED) == 2 && latchedEntity != null;
 	}
 }

@@ -1,6 +1,6 @@
 package mekanism.api.gas;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Implement this if your block can connect to Pressurized Tubes.
@@ -14,5 +14,5 @@ public interface ITubeConnection
 	 * @param side - orientation to check
 	 * @return if a tube can connect
 	 */
-	public boolean canTubeConnect(ForgeDirection side);
+    boolean canTubeConnect(EnumFacing side);
 }

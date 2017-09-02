@@ -7,32 +7,47 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.util.CapabilityUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMessage>
 {
 	@Override
 	public IMessage onMessage(TileEntityMessage message, MessageContext context) 
 	{
-		TileEntity tileEntity = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
+		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(tileEntity instanceof ITileNetwork)
+		if(player == null)
 		{
-			try {
-				((ITileNetwork)tileEntity).handlePacketData(message.storedBuffer);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-			
-			message.storedBuffer.release();
+			return null;
 		}
+		
+		PacketHandler.handlePacket(() ->
+		{
+            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+            if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
+            {
+                ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+
+                try {
+                    network.handlePacketData(message.storedBuffer);
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+                message.storedBuffer.release();
+            }
+        }, player);
 		
 		return null;
 	}
@@ -41,13 +56,13 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 	{
 		public Coord4D coord4D;
 	
-		public ArrayList parameters;
+		public ArrayList<Object> parameters;
 		
 		public ByteBuf storedBuffer = null;
 		
 		public TileEntityMessage() {}
 	
-		public TileEntityMessage(Coord4D coord, ArrayList params)
+		public TileEntityMessage(Coord4D coord, ArrayList<Object> params)
 		{
 			coord4D = coord;
 			parameters = params;
@@ -56,16 +71,13 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 			
 			MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 			
 			if(server != null)
 			{
-				World world = server.worldServerForDimension(coord4D.dimensionId);
+				World world = server.getWorld(coord4D.dimensionId);
 				PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.getTileEntity(world) + ")");
 			}
 			
@@ -75,7 +87,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 			
 			storedBuffer = dataStream.copy();
 		}

@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:machineblock",
+    "data": 2
+  },
+  "pattern": [
+    "RCR",
+    "SIS",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Combiner"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "cobblestone",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUITELITE"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

@@ -1,31 +1,38 @@
 package mekanism.common.base;
 
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.tile.IEnergySink;
-import mekanism.api.Coord4D;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.security.ISecurityTile;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 
 @InterfaceList({
-		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
-		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
 })
-public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
+public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData, ISecurityTile
 {
-	public int[] getBoundSlots(Coord4D location, int side);
+	int[] getBoundSlots(BlockPos location, EnumFacing side);
 
-	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack);
+	boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack);
 
-	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, int j);
+	boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing side);
+	
+	boolean canBoundReceiveEnergy(BlockPos location, EnumFacing side);
 
-	public void onPower();
+	void onPower();
 
-	public void onNoPower();
+	void onNoPower();
 }

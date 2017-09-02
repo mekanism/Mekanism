@@ -2,18 +2,21 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.util.StackUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * An input of a gas, a fluid and an item for the pressurized reaction chamber
  */
 public class PressurizedInput extends MachineInput<PressurizedInput>
 {
-	private ItemStack theSolid;
+	private ItemStack theSolid = ItemStack.EMPTY;
 	private FluidStack theFluid;
 	private GasStack theGas;
 
@@ -29,7 +32,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
-		theSolid = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemInput"));
+		theSolid = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemInput"));
 		theFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("fluidInput"));
 		theGas = GasStack.readFromNBT(nbtTags.getCompoundTag("gasInput"));
 	}
@@ -40,21 +43,23 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	@Override
 	public boolean isValid()
 	{
-		return theSolid != null && theFluid != null && theGas != null;
+		return !theSolid.isEmpty() && theFluid != null && theGas != null;
 	}
 
-	public boolean use(ItemStack[] inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete)
+	public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete)
 	{
-		if(meets(new PressurizedInput(inventory[index], fluidTank.getFluid(), gasTank.getGas())))
+		if(meets(new PressurizedInput(inventory.get(index), fluidTank.getFluid(), gasTank.getGas())))
 		{
 			if(deplete)
 			{
-				inventory[index] = StackUtils.subtract(inventory[index], theSolid);
+				inventory.set(index, StackUtils.subtract(inventory.get(index), theSolid));
 				fluidTank.drain(theFluid.amount, true);
 				gasTank.draw(theGas.amount, true);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -65,7 +70,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	 */
 	public boolean containsType(ItemStack stack)
 	{
-		if(stack == null || stack.stackSize == 0)
+		if(stack.isEmpty() || stack.getCount() == 0)
 		{
 			return false;
 		}
@@ -120,7 +125,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 			return false;
 		}
 
-		return input.theSolid.stackSize >= theSolid.stackSize && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
+		return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
 	}
 
 	@Override
@@ -160,5 +165,10 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	public boolean isInstance(Object other)
 	{
 		return other instanceof PressurizedInput;
+	}
+
+	public PressurizedInput wildCopy()
+	{
+		return new PressurizedInput(new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
 	}
 }

@@ -1,0 +1,37 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 2
+    },
+    "item": "mekanism:basicblock2",
+    "data": 4,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "CPC",
+    "PEP",
+    "CPC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "nbt": {
+        "tier": 1
+      },
+      "item": "mekanism:basicblock2",
+      "data": 4,
+      "type": "mekanism:item_nbt"
+    },
+    "C": {
+      "item": "#CIRCUITELITE"
+    },
+    "E": {
+      "nbt": {
+        "tier": 2
+      },
+      "item": "mekanism:energycube",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

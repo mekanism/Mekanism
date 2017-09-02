@@ -1,0 +1,38 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 2
+  },
+  "pattern": [
+    "ACA",
+    "GRG",
+    "ACA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ChemicalInfuser"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "R": {
+      "item": "mekanism:basicblock",
+      "data": 9
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

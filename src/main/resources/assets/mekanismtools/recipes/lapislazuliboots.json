@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "mekanismtools:lapislazuliboots"
+  },
+  "pattern": [
+    "* *",
+    "* *"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "*": {
+      "item": "minecraft:dye",
+      "data": 4
+    }
+  }
+}

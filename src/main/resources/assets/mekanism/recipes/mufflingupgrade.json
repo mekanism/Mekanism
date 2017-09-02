@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "mekanism:mufflingupgrade"
+  },
+  "pattern": [
+    " G ",
+    "ADA",
+    " G "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "D": {
+      "ore": "dustSteel",
+      "type": "forge:ore_dict"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    }
+  }
+}

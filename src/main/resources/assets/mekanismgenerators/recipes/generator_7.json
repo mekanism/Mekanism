@@ -1,0 +1,21 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 7
+  },
+  "pattern": [
+    "SAS",
+    "SAS",
+    "SAS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 0
+    },
+    "item": "mekanism:transmitter",
+    "data": 1,
+    "count": 8,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "SBS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

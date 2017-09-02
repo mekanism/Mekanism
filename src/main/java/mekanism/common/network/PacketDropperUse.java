@@ -6,31 +6,37 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITankManager.DropperHandler;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMessage>
 {
 	@Override
 	public IMessage onMessage(DropperUseMessage message, MessageContext context) 
 	{
-		TileEntity tileEntity = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
+		EntityPlayer player = PacketHandler.getPlayer(context);
 		
-		if(tileEntity instanceof ITankManager)
-		{
-			try {
-				Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
-				
-				if(tank != null)
-				{
-					DropperHandler.useDropper(PacketHandler.getPlayer(context), tank, message.mouseButton);
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
+		PacketHandler.handlePacket(() ->
+        {
+            TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
+
+            if(tileEntity instanceof ITankManager)
+            {
+                try {
+                    Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
+
+                    if(tank != null)
+                    {
+                        DropperHandler.useDropper(player, tank, message.mouseButton);
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, player);
 		
 		return null;
 	}
@@ -54,10 +60,7 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 			
 			dataStream.writeInt(mouseButton);
 			dataStream.writeInt(tankId);
@@ -66,7 +69,7 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 			
 			mouseButton = dataStream.readInt();
 			tankId = dataStream.readInt();

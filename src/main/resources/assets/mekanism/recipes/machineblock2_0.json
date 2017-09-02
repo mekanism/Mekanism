@@ -1,0 +1,46 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 0
+  },
+  "pattern": [
+    "GCG",
+    "tEI",
+    "GCG"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "RotaryCondensentrator"
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "t": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:machineblock2",
+      "data": 11,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanismgenerators:blocks/reactor_frame",
+      "front": "mekanismgenerators:blocks/reactor_frame",
+      "up": "mekanismgenerators:blocks/reactor_controller"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "active": {
+      "false": {},
+      "true": {
+        "textures": {
+          "sides": "mekanismgenerators:blocks/reactor_frame",
+          "front": "mekanismgenerators:blocks/reactor_frame",
+          "up": "mekanismgenerators:blocks/reactor_controller_on"
+        }
+      }
+    }
+  }
+}
+

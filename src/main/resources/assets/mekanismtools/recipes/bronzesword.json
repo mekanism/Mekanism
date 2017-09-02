@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:bronzesword"
+  },
+  "pattern": [
+    "X",
+    "X",
+    "T"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "ore": "ingotBronze",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,19 +1,20 @@
 /**
  * This file is part of the public ComputerCraft API - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2014. This API may be redistributed unmodified and in full only.
+ * Copyright Daniel Ratcliffe, 2011-2016. This API may be redistributed unmodified and in full only.
  * For help using the API, and posting your mods, visit the forums at computercraft.info.
  */
 
 package dan200.computercraft.api.turtle;
 
+import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 
 /**
  * The interface passed to turtle by turtles, providing methods that they can call.
@@ -31,12 +32,12 @@ public interface ITurtleAccess
 	 * Returns a vector containing the integer co-ordinates at which the turtle resides.
 	 * @return a vector containing the integer co-ordinates at which the turtle resides.
 	 */
-	public ChunkCoordinates getPosition();
+	public BlockPos getPosition();
 
     /**
      * TODO: Document me
      */
-    public boolean teleportTo( World world, int x, int y, int z );
+    public boolean teleportTo( World world, BlockPos pos );
 
 	/**
 	 * Returns a vector containing the floating point co-ordinates at which the turtle is rendered.
@@ -44,7 +45,7 @@ public interface ITurtleAccess
 	 * @param f The subframe fraction
 	 * @return a vector containing the floating point co-ordinates at which the turtle resides.
 	 */
-	public Vec3 getVisualPosition( float f );
+	public Vec3d getVisualPosition( float f );
 
     /**
      * TODO: Document me
@@ -55,12 +56,12 @@ public interface ITurtleAccess
 	 * Returns the world direction the turtle is currently facing.
 	 * @return the world direction the turtle is currently facing.
 	 */
-	public int getDirection();
+	public EnumFacing getDirection();
 
     /**
      * TODO: Document me
      */
-    public void setDirection( int dir );
+    public void setDirection( EnumFacing dir );
 
     /**
      * TODO: Document me
@@ -71,6 +72,18 @@ public interface ITurtleAccess
      * TODO: Document me
      */
     public void setSelectedSlot( int slot );
+
+    /**
+     * Sets the colour of the turtle, as if the player had dyed it with a dye item.
+     * @param dyeColour 0-15 to dye the turtle one of the 16 standard minecraft colours, or -1 to remove the dye from the turtle.
+     */
+    public void setDyeColour( int dyeColour );
+
+    /**
+     * Gets the colour the turtle has been dyed.
+     * @return 0-15 if the turtle has been dyed one of the 16 standard minecraft colours, -1 if the turtle is clean.
+     */
+    public int getDyeColour();
 
     /**
      * TODO: Document me

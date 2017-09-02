@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "mekanism:basicblock2",
+    "data": 9
+  },
+  "pattern": [
+    "SGS",
+    "CIC",
+    "STS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUITELITE"
+    },
+    "T": {
+      "item": "mekanism:teleportationcore"
+    },
+    "G": {
+      "ore": "blockGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

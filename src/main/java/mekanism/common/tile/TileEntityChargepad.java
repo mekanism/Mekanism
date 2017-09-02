@@ -1,49 +1,54 @@
 package mekanism.common.tile;
 
+import cofh.redstoneflux.api.IEnergyContainerItem;
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.MekanismUtils;
-
+import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import io.netty.buffer.ByteBuf;
-
-import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-
-public class TileEntityChargepad extends TileEntityNoisyElectricBlock
+public class TileEntityChargepad extends TileEntityNoisyBlock
 {
 	public boolean isActive;
-
-	public boolean prevActive;
+	public boolean clientActive;
 
 	public Random random = new Random();
 
 	public TileEntityChargepad()
 	{
-		super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
-		inventory = new ItemStack[0];
+		super("machine.chargepad", "Chargepad", BlockStateMachine.MachineType.CHARGEPAD.baseEnergy);
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -51,10 +56,10 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			isActive = false;
-			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 0.2, zCoord + 1));
+			List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX() + 1, getPos().getY() + 0.2, getPos().getZ() + 1));
 
 			for(EntityLivingBase entity : entities)
 			{
@@ -104,47 +109,69 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 				}
 			}
 
-			if(prevActive != isActive)
+			if(clientActive != isActive)
 			{
-				worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.1, zCoord + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
+				if(isActive)
+				{
+		            world.playSound((EntityPlayer)null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.8F);
+				}
+				else {
+		            world.playSound((EntityPlayer)null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
+				}
+				
 				setActive(isActive);
 			}
 		}
 		else if(isActive)
 		{
-			worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
+			world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX()+random.nextDouble(), getPos().getY()+0.15, getPos().getZ()+random.nextDouble(), 0, 0, 0);
 		}
 	}
 
 	public void chargeItemStack(ItemStack itemstack)
 	{
-		if(itemstack != null)
+		if(!itemstack.isEmpty())
 		{
 			if(itemstack.getItem() instanceof IEnergizedItem)
 			{
 				setEnergy(getEnergy() - EnergizedItemManager.charge(itemstack, getEnergy()));
 			}
-			else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null))
 			{
-				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*general.TO_IC2), 4, true, false)*general.FROM_IC2;
-				setEnergy(getEnergy() - sent);
+				ITeslaConsumer consumer = itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
+				
+				long stored = (long)Math.round(getEnergy()*general.TO_TESLA);
+				setEnergy(getEnergy() - consumer.givePower(stored, false)*general.FROM_TESLA);
+			}
+			else if(MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null))
+			{
+				IEnergyStorage storage = itemstack.getCapability(CapabilityEnergy.ENERGY, null);
+				
+				if(storage.canReceive())
+				{
+					int stored = (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_FORGE));
+					setEnergy(getEnergy() - storage.receiveEnergy(stored, false)*general.FROM_FORGE);
+				}
 			}
 			else if(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem)
 			{
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 
-				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*general.TO_TE)));
-
-				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_TE));
+				int toTransfer = (int)Math.round(getEnergy()*general.TO_RF);
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_RF));
+			}
+			else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem)
+			{
+				double sent = ElectricItem.manager.charge(itemstack, getEnergy()*general.TO_IC2, 4, true, false)*general.FROM_IC2;
+				setEnergy(getEnergy() - sent);
 			}
 		}
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return EnumSet.of(ForgeDirection.DOWN, ForgeDirection.getOrientation(facing).getOpposite());
+		return side == EnumFacing.DOWN || side == facing.getOpposite();
 	}
 
 	@Override
@@ -158,12 +185,12 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	{
 		isActive = active;
 
-		if(prevActive != active)
+		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
 
-		prevActive = active;
+		clientActive = active;
 	}
 
 	@Override
@@ -175,23 +202,34 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
+		
+		return nbtTags;
 	}
 
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-		isActive = dataStream.readBoolean();
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			clientActive = dataStream.readBoolean();
+			
+			if(clientActive != isActive)
+			{
+				isActive = clientActive;
+				MekanismUtils.updateBlock(world, getPos());
+			}
+		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(isActive);
@@ -208,7 +246,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
-		return 0.4F;
+		return 0.4F*super.getVolume();
 	}
 
 	@Override

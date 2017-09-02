@@ -1,15 +1,16 @@
 package mekanism.common.content.matrix;
 
 import mekanism.common.multiblock.MultiblockCache;
-
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 {
-	public ItemStack[] inventory = new ItemStack[2];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	
 	@Override
 	public void apply(SynchronizedMatrixData data) 
@@ -27,7 +28,7 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 	public void load(NBTTagCompound nbtTags) 
 	{
 		NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
@@ -36,7 +37,7 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 
 			if(slotID >= 0 && slotID < 2)
 			{
-				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
 			}
 		}
 	}
@@ -48,11 +49,11 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 
 		for(int slotCount = 0; slotCount < 2; slotCount++)
 		{
-			if(inventory[slotCount] != null)
+			if(!inventory.get(slotCount).isEmpty())
 			{
 				NBTTagCompound tagCompound = new NBTTagCompound();
 				tagCompound.setByte("Slot", (byte)slotCount);
-				inventory[slotCount].writeToNBT(tagCompound);
+				inventory.get(slotCount).writeToNBT(tagCompound);
 				tagList.appendTag(tagCompound);
 			}
 		}

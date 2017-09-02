@@ -1,7 +1,7 @@
 package mekanism.common.base;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Implement this if your TileEntity has a specific sound.
@@ -11,8 +11,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public interface IHasSound
 {
 	@SideOnly(Side.CLIENT)
-	public SoundWrapper getSound();
+    SoundWrapper getSound();
 
 	@SideOnly(Side.CLIENT)
-	public boolean shouldPlaySound();
+    boolean shouldPlaySound();
 }

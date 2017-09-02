@@ -30,7 +30,7 @@ public class FluidSlot
 
 	/**
 	 * Sets the fluid to a new amount.
-	 * @param fluid - amount to store
+	 * @param amount - amount to store
 	 */
 	public void setFluid(int amount)
 	{

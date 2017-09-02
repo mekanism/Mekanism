@@ -4,7 +4,7 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 
 public interface IFluidContainerManager 
 {
-	public ContainerEditMode getContainerEditMode();
+	ContainerEditMode getContainerEditMode();
 	
-	public void setContainerEditMode(ContainerEditMode mode);
+	void setContainerEditMode(ContainerEditMode mode);
 }

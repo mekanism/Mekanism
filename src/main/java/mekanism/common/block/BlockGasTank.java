@@ -3,58 +3,103 @@ package mekanism.common.block;
 import java.util.Random;
 
 import mekanism.api.gas.IGasItem;
-import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
-import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.base.ITierItem;
+import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateGasTank;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import buildcraft.api.tools.IToolWrench;
 
 public class BlockGasTank extends BlockContainer
 {
+	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
+
 	public BlockGasTank()
 	{
-		super(Material.iron);
-		setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
+		super(Material.IRON);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) 
+	protected BlockStateContainer createBlockState()
 	{
-		blockIcon = register.registerIcon("mekanism:SteelCasing");
+		return new BlockStateGasTank(this);
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public IBlockState getStateFromMeta(int meta)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		return getDefaultState();
+	}
 
-		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return 0;
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
+		
+		if(tile instanceof TileEntityGasTank)
+		{
+			TileEntityGasTank tank = (TileEntityGasTank)tile;
+			
+			if(tank.facing != null)
+			{
+				state = state.withProperty(BlockStateFacing.facingProperty, tank.facing);
+			}
+
+			if(tank.tier != null)
+			{
+				state = state.withProperty(BlockStateGasTank.typeProperty, tank.tier);
+			}
+		}
+		
+		return state;
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+	{
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+
+		int side = MathHelper.floor((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int change = 3;
 
 		switch(side)
@@ -66,57 +111,71 @@ public class BlockGasTank extends BlockContainer
 		}
 
 		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(pos);
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
 			}
 		}
 	}
+	
+	@Override
+	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		
+		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
+	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-		{
-			return false;
-		}
-
 		if(world.isRemote)
 		{
 			return true;
 		}
 
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
+		ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		if(!stack.isEmpty())
 		{
-			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+			Item tool = stack.getItem();
 
-			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
 			{
-				if(entityplayer.isSneaking())
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
 				{
-					dismantleBlock(world, x, y, z, false);
-					return true;
+					if(entityplayer.isSneaking())
+					{
+						dismantleBlock(state, world, pos, false);
+						
+						return true;
+					}
+	
+					if(MekanismUtils.isBCWrench(tool))
+					{
+						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
+					}
+	
+					int change = tileEntity.facing.rotateY().ordinal();
+	
+					tileEntity.setFacing((short)change);
+					world.notifyNeighborsOfStateChange(pos, this, true);
 				}
-
-				if(MekanismUtils.isBCWrench(tool))
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
-
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
@@ -125,36 +184,44 @@ public class BlockGasTank extends BlockContainer
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(Mekanism.instance, 10, world, x, y, z);
+				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				{
+					entityplayer.openGui(Mekanism.instance, 10, world, pos.getX(), pos.getY(), pos.getZ());
+				}
+				else {
+					SecurityUtils.displayNoAccess(entityplayer);
+				}
+				
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -163,9 +230,9 @@ public class BlockGasTank extends BlockContainer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			world.spawnEntity(entityItem);
 		}
 
 		return itemStack;
@@ -178,27 +245,27 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean renderAsNormalBlock()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isOpaqueCube()
+	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
-		return false;
+		return EnumBlockRenderType.MODEL;
 	}
-
+	
 	@Override
-	public int getRenderType()
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		return -1;
+		return TANK_BOUNDS;
 	}
 
 	@Override
@@ -208,44 +275,71 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
+		
+		if(itemStack.hasTagCompound())
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(tileEntity instanceof ISecurityTile)
+		{
+			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+			
+			if(securityItem.hasSecurity(itemStack))
+			{
+				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
+				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
+			}
+		}
+		
+		if(tileEntity instanceof ISideConfiguration)
+		{
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
+
+			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+		}
+		
+		ITierItem tierItem = (ITierItem)itemStack.getItem();
+		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
 
 		IGasItem storageTank = (IGasItem)itemStack.getItem();
 		storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
 
 		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-		inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+		inventory.setInventory(tileEntity.getInventory(), itemStack);
 
 		return itemStack;
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride()
+	public boolean hasComparatorInputOverride(IBlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
+	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		return tileEntity.getRedstoneLevel();
 	}
 	
 	@Override
-	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		ForgeDirection[] valid = new ForgeDirection[6];
+		TileEntity tile = world.getTileEntity(pos);
+		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.VALUES)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{
@@ -258,9 +352,9 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(pos);
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
@@ -275,4 +369,24 @@ public class BlockGasTank extends BlockContainer
 		
 		return false;
 	}
+
+	@Override
+	public boolean isFullBlock(IBlockState state) 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState state) 
+	{
+		return false;
+	}
+
+	/*
+	@Override
+	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
+	{
+		return false;
+	}
+	*/
 }

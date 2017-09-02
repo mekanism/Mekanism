@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanism:basicblock2",
+    "data": 8,
+    "count": 2
+  },
+  "pattern": [
+    " I ",
+    "ICI",
+    " I "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "item": "#CIRCUITADVANCED"
+    },
+    "I": {
+      "item": "mekanism:basicblock2",
+      "data": 7
+    }
+  }
+}

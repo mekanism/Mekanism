@@ -3,47 +3,51 @@ package mekanism.common;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
 
 public class LaserManager
 {
-	public static LaserInfo fireLaser(TileEntity from, ForgeDirection direction, double energy, World world)
+	public static LaserInfo fireLaser(TileEntity from, EnumFacing direction, double energy, World world)
 	{
 		return fireLaser(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
 	}
 
-	public static LaserInfo fireLaser(Pos3D from, ForgeDirection direction, double energy, World world)
+	public static LaserInfo fireLaser(Pos3D from, EnumFacing direction, double energy, World world)
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
 
-		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
+		RayTraceResult mop = world.rayTraceBlocks(from, to);
 
 		if(mop != null)
 		{
 			to = new Pos3D(mop.hitVec);
-			Coord4D toCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+			Coord4D toCoord = new Coord4D(mop.getBlockPos(), world);
 			TileEntity tile = toCoord.getTileEntity(world);
 
-			if(tile instanceof ILaserReceptor)
+			if(isReceptor(tile, mop.sideHit))
 			{
-				if(!(((ILaserReceptor)tile).canLasersDig()))
+				ILaserReceptor receptor = getReceptor(tile, mop.sideHit);
+				
+				if(!(receptor.canLasersDig()))
 				{
-					((ILaserReceptor)tile).receiveLaserEnergy(energy, ForgeDirection.getOrientation(mop.sideHit));
+					receptor.receiveLaserEnergy(energy, mop.sideHit);
 				}
 			}
 		}
@@ -64,7 +68,7 @@ public class LaserManager
 			
 			if(energy > 256)
 			{
-				e.attackEntityFrom(DamageSource.generic, (float)energy/1000F);
+				e.attackEntityFrom(DamageSource.GENERIC, (float)energy/1000F);
 			}
 		}
 		
@@ -79,11 +83,11 @@ public class LaserManager
 		}
 		
 		List<ItemStack> ret = null;
-		Block blockHit = blockCoord.getBlock(world);
-		int meta = blockCoord.getMetadata(world);
+		IBlockState state = blockCoord.getBlockState(world);
+		Block blockHit = state.getBlock();
 		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord).get();
-		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, world, blockHit, meta, dummy);
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.x, blockCoord.y, blockCoord.z).get();
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
 		MinecraftForge.EVENT_BUS.post(event);
 		
 		if(event.isCanceled())
@@ -93,28 +97,28 @@ public class LaserManager
 		
 		if(dropAtBlock)
 		{
-			blockHit.dropBlockAsItem(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
+			blockHit.dropBlockAsItem(world, blockCoord.getPos(), state, 0);
 		}
 		else {
-			ret = blockHit.getDrops(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
+			ret = blockHit.getDrops(world, blockCoord.getPos(), state, 0);
 		}
 		
-		blockHit.breakBlock(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockHit, blockCoord.getMetadata(world));
-		world.setBlockToAir(blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord);
-		world.playAuxSFX(2001, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, Block.getIdFromBlock(blockHit));
+		blockHit.breakBlock(world, blockCoord.getPos(), state);
+		world.setBlockToAir(blockCoord.getPos());
+		world.playEvent(2001, blockCoord.getPos(), Block.getStateId(state));
 		
 		return ret;
 	}
 
-	public static MovingObjectPosition fireLaserClient(TileEntity from, ForgeDirection direction, double energy, World world)
+	public static RayTraceResult fireLaserClient(TileEntity from, EnumFacing direction, double energy, World world)
 	{
 		return fireLaserClient(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
 	}
 
-	public static MovingObjectPosition fireLaserClient(Pos3D from, ForgeDirection direction, double energy, World world)
+	public static RayTraceResult fireLaserClient(Pos3D from, EnumFacing direction, double energy, World world)
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
-		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
+		RayTraceResult mop = world.rayTraceBlocks(from, to);
 
 		if(mop != null)
 		{
@@ -127,13 +131,23 @@ public class LaserManager
 		return mop;
 	}
 	
+	public static boolean isReceptor(TileEntity tile, EnumFacing side)
+	{
+		return CapabilityUtils.hasCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
+	}
+	
+	public static ILaserReceptor getReceptor(TileEntity tile, EnumFacing side)
+	{
+		return CapabilityUtils.getCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, side);
+	}
+	
 	public static class LaserInfo
 	{
-		public MovingObjectPosition movingPos;
+		public RayTraceResult movingPos;
 		
 		public boolean foundEntity;
 		
-		public LaserInfo(MovingObjectPosition mop, boolean b)
+		public LaserInfo(RayTraceResult mop, boolean b)
 		{
 			movingPos = mop;
 			foundEntity = b;

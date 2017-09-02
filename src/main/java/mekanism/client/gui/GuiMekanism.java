@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,19 +10,22 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
-	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
+	public Set<GuiElement> guiElements = new HashSet<>();
 
 	private TileEntityContainerBlock tileEntity;
 
@@ -40,7 +43,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	
 	public float getNeededScale(String text, int maxX)
 	{
-		int length = fontRendererObj.getStringWidth(text);
+		int length = fontRenderer.getStringWidth(text);
 		
 		if(length <= maxX)
 		{
@@ -54,24 +57,36 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	/** returns scale */
 	public void renderScaledText(String text, int x, int y, int color, int maxX)
 	{
-		int length = fontRendererObj.getStringWidth(text);
+		int length = fontRenderer.getStringWidth(text);
 		
 		if(length <= maxX)
 		{
-			fontRendererObj.drawString(text, x, y, color);
+			fontRenderer.drawString(text, x, y, color);
 		}
 		else {
 			float scale = (float)maxX/length;
 			float reverse = 1/scale;
 			float yAdd = 4-(scale*8)/2F;
 			
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			
-			GL11.glScalef(scale, scale, scale);
-			fontRendererObj.drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
+			GlStateManager.scale(scale, scale, scale);
+			fontRenderer.drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
 			
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
+	}
+	
+	public static boolean isTextboxKey(char c, int i)
+	{
+		if(i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT ||
+				i == Keyboard.KEY_END || i == Keyboard.KEY_HOME || i == Keyboard.KEY_BACK || isKeyComboCtrlA(i) || 
+				isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i))
+		{
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -102,15 +117,15 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 				}
 			}
 
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 
-			if(stack != null && stack.getItem() instanceof ItemConfigurator && hovering != null)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null)
 			{
 				SideData data = getFromSlot(hovering);
 
 				if(data != null)
 				{
-					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
+					drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
 				}
 			}
 		}
@@ -144,7 +159,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY)
 	{
-		return func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);//isPointInRegion
+		return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
 	}
 
 	@Override
@@ -163,7 +178,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
@@ -182,47 +197,33 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	}
 
 	@Override
-	protected void drawCreativeTabHoveringText(String text, int x, int y)
-	{
-		func_146283_a(Arrays.asList(new String[] {text}), x, y);
-	}
-
-	@Override
-	protected void func_146283_a(List list, int x, int y)
-	{
-		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
-		super.func_146283_a(list, x, y);
-		GL11.glPopAttrib();
-	}
-
-	@Override
 	public void drawTexturedRect(int x, int y, int u, int v, int w, int h)
 	{
 		drawTexturedModalRect(x, y, u, v, w, h);
 	}
 
 	@Override
-	public void drawTexturedRectFromIcon(int x, int y, IIcon icon, int w, int h)
+	public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h)
 	{
-		drawTexturedModelRectFromIcon(x, y, icon, w, h);
+		drawTexturedModalRect(x, y, icon, w, h);
 	}
 
 	@Override
 	public void displayTooltip(String s, int x, int y)
 	{
-		drawCreativeTabHoveringText(s, x, y);
+		drawHoveringText(s, x, y);
 	}
 
 	@Override
 	public void displayTooltips(List<String> list, int xAxis, int yAxis)
 	{
-		func_146283_a(list, xAxis, yAxis);
+		drawHoveringText(list, xAxis, yAxis);
 	}
 
 	@Override
 	public FontRenderer getFont()
 	{
-		return fontRendererObj;
+		return fontRenderer;
 	}
 	
 	@Override
@@ -240,22 +241,45 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
+	protected void mouseReleased(int mouseX, int mouseY, int type)
 	{
-		super.mouseMovedOrUp(mouseX, mouseY, type);
+		super.mouseReleased(mouseX, mouseY, type);
 		
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		for(GuiElement element : guiElements)
 		{
-			element.mouseMovedOrUp(xAxis, yAxis, type);
+			element.mouseReleased(xAxis, yAxis, type);
 		}
 	}
 	
-	public void handleMouse(Slot slot, int slotIndex, int button, int modifier)
+	public void handleMouse(Slot slot, int slotIndex, int button, ClickType modifier)
 	{
 		handleMouseClick(slot, slotIndex, button, modifier);
+	}
+	
+	@Override
+	public void handleMouseInput() throws java.io.IOException
+	{
+		super.handleMouseInput();
+		
+		int xAxis = Mouse.getEventX() * width / mc.displayWidth - getXPos();
+		int yAxis = height - Mouse.getEventY() * height / mc.displayHeight - 1 - getYPos();
+		int delta = Mouse.getEventDWheel();
+		
+		if(delta != 0) 
+		{
+			mouseWheel(xAxis, yAxis, delta);
+		}
+	}
+	
+	public void mouseWheel(int xAxis, int yAxis, int delta)
+	{
+		for(GuiElement element : guiElements)
+		{
+			element.mouseWheel(xAxis, yAxis, delta);
+		}
 	}
 	
 	public int getXPos()
@@ -270,6 +294,13 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	protected FontRenderer getFontRenderer()
 	{
-		return fontRendererObj;
+		return fontRenderer;
+	}
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		this.drawDefaultBackground();
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 }

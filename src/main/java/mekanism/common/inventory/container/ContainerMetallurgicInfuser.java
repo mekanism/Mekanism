@@ -1,14 +1,13 @@
 package mekanism.common.inventory.container;
 
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -22,10 +21,10 @@ public class ContainerMetallurgicInfuser extends Container
 	public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 0, 143, 35));
 		addSlotToContainer(new Slot(tentity, 1, 17, 35));
 		addSlotToContainer(new Slot(tentity, 2, 51, 43));
 		addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
+        addSlotToContainer(new SlotEnergy.SlotDischarge(tentity, 4, 143, 35));
 		
 		int slotY;
 
@@ -43,7 +42,7 @@ public class ContainerMetallurgicInfuser extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 	}
 
 	@Override
@@ -52,19 +51,19 @@ public class ContainerMetallurgicInfuser extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -76,23 +75,23 @@ public class ContainerMetallurgicInfuser extends Container
 			{
 				if(InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
 				{
-					if(!mergeItemStack(slotStack, 1, 2, false))
+					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(ChargeUtils.canBeDischarged(slotStack))
 				{
-					if(!mergeItemStack(slotStack, 0, 1, false))
+					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(isInputItem(slotStack))
 				{
-					if(!mergeItemStack(slotStack, 2, 3, false))
+					if(!mergeItemStack(slotStack, 1, 2, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
@@ -100,20 +99,20 @@ public class ContainerMetallurgicInfuser extends Container
 					{
 						if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 					else if(slotID > 30)
 					{
 						if(!mergeItemStack(slotStack, 4, 30, false))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 					else {
 						if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 				}
@@ -121,24 +120,24 @@ public class ContainerMetallurgicInfuser extends Container
 			else {
 				if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

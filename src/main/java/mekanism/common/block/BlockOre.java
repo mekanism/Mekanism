@@ -1,18 +1,15 @@
 package mekanism.common.block;
 
-import java.util.List;
-
 import mekanism.common.Mekanism;
-
+import mekanism.common.block.states.BlockStateOre;
+import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.NonNullList;
 
 /**
  * Block class for handling multiple ore block IDs.
@@ -24,44 +21,44 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockOre extends Block
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public BlockOre()
 	{
-		super(Material.rock);
+		super(Material.ROCK);
 		setHardness(3F);
 		setResistance(5F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	protected BlockStateContainer createBlockState()
 	{
-		icons[0] = register.registerIcon("mekanism:OsmiumOre");
-		icons[1] = register.registerIcon("mekanism:CopperOre");
-		icons[2] = register.registerIcon("mekanism:TinOre");
+		return new BlockStateOre(this);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
+	public IBlockState getStateFromMeta(int meta)
 	{
-		return icons[meta];
+		return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
 	}
 
 	@Override
-	public int damageDropped(int i)
+	public int getMetaFromState(IBlockState state)
 	{
-		return i;
+		return state.getValue(BlockStateOre.typeProperty).ordinal();
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
+	public int damageDropped(IBlockState state)
 	{
-		list.add(new ItemStack(item, 1, 0));
-		list.add(new ItemStack(item, 1, 1));
-		list.add(new ItemStack(item, 1, 2));
+		return getMetaFromState(state);
+	}
+
+	@Override
+	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
+	{
+		for(EnumOreType ore : EnumOreType.values())
+		{
+			list.add(new ItemStack(this, 1, ore.ordinal()));
+		}
 	}
 }

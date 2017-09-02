@@ -7,29 +7,30 @@ import java.util.Random;
 
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonWorldTickHandler
 {
 	private static final long maximumDeltaTimeNanoSecs = 16000000; // 16 milliseconds
 	
-	private HashMap<Integer, Queue<ChunkCoordIntPair>> chunkRegenMap;
+	private HashMap<Integer, Queue<ChunkPos>> chunkRegenMap;
 	
-	public void addRegenChunk(int dimensionId, ChunkCoordIntPair chunkCoord) 
+	public void addRegenChunk(int dimensionId, ChunkPos chunkCoord) 
 	{
 		if(chunkRegenMap == null) 
 		{
-			chunkRegenMap = new HashMap<Integer, Queue<ChunkCoordIntPair>>();
+			chunkRegenMap = new HashMap<>();
 		}
 
 		if(!chunkRegenMap.containsKey(dimensionId))
 		{
-			LinkedList<ChunkCoordIntPair> list = new LinkedList<ChunkCoordIntPair>();
+			LinkedList<ChunkPos> list = new LinkedList<>();
 			list.add(chunkCoord);
 			chunkRegenMap.put(dimensionId, list);
 		}
@@ -88,17 +89,17 @@ public class CommonWorldTickHandler
 				return; 
 			}
 			
-			int dimensionId = world.provider.dimensionId;
+			int dimensionId = world.provider.getDimension();
 
 			//Credit to E. Beef
 			if(chunkRegenMap.containsKey(dimensionId)) 
 			{
-				Queue<ChunkCoordIntPair> chunksToGen = chunkRegenMap.get(dimensionId);
+				Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionId);
 				long startTime = System.nanoTime();
 				
 				while(System.nanoTime() - startTime < maximumDeltaTimeNanoSecs && !chunksToGen.isEmpty()) 
 				{
-					ChunkCoordIntPair nextChunk = chunksToGen.poll();
+					ChunkPos nextChunk = chunksToGen.poll();
 					
 					if(nextChunk == null) 
 					{ 
@@ -108,9 +109,9 @@ public class CommonWorldTickHandler
 			        Random fmlRandom = new Random(world.getSeed());
 			        long xSeed = fmlRandom.nextLong() >> 2 + 1L;
 			        long zSeed = fmlRandom.nextLong() >> 2 + 1L;
-			        fmlRandom.setSeed((xSeed*nextChunk.chunkXPos + zSeed*nextChunk.chunkZPos) ^ world.getSeed());
+			        fmlRandom.setSeed((xSeed*nextChunk.x + zSeed*nextChunk.z) ^ world.getSeed());
 
-					Mekanism.genHandler.generate(fmlRandom, nextChunk.chunkXPos, nextChunk.chunkZPos, world, world.getChunkProvider(), world.getChunkProvider());
+					Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world, ((ChunkProviderServer)world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
 					Mekanism.logger.info("[Mekanism] Regenerating ores at chunk " + nextChunk);
 				}
 

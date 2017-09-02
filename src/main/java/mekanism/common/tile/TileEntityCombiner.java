@@ -2,14 +2,15 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.MekanismFluids;
+import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.CombinerRecipe;
-
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -19,11 +20,11 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<Combin
 {
 	public TileEntityCombiner()
 	{
-		super("combiner", "Combiner", usage.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
+		super("combiner", "Combiner", BlockStateMachine.MachineType.COMBINER.baseEnergy, usage.combinerUsage, 200, 1);
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<AdvancedMachineInput, CombinerRecipe> getRecipes()
 	{
 		return Recipe.COMBINER.get();
 	}
@@ -31,9 +32,9 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<Combin
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(itemstack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemstack.getItem()) == Blocks.cobblestone)
+		if(itemstack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemstack.getItem()) == Blocks.COBBLESTONE)
 		{
-			return new GasStack(GasRegistry.getGas("liquidStone"), 200);
+			return new GasStack(MekanismFluids.LiquidStone, 200);
 		}
 
 		return null;

@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -15,12 +16,15 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorLogicAdapter extends GuiMekanism
@@ -40,32 +44,35 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
 		renderScaledText(LangUtils.localize("gui.coolingMeasurements") + ": " + EnumColor.RED + LangUtils.transOnOff(tileEntity.activeCooled), 36, 20, 0x404040, 117);
 		renderScaledText(LangUtils.localize("gui.redstoneOutputMode") + ": " + EnumColor.RED + tileEntity.logicType.getLocalizedName(), 23, 123, 0x404040, 130);
 		
 		String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
-		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 136, 0x404040); 
+		fontRenderer.drawString(text, (xSize/2)-(fontRenderer.getStringWidth(text)/2), 136, 0x404040); 
 		
 		for(ReactorLogic type : ReactorLogic.values())
 		{
-			GL11.glPushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), type.getRenderStack(), 27, 35 + (22*type.ordinal()));
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.pushMatrix();
+			RenderHelper.enableGUIStandardItemLighting();
+			itemRender.renderItemAndEffectIntoGUI(type.getRenderStack(), 27, 35 + (22*type.ordinal()));
+			RenderHelper.disableStandardItemLighting();
+			GlStateManager.popMatrix();
 			
-			fontRendererObj.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);
-			
+			fontRenderer.drawString(EnumColor.WHITE + type.getLocalizedName(), 46, 34+(22*type.ordinal()), 0x404040);
+		}
+		
+		for(ReactorLogic type : ReactorLogic.values())
+		{
 			if(xAxis >= 24 && xAxis <= 152 && yAxis >= 32+(22*type.ordinal()) && yAxis <= 32+22+(22*type.ordinal()))
 			{
-				drawCreativeTabHoveringText(type.getDescription(), xAxis, yAxis);
+				displayTooltips(MekanismUtils.splitTooltip(type.getDescription(), ItemStack.EMPTY), xAxis, yAxis);
 			}
 		}
 		
 		if(xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -104,7 +111,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 	}
 	
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 		
@@ -115,9 +122,9 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 			
 			if(xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				
-				ArrayList data = new ArrayList();
+				ArrayList<Object> data = new ArrayList<>();
 				data.add(0);
 				
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -131,9 +138,9 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 				{
 					if(type != tileEntity.logicType)
 					{
-						SoundHandler.playSound("gui.button.press");
+						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
-						ArrayList data = new ArrayList();
+						ArrayList<Object> data = new ArrayList<>();
 						data.add(1);
 						data.add(type.ordinal());
 						

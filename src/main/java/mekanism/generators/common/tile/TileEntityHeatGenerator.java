@@ -1,42 +1,43 @@
 package mekanism.generators.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.MekanismConfig.generators;
-import mekanism.common.Mekanism;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.FluidChecker;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.Optional.Method;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import io.netty.buffer.ByteBuf;
-
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData, IHeatTransfer
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer
 {
 	/** The FluidTank for this generator. */
 	public FluidTank lavaTank = new FluidTank(24000);
@@ -50,11 +51,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public double heatToAbsorb = 0;
 	
 	public double producingEnergy;
+	
+	public double lastTransferLoss;
+	public double lastEnvironmentLoss;
 
 	public TileEntityHeatGenerator()
 	{
 		super("heat", "HeatGenerator", 160000, generators.heatGeneration*2);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -62,43 +66,18 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(1, this);
 
-			if(inventory[0] != null)
+			if(!inventory.get(0).isEmpty())
 			{
-				FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-				
-				if(inventory[0].getItem() instanceof IFluidContainerItem)
+				if(FluidContainerUtils.isFluidContainer(inventory.get(0)))
 				{
-					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidRegistry.LAVA), true);
-				}
-				else if(fluid != null)
-				{
-					if(fluid != null && fluid.fluidID == FluidRegistry.LAVA.getID())
-					{
-						if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
-						{
-							lavaTank.fill(fluid, true);
-	
-							if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
-							{
-								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
-							}
-							else {
-								inventory[0].stackSize--;
-							}
-	
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
-							}
-						}
-					}
+					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, this, 0, FluidChecker.check(FluidRegistry.LAVA)), true);
 				}
 				else {
-					int fuel = getFuel(inventory[0]);
+					int fuel = getFuel(inventory.get(0));
 
 					if(fuel > 0)
 					{
@@ -108,17 +87,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 						{
 							lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
 
-							if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
+							if(!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty())
 							{
-								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+								inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
 							}
 							else {
-								inventory[0].stackSize--;
-							}
-
-							if(inventory[0].stackSize == 0)
-							{
-								inventory[0] = null;
+								inventory.get(0).shrink(1);
 							}
 						}
 					}
@@ -140,8 +114,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				setActive(false);
 			}
 			
-			simulateHeat();
+			double[] loss = simulateHeat();
 			applyTemperatureChange();
+			
+			lastTransferLoss = loss[0];
+			lastEnvironmentLoss = loss[1];
 			
 			producingEnergy = getEnergy()-prev;
 		}
@@ -152,7 +129,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(slotID == 0)
 		{
-			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).fluidID == FluidRegistry.LAVA.getID());
+			return getFuel(itemstack) > 0 || (FluidUtil.getFluidContained(itemstack) != null && FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry.LAVA);
 		}
 		else if(slotID == 1)
 		{
@@ -180,7 +157,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
@@ -188,10 +165,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		{
 			nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new NBTTagCompound()));
 		}
+		
+		return nbtTags;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -199,7 +178,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		}
 		else if(slotID == 0)
 		{
-			return FluidContainerRegistry.isEmptyContainer(itemstack);
+			return FluidUtil.getFluidContained(itemstack) == null;
 		}
 
 		return false;
@@ -210,17 +189,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		int lavaBoost = 0;
 		double netherBoost = 0D;
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			Coord4D coord = Coord4D.get(this).getFromSide(side);
+			Coord4D coord = Coord4D.get(this).offset(side);
 			
-			if(isLava(coord.xCoord, coord.yCoord, coord.zCoord))
+			if(isLava(coord.getPos()))
 			{
 				lavaBoost++;
 			}
 		}
 
-		if(worldObj.provider.dimensionId == -1)
+		if(world.provider.getDimension() == -1)
 		{
 			netherBoost = generators.heatGenerationNether;
 		}
@@ -228,31 +207,26 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		return (generators.heatGenerationLava * lavaBoost) + netherBoost;
 	}
 	
-	private boolean isLava(int x, int y, int z)
+	private boolean isLava(BlockPos pos)
 	{
-		return worldObj.getBlock(x, y, z) == Blocks.lava;
+		return world.getBlockState(pos).getBlock() == Blocks.LAVA;
 	}
 
 	public int getFuel(ItemStack itemstack)
 	{
-		if(itemstack.getItem() == Items.lava_bucket)
-		{
-			return 1000;
-		}
-
 		return TileEntityFurnace.getItemBurnTime(itemstack)/2;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return side == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	/**
 	 * Gets the scaled fuel level for the GUI.
 	 * @param i - multiplier
-	 * @return
+	 * @return Scaled fuel level
 	 */
 	public int getScaledFuelLevel(int i)
 	{
@@ -264,25 +238,34 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		super.handlePacketData(dataStream);
 		
-		producingEnergy = dataStream.readDouble();
-
-		int amount = dataStream.readInt();
-
-		if(amount != 0)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			lavaTank.setFluid(new FluidStack(FluidRegistry.LAVA, amount));
-		}
-		else {
-			lavaTank.setFluid(null);
+			producingEnergy = dataStream.readDouble();
+			
+			lastTransferLoss = dataStream.readDouble();
+			lastEnvironmentLoss = dataStream.readDouble();
+	
+			int amount = dataStream.readInt();
+	
+			if(amount != 0)
+			{
+				lavaTank.setFluid(new FluidStack(FluidRegistry.LAVA, amount));
+			}
+			else {
+				lavaTank.setFluid(null);
+			}
 		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
 		data.add(producingEnergy);
+		
+		data.add(lastTransferLoss);
+		data.add(lastEnvironmentLoss);
 
 		if(lavaTank.getFluid() != null)
 		{
@@ -295,16 +278,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		return data;
 	}
 
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -321,15 +304,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			case 5:
 				return new Object[] {lavaTank.getCapacity()-(lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return null;
+				throw new NoSuchMethodException();
 		}
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(resource.fluidID == FluidRegistry.LAVA.getID() && from != ForgeDirection.getOrientation(facing))
+		if(resource.getFluid() == FluidRegistry.LAVA && from != facing)
 		{
 			return lavaTank.fill(resource, doFill);
 		}
@@ -338,33 +320,33 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return fluid == FluidRegistry.LAVA && from != ForgeDirection.getOrientation(facing);
+		return fluid == FluidRegistry.LAVA && from != facing;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == ForgeDirection.getOrientation(facing))
+		if(from == facing)
 		{
 			return PipeUtils.EMPTY;
 		}
@@ -377,14 +359,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(lavaTank.getFluid() != null)
 		{
-			itemStack.stackTagCompound.setTag("lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("lavaTank")));
+		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "lavaTank")));
 	}
 
 	@Override
@@ -400,7 +382,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public double getInsulationCoefficient(ForgeDirection side)
+	public double getInsulationCoefficient(EnumFacing side)
 	{
 		return canConnectHeat(side) ? 0 : 10000;
 	}
@@ -431,28 +413,52 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		temperature += invHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
+		
 		return temperature;
 	}
 
 	@Override
-	public boolean canConnectHeat(ForgeDirection side)
+	public boolean canConnectHeat(EnumFacing side)
 	{
-		return side == ForgeDirection.DOWN;
+		return side == EnumFacing.DOWN;
 	}
 
 	@Override
-	public IHeatTransfer getAdjacent(ForgeDirection side)
+	public IHeatTransfer getAdjacent(EnumFacing side)
 	{
 		if(canConnectHeat(side))
 		{
-			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+			TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
 			
-			if(adj instanceof IHeatTransfer)
+			if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
 			{
-				return (IHeatTransfer)adj;
+				return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
 			}
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || 
+				(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		if(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			return (T)new FluidHandlerWrapper(this, side);
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

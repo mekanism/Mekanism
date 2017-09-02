@@ -1,19 +1,16 @@
 package mekanism.client.gui.element;
 
+import java.awt.Rectangle;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.ObfuscatedNames;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiElement
@@ -47,12 +44,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int size = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
-				MekanismUtils.setPrivateValue(guiObj, size + xSize, GuiContainer.class, ObfuscatedNames.GuiContainer_xSize);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).xSize += xSize;
 		}
 	}
 
@@ -60,12 +52,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int size = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
-				MekanismUtils.setPrivateValue(guiObj, size + ySize, GuiContainer.class, ObfuscatedNames.GuiContainer_ySize);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).ySize += ySize;
 		}
 	}
 	
@@ -73,13 +60,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int left = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-				System.out.println(left + " " + guiLeft);
-				MekanismUtils.setPrivateValue(guiObj, left + guiLeft, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).guiLeft += guiLeft;
 		}
 	}
 	
@@ -87,12 +68,7 @@ public abstract class GuiElement
 	{
 		if(guiObj instanceof GuiContainer)
 		{
-			try {
-				int top = (Integer)MekanismUtils.getPrivateValue(guiObj, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-				MekanismUtils.setPrivateValue(guiObj, top + guiTop, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+			((GuiContainer)guiObj).guiTop += guiTop;
 		}
 	}
 	
@@ -109,12 +85,12 @@ public abstract class GuiElement
 			float reverse = 1/scale;
 			float yAdd = 4-(scale*8)/2F;
 			
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			
-			GL11.glScalef(scale, scale, scale);
+			GlStateManager.scale(scale, scale, scale);
 			getFontRenderer().drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
 			
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 	}
 
@@ -125,7 +101,9 @@ public abstract class GuiElement
 	
 	public void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {}
 
-	public void mouseMovedOrUp(int x, int y, int type) {}
+	public void mouseReleased(int x, int y, int type) {}
+	
+	public void mouseWheel(int x, int y, int delta) {}
 	
 	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
 
@@ -136,4 +114,27 @@ public abstract class GuiElement
 	public abstract void preMouseClicked(int xAxis, int yAxis, int button);
 
 	public abstract void mouseClicked(int xAxis, int yAxis, int button);
+	
+	public interface IInfoHandler
+	{
+		List<String> getInfo();
+	}
+
+	public static class Rectangle4i
+	{
+		public int x, y, width, height;
+		
+		public Rectangle4i(int x, int y, int width, int height)
+		{
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
+		
+		public Rectangle toRectangle()
+		{
+			return new Rectangle(x, y, width, height);
+		}
+	}
 }

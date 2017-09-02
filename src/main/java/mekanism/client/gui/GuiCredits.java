@@ -6,11 +6,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiCredits extends GuiScreen
@@ -55,7 +54,7 @@ public class GuiCredits extends GuiScreen
 
 	public void writeText(String text, int yAxis)
 	{
-		drawString(fontRendererObj, text, width / 2 - 140, (height / 4 - 60) + 20 + yAxis, 0xa0a0a0);
+		drawString(fontRenderer, text, width / 2 - 140, (height / 4 - 60) + 20 + yAxis, 0xa0a0a0);
 	}
 
 	@Override
@@ -68,7 +67,7 @@ public class GuiCredits extends GuiScreen
 	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
 		drawDefaultBackground();
-		drawCenteredString(fontRendererObj, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
+		drawCenteredString(fontRenderer, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
 
 		if(Mekanism.latestVersionNumber != null && !Mekanism.latestVersionNumber.equals("null"))
 		{

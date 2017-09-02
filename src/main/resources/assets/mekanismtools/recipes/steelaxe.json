@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:steelaxe"
+  },
+  "pattern": [
+    "XX",
+    "XI",
+    " I"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "X": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

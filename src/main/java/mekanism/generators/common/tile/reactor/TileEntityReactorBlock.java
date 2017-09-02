@@ -1,20 +1,18 @@
 package mekanism.generators.common.tile.reactor;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.reactor.IFusionReactor;
-import mekanism.api.reactor.IReactorBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
-
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.generators.common.FusionReactor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 
-public abstract class TileEntityReactorBlock extends TileEntityElectricBlock implements IReactorBlock
+public abstract class TileEntityReactorBlock extends TileEntityElectricBlock
 {
-	public IFusionReactor fusionReactor;
+	public FusionReactor fusionReactor;
 	
 	public boolean attempted;
 	
@@ -23,16 +21,17 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	public TileEntityReactorBlock()
 	{
 		super("ReactorBlock", 0);
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
+	
+	public abstract boolean isFrame();
 
 	public TileEntityReactorBlock(String name, double maxEnergy)
 	{
 		super(name, maxEnergy);
 	}
 
-	@Override
-	public void setReactor(IFusionReactor reactor)
+	public void setReactor(FusionReactor reactor)
 	{
 		if(reactor != fusionReactor)
 		{
@@ -42,8 +41,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		fusionReactor = reactor;
 	}
 
-	@Override
-	public IFusionReactor getReactor()
+	public FusionReactor getReactor()
 	{
 		return fusionReactor;
 	}
@@ -55,7 +53,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		
 		if(getReactor() != null)
 		{
-			getReactor().formMultiblock();
+			getReactor().formMultiblock(false);
 		}
 	}
 
@@ -69,7 +67,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			changed = false;
 		}
 		
-		if(!worldObj.isRemote && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed()))
+		if(!world.isRemote && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed()))
 		{
 			updateController();
 		}
@@ -78,17 +76,17 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side)
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return false;
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return false;
 	}
-	
+
 	@Override
 	public void onChunkUnload()
 	{
@@ -96,7 +94,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 
 		if(!(this instanceof TileEntityReactorController) && getReactor() != null)
 		{
-			getReactor().formMultiblock();
+			getReactor().formMultiblock(true);
 		}
 	}
 	
@@ -105,11 +103,11 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	{
 		super.onAdded();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(getReactor() != null)
 			{
-				getReactor().formMultiblock();
+				getReactor().formMultiblock(false);
 			}
 			else {
 				updateController();
@@ -125,7 +123,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			
 			if(found != null && (found.getReactor() == null || !found.getReactor().isFormed()))
 			{
-				found.formMultiblock();
+				found.formMultiblock(false);
 			}
 		}
 	}
@@ -134,7 +132,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	{
 		public TileEntityReactorController found;
 		
-		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		public Set<Coord4D> iterated = new HashSet<>();
 		
 		public void loop(Coord4D pos)
 		{
@@ -145,17 +143,17 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			
 			iterated.add(pos);
 			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALUES)
 			{
-				Coord4D coord = pos.getFromSide(side);
+				Coord4D coord = pos.offset(side);
 				
-				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntityReactorBlock)
+				if(!iterated.contains(coord) && coord.getTileEntity(world) instanceof TileEntityReactorBlock)
 				{
-					((TileEntityReactorBlock)coord.getTileEntity(worldObj)).attempted = true;
+					((TileEntityReactorBlock)coord.getTileEntity(world)).attempted = true;
 					
-					if(coord.getTileEntity(worldObj) instanceof TileEntityReactorController)
+					if(coord.getTileEntity(world) instanceof TileEntityReactorController)
 					{
-						found = (TileEntityReactorController)coord.getTileEntity(worldObj);
+						found = (TileEntityReactorController)coord.getTileEntity(world);
 						return;
 					}
 					

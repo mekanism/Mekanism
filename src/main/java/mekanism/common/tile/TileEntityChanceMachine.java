@@ -12,22 +12,20 @@ import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
 {
-	public TileEntityChanceMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityChanceMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage, int ticksRequired, ResourceLocation location)
 	{
-		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, maxEnergy, baseEnergyUsage, 3, ticksRequired, location);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
@@ -37,11 +35,10 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2, 4}));
 
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
-		configComponent.setInputEnergyConfig();
+		configComponent.setInputConfig(TransmissionType.ENERGY);
 
-		inventory = new ItemStack[5];
-
-		upgradeComponent = new TileComponentUpgrade(this, 3);
+		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+		
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
@@ -51,7 +48,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(1, this);
 
@@ -111,7 +108,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	@Override
 	public ItemStackInput getInput()
 	{
-		return new ItemStackInput(inventory[0]);
+		return new ItemStackInput(inventory.get(0));
 	}
 
 	@Override
@@ -130,7 +127,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -163,17 +160,35 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		return null;
 	}
 
+	private static final String[] methods = new String[] {"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return null;
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		return null;
+		switch(method)
+		{
+			case 0:
+				return new Object[] {getEnergy()};
+			case 1:
+				return new Object[] {operatingTicks};
+			case 2:
+				return new Object[] {isActive};
+			case 3:
+				return new Object[] {facing};
+			case 4:
+				return new Object[] {canOperate(getRecipe())};
+			case 5:
+				return new Object[] {getMaxEnergy()};
+			case 6:
+				return new Object[] {getMaxEnergy()-getEnergy()};
+			default:
+				throw new NoSuchMethodException();
+		}
 	}
 }

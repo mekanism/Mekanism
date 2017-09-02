@@ -1,15 +1,18 @@
 package mekanism.common.tile;
 
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandler
+public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper
 {
 	public DynamicFluidTank fluidTank;
 
@@ -20,19 +23,19 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return fluidTank.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(structure != null && structure.fluidStored != null)
 		{
@@ -46,7 +49,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(structure != null)
 		{
@@ -57,20 +60,48 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("gui.dynamicTank");
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return true;
+			}
+		}
+		
+		return super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return (T)new FluidHandlerWrapper(this, side);
+			}
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

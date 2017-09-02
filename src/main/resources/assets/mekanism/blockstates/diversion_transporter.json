@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:transmitter_large.obj.mek",
+    "textures": {
+      "#side": "mekanism:blocks/models/multipart/DiversionTransporterVertical",
+      "#center": "mekanism:blocks/models/multipart/DiversionTransporter",
+      "#side_opaque": "mekanism:blocks/models/multipart/opaque/DiversionTransporterVertical",
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/DiversionTransporter"
+    },
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}
+

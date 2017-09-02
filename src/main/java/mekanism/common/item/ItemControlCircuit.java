@@ -1,53 +1,40 @@
 package mekanism.common.item;
 
-import java.util.List;
-
-import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
+import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.NonNullList;
 
-public class ItemControlCircuit extends ItemMekanism
+public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 {
-	public IIcon[] icons = new IIcon[256];
-
 	public ItemControlCircuit()
 	{
 		super();
 		setHasSubtypes(true);
-		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
+		return BaseTier.values()[meta].getSimpleName() + "ControlCircuit";
+	}
+	
+	@Override
+	public int getVariants()
+	{
+		return BaseTier.values().length-1;
+	}
+	
+	@Override
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
+	{
+		if(!isInCreativeTab(tabs)) return;
 		for(BaseTier tier : BaseTier.values())
 		{
 			if(tier.isObtainable())
 			{
-				icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "ControlCircuit");
-			}
-		}
-	}
-
-	@Override
-	public IIcon getIconFromDamage(int meta)
-	{
-		return icons[meta];
-	}
-
-	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
-	{
-		for(BaseTier tier : BaseTier.values())
-		{
-			if(tier.isObtainable())
-			{
-				itemList.add(new ItemStack(item, 1, tier.ordinal()));
+				itemList.add(new ItemStack(this, 1, tier.ordinal()));
 			}
 		}
 	}
@@ -55,6 +42,6 @@ public class ItemControlCircuit extends ItemMekanism
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + BaseTier.values()[item.getItemDamage()].getName() + "ControlCircuit";
+		return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName() + "ControlCircuit";
 	}
 }

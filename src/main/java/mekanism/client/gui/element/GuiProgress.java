@@ -4,9 +4,9 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 
 @SideOnly(Side.CLIENT)
 public class GuiProgress extends GuiElement
@@ -92,7 +92,7 @@ public class GuiProgress extends GuiElement
 		public int textureX;
 		public int textureY;
 
-		private ProgressBar(int w, int h, int u, int v)
+		ProgressBar(int w, int h, int u, int v)
 		{
 			width = w;
 			height = h;

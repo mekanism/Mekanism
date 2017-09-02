@@ -8,25 +8,32 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class TransporterFilter
 {
 	public static final int MAX_LENGTH = 24;
 	
-	public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ', '|');
+	public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ', '|', '_', '\'');
 	
 	public EnumColor color;
+	
+	public boolean allowDefault;
 
-	public abstract boolean canFilter(ItemStack itemStack);
+	public abstract boolean canFilter(ItemStack itemStack, boolean strict);
 
-	public abstract InvStack getStackFromInventory(IInventory inv, ForgeDirection side);
+	public abstract Finder getFinder();
+
+	public InvStack getStackFromInventory(StackSearcher searcher)
+	{
+		return searcher.takeTopStack(getFinder());
+	}
 
 	public void write(NBTTagCompound nbtTags)
 	{
+		nbtTags.setBoolean("allowDefault", allowDefault);
+		
 		if(color != null)
 		{
 			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
@@ -35,14 +42,18 @@ public abstract class TransporterFilter
 
 	protected void read(NBTTagCompound nbtTags)
 	{
+		allowDefault = nbtTags.getBoolean("allowDefault");
+		
 		if(nbtTags.hasKey("color"))
 		{
 			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
 		}
 	}
 
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
+		data.add(allowDefault);
+		
 		if(color != null)
 		{
 			data.add(TransporterUtils.colors.indexOf(color));
@@ -54,6 +65,8 @@ public abstract class TransporterFilter
 
 	protected void read(ByteBuf dataStream)
 	{
+		allowDefault = dataStream.readBoolean();
+		
 		int c = dataStream.readInt();
 
 		if(c != -1)

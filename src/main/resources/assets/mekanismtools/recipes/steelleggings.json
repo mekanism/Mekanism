@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanismtools:steelleggings"
+  },
+  "pattern": [
+    "I*I",
+    "* *",
+    "* *"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "*": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

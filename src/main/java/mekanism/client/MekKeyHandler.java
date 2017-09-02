@@ -15,8 +15,8 @@ public abstract class MekKeyHandler
 	/**
 	 * Pass an array of keybindings and a repeat flag for each one
 	 *
-	 * @param bindings
-	 * @param rep
+	 * @param bindings Bindings to set
+	 * @param rep Repeat flags for bindings
 	 */
 	public MekKeyHandler(KeyBinding[] bindings, boolean[] rep)
 	{
@@ -30,7 +30,7 @@ public abstract class MekKeyHandler
 	 * Register the keys into the system. You will do your own keyboard
 	 * management elsewhere. No events will fire if you use this method
 	 *
-	 * @param  bindings
+	 * @param bindings Bindings to set
 	 */
 	public MekKeyHandler(KeyBinding[] bindings)
 	{
@@ -40,8 +40,12 @@ public abstract class MekKeyHandler
 
 	public static boolean getIsKeyPressed(KeyBinding keyBinding)
 	{
-		int keyCode = keyBinding.getKeyCode();
-		return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
+		try {
+			int keyCode = keyBinding.getKeyCode();
+			return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
+		} catch(Exception e) {
+			return false;
+		}
 	}
 
 	public KeyBinding[] getKeyBindings ()
@@ -54,7 +58,7 @@ public abstract class MekKeyHandler
 		for(int i = 0; i < keyBindings.length; i++)
 		{
 			KeyBinding keyBinding = keyBindings[i];
-			boolean state = keyBinding.getIsKeyPressed();
+			boolean state = keyBinding.isPressed();
 
 			if(state != keyDown[i] || (state && repeatings[i]))
 			{

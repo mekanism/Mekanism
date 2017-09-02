@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,13 +20,15 @@ public enum Upgrade
 	SPEED("speed", 8, EnumColor.RED),
 	ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
 	FILTER("filter", 1, EnumColor.DARK_AQUA),
-	GAS("gas", 8, EnumColor.YELLOW);
+	GAS("gas", 8, EnumColor.YELLOW),
+	MUFFLING("muffling", 4, EnumColor.DARK_GREY),
+	ANCHOR("anchor", 1, EnumColor.DARK_GREEN);
 	
 	private String name;
 	private int maxStack;
 	private EnumColor color;
 	
-	private Upgrade(String s, int max, EnumColor c)
+	Upgrade(String s, int max, EnumColor c)
 	{
 		name = s;
 		maxStack = max;
@@ -68,16 +70,20 @@ public enum Upgrade
 				return new ItemStack(MekanismItems.EnergyUpgrade);
 			case FILTER:
 				return new ItemStack(MekanismItems.FilterUpgrade);
+			case MUFFLING:
+				return new ItemStack(MekanismItems.MufflingUpgrade);
 			case GAS:
 				return new ItemStack(MekanismItems.GasUpgrade);
+			case ANCHOR:
+				return new ItemStack(MekanismItems.AnchorUpgrade);
 		}
 		
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	public List<String> getInfo(TileEntity tile)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		
 		if(tile instanceof IUpgradeTile)
 		{
@@ -95,7 +101,7 @@ public enum Upgrade
 	
 	public List<String> getMultScaledInfo(IUpgradeTile tile)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		
 		if(canMultiply())
 		{
@@ -109,7 +115,7 @@ public enum Upgrade
 	
 	public List<String> getExpScaledInfo(IUpgradeTile tile)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		
 		if(canMultiply())
 		{
@@ -123,7 +129,7 @@ public enum Upgrade
 	
 	public static Map<Upgrade, Integer> buildMap(NBTTagCompound nbtTags)
 	{
-		Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
+		Map<Upgrade, Integer> upgrades = new HashMap<>();
 		
 		if(nbtTags != null)
 		{
@@ -138,11 +144,6 @@ public enum Upgrade
 					Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
 					upgrades.put(upgrade, compound.getInteger("amount"));
 				}
-			}
-			else if(nbtTags.hasKey("energyMultiplier") && nbtTags.hasKey("speedMultiplier")) //TODO remove soon
-			{
-				upgrades.put(Upgrade.ENERGY, nbtTags.getInteger("energyMultiplier"));
-				upgrades.put(Upgrade.SPEED, nbtTags.getInteger("speedMultiplier"));
 			}
 		}
 		
@@ -171,8 +172,8 @@ public enum Upgrade
 		return compound;
 	}
 	
-	public static interface IUpgradeInfoHandler
+	public interface IUpgradeInfoHandler
 	{
-		public List<String> getInfo(Upgrade upgrade);
+		List<String> getInfo(Upgrade upgrade);
 	}
 }

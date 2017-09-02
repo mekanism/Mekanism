@@ -8,24 +8,36 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.util.ListUtils;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.BlockDirt;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.event.entity.player.UseHoeEvent;
-import cpw.mods.fml.common.eventhandler.Event.Result;
+
+import com.google.common.collect.Multimap;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
@@ -37,48 +49,60 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
-		return block != Blocks.bedrock;
+		return state.getBlock() != Blocks.BEDROCK;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
-		super.addInformation(itemstack, entityplayer, list, flag);
+		super.addInformation(itemstack, world, list, flag);
 
 		list.add(LangUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
 		list.add(LangUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + getEfficiency(itemstack));
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack itemstack, EntityLivingBase hitEntity, EntityLivingBase player)
+	public boolean hitEntity(ItemStack itemstack, EntityLivingBase target, EntityLivingBase attacker)
 	{
 		if(getEnergy(itemstack) > 0)
 		{
-			hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 20);
+			if(attacker instanceof EntityPlayer) 
+			{
+				target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), 20);
+			} 
+			else {
+				target.attackEntityFrom(DamageSource.causeMobDamage(attacker), 20);
+			}
+			
 			setEnergy(itemstack, getEnergy(itemstack) - 2000);
 		}
 		else {
-			hitEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)player), 4);
+			if(attacker instanceof EntityPlayer) 
+			{
+				target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)attacker), 4);
+			} 
+			else {
+				target.attackEntityFrom(DamageSource.causeMobDamage(attacker), 4);
+			}
+
 		}
 
 		return false;
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack itemstack, Block block, int meta)
+	public float getStrVsBlock(ItemStack itemstack, IBlockState state)
 	{
 		return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, int x, int y, int z, EntityLivingBase entityliving)
+	public boolean onBlockDestroyed(ItemStack itemstack, World world, IBlockState state, BlockPos pos, EntityLivingBase entityliving)
 	{
-		if(block.getBlockHardness(world, x, y, z) != 0.0D)
+		if(state.getBlockHardness(world, pos) != 0.0D)
 		{
 			setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
 		}
@@ -90,22 +114,23 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
 	{
-		super.onBlockStartBreak(itemstack, x, y, z, player);
+		super.onBlockStartBreak(itemstack, pos, player);
 
-		if(!player.worldObj.isRemote)
+		if(!player.world.isRemote)
 		{
-			Block block = player.worldObj.getBlock(x, y, z);
-			int meta = player.worldObj.getBlockMetadata(x, y, z);
-			
-			if(block == Blocks.lit_redstone_ore)
+			IBlockState state = player.world.getBlockState(pos);
+			Block block = state.getBlock();
+			int meta = block.getMetaFromState(state);
+
+			if(block == Blocks.LIT_REDSTONE_ORE)
 			{
-				block = Blocks.redstone_ore;
+				block = Blocks.REDSTONE_ORE;
 			}
 
 			ItemStack stack = new ItemStack(block, 1, meta);
-			Coord4D orig = new Coord4D(x, y, z, player.worldObj.provider.dimensionId);
+			Coord4D orig = new Coord4D(pos, player.world);
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
 
@@ -121,7 +146,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
 			{
-				Set<Coord4D> found = new Finder(player.worldObj, stack, new Coord4D(x, y, z, player.worldObj.provider.dimensionId)).calc();
+				Set<Coord4D> found = new Finder(player.world, stack, new Coord4D(pos, player.world)).calc();
 
 				for(Coord4D coord : found)
 				{
@@ -130,13 +155,13 @@ public class ItemAtomicDisassembler extends ItemEnergized
 						continue;
 					}
 
-					Block block2 = coord.getBlock(player.worldObj);
+					Block block2 = coord.getBlock(player.world);
 
-					block2.onBlockDestroyedByPlayer(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta);
-					player.worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, meta << 12);
-					player.worldObj.setBlockToAir(coord.xCoord, coord.yCoord, coord.zCoord);
-					block2.breakBlock(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, block, meta);
-					block2.dropBlockAsItem(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta, 0);
+					block2.onBlockDestroyedByPlayer(player.world, coord.getPos(), state);
+					player.world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
+					player.world.setBlockToAir(coord.getPos());
+					block2.breakBlock(player.world, coord.getPos(), state);
+					block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
 
 					setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
 				}
@@ -153,108 +178,117 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
-		if(!world.isRemote && entityplayer.isSneaking())
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
+		
+		if(entityplayer.isSneaking())
 		{
-			toggleMode(itemstack);
-			entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			if(!world.isRemote)
+			{
+				toggleMode(itemstack);
+				entityplayer.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			}
+			
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 		}
 
-		return itemstack;
+		return new ActionResult<>(EnumActionResult.PASS, itemstack);
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(!player.isSneaking())
+		ItemStack stack = player.getHeldItem(hand);
+		Block block = world.getBlockState(pos).getBlock();
+		
+		if(!player.isSneaking() && (block == Blocks.DIRT || block == Blocks.GRASS || block == Blocks.GRASS_PATH))
 		{
-			if(!useHoe(stack, player, world, x, y, z, side))
+			if(useHoe(stack, player, world, pos, side) == EnumActionResult.FAIL)
 			{
-				if(world.getBlock(x, y, z) != Blocks.farmland)
-				{
-					return false;
-				}
+				return EnumActionResult.FAIL;
 			}
 
 			switch(getEfficiency(stack))
 			{
 				case 20:
-					for(int x1 = x-1; x1 <= x+1; x1++)
+					for(int x1 = -1; x1 <= +1; x1++)
 					{
-						for(int z1 = z-1; z1 <= z+1; z1++)
+						for(int z1 = -1; z1 <= +1; z1++)
 						{
-							useHoe(stack, player, world, x1, y, z1, side);
+							useHoe(stack, player, world, pos.add(x1, 0, z1), side);
 						}
 					}
 
 					break;
 				case 128:
-					for(int x1 = x-2; x1 <= x+2; x1++)
+					for(int x1 = -2; x1 <= +2; x1++)
 					{
-						for(int z1 = z-2; z1 <= z+2; z1++)
+						for(int z1 = -2; z1 <= +2; z1++)
 						{
-							useHoe(stack, player, world, x1, y, z1, side);
+							useHoe(stack, player, world, pos.add(x1, 0, z1), side);
 						}
 					}
 
 					break;
 			}
 
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
-	private boolean useHoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side)
+	@SuppressWarnings("incomplete-switch")
+	private EnumActionResult useHoe(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing facing)
 	{
-		if(!player.canPlayerEdit(x, y, z, side, stack) || (!player.capabilities.isCreativeMode && getEnergy(stack) < HOE_USAGE))
-		{
-			return false;
-		}
-		else {
-			UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
+		if(!playerIn.canPlayerEdit(pos.offset(facing), facing, stack))
+        {
+            return EnumActionResult.FAIL;
+        }
+        else {
+            int hook = net.minecraftforge.event.ForgeEventFactory.onHoeUse(stack, playerIn, worldIn, pos);
+            if(hook != 0) return hook > 0 ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 
-			if(MinecraftForge.EVENT_BUS.post(event))
-			{
-				return false;
-			}
+            IBlockState iblockstate = worldIn.getBlockState(pos);
+            Block block = iblockstate.getBlock();
 
-			if(event.getResult() == Result.ALLOW)
-			{
-				setEnergy(stack, getEnergy(stack)-HOE_USAGE);
-				return true;
-			}
+            if(facing != EnumFacing.DOWN && worldIn.isAirBlock(pos.up()))
+            {
+                if(block == Blocks.GRASS || block == Blocks.GRASS_PATH)
+                {
+                    setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
+                    return EnumActionResult.SUCCESS;
+                }
 
-			Block block1 = world.getBlock(x, y, z);
-			boolean air = world.isAirBlock(x, y + 1, z);
+                if(block == Blocks.DIRT)
+                {
+                    switch((BlockDirt.DirtType)iblockstate.getValue(BlockDirt.VARIANT))
+                    {
+                        case DIRT:
+                            setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
+                            return EnumActionResult.SUCCESS;
+                        case COARSE_DIRT:
+                            setBlock(stack, playerIn, worldIn, pos, Blocks.DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, BlockDirt.DirtType.DIRT));
+                            return EnumActionResult.SUCCESS;
+                    }
+                }
+            }
 
-			if(side != 0 && air && (block1 == Blocks.grass || block1 == Blocks.dirt))
-			{
-				Block farm = Blocks.farmland;
-				world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, farm.stepSound.getStepResourcePath(), (farm.stepSound.getVolume() + 1.0F) / 2.0F, farm.stepSound.getPitch() * 0.8F);
-
-				if(world.isRemote)
-				{
-					return true;
-				}
-				else {
-					world.setBlock(x, y, z, farm);
-					
-					if(!player.capabilities.isCreativeMode)
-					{
-						setEnergy(stack, getEnergy(stack)-HOE_USAGE);
-					}
-					
-					return true;
-				}
-			}
-			else {
-				return false;
-			}
-		}
+            return EnumActionResult.PASS;
+        }
 	}
+	
+	protected void setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos, IBlockState state)
+    {
+        worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+        if(!worldIn.isRemote)
+        {
+            worldIn.setBlockState(pos, state, 11);
+            stack.damageItem(1, player);
+        }
+    }
 
 	public int getEfficiency(ItemStack itemStack)
 	{
@@ -277,12 +311,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public int getMode(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			return 0;
-		}
-
-		return itemStack.stackTagCompound.getInteger("mode");
+		return ItemDataUtils.getInt(itemStack, "mode");
 	}
 
 	public String getModeName(ItemStack itemStack)
@@ -308,12 +337,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public void toggleMode(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.stackTagCompound.setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
+		ItemDataUtils.setInt(itemStack, "mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
 	}
 
 	@Override
@@ -321,6 +345,19 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		return false;
 	}
+	
+	@Override
+	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
+    {
+        Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
+
+        if(equipmentSlot == EntityEquipmentSlot.MAINHAND)
+        {
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, 0));
+        }
+
+        return multimap;
+    }
 
 	public static class Finder
 	{
@@ -330,9 +367,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 		public Coord4D location;
 
-		public Set<Coord4D> found = new HashSet<Coord4D>();
+		public Set<Coord4D> found = new HashSet<>();
 
-		public static Map<Block, List<Block>> ignoreBlocks = new HashMap<Block, List<Block>>();
+		public static Map<Block, List<Block>> ignoreBlocks = new HashMap<>();
 
 		public Finder(World w, ItemStack s, Coord4D loc)
 		{
@@ -350,11 +387,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			found.add(pointer);
 
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALUES)
 			{
-				Coord4D coord = pointer.getFromSide(side);
+				Coord4D coord = pointer.offset(side);
 
-				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getMetadata(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getMetadata(world) % 4 == stack.getItemDamage() % 4)))
+				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getBlockMeta(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4)))
 				{
 					loop(coord);
 				}
@@ -375,8 +412,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		}
 
 		static {
-			ignoreBlocks.put(Blocks.redstone_ore, ListUtils.asList(Blocks.redstone_ore, Blocks.lit_redstone_ore));
-			ignoreBlocks.put(Blocks.lit_redstone_ore, ListUtils.asList(Blocks.redstone_ore, Blocks.lit_redstone_ore));
+			ignoreBlocks.put(Blocks.REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
+			ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
 		}
 	}
 }

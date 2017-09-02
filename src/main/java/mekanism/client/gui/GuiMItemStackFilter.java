@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
@@ -14,15 +16,17 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -78,13 +82,13 @@ public class GuiMItemStackFilter extends GuiMekanism
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
 		if(guibutton.id == 0)
 		{
-			if(filter.itemType != null)
+			if(!filter.itemType.isEmpty())
 			{
 				if(isNew)
 				{
@@ -96,8 +100,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
-			else if(filter.itemType == null)
-			{
+			else {
 				status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
 				ticker = 20;
 			}
@@ -115,41 +118,37 @@ public class GuiMItemStackFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
+		fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
 
-		if(filter.itemType != null)
+		if(!filter.itemType.isEmpty())
 		{
-			fontRendererObj.drawString(filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
-		}
-
-		if(filter.itemType != null)
-		{
-			GL11.glPushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.itemType, 12, 19);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 107);
+			GlStateManager.pushMatrix();
+			RenderHelper.enableGUIStandardItemLighting();
+			itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
+			RenderHelper.disableStandardItemLighting();
+			GlStateManager.popMatrix();
 		}
 		
-		if(filter.replaceStack != null)
+		if(!filter.replaceStack.isEmpty())
 		{
-			GL11.glPushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.replaceStack, 149, 19);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.pushMatrix();
+			RenderHelper.enableGUIStandardItemLighting();
+			itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
+			RenderHelper.disableStandardItemLighting();
+			GlStateManager.popMatrix();
 		}
 		
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.digitalMiner.fuzzyMode") + ": " + LangUtils.transYesNo(filter.fuzzy), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -172,8 +171,6 @@ public class GuiMItemStackFilter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMItemStackFilter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -209,37 +206,43 @@ public class GuiMItemStackFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 		{
-			GL11.glPushMatrix();
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GlStateManager.pushMatrix();
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepth();
+			GlStateManager.colorMask(true, true, true, false);
 
 			int x = guiWidth + 12;
 			int y = guiHeight + 19;
 			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
 
-			GL11.glEnable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glPopMatrix();
+			GlStateManager.colorMask(true, true, true, true);
+			GlStateManager.enableLighting();
+			GlStateManager.enableDepth();
+			GlStateManager.popMatrix();
 		}
 		
 		if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 		{
-			GL11.glPushMatrix();
-			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GlStateManager.pushMatrix();
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepth();
+			GlStateManager.colorMask(true, true, true, false);
 
 			int x = guiWidth + 149;
 			int y = guiHeight + 19;
 			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
 
-			GL11.glPopAttrib();
-			GL11.glPopMatrix();
+			GlStateManager.colorMask(true, true, true, true);
+			GlStateManager.enableLighting();
+			GlStateManager.enableDepth();
+			GlStateManager.popMatrix();
 		}
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -250,73 +253,73 @@ public class GuiMItemStackFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
 			}
 			
 			if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.requireStack = !filter.requireStack;
 			}
 			
 			if(xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.fuzzy = !filter.fuzzy;
 			}
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							filter.itemType = stack.copy();
-							filter.itemType.stackSize = 1;
+							filter.itemType.setCount(1);
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					filter.itemType = null;
+					filter.itemType = ItemStack.EMPTY;
 				}
 
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 			
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 			{
 				boolean doNull = false;
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
-				ItemStack toUse = null;
+				ItemStack stack = mc.player.inventory.getItemStack();
+				ItemStack toUse = ItemStack.EMPTY;
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK)
 						{
 							toUse = stack.copy();
-							toUse.stackSize = 1;
+							toUse.setCount(1);
 						}
 					}
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					doNull = true;
 				}
 
-				if(toUse != null || doNull)
+				if(!toUse.isEmpty() || doNull)
 				{
 					filter.replaceStack = toUse;
 				}
 
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

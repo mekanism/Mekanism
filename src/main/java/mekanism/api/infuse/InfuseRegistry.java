@@ -13,14 +13,14 @@ import net.minecraft.item.ItemStack;
 public class InfuseRegistry
 {
 	/** The (private) map of ItemStacks and their related InfuseObjects. */
-	private static Map<ItemStack, InfuseObject> infuseObjects = new HashMap<ItemStack, InfuseObject>();
+	private static Map<ItemStack, InfuseObject> infuseObjects = new HashMap<>();
 
 	/** The (private) map of infuse names and their corresponding InfuseTypes. */
-	private static Map<String, InfuseType> infuseTypes = new HashMap<String, InfuseType>();
+	private static Map<String, InfuseType> infuseTypes = new HashMap<>();
 
 	/**
 	 * Registers an InfuseType into the registry. Call this in PreInit!
-	 * @param infuse
+	 * @param infuse InfuseType to register
 	 */
 	public static void registerInfuseType(InfuseType infuse)
 	{
@@ -97,7 +97,7 @@ public class InfuseRegistry
 	 * Gets the private map for InfuseObjects.
 	 * @return private InfuseObject map
 	 */
-	public static final Map<ItemStack, InfuseObject> getObjectMap()
+	public static Map<ItemStack, InfuseObject> getObjectMap()
 	{
 		return infuseObjects;
 	}
@@ -106,7 +106,7 @@ public class InfuseRegistry
 	 * Gets the private map for InfuseTypes.
 	 * @return private InfuseType map
 	 */
-	public static final Map<String, InfuseType> getInfuseMap()
+	public static Map<String, InfuseType> getInfuseMap()
 	{
 		return infuseTypes;
 	}

@@ -1,63 +1,70 @@
 package mekanism.client.render;
 
-import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
+import mekanism.client.ClientTickHandler;
 import mekanism.client.render.particle.EntityJetpackFlameFX;
 import mekanism.client.render.particle.EntityJetpackSmokeFX;
+import mekanism.client.render.particle.EntityScubaBubbleFX;
+import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderTickHandler
 {
 	public Random rand = new Random();
 	public Minecraft mc = Minecraft.getMinecraft();
+	public static int modeSwitchTimer = 0;
 
 	@SubscribeEvent
 	public void tickEnd(RenderTickEvent event)
 	{
 		if(event.phase == Phase.END)
 		{
-			if(mc.thePlayer != null && mc.theWorld != null && !mc.isGamePaused())
+			if(mc.player != null && mc.world != null && !mc.isGamePaused())
 			{
-				EntityPlayer player = mc.thePlayer;
-				World world = mc.thePlayer.worldObj;
-	
+				EntityPlayer player = mc.player;
+				World world = mc.player.world;
 				FontRenderer font = mc.fontRenderer;
-	
-				MovingObjectPosition pos = player.rayTrace(40.0D, 1.0F);
+				RayTraceResult pos = player.rayTrace(40.0D, 1.0F);
+				
+				if(font == null)
+				{
+					return;
+				}
 	
 				if(pos != null)
-				{
-					int x = MathHelper.floor_double(pos.blockX);
-					int y = MathHelper.floor_double(pos.blockY);
-					int z = MathHelper.floor_double(pos.blockZ);
+				{	
+					Coord4D obj = new Coord4D(pos.getBlockPos(), world);
+					Block block = obj.getBlock(world);
 	
-					Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
-	
-					if(MekanismAPI.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
+					if(block != null && MekanismAPI.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 					{
 						String tileDisplay = "";
 	
@@ -69,19 +76,39 @@ public class RenderTickHandler
 							}
 						}
 	
-						font.drawStringWithShadow("Block: " + obj.getBlock(world).getUnlocalizedName(), 1, 1, 0x404040);
-						font.drawStringWithShadow("Metadata: " + obj.getMetadata(world), 1, 10, 0x404040);
+						font.drawStringWithShadow("Block: " + block.getUnlocalizedName(), 1, 1, 0x404040);
+						font.drawStringWithShadow("Metadata: " + obj.getBlockState(world), 1, 10, 0x404040);
 						font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
 						font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
 						font.drawStringWithShadow("Side: " + pos.sideHit, 1, 37, 0x404040);
 					}
 				}
-	
-				if(player != null && mc.currentScreen == null && player.getEquipmentInSlot(3) != null)
+				
+				if(modeSwitchTimer > 1 && mc.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator)
 				{
-					ItemStack stack = player.getEquipmentInSlot(3);
+					ItemStack stack = player.getHeldItemMainhand();
+					ScaledResolution scaledresolution = new ScaledResolution(mc);
+					ConfiguratorMode mode = ((ItemConfigurator)stack.getItem()).getState(stack);
+					
+					int x = scaledresolution.getScaledWidth();
+					int y = scaledresolution.getScaledHeight();
+					int stringWidth = font.getStringWidth(mode.getName());
+					int color = new ColourRGBA(1, 1, 1, (float)modeSwitchTimer/100F).argb();
+					font.drawString(mode.getColor() + mode.getName(), x/2 - stringWidth/2, y-60, color);
+				}
+				
+				modeSwitchTimer = Math.max(modeSwitchTimer-1, 0);
+				
+				if(modeSwitchTimer == 0)
+				{
+					ClientTickHandler.wheelStatus = 0;
+				}
 	
-					ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+				if(mc.currentScreen == null && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
+				{
+					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+	
+					ScaledResolution scaledresolution = new ScaledResolution(mc);
 	
 					int x = scaledresolution.getScaledWidth();
 					int y = scaledresolution.getScaledHeight();
@@ -107,109 +134,120 @@ public class RenderTickHandler
 				{
 					for(String s : Mekanism.jetpackOn)
 					{
-						EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
+						EntityPlayer p = mc.world.getPlayerEntityByName(s);
 
 						if(p == null)
 						{
 							continue;
 						}
 
-						Pos3D playerPos = new Pos3D(p);
-
-						if(p != mc.thePlayer)
-						{
-							playerPos.translate(0, 1.7, 0);
-						}
-
+						Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+						
 						float random = (rand.nextFloat() - 0.5F) * 0.1F;
 
-						Pos3D vLeft = new Pos3D();
-						vLeft.xPos -= 0.43;
-						vLeft.yPos -= 0.55;
-						vLeft.zPos -= 0.54;
-						vLeft.rotateYaw(p.renderYawOffset);
+						Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
+						Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
+						Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
 
-						Pos3D vRight = new Pos3D();
-						vRight.xPos += 0.43;
-						vRight.yPos -= 0.55;
-						vRight.zPos -= 0.54;
-						vRight.rotateYaw(p.renderYawOffset);
+						Pos3D rLeft = vLeft.scale(random);
+						Pos3D rRight = vRight.scale(random);
 
-						Pos3D vCenter = new Pos3D();
-						vCenter.xPos = (rand.nextFloat() - 0.5F) * 0.4F;
-						vCenter.yPos -= 0.86;
-						vCenter.zPos -= 0.30;
-						vCenter.rotateYaw(p.renderYawOffset);
+						Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 
-						Pos3D rLeft = vLeft.clone().scale(random);
-						Pos3D rRight = vRight.clone().scale(random);
+						mLeft = mLeft.translate(rLeft);
+						mRight = mRight.translate(rRight);
 
-						Pos3D mLeft = vLeft.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						Pos3D mRight = vRight.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						Pos3D mCenter = vCenter.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 
-						mLeft.translate(rLeft);
-						mRight.translate(rRight);
+						v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 
-						Pos3D v = playerPos.clone().translate(vLeft);
-						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
-						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
-
-						v = playerPos.clone().translate(vRight);
-						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
-						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
-
-						v = playerPos.clone().translate(vCenter);
-						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
-						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
+						v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+					}
+				}
+				
+				synchronized(Mekanism.gasmaskOn)
+				{
+					if(world.getWorldTime() % 4 == 0)
+					{
+						for(String s : Mekanism.gasmaskOn)
+						{
+							EntityPlayer p = mc.world.getPlayerEntityByName(s);
+	
+							if(p == null || !p.isInWater())
+							{
+								continue;
+							}
+							
+							Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+							
+							float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
+							float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
+							
+							Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
+							Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+							
+							Pos3D v = playerPos.translate(vec);
+							spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+						}
 					}
 				}
 				
 				if(world.getWorldTime() % 4 == 0)
 				{
-					for(EntityPlayer p : (List<EntityPlayer>)world.playerEntities)
+					for(EntityPlayer p : world.playerEntities)
 					{
-						if(!Mekanism.flamethrowerActive.contains(p.getCommandSenderName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && !p.inventory.getCurrentItem().isEmpty() && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 						{
-							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
+							if(((ItemFlamethrower)p.inventory.getCurrentItem().getItem()).getGas(p.inventory.getCurrentItem()) != null)
 							{
 								Pos3D playerPos = new Pos3D(p);
-								Pos3D flameVec = new Pos3D();
-								
-								if(p.isSneaking())
-								{
-									flameVec.yPos -= 0.35F;
-									flameVec.zPos -= 0.15F;
-								}
+								Pos3D flameVec;
+
+								double flameXCoord = 0;
+								double flameYCoord = 1.5;
+								double flameZCoord = 0;
 								
 								Pos3D flameMotion = new Pos3D(p.motionX, p.onGround ? 0 : p.motionY, p.motionZ);
 								
 								if(player == p && mc.gameSettings.thirdPersonView == 0)
 								{
-									flameVec = new Pos3D(0.8, 0.8, 0.8);
-									
-									flameVec.multiply(new Pos3D(p.getLook(90)));
-									flameVec.rotateYaw(15);
+									flameVec = new Pos3D(1, 1, 1).multiply(p.getLook(1)).rotateYaw(5).translate(flameXCoord, flameYCoord+0.1, flameZCoord);
 								}
 								else {
-									flameVec.xPos -= 0.45F;
+									flameXCoord += 0.25F;
+									flameXCoord -= 0.45F;
+									flameZCoord += 0.15F;
+									
+									if(p.isSneaking())
+									{
+										flameYCoord -= 0.55F;
+										flameZCoord -= 0.15F;
+									}
 									
 									if(player == p)
 									{
-										flameVec.yPos -= 0.5F;
+										flameYCoord -= 0.5F;
 									}
 									else {
-										flameVec.yPos += 1F;
+										flameYCoord -= 0.5F;
 									}
 									
-									flameVec.zPos += 1.05F;
+									flameZCoord += 1.05F;
 									
-									flameVec.rotateYaw(p.renderYawOffset);
+									flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
 								}
 								
-								Pos3D mergedVec = playerPos.clone().translate(flameVec);
+								Pos3D mergedVec = playerPos.translate(flameVec);
 								
-								spawnAndSetParticle("flame", world, mergedVec.xPos, mergedVec.yPos, mergedVec.zPos, flameMotion.xPos, flameMotion.yPos, flameMotion.zPos);
+								spawnAndSetParticle(EnumParticleTypes.FLAME, world, mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
 							}
 						}
 					}
@@ -218,17 +256,21 @@ public class RenderTickHandler
 		}
 	}
 
-	public void spawnAndSetParticle(String s, World world, double x, double y, double z, double velX, double velY, double velZ)
+	public void spawnAndSetParticle(EnumParticleTypes s, World world, double x, double y, double z, double velX, double velY, double velZ)
 	{
-		EntityFX fx = null;
+		Particle fx = null;
 
-		if(s.equals("flame"))
+		if(s.equals(EnumParticleTypes.FLAME))
 		{
 			fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
 		}
-		else if(s.equals("smoke"))
+		else if(s.equals(EnumParticleTypes.SMOKE_NORMAL))
 		{
 			fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
+		}
+		else if(s.equals(EnumParticleTypes.WATER_BUBBLE))
+		{
+			fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
 		}
 
 		mc.effectRenderer.addEffect(fx);

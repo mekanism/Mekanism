@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 12
+  },
+  "pattern": [
+    "TTT",
+    "CPC",
+    "TTT"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "FluidicPlenisher"
+    }
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:machineblock",
+      "data": 12
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "T": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    }
+  }
+}

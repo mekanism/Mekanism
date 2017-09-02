@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,9 +11,11 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
@@ -28,16 +31,18 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiLogisticalSorter extends GuiMekanism
@@ -77,9 +82,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 	public int stackSwitch = 0;
 
-	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<TOreDictFilter, StackData>();
+	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<>();
 
-	public Map<TModIDFilter, StackData> modIDStacks = new HashMap<TModIDFilter, StackData>();
+	public Map<TModIDFilter, StackData> modIDStacks = new HashMap<>();
 
 	public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter entity)
 	{
@@ -92,6 +97,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		// Add common Mekanism gui elements
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
 	}
 
 	public int getScroll()
@@ -167,7 +173,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			{
 				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
 				{
-					entry.getValue().renderStack = null;
+					entry.getValue().renderStack = ItemStack.EMPTY;
 				}
 			}
 
@@ -175,13 +181,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 			{
 				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
 				{
-					entry.getValue().renderStack = null;
+					entry.getValue().renderStack = ItemStack.EMPTY;
 				}
 			}
 		}
 
-		final Set<TOreDictFilter> oreDictFilters = new HashSet<TOreDictFilter>();
-		final Set<TModIDFilter> modIDFilters = new HashSet<TModIDFilter>();
+		final Set<TOreDictFilter> oreDictFilters = new HashSet<>();
+		final Set<TModIDFilter> modIDFilters = new HashSet<>();
 
 		for(int i = 0; i < 4; i++)
 		{
@@ -215,7 +221,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int mouseBtn)
+	public void mouseClicked(int mouseX, int mouseY, int mouseBtn) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, mouseBtn);
 
@@ -255,12 +261,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 							if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 							{
 								// Process up button click
-								final ArrayList data = new ArrayList();
+								final ArrayList<Object> data = new ArrayList<>();
 								data.add(3);
 								data.add(getFilterIndex() + i);
 
 								Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-								SoundHandler.playSound("gui.button.press");
+								SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 								
 								return;
 							}
@@ -271,12 +277,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 							if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 							{
 								// Process down button click
-								final ArrayList data = new ArrayList();
+								final ArrayList<Object> data = new ArrayList<>();
 								data.add(4);
 								data.add(getFilterIndex() + i);
 
 								Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-								SoundHandler.playSound("gui.button.press");
+								SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 								
 								return;
 							}
@@ -286,22 +292,22 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 						if(filter instanceof TItemStackFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
 						}
 						else if(filter instanceof TOreDictFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex() + i, 0));
 						}
 						else if(filter instanceof TMaterialFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex() + i, 0));
 						}
 						else if(filter instanceof TModIDFilter)
 						{
-							SoundHandler.playSound("gui.button.press");
+							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 5, getFilterIndex() + i, 0));
 						}
 					}
@@ -311,21 +317,21 @@ public class GuiLogisticalSorter extends GuiMekanism
 			// Check for auto eject button
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
 			{
-				final ArrayList data = new ArrayList();
+				final ArrayList<Object> data = new ArrayList<>();
 				data.add(1);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 
 			// Check for round robin button
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
 			{
-				final ArrayList data = new ArrayList();
+				final ArrayList<Object> data = new ArrayList<>();
 				data.add(2);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 
@@ -337,12 +343,12 @@ public class GuiLogisticalSorter extends GuiMekanism
 		// Check for default colour button
 		if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
 		{
-			final ArrayList data = new ArrayList();
+			final ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(mouseBtn);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-			SoundHandler.playSound("mekanism:etc.Ding");
+			SoundHandler.playSound(MekanismSounds.DING);
 		}
 	}
 
@@ -362,9 +368,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
+	protected void mouseReleased(int mouseX, int mouseY, int type)
 	{
-		super.mouseMovedOrUp(mouseX, mouseY, type);
+		super.mouseReleased(mouseX, mouseY, type);
 
 		if(type == 0 && isDragging)
 		{
@@ -377,7 +383,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	 * Handles mouse input.
 	 */
 	@Override
-	public void handleMouseInput()
+	public void handleMouseInput() throws IOException
 	{
 		super.handleMouseInput();
 		
@@ -422,7 +428,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -440,18 +446,18 @@ public class GuiLogisticalSorter extends GuiMekanism
 		final int yAxis = mouseY - guiTop;
 
 		// Write to info display
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 43, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 43, 6, 0x404040);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRendererObj.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 
-		fontRendererObj.drawString("RR:", 12, 74, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
+		fontRenderer.drawString("RR:", 12, 74, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
 
-		fontRendererObj.drawString(LangUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
+		fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 
 		// Draw filters
 		for(int i = 0; i < 4; i++)
@@ -465,17 +471,17 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					final TItemStackFilter itemFilter = (TItemStackFilter) filter;
 
-					if(itemFilter.itemType != null)
+					if(!itemFilter.itemType.isEmpty())
 					{
-						GL11.glPushMatrix();
-						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
-						GL11.glDisable(GL11.GL_LIGHTING);
-						GL11.glPopMatrix();
+						GlStateManager.pushMatrix();
+						RenderHelper.enableGUIStandardItemLighting();
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
+						RenderHelper.disableStandardItemLighting();
+						GlStateManager.popMatrix();
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TOreDictFilter)
 				{
@@ -486,35 +492,37 @@ public class GuiLogisticalSorter extends GuiMekanism
 						updateStackList(oreFilter);
 					}
 
-					if(oreDictStacks.get(filter).renderStack != null)
+					ItemStack renderStack = oreDictStacks.get(filter).renderStack;
+					
+					if(!renderStack.isEmpty())
 					{
 						try {
-							GL11.glPushMatrix();
-							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-							GL11.glDisable(GL11.GL_LIGHTING);
-							GL11.glPopMatrix();
+							GlStateManager.pushMatrix();
+							RenderHelper.enableGUIStandardItemLighting();
+							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
+							RenderHelper.disableStandardItemLighting();
+							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TMaterialFilter)
 				{
 					final TMaterialFilter itemFilter = (TMaterialFilter) filter;
 
-					if(itemFilter.materialItem != null)
+					if(!itemFilter.materialItem.isEmpty())
 					{
-						GL11.glPushMatrix();
-						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
-						GL11.glDisable(GL11.GL_LIGHTING);
-						GL11.glPopMatrix();
+						GlStateManager.pushMatrix();
+						RenderHelper.enableGUIStandardItemLighting();
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
+						RenderHelper.disableStandardItemLighting();
+						GlStateManager.popMatrix();
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TModIDFilter)
 				{
@@ -525,19 +533,21 @@ public class GuiLogisticalSorter extends GuiMekanism
 						updateStackList(modFilter);
 					}
 
-					if(modIDStacks.get(filter).renderStack != null)
+					ItemStack renderStack = modIDStacks.get(filter).renderStack;
+					
+					if(!renderStack.isEmpty())
 					{
 						try {
-							GL11.glPushMatrix();
-							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), modIDStacks.get(filter).renderStack, 59, yStart + 3);
-							GL11.glDisable(GL11.GL_LIGHTING);
-							GL11.glPopMatrix();
+							GlStateManager.pushMatrix();
+							RenderHelper.enableGUIStandardItemLighting();
+							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
+							RenderHelper.disableStandardItemLighting();
+							GlStateManager.popMatrix();
 						} catch(final Exception e) {}
 					}
 
-					fontRendererObj.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRenderer.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 
 				// Draw hovertext for sorting buttons
@@ -547,7 +557,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 					{
-						drawCreativeTabHoveringText(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
+						drawHoveringText(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
 					}
 				}
 				
@@ -555,7 +565,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 					{
-						drawCreativeTabHoveringText(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
+						drawHoveringText(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
 					}
 				}
 			}
@@ -563,16 +573,16 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		if(tileEntity.color != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRender.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
+			drawTexturedRectFromIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 
 		// Draw tooltips for buttons
@@ -580,21 +590,21 @@ public class GuiLogisticalSorter extends GuiMekanism
 		{
 			if(tileEntity.color != null)
 			{
-				drawCreativeTabHoveringText(tileEntity.color.getName(), xAxis, yAxis);
+				drawHoveringText(tileEntity.color.getColoredName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+				drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 
 		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.logisticalSorter.roundRobin"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.logisticalSorter.roundRobin"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -715,10 +725,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 	public static class StackData
 	{
 		public List<ItemStack> iterStacks;
-
 		public int stackIndex;
-
-		public ItemStack renderStack;
+		public ItemStack renderStack = ItemStack.EMPTY;
 	}
 
 	/**

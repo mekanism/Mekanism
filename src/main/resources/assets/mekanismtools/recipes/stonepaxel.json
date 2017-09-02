@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "mekanismtools:stonepaxel"
+  },
+  "pattern": [
+    "XYZ",
+    " T ",
+    " T "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "minecraft:stone_axe"
+    },
+    "Y": {
+      "item": "minecraft:stone_pickaxe"
+    },
+    "Z": {
+      "item": "minecraft:stone_shovel"
+    }
+  }
+}

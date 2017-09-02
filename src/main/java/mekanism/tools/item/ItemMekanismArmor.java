@@ -2,48 +2,44 @@ package mekanism.tools.item;
 
 import java.util.List;
 
-import mekanism.api.util.StackUtils;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItems;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismArmor extends ItemArmor
 {
-	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex, int armorType)
+	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex, EntityEquipmentSlot slot)
 	{
-		super(enumarmormaterial, renderIndex, armorType);
+		super(enumarmormaterial, renderIndex, slot);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
-		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
-	}
-
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-	{
-		int layer = (slot == 2) ? 2 : 1;
+		int layer = (slot == EntityEquipmentSlot.LEGS) ? 2 : 1;
 		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase() + "_" + layer + ".png";
 	}
 	
@@ -61,7 +57,7 @@ public class ItemMekanismArmor extends ItemArmor
     	}
     	else if(getArmorMaterial() == MekanismTools.armorLAZULI)
     	{
-    		return new ItemStack(Items.dye, 1, 4);
+    		return new ItemStack(Items.DYE, 1, 4);
     	}
     	else if(getArmorMaterial() == MekanismTools.armorOSMIUM)
     	{
@@ -80,12 +76,12 @@ public class ItemMekanismArmor extends ItemArmor
     		return new ItemStack(MekanismItems.Ingot, 1, 4);
     	}
     	
-    	return new ItemStack(getArmorMaterial().func_151685_b());
+    	return new ItemStack(getArmorMaterial().getRepairItem());
     }
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		if(itemStack.getItem() == ToolsItems.GlowstoneHelmet || itemStack.getItem() == ToolsItems.GlowstoneChestplate ||
 				itemStack.getItem() == ToolsItems.GlowstoneLeggings || itemStack.getItem() == ToolsItems.GlowstoneBoots)
@@ -93,6 +89,6 @@ public class ItemMekanismArmor extends ItemArmor
 			return ModelCustomArmor.getGlow(armorSlot);
 		}
 
-		return super.getArmorModel(entityLiving, itemStack, armorSlot);
+		return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
 	}
 }

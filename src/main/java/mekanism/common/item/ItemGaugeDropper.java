@@ -6,21 +6,30 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
-import mekanism.common.tile.TileEntityPortableTank;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidContainerItem
+public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 {
-	public static int CAPACITY = FluidContainerRegistry.BUCKET_VOLUME;
+	public static int CAPACITY = Fluid.BUCKET_VOLUME;
 	
 	public static final int TRANSFER_RATE = 16;
 	
@@ -28,64 +37,62 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	{
 		super();
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
-	}
-	
-	private void updateDamage(ItemStack stack)
-	{
-		GasStack gas = getGas_do(stack);
-		FluidStack fluid = getFluid_do(stack);
-		
-		if((gas == null || gas.amount == 0) && (fluid == null || fluid.amount == 0))
-		{
-			stack.setItemDamage(100);
-		}
-		else if(gas != null && gas.amount > 0)
-		{
-			stack.setItemDamage((int)Math.max(1, (Math.abs((((float)gas.amount/getMaxGas(stack))*100)-100))));
-		}
-		else if(fluid != null && fluid.amount > 0)
-		{
-			stack.setItemDamage((int)Math.max(1, (Math.abs((((float)fluid.amount/getCapacity(stack))*100)-100))));
-		}
 	}
 	
 	public ItemStack getEmptyItem()
 	{
 		ItemStack empty = new ItemStack(this);
-		empty.setItemDamage(100);
 		setGas(empty, null);
-		setFluid(empty, null);
 		return empty;
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
+		if(!isInCreativeTab(tabs)) return;
 		list.add(getEmptyItem());
 	}
 	
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		if(player.isSneaking() && !world.isRemote)
-		{
-			setGas(stack, null);
-			setFluid(stack, null);
-		
-			return true;
-		}
-		
-		return false;
+		return true;
 	}
 	
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		double gasRatio = ((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)CAPACITY);
+		double fluidRatio = ((FluidUtil.getFluidContained(stack) != null ? (double)FluidUtil.getFluidContained(stack).amount : 0D)/(double)CAPACITY);
+		
+		return 1D-Math.max(gasRatio, fluidRatio);
+	}
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	{
+		ItemStack stack = player.getHeldItem(hand);
+		
+		if(player.isSneaking() && !world.isRemote)
+		{
+			setGas(stack, null);
+			FluidUtil.getFluidHandler(stack).drain(CAPACITY, true);
+			
+			((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);
+		
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+		}
+		
+		return new ActionResult<>(EnumActionResult.PASS, stack);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		GasStack gasStack = getGas(itemstack);
-		FluidStack fluidStack = getFluid(itemstack);
+		FluidStack fluidStack = FluidUtil.getFluidContained(itemstack);
 
 		if(gasStack == null && fluidStack == null)
 		{
@@ -99,101 +106,6 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 		{
 			list.add(LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": " + fluidStack.amount);
 		}
-	}
-
-	private FluidStack getFluid_do(ItemStack container) 
-	{
-		if(container.stackTagCompound == null)
-		{
-			return null;
-		}
-
-		if(container.stackTagCompound.hasKey("fluidStack"))
-		{
-			return FluidStack.loadFluidStackFromNBT(container.stackTagCompound.getCompoundTag("fluidStack"));
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public FluidStack getFluid(ItemStack container)
-	{
-		updateDamage(container);
-		return getFluid_do(container);
-	}
-	
-	public void setFluid(ItemStack container, FluidStack stack)
-	{
-		if(container.stackTagCompound == null)
-		{
-			container.setTagCompound(new NBTTagCompound());
-		}
-		
-		if(stack == null || stack.amount == 0 || stack.fluidID == 0)
-		{
-			container.stackTagCompound.removeTag("fluidStack");
-		}
-		else {
-			container.stackTagCompound.setTag("fluidStack", stack.writeToNBT(new NBTTagCompound()));
-		}
-		
-		updateDamage(container);
-	}
-
-	@Override
-	public int getCapacity(ItemStack container) 
-	{
-		return CAPACITY;
-	}
-
-	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill) 
-	{
-		FluidStack stored = getFluid(container);
-		int toFill;
-
-		if(stored != null && stored.getFluid() != resource.getFluid())
-		{
-			return 0;
-		}
-		
-		if(stored == null)
-		{
-			toFill = Math.min(resource.amount, TileEntityPortableTank.MAX_FLUID);
-		}
-		else {
-			toFill = Math.min(resource.amount, TileEntityPortableTank.MAX_FLUID-stored.amount);
-		}
-		
-		if(doFill)
-		{
-			int fillAmount = toFill + (stored == null ? 0 : stored.amount);
-			setFluid(container, new FluidStack(resource.getFluid(), (stored != null ? stored.amount : 0)+toFill));
-		}
-		
-		return toFill;
-	}
-
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) 
-	{
-		FluidStack stored = getFluid(container);
-		
-		if(stored != null)
-		{
-			FluidStack toDrain = new FluidStack(stored.getFluid(), Math.min(stored.amount, maxDrain));
-			
-			if(doDrain)
-			{
-				stored.amount -= toDrain.amount;
-				setFluid(container, stored.amount > 0 ? stored : null);
-			}
-			
-			return toDrain;
-		}
-		
-		return null;
 	}
 
 	@Override
@@ -251,41 +163,28 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 
 	private GasStack getGas_do(ItemStack itemstack) 
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			return null;
-		}
-
-		return GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("gasStack"));
+		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "gasStack"));
 	}
 	
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
-		updateDamage(itemstack);
 		return getGas_do(itemstack);
 	}
 
 	@Override
-	public void setGas(ItemStack itemstack, GasStack stack) 
+	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
 		if(stack == null || stack.amount == 0)
 		{
-			itemstack.stackTagCompound.removeTag("gasStack");
+			ItemDataUtils.removeData(itemstack, "gasStack");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
-			itemstack.stackTagCompound.setTag("gasStack", gasStack.write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemstack, "gasStack", gasStack.write(new NBTTagCompound()));
 		}
-		
-		updateDamage(itemstack);
 	}
 
 	@Override
@@ -293,10 +192,10 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 	{
 		return CAPACITY;
 	}
-
-	@Override
-	public boolean isMetadataSpecific(ItemStack itemstack) 
-	{
-		return false;
-	}
+	
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
+    {
+        return new FluidHandlerItemStack(stack, CAPACITY);
+    }
 }

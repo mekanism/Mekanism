@@ -3,11 +3,16 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import mekanism.common.content.transporter.TransporterFilter;
-
 public class HashList<T> implements Iterable<T>
 {
-	private ArrayList<T> list = new ArrayList<T>(256);
+	private ArrayList<T> list = new ArrayList<>(256);
+	
+	private HashList(ArrayList<T> newList)
+	{
+		list = newList;
+	}
+	
+	public HashList() {}
 
 	public boolean contains(T obj)
 	{
@@ -93,17 +98,23 @@ public class HashList<T> implements Iterable<T>
 		return list.size();
 	}
 	
-	public void swap( int source, int target )
+	@Override
+	public HashList<T> clone()
 	{
-		// Make sure both source and target ar legal values
-		if( source == target ) return;
-		if( source < 0 || target < 0 ) return;
-		if( source >= list.size() || target >= list.size() ) return;
+		return new HashList<>(new ArrayList<>(list));
+	}
+	
+	public void swap(int source, int target)
+	{
+		// Make sure both source and target are legal values
+		if(source == target) return;
+		if(source < 0 || target < 0) return;
+		if(source >= list.size() || target >= list.size()) return;
 		
 		// Perform swap
-		T temp = list.get( source );
-		list.set( source, list.get(  target ) );
-		list.set( target, temp );
+		T temp = list.get(source);
+		list.set(source, list.get( target));
+		list.set(target, temp);
 	}
 
 	@Override
@@ -119,7 +130,7 @@ public class HashList<T> implements Iterable<T>
 	}
 
 	@Override
-	public Iterator iterator()
+	public Iterator<T> iterator()
 	{
 		return list.iterator();
 	}

@@ -10,8 +10,8 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 
@@ -21,23 +21,24 @@ public final class MinerVisualRenderer
 {
 	private static Minecraft mc = Minecraft.getMinecraft();
 	
-	private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<MinerRenderData, DisplayInteger>();
+	private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 	
 	private static final double offset = 0.01;
 	
 	public static void render(TileEntityDigitalMiner miner)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslated(getX(miner.xCoord), getY(miner.yCoord), getZ(miner.zCoord));
+		GlStateManager.pushMatrix();
+		GL11.glTranslated(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 		mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 		getList(new MinerRenderData(miner)).render();
+		MekanismRenderer.resetColor();
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 	
 	private static DisplayInteger getList(MinerRenderData data)
@@ -50,7 +51,7 @@ public final class MinerVisualRenderer
 		DisplayInteger display = DisplayInteger.createAndStart();
 		cachedVisuals.put(data, display);
 		
-		List<Model3D> models = new ArrayList<Model3D>();
+		List<Model3D> models = new ArrayList<>();
 		
 		for(int x = -data.radius; x <= data.radius; x++)
 		{
@@ -60,7 +61,7 @@ public final class MinerVisualRenderer
 				{
 					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
 					{
-						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.dimensionId)));
+						models.add(createModel(new Coord4D(x, y, z, mc.world.provider.getDimension())));
 					}
 				}
 			}
@@ -71,7 +72,7 @@ public final class MinerVisualRenderer
 			MekanismRenderer.renderObject(model);
 		}
 		
-		display.endList();
+		DisplayInteger.endList();
 		
 		return display;
 	}
@@ -80,8 +81,8 @@ public final class MinerVisualRenderer
 	{
 		Model3D toReturn = new Model3D();
 		
-		toReturn.setBlockBounds(rel.xCoord + 0.4, rel.yCoord + 0.4, rel.zCoord + 0.4, rel.xCoord + 0.6, rel.yCoord + 0.6, rel.zCoord + 0.6);
-		toReturn.baseBlock = Blocks.water;
+		toReturn.setBlockBounds(rel.x + 0.4, rel.y + 0.4, rel.z + 0.4, rel.x + 0.6, rel.y + 0.6, rel.z + 0.6);
+		toReturn.baseBlock = Blocks.WATER;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		
 		return toReturn;
@@ -119,9 +120,9 @@ public final class MinerVisualRenderer
 		
 		public MinerRenderData(TileEntityDigitalMiner miner)
 		{
-			this(miner.minY, miner.maxY, miner.radius, miner.yCoord);
+			this(miner.minY, miner.maxY, miner.radius, miner.getPos().getY());
 		}
-		
+
 		@Override
 		public boolean equals(Object data)
 		{

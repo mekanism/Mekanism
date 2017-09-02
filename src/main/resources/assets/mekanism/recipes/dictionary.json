@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:dictionary"
+  },
+  "pattern": [
+    "C",
+    "B"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    }
+  }
+}

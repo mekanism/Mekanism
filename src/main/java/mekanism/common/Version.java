@@ -1,7 +1,7 @@
 package mekanism.common;
 
 /**
- * Version v1.0.4. Simple version handling for Mekanism.
+ * Version v2.0.0. Simple version handling for Mekanism.
  * @author AidanBrady
  *
  */
@@ -40,11 +40,8 @@ public class Version
 	}
 
 	/**
-	 * 1: greater than
-	 * 0: equal to
-	 * -1: less than
-	 * @param version
-	 * @return
+	 * @param version Version to check against
+	 * @return 1: greater than, 0: equal to, -1: less than
 	 */
 	public byte comparedState(Version version)
 	{
@@ -60,17 +57,7 @@ public class Version
 			}
 			else if(version.minor == minor)
 			{
-				if(version.build > build)
-				{
-					return -1;
-				}
-				else if(version.build == build)
-				{
-					return 0;
-				}
-				else {
-					return 1;
-				}
+				return (byte) Integer.compare(build, version.build);
 			}
 			else {
 				return 1;
@@ -126,5 +113,30 @@ public class Version
 		else {
 			return major + "." + minor + "." + build;
 		}
+	}
+	
+	@Override
+	public int hashCode() 
+	{
+		int result = 1;
+		
+		result = 31 * result + build;
+		result = 31 * result + major;
+		result = 31 * result + minor;
+		
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) 
+	{	
+		if(obj == null || getClass() != obj.getClass())
+		{
+			return false;
+		}
+		
+		Version other = (Version)obj;
+		
+		return build == other.build && major == other.major && minor == other.minor;
 	}
 }

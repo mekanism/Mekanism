@@ -1,28 +1,27 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityDynamicTank;
-
+import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IMessage>
 {
@@ -30,29 +29,39 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 	public IMessage onMessage(DataRequestMessage message, MessageContext context) 
 	{
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
-		if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof ITileNetwork)
-		{
-			TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
+		PacketHandler.handlePacket(() ->
+        {
+            World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
+            TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 
-			if(tileEntity instanceof TileEntityDynamicTank)
-			{
-				((TileEntityDynamicTank)tileEntity).sendStructure = true;
-			}
+            if(worldServer != null)
+            {
+                if(tileEntity instanceof TileEntityMultiblock)
+                {
+                    ((TileEntityMultiblock)tileEntity).sendStructure = true;
+                }
 
-			if(tileEntity instanceof ITransmitterTile)
-			{
-				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+                if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
+                {
+                    IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
-				if(transmitter.hasTransmitterNetwork())
-				{
-					transmitter.getTransmitterNetwork().addUpdate(player);
-				}
-			}
+                    transmitter.setRequestsUpdate();
 
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), ((ITileNetwork)tileEntity).getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
-		}
+                    if(transmitter.hasTransmitterNetwork())
+                    {
+                        transmitter.getTransmitterNetwork().addUpdate(player);
+                    }
+                }
+
+                if(CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null))
+                {
+                    ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
+
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new ArrayList<>())), (EntityPlayerMP)player);
+                }
+            }
+        }, player);
 		
 		return null;
 	}
@@ -71,17 +80,13 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
-	
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 		}
 	
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 		}
 	}
 }

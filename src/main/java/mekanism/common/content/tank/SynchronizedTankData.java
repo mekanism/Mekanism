@@ -7,8 +7,8 @@ import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
@@ -17,12 +17,13 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 	
 	/** For use by rendering segment */
 	public FluidStack prevFluid;
+	public int prevFluidStage = 0;
 	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-	public ItemStack[] inventory = new ItemStack[2];
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
-	public Set<ValveData> valves = new HashSet<ValveData>();
+	public Set<ValveData> valves = new HashSet<>();
 	
 	public boolean needsRenderUpdate()
 	{
@@ -33,7 +34,11 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 		
 		if(fluidStored != null && prevFluid != null)
 		{
-			if((fluidStored.getFluid() != prevFluid.getFluid()) || (fluidStored.amount != prevFluid.amount))
+			int totalStage 		= (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
+			int currentStage 	= (int)((fluidStored.amount / (float)(volume*TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
+			boolean stageChanged 	= currentStage != prevFluidStage;
+			prevFluidStage 		= currentStage;
+			if((fluidStored.getFluid() != prevFluid.getFluid()) || stageChanged)
 			{
 				return true;
 			}
@@ -43,14 +48,14 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 	}
 	
 	@Override
-	public ItemStack[] getInventory()
+	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
 	}
 
 	public static class ValveData
 	{
-		public ForgeDirection side;
+		public EnumFacing side;
 		public Coord4D location;
 		
 		public boolean prevActive;

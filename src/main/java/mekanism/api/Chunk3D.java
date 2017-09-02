@@ -1,7 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -15,8 +15,8 @@ public class Chunk3D
 {
 	public int dimensionId;
 	
-	public int xCoord;
-	public int zCoord;
+	public int x;
+	public int z;
 	
 	/**
 	 * Creates a Chunk3D object from the given x and z coordinates, as well as a dimension.
@@ -26,8 +26,8 @@ public class Chunk3D
 	 */
 	public Chunk3D(int x, int z, int dimension)
 	{
-		xCoord = x;
-		zCoord = z;
+		this.x = x;
+		this.z = z;
 		
 		dimensionId = dimension;
 	}
@@ -38,8 +38,8 @@ public class Chunk3D
 	 */
 	public Chunk3D(Entity entity)
 	{
-		xCoord = ((int)entity.posX) >> 4;
-		zCoord = ((int)entity.posZ) >> 4;
+		x = ((int)entity.posX) >> 4;
+		z = ((int)entity.posZ) >> 4;
 		
 		dimensionId = entity.dimension;
 	}
@@ -50,8 +50,8 @@ public class Chunk3D
 	 */
 	public Chunk3D(Coord4D coord)
 	{
-		xCoord = coord.xCoord >> 4;
-		zCoord = coord.zCoord >> 4;
+		x = coord.x >> 4;
+		z = coord.z >> 4;
 		
 		dimensionId = coord.dimensionId;
 	}
@@ -63,7 +63,7 @@ public class Chunk3D
 	 */
 	public boolean exists(World world)
 	{
-		return world.getChunkProvider().chunkExists(xCoord, zCoord);
+		return world.getChunkProvider().getLoadedChunk(x, z) != null;
 	}
 	
 	/**
@@ -73,36 +73,36 @@ public class Chunk3D
 	 */
 	public Chunk getChunk(World world)
 	{
-		return world.getChunkFromChunkCoords(xCoord, zCoord);
+		return world.getChunkFromChunkCoords(x, z);
 	}
 	
 	/**
 	 * Returns this Chunk3D in the Minecraft-based ChunkCoordIntPair format.
 	 * @return this Chunk3D as a ChunkCoordIntPair
 	 */
-	public ChunkCoordIntPair toPair()
+	public ChunkPos getPos()
 	{
-		return new ChunkCoordIntPair(xCoord, zCoord);
+		return new ChunkPos(x, z);
 	}
 	
 	@Override
-	public Coord4D clone()
+	public Chunk3D clone()
 	{
-		return new Coord4D(xCoord, zCoord, dimensionId);
+		return new Chunk3D(x, z, dimensionId);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[Chunk3D: " + xCoord + ", " + zCoord + ", dim=" + dimensionId + "]";
+		return "[Chunk3D: " + x + ", " + z + ", dim=" + dimensionId + "]";
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Chunk3D &&
-				((Chunk3D)obj).xCoord == xCoord &&
-				((Chunk3D)obj).zCoord == zCoord &&
+				((Chunk3D)obj).x == x &&
+				((Chunk3D)obj).z == z &&
 				((Chunk3D)obj).dimensionId == dimensionId;
 	}
 
@@ -110,8 +110,8 @@ public class Chunk3D
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + xCoord;
-		code = 31 * code + zCoord;
+		code = 31 * code + x;
+		code = 31 * code + z;
 		code = 31 * code + dimensionId;
 		return code;
 	}

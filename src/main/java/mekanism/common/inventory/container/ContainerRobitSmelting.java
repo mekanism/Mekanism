@@ -1,13 +1,12 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.entity.EntityRobit;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -23,11 +22,11 @@ public class ContainerRobitSmelting extends Container
 	public ContainerRobitSmelting(InventoryPlayer inventory, EntityRobit entity)
 	{
 		robit = entity;
-		robit.openInventory();
+		robit.openInventory(inventory.player);
 
 		addSlotToContainer(new Slot(entity, 28, 56, 17));
 		addSlotToContainer(new Slot(entity, 29, 56, 53));
-		addSlotToContainer(new SlotFurnace(inventory.player, entity, 30, 116, 35));
+		addSlotToContainer(new SlotFurnaceOutput(inventory.player, entity, 30, 116, 35));
 
 		int slotY;
 
@@ -48,16 +47,16 @@ public class ContainerRobitSmelting extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return true;
+		return !robit.isDead;
 	}
 
 	@Override
-	public void addCraftingToCrafters(ICrafting icrafting)
+	public void addListener(IContainerListener icrafting)
 	{
-		super.addCraftingToCrafters(icrafting);
-		icrafting.sendProgressBarUpdate(this, 0, robit.furnaceCookTime);
-		icrafting.sendProgressBarUpdate(this, 1, robit.furnaceBurnTime);
-		icrafting.sendProgressBarUpdate(this, 2, robit.currentItemBurnTime);
+		super.addListener(icrafting);
+		icrafting.sendWindowProperty(this, 0, robit.furnaceCookTime);
+		icrafting.sendWindowProperty(this, 1, robit.furnaceBurnTime);
+		icrafting.sendWindowProperty(this, 2, robit.currentItemBurnTime);
 	}
 
 	@Override
@@ -65,23 +64,23 @@ public class ContainerRobitSmelting extends Container
 	{
 		super.detectAndSendChanges();
 
-		for(int i = 0; i < crafters.size(); ++i)
+		for (IContainerListener listener : listeners)
 		{
-			ICrafting icrafting = (ICrafting)crafters.get(i);
+			IContainerListener icrafting = listener;
 
-			if(lastCookTime != robit.furnaceCookTime)
+			if (lastCookTime != robit.furnaceCookTime)
 			{
-				icrafting.sendProgressBarUpdate(this, 0, robit.furnaceCookTime);
+				icrafting.sendWindowProperty(this, 0, robit.furnaceCookTime);
 			}
 
-			if(lastBurnTime != robit.furnaceBurnTime)
+			if (lastBurnTime != robit.furnaceBurnTime)
 			{
-				icrafting.sendProgressBarUpdate(this, 1, robit.furnaceBurnTime);
+				icrafting.sendWindowProperty(this, 1, robit.furnaceBurnTime);
 			}
 
-			if(lastItemBurnTime != robit.currentItemBurnTime)
+			if (lastItemBurnTime != robit.currentItemBurnTime)
 			{
-				icrafting.sendProgressBarUpdate(this, 2, robit.currentItemBurnTime);
+				icrafting.sendWindowProperty(this, 2, robit.currentItemBurnTime);
 			}
 		}
 
@@ -112,7 +111,7 @@ public class ContainerRobitSmelting extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -124,56 +123,56 @@ public class ContainerRobitSmelting extends Container
 			{
 				if(!mergeItemStack(slotStack, 3, 39, true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(slotID != 1 && slotID != 0)
 			{
-				if(FurnaceRecipes.smelting().getSmeltingResult(slotStack) != null)
+				if(!FurnaceRecipes.instance().getSmeltingResult(slotStack).isEmpty())
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(TileEntityFurnace.isItemFuel(slotStack))
 				{
 					if(!mergeItemStack(slotStack, 1, 2, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID >= 3 && slotID < 30)
 				{
 					if(!mergeItemStack(slotStack, 30, 39, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID >= 30 && slotID < 39 && !mergeItemStack(slotStack, 3, 30, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(!mergeItemStack(slotStack, 3, 39, false))
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;
@@ -183,6 +182,6 @@ public class ContainerRobitSmelting extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		robit.closeInventory();
+		robit.closeInventory(entityplayer);
 	}
 }

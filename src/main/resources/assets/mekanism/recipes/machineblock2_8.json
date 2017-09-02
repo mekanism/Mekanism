@@ -1,0 +1,38 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 8
+  },
+  "pattern": [
+    "CGC",
+    "ASA",
+    "CGC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ChemicalCrystallizer"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:atomicalloy"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "S": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

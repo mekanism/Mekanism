@@ -17,25 +17,25 @@ public interface IElectricMachine<INPUT extends MachineInput<INPUT>, OUTPUT exte
 	/**
 	 * Update call for machines. Use instead of updateEntity() - it's called every tick.
 	 */
-	public void onUpdate();
+    void onUpdate();
 
 	/**
 	 * Whether or not this machine can operate.
 	 * @return can operate
 	 */
-	public boolean canOperate(RECIPE recipe);
+    boolean canOperate(RECIPE recipe);
 
 	/**
 	 * Runs this machine's operation -- or smelts the item.
 	 */
-	public void operate(RECIPE recipe);
+    void operate(RECIPE recipe);
 
 	/**
 	 * Gets this machine's recipes.
 	 */
-	public Map<INPUT, RECIPE> getRecipes();
+    Map<INPUT, RECIPE> getRecipes();
 
-	public RECIPE getRecipe();
+	RECIPE getRecipe();
 
-	public INPUT getInput();
+	INPUT getInput();
 }

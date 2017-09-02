@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>>
 {
-	public Set<Coord4D> locations = new HashSet<Coord4D>();
+	public Set<Coord4D> locations = new HashSet<>();
 
 	public int volLength;
 
@@ -19,7 +19,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 
 	public int volume;
 	
-	public int inventoryID;
+	public String inventoryID;
 	
 	public boolean didTick;
 
@@ -32,7 +32,9 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 	
 	public boolean destroyed;
 	
-	public ItemStack[] getInventory()
+	public Set<Coord4D> internalLocations = new HashSet<>();
+	
+	public NonNullList<ItemStack> getInventory()
 	{
 		return null;
 	}

@@ -1,0 +1,43 @@
+{
+  "result": {
+    "nbt": {
+      "recipeType": 6
+    },
+    "item": "mekanism:machineblock",
+    "data": 7,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "RCR",
+    "gOg",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Factory"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyElite",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUITELITE"
+    },
+    "g": {
+      "ore": "ingotGold",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "nbt": {
+        "recipeType": 6
+      },
+      "item": "mekanism:machineblock",
+      "data": 6,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

@@ -1,48 +1,110 @@
 package mekanism.common.tile;
 
+import mekanism.api.Coord4D;
+import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
 import mekanism.common.content.boiler.BoilerWaterTank;
+import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
-
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityBoilerValve extends TileEntityBoiler implements IFluidHandler
+public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration
 {
 	public BoilerTank waterTank;
 	public BoilerTank steamTank;
 
 	public TileEntityBoilerValve()
 	{
-		super("Boiler Valve");
+		super("BoilerValve");
+		
 		waterTank = new BoilerWaterTank(this);
 		steamTank = new BoilerSteamTank(this);
 	}
-
+	
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public void onUpdate()
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {waterTank.getInfo(), steamTank.getInfo()} : PipeUtils.EMPTY;
-	}
-
-	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
-	{
-		return waterTank.fill(resource, doFill);
-	}
-
-	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
-	{
-		if(structure != null && structure.steamStored != null)
+		super.onUpdate();
+		
+		if(!world.isRemote)
 		{
-			if(resource.getFluid() == structure.steamStored.getFluid())
+			if(structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y -1)
 			{
-				return steamTank.drain(resource.amount, doDrain);
+				if(structure.steamStored != null && structure.steamStored.amount > 0)
+				{
+					for(EnumFacing side : EnumFacing.values())
+					{
+						TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
+						
+						if(tile != null && !(tile instanceof TileEntityBoilerValve) && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+						{
+							IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+							
+							if(PipeUtils.canFill(handler, structure.steamStored))
+							{
+								structure.steamStored.amount -= handler.fill(structure.steamStored, true);
+								
+								if(structure.steamStored.amount <= 0)
+								{
+									structure.steamStored = null;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
+	{
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+		{
+			if(structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y -1)
+			{
+				return new FluidTankInfo[] {steamTank.getInfo()};
+			}
+			else {
+				return new FluidTankInfo[] {waterTank.getInfo()};
+			}
+		}
+		
+		return PipeUtils.EMPTY;
+	}
+
+	@Override
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	{
+		if(structure != null && structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y -1)
+		{
+			return waterTank.fill(resource, doFill);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	{
+		if(structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y -1)
+		{
+			if(structure.steamStored != null)
+			{
+				if(resource.getFluid() == structure.steamStored.getFluid())
+				{
+					return steamTank.drain(resource.amount, doDrain);
+				}
 			}
 		}
 
@@ -50,9 +112,9 @@ public class TileEntityBoilerValve extends TileEntityBoiler implements IFluidHan
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
-		if(structure != null)
+		if(structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y -1)
 		{
 			return steamTank.drain(maxDrain, doDrain);
 		}
@@ -61,14 +123,91 @@ public class TileEntityBoilerValve extends TileEntityBoiler implements IFluidHan
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return true;
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+		{
+			return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y -1;
+		}
+		
+		return false;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return true;
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+		{
+			return structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y -1;
+		}
+		
+		return false;
+	}
+	
+	private static final String[] methods = new String[] {"isFormed", "getSteam", "getWater", "getBoilRate", "getMaxBoilRate", "getTemp"};
+
+	@Override
+	public String[] getMethods()
+	{
+		return methods;
+	}
+
+	@Override
+	public Object[] invoke(int method, Object[] arguments) throws Exception
+	{
+		if(method == 0)
+		{
+			return new Object[] {structure != null};
+		}
+		else {
+			if(structure == null)
+			{
+				return new Object[] {"Unformed"};
+			}
+			
+			switch(method)
+			{
+				case 1:
+					return new Object[] {structure.steamStored != null ? structure.steamStored.amount : 0};
+				case 2:
+					return new Object[] {structure.waterStored != null ? structure.waterStored.amount : 0};
+				case 3:
+					return new Object[] {structure.lastBoilRate};
+				case 4:
+					return new Object[] {structure.lastMaxBoil};
+				case 5:
+					return new Object[] {structure.temperature};
+			}
+		}
+		
+		throw new NoSuchMethodException();
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return true;
+			}
+		}
+		
+		return super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
+		{
+			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			{
+				return (T)new FluidHandlerWrapper(this, side);
+			}
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

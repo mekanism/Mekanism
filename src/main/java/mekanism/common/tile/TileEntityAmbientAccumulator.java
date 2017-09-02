@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -11,11 +13,11 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
-
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection
 {
@@ -29,17 +31,17 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	public TileEntityAmbientAccumulator()
 	{
 		super("AmbientAccumulator");
-		inventory = new ItemStack[0];
+		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			if(cachedRecipe == null || worldObj.provider.dimensionId != cachedDimensionId)
+			if(cachedRecipe == null || world.provider.getDimension() != cachedDimensionId)
 			{
-				cachedDimensionId = worldObj.provider.dimensionId;
+				cachedDimensionId = world.provider.getDimension();
 				cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
 			}
 
@@ -52,49 +54,37 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return 0;
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return collectedGas.draw(amount, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
-	{
-		return drawGas(side, amount, true);
-	}
-
-	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return type == collectedGas.getGasType();
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return true;
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		if(collectedGas.getGasType() != null)
 		{
@@ -112,14 +102,17 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	@Override
 	public void handlePacketData(ByteBuf data)
 	{
-		int gasID = data.readInt();
-		
-		if(gasID < 0)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			collectedGas.setGas(null);
-		} 
-		else {
-			collectedGas.setGas(new GasStack(gasID, data.readInt()));
+			int gasID = data.readInt();
+			
+			if(gasID < 0)
+			{
+				collectedGas.setGas(null);
+			} 
+			else {
+				collectedGas.setGas(new GasStack(gasID, data.readInt()));
+			}
 		}
 	}
 }

@@ -1,0 +1,38 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
+      "front": "mekanism:blocks/energized_smelter/EnergizedSmelterFront",
+      "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRight",
+      "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeft",
+      "south": "mekanism:blocks/energized_smelter/EnergizedSmelterBack",
+      "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTop",
+      "down": "mekanism:blocks/energized_smelter/EnergizedSmelterBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/energized_smelter/EnergizedSmelterFrontOn",
+          "west": "mekanism:blocks/energized_smelter/EnergizedSmelterRightOn",
+          "east": "mekanism:blocks/energized_smelter/EnergizedSmelterLeftOn",
+          "south": "mekanism:blocks/energized_smelter/EnergizedSmelterBackOn",
+          "up": "mekanism:blocks/energized_smelter/EnergizedSmelterTopOn",
+          "down": "mekanism:blocks/energized_smelter/EnergizedSmelterBottomOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

@@ -12,7 +12,7 @@ public class EnergizedItemManager
 	 */
 	public static double discharge(ItemStack itemStack, double amount)
 	{
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			if(itemStack.getItem() instanceof IEnergizedItem)
 			{
@@ -39,7 +39,7 @@ public class EnergizedItemManager
 	 */
 	public static double charge(ItemStack itemStack, double amount)
 	{
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			if(itemStack.getItem() instanceof IEnergizedItem)
 			{

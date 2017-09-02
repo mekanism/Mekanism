@@ -7,22 +7,27 @@ import mekanism.api.MekanismAPI;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockCardboardBox extends ItemBlock
 {
@@ -33,7 +38,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 	public ItemBlockCardboardBox(Block block)
 	{
 		super(block);
-		setMaxStackSize(1);
+		setMaxStackSize(16);
 		metaBlock = block;
 
 		MinecraftForge.EVENT_BUS.register(this);
@@ -41,19 +46,22 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
-
-		if(getBlockData(itemstack) != null)
+		BlockData data = getBlockData(itemstack);
+		
+		if(data != null)
 		{
-			list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(getBlockData(itemstack).block, getBlockData(itemstack).meta).getDisplayName());
-			list.add(LangUtils.localize("tooltip.meta") + ": " + getBlockData(itemstack).meta);
-
-			if(getBlockData(itemstack).tileTag != null)
-			{
-				list.add(LangUtils.localize("tooltip.tile") + ": " + getBlockData(itemstack).tileTag.getString("id"));
-			}
+			try {
+				list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta).getDisplayName());
+				list.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
+	
+				if(data.tileTag != null)
+				{
+					list.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
+				}
+			} catch(Exception e) {}
 		}
 	}
 
@@ -64,20 +72,17 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
-		return metaBlock.getIcon(2, i);
-	}
-
-	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-	{
-		if(!player.isSneaking() && !world.isAirBlock(x, y, z) && stack.getItemDamage() == 0)
+		ItemStack stack = player.getHeldItem(hand);
+		
+		if(!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0)
 		{
-			Block block = world.getBlock(x, y, z);
-			int meta = world.getBlockMetadata(x, y, z);
+			IBlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
+			int meta = block.getMetaFromState(state);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && block.getBlockHardness(world, x, y, z) != -1)
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(block, meta) && state.getBlockHardness(world, pos) != -1)
 			{
 				BlockData data = new BlockData();
 				data.block = block;
@@ -85,9 +90,9 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				isMonitoring = true;
 
-				if(world.getTileEntity(x, y, z) != null)
+				if(world.getTileEntity(pos) != null)
 				{
-					TileEntity tile = world.getTileEntity(x, y, z);
+					TileEntity tile = world.getTileEntity(pos);
 					NBTTagCompound tag = new NBTTagCompound();
 
 					tile.writeToNBT(tag);
@@ -96,40 +101,40 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				if(!player.capabilities.isCreativeMode)
 				{
-					stack.stackSize--;
+					stack.shrink(1);
 				}
 
-				world.setBlock(x, y, z, MekanismBlocks.CardboardBox, 1, 3);
+				world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1), 3);
 
 				isMonitoring = false;
 
-				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
 				if(tileEntity != null)
 				{
 					tileEntity.storedData = data;
 				}
 
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
 		if(world.isRemote)
 		{
 			return true;
 		}
 
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
 		if(place)
 		{
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
 			if(tileEntity != null)
 			{
@@ -142,30 +147,36 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	public void setBlockData(ItemStack itemstack, BlockData data)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemstack.stackTagCompound.setTag("blockData", data.write(new NBTTagCompound()));
+		ItemDataUtils.setCompound(itemstack, "blockData", data.write(new NBTTagCompound()));
 	}
 
 	public BlockData getBlockData(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("blockData"))
+		if(!ItemDataUtils.hasData(itemstack, "blockData"))
 		{
 			return null;
 		}
 
-		return BlockData.read(itemstack.stackTagCompound.getCompoundTag("blockData"));
+		return BlockData.read(ItemDataUtils.getCompound(itemstack, "blockData"));
 	}
 
 	@SubscribeEvent
 	public void onEntitySpawn(EntityJoinWorldEvent event)
 	{
-		if(event.entity instanceof EntityItem && isMonitoring)
+		if(event.getEntity() instanceof EntityItem && isMonitoring)
 		{
 			event.setCanceled(true);
 		}
+	}
+
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+	{
+		BlockData blockData = getBlockData(stack);
+		if(blockData != null)
+		{
+			return 1;
+		}
+		return super.getItemStackLimit(stack);
 	}
 }

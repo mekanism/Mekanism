@@ -7,16 +7,20 @@ import mekanism.api.EnumColor;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRobit extends ItemEnergized implements ISustainedInventory
 {
@@ -27,48 +31,46 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
-		super.addInformation(itemstack, entityplayer, list, flag);
+		super.addInformation(itemstack, world, list, flag);
 
 		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.name") + ": " + EnumColor.GREY + getName(itemstack));
 		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float posX, float posY, float posZ)
+	public EnumActionResult onItemUse(EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand, EnumFacing side, float posX, float posY, float posZ)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(pos);
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
 
 		if(tileEntity instanceof TileEntityChargepad)
 		{
 			TileEntityChargepad chargepad = (TileEntityChargepad)tileEntity;
+			
 			if(!chargepad.isActive)
 			{
 				if(!world.isRemote)
 				{
-					EntityRobit robit = new EntityRobit(world, x+0.5, y+0.1, z+0.5);
+					EntityRobit robit = new EntityRobit(world, pos.getX()+0.5, pos.getY()+0.1, pos.getZ()+0.5);
 
 					robit.setHome(Coord4D.get(chargepad));
 					robit.setEnergy(getEnergy(itemstack));
-					robit.setOwner(entityplayer.getCommandSenderName());
+					robit.setOwnerUUID(entityplayer.getUniqueID());
 					robit.setInventory(getInventory(itemstack));
-					robit.setName(getName(itemstack));
+					robit.setCustomNameTag(getName(itemstack));
 
-					world.spawnEntityInWorld(robit);
+					world.spawnEntity(robit);
 				}
 
-				entityplayer.setCurrentItemOrArmor(0, null);
+				entityplayer.setHeldItem(hand, ItemStack.EMPTY);
 
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
@@ -79,24 +81,14 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 
 	public void setName(ItemStack itemstack, String name)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemstack.stackTagCompound.setString("name", name);
+		ItemDataUtils.setString(itemstack, "name", name);
 	}
 
 	public String getName(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
-		{
-			return "Robit";
-		}
+		String name = ItemDataUtils.getString(itemstack, "name");
 
-		String name = itemstack.stackTagCompound.getString("name");
-
-		return name.equals("") ? "Robit" : name;
+		return name.isEmpty() ? "Robit" : name;
 	}
 
 	@Override
@@ -104,14 +96,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.stackTagCompound == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-
-			itemStack.stackTagCompound.setTag("Items", nbtTags);
+			ItemDataUtils.setList((ItemStack)data[0], "Items", nbtTags);
 		}
 	}
 
@@ -120,14 +105,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	{
 		if(data[0] instanceof ItemStack)
 		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.stackTagCompound == null)
-			{
-				return null;
-			}
-
-			return itemStack.stackTagCompound.getTagList("Items", 10);
+			return ItemDataUtils.getList((ItemStack)data[0], "Items");
 		}
 
 		return null;

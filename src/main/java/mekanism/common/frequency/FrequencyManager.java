@@ -4,44 +4,54 @@ import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSavedData;
+import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class FrequencyManager
 {
+	public static final int MAX_FREQ_LENGTH = 16;
+	public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', 
+			'?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
+
 	public static boolean loaded;
 	
-	private static Set<FrequencyManager> managers = new HashSet<FrequencyManager>();
+	private static Set<FrequencyManager> managers = new HashSet<>();
 	
-	private Set<Frequency> frequencies = new HashSet<Frequency>();
+	private Set<Frequency> frequencies = new HashSet<>();
 	
 	private FrequencyDataHandler dataHandler;
 	
-	private String owner;
+	private UUID ownerUUID;
+	
+	private String name;
 	
 	private Class<? extends Frequency> frequencyClass;
 	
-	public FrequencyManager(Class c)
+	public FrequencyManager(Class c, String n)
 	{
 		frequencyClass = c;
+		name = n;
+		
 		managers.add(this);
 	}
 	
-	public FrequencyManager(Class c, String s)
+	public FrequencyManager(Class c, String n, UUID uuid)
 	{
-		this(c);
+		this(c, n);
 		
-		owner = s;
+		ownerUUID = uuid;
 	}
 	
 	public static void load(World world)
@@ -54,7 +64,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public Frequency update(String user, Coord4D coord, Frequency freq)
+	public Frequency update(Coord4D coord, Frequency freq)
 	{
 		for(Frequency iterFreq : frequencies)
 		{
@@ -72,13 +82,13 @@ public class FrequencyManager
 		return null;
 	}
 	
-	public void remove(String name, String owner)
+	public void remove(String name, UUID owner)
 	{
 		for(Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext();)
 		{
 			Frequency iterFreq = iter.next();
 			
-			if(iterFreq.name.equals(name) && iterFreq.owner.equals(owner))
+			if(iterFreq.name.equals(name) && iterFreq.ownerUUID.equals(owner))
 			{
 				iter.remove();
 				dataHandler.markDirty();
@@ -108,7 +118,7 @@ public class FrequencyManager
 		{
 			Frequency iterFreq = iter.next();
 			
-			if(iterFreq.owner.equals(user))
+			if(iterFreq.ownerUUID.equals(user))
 			{
 				iter.remove();
 				dataHandler.markDirty();
@@ -128,7 +138,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public Frequency validateFrequency(String user, Coord4D coord, Frequency freq)
+	public Frequency validateFrequency(UUID uuid, Coord4D coord, Frequency freq)
 	{
 		for(Frequency iterFreq : frequencies)
 		{
@@ -141,9 +151,10 @@ public class FrequencyManager
 			}
 		}
 		
-		if(user.equals(freq.owner))
+		if(uuid.equals(freq.ownerUUID))
 		{
 			freq.activeCoords.add(coord);
+			freq.valid = true;
 			frequencies.add(freq);
 			dataHandler.markDirty();
 			
@@ -159,37 +170,18 @@ public class FrequencyManager
 		
 		if(dataHandler == null)
 		{
-			dataHandler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
+			dataHandler = (FrequencyDataHandler)world.getPerWorldStorage().getOrLoadData(FrequencyDataHandler.class, name);
 			
 			if(dataHandler == null)
 			{
 				dataHandler = new FrequencyDataHandler(name);
 				dataHandler.setManager(this);
-				world.perWorldStorage.setData(name, dataHandler);
+				world.getPerWorldStorage().setData(name, dataHandler);
 			}
 			else {
 				dataHandler.setManager(this);
 				dataHandler.syncManager();
 			}
-		}
-	}
-	
-	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass)
-	{
-		FrequencyManager manager = new FrequencyManager(freqClass);
-		String name = manager.getName();
-		
-		FrequencyDataHandler handler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
-		
-		if(handler == null)
-		{
-			return null;
-		}
-		else {
-			manager.dataHandler = handler;
-			manager.dataHandler.syncManager();
-			
-			return manager;
 		}
 	}
 	
@@ -238,7 +230,7 @@ public class FrequencyManager
 			{
 				Coord4D coord = iter.next();
 				
-				if(coord.dimensionId == world.provider.dimensionId)
+				if(coord.dimensionId == world.provider.getDimension())
 				{
 					if(!coord.exists(world))
 					{
@@ -247,12 +239,12 @@ public class FrequencyManager
 					else {
 						TileEntity tile = coord.getTileEntity(world);
 						
-						if(!(tile instanceof TileEntityTeleporter))
+						if(!(tile instanceof IFrequencyHandler))
 						{
 							iter.remove();
 						}
 						else {
-							Frequency freq = ((TileEntityTeleporter)tile).frequency;
+							Frequency freq = ((IFrequencyHandler)tile).getFrequency(this);
 							
 							if(freq == null || !freq.equals(iterFreq))
 							{
@@ -265,7 +257,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public void writeFrequencies(ArrayList data)
+	public void writeFrequencies(ArrayList<Object> data)
 	{
 		data.add(frequencies.size());
 		
@@ -277,13 +269,13 @@ public class FrequencyManager
 	
 	public Set<Frequency> readFrequencies(ByteBuf dataStream)
 	{
-		Set<Frequency> ret = new HashSet<Frequency>();
+		Set<Frequency> ret = new HashSet<>();
 		int size = dataStream.readInt();
 		
 		try {
 			for(int i = 0; i < size; i++)
 			{
-				Frequency freq = frequencyClass.newInstance();
+				Frequency freq = frequencyClass.getConstructor(new Class[] {ByteBuf.class}).newInstance(dataStream);
 				freq.read(dataStream);
 				ret.add(freq);
 			}
@@ -296,7 +288,7 @@ public class FrequencyManager
 	
 	public String getName()
 	{
-		return owner != null ? owner + "FrequencyHandler" : "FrequencyHandler";
+		return ownerUUID != null ? (ownerUUID.toString() + "_" + name + "FrequencyHandler") : (name + "FrequencyHandler");
 	}
 	
 	public static void reset()
@@ -315,7 +307,7 @@ public class FrequencyManager
 		public FrequencyManager manager;
 		
 		public Set<Frequency> loadedFrequencies;
-		public String loadedOwner;
+		public UUID loadedOwner;
 		
 		public FrequencyDataHandler(String tagName)
 		{
@@ -332,7 +324,7 @@ public class FrequencyManager
 			if(loadedFrequencies != null)
 			{
 				manager.frequencies = loadedFrequencies;
-				manager.owner = loadedOwner;
+				manager.ownerUUID = loadedOwner;
 			}
 		}
 		
@@ -342,14 +334,14 @@ public class FrequencyManager
 			try {
 				String frequencyClass = nbtTags.getString("frequencyClass");
 				
-				if(nbtTags.hasKey("owner"))
+				if(nbtTags.hasKey("ownerUUID"))
 				{
-					loadedOwner = nbtTags.getString("owner");
+					loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
 				}
 				
 				NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
 				
-				loadedFrequencies = new HashSet<Frequency>();
+				loadedFrequencies = new HashSet<>();
 				
 				for(int i = 0; i < list.tagCount(); i++)
 				{
@@ -366,13 +358,13 @@ public class FrequencyManager
 		}
 
 		@Override
-		public void writeToNBT(NBTTagCompound nbtTags) 
+		public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) 
 		{
 			nbtTags.setString("frequencyClass", manager.frequencyClass.getName());
 			
-			if(manager.owner != null)
+			if(manager.ownerUUID != null)
 			{
-				nbtTags.setString("owner", manager.owner);
+				nbtTags.setString("ownerUUID", manager.ownerUUID.toString());
 			}
 			
 			NBTTagList list = new NBTTagList();
@@ -385,6 +377,8 @@ public class FrequencyManager
 			}
 			
 			nbtTags.setTag("freqList", list);
+			
+			return nbtTags;
 		}
 	}
 }

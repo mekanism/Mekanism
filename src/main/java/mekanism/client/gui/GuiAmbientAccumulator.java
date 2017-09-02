@@ -1,8 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.api.gas.GasTank;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -22,20 +20,14 @@ public class GuiAmbientAccumulator extends GuiMekanism
 		super(tile, new ContainerNull(player, tile));
 		tileEntity = tile;
 
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
-			@Override
-			public GasTank getTank()
-			{
-				return tileEntity.collectedGas;
-			}
-		}, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 26, 16));
+		guiElements.add(new GuiGasGauge(() -> tileEntity.collectedGas, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 26, 16));
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 45, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

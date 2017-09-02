@@ -8,13 +8,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import mekanism.api.MekanismAPI;
-
 import net.minecraft.block.Block;
 
 public final class BoxBlacklistParser
 {
-	public static File mekanismDir = new File(Mekanism.proxy.getMinecraftDir(), "config/mekanism");
-	public static File boxBlacklistFile = new File(mekanismDir, "BoxBlacklist.txt");
+	private static File mekanismDir = new File(Mekanism.proxy.getMinecraftDir(), "config/mekanism");
+	private static File boxBlacklistFile = new File(mekanismDir, "BoxBlacklist.txt");
+
+	private BoxBlacklistParser() {}
 
 	public static void load()
 	{
@@ -22,7 +23,7 @@ public final class BoxBlacklistParser
 			generateFiles();
 			readBlacklist();
 		} catch(Exception e) {
-			e.printStackTrace();
+			Mekanism.logger.warn("Couldn't load Cardboard Box blacklist", e);
 		}
 	}
 
@@ -50,61 +51,60 @@ public final class BoxBlacklistParser
 
 	private static void readBlacklist() throws IOException
 	{
-		BufferedReader reader = new BufferedReader(new FileReader(boxBlacklistFile));
-		int entries = 0;
-
-		String readingLine;
-		int line = 0;
-
-		while((readingLine = reader.readLine()) != null)
+		try(BufferedReader reader = new BufferedReader(new FileReader((boxBlacklistFile))))
 		{
-			line++;
+			int entries = 0;
 
-			if(readingLine.startsWith("#") || readingLine.trim().isEmpty())
+			String readingLine;
+			int line = 0;
+
+			while((readingLine = reader.readLine()) != null)
 			{
-				continue;
-			}
+				line++;
 
-			String[] split = readingLine.split(":");
+				if(readingLine.startsWith("#") || readingLine.trim().isEmpty())
+				{
+					continue;
+				}
 
-			if(split.length < 2 || split.length > 3 || !isInteger(split[split.length-1]))
-			{
-				Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
-				continue;
-			}
-			
-			String blockName = (split.length == 2) ? split[0].trim() : split[0].trim() + ":" + split[1].trim();
-			
-			Block block = Block.getBlockFromName(blockName);
-			
-			if(block == null)
-			{
-				Mekanism.logger.error("BoxBlacklist.txt: Couldn't find specified block on line " + line);
-				continue;
-			}
+				String[] split = readingLine.split(" ");
 
-			MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length-1]));
-			entries++;
+				if(split.length != 2 || !isInteger(split[split.length-1]))
+				{
+					Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
+					continue;
+				}
+
+				String blockName = split[0].trim();
+
+				Block block = Block.getBlockFromName(blockName);
+
+				if(block == null)
+				{
+					Mekanism.logger.error("BoxBlacklist.txt: Couldn't find specified block on line " + line);
+					continue;
+				}
+
+				MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length-1]));
+				entries++;
+
+				Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
+			}
 		}
-
-		reader.close();
-
-		Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
 	}
 
 	private static void writeExamples() throws IOException
 	{
-		BufferedWriter writer = new BufferedWriter(new FileWriter(boxBlacklistFile));
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(boxBlacklistFile)))
+		{
 
-		writer.append("# Use this file to tell Mekanism which blocks should not be picked up by a cardboard box.");
-		writer.newLine();
+			writer.append("# Use this file to tell Mekanism which blocks should not be picked up by a cardboard box.");
+			writer.newLine();
 
-		writer.append("# Proper syntax is \"NAME:META\". Example (for stone):");
-		writer.newLine();
+			writer.append("# Proper syntax is \"NAME META\". Example (for stone):");
+			writer.newLine();
 
-		writer.append("# stone:0");
-
-		writer.flush();
-		writer.close();
+			writer.append("# minecraft:stone 0");
+		}
 	}
 }

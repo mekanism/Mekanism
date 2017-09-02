@@ -1,16 +1,21 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -18,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiDictionary extends GuiMekanism
 {
-	public ItemStack itemType;
+	public ItemStack itemType = ItemStack.EMPTY;
 	
 	public GuiScrollList scrollList;
 
@@ -35,16 +40,16 @@ public class GuiDictionary extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
-		if(itemType != null)
+		if(!itemType.isEmpty())
 		{
-			GL11.glPushMatrix();
-			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemType, 6, 6);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.pushMatrix();
+			RenderHelper.enableGUIStandardItemLighting();
+			itemRender.renderItemAndEffectIntoGUI(itemType, 6, 6);
+			RenderHelper.disableStandardItemLighting();
+			GlStateManager.popMatrix();
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -64,7 +69,7 @@ public class GuiDictionary extends GuiMekanism
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -74,7 +79,7 @@ public class GuiDictionary extends GuiMekanism
 
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 		
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
@@ -87,7 +92,7 @@ public class GuiDictionary extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
@@ -100,7 +105,7 @@ public class GuiDictionary extends GuiMekanism
 
 				for(int i = 0; i < inventorySlots.inventorySlots.size(); i++)
 				{
-					Slot slot = (Slot)inventorySlots.inventorySlots.get(i);
+					Slot slot = inventorySlots.inventorySlots.get(i);
 
 					if(isMouseOverSlot(slot, mouseX, mouseY))
 					{
@@ -113,13 +118,13 @@ public class GuiDictionary extends GuiMekanism
 				{
 					ItemStack stack = hovering.getStack();
 
-					if(stack != null)
+					if(!stack.isEmpty())
 					{
 						itemType = stack.copy();
-						itemType.stackSize = 1;
+						itemType.setCount(1);
 
 						scrollList.setText(MekanismUtils.getOreDictName(itemType));
-						SoundHandler.playSound("gui.button.press");
+						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						
 						return;
 					}
@@ -128,23 +133,23 @@ public class GuiDictionary extends GuiMekanism
 
 			if(xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack stack = mc.player.inventory.getItemStack();
 
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				if(!stack.isEmpty() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					itemType = stack.copy();
-					itemType.stackSize = 1;
+					itemType.setCount(1);
 
 					scrollList.setText(MekanismUtils.getOreDictName(itemType));
 				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				else if(stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					itemType = null;
+					itemType = ItemStack.EMPTY;
 					
 					scrollList.setText(null);
 				}
 
-                SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 

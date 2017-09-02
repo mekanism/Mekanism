@@ -1,6 +1,7 @@
 package mekanism.api.gas;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
+
 
 public class OreGas extends Gas
 {
@@ -9,7 +10,7 @@ public class OreGas extends Gas
 
 	public OreGas(String s, String name)
 	{
-		super(s);
+		super(s, "mekanism:blocks/liquid/Liquid" + (s.contains("clean") ? "Clean" : "") + "Ore");
 
 		oreName = name;
 	}
@@ -33,6 +34,6 @@ public class OreGas extends Gas
 
 	public String getOreName()
 	{
-		return StatCollector.translateToLocal(oreName);
+		return I18n.translateToLocal(oreName);
 	}
 }

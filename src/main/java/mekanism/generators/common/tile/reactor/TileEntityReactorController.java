@@ -5,41 +5,41 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.client;
-import mekanism.api.Pos3D;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.SoundWrapper;
+import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound, ISoundSource
 {
-	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
-
-	public static final int MAX_FUEL = 1 * FluidContainerRegistry.BUCKET_VOLUME;
+	public static final int MAX_WATER = 100 * Fluid.BUCKET_VOLUME;
+	public static final int MAX_STEAM = MAX_WATER * 100;
+	public static final int MAX_FUEL = 1 * Fluid.BUCKET_VOLUME;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
-	public FluidTank steamTank = new FluidTank(MAX_WATER*1000);
+	public FluidTank steamTank = new FluidTank(MAX_STEAM);
 
 	public GasTank deuteriumTank = new GasTank(MAX_FUEL);
 	public GasTank tritiumTank = new GasTank(MAX_FUEL);
@@ -59,10 +59,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	public TileEntityReactorController()
 	{
 		super("ReactorController", 1000000000);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 
-	@Override
 	public boolean isFrame()
 	{
 		return false;
@@ -70,14 +69,14 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	public void radiateNeutrons(int neutrons) {} //future impl
 
-	public void formMultiblock()
+	public void formMultiblock(boolean keepBurning)
 	{
 		if(getReactor() == null)
 		{
 			setReactor(new FusionReactor(this));
 		}
 		
-		getReactor().formMultiblock();
+		getReactor().formMultiblock(keepBurning);
 	}
 
 	public double getPlasmaTemp()
@@ -105,7 +104,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			updateSound();
 		}
@@ -114,9 +113,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			getReactor().simulate();
 			
-			if(!worldObj.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
+			if(!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50D));
 				clientBurning = getReactor().isBurning();
 				clientTemp = getReactor().getPlasmaTemp();
 			}
@@ -138,7 +137,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onChunkUnload();
 		
-		formMultiblock();
+		formMultiblock(true);
 	}
 	
 	@Override
@@ -146,11 +145,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onAdded();
 		
-		formMultiblock();
+		formMultiblock(false);
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tag)
+	public NBTTagCompound writeToNBT(NBTTagCompound tag)
 	{
 		super.writeToNBT(tag);
 
@@ -175,6 +174,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		tag.setTag("tritiumTank", tritiumTank.write(new NBTTagCompound()));
 		tag.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
 		tag.setTag("steamTank", steamTank.writeToNBT(new NBTTagCompound()));
+		
+		return tag;
 	}
 
 	@Override
@@ -202,7 +203,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
@@ -217,7 +218,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			data.add(fuelTank.getStored());
 			data.add(deuteriumTank.getStored());
 			data.add(tritiumTank.getStored());
+			data.add(waterTank.getCapacity());
 			data.add(waterTank.getFluidAmount());
+			data.add(steamTank.getCapacity());
 			data.add(steamTank.getFluidAmount());
 		}
 
@@ -227,7 +230,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			int type = dataStream.readInt();
 
@@ -243,42 +246,41 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 		super.handlePacketData(dataStream);
 
-		boolean formed = dataStream.readBoolean();
-		
-		if(formed)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(getReactor() == null || !((FusionReactor)getReactor()).formed)
-			{
-				Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
-					@Override
-					public boolean isNode(TileEntity tile)
-					{
-						return tile instanceof TileEntityReactorBlock;
-					}
-				});
-			}
+			boolean formed = dataStream.readBoolean();
 			
-			if(getReactor() == null)
+			if(formed)
 			{
-				setReactor(new FusionReactor(this));
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				if(getReactor() == null || !((FusionReactor)getReactor()).formed)
+				{
+					Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityReactorBlock);
+				}
+				
+				if(getReactor() == null)
+				{
+					setReactor(new FusionReactor(this));
+					MekanismUtils.updateBlock(world, getPos());
+				}
+				
+				getReactor().formed = true;
+				getReactor().setPlasmaTemp(dataStream.readDouble());
+				getReactor().setCaseTemp(dataStream.readDouble());
+				getReactor().setInjectionRate(dataStream.readInt());
+				getReactor().setBurning(dataStream.readBoolean());
+				fuelTank.setGas(new GasStack(MekanismFluids.FusionFuel, dataStream.readInt()));
+				deuteriumTank.setGas(new GasStack(MekanismFluids.Deuterium, dataStream.readInt()));
+				tritiumTank.setGas(new GasStack(MekanismFluids.Tritium, dataStream.readInt()));
+				waterTank.setCapacity(dataStream.readInt());
+				waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
+				steamTank.setCapacity(dataStream.readInt());
+				steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
 			}
-			
-			((FusionReactor)getReactor()).formed = true;
-			getReactor().setPlasmaTemp(dataStream.readDouble());
-			getReactor().setCaseTemp(dataStream.readDouble());
-			getReactor().setInjectionRate(dataStream.readInt());
-			getReactor().setBurning(dataStream.readBoolean());
-			fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
-			deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
-			tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
-			waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
-			steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
-		}
-		else if(getReactor() != null)
-		{
-			setReactor(null);
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			else if(getReactor() != null)
+			{
+				setReactor(null);
+				MekanismUtils.updateBlock(world, getPos());
+			}
 		}
 	}
 
@@ -325,7 +327,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		if(box == null)
 		{
-			box = AxisAlignedBB.getBoundingBox(xCoord-1, yCoord-3, zCoord-1, xCoord+2, yCoord, zCoord+2);
+			box = new AxisAlignedBB(getPos().getX()-1, getPos().getY()-3, getPos().getZ()-1, getPos().getX()+2, getPos().getY(), getPos().getZ()+2);
 		}
 		
 		return box;
@@ -361,16 +363,16 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public float getPitch()
+	public float getFrequency()
 	{
 		return 1F;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Pos3D getSoundPosition()
+	public Vec3d getSoundPosition()
 	{
-		return new Pos3D(xCoord+0.5, yCoord+0.5, zCoord+0.5);
+		return new Vec3d(getPos()).addVector(0.5, 0.5, 0.5);
 	}
 
 	@Override
@@ -399,7 +401,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.validate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			initSounds();
 		}

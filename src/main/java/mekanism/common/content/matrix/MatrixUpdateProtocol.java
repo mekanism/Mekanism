@@ -3,7 +3,6 @@ package mekanism.common.content.matrix;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.multiblock.MultiblockCache;
@@ -12,8 +11,11 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.util.StackUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 {
@@ -25,13 +27,14 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	@Override
 	protected boolean isValidFrame(int x, int y, int z) 
 	{
-		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock2 && pointer.getWorldObj().getBlockMetadata(x, y, z) == 1;
+		IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
+		return state.getBlock() == MekanismBlocks.BasicBlock2 && state.getBlock().getMetaFromState(state) == 1;
 	}
 	
 	@Override
 	public boolean isValidInnerNode(int x, int y, int z)
 	{
-		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
 		
 		if(tile != null && (tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider))
 		{
@@ -73,22 +76,24 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	}
 	
 	@Override
-	protected void onFormed()
+	protected boolean canForm(SynchronizedMatrixData structure)
 	{
 		for(Coord4D coord : innerNodes)
 		{
-			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			TileEntity tile = coord.getTileEntity(pointer.getWorld());
 			
 			if(tile instanceof TileEntityInductionCell)
 			{
-				structureFound.cells.add(coord);
-				structureFound.storageCap += ((TileEntityInductionCell)tile).tier.maxEnergy;
+				structure.cells.add(coord);
+				structure.storageCap += ((TileEntityInductionCell)tile).tier.maxEnergy;
 			}
 			else if(tile instanceof TileEntityInductionProvider)
 			{
-				structureFound.providers.add(coord);
-				structureFound.outputCap += ((TileEntityInductionProvider)tile).tier.output;
+				structure.providers.add(coord);
+				structure.transferCap += ((TileEntityInductionProvider)tile).tier.output;
 			}
 		}
+		
+		return true;
 	}
 }

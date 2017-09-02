@@ -1,5 +1,8 @@
 package mekanism.common.recipe.inputs;
 
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
@@ -17,10 +20,26 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 	 * This should return true if the input matches this one,
 	 * IGNORING AMOUNTS.
 	 * Allows usage of HashMap optimisation to get recipes.
-	 * @param other
-	 * @return
+	 *
+	 * @param other The other input to check
+	 * @return True if input matches this one, IGNORING AMOUNTS!
 	 */
 	public abstract boolean testEquality(INPUT other);
+	
+	public static boolean inputContains(ItemStack container, ItemStack contained)
+	{
+		if(!container.isEmpty() && container.getCount() >= contained.getCount())
+		{
+			if(MekanismUtils.getOreDictName(container).contains("treeSapling"))
+			{
+				return StackUtils.equalsWildcard(contained, container);
+			}
+			
+			return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
+		}
+		
+		return false;
+	}
 
 	@Override
 	public int hashCode()

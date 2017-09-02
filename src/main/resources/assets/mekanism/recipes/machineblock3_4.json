@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "mekanism:machineblock3",
+    "data": 4
+  },
+  "pattern": [
+    "CRC",
+    "RHR",
+    "CEC"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ResistiveHeater"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "H": {
+      "item": "mekanism:basicblock2",
+      "data": 5
+    }
+  }
+}

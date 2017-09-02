@@ -1,17 +1,16 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
-
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage, IMessage>
 {
@@ -30,16 +29,16 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 				Mekanism.gasmaskOn.remove(message.username);
 			}
 
-			if(!player.worldObj.isRemote)
+			if(!player.world.isRemote)
 			{
-				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.worldObj.provider.dimensionId);
+				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
 			}
 		}
 		else if(message.packetType == ScubaTankPacket.MODE)
 		{
-			ItemStack stack = player.getEquipmentInSlot(3);
+			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 
-			if(stack != null && stack.getItem() instanceof ItemScubaTank)
+			if(!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank)
 			{
 				((ItemScubaTank)stack.getItem()).toggleFlowing(stack);
 			}
@@ -116,10 +115,10 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 		}
 	}
 	
-	public static enum ScubaTankPacket
+	public enum ScubaTankPacket
 	{
 		UPDATE,
 		FULL,
-		MODE;
-	}
+		MODE
+    }
 }

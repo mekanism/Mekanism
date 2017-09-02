@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanismgenerators:reactor",
+    "data": 1,
+    "count": 4
+  },
+  "pattern": [
+    " C ",
+    "CAC",
+    " C "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    }
+  }
+}

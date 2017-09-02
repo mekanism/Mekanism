@@ -4,26 +4,28 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.MekanismConfig.general;
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IPeripheral
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration
 {
 	public int clientCells;
 	public int clientProviders;
@@ -36,7 +38,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	public TileEntityInductionCasing(String name)
 	{
 		super(name);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -44,12 +46,15 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		super.onUpdate();
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null && isRendering)
 			{
-				structure.lastOutput = structure.outputCap-structure.remainingOutput;
-				structure.remainingOutput = structure.outputCap;
+				structure.lastInput = structure.transferCap-structure.remainingInput;
+				structure.remainingInput = structure.transferCap;
+				
+				structure.lastOutput = structure.transferCap-structure.remainingOutput;
+				structure.remainingOutput = structure.transferCap;
 				
 				ChargeUtils.charge(0, this);
 				ChargeUtils.discharge(1, this);
@@ -58,15 +63,30 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	}
 	
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack)
+	{
+		if(!player.isSneaking() && structure != null)
+		{
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			player.openGui(Mekanism.instance, 49, world, getPos().getX(), getPos().getY(), getPos().getZ());
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
 		if(structure != null)
 		{
-			data.add(structure.getEnergy(worldObj));
+			data.add(structure.getEnergy(world));
 			data.add(structure.storageCap);
-			data.add(structure.outputCap);
+			data.add(structure.transferCap);
+			data.add(structure.lastInput);
 			data.add(structure.lastOutput);
 			
 			data.add(structure.volWidth);
@@ -85,19 +105,23 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		super.handlePacketData(dataStream);
 		
-		if(clientHasStructure)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			structure.clientEnergy = dataStream.readDouble();
-			structure.storageCap = dataStream.readDouble();
-			structure.outputCap = dataStream.readDouble();
-			structure.lastOutput = dataStream.readDouble();
-			
-			structure.volWidth = dataStream.readInt();
-			structure.volHeight = dataStream.readInt();
-			structure.volLength = dataStream.readInt();
-			
-			clientCells = dataStream.readInt();
-			clientProviders = dataStream.readInt();
+			if(clientHasStructure)
+			{
+				structure.clientEnergy = dataStream.readDouble();
+				structure.storageCap = dataStream.readDouble();
+				structure.transferCap = dataStream.readDouble();
+				structure.lastInput = dataStream.readDouble();
+				structure.lastOutput = dataStream.readDouble();
+				
+				structure.volWidth = dataStream.readInt();
+				structure.volHeight = dataStream.readInt();
+				structure.volLength = dataStream.readInt();
+				
+				clientCells = dataStream.readInt();
+				clientProviders = dataStream.readInt();
+			}
 		}
 	}
 
@@ -126,7 +150,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	}
 	
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return LangUtils.localize("gui.inductionMatrix");
 	}
@@ -139,12 +163,12 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	@Override
 	public double getEnergy()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			return structure != null ? structure.getEnergy(worldObj) : 0;
+			return structure != null ? structure.getEnergy(world) : 0;
 		}
 		else {
-			return structure.clientEnergy;
+			return structure != null ? structure.clientEnergy : 0;
 		}
 	}
 
@@ -153,7 +177,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		if(structure != null)
 		{
-			structure.setEnergy(worldObj, Math.max(Math.min(energy, getMaxEnergy()), 0));
+			structure.setEnergy(world, Math.max(Math.min(energy, getMaxEnergy()), 0));
 			MekanismUtils.saveChunk(this);
 		}
 	}
@@ -164,63 +188,50 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		return structure != null ? structure.storageCap : 0;
 	}
 
-	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
-	{
-		return "Mekanism-InductionMatrix";
-	}
-
-	public static final String[] NAMES = new String[] { "getEnergyStored", "getMaxEnergyStored", "getEnergyStoredMJ", "getMaxEnergyStoredMJ", "getLastOutput", "getOutputCap" };
+	public static final String[] methods = new String[] {"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return NAMES;
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		if (structure == null)
+		if(structure == null)
 		{
-			return new Object[] { "Unformed." };
+			return new Object[] {"Unformed."};
 		}
 
-		switch (method)
+		switch(method)
 		{
 			case 0:
-				return new Object[] { getEnergy() * general.TO_TE };
+				return new Object[] {getEnergy()};
 			case 1:
-				return new Object[] { getMaxEnergy() * general.TO_TE };
+				return new Object[] {getMaxEnergy()};
 			case 2:
-				return new Object[] { getEnergy() };
+				return new Object[] {structure.lastInput};
 			case 3:
-				return new Object[] { getMaxEnergy() };
+				return new Object[] {structure.lastOutput};
 			case 4:
-				return new Object[] { structure.lastOutput };
-			case 5:
-				return new Object[] { structure.outputCap };
+				return new Object[] {structure.transferCap};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return new Object[] { "Unknown command." };
+				throw new NoSuchMethodException();
 		}
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
+	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
 	{
-		return this == other;
+		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
+	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	{
+		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
+			return (T) this;
+		return super.getCapability(capability, facing);
+	}
 }

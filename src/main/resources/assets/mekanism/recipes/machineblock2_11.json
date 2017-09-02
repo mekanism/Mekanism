@@ -1,0 +1,32 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 0
+    },
+    "item": "mekanism:machineblock2",
+    "data": 11,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "AIA",
+    "I I",
+    "AIA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "FluidTank"
+    }
+  ],
+  "key": {
+    "A": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,8 +1,8 @@
 package mekanism.common.recipe.outputs;
 
-import net.minecraft.nbt.NBTTagCompound;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * An input of gasses for recipe use.
@@ -38,8 +38,7 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput>
 	}
 
 	/**
-	 * If this is a valid ChemicalPair
-	 * @return
+	 * @return True if this is a valid ChemicalPair
 	 */
 	public boolean isValid()
 	{

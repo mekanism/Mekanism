@@ -1,42 +1,53 @@
 package mekanism.common.item;
 
+import cofh.redstoneflux.api.IEnergyContainerItem;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.IC2ItemManager;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
+import mekanism.common.integration.ic2.IC2ItemManager;
+import mekanism.common.integration.tesla.TeslaItemWrapper;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
-		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
 public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
@@ -45,32 +56,26 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	public ItemFreeRunners()
 	{
-		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
+		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", "frictionboots", 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), 0, EntityEquipmentSlot.FEET);
 		setMaxStackSize(1);
-		setMaxDamage(100);
-		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
-	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
 	{
-		return armorType == 3;
+		return armorType == EntityEquipmentSlot.FEET;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		return "mekanism:render/NullArmor.png";
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 		model.modelType = ArmorModel.FREERUNNERS;
@@ -78,23 +83,23 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
-		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
+		list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 
 	public ItemStack getUnchargedItem()
 	{
-		ItemStack charged = new ItemStack(this);
-		charged.setItemDamage(100);
-		return charged;
+		return new ItemStack(this);
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
+		if(!isInCreativeTab(tabs)) return;
 		ItemStack discharged = new ItemStack(this);
-		discharged.setItemDamage(100);
 		list.add(discharged);
 		ItemStack charged = new ItemStack(this);
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy(charged));
@@ -102,72 +107,15 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	@Method(modid = "IC2")
-	public boolean canProvideEnergy(ItemStack itemStack)
-	{
-		return canSend(itemStack);
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public Item getChargedItem(ItemStack itemStack)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public Item getEmptyItem(ItemStack itemStack)
-	{
-		return this;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getMaxCharge(ItemStack itemStack)
-	{
-		return 0;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public int getTier(ItemStack itemStack)
-	{
-		return 4;
-	}
-
-	@Override
-	@Method(modid = "IC2")
-	public double getTransferLimit(ItemStack itemStack)
-	{
-		return 0;
-	}
-
-	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			return 0;
-		}
-
-		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-
-		return electricityStored;
+		return ItemDataUtils.getDouble(itemStack, "energyStored");
 	}
 
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
-		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
+		ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
 	}
 
 	@Override
@@ -195,63 +143,79 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy*general.FROM_RF, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive* general.TO_TE);
+			return (int)Math.round(toReceive*general.TO_RF);
 		}
 
 		return 0;
 	}
 
 	@Override
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy*general.FROM_RF), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend* general.TO_TE);
+			return (int)Math.round(toSend*general.TO_RF);
 		}
 
 		return 0;
 	}
 
 	@Override
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)Math.round(getEnergy(theItem)* general.TO_TE);
+		return (int)Math.round(getEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)Math.round(getMaxEnergy(theItem)* general.TO_TE);
+		return (int)Math.round(getMaxEnergy(theItem)*general.TO_RF);
 	}
 
 	@Override
-	public boolean isMetadataSpecific(ItemStack itemStack)
+	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return false;
+		return true;
 	}
+	
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return 1D-(getEnergy(stack)/getMaxEnergy(stack));
+	}
+	
+	@Override
+	public int getRGBDurabilityForDisplay(ItemStack stack)
+    {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
@@ -260,18 +224,64 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	@SubscribeEvent
 	public void onEntityAttacked(LivingAttackEvent event)
 	{
-		EntityLivingBase base = event.entityLiving;
+		EntityLivingBase base = event.getEntityLiving();
+		ItemStack stack = base.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-		if(base.getEquipmentInSlot(1) != null && base.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
+		if(!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners)
 		{
-			ItemStack stack = base.getEquipmentInSlot(1);
 			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
 
-			if(boots.getEnergy(stack) > 0 && event.source == DamageSource.fall)
+			if(boots.getMode(stack) == FreeRunnerMode.NORMAL && boots.getEnergy(stack) > 0 && event.getSource() == DamageSource.FALL)
 			{
-				boots.setEnergy(stack, boots.getEnergy(stack)-event.ammount*50);
+				boots.setEnergy(stack, boots.getEnergy(stack)-event.getAmount()*50);
 				event.setCanceled(true);
 			}
 		}
+	}
+	
+	@Override
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) 
+	{
+		return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
+	}
+
+	public enum FreeRunnerMode
+	{
+		NORMAL("tooltip.freerunner.regular", EnumColor.DARK_GREEN),
+		DISABLED("tooltip.freerunner.disabled", EnumColor.DARK_RED);
+
+		private String unlocalized;
+		private EnumColor color;
+
+		FreeRunnerMode(String unlocalized, EnumColor color)
+		{
+			this.unlocalized = unlocalized;
+			this.color = color;
+		}
+
+		public FreeRunnerMode increment()
+		{
+			return ordinal() < values().length-1 ? values()[ordinal()+1] : values()[0];
+		}
+
+		public String getName()
+		{
+			return color + LangUtils.localize(unlocalized);
+		}
+	}
+
+	public FreeRunnerMode getMode(ItemStack itemStack)
+	{
+		return FreeRunnerMode.values()[ItemDataUtils.getInt(itemStack, "mode")];
+	}
+
+	public void setMode(ItemStack itemStack, FreeRunnerMode mode)
+	{
+		ItemDataUtils.setInt(itemStack, "mode", mode.ordinal());
+	}
+
+	public void incrementMode(ItemStack itemStack)
+	{
+		setMode(itemStack, getMode(itemStack).increment());
 	}
 }

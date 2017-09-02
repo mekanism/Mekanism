@@ -1,31 +1,33 @@
 package mekanism.tools.item;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismTool extends ItemTool
 {
-	public ItemMekanismTool(int mobBoost, ToolMaterial toolMaterial, Block[] effectiveBlocks)
+	public ItemMekanismTool(float attack, float speed, ToolMaterial toolMaterial, Set<Block> effectiveBlocksIn)
 	{
-		super(mobBoost, toolMaterial, new HashSet<Block>(Arrays.asList(effectiveBlocks)));
+		super(attack, speed, toolMaterial, effectiveBlocksIn);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
@@ -49,7 +51,7 @@ public class ItemMekanismTool extends ItemTool
     	}
     	else if(material == MekanismTools.toolLAZULI || material == MekanismTools.toolLAZULI2)
     	{
-    		return new ItemStack(Items.dye, 1, 4);
+    		return new ItemStack(Items.DYE, 1, 4);
     	}
     	else if(material == MekanismTools.toolOSMIUM || material == MekanismTools.toolOSMIUM2)
     	{
@@ -68,12 +70,6 @@ public class ItemMekanismTool extends ItemTool
     		return new ItemStack(MekanismItems.Ingot, 1, 4);
     	}
     	
-    	return new ItemStack(material.func_150995_f());
+    	return material.getRepairItemStack();
     }
-
-	@Override
-	public void registerIcons(IIconRegister register)
-	{
-		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
-	}
 }

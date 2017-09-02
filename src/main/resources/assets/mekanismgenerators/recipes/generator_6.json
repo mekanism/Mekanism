@@ -1,0 +1,33 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 6
+  },
+  "pattern": [
+    " O ",
+    "OAO",
+    "ECE"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "generatorType": "WindGenerator"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "O": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

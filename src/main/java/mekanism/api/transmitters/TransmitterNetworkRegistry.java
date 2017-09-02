@@ -5,27 +5,31 @@ import java.util.HashSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
-import cpw.mods.fml.relauncher.Side;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class TransmitterNetworkRegistry
 {
 	private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
 	private static boolean loaderRegistered = false;
 
-	private HashSet<DynamicNetwork> networks = new HashSet<>();
-	private HashSet<DynamicNetwork> networksToChange = new HashSet<>();
+	private HashSet<DynamicNetwork> networks = Sets.newHashSet();
+	private HashSet<DynamicNetwork> networksToChange = Sets.newHashSet();
 
-	private HashSet<IGridTransmitter> invalidTransmitters = new HashSet<>();
-	private HashMap<Coord4D, IGridTransmitter> orphanTransmitters = new HashMap<>();
+	private HashSet<IGridTransmitter> invalidTransmitters = Sets.newHashSet();
+	 
+	private HashMap<Coord4D, IGridTransmitter> orphanTransmitters = Maps.newHashMap();
+	private HashMap<Coord4D, IGridTransmitter> newOrphanTransmitters = Maps.newHashMap();
 
 	private Logger logger = LogManager.getLogger("MekanismTransmitters");
 
@@ -35,7 +39,7 @@ public class TransmitterNetworkRegistry
 		{
 			loaderRegistered = true;
 
-			FMLCommonHandler.instance().bus().register(INSTANCE);
+			MinecraftForge.EVENT_BUS.register(INSTANCE);
 		}
 	}
 
@@ -45,6 +49,7 @@ public class TransmitterNetworkRegistry
 		getInstance().networksToChange.clear();
 		getInstance().invalidTransmitters.clear();
 		getInstance().orphanTransmitters.clear();
+		getInstance().newOrphanTransmitters.clear();
 	}
 
 	public static void invalidateTransmitter(IGridTransmitter transmitter)
@@ -54,7 +59,7 @@ public class TransmitterNetworkRegistry
 
 	public static void registerOrphanTransmitter(IGridTransmitter transmitter)
 	{
-		getInstance().orphanTransmitters.put(transmitter.coord(), transmitter);
+		getInstance().newOrphanTransmitters.put(transmitter.coord(), transmitter);
 	}
 
 	public static void registerChangedNetwork(DynamicNetwork network)
@@ -107,12 +112,12 @@ public class TransmitterNetworkRegistry
 	{
 		if(MekanismAPI.debug && !invalidTransmitters.isEmpty())
 		{
-			logger.debug("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
+			logger.info("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
 		}
 		
 		for(IGridTransmitter invalid : invalidTransmitters)
 		{
-			if(!invalid.isOrphan())
+			if(!(invalid.isOrphan() && invalid.isValid()))
 			{
 				DynamicNetwork n = invalid.getTransmitterNetwork();
 				
@@ -128,12 +133,15 @@ public class TransmitterNetworkRegistry
 
 	public void assignOrphans()
 	{
+		orphanTransmitters = new HashMap<>(newOrphanTransmitters);
+		newOrphanTransmitters.clear();
+		
 		if(MekanismAPI.debug && !orphanTransmitters.isEmpty())
 		{
-			logger.debug("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
+			logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
 		}
 		
-		for(IGridTransmitter orphanTransmitter : orphanTransmitters.values())
+		for(IGridTransmitter orphanTransmitter : (new HashMap<>(orphanTransmitters)).values())
 		{
 			DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
 			
@@ -160,7 +168,7 @@ public class TransmitterNetworkRegistry
 				case 0:
 					if(MekanismAPI.debug)
 					{
-						logger.debug("No networks found. Creating new network");
+						logger.info("No networks found. Creating new network for " + finder.connectedTransmitters.size() + " transmitters");
 					}
 					
 					network = startOrphan.createEmptyNetwork();
@@ -169,7 +177,7 @@ public class TransmitterNetworkRegistry
 				case 1:
 					if(MekanismAPI.debug)
 					{
-						logger.debug("Using single found network");
+						logger.info("Adding " + finder.connectedTransmitters.size() + " transmitters to single found network");
 					}
 					
 					network = finder.networksFound.iterator().next();
@@ -178,7 +186,7 @@ public class TransmitterNetworkRegistry
 				default:
 					if(MekanismAPI.debug)
 					{
-						logger.debug("Merging " + finder.networksFound.size() + " networks");
+						logger.info("Merging " + finder.networksFound.size() + " networks with " + finder.connectedTransmitters.size() + " new transmitters");
 					}
 					
 					network = startOrphan.mergeNetworks(finder.networksFound);
@@ -225,10 +233,10 @@ public class TransmitterNetworkRegistry
 	{
 		public IGridTransmitter<A, N> startPoint;
 
-		public HashSet<Coord4D> iterated = new HashSet<>();
+		public HashSet<Coord4D> iterated = Sets.newHashSet();
 
-		public HashSet<IGridTransmitter<A, N>> connectedTransmitters = new HashSet<>();
-		public HashSet<N> networksFound = new HashSet<>();
+		public HashSet<IGridTransmitter<A, N>> connectedTransmitters = Sets.newHashSet();
+		public HashSet<N> networksFound = Sets.newHashSet();
 
 		public OrphanPathFinder(IGridTransmitter<A, N> start)
 		{
@@ -237,10 +245,10 @@ public class TransmitterNetworkRegistry
 
 		public void start()
 		{
-			iterate(startPoint.coord(), ForgeDirection.UNKNOWN);
+			iterate(startPoint.coord());
 		}
 
-		public void iterate(Coord4D from, ForgeDirection fromDirection)
+		public void iterate(Coord4D from)
 		{
 			if(iterated.contains(from))
 			{
@@ -258,16 +266,13 @@ public class TransmitterNetworkRegistry
 					connectedTransmitters.add(transmitter);
 					transmitter.setOrphan(false);
 					
-					for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+					for(EnumFacing direction : EnumFacing.VALUES)
 					{
-						if(direction != fromDirection)
+						Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);
+						
+						if(directionCoord != null && !iterated.contains(directionCoord))
 						{
-							Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);
-							
-							if(!(directionCoord == null || iterated.contains(directionCoord)))
-							{
-								iterate(directionCoord, direction.getOpposite());
-							}
+							iterate(directionCoord);
 						}
 					}
 				}

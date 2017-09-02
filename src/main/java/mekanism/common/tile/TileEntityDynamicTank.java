@@ -9,7 +9,9 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
@@ -18,16 +20,19 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager
 {
 	/** A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids. */
-	public Set<ValveData> valveViewing = new HashSet<ValveData>();
+	public Set<ValveData> valveViewing = new HashSet<>();
 
 	/** The capacity this tank has on the client-side. */
 	public int clientCapacity;
@@ -42,7 +47,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	public TileEntityDynamicTank(String name)
 	{
 		super(name);
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -50,12 +55,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			if(structure != null && clientHasStructure && isRendering)
 			{
 				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
-
+				
 				if(Math.abs(prevScale - targetScale) > 0.01)
 				{
 					prevScale = (9*prevScale + targetScale)/10;
@@ -66,7 +71,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			{
 				for(ValveData data : valveViewing)
 				{
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(world);
 
 					if(tileEntity != null)
 					{
@@ -78,7 +83,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			}
 		}
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(structure != null)
 			{
@@ -112,172 +117,45 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 						sendPacketToRenderer();
 					}
 					
-					structure.prevFluid = structure.fluidStored;
+					structure.prevFluid = structure.fluidStored != null ? structure.fluidStored.copy() : null;
+					
+					manageInventory();
 				}
-				
-				manageInventory();
 			}
 		}
 	}
 
 	public void manageInventory()
 	{
-		int max = structure.volume * TankUpdateProtocol.FLUID_PER_TANK;
+		int needed = (structure.volume*TankUpdateProtocol.FLUID_PER_TANK)-(structure.fluidStored != null ? structure.fluidStored.amount : 0);
 
-		if(structure.inventory[0] != null)
+		if(FluidContainerUtils.isFluidContainer(structure.inventory.get(0)))
 		{
-			if(structure.inventory[0].getItem() instanceof IFluidContainerItem)
-			{
-				if(structure.editMode == ContainerEditMode.FILL && structure.fluidStored != null)
-				{
-					int prev = structure.fluidStored.amount;
-					
-					structure.fluidStored.amount -= FluidContainerUtils.insertFluid(structure.fluidStored, structure.inventory[0]);
-					
-					if(prev == structure.fluidStored.amount || structure.fluidStored.amount == 0)
-					{
-						if(structure.inventory[1] == null)
-						{
-							structure.inventory[1] = structure.inventory[0].copy();
-							structure.inventory[0] = null;
-							
-							markDirty();
-						}
-					}
-					
-					if(structure.fluidStored.amount == 0)
-					{
-						structure.fluidStored = null;
-					}
-				}
-				else if(structure.editMode == ContainerEditMode.EMPTY)
-				{
-					if(structure.fluidStored != null)
-					{
-						FluidStack received = FluidContainerUtils.extractFluid(max-structure.fluidStored.amount, structure.inventory[0], structure.fluidStored.getFluid());
-						
-						if(received != null)
-						{
-							structure.fluidStored.amount += received.amount;
-						}
-					}
-					else {
-						structure.fluidStored = FluidContainerUtils.extractFluid(max, structure.inventory[0], null);
-					}
-					
-					int newStored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
-					
-					if(((IFluidContainerItem)structure.inventory[0].getItem()).getFluid(structure.inventory[0]) == null || newStored == max)
-					{
-						if(structure.inventory[1] == null)
-						{
-							structure.inventory[1] = structure.inventory[0].copy();
-							structure.inventory[0] = null;
-							
-							markDirty();
-						}
-					}
-				}
-			}
-			else if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.FILL))
-			{
-				if(structure.fluidStored != null && structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
-				{
-					ItemStack filled = FluidContainerRegistry.fillFluidContainer(structure.fluidStored, structure.inventory[0]);
-
-					if(filled != null)
-					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(filled) && structure.inventory[1].stackSize+1 <= filled.getMaxStackSize()))
-						{
-							structure.inventory[0].stackSize--;
-
-							if(structure.inventory[0].stackSize <= 0)
-							{
-								structure.inventory[0] = null;
-							}
-
-							if(structure.inventory[1] == null)
-							{
-								structure.inventory[1] = filled;
-							}
-							else {
-								structure.inventory[1].stackSize++;
-							}
-
-							markDirty();
-
-							structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-
-							if(structure.fluidStored.amount == 0)
-							{
-								structure.fluidStored = null;
-							}
-
-							Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-						}
-					}
-				}
-			}
-			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.EMPTY))
-			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(structure.inventory[0]);
-
-				if((structure.fluidStored == null && itemFluid.amount <= max) || structure.fluidStored.amount+itemFluid.amount <= max)
-				{
-					if(structure.fluidStored != null && !structure.fluidStored.isFluidEqual(itemFluid))
-					{
-						return;
-					}
-
-					ItemStack containerItem = structure.inventory[0].getItem().getContainerItem(structure.inventory[0]);
-
-					boolean filled = false;
-
-					if(containerItem != null)
-					{
-						if(structure.inventory[1] == null || (structure.inventory[1].isItemEqual(containerItem) && structure.inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
-						{
-							structure.inventory[0] = null;
-
-							if(structure.inventory[1] == null)
-							{
-								structure.inventory[1] = containerItem;
-							}
-							else {
-								structure.inventory[1].stackSize++;
-							}
-
-							filled = true;
-						}
-					}
-					else {
-						structure.inventory[0].stackSize--;
-
-						if(structure.inventory[0].stackSize == 0)
-						{
-							structure.inventory[0] = null;
-						}
-
-						filled = true;
-					}
-
-					if(filled)
-					{
-						if(structure.fluidStored == null)
-						{
-							structure.fluidStored = itemFluid.copy();
-						}
-						else {
-							structure.fluidStored.amount += itemFluid.amount;
-						}
-						
-						markDirty();
-					}
-
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-				}
-			}
+			structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.inventory, structure.editMode, structure.fluidStored, needed, 0, 1, null);
+			
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
+	}
+	
+	@Override
+	public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack)
+	{
+		if(!player.isSneaking() && structure != null)
+		{
+			if(!BlockBasic.manageInventory(player, this, hand, stack))
+			{
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+				player.openGui(Mekanism.instance, 18, world, getPos().getX(), getPos().getY(), getPos().getZ());
+			}
+			else {
+				player.inventory.markDirty();
+				sendPacketToRenderer();
+			}
+
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -305,7 +183,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		
@@ -317,7 +195,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			if(structure.fluidStored != null)
 			{
 				data.add(1);
-				data.add(structure.fluidStored.fluidID);
+				data.add(FluidRegistry.getFluidName(structure.fluidStored));
 				data.add(structure.fluidStored.amount);
 			}
 			else {
@@ -326,7 +204,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			
 			if(isRendering)
 			{
-				Set<ValveData> toSend = new HashSet<ValveData>();
+				Set<ValveData> toSend = new HashSet<>();
 
 				for(ValveData valveData : structure.valves)
 				{
@@ -341,7 +219,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 				for(ValveData valveData : toSend)
 				{
 					valveData.location.write(data);
-					data.add(valveData.side.ordinal());
+					data.add(valveData.side);
 				}
 			}
 		}
@@ -354,52 +232,55 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	{
 		super.handlePacketData(dataStream);
 		
-		if(clientHasStructure)
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			clientCapacity = dataStream.readInt();
-			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
-			
-			if(dataStream.readInt() == 1)
+			if(clientHasStructure)
 			{
-				structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
-			}
-			else {
-				structure.fluidStored = null;
-			}
-
-			if(isRendering)
-			{
-				int size = dataStream.readInt();
+				clientCapacity = dataStream.readInt();
+				structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
 				
-				valveViewing.clear();
-
-				for(int i = 0; i < size; i++)
+				if(dataStream.readInt() == 1)
 				{
-					ValveData data = new ValveData();
-					data.location = Coord4D.read(dataStream);
-					data.side = ForgeDirection.getOrientation(dataStream.readInt());
+					structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
+				}
+				else {
+					structure.fluidStored = null;
+				}
+	
+				if(isRendering)
+				{
+					int size = dataStream.readInt();
 					
-					valveViewing.add(data);
-
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
-
-					if(tileEntity != null)
+					valveViewing.clear();
+	
+					for(int i = 0; i < size; i++)
 					{
-						tileEntity.clientHasStructure = true;
+						ValveData data = new ValveData();
+						data.location = Coord4D.read(dataStream);
+						data.side = EnumFacing.getFront(dataStream.readInt());
+						
+						valveViewing.add(data);
+	
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(world);
+	
+						if(tileEntity != null)
+						{
+							tileEntity.clientHasStructure = true;
+						}
 					}
 				}
 			}
 		}
 	}
 
-	public int getScaledFluidLevel(int i)
+	public int getScaledFluidLevel(long i)
 	{
 		if(clientCapacity == 0 || structure.fluidStored == null)
 		{
 			return 0;
 		}
 
-		return structure.fluidStored.amount*i / clientCapacity;
+		return (int)(structure.fluidStored.amount*i / clientCapacity);
 	}
 
 	@Override

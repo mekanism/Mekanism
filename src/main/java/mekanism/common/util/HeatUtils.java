@@ -1,20 +1,17 @@
 package mekanism.common.util;
 
-import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterTile;
-
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import mekanism.common.capabilities.Capabilities;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class HeatUtils
 {
 	public static double[] simulate(IHeatTransfer source)
 	{
-		double heatTransferred[] = new double[] {0,0};
+		double heatTransferred[] = new double[] {0, 0};
 		
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
 			IHeatTransfer sink = source.getAdjacent(side);
 			
@@ -25,7 +22,7 @@ public class HeatUtils
 				source.transferHeatTo(-heatToTransfer);
 				sink.transferHeatTo(heatToTransfer);
 				
-				if(!(sink instanceof ITransmitterTile))
+				if(!(sink instanceof ICapabilityProvider && CapabilityUtils.hasCapability((ICapabilityProvider)sink, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())))
 				{
 					heatTransferred[0] += heatToTransfer;
 				}

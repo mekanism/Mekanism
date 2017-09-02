@@ -1,6 +1,6 @@
 [
 {
-  "modid": "Mekanism",
+  "modid": "mekanism",
   "name": "Mekanism",
   "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
   "version": "${version}",
@@ -15,7 +15,7 @@
   ]
 },
 {
-  "modid": "MekanismGenerators",
+  "modid": "mekanismgenerators",
   "name": "MekanismGenerators",
   "description": "Generators module of Mekanism.",
   "version": "${version}",
@@ -30,7 +30,7 @@
   ]
 },
 {
-  "modid": "MekanismTools",
+  "modid": "mekanismtools",
   "name": "MekanismTools",
   "description": "Tools module for Mekanism.",
   "version": "${version}",

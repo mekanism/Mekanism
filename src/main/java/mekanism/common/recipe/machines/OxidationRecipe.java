@@ -4,8 +4,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.outputs.GasOutput;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public class OxidationRecipe extends MachineRecipe<ItemStackInput, GasOutput, OxidationRecipe>
 {
@@ -25,12 +25,12 @@ public class OxidationRecipe extends MachineRecipe<ItemStackInput, GasOutput, Ox
 		return new OxidationRecipe(getInput().copy(), getOutput().copy());
 	}
 
-	public boolean canOperate(ItemStack[] inventory, GasTank outputTank)
+	public boolean canOperate(NonNullList<ItemStack> inventory, GasTank outputTank)
 	{
 		return getInput().useItemStackFromInventory(inventory, 0, false) && getOutput().applyOutputs(outputTank, false, 1);
 	}
 
-	public void operate(ItemStack[] inventory, GasTank outputTank)
+	public void operate(NonNullList<ItemStack> inventory, GasTank outputTank)
 	{
 		if(getInput().useItemStackFromInventory(inventory, 0, true))
 		{

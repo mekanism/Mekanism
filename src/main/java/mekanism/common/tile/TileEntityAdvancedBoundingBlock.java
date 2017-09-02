@@ -1,354 +1,378 @@
 package mekanism.common.tile;
 
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
+import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
-import mekanism.api.IFilterAccess;
+import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
 
 @InterfaceList({
-		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
-		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IPeripheral, IFilterAccess
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData
 {
+	@Override
+	public boolean isEmpty()
+	{
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
+		{
+			return true;
+		}
+		
+		return inv.isEmpty();
+	}
+	
 	@Override
 	public int getSizeInventory()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getSizeInventory();
+		return inv.getSizeInventory();
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		return getInv().getStackInSlot(i);
+		return inv.getStackInSlot(i);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		return getInv().decrStackSize(i, j);
+		return inv.decrStackSize(i, j);
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i)
+	public ItemStack removeStackFromSlot(int i)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		return getInv().getStackInSlotOnClosing(i);
+		return inv.removeStackFromSlot(i);
 	}
 
 	@Override
 	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 
-		getInv().setInventorySlotContents(i, itemstack);
+		inv.setInventorySlotContents(i, itemstack);
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return "null";
 		}
 
-		return getInv().getInventoryName();
+		return inv.getName();
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().hasCustomInventoryName();
+		return inv.hasCustomName();
+	}
+
+	@Override
+	public ITextComponent getDisplayName()
+	{
+		return new TextComponentString(getName());
 	}
 
 	@Override
 	public int getInventoryStackLimit()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getInventoryStackLimit();
+		return inv.getInventoryStackLimit();
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(EntityPlayer entityplayer)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().isUseableByPlayer(entityplayer);
+		return inv.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 
-		getInv().openInventory();
+		inv.openInventory(player);
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 
-		getInv().closeInventory();
+		inv.closeInventory(player);
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().canBoundInsert(Coord4D.get(this), i, itemstack);
+		return inv.canBoundInsert(getPos(), i, itemstack);
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int slotID)
+	public int getField(int id)
 	{
-		if(getInv() == null)
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear() {}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return InventoryUtils.EMPTY;
 		}
 
-		return getInv().getBoundSlots(Coord4D.get(this), slotID);
+		return inv.getBoundSlots(getPos(), side);
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing side)
 	{
 		return isItemValidForSlot(i, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing side)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, j);
+		return inv.canBoundExtract(getPos(), i, itemstack, side);
 	}
 
 	@Override
-	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
+	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().acceptsEnergyFrom(emitter, direction);
+		return inv.acceptsEnergyFrom(emitter, direction);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null || !canReceiveEnergy(from))
 		{
 			return 0;
 		}
 
-		return getInv().receiveEnergy(from, maxReceive, simulate);
+		return inv.receiveEnergy(from, maxReceive, simulate);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().extractEnergy(from, maxExtract, simulate);
+		return inv.extractEnergy(from, maxExtract, simulate);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
-	public boolean canConnectEnergy(ForgeDirection from)
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+	public boolean canConnectEnergy(EnumFacing from)
 	{
-		if(getInv() == null)
+		return canReceiveEnergy(from);
+	}
+
+	@Override
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+	public int getEnergyStored(EnumFacing from)
+	{
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
+		{
+			return 0;
+		}
+
+		return inv.getEnergyStored(from);
+	}
+
+	@Override
+	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+	public int getMaxEnergyStored(EnumFacing from)
+	{
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
+		{
+			return 0;
+		}
+
+		return inv.getMaxEnergyStored(from);
+	}
+
+	@Override
+	public double acceptEnergy(EnumFacing side, double amount, boolean simulate)
+	{
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null || !canReceiveEnergy(side))
+		{
+			return 0;
+		}
+
+		return inv.acceptEnergy(side, amount, simulate);
+	}
+
+	@Override
+	public boolean canReceiveEnergy(EnumFacing side)
+	{
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return false;
 		}
 
-		return getInv().canConnectEnergy(from);
+		return inv.canBoundReceiveEnergy(getPos(), side);
 	}
 
 	@Override
-	@Method(modid = "CoFHCore")
-	public int getEnergyStored(ForgeDirection from)
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getEnergyStored(from);
-	}
-
-	@Override
-	@Method(modid = "CoFHCore")
-	public int getMaxEnergyStored(ForgeDirection from)
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getMaxEnergyStored(from);
-	}
-
-	@Override
-	public double getEnergy()
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getEnergy();
-	}
-
-	@Override
-	public void setEnergy(double energy)
-	{
-		if(getInv() == null)
-		{
-			return;
-		}
-
-		getInv().setEnergy(energy);
-	}
-
-	@Override
-	public double getMaxEnergy()
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getMaxEnergy();
-	}
-
-	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
-	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().transferEnergyToAcceptor(side, amount);
-	}
-
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		if(getInv() == null)
-		{
-			return false;
-		}
-
-		return getInv().canReceiveEnergy(side);
-	}
-
-	@Override
-	@Method(modid = "IC2")
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double getDemandedEnergy()
 	{
-		if(getInv() == null)
-		{
-			return 0;
-		}
-
-		return getInv().getDemandedEnergy();
+		IAdvancedBoundingBlock inv = getInv();
+		return inv == null ? 0 : inv.getDemandedEnergy();
 	}
 
 	@Override
-	@Method(modid = "IC2")
-	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
+	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null || !canReceiveEnergy(directionFrom))
 		{
 			return amount;
 		}
 
-		return getInv().injectEnergy(directionFrom, amount, voltage);
+		return inv.injectEnergy(directionFrom, amount, voltage);
 	}
 
 	@Override
-	@Method(modid = "IC2")
+	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getSinkTier()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return 0;
 		}
 
-		return getInv().getSinkTier();
+		return inv.getSinkTier();
 	}
 
 	public IAdvancedBoundingBlock getInv()
@@ -358,15 +382,15 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
-			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			world.setBlockToAir(mainPos);
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock) tile;
 	}
 
 	@Override
@@ -374,9 +398,10 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		super.onPower();
 
-		if(getInv() != null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv != null)
 		{
-			getInv().onPower();
+			inv.onPower();
 		}
 	}
 
@@ -385,109 +410,104 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		super.onNoPower();
 
-		if(getInv() != null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv != null)
 		{
-			getInv().onNoPower();
+			inv.onNoPower();
 		}
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
+	public String[] getMethods()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
-			return null;
+			return new String[] {};
 		}
 
-		return getInv().getType();
+		return inv.getMethods();
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		if(getInv() == null)
-		{
-			return new String[] {"null"};
-		}
-
-		return getInv().getMethodNames();
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
-	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return new Object[] {};
 		}
 
-		return getInv().callMethod(computer, context, method, arguments);
+		return inv.invoke(method, arguments);
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer)
+	public NBTTagCompound getConfigurationData(NBTTagCompound nbtTags)
 	{
-		if(getInv() == null)
-		{
-			return;
-		}
-
-		getInv().attach(computer);
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer)
-	{
-		if(getInv() == null)
-		{
-			return;
-		}
-
-		getInv().detach(computer);
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-
-	@Override
-	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
-	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return new NBTTagCompound();
 		}
 		
-		return getInv().getFilterData(nbtTags);
+		return inv.getConfigurationData(nbtTags);
 	}
 
 	@Override
-	public void setFilterData(NBTTagCompound nbtTags)
+	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return;
 		}
 		
-		getInv().setFilterData(nbtTags);
+		inv.setConfigurationData(nbtTags);
 	}
 
 	@Override
 	public String getDataType()
 	{
-		if(getInv() == null)
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
 		{
 			return "null";
 		}
 		
-		return getInv().getDataType();
+		return inv.getDataType();
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		if (capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		{
+			return super.hasCapability(capability, facing);
+		}
+
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
+		{
+			return super.hasCapability(capability, facing);
+		}
+		
+		return inv.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if (capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		{
+			return super.getCapability(capability, facing);
+		}
+
+		IAdvancedBoundingBlock inv = getInv();
+		if(inv == null)
+		{
+			return super.getCapability(capability, facing);
+		}
+		
+		return inv.getCapability(capability, facing);
 	}
 }

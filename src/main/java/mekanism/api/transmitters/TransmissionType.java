@@ -1,9 +1,7 @@
 package mekanism.api.transmitters;
 
-import mekanism.api.gas.IGasTransmitter;
-
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 public enum TransmissionType
 {
@@ -16,7 +14,7 @@ public enum TransmissionType
 	private String name;
 	private String transmission;
 	
-	private TransmissionType(String n, String t)
+	TransmissionType(String n, String t)
 	{
 		name = n;
 		transmission = t;
@@ -34,7 +32,7 @@ public enum TransmissionType
 	
 	public String localize()
 	{
-		return StatCollector.translateToLocal("transmission." + getTransmission());
+		return I18n.translateToLocal("transmission." + getTransmission());
 	}
 
 	public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type)
@@ -62,14 +60,6 @@ public enum TransmissionType
 		if(sideTile instanceof ITransmitter)
 		{
 			if(((ITransmitter)sideTile).getTransmissionType() == this)
-			{
-				return true;
-			}
-		}
-
-		if(this == GAS && currentTile instanceof IGasTransmitter)
-		{
-			if(((IGasTransmitter)currentTile).canTransferGasToTube(sideTile))
 			{
 				return true;
 			}

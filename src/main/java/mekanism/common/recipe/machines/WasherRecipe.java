@@ -6,7 +6,6 @@ import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.outputs.GasOutput;
 import mekanism.common.tile.TileEntityChemicalWasher;
-
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;

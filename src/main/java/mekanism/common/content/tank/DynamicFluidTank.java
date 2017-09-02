@@ -32,9 +32,9 @@ public class DynamicFluidTank implements IFluidTank
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(dynamicTank.structure != null && !dynamicTank.getWorldObj().isRemote)
+		if(dynamicTank.structure != null && !dynamicTank.getWorld().isRemote)
 		{
-			if(resource == null || resource.fluidID <= 0)
+			if(resource == null || resource.getFluid() == null)
 			{
 				return 0;
 			}
@@ -44,7 +44,7 @@ public class DynamicFluidTank implements IFluidTank
 				return 0;
 			}
 
-			if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.fluidID <= 0)
+			if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.getFluid() == null)
 			{
 				if(resource.amount <= getCapacity())
 				{
@@ -130,9 +130,9 @@ public class DynamicFluidTank implements IFluidTank
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(dynamicTank.structure != null && !dynamicTank.getWorldObj().isRemote)
+		if(dynamicTank.structure != null && !dynamicTank.getWorld().isRemote)
 		{
-			if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.fluidID <= 0)
+			if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.getFluid() == null)
 			{
 				return null;
 			}
@@ -154,7 +154,7 @@ public class DynamicFluidTank implements IFluidTank
 				dynamicTank.structure.fluidStored.amount -= used;
 			}
 
-			FluidStack drained = new FluidStack(dynamicTank.structure.fluidStored.fluidID, used);
+			FluidStack drained = new FluidStack(dynamicTank.structure.fluidStored.getFluid(), used);
 
 			if(dynamicTank.structure.fluidStored.amount <= 0)
 			{

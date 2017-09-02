@@ -10,9 +10,12 @@ import mekanism.api.util.BlockInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
-
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread
 {
@@ -20,10 +23,10 @@ public class ThreadMinerSearch extends Thread
 
 	public State state = State.IDLE;
 
-	public Map<Chunk3D, BitSet> oresToMine = new HashMap<Chunk3D, BitSet>();
-	public Map<Integer, MinerFilter> replaceMap = new HashMap<Integer, MinerFilter>();
+	public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
+	public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
 
-	public Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<BlockInfo, MinerFilter>();
+	public Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<>();
 
 	public int found = 0;
 
@@ -50,9 +53,9 @@ public class ThreadMinerSearch extends Thread
 
 		for(int i = 0; i < size; i++)
 		{
-			int x = coord.xCoord+i%diameter;
-			int z = coord.zCoord+(i/diameter)%diameter;
-			int y = coord.yCoord+(i/diameter/diameter);
+			int x = coord.x +i%diameter;
+			int z = coord.z +(i/diameter)%diameter;
+			int y = coord.y +(i/diameter/diameter);
 
 			if(tileEntity.isInvalid())
 			{
@@ -60,30 +63,36 @@ public class ThreadMinerSearch extends Thread
 			}
 
 			try {
-				if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
+				if(tileEntity.getPos().getX() == x && tileEntity.getPos().getY() == y && tileEntity.getPos().getZ() == z)
 				{
 					continue;
 				}
 	
-				if(!tileEntity.getWorldObj().getChunkProvider().chunkExists(x >> 4, z >> 4))
+				if(tileEntity.getWorld().getChunkProvider().getLoadedChunk(x >> 4, z >> 4) == null)
 				{
 					continue;
 				}
 	
-				TileEntity tile = tileEntity.getWorldObj().getTileEntity(x, y, z);
+				TileEntity tile = tileEntity.getWorld().getTileEntity(new BlockPos(x, y, z));
 				
 				if(tile instanceof TileEntityBoundingBlock)
 				{
 					continue;
 				}
+
+				IBlockState state = tileEntity.getWorld().getBlockState(new BlockPos(x, y, z));
+				info.block = state.getBlock();
+				info.meta = state.getBlock().getMetaFromState(state);
 	
-				info.block = tileEntity.getWorldObj().getBlock(x, y, z);
-				info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
+				if(info.block instanceof BlockLiquid || info.block instanceof IFluidBlock)
+				{
+					continue;
+				}
 	
-				if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)
+				if(info.block != null && !tileEntity.getWorld().isAirBlock(new BlockPos(x, y, z)) && state.getBlockHardness(tileEntity.getWorld(), new BlockPos(x, y, z)) >= 0)
 				{
 					MinerFilter filterFound = null;
-					boolean canFilter = false;
+					boolean canFilter;
 	
 					if(acceptedItems.containsKey(info))
 					{
@@ -113,7 +122,7 @@ public class ThreadMinerSearch extends Thread
 	
 					if(canFilter)
 					{
-						set(i, new Coord4D(x, y, z, tileEntity.getWorldObj().provider.dimensionId));
+						set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.getDimension()));
 						replaceMap.put(i, filterFound);
 						
 						found++;
@@ -131,11 +140,8 @@ public class ThreadMinerSearch extends Thread
 	public void set(int i, Coord4D location)
 	{
 		Chunk3D chunk = new Chunk3D(location);
-		
-		if(oresToMine.get(chunk) == null)
-		{
-			oresToMine.put(chunk, new BitSet());
-		}
+
+		oresToMine.computeIfAbsent(chunk, k -> new BitSet());
 		
 		oresToMine.get(chunk).set(i);
 	}
@@ -145,7 +151,7 @@ public class ThreadMinerSearch extends Thread
 		state = State.IDLE;
 	}
 
-	public static enum State
+	public enum State
 	{
 		IDLE("Not ready"),
 		SEARCHING("Searching"),
@@ -154,7 +160,7 @@ public class ThreadMinerSearch extends Thread
 
 		public String desc;
 
-		private State(String s)
+		State(String s)
 		{
 			desc = s;
 		}

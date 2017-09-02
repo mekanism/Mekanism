@@ -1,0 +1,31 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 1
+    },
+    "item": "mekanism:transmitter",
+    "data": 3,
+    "count": 8,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "TTT",
+    "TET",
+    "TTT"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "T": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:transmitter",
+      "data": 3,
+      "type": "mekanism:item_nbt"
+    },
+    "E": {
+      "ore": "alloyAdvanced",
+      "type": "forge:ore_dict"
+    }
+  }
+}

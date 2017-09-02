@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 5
+  },
+  "pattern": [
+    "ICI",
+    "ASA",
+    "ICI"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "PrecisionSawmill"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "S": {
+      "item": "mekanism:basicblock",
+      "data": 8
+    },
+    "I": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    }
+  }
+}

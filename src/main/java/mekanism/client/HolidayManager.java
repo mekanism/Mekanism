@@ -5,20 +5,20 @@ import java.util.Calendar;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.MekanismConfig.client;
 import mekanism.common.Mekanism;
-
+import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 
 public final class HolidayManager
 {
 	private static Calendar calendar = Calendar.getInstance();
 	private static Minecraft mc = Minecraft.getMinecraft();
 
-	public static List<Holiday> holidays = new ArrayList<Holiday>();
-	private static List<Holiday> holidaysNotified = new ArrayList<Holiday>();
+	private static List<Holiday> holidays = new ArrayList<>();
+	private static List<Holiday> holidaysNotified = new ArrayList<>();
 
 	public static void init()
 	{
@@ -42,7 +42,7 @@ public final class HolidayManager
 				{
 					if(holiday.getDate().equals(date))
 					{
-						holiday.onEvent(mc.thePlayer);
+						holiday.onEvent(mc.player);
 						holidaysNotified.add(holiday);
 					}
 				}
@@ -50,7 +50,7 @@ public final class HolidayManager
 		} catch(Exception e) {}
 	}
 
-	public static String filterSound(String sound)
+	public static ResourceLocation filterSound(ResourceLocation sound)
 	{
 		if(!client.holidays)
 		{
@@ -83,7 +83,7 @@ public final class HolidayManager
 
 		public abstract void onEvent(EntityPlayer player);
 
-		public String filterSound(String sound)
+		public ResourceLocation filterSound(ResourceLocation sound)
 		{
 			return sound;
 		}
@@ -91,7 +91,7 @@ public final class HolidayManager
 
 	private static class Christmas extends Holiday
 	{
-		private String[] nutcracker = new String[] {"holiday/Nutcracker1.ogg", "holiday/Nutcracker2.ogg", "holiday/Nutcracker3.ogg", "holiday/Nutcracker4.ogg", "holiday/Nutcracker5.ogg"};
+		private String[] nutcracker = new String[] {"christmas.1", "christmas.2", "christmas.3", "christmas.4", "christmas.5"};
 
 		@Override
 		public YearlyDate getDate()
@@ -103,37 +103,39 @@ public final class HolidayManager
 		public void onEvent(EntityPlayer player)
 		{
 			String themedLines = getThemedLines(new EnumColor[] {EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
-			player.addChatMessage(new ChatComponentText(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
-			player.addChatMessage(new ChatComponentText(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getCommandSenderName() + EnumColor.RED + "!"));
-			player.addChatMessage(new ChatComponentText(EnumColor.RED + "May you have plenty of Christmas cheer"));
-			player.addChatMessage(new ChatComponentText(EnumColor.RED + "and have a relaxing holiday with your"));
-			player.addChatMessage(new ChatComponentText(EnumColor.RED + "family :)"));
-			player.addChatMessage(new ChatComponentText(EnumColor.DARK_GREY + "-aidancbrady"));
-			player.addChatMessage(new ChatComponentText(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "May you have plenty of Christmas cheer"));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "and have a relaxing holiday with your"));
+			player.sendMessage(new TextComponentString(EnumColor.RED + "family :)"));
+			player.sendMessage(new TextComponentString(EnumColor.DARK_GREY + "-aidancbrady"));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
 		}
 
 		@Override
-		public String filterSound(String sound)
+		public ResourceLocation filterSound(ResourceLocation sound)
 		{
-			if(sound.equals("Chamber.ogg"))
+			String soundResourceLocationString = sound.toString();
+
+			if(soundResourceLocationString.contains("machine.enrichment"))
 			{
-				return nutcracker[0];
+				return new ResourceLocation(sound.toString().replace("machine.enrichment", nutcracker[0]));
 			}
-			else if(sound.equals("MetallurgicInfuser.ogg"))
+			else if(soundResourceLocationString.contains("machine.metalinfuser"))
 			{
-				return nutcracker[1];
+				return new ResourceLocation(sound.toString().replace("machine.metalinfuser", nutcracker[1]));
 			}
-			else if(sound.equals("PurificationChamber.ogg"))
+			else if(soundResourceLocationString.contains("machine.purification"))
 			{
-				return nutcracker[2];
+				return new ResourceLocation(sound.toString().replace("machine.purification", nutcracker[2]));
 			}
-			else if(sound.equals("Smelter.ogg"))
+			else if(soundResourceLocationString.contains("machine.smelter"))
 			{
-				return nutcracker[3];
+				return new ResourceLocation(sound.toString().replace("machine.smelter", nutcracker[3]));
 			}
-			else if(sound.equals("HeatGenerator.ogg"))
+			else if(soundResourceLocationString.contains("machine.dissolution"))
 			{
-				return nutcracker[4];
+				return new ResourceLocation(sound.toString().replace("machine.dissolution", nutcracker[4]));
 			}
 
 			return sound;
@@ -152,16 +154,16 @@ public final class HolidayManager
 		public void onEvent(EntityPlayer player)
 		{
 			String themedLines = getThemedLines(new EnumColor[] {EnumColor.WHITE, EnumColor.YELLOW}, 13);
-			player.addChatMessage(new ChatComponentText(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
-			player.addChatMessage(new ChatComponentText(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getCommandSenderName() + EnumColor.RED + "!"));
-			player.addChatMessage(new ChatComponentText(EnumColor.AQUA + "Best wishes to you as we enter this"));
-			player.addChatMessage(new ChatComponentText(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
-			player.addChatMessage(new ChatComponentText(EnumColor.DARK_GREY + "-aidancbrady"));
-			player.addChatMessage(new ChatComponentText(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
+			player.sendMessage(new TextComponentString(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
+			player.sendMessage(new TextComponentString(EnumColor.AQUA + "Best wishes to you as we enter this"));
+			player.sendMessage(new TextComponentString(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
+			player.sendMessage(new TextComponentString(EnumColor.DARK_GREY + "-aidancbrady"));
+			player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
 		}
 	}
 
-	public static enum Month
+	public enum Month
 	{
 		JANUARY("January"),
 		FEBRUARY("February"),
@@ -178,7 +180,7 @@ public final class HolidayManager
 
 		private final String name;
 
-		private Month(String n)
+		Month(String n)
 		{
 			name = n;
 		}
@@ -233,7 +235,7 @@ public final class HolidayManager
 
 		for(int i = 0; i < amount; i++)
 		{
-			builder.append(colors[i%colors.length] + "-");
+			builder.append(colors[i % colors.length]).append("-");
 		}
 
 		return builder.toString();

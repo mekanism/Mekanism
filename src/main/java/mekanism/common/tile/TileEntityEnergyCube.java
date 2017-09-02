@@ -1,33 +1,43 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.api.IConfigCardAccess;
 import mekanism.api.Range4D;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
+import mekanism.common.SideData;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import io.netty.buffer.ByteBuf;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
-@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPeripheral, IRedstoneControl
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable, IConfigCardAccess
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
@@ -39,6 +49,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	public RedstoneControl controlType;
 
 	public int prevScale;
+	
+	public TileComponentEjector ejectorComponent;
+	public TileComponentConfig configComponent;
+	public TileComponentSecurity securityComponent;
 
 	/**
 	 * A block used to store and transfer electricity.
@@ -46,9 +60,24 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	public TileEntityEnergyCube()
 	{
 		super("EnergyCube", 0);
+		
+		configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Charge", EnumColor.DARK_BLUE, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Discharge", EnumColor.DARK_RED, new int[] {1}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {0, 0, 0, 0, 2, 1});
+		configComponent.setCanEject(TransmissionType.ITEM, false);
+		configComponent.setIOConfig(TransmissionType.ENERGY);
+		configComponent.setEjecting(TransmissionType.ENERGY, true);
 
-		inventory = new ItemStack[2];
+		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		controlType = RedstoneControl.DISABLED;
+		
+		ejectorComponent = new TileComponentEjector(this);
+		
+		securityComponent = new TileComponentSecurity(this);
 	}
 
 	@Override
@@ -56,12 +85,12 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(0, this);
 			ChargeUtils.discharge(1, this);
 	
-			if(MekanismUtils.canFunction(this))
+			if(MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY))
 			{
 				CableUtils.emit(this);
 			}
@@ -70,22 +99,43 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	
 			if(newScale != prevScale)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			}
 	
 			prevScale = newScale;
 		}
 	}
+	
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
+	{
+		if(upgradeTier.ordinal() != tier.ordinal()+1)
+		{
+			return false;
+		}
+		
+		tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
+		
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+		markDirty();
+		
+		return true;
+	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
-		return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getName() + ".name");
+		return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 
 	@Override
 	public double getMaxOutput()
 	{
+		if(tier == EnergyCubeTier.CREATIVE)
+		{
+			return Integer.MAX_VALUE;
+		}
+		
 		return tier.output;
 	}
 
@@ -105,19 +155,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getConsumingSides()
+	public boolean sideIsConsumer(EnumFacing side) 
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
-		set.removeAll(getOutputtingSides());
-		set.remove(ForgeDirection.UNKNOWN);
-
-		return set;
+		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side)
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
 	}
 
 	@Override
@@ -133,13 +179,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return side <= 1 ? new int[] {0} : new int[] {1};
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -153,23 +199,16 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 		return false;
 	}
 
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String getType()
+	public String[] getMethods()
 	{
-		return getInventoryName();
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
-	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -182,45 +221,35 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 			case 3:
 				return new Object[] {(getMaxEnergy()-getEnergy())};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return null;
+				throw new NoSuchMethodException();
 		}
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public boolean equals(IPeripheral other)
-	{
-		return this == other;
-	}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void attach(IComputerAccess computer) {}
-
-	@Override
-	@Method(modid = "ComputerCraft")
-	public void detach(IComputerAccess computer) {}
-
-	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = EnergyCubeTier.values()[dataStream.readInt()];
-
 		super.handlePacketData(dataStream);
-
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{	
+			EnergyCubeTier prevTier = tier;
+			
+			tier = EnergyCubeTier.values()[dataStream.readInt()];
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(prevTier != tier)
+			{
+				MekanismUtils.updateBlock(world, getPos());
+			}
+		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(tier.ordinal());
-
 		super.getNetworkedData(data);
 
+		data.add(tier.ordinal());
 		data.add(controlType.ordinal());
 
 		return data;
@@ -231,23 +260,25 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	{
 		super.readFromNBT(nbtTags);
 
-		tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
+		tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setString("tier", tier.getBaseTier().getName());
+		nbtTags.setInteger("tier", tier.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		
+		return nbtTags;
 	}
 
 	@Override
 	public void setEnergy(double energy)
 	{
-		if(tier == EnergyCubeTier.CREATIVE && energy != Integer.MAX_VALUE)
+		if(tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE)
 		{
 			return;
 		}
@@ -266,7 +297,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	public int getRedstoneLevel()
 	{
 		double fractionFull = getEnergy()/getMaxEnergy();
-		return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+		return MathHelper.floor((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
 
 	@Override
@@ -285,5 +316,46 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	public boolean canPulse()
 	{
 		return false;
+	}
+
+	@Override
+	public TileComponentEjector getEjector()
+	{
+		return ejectorComponent;
+	}
+	
+	@Override
+	public TileComponentConfig getConfig()
+	{
+		return configComponent;
+	}
+	
+	@Override
+	public EnumFacing getOrientation()
+	{
+		return facing;
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.CONFIG_CARD_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 }

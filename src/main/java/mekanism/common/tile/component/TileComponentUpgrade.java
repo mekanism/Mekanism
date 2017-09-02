@@ -1,28 +1,31 @@
 package mekanism.common.tile.component;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
+import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
-import mekanism.common.tile.TileEntityContainerBlock;
-
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileComponentUpgrade implements ITileComponent
 {
 	/** How long it takes this machine to install an upgrade. */
 	public static int UPGRADE_TICKS_REQUIRED = 40;
 	
-	private Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
+	private Map<Upgrade, Integer> upgrades = new HashMap<>();
 	
-	private Set<Upgrade> supported = new HashSet<Upgrade>();
+	private Set<Upgrade> supported = new HashSet<>();
 
 	/** The inventory slot the upgrade slot of this component occupies. */
 	private int upgradeSlot;
@@ -52,14 +55,15 @@ public class TileComponentUpgrade implements ITileComponent
 		upgradeTicks = upgrade.upgradeTicks;
 	}
 
+	// This SHOULD continue to directly use te.inventory, as it is needed for Entangleporter upgrades, since it messes with IInventory.
 	@Override
 	public void tick()
 	{
-		if(!tileEntity.getWorldObj().isRemote)
+		if(!tileEntity.getWorld().isRemote)
 		{
-			if(tileEntity.inventory[upgradeSlot] != null && tileEntity.inventory[upgradeSlot].getItem() instanceof IUpgradeItem)
+			if(!tileEntity.inventory.get(upgradeSlot).isEmpty() && tileEntity.inventory.get(upgradeSlot).getItem() instanceof IUpgradeItem)
 			{
-				Upgrade type = ((IUpgradeItem)tileEntity.inventory[upgradeSlot].getItem()).getUpgradeType(tileEntity.inventory[upgradeSlot]);
+				Upgrade type = ((IUpgradeItem)tileEntity.inventory.get(upgradeSlot).getItem()).getUpgradeType(tileEntity.inventory.get(upgradeSlot));
 				
 				if(supports(type) && getUpgrades(type) < type.getMax())
 				{
@@ -72,13 +76,9 @@ public class TileComponentUpgrade implements ITileComponent
 						upgradeTicks = 0;
 						addUpgrade(type);
 
-						tileEntity.inventory[upgradeSlot].stackSize--;
+						tileEntity.inventory.get(upgradeSlot).shrink(1);
 
-						if(tileEntity.inventory[upgradeSlot].stackSize == 0)
-						{
-							tileEntity.inventory[upgradeSlot] = null;
-						}
-
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
 						tileEntity.markDirty();
 					}
 				}
@@ -193,7 +193,7 @@ public class TileComponentUpgrade implements ITileComponent
 	}
 	
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(upgrades.size());
 		
@@ -222,4 +222,7 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		Upgrade.saveMap(upgrades, nbtTags);
 	}
+	
+	@Override
+	public void invalidate() {}
 }

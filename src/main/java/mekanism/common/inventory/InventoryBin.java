@@ -1,15 +1,16 @@
 package mekanism.common.inventory;
 
-import mekanism.api.util.StackUtils;
-import mekanism.common.item.ItemBlockBasic;
-
+import mekanism.common.Tier.BinTier;
+import mekanism.common.base.ITierItem;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryBin
 {
-	public final int MAX_STORAGE = 4096;
-
 	public ItemStack bin;
 
 	public InventoryBin(ItemStack stack)
@@ -19,51 +20,61 @@ public class InventoryBin
 
 	public ItemStack getStack()
 	{
-		if(getItemCount() > 0 && getItemType() != null)
+		if(getItemCount() > 0 && !getItemType().isEmpty())
 		{
 			ItemStack ret = getItemType().copy();
-			ret.stackSize = Math.min(getItemType().getMaxStackSize(), getItemCount());
+			ret.setCount(Math.min(getItemType().getMaxStackSize(), getItemCount()));
 
 			return ret;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public ItemStack removeStack()
 	{
 		ItemStack stack = getStack();
 
-		if(stack == null)
+		if(stack.isEmpty())
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		setItemCount(getItemCount() - stack.stackSize);
+		if(getTier() != BinTier.CREATIVE)
+		{
+			setItemCount(getItemCount() - stack.getCount());
+		}
+		
 		return stack.copy();
 	}
 
 	public ItemStack add(ItemStack stack)
 	{
-		if(isValid(stack) && getItemCount() != MAX_STORAGE)
+		if(isValid(stack) && (getTier() == BinTier.CREATIVE || getItemCount() != getMaxStorage()))
 		{
-			if(getItemType() == null)
+			if(getItemType().isEmpty())
 			{
 				setItemType(stack);
 			}
 
-			if(getItemCount() + stack.stackSize <= MAX_STORAGE)
+			if(getTier() != BinTier.CREATIVE)
 			{
-				setItemCount(getItemCount() + stack.stackSize);
-				return null;
+				if(getItemCount() + stack.getCount() <= getMaxStorage())
+				{
+					setItemCount(getItemCount() + stack.getCount());
+					return ItemStack.EMPTY;
+				}
+				else {
+					ItemStack rejects = getItemType().copy();
+					rejects.setCount((getItemCount()+stack.getCount()) - getMaxStorage());
+	
+					setItemCount(getMaxStorage());
+	
+					return rejects;
+				}
 			}
 			else {
-				ItemStack rejects = getItemType().copy();
-				rejects.stackSize = (getItemCount()+stack.stackSize) - MAX_STORAGE;
-
-				setItemCount(MAX_STORAGE);
-
-				return rejects;
+				setItemCount(Integer.MAX_VALUE);
 			}
 		}
 
@@ -72,17 +83,17 @@ public class InventoryBin
 
 	public boolean isValid(ItemStack stack)
 	{
-		if(stack == null || stack.stackSize <= 0)
+		if(stack.isEmpty() || stack.getCount() <= 0)
 		{
 			return false;
 		}
 
-		if(stack.getItem() instanceof ItemBlockBasic && stack.getItemDamage() == 6)
+		if(BasicBlockType.get(stack) == BasicBlockType.BIN)
 		{
 			return false;
 		}
 
-		if(getItemType() == null)
+		if(getItemType().isEmpty())
 		{
 			return true;
 		}
@@ -94,57 +105,50 @@ public class InventoryBin
 
 		return true;
 	}
+	
+	public int getMaxStorage()
+	{
+		return getTier().storage;
+	}
+	
+	public BinTier getTier()
+	{
+		return BinTier.values()[((ITierItem)bin.getItem()).getBaseTier(bin).ordinal()];
+	}
 
 	public int getItemCount()
 	{
-		if(bin.stackTagCompound == null)
-		{
-			return 0;
-		}
-
-		return bin.stackTagCompound.getInteger("itemCount");
+		return ItemDataUtils.getInt(bin, "itemCount");
 	}
 
 	public void setItemCount(int count)
 	{
-		if(bin.stackTagCompound == null)
-		{
-			bin.setTagCompound(new NBTTagCompound());
-		}
-
-		bin.stackTagCompound.setInteger("itemCount", Math.max(0, count));
+		ItemDataUtils.setInt(bin, "itemCount", Math.max(0, count));
 
 		if(getItemCount() == 0)
 		{
-			setItemType(null);
+			setItemType(ItemStack.EMPTY);
 		}
 	}
 
 	public ItemStack getItemType()
 	{
-		if(bin.stackTagCompound == null || getItemCount() == 0)
+		if(getItemCount() == 0)
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		return ItemStack.loadItemStackFromNBT(bin.stackTagCompound.getCompoundTag("storedItem"));
+		return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
 	}
 
 	public void setItemType(ItemStack stack)
 	{
-		if(bin.stackTagCompound == null)
+		if(stack.isEmpty())
 		{
-			bin.setTagCompound(new NBTTagCompound());
-		}
-
-		if(stack == null)
-		{
-			bin.stackTagCompound.removeTag("storedItem");
+			ItemDataUtils.removeData(bin, "storedItem");
 			return;
 		}
 
-		ItemStack ret = StackUtils.size(stack, 1);
-
-		bin.stackTagCompound.setTag("storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
+		ItemDataUtils.setCompound(bin, "storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
 	}
 }

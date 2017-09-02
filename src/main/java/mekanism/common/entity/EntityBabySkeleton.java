@@ -7,6 +7,9 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.world.World;
 
 public class EntityBabySkeleton extends EntitySkeleton
@@ -14,27 +17,23 @@ public class EntityBabySkeleton extends EntitySkeleton
     private static final UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
     private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, 1);
     
+    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
+    
 	public EntityBabySkeleton(World world) 
 	{
 		super(world);
-		setChild(true);
-	}
-	
-	@Override
-	protected void entityInit()
-	{
-		super.entityInit();
 		
-        getDataWatcher().addObject(12, new Byte((byte)0));
+		dataManager.register(IS_CHILD, false);
+		setChild(true);
 	}
 	
     public void setChild(boolean child)
     {
-        getDataWatcher().updateObject(12, Byte.valueOf((byte)(child ? 1 : 0)));
+        dataManager.set(IS_CHILD, child);
 
-        if(worldObj != null && !worldObj.isRemote)
+        if(world != null && !world.isRemote)
         {
-            IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
+            IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
             iattributeinstance.removeModifier(babySpeedBoostModifier);
 
             if(child)
@@ -49,7 +48,7 @@ public class EntityBabySkeleton extends EntitySkeleton
     @Override
     public boolean isChild()
     {
-        return getDataWatcher().getWatchableObjectByte(12) == 1;
+    	return dataManager.get(IS_CHILD);
     }
     
     @Override

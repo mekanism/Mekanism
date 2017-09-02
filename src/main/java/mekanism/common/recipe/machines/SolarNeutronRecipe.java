@@ -28,11 +28,11 @@ public class SolarNeutronRecipe extends MachineRecipe<GasInput, GasOutput, Solar
 		return getInput().useGas(inputTank, false, 1) && getOutput().applyOutputs(outputTank, false, 1);
 	}
 
-	public void operate(GasTank inputTank, GasTank outputTank)
+	public void operate(GasTank inputTank, GasTank outputTank, int scale)
 	{
-		if(getInput().useGas(inputTank, true, 1))
+		if(getInput().useGas(inputTank, true, scale))
 		{
-			getOutput().applyOutputs(outputTank, true, 1);
+			getOutput().applyOutputs(outputTank, true, scale);
 		}
 	}
 }

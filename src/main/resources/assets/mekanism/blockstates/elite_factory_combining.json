@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRight",
+      "front": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryFront",
+      "south": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryBack",
+      "west": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRight",
+      "east": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryLeft",
+      "up": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryTop",
+      "down": "mekanism:blocks/factory/elite/EliteFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryFrontOn",
+          "south": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryBackOn",
+          "west": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryRightOn",
+          "east": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryLeftOn",
+          "up": "mekanism:blocks/factory/elite/combining/EliteCombiningFactoryTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

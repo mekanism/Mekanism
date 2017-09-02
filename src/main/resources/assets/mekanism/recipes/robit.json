@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "mekanism:robit"
+  },
+  "pattern": [
+    " S ",
+    "ECE",
+    "OIO"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:atomicalloy"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "I": {
+      "item": "mekanism:machineblock",
+      "data": 13
+    },
+    "O": {
+      "ore": "ingotRefinedObsidian",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "mekanism:atomicdisassembler"
+  },
+  "pattern": [
+    "AEA",
+    "ACA",
+    " O "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "C": {
+      "item": "mekanism:atomicalloy"
+    },
+    "E": {
+      "item": "mekanism:energytablet"
+    },
+    "O": {
+      "ore": "ingotRefinedObsidian",
+      "type": "forge:ore_dict"
+    }
+  }
+}

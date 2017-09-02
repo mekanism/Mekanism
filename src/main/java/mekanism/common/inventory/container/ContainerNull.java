@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.tile.TileEntityContainerBlock;
-
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
@@ -13,8 +12,16 @@ public class ContainerNull extends Container
 	{
 		tileEntity = tile;
 
-		tileEntity.open(player);
-		tileEntity.openInventory();
+		if(tileEntity != null)
+		{
+			tileEntity.open(player);
+			tileEntity.openInventory(player);
+		}
+	}
+	
+	public ContainerNull(TileEntityContainerBlock tile)
+	{
+		tileEntity = tile;
 	}
 	
 	public ContainerNull() {}
@@ -27,7 +34,7 @@ public class ContainerNull extends Container
 		if(tileEntity != null)
 		{
 			tileEntity.close(entityplayer);
-			tileEntity.closeInventory();
+			tileEntity.closeInventory(entityplayer);
 		}
 	}
 
@@ -36,7 +43,7 @@ public class ContainerNull extends Container
 	{
 		if(tileEntity != null)
 		{
-			return tileEntity.isUseableByPlayer(entityplayer);
+			return tileEntity.isUsableByPlayer(entityplayer);
 		}
 		
 		return true;

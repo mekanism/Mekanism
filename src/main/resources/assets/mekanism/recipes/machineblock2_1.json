@@ -1,0 +1,42 @@
+{
+  "result": {
+    "item": "mekanism:machineblock2",
+    "data": 1
+  },
+  "pattern": [
+    "ACA",
+    "ERG",
+    "ACA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "ChemicalOxidizer"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "mekanism:enrichedalloy"
+    },
+    "R": {
+      "item": "mekanism:basicblock",
+      "data": 9
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "E": {
+      "item": "mekanism:machineblock",
+      "data": 13
+    },
+    "G": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    }
+  }
+}

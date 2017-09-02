@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRight",
+      "front": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryFront",
+      "south": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryBack",
+      "west": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRight",
+      "east": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryLeft",
+      "up": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryTop",
+      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryFrontOn",
+          "south": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryBackOn",
+          "west": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryRightOn",
+          "east": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryLeftOn",
+          "up": "mekanism:blocks/factory/advanced/enriching/AdvancedEnrichingFactoryTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

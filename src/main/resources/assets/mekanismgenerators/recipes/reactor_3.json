@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanismgenerators:reactor",
+    "data": 3
+  },
+  "pattern": [
+    " R ",
+    "RFR",
+    " R "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    },
+    "F": {
+      "item": "mekanismgenerators:reactor",
+      "data": 1
+    }
+  }
+}

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
@@ -23,21 +26,23 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificator extends GuiMekanism
 {
 	public TileEntityOredictionificator tileEntity;
 	
-	public Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<OredictionificatorFilter, ItemStack>();
+	public Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<>();
 	
 	public boolean isDragging = false;
 
@@ -50,6 +55,8 @@ public class GuiOredictionificator extends GuiMekanism
 		super(tentity, new ContainerOredictionificator(inventory, tentity));
 		tileEntity = tentity;
 		
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png")));
+		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png")));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -66,7 +73,7 @@ public class GuiOredictionificator extends GuiMekanism
 	
 	public int getScroll()
 	{
-		return Math.max(Math.min((int)(scroll*88), 88), 0);
+		return Math.max(Math.min((int)(scroll*73), 73), 0);
 	}
 	
 	public int getFilterIndex()
@@ -92,7 +99,7 @@ public class GuiOredictionificator extends GuiMekanism
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -108,8 +115,8 @@ public class GuiOredictionificator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		for(int i = 0; i < 3; i++)
 		{
@@ -125,16 +132,16 @@ public class GuiOredictionificator extends GuiMekanism
 				
 				ItemStack stack = renderStacks.get(filter);
 				
-				if(stack != null)
+				if(!stack.isEmpty())
 				{
-					GL11.glPushMatrix();
-					GL11.glEnable(GL11.GL_LIGHTING);
-					itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), stack, 13, yStart + 3);
-					GL11.glDisable(GL11.GL_LIGHTING);
-					GL11.glPopMatrix();
+					GlStateManager.pushMatrix();
+					RenderHelper.enableGUIStandardItemLighting();
+					itemRender.renderItemAndEffectIntoGUI(stack, 13, yStart + 3);
+					RenderHelper.disableStandardItemLighting();
+					GlStateManager.popMatrix();
 				}
 
-				fontRendererObj.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
+				fontRenderer.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
 				renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
 			}
 		}
@@ -163,7 +170,7 @@ public class GuiOredictionificator extends GuiMekanism
 			if(tileEntity.filters.get(getFilterIndex()+i) != null)
 			{
 				int yStart = i*22 + 18;
-				boolean mouseOver = xAxis >= 10 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22;
+				boolean mouseOver = xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart+22;
 				
 				if(mouseOver)
 				{
@@ -178,7 +185,7 @@ public class GuiOredictionificator extends GuiMekanism
 	}
 	
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -203,13 +210,13 @@ public class GuiOredictionificator extends GuiMekanism
 			{
 				if(tileEntity.filters.get(getFilterIndex()+i) != null)
 				{
-					int yStart = i*29 + 18;
+					int yStart = i*22 + 18;
 
-					if(xAxis >= 10 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22)
+					if(xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart+22)
 					{
 						OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex()+i);
 
-                        SoundHandler.playSound("gui.button.press");
+                        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 						Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
 					}
 				}
@@ -227,14 +234,14 @@ public class GuiOredictionificator extends GuiMekanism
 
 		if(isDragging)
 		{
-			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/88F, 0), 1);
+			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/73F, 0), 1);
 		}
 	}
 	
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int type)
+	protected void mouseReleased(int x, int y, int type)
 	{
-		super.mouseMovedOrUp(x, y, type);
+		super.mouseReleased(x, y, type);
 
 		if(type == 0 && isDragging)
 		{
@@ -251,7 +258,7 @@ public class GuiOredictionificator extends GuiMekanism
 		{
 			if(filter.filter == null || filter.filter.isEmpty())
 			{
-				renderStacks.put(filter, null);
+				renderStacks.put(filter, ItemStack.EMPTY);
 				continue;
 			}
 			
@@ -259,7 +266,7 @@ public class GuiOredictionificator extends GuiMekanism
 			
 			if(stacks.isEmpty())
 			{
-				renderStacks.put(filter, null);
+				renderStacks.put(filter, ItemStack.EMPTY);
 				continue;
 			}
 			
@@ -268,7 +275,7 @@ public class GuiOredictionificator extends GuiMekanism
 				renderStacks.put(filter, stacks.get(filter.index).copy());
 			}
 			else {
-				renderStacks.put(filter, null);
+				renderStacks.put(filter, ItemStack.EMPTY);
 			}
 		}
 	}

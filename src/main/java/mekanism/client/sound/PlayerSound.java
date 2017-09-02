@@ -2,11 +2,11 @@ package mekanism.client.sound;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class PlayerSound extends Sound implements IResettableSound
+public abstract class PlayerSound extends MekSound implements IResettableSound
 {
 	public EntityPlayer player;
 

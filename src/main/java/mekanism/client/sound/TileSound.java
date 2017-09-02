@@ -2,12 +2,12 @@ package mekanism.client.sound;
 
 import mekanism.common.base.IHasSound;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class TileSound extends Sound implements IResettableSound {
-
+public class TileSound extends MekSound implements IResettableSound 
+{
 	IHasSound source;
 	
 	boolean beginFadeOut;
@@ -24,12 +24,12 @@ public class TileSound extends Sound implements IResettableSound {
 
 	public TileSound(IHasSound source, ISoundSource values)
 	{
-		this(source, values.getSoundLocation(), values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
+		this(source, values.getSoundLocation(), values.getVolume(), values.getFrequency(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().x, values.getSoundPosition().y, values.getSoundPosition().z);
 	}
 
 	public TileSound(IHasSound source, ISoundSource values, ResourceLocation location)
 	{
-		this(source, location, values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
+		this(source, location, values.getVolume(), values.getFrequency(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().x, values.getSoundPosition().y, values.getSoundPosition().z);
 	}
 
 	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z)
@@ -52,7 +52,7 @@ public class TileSound extends Sound implements IResettableSound {
 		super(resource, volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
 
 		source = soundSource;
-		sound = resource;
+		soundLocation = resource;
 		baseVolume = volume;
 	}
 
@@ -82,6 +82,11 @@ public class TileSound extends Sound implements IResettableSound {
 	@Override
 	public void update() 
 	{
+		if(source instanceof ISoundSource)
+		{
+			baseVolume = ((ISoundSource)source).getVolume();
+		}
+		
 		if(!beginFadeOut) 
 		{
 			if(ticks < fadeIn)

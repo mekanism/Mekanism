@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.Tier;
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
@@ -8,12 +8,13 @@ import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import java.util.Arrays;
 
 public class ContainerFactory extends Container
 {
@@ -93,7 +94,7 @@ public class ContainerFactory extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 	}
 
 	@Override
@@ -102,21 +103,21 @@ public class ContainerFactory extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
-
+		
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
 			ItemStack slotStack = currentSlot.getStack();
@@ -124,38 +125,38 @@ public class ContainerFactory extends Container
 
 			if(isOutputSlot(slotID))
 			{
-				if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(slotID != 1 && slotID != 2 && isProperMachine(slotStack) && !slotStack.isItemEqual(tileEntity.getMachineStack()))
 			{
 				if(!mergeItemStack(slotStack, 1, 2, false))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
 			else if(slotID == 2)
 			{
-				if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 			}
-			else if(tileEntity.recipeType.getAnyRecipe(slotStack, tileEntity.gasTank.getGasType()) != null)
+			else if(tileEntity.recipeType.getAnyRecipe(slotStack, tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null)
 			{
 				if(!isInputSlot(slotID))
 				{
 					if(!mergeItemStack(slotStack, 4, 4+tileEntity.tier.processes, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -165,72 +166,88 @@ public class ContainerFactory extends Container
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID == 0)
 				{
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 			else if(tileEntity.recipeType.getItemGas(slotStack) != null)
 			{
-				if(slotID > tileEntity.inventory.length-1)
+				if(slotID >= tileEntity.inventory.size()-1)
 				{
 					if(!mergeItemStack(slotStack, 3, 4, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
+					}
+				}
+			}
+			else if(tileEntity.recipeType == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
+			{
+				if(slotID >= tileEntity.inventory.size()-1)
+				{
+					if(!mergeItemStack(slotStack, 3, 4, false))
+					{
+						return ItemStack.EMPTY;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
+					{
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 			else {
-				int slotEnd = tileEntity.inventory.length-1;
+				int slotEnd = tileEntity.inventory.size()-1;
 
 				if(slotID >= slotEnd && slotID <= (slotEnd+26))
 				{
 					if(!mergeItemStack(slotStack, (slotEnd+27), inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > (slotEnd+26))
 				{
 					if(!mergeItemStack(slotStack, slotEnd, (slotEnd+26), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, slotEnd, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;
@@ -238,12 +255,9 @@ public class ContainerFactory extends Container
 
 	public boolean isProperMachine(ItemStack itemStack)
 	{
-		if(itemStack != null && itemStack.getItem() instanceof ItemBlockMachine)
+		if(!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockMachine)
 		{
-			for(RecipeType type : RecipeType.values())
-			{
-				return itemStack.isItemEqual(type.getStack());
-			}
+			return Arrays.stream(RecipeType.values()).findFirst().filter(type -> itemStack.isItemEqual(type.getStack())).isPresent();
 		}
 
 		return false;
@@ -251,25 +265,11 @@ public class ContainerFactory extends Container
 
 	public boolean isInputSlot(int slot)
 	{
-		if(tileEntity.tier == Tier.FactoryTier.BASIC)
-			return slot >= 4 && slot <= 6;
-		if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-			return slot >= 4 && slot <= 8;
-		if(tileEntity.tier == Tier.FactoryTier.ELITE)
-			return slot >= 4 && slot <= 10;
-
-		return false;
+		return slot >= 4 && slot < 4+tileEntity.tier.processes;
 	}
 
 	public boolean isOutputSlot(int slot)
 	{
-		if(tileEntity.tier == Tier.FactoryTier.BASIC)
-			return slot >= 7 && slot <= 9;
-		if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-			return slot >= 9 && slot <= 13;
-		if(tileEntity.tier == Tier.FactoryTier.ELITE)
-			return slot >= 11 && slot <= 17;
-
-		return false;
+		return slot >= 4+tileEntity.tier.processes && slot < 4+tileEntity.tier.processes*2;
 	}
 }

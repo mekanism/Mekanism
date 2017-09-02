@@ -14,9 +14,8 @@ import mekanism.client.gui.GuiCredits;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Thread that downloads the latest release of Mekanism. The older file is deleted and the newly downloaded file takes it's place.
@@ -142,7 +141,7 @@ public class ThreadClientUpdate extends Thread
 		}
 	}
 
-	private void createTemp() throws IOException
+	private void createTemp()
 	{
 		if(!tempDir.exists())
 		{
@@ -150,7 +149,7 @@ public class ThreadClientUpdate extends Thread
 		}
 	}
 
-	private void deleteTemp() throws IOException
+	private void deleteTemp()
 	{
 		if(tempDir.exists())
 		{
@@ -173,7 +172,7 @@ public class ThreadClientUpdate extends Thread
 
 	private void prepareForDownload()
 	{
-		File[] modsList = new File(new StringBuilder().append(Mekanism.proxy.getMinecraftDir()).append(File.separator + "mods").toString()).listFiles();
+		File[] modsList = new File(String.valueOf(Mekanism.proxy.getMinecraftDir()) + File.separator + "mods").listFiles();
 
 		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 		{

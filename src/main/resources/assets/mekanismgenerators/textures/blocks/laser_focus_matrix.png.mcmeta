@@ -1,0 +1,28 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "type":"CTM",
+        "layer":"TRANSLUCENT",
+        "textures":[
+            "mekanismgenerators:blocks/laser_focus_matrix-ctm"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanismgenerators:reactorglass",
+                    "predicate":
+                    {
+                        "type": "reactor_glass"
+                    }
+                },
+                {
+                    "block": "mekanismgenerators:reactorglass",
+                    "predicate":
+                    {
+                        "type": "laser_focus_matrix"
+                    }
+                }
+            ]
+        }
+    }
+}

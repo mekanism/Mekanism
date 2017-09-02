@@ -1,0 +1,22 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:basic_cube",
+    "textures": {
+      "all": "mekanismgenerators:blocks/reactor_port"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "active": {
+      "false": {},
+      "true": {
+        "textures": {
+          "all": "mekanismgenerators:blocks/reactor_port_output"
+        }
+      }
+    }
+  }
+}
+

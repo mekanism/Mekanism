@@ -11,11 +11,10 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemWalkieTalkie;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class VoiceConnection extends Thread
 {
@@ -49,7 +48,7 @@ public class VoiceConnection extends Thread
 				while(username == null && retryCount <= 100)
 				{
 					try {
-						List l = Collections.synchronizedList((List)((ArrayList)server.getConfigurationManager().playerEntityList).clone());
+						List l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
 						for(Object obj : l)
 						{
@@ -61,12 +60,12 @@ public class VoiceConnection extends Thread
 								if(!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.foundLocal)
 								{
 									Mekanism.voiceManager.foundLocal = true;
-									username = playerMP.getCommandSenderName();
+									username = playerMP.getName();
 									break;
 								}
 								else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
 								{
-									username = playerMP.getCommandSenderName();
+									username = playerMP.getName();
 									break;
 								}
 							}
@@ -94,33 +93,29 @@ public class VoiceConnection extends Thread
 		}
 
 		//Main client listen thread
-		new Thread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				while(open)
-				{
-					try {
-						short byteCount = VoiceConnection.this.input.readShort();
-						byte[] audioData = new byte[byteCount];
-						VoiceConnection.this.input.readFully(audioData);
+		new Thread(() ->
+        {
+            while(open)
+            {
+                try {
+                    short byteCount = VoiceConnection.this.input.readShort();
+                    byte[] audioData = new byte[byteCount];
+                    VoiceConnection.this.input.readFully(audioData);
 
-						if(byteCount > 0)
-						{
-							Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
-						}
-					} catch(Exception e) {
-						open = false;
-					}
-				}
+                    if(byteCount > 0)
+                    {
+                        Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
+                    }
+                } catch(Exception e) {
+                    open = false;
+                }
+            }
 
-				if(!open)
-				{
-					kill();
-				}
-			}
-		}).start();
+            if(!open)
+            {
+                kill();
+            }
+        }).start();
 	}
 
 	public void kill()
@@ -159,29 +154,47 @@ public class VoiceConnection extends Thread
 	{
 		for(ItemStack itemStack : getPlayer().inventory.mainInventory)
 		{
-			if(itemStack != null)
+			if(canListen(channel, itemStack))
 			{
-				if(itemStack.getItem() instanceof ItemWalkieTalkie)
-				{
-					if(((ItemWalkieTalkie)itemStack.getItem()).getOn(itemStack))
-					{
-						if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
-						{
-							return true;
-						}
-					}
-				}
+				return true;
+			}
+		}
+		
+		for(ItemStack itemStack : getPlayer().inventory.offHandInventory)
+		{
+			if(canListen(channel, itemStack))
+			{
+				return true;
 			}
 		}
 
 		return false;
 	}
+	
+	public boolean canListen(int channel, ItemStack itemStack)
+	{
+		if(!itemStack.isEmpty())
+		{
+			if(itemStack.getItem() instanceof ItemWalkieTalkie)
+			{
+				if(((ItemWalkieTalkie)itemStack.getItem()).getOn(itemStack))
+				{
+					if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	public int getCurrentChannel()
 	{
-		ItemStack itemStack = getPlayer().getCurrentEquippedItem();
+		ItemStack itemStack = getPlayer().inventory.getCurrentItem();
 
-		if(itemStack != null)
+		if(!itemStack.isEmpty())
 		{
 			ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie)itemStack.getItem();
 
@@ -199,6 +212,6 @@ public class VoiceConnection extends Thread
 
 	public EntityPlayerMP getPlayer()
 	{
-		return server.getConfigurationManager().func_152612_a(username); //TODO getPlayerForUsername
+		return server.getPlayerList().getPlayerByUsername(username);
 	}
 }

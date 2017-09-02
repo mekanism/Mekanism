@@ -1,3 +1,4 @@
-@API(apiVersion = "8.0.0", owner = "Mekanism", provides = "MekanismAPI|transmitter")
+@API(apiVersion = "9.0.0", owner = "mekanism", provides = "MekanismAPI|transmitter")
 package mekanism.api.transmitters;
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;
+

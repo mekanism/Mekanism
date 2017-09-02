@@ -1,0 +1,23 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:laser_amplifier"
+  },
+  "variants": {
+    "normal": [{}],
+    "facing": {
+      "up":    {},
+      "down":  {"x": 180},
+      "north": {"x": -90, "y": 180},
+      "south": {"x": -90},
+      "east":  {"x": -90, "y": -90},
+      "west":  {"x": -90, "y":  90}
+    },
+    "active": {
+      "true": {},
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

@@ -2,19 +2,19 @@ package mekanism.common;
 
 import java.util.HashMap;
 
-import mekanism.api.MekanismConfig.general;
+import buildcraft.api.mj.MjAPI;
 import mekanism.api.gas.Gas;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.MekanismUtils;
-
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import cpw.mods.fml.common.ModAPIManager;
-
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.ModAPIManager;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
 public class FuelHandler
 {
-	public static HashMap<String, FuelGas> fuels = new HashMap<String, FuelGas>();
+	public static HashMap<String, FuelGas> fuels = new HashMap<>();
 
 	public static void addGas(Gas gas, int burnTicks, double energyPerMilliBucket)
 	{
@@ -28,9 +28,9 @@ public class FuelHandler
 			return fuels.get(gas.getName());
 		}
 
-		if(BCPresent() && gas.hasFluid())
+		if(BCPresent() && gas.hasFluid() && BuildcraftFuelRegistry.fuel != null)
 		{
-			IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(gas.getFluid());
+			IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(new FluidStack(gas.getFluid(), 1));
 			
 			if(bcFuel != null)
 			{
@@ -57,8 +57,11 @@ public class FuelHandler
 
 		public FuelGas(IFuel bcFuel)
 		{
-			burnTicks = bcFuel.getTotalBurningTime() / FluidContainerRegistry.BUCKET_VOLUME;
-			energyPerTick = bcFuel.getPowerPerCycle() * general.FROM_TE;
+			burnTicks = bcFuel.getTotalBurningTime() / Fluid.BUCKET_VOLUME;
+
+			// getPowerPerCycle returns value in 1 BuildCraft micro MJ
+			// 1 BuildCraft MJ equals 20 RF
+			energyPerTick = bcFuel.getPowerPerCycle() / (double) MjAPI.MJ * 20 * general.FROM_RF;
 		}
 	}
 

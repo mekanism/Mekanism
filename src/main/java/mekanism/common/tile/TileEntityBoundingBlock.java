@@ -1,41 +1,41 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-
-import io.netty.buffer.ByteBuf;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 {
-	public int mainX;
-	public int mainY;
-	public int mainZ;
+	public BlockPos mainPos = BlockPos.ORIGIN;
 	
 	public boolean receivedCoords;
 
-	public boolean prevPower;
+	public int prevPower;
 
-	public void setMainLocation(int x, int y, int z)
+	public void setMainLocation(BlockPos pos)
 	{
 		receivedCoords = true;
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			mainX = x;
-			mainY = y;
-			mainZ = z;
+			mainPos = pos;
 
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 		}
 	}
 
@@ -44,31 +44,25 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	{
 		super.validate();
 
-		if(worldObj.isRemote)
+		if(world.isRemote)
 		{
 			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
 		}
 	}
 
-	@Override
-	public boolean canUpdate()
-	{
-		return false;
-	}
-
 	public void onNeighborChange(Block block)
 	{
-		TileEntity tile = worldObj.getTileEntity(mainX, mainY, mainZ);
+		TileEntity tile = world.getTileEntity(mainPos);
 
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)tile;
 
-			boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+			int power = world.isBlockIndirectlyGettingPowered(getPos());
 
 			if(prevPower != power)
 			{
-				if(power)
+				if(power > 0)
 				{
 					onPower();
 				}
@@ -77,7 +71,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 				}
 
 				prevPower = power;
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 			}
 		}
 	}
@@ -89,10 +83,11 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		mainX = dataStream.readInt();
-		mainY = dataStream.readInt();
-		mainZ = dataStream.readInt();
-		prevPower = dataStream.readBoolean();
+		if(world.isRemote)
+		{
+			mainPos = new BlockPos(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			prevPower = dataStream.readInt();
+		}
 	}
 
 	@Override
@@ -100,33 +95,50 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	{
 		super.readFromNBT(nbtTags);
 
-		mainX = nbtTags.getInteger("mainX");
-		mainY = nbtTags.getInteger("mainY");
-		mainZ = nbtTags.getInteger("mainZ");
-		prevPower = nbtTags.getBoolean("prevPower");
+		mainPos = new BlockPos(nbtTags.getInteger("mainX"), nbtTags.getInteger("mainY"), nbtTags.getInteger("mainZ"));
+		prevPower = nbtTags.getInteger("prevPower");
 		receivedCoords = nbtTags.getBoolean("receivedCoords");
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("mainX", mainX);
-		nbtTags.setInteger("mainY", mainY);
-		nbtTags.setInteger("mainZ", mainZ);
-		nbtTags.setBoolean("prevPower", prevPower);
+		nbtTags.setInteger("mainX", mainPos.getX());
+		nbtTags.setInteger("mainY", mainPos.getY());
+		nbtTags.setInteger("mainZ", mainPos.getZ());
+		nbtTags.setInteger("prevPower", prevPower);
 		nbtTags.setBoolean("receivedCoords", receivedCoords);
+		
+		return nbtTags;
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
-		data.add(mainX);
-		data.add(mainY);
-		data.add(mainZ);
+		data.add(mainPos.getX());
+		data.add(mainPos.getY());
+		data.add(mainPos.getZ());
 		data.add(prevPower);
 
 		return data;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, facing);
 	}
 }

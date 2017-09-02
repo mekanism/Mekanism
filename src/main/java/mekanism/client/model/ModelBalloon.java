@@ -1,11 +1,12 @@
 package mekanism.client.model;
 
 import mekanism.api.EnumColor;
-
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -57,23 +58,23 @@ public class ModelBalloon extends ModelBase
 
 	public void render(float size, EnumColor color)
 	{
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		GL11.glColor3f(color.getColor(0), color.getColor(1), color.getColor(2));
-		GL11.glScalef(1.5F, 1.5F, 1.5F);
-		GL11.glTranslatef(0, -0.07F, 0);
+		GlStateManager.scale(1.5F, 1.5F, 1.5F);
+		GlStateManager.translate(0, -0.07F, 0);
 
 		Balloon2.render(size);
 		Balloon1.render(size);
 		Balloon3.render(size);
 		Balloonnub.render(size);
 
-		GL11.glColor3f(1, 1, 1);
-		GL11.glPopMatrix();
+		MekanismRenderer.resetColor();
+		GlStateManager.popMatrix();
 
-		GL11.glPushMatrix();
-		GL11.glScalef(0.2F, 1, 0.2F);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(0.2F, 1, 0.2F);
 		String.render(size);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

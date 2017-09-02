@@ -3,18 +3,17 @@ package mekanism.common;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
-import mekanism.common.network.PacketConfiguratorState;
-import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketContainerEditMode;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.network.PacketDataRequest;
@@ -25,12 +24,13 @@ import mekanism.common.network.PacketDropperUse;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
-import mekanism.common.network.PacketElectricBowState;
-import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
-import mekanism.common.network.PacketFlamethrowerActive;
-import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
+import mekanism.common.network.PacketEntityMove;
+import mekanism.common.network.PacketEntityMove.EntityMoveMessage;
+import mekanism.common.network.PacketFlamethrowerData;
+import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
+import mekanism.common.network.PacketFreeRunnerData;
+import mekanism.common.network.PacketItemStack;
+import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketKey;
@@ -41,8 +41,8 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketOredictionificatorGui;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
-import mekanism.common.network.PacketPortableTankState;
-import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
+import mekanism.common.network.PacketPersonalChest;
+import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX;
@@ -55,29 +55,31 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.network.PacketSecurityMode;
+import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
+import mekanism.common.network.PacketSecurityUpdate;
+import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
-import mekanism.common.network.PacketWalkieTalkieState;
-import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -92,22 +94,22 @@ public class PacketHandler
 	{
 		netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
 		netHandler.registerMessage(PacketTransmitterUpdate.class, TransmitterUpdateMessage.class, 1, Side.CLIENT);
-		netHandler.registerMessage(PacketElectricChest.class, ElectricChestMessage.class, 2, Side.CLIENT);
-		netHandler.registerMessage(PacketElectricChest.class, ElectricChestMessage.class, 2, Side.SERVER);
-		netHandler.registerMessage(PacketElectricBowState.class, ElectricBowStateMessage.class, 3, Side.SERVER);
-		netHandler.registerMessage(PacketConfiguratorState.class, ConfiguratorStateMessage.class, 4, Side.SERVER);
+		netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.CLIENT);
+		netHandler.registerMessage(PacketPersonalChest.class, PersonalChestMessage.class, 2, Side.SERVER);
+		//FREE ID 3
+		netHandler.registerMessage(PacketItemStack.class, ItemStackMessage.class, 4, Side.SERVER);
 		netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.CLIENT);
 		netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.SERVER);
 		netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Side.CLIENT);
 		netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
 		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
 		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
-		//EMPTY SLOT 9
+		netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Side.SERVER);
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
 		netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Side.SERVER);
 		netHandler.registerMessage(PacketRedstoneControl.class, RedstoneControlMessage.class, 12, Side.SERVER);
-		netHandler.registerMessage(PacketWalkieTalkieState.class, WalkieTalkieStateMessage.class, 13, Side.SERVER);
+		//FREE ID 13
 		netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Side.CLIENT);
 		netHandler.registerMessage(PacketLogisticalSorterGui.class, LogisticalSorterGuiMessage.class, 14, Side.SERVER);
 		netHandler.registerMessage(PacketNewFilter.class, NewFilterMessage.class, 15, Side.SERVER);
@@ -124,11 +126,15 @@ public class PacketHandler
 		netHandler.registerMessage(PacketScubaTankData.class, ScubaTankDataMessage.class, 22, Side.SERVER);
 		netHandler.registerMessage(PacketConfigSync.class, ConfigSyncMessage.class, 23, Side.CLIENT);
 		netHandler.registerMessage(PacketBoxBlacklist.class, BoxBlacklistMessage.class, 24, Side.CLIENT);
-		netHandler.registerMessage(PacketPortableTankState.class, PortableTankStateMessage.class, 25, Side.SERVER);
+		//FREE ID 25
 		netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Side.SERVER);
-		netHandler.registerMessage(PacketFlamethrowerActive.class, FlamethrowerActiveMessage.class, 27, Side.CLIENT);
-		netHandler.registerMessage(PacketFlamethrowerActive.class, FlamethrowerActiveMessage.class, 27, Side.SERVER);
+		netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.CLIENT);
+		netHandler.registerMessage(PacketFlamethrowerData.class, FlamethrowerDataMessage.class, 27, Side.SERVER);
 		netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
+		netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
+		netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
+		netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.CLIENT);
+		netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.SERVER);
 	}
 	
 	/**
@@ -141,9 +147,21 @@ public class PacketHandler
 		try {
 			for(Object data : dataValues)
 			{
-				if(data instanceof Integer)
+				if(data instanceof Byte)
+				{
+					output.writeByte((Byte)data);
+				}
+				else if(data instanceof Integer)
 				{
 					output.writeInt((Integer)data);
+				}
+				else if(data instanceof Short)
+				{
+					output.writeShort((Short)data);
+				}
+				else if(data instanceof Long)
+				{
+					output.writeLong((Long)data);
 				}
 				else if(data instanceof Boolean)
 				{
@@ -161,9 +179,9 @@ public class PacketHandler
 				{
 					writeString(output, (String)data);
 				}
-				else if(data instanceof Byte)
+				else if(data instanceof EnumFacing)
 				{
-					output.writeByte((Byte)data);
+					output.writeInt(((EnumFacing)data).ordinal());
 				}
 				else if(data instanceof ItemStack)
 				{
@@ -191,6 +209,9 @@ public class PacketHandler
 				{
 					encode(((ArrayList)data).toArray(), output);
 				}
+				else {
+					throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
+				}
 			}
 		} catch(Exception e) {
 			Mekanism.logger.error("Error while encoding packet data.");
@@ -200,87 +221,50 @@ public class PacketHandler
 	
 	public static void writeString(ByteBuf output, String s)
 	{
-		output.writeInt(s.getBytes().length);
-		output.writeBytes(s.getBytes());
+		ByteBufUtils.writeUTF8String(output, s);
 	}
 	
 	public static String readString(ByteBuf input)
 	{
-		return new String(input.readBytes(input.readInt()).array());
+		return ByteBufUtils.readUTF8String(input);
 	}
 	
 	public static void writeStack(ByteBuf output, ItemStack stack)
 	{
-		output.writeInt(stack != null ? Item.getIdFromItem(stack.getItem()) : -1);
-		
-		if(stack != null)
-		{
-			output.writeInt(stack.stackSize);
-			output.writeInt(stack.getItemDamage());
-			
-			if(stack.getTagCompound() != null && stack.getItem().getShareTag())
-			{
-				output.writeBoolean(true);
-				writeNBT(output, stack.getTagCompound());
-			}
-			else {
-				output.writeBoolean(false);
-			}
-		}
+		ByteBufUtils.writeItemStack(output, stack);
 	}
 	
 	public static ItemStack readStack(ByteBuf input)
 	{
-		int id = input.readInt();
-		
-		if(id >= 0)
-		{
-			ItemStack stack = new ItemStack(Item.getItemById(id), input.readInt(), input.readInt());
-			
-			if(input.readBoolean())
-			{
-				stack.setTagCompound(readNBT(input));
-			}
-			
-			return stack;
-		}
-		
-		return null;
+		return ByteBufUtils.readItemStack(input);
 	}
 	
 	public static void writeNBT(ByteBuf output, NBTTagCompound nbtTags)
 	{
-		try {
-			byte[] buffer = CompressedStreamTools.compress(nbtTags);
-			
-			output.writeInt(buffer.length);
-			output.writeBytes(buffer);
-		} catch(Exception e) {}
+		ByteBufUtils.writeTag(output, nbtTags);
 	}
 	
 	public static NBTTagCompound readNBT(ByteBuf input)
 	{
-		try {
-			byte[] buffer = new byte[input.readInt()];
-			input.readBytes(buffer);
-			
-			return CompressedStreamTools.func_152457_a(buffer, new NBTSizeTracker(2097152L));
-		} catch(Exception e) {
-			return null;
-		}
+		return ByteBufUtils.readTag(input);
 	}
 	
 	public static void log(String log)
 	{
 		if(general.logPackets)
 		{
-			System.out.println("[Mekanism] " + log);
+			Mekanism.logger.info(log);
 		}
 	}
 	
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
 		return Mekanism.proxy.getPlayer(context);
+	}
+	
+	public static void handlePacket(Runnable runnable, EntityPlayer player)
+	{
+		Mekanism.proxy.handlePacket(runnable, player);
 	}
 
 	/**
@@ -291,6 +275,20 @@ public class PacketHandler
 	public void sendTo(IMessage message, EntityPlayerMP player)
 	{
 		netHandler.sendTo(message, player);
+	}
+	
+	/**
+	 * Send this message to everyone connected to the server.
+	 * @param message - message to send
+	 */
+	public void sendToAll(IMessage message)
+	{
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		
+		for(EntityPlayerMP player : server.getPlayerList().getPlayers())
+		{
+			sendTo(message, player);
+		}
 	}
 
 	/**
@@ -331,13 +329,13 @@ public class PacketHandler
 	 */
 	public void sendToCuboid(IMessage message, AxisAlignedBB cuboid, int dimId)
 	{
-		MinecraftServer server = MinecraftServer.getServer();
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 		if(server != null && cuboid != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayers())
 			{
-				if(player.dimension == dimId && cuboid.isVecInside(Vec3.createVectorHelper(player.posX, player.posY, player.posZ)))
+				if(player.dimension == dimId && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ)))
 				{
 					sendTo(message, player);
 				}
@@ -347,11 +345,11 @@ public class PacketHandler
 	
 	public void sendToReceivers(IMessage message, Range4D range)
 	{
-		MinecraftServer server = MinecraftServer.getServer();
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
 		if(server != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayers())
 			{
 				if(player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range))
 				{

@@ -1,11 +1,10 @@
 package mekanism.client.sound;
 
 import mekanism.client.ClientTickHandler;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class FlamethrowerSound extends PlayerSound
@@ -22,7 +21,7 @@ public class FlamethrowerSound extends PlayerSound
 		onSound = new ResourceLocation("mekanism", "item.flamethrower.active");
 		offSound = new ResourceLocation("mekanism", "item.flamethrower.idle");
 		inUse = ClientTickHandler.isFlamethrowerOn(player);
-		sound = inUse ? onSound : offSound;
+		soundLocation = inUse ? onSound : offSound;
 		
 		setFadeIn(0);
 		setFadeOut(0);
@@ -58,7 +57,7 @@ public class FlamethrowerSound extends PlayerSound
 		if(inUse != ClientTickHandler.isFlamethrowerOn(player))
 		{
 			inUse = ClientTickHandler.isFlamethrowerOn(player);
-			sound = inUse ? onSound : offSound;
+			soundLocation = inUse ? onSound : offSound;
 			donePlaying = true;
 		}
 	}

@@ -1,13 +1,12 @@
 package mekanism.common.item;
 
 import mekanism.api.EnumColor;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.text.translation.I18n;
 
 public class ItemBlockPlastic extends ItemBlock
 {
@@ -27,16 +26,17 @@ public class ItemBlockPlastic extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
-	}
-
-	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		EnumColor colour = EnumColor.DYES[stack.getItemDamage()&15];
+		EnumDyeColor dyeColour = EnumDyeColor.byDyeDamage(stack.getItemDamage()&15);
+		EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];
 		String colourName;
+
+        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
+        {
+            return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
+        }
+
 		if(colour == EnumColor.BLACK)
 		{
 			colourName = EnumColor.DARK_GREY + colour.getDyeName();
@@ -46,12 +46,5 @@ public class ItemBlockPlastic extends ItemBlock
 		}
 
 		return colourName + " " + super.getItemStackDisplayName(stack);
-	}
-
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack stack, int par2)
-	{
-		EnumColor colour = EnumColor.DYES[stack.getItemDamage()&15];
-		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
 	}
 }

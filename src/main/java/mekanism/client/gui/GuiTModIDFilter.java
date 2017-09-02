@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -7,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TModIDFilter;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -22,15 +24,17 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiTModIDFilter extends GuiMekanism
@@ -45,7 +49,7 @@ public class GuiTModIDFilter extends GuiMekanism
 
 	private GuiTextField modIDText;
 
-	public ItemStack renderStack;
+	public ItemStack renderStack = ItemStack.EMPTY;
 
 	public int ticker = 0;
 
@@ -85,21 +89,21 @@ public class GuiTModIDFilter extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
+		buttonList.add(new GuiButton(0, guiWidth + 47, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 109, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
 
 		if(isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 
-		modIDText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
+		modIDText = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
 		modIDText.setMaxStringLength(TransporterFilter.MAX_LENGTH);
 		modIDText.setFocused(true);
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!modIDText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -112,14 +116,14 @@ public class GuiTModIDFilter extends GuiMekanism
 			return;
 		}
 
-		if(Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || isTextboxKey(c, i))
 		{
 			modIDText.textboxKeyTyped(c, i);
 		}
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 
@@ -160,43 +164,49 @@ public class GuiTModIDFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
-		fontRendererObj.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		renderScaledText(LangUtils.localize("gui.id") + ": " + filter.modID, 35, 32, 0x00CD00, 107);
+		fontRenderer.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
 
-		if(renderStack != null)
+		if(!renderStack.isEmpty())
 		{
 			try {
-				GL11.glPushMatrix();
-				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 12, 19);
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glPopMatrix();
+				GlStateManager.pushMatrix();
+				RenderHelper.enableGUIStandardItemLighting();
+				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
+				RenderHelper.disableStandardItemLighting();
+				GlStateManager.popMatrix();
 			} catch(Exception e) {}
 		}
 
 		if(filter.color != null)
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+			drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
+		}
+		
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
 			if(filter.color != null)
 			{
-				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+				drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+				drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 
@@ -206,8 +216,6 @@ public class GuiTModIDFilter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTModIDFilter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -232,8 +240,18 @@ public class GuiTModIDFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
 		}
+		
+		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+		{
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 11, 11, 11);
+		}
 
 		modIDText.drawTextBox();
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override
@@ -273,12 +291,12 @@ public class GuiTModIDFilter extends GuiMekanism
 		}
 		else if(iterStacks != null && iterStacks.size() == 0)
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 		}
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -291,14 +309,20 @@ public class GuiTModIDFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setModID();
+			}
+			
+			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
+			{
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				filter.allowDefault = !filter.allowDefault;
 			}
 		}
 
@@ -309,7 +333,7 @@ public class GuiTModIDFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-			SoundHandler.playSound("mekanism:etc.Ding");
+			SoundHandler.playSound(MekanismSounds.DING);
 
 			if(button == 0)
 			{

@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "mekanismgenerators:generator",
+    "data": 12,
+    "count": 2
+  },
+  "pattern": [
+    " I ",
+    "IFI",
+    " I "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "minecraft:iron_bars"
+    },
+    "I": {
+      "item": "mekanismgenerators:generator",
+      "data": 10
+    }
+  }
+}

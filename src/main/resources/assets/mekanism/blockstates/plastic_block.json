@@ -1,0 +1,18 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:cube_colour"
+  },
+  "variants": {
+    "normal": [{}],
+    "type": {
+      "plastic":    {"textures": {"all": "mekanism:blocks/PlasticBlock"}},
+      "slick":      {"textures": {"all": "mekanism:blocks/SlickPlasticBlock"}},
+      "glow":       {"textures": {"all": "mekanism:blocks/GlowPlasticBlock"}},
+      "reinforced": {"textures": {"all": "mekanism:blocks/ReinforcedPlasticBlock"}},
+      "road":       {"textures": {"all": "mekanism:blocks/RoadPlasticBlock"}}
+    },
+    "inventory": [{}]
+  }
+}
+

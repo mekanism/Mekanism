@@ -1,0 +1,33 @@
+{
+  "result": {
+    "item": "mekanismgenerators:reactor",
+    "data": 0
+  },
+  "pattern": [
+    "CGC",
+    "ITI",
+    "III"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "C": {
+      "item": "#CIRCUITULTIMATE"
+    },
+    "T": {
+      "nbt": {
+        "tier": 0
+      },
+      "item": "mekanism:gastank",
+      "data": 0,
+      "type": "mekanism:item_nbt"
+    },
+    "G": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanismgenerators:reactor",
+      "data": 1
+    }
+  }
+}

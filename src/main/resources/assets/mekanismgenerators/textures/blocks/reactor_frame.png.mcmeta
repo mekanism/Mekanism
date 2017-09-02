@@ -1,0 +1,42 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "type":"CTM",
+        "layer":"SOLID",
+        "textures":[
+            "mekanismgenerators:blocks/reactor_frame-ctm"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanismgenerators:reactor",
+                    "predicate":
+                    {
+                        "type": "reactor_frame"
+                    }
+                },
+                {
+                    "block": "mekanismgenerators:reactor",
+                    "predicate":
+                    {
+                        "type": "reactor_controller"
+                    }
+                },
+                {
+                    "block": "mekanismgenerators:reactor",
+                    "predicate":
+                    {
+                        "type": "reactor_logic_adapter"
+                    }
+                },
+                {
+                    "block": "mekanismgenerators:reactor",
+                    "predicate":
+                    {
+                        "type": "reactor_port"
+                    }
+                }
+            ]
+        }
+    }
+}

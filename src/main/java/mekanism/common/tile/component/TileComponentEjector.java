@@ -11,30 +11,29 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.base.IEjector;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.base.ITransporterTile;
-import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.content.transporter.TransitRequest;
+import mekanism.common.content.transporter.TransitRequest.TransitResponse;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class TileComponentEjector implements ITileComponent, IEjector
+public class TileComponentEjector implements ITileComponent
 {
 	public TileEntityContainerBlock tileEntity;
 
@@ -46,9 +45,9 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 	public int tickDelay = 0;
 
-	public Map<TransmissionType, SideData> sideData = new HashMap<TransmissionType, SideData>();
+	public Map<TransmissionType, SideData> sideData = new HashMap<>();
 
-	public Map<TransmissionType, int[]> trackers = new HashMap<TransmissionType, int[]>();
+	public Map<TransmissionType, int[]> trackers = new HashMap<>();
 	
 	public static final int GAS_OUTPUT = 256;
 	public static final int FLUID_OUTPUT = 256;
@@ -77,15 +76,15 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		sideData = ejector.sideData;
 	}
 
-	private List<ForgeDirection> getTrackedOutputs(TransmissionType type, int index, List<ForgeDirection> dirs)
+	private List<EnumFacing> getTrackedOutputs(TransmissionType type, int index, List<EnumFacing> dirs)
 	{
-		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
+		List<EnumFacing> sides = new ArrayList<>();
 
 		for(int i = trackers.get(type)[index]+1; i <= trackers.get(type)[index]+6; i++)
 		{
-			for(ForgeDirection side : dirs)
+			for(EnumFacing side : dirs)
 			{
-				if(ForgeDirection.getOrientation(i%6) == side)
+				if(EnumFacing.getFront(i%6) == side)
 				{
 					sides.add(side);
 				}
@@ -109,152 +108,161 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			tickDelay--;
 		}
 		
-		if(!tileEntity.getWorldObj().isRemote)
+		if(!tileEntity.getWorld().isRemote)
 		{
 			if(sideData.get(TransmissionType.GAS) != null && getEjecting(TransmissionType.GAS))
 			{
 				SideData data = sideData.get(TransmissionType.GAS);
-				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.GAS, data);
+				List<EnumFacing> outputSides = getOutputSides(TransmissionType.GAS, data);
 				
-				GasTank tank = (GasTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
-				
-				if(tank.getStored() > 0)
+				if(((ITankManager)tileEntity).getTanks() != null)
 				{
-					GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
-					int emit = GasTransmission.emit(outputSides, toEmit, tileEntity);
-					tank.draw(emit, true);
+					GasTank tank = (GasTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+					
+					if(tank.getStored() > 0)
+					{
+						GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+						int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
+						tank.draw(emit, true);
+					}
 				}
 			}
 			
 			if(sideData.get(TransmissionType.FLUID) != null && getEjecting(TransmissionType.FLUID))
 			{
 				SideData data = sideData.get(TransmissionType.FLUID);
-				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.FLUID, data);
+				List<EnumFacing> outputSides = getOutputSides(TransmissionType.FLUID, data);
 				
-				FluidTank tank = (FluidTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
-				
-				if(tank.getFluidAmount() > 0)
+				if(((ITankManager)tileEntity).getTanks() != null)
 				{
-					FluidStack toEmit = new FluidStack(tank.getFluid().getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-					int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
-					tank.drain(emit, true);
+					FluidTank tank = (FluidTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+					
+					if(tank.getFluidAmount() > 0)
+					{
+						FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
+						int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
+						tank.drain(emit, true);
+					}
 				}
 			}
 		}
 	}
 	
-	public List<ForgeDirection> getOutputSides(TransmissionType type, SideData data)
+	public List<EnumFacing> getOutputSides(TransmissionType type, SideData data)
 	{
-		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
-
+		List<EnumFacing> outputSides = new ArrayList<>();
 		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
 
-		for(int i = 0; i < configurable.getConfig().getConfig(type).length; i++)
+		SideConfig sideConfig = configurable.getConfig().getConfig(type);
+		ArrayList<SideData> outputs = configurable.getConfig().getOutputs(type);
+
+		EnumFacing[] facings = MekanismUtils.getBaseOrientations(tileEntity.facing);
+
+		for(int i = 0; i < EnumFacing.VALUES.length; i++)
 		{
-			if(configurable.getConfig().getConfig(type)[i] == configurable.getConfig().getOutputs(type).indexOf(data))
+			EnumFacing side = facings[i];
+
+			if(sideConfig.get(side) == outputs.indexOf(data))
 			{
-				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
+				outputSides.add(EnumFacing.VALUES[i]);
 			}
 		}
 		
 		return outputSides;
 	}
 
-	@Override
 	public void outputItems()
 	{
-		if(!getEjecting(TransmissionType.ITEM) || tileEntity.getWorldObj().isRemote)
+		if(!getEjecting(TransmissionType.ITEM) || tileEntity.getWorld().isRemote)
 		{
 			return;
 		}
 
 		SideData data = sideData.get(TransmissionType.ITEM);
-		List<ForgeDirection> outputSides = getOutputSides(TransmissionType.ITEM, data);
+		List<EnumFacing> outputSides = getOutputSides(TransmissionType.ITEM, data);
 
 		for(int index = 0; index < sideData.get(TransmissionType.ITEM).availableSlots.length; index++)
 		{
 			int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
 
-			if(tileEntity.inventory[slotID] == null)
+			if(tileEntity.getStackInSlot(slotID).isEmpty())
 			{
 				continue;
 			}
 
-			ItemStack stack = tileEntity.inventory[slotID];
-			List<ForgeDirection> outputs = getTrackedOutputs(TransmissionType.ITEM, index, outputSides);
+			ItemStack stack = tileEntity.getStackInSlot(slotID);
+			List<EnumFacing> outputs = getTrackedOutputs(TransmissionType.ITEM, index, outputSides);
 
-			for(ForgeDirection side : outputs)
+			for(EnumFacing side : outputs)
 			{
-				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.getWorldObj());
+				TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorld());
 				ItemStack prev = stack.copy();
 
-				if(tile instanceof IInventory && !(tile instanceof ITransporterTile))
+				if(CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()))
 				{
-					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side.ordinal(), false);
-				}
-				else if(tile instanceof ITransporterTile)
-				{
-					ItemStack rejects = TransporterUtils.insert(tileEntity, ((ITransporterTile)tile).getTransmitter(), stack, outputColor, true, 0);
+					TransitResponse response = TransporterUtils.insert(tileEntity, CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()), TransitRequest.getFromStack(stack.copy()), outputColor, true, 0);
 
-					if(TransporterManager.didEmit(stack, rejects))
+					if(!response.isEmpty())
 					{
-						stack = rejects;
+						stack.shrink(response.stack.getCount());
+					}
+				}
+				else {
+					TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(stack.copy()), side, false);
+					
+					if(!response.isEmpty())
+					{
+						stack.shrink(response.stack.getCount());
 					}
 				}
 
-				if(stack == null || prev.stackSize != stack.stackSize)
+				if(stack.isEmpty() || prev.getCount() != stack.getCount())
 				{
 					trackers.get(TransmissionType.ITEM)[index] = side.ordinal();
 				}
 
-				if(stack == null)
+				if(stack.isEmpty())
 				{
 					break;
 				}
 			}
 
-			tileEntity.inventory[slotID] = stack;
+			tileEntity.setInventorySlotContents(slotID, stack);
 			tileEntity.markDirty();
 		}
 
 		tickDelay = 20;
 	}
 
-	@Override
 	public boolean hasStrictInput()
 	{
 		return strictInput;
 	}
 
-	@Override
 	public void setStrictInput(boolean strict)
 	{
 		strictInput = strict;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public void setOutputColor(EnumColor color)
 	{
 		outputColor = color;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
 	public EnumColor getOutputColor()
 	{
 		return outputColor;
 	}
 
-	@Override
-	public void setInputColor(ForgeDirection side, EnumColor color)
+	public void setInputColor(EnumFacing side, EnumColor color)
 	{
 		inputColors[side.ordinal()] = color;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
-	@Override
-	public EnumColor getInputColor(ForgeDirection side)
+	public EnumColor getInputColor(EnumFacing side)
 	{
 		return inputColors[side.ordinal()];
 	}
@@ -354,7 +362,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(strictInput);
 
@@ -377,6 +385,9 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			}
 		}
 	}
+	
+	@Override
+	public void invalidate() {}
 	
 	private boolean getEjecting(TransmissionType type)
 	{

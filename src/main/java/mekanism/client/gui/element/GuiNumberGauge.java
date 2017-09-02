@@ -3,7 +3,7 @@ package mekanism.client.gui.element;
 import static java.lang.Math.min;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiNumberGauge extends GuiGauge
@@ -30,7 +30,7 @@ public class GuiNumberGauge extends GuiGauge
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		return infoHandler.getIcon();
 	}
@@ -42,14 +42,14 @@ public class GuiNumberGauge extends GuiGauge
 	}
 
 
-	public static interface INumberInfoHandler
+	public interface INumberInfoHandler
 	{
-		public IIcon getIcon();
+		TextureAtlasSprite getIcon();
 
-		public double getLevel();
+		double getLevel();
 
-		public double getMaxLevel();
+		double getMaxLevel();
 
-		public String getText(double level);
+		String getText(double level);
 	}
 }

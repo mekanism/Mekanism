@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:fence_post",
+    "textures": {
+      "texture": "mekanismgenerators:blocks/TurbineRotor"
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}
+

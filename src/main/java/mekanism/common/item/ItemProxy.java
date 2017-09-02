@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -23,63 +24,47 @@ public class ItemProxy extends Item
 	}
 
 	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-	{
-		return stack.stackTagCompound == null || !stack.stackTagCompound.getBoolean("hasStack");
-	}
-
-	@Override
 	public boolean hasContainerItem(ItemStack itemStack)
 	{
-		return getSavedItem(itemStack) != null;
+		return !getSavedItem(itemStack).isEmpty();
 	}
 
 	public void setSavedItem(ItemStack stack, ItemStack save)
 	{
-		if(stack.stackTagCompound == null)
+		if(save == null || save.isEmpty())
 		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-
-		if(save == null)
-		{
-			stack.stackTagCompound.setBoolean("hasStack", false);
-			stack.stackTagCompound.removeTag("savedItem");
+			ItemDataUtils.setBoolean(stack, "hasStack", false);
+			ItemDataUtils.removeData(stack, "savedItem");
 		}
 		else {
-			stack.stackTagCompound.setBoolean("hasStack", true);
-			stack.stackTagCompound.setTag("savedItem", save.writeToNBT(new NBTTagCompound()));
+			ItemDataUtils.setBoolean(stack, "hasStack", true);
+			ItemDataUtils.setCompound(stack, "savedItem", save.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	public ItemStack getSavedItem(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null)
+		if(ItemDataUtils.getBoolean(stack, "hasStack"))
 		{
-			return null;
+			return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
 		}
 
-		if(stack.stackTagCompound.getBoolean("hasStack"))
-		{
-			return ItemStack.loadItemStackFromNBT(stack.stackTagCompound.getCompoundTag("savedItem"));
-		}
-
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register) {}
-
-	@Override
-	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)
+	public void onUpdate(ItemStack stacks, World world, Entity entity, int j, boolean flag)
 	{
-		if (par3Entity instanceof EntityPlayer)
+		if(entity instanceof EntityPlayer)
 		{
-			EntityPlayer player = (EntityPlayer) par3Entity;
-			for (int i = 0; i < player.inventory.mainInventory.length; i++)
+			EntityPlayer player = (EntityPlayer)entity;
+			
+			for(int i = 0; i < player.inventory.mainInventory.size(); i++)
 			{
-				if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == this)
-					player.inventory.mainInventory[i] = null;					
+				if(!player.inventory.mainInventory.get(i).isEmpty() && player.inventory.mainInventory.get(i).getItem() == this)
+				{
+					player.inventory.mainInventory.remove(i);
+				}
 			}
 		}
 	}

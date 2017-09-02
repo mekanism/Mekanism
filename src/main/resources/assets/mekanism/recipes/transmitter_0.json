@@ -1,0 +1,25 @@
+{
+  "result": {
+    "nbt": {
+      "tier": 0
+    },
+    "item": "mekanism:transmitter",
+    "data": 0,
+    "count": 8,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "SRS"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "R": {
+      "ore": "dustRedstone",
+      "type": "forge:ore_dict"
+    },
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    }
+  }
+}

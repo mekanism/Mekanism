@@ -1,14 +1,18 @@
 package mekanism.client.gui.element;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 
 @SideOnly(Side.CLIENT)
 public class GuiEnergyInfo extends GuiElement
@@ -28,11 +32,6 @@ public class GuiEnergyInfo extends GuiElement
 		return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
 	}
 
-	public static interface IInfoHandler
-	{
-		public List<String> getInfo();
-	}
-
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
@@ -48,7 +47,12 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 		{
-			displayTooltips(infoHandler.getInfo(), xAxis, yAxis);
+			List<String> info = new ArrayList<>();
+
+			info.addAll(infoHandler.getInfo());
+			
+			info.add(LangUtils.localize("gui.unit") + ": " + general.energyUnit);
+			displayTooltips(info, xAxis, yAxis);
 		}
 	}
 
@@ -56,5 +60,14 @@ public class GuiEnergyInfo extends GuiElement
 	public void preMouseClicked(int xAxis, int yAxis, int button) {}
 
 	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button) {}
+	public void mouseClicked(int xAxis, int yAxis, int button) 
+	{
+		if(button == 0)
+		{
+			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
+			{
+				general.energyUnit = EnergyType.values()[(general.energyUnit.ordinal()+1)%EnergyType.values().length];
+			}
+		}
+	}
 }

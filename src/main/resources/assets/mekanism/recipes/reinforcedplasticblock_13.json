@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "mekanism:reinforcedplasticblock",
+    "data": 13,
+    "count": 4
+  },
+  "pattern": [
+    " P ",
+    "POP",
+    " P "
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "P": {
+      "item": "mekanism:plasticblock",
+      "data": 13
+    },
+    "O": {
+      "ore": "dustOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

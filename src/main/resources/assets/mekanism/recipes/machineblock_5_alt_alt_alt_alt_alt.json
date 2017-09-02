@@ -1,0 +1,39 @@
+{
+  "result": {
+    "nbt": {
+      "recipeType": 5
+    },
+    "item": "mekanism:machineblock",
+    "data": 5,
+    "type": "mekanism:item_nbt"
+  },
+  "pattern": [
+    "RCR",
+    "iOi",
+    "RCR"
+  ],
+  "type": "mekanism:ore_shaped",
+  "conditions": [
+    {
+      "type": "mekanism:recipe_enabled",
+      "machineType": "Factory"
+    }
+  ],
+  "key": {
+    "R": {
+      "ore": "alloyBasic",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "i": {
+      "ore": "ingotIron",
+      "type": "forge:ore_dict"
+    },
+    "O": {
+      "item": "mekanism:machineblock",
+      "data": 9
+    }
+  }
+}

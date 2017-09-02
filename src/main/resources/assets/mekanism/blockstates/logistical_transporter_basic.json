@@ -1,0 +1,20 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:transmitter_large.obj.mek",
+    "textures": {
+      "#side": "mekanism:blocks/models/multipart/LogisticalTransporterVerticalBasic",
+      "#center": "mekanism:blocks/models/multipart/LogisticalTransporterBasic",
+      "#side_opaque": "mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalBasic",
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/LogisticalTransporterBasic"
+    },
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}
+

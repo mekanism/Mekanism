@@ -6,23 +6,22 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
-
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class PathfinderCache 
 {
-	public static Map<PathData, List<Coord4D>> cachedPaths = new HashMap<PathData, List<Coord4D>>();
+	public static Map<PathData, List<Coord4D>> cachedPaths = new HashMap<>();
 	
 	public static void onChanged(Coord4D location)
 	{
 		reset();
 	}
 	
-	public static List<Coord4D> getCache(Coord4D start, Coord4D end, EnumSet<ForgeDirection> sides)
+	public static List<Coord4D> getCache(Coord4D start, Coord4D end, EnumSet<EnumFacing> sides)
 	{
 		List<Coord4D> ret = null;
 		
-		for(ForgeDirection side : sides)
+		for(EnumFacing side : sides)
 		{
 			PathData data = new PathData(start, end, side);
 
@@ -47,9 +46,9 @@ public class PathfinderCache
 		public Coord4D startTransporter;
 		
 		public Coord4D end;
-		public ForgeDirection endSide;
+		public EnumFacing endSide;
 		
-		public PathData(Coord4D s, Coord4D e, ForgeDirection es)
+		public PathData(Coord4D s, Coord4D e, EnumFacing es)
 		{
 			startTransporter = s;
 			

@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "mekanism:controlcircuit",
+    "data": 3
+  },
+  "pattern": [
+    "ACA"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "A": {
+      "ore": "alloyUltimate",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "mekanism:controlcircuit",
+      "data": 2
+    }
+  }
+}

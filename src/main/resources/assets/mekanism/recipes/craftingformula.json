@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "mekanism:craftingformula"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "#CIRCUITBASIC"
+    }
+  ],
+  "type": "mekanism:ore_shapeless"
+}

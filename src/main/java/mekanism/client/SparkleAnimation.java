@@ -5,12 +5,15 @@ import java.util.Random;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
+import mekanism.common.MekanismSounds;
+import mekanism.common.config.MekanismConfig.general;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class SparkleAnimation
@@ -19,7 +22,7 @@ public class SparkleAnimation
 
 	public Random random = new Random();
 
-	public Set<Coord4D> iteratedNodes = new HashSet<Coord4D>();
+	public Set<Coord4D> iteratedNodes = new HashSet<>();
 	
 	public INodeChecker nodeChecker;
 
@@ -34,33 +37,30 @@ public class SparkleAnimation
 		try {
 			if(general.dynamicTankEasterEgg)
 			{
-				pointer.getWorldObj().playSound(pointer.xCoord, pointer.yCoord, pointer.zCoord, "mekanism:etc.cj", 1F, 1F, false);
+				pointer.getWorld().playSound(null, pointer.getPos().getX(), pointer.getPos().getY(), pointer.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG, SoundCategory.BLOCKS, 1F, 1F);
 			}
 
 			loop(pointer);
 		} catch(Exception e) {}
 		
 		try {
-			new Thread() {
-				@Override
-				public void run()
-				{
-					World world = pointer.getWorldObj();
-					
-					for(Coord4D coord : iteratedNodes)
-					{
-						for(int i = 0; i < 6; i++)
-						{
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + -.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + 1.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + -.01, 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + 1.01, 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + -.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
-							world.spawnParticle("reddust", coord.xCoord + 1.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
-						}
-					}
-				}
-			}.start();
+			new Thread(() ->
+			{
+                World world = pointer.getWorld();
+
+                for(Coord4D coord : iteratedNodes)
+                {
+                    for(int i = 0; i < 6; i++)
+                    {
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + -.01, coord.z + random.nextDouble(), 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + 1.01, coord.z + random.nextDouble(), 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + -.01, 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + random.nextDouble(), coord.z + 1.01, 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + -.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
+                        world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + 1.01, coord.y + random.nextDouble(), coord.z + random.nextDouble(), 0, 0, 0);
+                    }
+                }
+            }).start();
 		} catch(Exception e) {}
 	}
 
@@ -68,13 +68,13 @@ public class SparkleAnimation
 	{
 		iteratedNodes.add(Coord4D.get(tileEntity));
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			Coord4D coord = Coord4D.get(tileEntity).getFromSide(side);
+			Coord4D coord = Coord4D.get(tileEntity).offset(side);
 			
-			if(coord.exists(pointer.getWorldObj()))
+			if(coord.exists(pointer.getWorld()))
 			{
-				TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+				TileEntity tile = coord.getTileEntity(pointer.getWorld());
 	
 				if(tile != null && isNode(tile) && !iteratedNodes.contains(coord))
 				{
@@ -89,8 +89,8 @@ public class SparkleAnimation
 		return nodeChecker.isNode(tile);
 	}
 	
-	public static interface INodeChecker
+	public interface INodeChecker
 	{
-		public boolean isNode(TileEntity tile);
+		boolean isNode(TileEntity tile);
 	}
 }

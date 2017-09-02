@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:basicblock",
+    "data": 13
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotTin",
+      "type": "forge:ore_dict"
+    }
+  }
+}

@@ -1,34 +1,50 @@
 /**
  * This file is part of the public ComputerCraft API - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2014. This API may be redistributed unmodified and in full only.
+ * Copyright Daniel Ratcliffe, 2011-2016. This API may be redistributed unmodified and in full only.
  * For help using the API, and posting your mods, visit the forums at computercraft.info.
  */
 
 package dan200.computercraft.api.turtle;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
+import javax.vecmath.Matrix4f;
+
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import dan200.computercraft.api.peripheral.IPeripheral;
+
 
 /**
- * The primary interface for defining an turtle for Turtles. A turtle turtle
+ * The primary interface for defining an update for Turtles. A turtle update
  * can either be a new tool, or a new peripheral.
  * @see dan200.computercraft.api.ComputerCraftAPI#registerTurtleUpgrade( dan200.computercraft.api.turtle.ITurtleUpgrade )
  */
 public interface ITurtleUpgrade
 {
 	/**
-	 * Gets a unique numerical identifier representing this type of turtle turtle.
-	 * Like Minecraft common and item IDs, you should strive to make this number unique
-	 * among all turtle turtle that have been released for ComputerCraft.
-	 * The ID must be in the range 64 to 255, as the ID is stored as an 8-bit value,
-	 * and 0-64 is reserved for future use by ComputerCraft. The turtle will
-	 * fail registration if an already used ID is specified.
+	 * Gets a unique identifier representing this type of turtle upgrade. eg: "computercraft:wireless_modem" or "my_mod:my_upgrade".
+	 * You should use a unique resource domain to ensure this upgrade is uniquely identified.
+     * The turtle will fail registration if an already used ID is specified.
 	 * @see dan200.computercraft.api.ComputerCraftAPI#registerTurtleUpgrade( dan200.computercraft.api.turtle.ITurtleUpgrade )
 	 */
-	public int getUpgradeID();
-	
-	/**
+	public ResourceLocation getUpgradeID();
+
+    /**
+     * Gets a numerical identifier representing this type of turtle upgrade,
+     * for backwards compatibility with pre-1.76 worlds. If your upgrade was
+     * not released for older ComputerCraft versions, you can return -1 here.
+     * The turtle will fail registration if an already used positive ID is specified.
+     * @see dan200.computercraft.api.ComputerCraftAPI#registerTurtleUpgrade( dan200.computercraft.api.turtle.ITurtleUpgrade )
+     */
+    public int getLegacyUpgradeID();
+
+    /**
 	 * Return a String to describe this type of turtle in turtle item names.
 	 * Examples of built-in adjectives are "Wireless", "Mining" and "Crafty".
 	 */	
@@ -36,27 +52,26 @@ public interface ITurtleUpgrade
 
 	/**
 	 * Return whether this turtle adds a tool or a peripheral to the turtle.
-	 * Currently, turtle crafting is restricted to one tool & one peripheral per turtle.
 	 * @see TurtleUpgradeType for the differences between the two.
 	 */	
 	public TurtleUpgradeType getType();
 	
 	/**
 	 * Return an item stack representing the type of item that a turtle must be crafted
-	 * with to create a turtle which holds this turtle.
-	 * Currently, turtle crafting is restricted to one tool & one peripheral per turtle.
-	 */		
+	 * with to create a turtle which holds this upgrade. This item stack is also used
+     * to determine the upgrade given by turtle.equip()
+	 */
 	public ItemStack getCraftingItem();
 
     /**
-	 * Will only be called for Peripheral turtle. Creates a peripheral for a turtle
-	 * being placed using this turtle. The peripheral created will be stored
-	 * for the lifetime of the turtle, will have update() called once-per-tick, and will be
-	 * attach'd detach'd and have methods called in the same manner as a Computer peripheral.
+	 * Will only be called for peripheral upgrades. Creates a peripheral for a turtle
+	 * being placed using this upgrade. The peripheral created will be stored
+	 * for the lifetime of the upgrade, will have update() called once-per-tick, and will be
+	 * attached, detached and have methods called in the same manner as a Computer peripheral.
 	 *
      * @param turtle Access to the turtle that the peripheral is being created for.
-     * @param side Which side of the turtle (left or right) that the turtle resides on.
-     * @return The newly created peripheral. You may return null if this turtle is a Tool
+     * @param side Which side of the turtle (left or right) that the upgrade resides on.
+     * @return The newly created peripheral. You may return null if this upgrade is a Tool
 	 * and this method is not expected to be called.
 	 */		
 	public IPeripheral createPeripheral( ITurtleAccess turtle, TurtleSide side );
@@ -75,20 +90,21 @@ public interface ITurtleUpgrade
 	 * a swinging animation. You may return null if this turtle is a Peripheral
 	 * and this method is not expected to be called.
 	 */
-	public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction );
-
-	/**
-	 * Called to obtain the IIcon to be used when rendering a turtle peripheral. Needs to be a "common"
-	 * type IIcon for now, as there is no way to determine which texture sheet an IIcon is from by the
-	 * IIcon itself.
-	 * @param turtle Access to the turtle that the peripheral resides on.
-	 * @param side Which side of the turtle (left or right) the peripheral resides on.
-	 * @return The IIcon that you wish to be used to render your turtle peripheral.
-	 */
-	public IIcon getIcon( ITurtleAccess turtle, TurtleSide side );
+	public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, EnumFacing direction );
 
     /**
-     * TODO: Document me
+     * Called to obtain the model to be used when rendering a turtle peripheral.
+     * @param turtle Access to the turtle that the upgrade resides on. This will be null when getting item models!
+     * @param side Which side of the turtle (left or right) the upgrade resides on.
+     * @return The model that you wish to be used to render your upgrade, and a transformation to apply to it. Returning a transformation of null has the same effect as the identify matrix.
+     */
+    @SideOnly( Side.CLIENT )
+    public Pair<IBakedModel, Matrix4f> getModel( ITurtleAccess turtle, TurtleSide side );
+
+    /**
+     * Called once per tick for each turtle which has the upgrade equipped.
+     * @param turtle Access to the turtle that the upgrade resides on.
+     * @param side Which side of the turtle (left or right) the upgrade resides on.
      */
     public void update( ITurtleAccess turtle, TurtleSide side );
 }

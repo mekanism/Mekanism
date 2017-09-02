@@ -1,20 +1,14 @@
 package mekanism.common.item;
 
-import java.util.List;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
+import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.NonNullList;
 
-public class ItemOtherDust extends ItemMekanism
+public class ItemOtherDust extends ItemMekanism implements IMetaItem
 {
-	public IIcon[] icons = new IIcon[256];
-	
-	public static String[] subtypes = {"Diamond", "Steel", "Lead", 
-									  "Sulfur", "Lithium", "RefinedObsidian",
-									  "Obsidian"};
+	public static String[] subtypes = {"Diamond", "Steel", "null", "Sulfur",
+									   "Lithium", "RefinedObsidian", "Obsidian"};
 	
 	public ItemOtherDust()
 	{
@@ -23,26 +17,32 @@ public class ItemOtherDust extends ItemMekanism
 	}
 	
 	@Override
-	public void registerIcons(IIconRegister register)
+	public String getTexture(int meta)
 	{
-		for(int i = 0; i < subtypes.length; i++)
+		if(meta == 2)
 		{
-			icons[i] = register.registerIcon("mekanism:" + subtypes[i] + "Dust");
+			return null;
 		}
+		
+		return subtypes[meta] + "Dust";
+	}
+	
+	@Override
+	public int getVariants()
+	{
+		return subtypes.length;
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
-		return icons[meta];
-	}
-
-	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
-	{
+		if(!isInCreativeTab(tabs)) return;
 		for(int counter = 0; counter < subtypes.length; counter++)
 		{
-			itemList.add(new ItemStack(this, 1, counter));
+			if(counter != 2)
+			{
+				itemList.add(new ItemStack(this, 1, counter));
+			}
 		}
 	}
 

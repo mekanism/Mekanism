@@ -1,0 +1,1084 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Obsidian-TNT
+item.EnrichedAlloy.name=Angereicherte Legierung
+item.ReinforcedAlloy.name=Verstärkte Legierung
+item.AtomicAlloy.name=Atomlegierung
+item.EnergyTablet.name=Energietablett
+item.SpeedUpgrade.name=Geschwindigkeitsupgrade
+item.EnergyUpgrade.name=Energieupgrade
+item.FilterUpgrade.name=Filter-Upgrade
+item.MufflingUpgrade.name=Schalldämpfer-Upgrade
+item.GasUpgrade.name=Gas-Upgrade
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Atomar-Disassembler
+item.ElectricBow.name=Elektrischer Bogen
+item.EnrichedIron.name=Angereichertes Eisen
+item.CompressedCarbon.name=Komprimierter Kohlenstoff
+item.CompressedRedstone.name=Komprimiertes Redstone
+item.CompressedDiamond.name=Komprimierter Diamant
+item.CompressedObsidian.name=Komprimiertes Obsidian
+item.PortableTeleporter.name=Tragbarer Teleporter
+item.TeleportationCore.name=Teleportationskern
+item.Configurator.name=Konfigurator
+item.NetworkReader.name=Netzwerklesegerät
+item.WalkieTalkie.name=Walkie-Talkie
+item.Jetpack.name=Jetpack
+item.ScubaTank.name=Taucherflasche
+item.GasMask.name=Gasmaske
+item.Dictionary.name=Lexikon
+item.ElectrolyticCore.name=Elektrolysekern
+item.Sawdust.name=Sägemehl
+item.Salt.name=Salz
+item.BrineBucket.name=Eimer mit Salzwasser
+item.LithiumBucket.name=Eimer mit Lithium
+item.HeavyWaterBucket.name=Eimer mit Schwerem Wasser
+item.FreeRunners.name=Freiläufer
+item.ArmoredJetpack.name=Panzer-Jetpack
+item.ConfigurationCard.name=Konfigurationskarte
+item.SeismicReader.name=Seismisches Lesegerät
+item.HDPEPellet.name=HDPE-Pellet
+item.HDPERod.name=HDPE-Stange
+item.HDPESheet.name=HDPE-Bogen
+item.PlaStick.name=PlaStick
+item.Substrate.name=Substrat
+item.Flamethrower.name=Flammenwerfer
+item.GaugeDropper.name=Ventilspender
+item.BioFuel.name=Biomasse
+item.CraftingFormula.name=Fertigungsformel
+
+//Control Circuits
+item.BasicControlCircuit.name=Basis-Kontrollschaltkreis
+item.AdvancedControlCircuit.name=Fortgeschr. Kontrollschaltkreis
+item.EliteControlCircuit.name=Elite-Kontrollschaltkreis
+item.UltimateControlCircuit.name=Ultimativer Kontrollschaltkreis
+
+//Gas Tank
+tile.GasTankBasic.name=Basis-Gastank
+tile.GasTankAdvanced.name=Fortgeschr. Gastank
+tile.GasTankElite.name=Elite-Gastank
+tile.GasTankUltimate.name=Ultimativer Gastank
+
+//Fluid Tank (part of MachineBlock2, naming handled differently)
+tile.FluidTankBasic.name=Basis-Fluidtank
+tile.FluidTankAdvanced.name=Fortgeschr. Fluidtank
+tile.FluidTankElite.name=Elite-Fluidtank
+tile.FluidTankUltimate.name=Ultimativer Fluidtank
+
+//Cardboard Box
+tile.CardboardBox.name=Pappkarton
+
+//Bounding Block
+tile.BoundingBlock.name=Begrenzungsblock
+
+//Salt
+tile.SaltBlock.name=Salzblock
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Osmiumblock
+tile.BasicBlock.BronzeBlock.name=Bronzeblock
+tile.BasicBlock.RefinedObsidian.name=Raffiniertes Obsidian
+tile.BasicBlock.CharcoalBlock.name=Holzkohleblock
+tile.BasicBlock.RefinedGlowstone.name=Raffiniertes Glowstone
+tile.BasicBlock.SteelBlock.name=Stahlblock
+tile.BasicBlock.BinBasic.name=Basis-Silo
+tile.BasicBlock.BinAdvanced.name=Fortgeschr. Silo
+tile.BasicBlock.BinElite.name=Elite-Silo
+tile.BasicBlock.BinUltimate.name=Ultimatives Silo
+tile.BasicBlock.TeleporterFrame.name=Teleporter-Rahmen
+tile.BasicBlock.SteelCasing.name=Stahlhülle
+tile.BasicBlock.DynamicTank.name=Dynamischer Tank
+tile.BasicBlock.StructuralGlass.name=Strukturglas
+tile.BasicBlock.DynamicValve.name=Dynamisches Ventil
+tile.BasicBlock.CopperBlock.name=Kupferblock
+tile.BasicBlock.TinBlock.name=Zinnblock
+tile.BasicBlock.ThermalEvaporationController.name=Thermalverdampfungs-Controller
+tile.BasicBlock.ThermalEvaporationValve.name=Thermalverdampfungsventil
+
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.ThermalEvaporationBlock.name=Thermalverdampfungsblock
+tile.BasicBlock2.InductionCasing.name=Induktionshülle
+tile.BasicBlock2.InductionPort.name=Induktionsport
+tile.BasicBlock2.InductionCellBasic.name=Basis-Induktionszelle
+tile.BasicBlock2.InductionCellAdvanced.name=Fortgeschrittene Induktionszelle
+tile.BasicBlock2.InductionCellElite.name=Elite-Induktionszelle
+tile.BasicBlock2.InductionCellUltimate.name=Ultimative Induktionszelle
+tile.BasicBlock2.InductionProviderBasic.name=Basis-Induktions-Provider
+tile.BasicBlock2.InductionProviderAdvanced.name=Fortgeschrittener Induktions-Provider
+tile.BasicBlock2.InductionProviderElite.name=Elite-Induktions-Provider
+tile.BasicBlock2.InductionProviderUltimate.name=Ultimativer Induktions-Provider
+tile.BasicBlock2.SuperheatingElement.name=Überhitzungselement
+tile.BasicBlock2.PressureDisperser.name=Druckventil
+tile.BasicBlock2.BoilerCasing.name=Dampfkesselhülle
+tile.BasicBlock2.BoilerValve.name=Dampfkesselventil
+tile.BasicBlock2.SecurityDesk.name=Sicherungstisch
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Anreicherungskammer
+tile.MachineBlock.OsmiumCompressor.name=Osmiumkompressor
+tile.MachineBlock.Combiner.name=Kombinierer
+tile.MachineBlock.Crusher.name=Zerstoßer
+tile.MachineBlock.Factory.name=Fabrik
+tile.MachineBlock.MetallurgicInfuser.name=Metallurgische Infusionsmaschine
+tile.MachineBlock.PurificationChamber.name=Purifikationskammer
+tile.MachineBlock.EnergizedSmelter.name=Energetisierter Schmelzer
+tile.MachineBlock.Teleporter.name=Teleporter
+tile.MachineBlock.ElectricPump.name=Elektrische Pumpe
+tile.MachineBlock.PersonalChest.name=Persönliche Truhe
+tile.MachineBlock.Chargepad.name=Ladepad
+tile.MachineBlock.LogisticalSorter.name=Logistischer Sortierer
+tile.MachineBlock.DigitalMiner.name=Digitalbergbaugerät
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Rotationskondensentrator
+tile.MachineBlock2.ChemicalOxidizer.name=Chemischer Oxidierer
+tile.MachineBlock2.ChemicalInfuser.name=Chemischer Infundierer
+tile.MachineBlock2.ChemicalCombiner.name=Chemischer Kombinierer
+tile.MachineBlock2.ChemicalInjectionChamber.name=Chemische Injektionskammer
+tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytischer Separator
+tile.MachineBlock2.PrecisionSawmill.name=Präzisionssägewerk
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemische Auflösungskammer
+tile.MachineBlock2.ChemicalWasher.name=Chemische Waschanlage
+tile.MachineBlock2.ChemicalCrystallizer.name=Chemischer Kristallisierer
+tile.MachineBlock2.SeismicVibrator.name=Seismischer Vibrator
+tile.MachineBlock2.PressurizedReactionChamber.name=Druckreaktionskammer
+tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.FluidicPlenisher.name=Flüssigkeitsfüller
+tile.MachineBlock2.Laser.name=Laser
+tile.MachineBlock2.LaserAmplifier.name=Laser-Verstärker
+tile.MachineBlock2.LaserTractorBeam.name=Laser-Traktorstrahl
+
+//Machine Block 3 (third ID iteration)
+tile.MachineBlock3.QuantumEntangloporter.name=Quantenverschränkungsporter
+tile.MachineBlock3.SolarNeutronActivator.name=Solarneutronenaktivator
+tile.MachineBlock3.Oredictionificator.name=Oredictionificator
+tile.MachineBlock3.ResistiveHeater.name=Stromwärmeheizung
+tile.MachineBlock3.FormulaicAssemblicator.name=Formelfertigungsfabrikator
+tile.MachineBlock3.FuelwoodHeater.name=Feuerholzverfeuerer
+
+//Plastic
+tile.PlasticBlock.name=Plastikblock
+tile.SlickPlasticBlock.name=Glatter Plastikblock
+tile.GlowPlasticBlock.name=Schimmernder Plastikblock
+tile.ReinforcedPlasticBlock.name=Verstärkter Plastikblock
+tile.RoadPlasticBlock.name=Plastikstraße
+
+tile.PlasticFence.name=Plastikbarriere
+
+//Infuse types
+infuse.carbon=Kohlenstoff
+infuse.tin=Zinn
+infuse.diamond=Diamant
+infuse.redstone=Redstone
+infuse.fungi=Fungi
+infuse.obsidian=Obsidian
+infuse.bio=Biomasse
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Osmiumerz
+tile.OreBlock.CopperOre.name=Kupfererz
+tile.OreBlock.TinOre.name=Zinnerz
+
+//Transmitters
+item.MultipartTransmitter.BasicPressurizedTube.name=Basis-Druckröhre
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Fortgeschrittene Druckröhre
+item.MultipartTransmitter.ElitePressurizedTube.name=Elite-Druckröhre
+item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimative Druckröhre
+item.MultipartTransmitter.BasicUniversalCable.name=Universelles Basiskabel
+item.MultipartTransmitter.AdvancedUniversalCable.name=Fortgeschrittenes Universelles Kabel
+item.MultipartTransmitter.EliteUniversalCable.name=Universelles Elitekabel
+item.MultipartTransmitter.UltimateUniversalCable.name=Ultimatives Universelles Kabel
+item.MultipartTransmitter.BasicMechanicalPipe.name=Mechanisches Basisrohr
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=Fortgeschrittenes Mechanisches Rohr
+item.MultipartTransmitter.EliteMechanicalPipe.name=Mechanisches Eliterohr
+item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimatives Mechanisches Rohr
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Logistischer Basistransporter
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Fortgeschrittener Logistischer Transporter
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Logistischer Elitetransporter
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimativer Logistischer Transporter
+item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiver Transporter
+item.MultipartTransmitter.DiversionTransporter.name=Diversionstransporter
+item.MultipartTransmitter.BasicThermodynamicConductor.name=Thermodynamischer Basisleiter
+item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Fortgeschr. Thermodynamischer Leiter
+item.MultipartTransmitter.EliteThermodynamicConductor.name=Thermodynamischer Eliteleiter
+item.MultipartTransmitter.UltimateThermodynamicConductor.name=Ultimativer Thermodynamischer Leiter
+
+//Glow Panel
+item.GlowPanel.name=Leuchtplatte
+
+//Energy Cubes
+tile.EnergyCubeBasic.name=Basis-Energiewürfel
+tile.EnergyCubeAdvanced.name=Fortgeschrittener Energiewürfel
+tile.EnergyCubeElite.name=Elite-Energiewürfel
+tile.EnergyCubeUltimate.name=Ultimativer Energiewürfel
+tile.EnergyCubeCreative.name=Kreativer Energiewürfel
+
+//Factory Installers
+item.basicFactoryInstaller.name=Basis-Fabriken-Installer
+item.advancedFactoryInstaller.name=Fortgeschrittener Fabriken-Installer
+item.eliteFactoryInstaller.name=Elite-Fabriken-Installer
+
+//Dust
+item.ironDust.name=Eisenstaub
+item.goldDust.name=Goldstaub
+item.osmiumDust.name=Osmiumstaub
+item.obsidianDust.name=Obsidianstaub
+item.refinedobsidianDust.name=Raffinierter Obsidianstaub
+item.diamondDust.name=Diamantstaub
+item.steelDust.name=Stahlstaub
+item.copperDust.name=Kupferstaub
+item.tinDust.name=Zinnstaub
+item.silverDust.name=Silberstaub
+item.leadDust.name=Bleistaub
+item.sulfurDust.name=Schwefelstaub
+item.lithiumDust.name=Lithiumstaub
+
+//Clumps
+item.ironClump.name=Eisenklumpen
+item.goldClump.name=Goldklumpen
+item.osmiumClump.name=Osmiumklumpen
+item.copperClump.name=Kupferklumpen
+item.tinClump.name=Zinnklumpen
+item.silverClump.name=Silberklumpen
+item.leadClump.name=Bleiklumpen
+
+//Shards
+item.ironShard.name=Eisensplitter
+item.goldShard.name=Goldsplitter
+item.osmiumShard.name=Osmiumsplitter
+item.copperShard.name=Kupfersplitter
+item.tinShard.name=Zinnsplitter
+item.silverShard.name=Silbersplitter
+item.leadShard.name=Bleisplitter
+
+//Crystals
+item.ironCrystal.name=Eisenkristall
+item.goldCrystal.name=Goldkristall
+item.osmiumCrystal.name=Osmiumkristall
+item.copperCrystal.name=Kupferkristall
+item.tinCrystal.name=Zinnkristall
+item.silverCrystal.name=Silberkristall
+item.leadCrystal.name=Bleikristall
+
+//Dirty Dust
+item.dirtyIronDust.name=Dreckiger Eisenstaub
+item.dirtyGoldDust.name=Dreckiger Goldstaub
+item.dirtyOsmiumDust.name=Dreckiger Osmiumstaub
+item.dirtyCopperDust.name=Dreckiger Kupferstaub
+item.dirtyTinDust.name=Dreckiger Zinnstaub
+item.dirtySilverDust.name=Dreckiger Silberstaub
+item.dirtyLeadDust.name=Dreckiger Bleistaub
+
+//Ingots
+item.obsidianIngot.name=Raffinierter Obsidianbarren
+item.osmiumIngot.name=Osmiumbarren
+item.bronzeIngot.name=Bronzebarren
+item.glowstoneIngot.name=Glowstonebarren
+item.steelIngot.name=Stahlbarren
+item.copperIngot.name=Kupferbarren
+item.tinIngot.name=Zinnbarren
+
+//Gasses
+gas.hydrogen=Wasserstoff
+gas.oxygen=Sauerstoff
+gas.water=Wasserdampf
+gas.chlorine=Chlor
+gas.sulfurDioxideGas=Schwefeldioxid
+gas.sulfurTrioxideGas=Schwefeltrioxid
+gas.sulfuricAcid=Schwefelsäure
+gas.hydrogenChloride=Chlorwasserstoff
+gas.liquidOsmium=Flüssiges Osmium
+gas.liquidStone=Flüssiges Gestein
+gas.ethene=Ethylen
+gas.sodium=Natrium
+gas.brine=Gasförmiges Salzwasser
+gas.deuterium=Deuterium
+gas.tritium=Tritium
+gas.lithium=Lithium
+gas.fusionFuelDT=D-T-Treibstoff
+
+gas.iron=Eisenschlamm
+gas.gold=Goldschlamm
+gas.osmium=Osmiumschlamm
+gas.copper=Kupferschlamm
+gas.tin=Zinnschlamm
+gas.silver=Silberschlamm
+gas.obsidian=Obsidianschlamm
+gas.lead=Bleischlamm
+
+gas.cleanIron=Sauberer Eisenschlamm
+gas.cleanGold=Sauberer Goldschlamm
+gas.cleanOsmium=Sauberer Osmiumschlamm
+gas.cleanCopper=Sauberer Kupferschlamm
+gas.cleanTin=Sauberer Zinnschlamm
+gas.cleanSilver=Sauberer Silberschlamm
+gas.cleanObsidian=Sauberer Obsidianschlamm
+gas.cleanLead=Sauberer Bleischlamm
+
+//BC Fuel Gases
+gas.fuel=Verdampftes Benzin
+gas.oil=Verdampftes Öl
+
+//Fluids
+fluid.hydrogen=Flüssiger Wasserstoff
+fluid.oxygen=Flüssiger Sauerstoff
+fluid.chlorine=Flüssiges Chlor
+fluid.sulfurDioxideGas=Flüssiges Schwefeldioxid
+fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
+fluid.sulfuricAcid=Flüssige Schwefelsäure
+fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
+fluid.brine=Salzwasser
+fluid.ethene=Flüssigethylen
+fluid.sodium=Flüssignatrium
+fluid.heavyWater=Schweres Wasser
+fluid.lithium=Flüssiges Lithium
+fluid.deuterium=Flüssiges Deuterium
+fluid.tritium=Flüssiges Tritium
+fluid.fusionFuelDT=Flüssiger D-T-Treibstoff
+fluid.steam=Dampf
+
+//OreGas names
+oregas.iron=Eisenerz
+oregas.gold=Golderz
+oregas.osmium=Osmiumerz
+oregas.copper=Kupfererz
+oregas.tin=Zinnerz
+oregas.silver=Silbererz
+oregas.obsidian=Obsidianerz
+oregas.lead=Bleierz
+
+//Tier names
+tier.Basic=Gewöhnlich
+tier.Advanced=Fortgeschritten
+tier.Elite=Elite
+tier.Ultimate=Ultimativ
+tier.Creative=Kreativ
+
+//Transmission types
+transmission.Energy=Energie
+transmission.Fluids=Flüssigkeiten
+transmission.Gases=Gase
+transmission.Items=Items
+transmission.Heat=Wärme
+
+//Update handler text
+update.consider=Vielleicht möchtest du deine Version updaten
+update.newFeatures=Neue Features
+update.visit=Besuche
+update.toDownload=zum Download
+update.devBuild=Verwendung einer Entwicklungsversion
+update.outdated=Verwendung von veralteten Versionen eines oder mehrerer Module
+
+//Upgrades
+upgrade.energy=Energie
+upgrade.energy.desc=Erhöht Energieeffizienz !nund Maschineriekapazität.
+upgrade.speed=Geschwindigkeit
+upgrade.speed.desc=Erhöht Maschineriegeschwindigkeit.
+upgrade.filter=Filter
+upgrade.filter.desc=Ein Filter, welcher Schweres !nWasser von regulärem Wasser trennt.
+upgrade.gas=Gas
+upgrade.gas.desc=Erhöht die Effizienz von !ngasverwendenden Maschinen.
+upgrade.muffling=Dämpfung
+upgrade.muffling.desc=Verringert den von Maschinen produzierten Schall.
+
+//Key description text
+key.mode=Moduswechsel
+key.armorMode=Küstungsmoduswechsel
+key.voice=Stimme
+
+//Entities
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Baby-Skelett
+
+//Config Gui
+mekanism.configgui.ctgy.general=Mekanism: Generelle Einstellungen
+mekanism.configgui.ctgy.machines=Maschineneinstellungen
+mekanism.configgui.ctgy.tier=Stufeneintellungen
+mekanism.configgui.ctgy.usage=Nutzungseinstellungen
+mekanism.configgui.ctgy.client=Client-Einstellungen
+
+//Config Tooltips
+mekanism.configgui.ctgy.general.tooltip=Generelle Einstellungen bezüglich Mekanism und all seinen Modulen
+mekanism.configgui.ctgy.machines.tooltip=Einstellungen bezüglich dem (De-)Aktivieren bestimmter Maschinerie
+mekanism.configgui.ctgy.tier.tooltip=Einstellugen bezüglich der Upgrade-Stufen in Mekanism und ihren Werten
+mekanism.configgui.ctgy.usage.tooltip=Einstellungen bezüglich Maschinerie und ihren Energieverbauch
+mekanism.configgui.ctgy.client.tooltip=Client-spezifische Einstellungen bezüglich Mekanism und seinen Modulen
+
+//Gui text
+gui.condensentrating=Kondensentrieren
+gui.decondensentrating=Dekondensentrieren
+gui.power=Energie
+gui.confirm=Bestätigen
+gui.open=Öffnen
+gui.allOK=Alles OK
+gui.none=Nichts
+gui.new=Neu
+gui.edit=Ändern
+gui.save=Speichern
+gui.output=Output
+gui.delete=Löschen
+gui.status=Status
+gui.autoEject=Auto-Auswerfen
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.material=Material
+gui.out=Out
+gui.noFluid=Keine Flüssigk.
+gui.empty=Leer
+gui.volume=Volumen
+gui.start=Start
+gui.stop=Stopp
+gui.config=Konfigurieren
+gui.teleport=Teleport
+gui.eject=Auswerfen
+gui.input=Input
+gui.strictInput=Strikter Input
+gui.slots=Slots
+gui.state=Status
+gui.on=An
+gui.off=Aus
+gui.filters=Filter
+gui.filter=Filter
+gui.idle=Bereit
+gui.data=Daten
+gui.newFilter=Neuer Filter
+gui.energy=Energie
+gui.gas=Gas
+gui.dumping=Ausleeren
+gui.dumping_excess=Überflüssiges Ausleeren
+gui.modID=Mod-ID
+gui.key=Key
+gui.id=ID
+gui.finished=Beendet
+gui.well=Alles ist gut!
+gui.upgrade=Upgrade
+gui.infinite=Unendlich
+gui.min=Min
+gui.max=Max
+gui.delay=Verzögerung
+gui.noDelay=Keine Verzögerung
+gui.fuel=Treibstoff
+gui.heat=Wärme
+gui.formed=Vollständig
+gui.incomplete=Unvollständig
+gui.inductionMatrix=Induktionsmatrix
+gui.matrixStats=Matrixstatistik
+gui.turbineStats=Turbinenstatistik
+gui.boilerStats=Dampfkesselstatistik
+gui.main=Kern
+gui.outputting=Output
+gui.receiving=Empfängt
+gui.dimensions=Maße
+gui.constituents=Bestandteile
+gui.cells=Zellen
+gui.providers=Provider
+gui.structure=Struktur
+gui.dynamicTank=Dynamischer Tank
+gui.industrialTurbine=Industrieturbine
+gui.thermoelectricBoiler=Thermoelektrischer Dampfkessel
+gui.visuals=Visuelles
+gui.noEject=Kein Auswerfen möglich
+gui.undefined=Undefiniert
+gui.owner=Eigentümer
+gui.public=Öffentlich
+gui.private=Privat
+gui.add=Hinzufügen
+gui.set=Setzen
+gui.freq=Freq
+gui.security=Sicherheit
+gui.index=Index
+gui.producing=Produziert
+gui.maxOutput=Max-Output
+gui.storing=Speichert
+gui.skyBlocked=Himmel nicht sichtbar
+gui.using=Verbraucht
+gui.needed=Benötigt
+gui.noRecipe=Kein Rezept
+gui.conflict=Konflikt
+gui.height=Höhe
+gui.mult=Mult
+gui.chunk=Chunk
+gui.vibrating=Vibrierend
+gui.abundancy=Fülle
+gui.nextItem=Nächstes Item
+gui.lastItem=Vorheriges Item
+gui.oreDictCompat=Kompatibler OreDict-Key
+gui.toggleCooling=Kühlmessungen umschalten
+gui.coolingMeasurements=Aktive Kühlung
+gui.redstoneOutputMode=Redstone-Modus
+gui.entityDetection=Entity-Erkennung
+gui.moveUp=Nach oben
+gui.moveDown=Nach unten
+gui.flowRate=Fließgeschw.
+gui.maxFlow=Max. Fluss
+gui.tankVolume=Tankvolumen
+gui.steamFlow=Dampffluss
+gui.production=Produktion
+gui.blades=Blätter
+gui.coils=Spulen
+gui.dispersers=Ventile
+gui.vents=Abzüge
+gui.maxProduction=Max. Produktion
+gui.limiting=Grenze
+gui.steamInput=Dampf-Input
+gui.capacity=Kapazität
+gui.unit=Einheit
+gui.temp=Temp
+gui.usage=Verbrauch
+gui.transferred=Übertragen
+gui.dissipated=Dissipation
+gui.boilRate=Siederate
+gui.maxBoil=Max. Sieden
+gui.maxWater=Max. Wasser
+gui.maxSteam=Max. Dampf
+gui.heatTransfer=Wärmetransfer
+gui.superheaters=Überhitzer
+gui.boilCapacity=Siedekapazität
+gui.encodeFormula=Formel codieren
+gui.autoModeToggle=Auto-Modus
+gui.craftSingle=Einelnes Item fertigen
+gui.craftAvailable=Verfügbare Items fertigen
+gui.fillEmpty=Gitter leeren/füllen
+gui.noOwner=Kein Eigentümer
+gui.securityOverride=Sicherungs-Override
+gui.remove=Entfernen
+gui.trustedPlayers=Vertraute Spieler
+gui.publicMode=Öffentlich
+gui.privateMode=Privat
+gui.trustedMode=Vertraut
+gui.securityOffline=Sicherheit offline
+gui.noAccessDesc=Du hast keinen Zugriff.
+gui.overridden=Übergangen
+gui.nowOwn=Die gehört dieses Item nicht
+gui.frequency=Frequenz
+gui.mode=Modus
+gui.burnRate=Brennrate
+
+gui.reactor.injectionRate=Injektionsrate
+
+gui.upgrades=Upgrades
+gui.upgrades.supported=Unterstützt
+gui.upgrades.noSelection=Keine Auswahl
+gui.upgrades.amount=Menge
+gui.upgrades.max=Max
+gui.upgrades.effect=Effekt
+
+gui.chemicalInfuser.short=C. Infundierer
+gui.chemicalDissolutionChamber.short=C. Auflösungsk.
+gui.thermalEvaporationController.short=Thermalv.-Controller
+
+gui.dictionary.noKey=Kein Key.
+
+gui.configuration=Konfiguration
+gui.config=Konfigurieren
+gui.configuration.side=Seitenkonfig
+gui.configuration.transporter=Transporterkonfig
+gui.configuration.strictInput=Strikter Input
+
+gui.rotaryCondensentrator.toggleOperation=Schalte Betrieb
+
+gui.factory.secondaryEnergy=Sekundärenergie
+gui.factory.autoSort=Auto-Sortieren
+
+//Recipe types
+gui.factory.Smelting=Schmelzen
+gui.factory.Enriching=Anreichern
+gui.factory.Crushing=Zerstoßen
+gui.factory.Compressing=Komprimieren
+gui.factory.Combining=Kombinieren
+gui.factory.Purifying=Purifizieren
+gui.factory.Injecting=Injezieren
+gui.factory.Infusing=Infundieren
+
+gui.seismicReader.short=S. Lesegerät
+gui.seismicReader.solids=Feststoffe
+gui.seismicReader.fluids=Flüssigkeiten
+gui.seismicReader.reading=Lesend
+
+gui.filterSelect.title=Neuen Filter kreieren
+
+gui.oredictFilter=OreDict-Filter
+gui.oredictFilter.noKey=Keine Kennung eingegeben
+gui.oredictFilter.sameKey=Selbes Kennwort
+
+gui.modIDFilter=Mod-ID-Filter
+gui.modIDFilter.noID=Keine ID
+gui.modIDFilter.sameID=Selbe ID
+
+gui.oredictionificatorFilter=Oredictionificator-Filter
+
+gui.itemFilter=Item-Filter
+gui.itemFilter.noItem=Kein Item
+gui.itemFilter.details=ItemStack-Details
+gui.itemFilter.min=Min
+gui.itemFilter.max=Max
+
+gui.materialFilter=Materialfilter
+gui.materialFilter.details=Nutze Material von
+
+gui.portableTeleporter=Tragbarer Teleporter
+
+gui.robit=Robit
+gui.robit.smelting=Robit-Schmelzen
+gui.robit.inventory=Robit-Inventar
+gui.robit.crafting=Robit-Werkbank
+gui.robit.greeting=Hallo, Ich bin
+gui.robit.toggleFollow=Schalte 'Folgen'-Modus
+gui.robit.rename=Benenne diesen Robit um
+gui.robit.teleport=Teleport zurück nach Hause
+gui.robit.togglePickup=Schalte 'Drop-Aufsammel'-Modus
+gui.robit.following=Folgend
+gui.robit.dropPickup=Wirf Gesammeltes ab
+gui.robit.owner=Eigentümer
+
+gui.password.setPassword=Passwort einstellen
+gui.password.enterPassword=Gib Passwort ein
+gui.password.fieldsEmpty=Feld(er) leer
+gui.password.notMatching=Passt nicht
+gui.password.identical=Identisch
+gui.password.invalid=Ungültig
+gui.password=Passwort
+
+gui.logisticalSorter.default=Standard
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round-Robin
+
+gui.teleporter.notReady=Nicht bereit
+gui.teleporter.ready=Bereit
+gui.teleporter.noFrame=Kein Rahmen
+gui.teleporter.noLink=Kein Link
+gui.teleporter.exceeds=Links > 2
+gui.teleporter.needsEnergy=Benötigt Energie
+gui.teleporter.noAccess=Du hast keinen Zugriff auf diesen Teleporter
+gui.teleporter.noFreq=Keine Frequenz
+
+gui.entangloporter.noAccess=Du hast keinen Zugriff auf diesen Quantenporter
+
+gui.digitalMinerConfig=Konfiguration
+
+gui.digitalMiner.autoPull=Auto-Anziehen
+gui.digitalMiner.replaceBlock=Ersetze Block
+gui.digitalMiner.reset=Reset
+gui.digitalMiner.silkTouch=Behutsamkeit
+gui.digitalMiner.pull=Anziehen
+gui.digitalMiner.silk=Behutsam
+gui.digitalMiner.toMine=Zum Abbauen
+gui.digitalMiner.running=Arbeitend
+gui.digitalMiner.inverse=Inversionsmodus
+gui.digitalMiner.requireReplace=Erfordert erneute Platzierung
+gui.digitalMiner.fuzzyMode=Ungenauer Modus
+gui.digitalMiner.missingBlock=Fehlender Block
+
+//Recipe names
+recipe.mekanismShaped=Geformt
+recipe.mekanismShapeless=Formlos
+
+//Security types
+security.public=Öffentlich
+security.private=Privat
+security.trusted=Vertraut
+
+//Item and block tooltip text
+tooltip.configurator.configurate=Konfigurieren
+tooltip.configurator.empty=Leeren
+tooltip.configurator.rotate=Rotieren
+tooltip.configurator.wrench=Schraubenschlüssel
+tooltip.configurator.pumpReset=Kalkulation der Elektrischen Pumpe neu stellen
+tooltip.configurator.toggleDiverter=Divertermodus geändert zu
+tooltip.configurator.toggleMode=Verhalten %s geändert zu
+tooltip.configurator.viewMode=Aktuelles Verhalten %s
+tooltip.configurator.noLink=Kein Link
+tooltip.configurator.linkMsg=Verbunden mit
+tooltip.configurator.dim=Dimension
+tooltip.configurator.setLink=Setze Link auf Block
+tooltip.configurator.plenisherReset=Flüssigkeitsfüllerkalkulation zurücksetzen
+tooltip.configurator.inductionPortMode=Induktionsport-Transfermodus geändert zu
+tooltip.configurator.toggleColor=Farbe geändert zu
+tooltip.configurator.viewColor=Aktuelle Farbe
+
+tooltip.upgrade.speed=Geschwindigkeit
+tooltip.upgrade.energy=Energie
+
+tooltip.inventory=Inventar
+tooltip.storedEnergy=Gespeicherte Energie
+tooltip.auth=Authentifiziert
+tooltip.locked=Gesperrt
+tooltip.recipeType=Rezeptart
+tooltip.hold=Halte
+tooltip.forDesc=für eine Beschreibung
+tooltip.forDetails=für Details
+tooltip.fireMode=Feuermodus
+tooltip.capacity=Kapazität
+tooltip.pumpRate=Pumprate
+tooltip.items=Items
+tooltip.blocks=Blöcke
+tooltip.universal=Universell
+tooltip.fluids=Flüssigkeiten
+tooltip.gasses=Gase
+tooltip.capableTrans=Fähig zum Transferieren von
+tooltip.restrictiveDesc=Nur verwendet, wenn kein anderer Pfad verfügbar ist
+tooltip.diversionDesc=Kontrollierbar via Redstone
+tooltip.noGas=Kein Gas gespeichert
+tooltip.stored=Gespeichert
+tooltip.channel=Kanal
+tooltip.mode=Modus
+tooltip.efficiency=Effizienz
+tooltip.modeToggle=Modus gewechselt auf
+tooltip.flowing=Fließend
+tooltip.yes=Ja
+tooltip.no=Nein
+tooltip.name=Name
+tooltip.blockData=Block-Daten
+tooltip.block=Block
+tooltip.meta=Metadaten
+tooltip.tile=Tile
+tooltip.keysFound=Key(s) gefunden
+tooltip.noKey=Kein key
+tooltip.hp=HP
+tooltip.configureState=Status Konfigurieren
+tooltip.outputRate=Output-Rate
+tooltip.insufficientFuel=Nicht genügend Treibstoff
+tooltip.readyForReaction=Bereit für Reaktion
+tooltip.speed=Geschwindigkeit
+tooltip.and=und
+tooltip.heat=Wärme
+tooltip.itemAmount=Item-Menge
+tooltip.invalid=Ungültig
+tooltip.encoded=Codiert
+tooltip.ingredients=Bestandteile
+
+tooltip.portableTank.bucketMode=Bucket Mode
+
+tooltip.disassembler.normal=normal
+tooltip.disassembler.slow=slow
+tooltip.disassembler.fast=fast
+tooltip.disassembler.vein=vein
+tooltip.disassembler.off=off
+
+tooltip.configurationCard.got=Konfigurationsdaten erhalten: %s
+tooltip.configurationCard.set=Konfigurationsdaten übertragen: %s
+tooltip.configurationCard.unequal=Inkompatible Konfigurationsdatenformate
+
+tooltip.balloon=Ballon
+
+tooltip.jetpack.regular=Regulär
+tooltip.jetpack.hover=Schweben
+tooltip.jetpack.disabled=Deaktiviert
+
+tooltip.flamethrower.combat=Kampf
+tooltip.flamethrower.heat=Hitze
+tooltip.flamethrower.inferno=Inferno
+tooltip.flamethrower.modeBump=Flammenwerfermodus geändert:
+
+tooltip.seismicReader.needsEnergy=Nicht genügend Energie, um Erschütterung zu bestimmen
+tooltip.seismicReader.noVibrations=Nicht fähig, Vibrationen zu erkennen
+
+tooltip.Bin=Ein Block, um große Mengen eines einzelnen Items zu lagern.
+tooltip.TeleporterFrame=Der Rahmen für den Teleporter-Multiblock. Innerhalb des Rahmens können Portale generiert werden.
+tooltip.SteelCasing=Ein robustes, stählernes Gehäuse ist die Grundlage guter Maschinerie.
+tooltip.DynamicTank=Das Gehäuse für Dynamische Tanks, einer Konstruktion, die große Mengen an Fluiden speichern kann.
+tooltip.StructuralGlass=Ein fortschrittliches, verstärktes Glas, welches in Multiblocks verwendet werden kann.
+tooltip.DynamicValve=Ein Ventil für Dynamische Tanks, welches Fluidtransfer ermöglicht.
+tooltip.ThermalEvaporationController=Der Controller für die Thermalverdampfungsanlage. Nur einer davon sollte in einem Multiblock platziert werden.
+tooltip.ThermalEvaporationValve=Ein Ventil für die Thermalverdampfungsanlage, welches Fluidtransfer ermöglicht.
+tooltip.ThermalEvaporationBlock=Ein aus einer Kupferlegierung bestehendes Gehäuse für die Thermalverdampfungsanlage. Kann aufgrund seines Materials große Mengen an Wärme leiten.
+tooltip.InductionCasing=Energieresistentes Gehäuse für energetisierte Induktionsmatrizen.
+tooltip.InductionPort=Ein- und Ausgang für Energie in einer Induktionsmatrix.
+tooltip.InductionCell=Äußerst leitfähiger Kondensator, der große Mengen an Energie speichern kann. Gehört in das Innere einer Induktionsmatrix, um die Kapazität zu erhöhen.
+tooltip.InductionProvider=Ein Komplex aus Kühlsystemen, Leitern und Transformatoren, der die Energietransferrate der Induktionsmatrix erhöht.
+tooltip.SuperheatingElement=Ein modularer, etwas gefährlicher Heizkörper, der gewaltige Wärmemengen an seine Umgebung abgeben kann.
+tooltip.PressureDisperser=Ein Block, mit welchem Dampf in einer Multiblockstruktur verteilt wird. Mit ihnen sollte eine lückenlose horizontale Fläche gebildet werden, um den Dampffluss vernünftig kontrollieren zu können.
+tooltip.BoilerCasing=Ein druckresistentes, dichtes Gehäuse für den Thermoelektrischen Dampfkessel.
+tooltip.BoilerValve=Ein Ventil für Thermoelektrische Dampfkessel, welches Energie-, Wasser- und Dampftransfer ermöglicht.
+tooltip.SecurityDesk=Eine zentrale Steuereinheit, um die Sicherheitseinstellungen all deiner Maschienen zu kontrollieren.
+
+tooltip.EnrichmentChamber=Eine einfache Maschine, genutzt, um Erze zu !nzwei ihrer entsprechenden Stäube anzureichern !nsowie viele andere Operationen auszuführen.
+tooltip.OsmiumCompressor=Eine ziemlich fortschrittliche Maschine, genutzt, !num Osmium in verschiedene Stäube zu pressen, !num ihre entsprechenden Barren zu kreieren.
+tooltip.Combiner=Eine Maschine, genutzt, um Stäube mit Pflasterstein !nzu kombinieren, um entsprechende Erze zu formen.
+tooltip.Crusher=Eine Maschine, genutzt, um Barren in ihre entsprechenden !nStäube zu zerstoßen sowie viele andere Operationen auszuführen.
+tooltip.DigitalMiner=Ein äußerst fortschrittlicher, Filter-basierter !nAuto-Minierer, der alles abbauen kann, was du willst, !ninnerhalb eines Radius von 32 Blöcken (max).
+tooltip.MetallurgicInfuser=Eine Maschine, genutzt, um verschiedene Materialien !n(generell) in Metalle einzuflößen, um Legierungen !nund andere Komponenten zu kreieren.
+tooltip.PurificationChamber=Eine fortgeschrittene Maschine, fähig, Erze zu !ndrei Klumpen zu verarbeiten, was im Anfangsstadium !n300% an Erzverarbeitung bietet.
+tooltip.EnergizedSmelter=Eine einfache Maschine, die einen Mekanism-basierten !nOfen bietet, der mit Energie läuft.
+tooltip.Teleporter=Eine Maschine, fähig, Spieler zu verschiedenen Orten, !ndefiniert durch andere Teleporter, zu teleportieren.
+tooltip.ElectricPump=Eine fortgeschrittene Pumpe, fähig, !nganze Lavaseen auszupumpen.
+tooltip.PersonalChest=Eine 54-Slot-Truhe, die von überall aus geöffnet werden kann - sogar von deinem eigenen Inventar aus.
+tooltip.Chargepad=Ein universelles Ladepad, dass jegliches energetisiertes !nItem jeglicher Mods aufladen kann.
+tooltip.LogisticalSorter=Eine Filter-basierte, fortgeschrittene Sortiermaschine, die !nautomatisch spezifische Items aus einem Inventar oder !nLogistischen Transporter heraus und in eines hinein treiben kann.
+tooltip.RotaryCondensentrator=Eine Maschine, die fähig ist, Gase in ihre !nflüssige Form zu konvertieren und umgekehrt.
+tooltip.ChemicalInjectionChamber=Eine Elite-Maschine, fähig, Erze in !nvier Splitter zu verarbeiten, was als erste Stufe !neiner 400%igen Erzverarbeitung dient.
+tooltip.ElectrolyticSeparator=Eine Maschine, die den Prozess der Elektrolyse nutzt, !num ein bestimmtes Gas in zwei unterschiedliche Gase aufzuteilen.
+tooltip.PrecisionSawmill=Eine Maschine, genutzt, um Baumstämme und andere !nhölzerne Dinge effizienter zu verarbeiten und um Sägemehl zu bekommen.
+tooltip.ChemicalDissolutionChamber=Eine ultimative Maschine, genutzt, !num jegliche Unreinheiten in einem Erz aufzulösen, !nwas unverarbeiteten Schlamm zurücklässt.
+tooltip.ChemicalWasher=Eine ultimative Maschine, die unverarbeiteten Schlamm !nsäubert und ihn für die Kristallisierung vorbereitet.
+tooltip.ChemicalCrystallizer=Eine ultimative Maschine, genutzt, um !nPurifizierten Erzschlamm zu Erzkristallen zu verarbeiten.
+tooltip.ChemicalOxidizer=Eine Maschine, fähig, !nFeststoffe in ihre Gasform zu verdampfen.
+tooltip.ChemicalInfuser=Eine Maschine, die ein Gas durch Infusion !nvon zwei anderen erstellt.
+tooltip.SeismicVibrator=Eine Maschine, die seismische Vibrationen nutzt, !num Informationen über verschiedene Schichten !nder Welt zu beschaffen.
+tooltip.PressurizedReactionChamber=Eine fortgeschrittene Maschine, die !neine feste, flüssige sowie gasförmige Mixtur verarbeitet !nund sowohl ein gasförmiges als auch ein festes Produkt herstellt.
+tooltip.FluidTank=Ein praktischer, robuster und tragbarer Tank, der dich gewisse Mengen an Fluiden überall hin tragen lässt. Funktioniert auch als Eimer!
+tooltip.FluidicPlenisher=Eine Maschine, fähig, ganze !nSeen durch das Füllen von Schluchten mit Flüssigkeiten zu kreieren.
+tooltip.Laser=Eine fortgeschrittene Form lineraren !nEnergietransfers, die einen extrem !nkollimierten Lichtstrahl verwendet.
+tooltip.LaserAmplifier=Ein Block, der verwendet wird, !n um Laserstrahlen zu bündeln, zu verstärken und umzulenken,!nmit genauer Kontrolle über den Zeitpunkt des Feuerns.
+tooltip.LaserTractorBeam=Ein Block, verwendet, um Laserstrahlen !nzu bündeln und umzulenken. Sammelt !nBlöcke, die er zerstört hat, ein.
+tooltip.SolarNeutronActivator=Eine Maschine, die Neutronenstrahlung der Sonne !nin sein eigenes Reservoir leitet, was die langsame !nKreierung verschiedener Isotope ermöglicht.
+tooltip.Oredictionificator=Eine Maschine, verwendet, um zwischen verschiedenen items !nund Blöcken mithilfe des Ore Dictionary umzuwandeln.
+tooltip.Factory=Eine Maschine, die als Upgrade zu gewöhnlichen Machinen dient; erlaubt das Ausführen mehrerer Operationen auf einmal.
+tooltip.ResistiveHeater=Ein dichter, gewundener Widerstand, der elektrische Energie direkt in Wärme umwandeln kann.
+tooltip.FormulaicAssemblicator=Eine Maschine, die mithilfe von Energie mit hohem Tempo Items und Blöcke nach Fertigungsformeln fertigt. Fungiert auch als Werkbank.
+tooltip.FuelwoodHeater=Eine Maschine, die große Mengen an Wärmeenergie durch das Verbrennen brennbarer Dinge erzeugt.
+
+tooltip.HeatGenerator=Ein Generator, der die Wärme aus Lava oder !nanderen Brennstoffen zur Energieerzeugung nutzt.
+tooltip.SolarGenerator=Ein Generator, der die Energie der Sonne !nzur Energieerzeugung nutzt.
+tooltip.GasGenerator=Ein Generator, der molekular unterschiedliche !nGase zur Energieerzeugung nutzt.
+tooltip.BioGenerator=Ein Generator, der organische Materialien dieser Welt !nzur Energieerzeugung nutzt.
+tooltip.AdvancedSolarGenerator=Ein fortgeschrittener Generator, der Sonnenstrahlung !ndirekt und verlustarm zur Energieerzeugung absorbiert.
+tooltip.WindGenerator=Ein Generator, der Windbewegung in Energie umwandelt; die Effizienz steigt mit zunehmender Höhe.
+tooltip.TurbineRotor=Der Stahlstab, mit dem Rotorblätter in einer Industrieturbine gehalten werden.
+tooltip.RotationalComplex=Ein Element, das am höchsten Rotor einer Industrieturbine platziert wird, um kinetische Energie in die Spulen zu übertragen.
+tooltip.ElectromagneticCoil=Ein Block, der kinetische energie in elektrischen Strom umwandelt. Er kann in jeglicher Form oberhalb eines Rotationskomplexes platziert werden, solang alle von ihnen einander und den Komplex berühren.
+tooltip.TurbineCasing=Druckresistentes Gehäuse für die Industrieturbine.
+tooltip.TurbineValve=Gehäuseart für die Industrieturbine, die Energie- und Dampftransfer ermöglicht.
+tooltip.TurbineVent=Gehäuseart für die Industrieturbine mit integriertem Dampfabzug. Sie sollte auf Höhe oder oberhalb des Rotationskomplexes platziert sein.
+
+tooltip.ReactorGlass=Verstärktes Glas, welches im !nFusionsreaktor-Multiblock verwendet werden kann.
+tooltip.ReactorLaserFocusMatrix=Eine Scheibe aus Reaktorglas, welche fähig ist, !noptische Energy zu absorbieren, und !nso den Fusionsreaktor aufheizt.
+tooltip.ReactorController=Der alles kontrollierende Block für !nden gesamten Fusionsreaktor.
+tooltip.ReactorFrame=Verstärkte Hülle, welche im !nFusionsreaktor-Multiblock verwendet werden kann.
+tooltip.ReactorNeutronCapturePlate=Ein Block, der zum Blockieren der Strahlung !naus einem Fusionsreaktors verwendet werden kann !nund bei der Produktion von Tritium hilft.
+tooltip.ReactorPort=Ein Block aus verstärktem Material, welcher sowohl den Gas- als auch den Energietransfer des Fusionsreaktors regeln kann.
+tooltip.ReactorLogicAdapter=Ein Block, welcher verwendet werden kann, !num einen Reaktor mit Redstone zu überwachen.
+
+tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
+tooltip.CopperOre=Ein häufig vorkommendes, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
+tooltip.TinOre=Ein leiches, jedoch robustes und leitfähiges !nMaterial, dass etwas schwieriger !nzu finden ist als Kupfer.
+
+//Side data
+sideData.None=Nichts
+sideData.Input=Input
+sideData.Output=Output
+sideData.Energy=Energie
+sideData.Gas=Gas
+sideData.Extra=Extra
+sideData.Infuse=Infusion
+sideData.Fluid=Flüssigkeit
+sideData.Fill=Füllen
+sideData.Empty=Leeren
+sideData.Charge=Laden
+sideData.Discharge=Entladen
+
+//Redstone control
+control.disabled=Deaktiviert
+control.high=High
+control.low=Low
+control.pulse=Puls
+control.disabled.desc=Immer aktiv
+control.high.desc=Aktiv mit Signal
+control.low.desc=Aktiv ohne Signal
+control.pulse.desc=Erst bei erstem empfangenen Signal aktivieren
+
+//Container edit modes
+fluidedit.both=Beides
+fluidedit.fill=Füllen
+fluidedit.empty=Leeren
+
+//Colors
+color.black=Schwarz
+color.darkBlue=Dunkelblau
+color.darkGreen=Dunkelgrün
+color.darkAqua=Dunkelcyan
+color.darkRed=Dunkelrot
+color.purple=Violett
+color.orange=Orange
+color.grey=Grau
+color.darkGrey=Dunkelgrau
+color.indigo=Indigo
+color.brightGreen=Hellgrün
+color.aqua=Cyan
+color.red=Rot
+color.pink=Pink
+color.yellow=Gelb
+color.white=Weiß
+color.brown=Braun
+color.brightPink=Hellrosa
+
+//Dyes
+dye.black=Schwarz
+dye.darkBlue=Blau
+dye.brown=Braun
+dye.darkGreen=Grün
+dye.darkAqua=Türkis
+dye.darkRed=Dunkelrot
+dye.purple=Violett
+dye.orange=Orange
+dye.grey=Hellgrau
+dye.darkGrey=Grau
+dye.indigo=Hellblau
+dye.brightGreen=Hellgrün
+dye.aqua=Cyan
+dye.red=Rot
+dye.brightPink=Pink
+dye.pink=Magentafarben
+dye.yellow=Gelb
+dye.white=Weiß
+
+//Reactor Logic modes
+reactor.disabled=Deaktiviert
+reactor.disabled.desc=Wird kein Redstone-Signal aussenden
+reactor.ready=Bereit für Zündung
+reactor.ready.desc=Reaktor hat die für Zündung erforderliche Temperatur erreicht
+reactor.capacity=Wärmekapazität erreicht
+reactor.capacity.desc=Die Wärmekapazität des Reaktorkrns ist erreicht worden
+reactor.depleted=Nicht genug Treibstoff
+reactor.depleted.desc=Der Reaktor hat nicht genügend Treibstoff, um eine Reaktion instandzuhalten
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//NEI stuff
+nei.chemicalInjectionChamber=C. Injektionskammer
+nei.rotaryCondensentrator=R.-Kondensentrator
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.SolarPanel.name=Solarmodul
+item.Hohlraum.name=Hohlraum
+item.TurbineBlade.name=Rotorblatt
+
+//Generators
+tile.Generator.HeatGenerator.name=Hitzegenerator
+tile.Generator.SolarGenerator.name=Solargenerator
+tile.Generator.GasGenerator.name=Gasverbrennender Generator
+tile.Generator.BioGenerator.name=Bio-Generator
+tile.Generator.AdvancedSolarGenerator.name=Fortgeschrittener Solargenerator
+tile.Generator.WindGenerator.name=Windgenerator
+tile.Generator.TurbineRotor.name=Turbinenrotor
+tile.Generator.RotationalComplex.name=Rotationskomplex
+tile.Generator.ElectromagneticCoil.name=Elektromagnetische Spule
+tile.Generator.TurbineCasing.name=Turbinengehäuse
+tile.Generator.TurbineValve.name=Turbinenventil
+tile.Generator.TurbineVent.name=Turbinenabzug
+
+tile.Reactor.ReactorController.name=Reaktor-Controller
+tile.Reactor.ReactorFrame.name=Reaktorrahmen
+tile.Reactor.ReactorNeutronCapturePlate.name=Neutronenauffangplatte
+tile.Reactor.ReactorPort.name=Reaktorport
+tile.Reactor.ReactorLogicAdapter.name=Reaktor-Logikadapter
+
+tile.ReactorGlass.ReactorGlass.name=Reaktorglas
+tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser-Fokusmatrix
+
+//Gui text
+gui.heatGenerator.fuel=Brennstoff
+gui.solarGenerator.sun=Sonne
+gui.bioGenerator.bioFuel=Biomasse
+gui.electrolyticSeparator.dump=Entsorge
+
+gui.passive=Luftgekühlt
+gui.active=Wassergekühlt
+
+gui.minInject=Min Injektionsrate
+gui.ignition=Zündtemp
+gui.maxPlasma=Max. Plasmatemp
+gui.maxCasing=Max. Hüllentemp
+gui.passiveGeneration=Passive Generierung
+gui.steamProduction=Dampfproduktion
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Holz-Paxel
+item.StonePaxel.name=Stein-Paxel
+item.IronPaxel.name=Eisen-Paxel
+item.DiamondPaxel.name=Diamant-Paxel
+item.GoldPaxel.name=Gold-Paxel
+
+//Obsidian
+item.ObsidianHelmet.name=Obsidianhelm
+item.ObsidianChestplate.name=Obsidianbrustpanzer
+item.ObsidianLeggings.name=Obsidianbeinschutz
+item.ObsidianBoots.name=Obsidianstiefel
+item.ObsidianPaxel.name=Obsidian-Paxel
+item.ObsidianPickaxe.name=Obsidianspitzhacke
+item.ObsidianAxe.name=Obsidianaxt
+item.ObsidianShovel.name=Obsidianschaufel
+item.ObsidianHoe.name=Obsidianhacke
+item.ObsidianSword.name=Obsidianschwert
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Lapislazulihelm
+item.LazuliChestplate.name=Lapislazulibrustpanzer
+item.LazuliLeggings.name=Lapislazulibeinschutz
+item.LazuliBoots.name=Lapislazulistiefel
+item.LazuliPaxel.name=Lapislazuli-Paxel
+item.LazuliPickaxe.name=Lapislazulispitzhacke
+item.LazuliAxe.name=Lapislazuliaxt
+item.LazuliShovel.name=Lapislazulischaufel
+item.LazuliHoe.name=Lapislazulihacke
+item.LazuliSword.name=Lapislazulischwert
+
+//Osmium
+item.OsmiumHelmet.name=Osmiumhelm
+item.OsmiumChestplate.name=Osmiumbrustpanzer
+item.OsmiumLeggings.name=Osmiumbeinschutz
+item.OsmiumBoots.name=Osmiumstiefel
+item.OsmiumPaxel.name=Osmium-Paxel
+item.OsmiumPickaxe.name=Osmiumspitzhacke
+item.OsmiumAxe.name=Osmiumaxt
+item.OsmiumShovel.name=Osmiumschaufel
+item.OsmiumHoe.name=Osmiumhacke
+item.OsmiumSword.name=Osmiumschwert
+
+//Bronze
+item.BronzeHelmet.name=Bronzehelm
+item.BronzeChestplate.name=Bronzebrustpanzer
+item.BronzeLeggings.name=Bronzebeinschutz
+item.BronzeBoots.name=Bronzestiefel
+item.BronzePaxel.name=Bronze-Paxel
+item.BronzePickaxe.name=Bronzespitzhacke
+item.BronzeAxe.name=Bronzeaxt
+item.BronzeShovel.name=Bronzeschaufel
+item.BronzeHoe.name=Bronzehacke
+item.BronzeSword.name=Bronzeschwert
+
+//Glow
+item.GlowstoneHelmet.name=Glowstone-Helm
+item.GlowstoneChestplate.name=Glowstone-Brustpanzer
+item.GlowstoneLeggings.name=Glowstone-Beinschutz
+item.GlowstoneBoots.name=Glowstone-Stiefel
+item.GlowstonePaxel.name=Glowstone-Paxel
+item.GlowstonePickaxe.name=Glowstone-Spitzhacke
+item.GlowstoneAxe.name=Glowstone-Axt
+item.GlowstoneShovel.name=Glowstone-Schaufel
+item.GlowstoneHoe.name=Glowstone-Hacke
+item.GlowstoneSword.name=Glowstone-Schwert
+
+//Steel
+item.SteelHelmet.name=Stahlhelm
+item.SteelChestplate.name=Stahlbrustpanzer
+item.SteelLeggings.name=Stahlbeinschutz
+item.SteelBoots.name=Stahlstiefel
+item.SteelPaxel.name=Stahl-Paxel
+item.SteelPickaxe.name=Stahlspitzhacke
+item.SteelAxe.name=Stahlaxt
+item.SteelShovel.name=Stahlschaufel
+item.SteelHoe.name=Stahlhacke
+item.SteelSword.name=Stahlschwert
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general=Generelles
+mekanism.configgui.ctgy.tools.armor=Rüstungs-Balance
+mekanism.configgui.ctgy.tools.tools=Werkzeug-Balance
+
+//Config Tooltips
+mekanism.configgui.ctgy.tools.general.tooltip=Einstellungen bezüglich MekanismTools' genereller Konfiguration
+mekanism.configgui.ctgy.tools.armor.tooltip=Einstellungen bezüglich der Schutzwerte und Balance der MekanismTools Rüstungssets
+mekanism.configgui.ctgy.tools.tools.tooltip=Einstellungen bezüglich der Effizientwerte und Balance der MekanismTools Werkzeugsets

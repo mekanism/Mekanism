@@ -6,8 +6,9 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
+
 
 public class GuiVisualsTab extends GuiElement
 {
@@ -68,7 +69,7 @@ public class GuiVisualsTab extends GuiElement
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 			{
 				tileEntity.clientRendering = !tileEntity.clientRendering;
-	            SoundHandler.playSound("gui.button.press");
+	            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

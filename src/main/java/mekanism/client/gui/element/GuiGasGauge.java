@@ -2,8 +2,6 @@ package mekanism.client.gui.element;
 
 import java.util.Arrays;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
@@ -15,10 +13,12 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.LangUtils;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.input.Keyboard;
 
 public class GuiGasGauge extends GuiGauge<Gas>
 {
@@ -50,13 +50,13 @@ public class GuiGasGauge extends GuiGauge<Gas>
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			ItemStack stack = mc.player.inventory.getItemStack();
 			
-			if(guiObj instanceof GuiMekanism && stack != null && stack.getItem() instanceof ItemGaugeDropper)
+			if(guiObj instanceof GuiMekanism && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 			{
 				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				
-				if(tile instanceof ITankManager)
+				if(tile instanceof ITankManager && ((ITankManager)tile).getTanks() != null)
 				{
 					int index = Arrays.asList(((ITankManager)tile).getTanks()).indexOf(infoHandler.getTank());
 					
@@ -81,19 +81,24 @@ public class GuiGasGauge extends GuiGauge<Gas>
 		{
 			return height-2;
 		}
+
+        if(infoHandler.getTank().getGas() == null || infoHandler.getTank().getMaxGas() == 0)
+        {
+            return 0;
+        }
 		
-		return infoHandler.getTank().getGas() != null ? infoHandler.getTank().getStored()*(height-2) / infoHandler.getTank().getMaxGas() : 0;
+		return infoHandler.getTank().getStored()*(height-2) / infoHandler.getTank().getMaxGas();
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		if(dummy)
 		{
-			return dummyType.getIcon();
+			return dummyType.getSprite();
 		}
 		
-		return (infoHandler.getTank() != null && infoHandler.getTank().getGas() != null && infoHandler.getTank().getGas().getGas() != null) ? infoHandler.getTank().getGas().getGas().getIcon() : null;
+		return (infoHandler.getTank() != null && infoHandler.getTank().getGas() != null && infoHandler.getTank().getGas().getGas() != null) ? infoHandler.getTank().getGas().getGas().getSprite() : null;
 	}
 
 	@Override
@@ -107,8 +112,8 @@ public class GuiGasGauge extends GuiGauge<Gas>
 		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() : LangUtils.localize("gui.empty");
 	}
 
-	public static interface IGasInfoHandler
+	public interface IGasInfoHandler
 	{
-		public GasTank getTank();
+		GasTank getTank();
 	}
 }

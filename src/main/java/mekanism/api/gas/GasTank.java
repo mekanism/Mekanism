@@ -147,7 +147,7 @@ public class GasTank
 
 	/**
 	 * Gets the amount of gas needed by this GasTank.
-	 * @return
+	 * @return Amount of gas needed
 	 */
 	public int getNeeded()
 	{

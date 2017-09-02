@@ -1,20 +1,22 @@
 package mekanism.common.base;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-import io.netty.buffer.ByteBuf;
-
 public interface ITileComponent
 {
-	public void tick();
+	void tick();
 
-	public void read(NBTTagCompound nbtTags);
+	void read(NBTTagCompound nbtTags);
 
-	public void read(ByteBuf dataStream);
+	void read(ByteBuf dataStream);
 
-	public void write(NBTTagCompound nbtTags);
+	void write(NBTTagCompound nbtTags);
 
-	public void write(ArrayList data);
+	void write(ArrayList<Object> data);
+	
+	void invalidate();
 }

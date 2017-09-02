@@ -1,20 +1,33 @@
 package mekanism.common.item;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.EnumColor;
+import mekanism.common.base.IItemNetwork;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemWalkieTalkie extends ItemMekanism
+public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 {
-	public IIcon[] icons = new IIcon[256];
-
+	public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
+	
+	public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
+	
 	public ItemWalkieTalkie()
 	{
 		super();
@@ -22,91 +35,78 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
-		super.addInformation(itemstack, entityplayer, list, flag);
+		super.addInformation(itemstack, world, list, flag);
 
 		list.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.localize("gui." + (getOn(itemstack) ? "on" : "off")));
 		list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
 	}
-
-	@Override
-	public IIcon getIconIndex(ItemStack itemStack)
+	
+	public static ModelResourceLocation getModel(int channel)
 	{
-		if(!getOn(itemStack))
-		{
-			return icons[0];
-		}
-
-		return icons[getChannel(itemStack)];
+		CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation("mekanism:WalkieTalkie_ch" + c, "inventory"));
+		
+		return CHANNEL_MODELS.get(channel);
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
 	{
-		icons[0] = register.registerIcon("mekanism:WalkieTalkieOff");
-
-		for(int i = 1; i <= 9; i++)
-		{
-			icons[i] = register.registerIcon("mekanism:WalkieTalkie_ch" + i);
-		}
-	}
-
-	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)
-	{
+		ItemStack itemStack = player.getHeldItem(hand);
+		
 		if(player.isSneaking())
 		{
 			setOn(itemStack, !getOn(itemStack));
+			
+			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 		}
 
-		return itemStack;
+		return new ActionResult<>(EnumActionResult.PASS, itemStack);
+	}
+	
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		return !ItemStack.areItemsEqual(oldStack, newStack);
 	}
 
 	public void setOn(ItemStack itemStack, boolean on)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.stackTagCompound.setBoolean("on", on);
+		ItemDataUtils.setBoolean(itemStack, "on", on);
 	}
 
 	public boolean getOn(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			return false;
-		}
-
-		return itemStack.stackTagCompound.getBoolean("on");
+		return ItemDataUtils.getBoolean(itemStack, "on");
 	}
 
 	public void setChannel(ItemStack itemStack, int channel)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.stackTagCompound.setInteger("channel", channel);
+		ItemDataUtils.setInt(itemStack, "channel", channel);
 	}
 
 	public int getChannel(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
-		{
-			return 1;
-		}
-
-		int channel = itemStack.stackTagCompound.getInteger("channel");
+		int channel = ItemDataUtils.getInt(itemStack, "channel");
 
 		if(channel == 0)
 		{
 			setChannel(itemStack, 1);
+			channel = 1;
 		}
 
-		return itemStack.stackTagCompound.getInteger("channel");
+		return channel;
+	}
+
+	@Override
+	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			int channel = dataStream.readInt();
+			setChannel(stack, channel);
+		}
 	}
 }

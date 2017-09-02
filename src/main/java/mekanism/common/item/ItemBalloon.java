@@ -5,30 +5,55 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
+import mekanism.common.base.IMetaItem;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBalloon extends ItemMekanism
+public class ItemBalloon extends ItemMekanism implements IMetaItem
 {
 	public ItemBalloon()
 	{
 		super();
 		setHasSubtypes(true);
-		BlockDispenser.dispenseBehaviorRegistry.putObject(this, new DispenserBehavior());
+		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(this, new DispenserBehavior());
+	}
+	
+	@Override
+	public String getTexture(int meta)
+	{
+		return "Balloon";
+	}
+	
+	@Override
+	public int getVariants()
+	{
+		return EnumColor.DYES.length;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public int getColorFromItemStack(ItemStack stack, int renderPass)
+	{
+		EnumColor dye = getColor(stack);
+		
+		return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
 	}
 
 	public EnumColor getColor(ItemStack stack)
@@ -37,8 +62,9 @@ public class ItemBalloon extends ItemMekanism
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tabs, List list)
+	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
 	{
+		if(!isInCreativeTab(tabs)) return;
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
 			EnumColor color = EnumColor.DYES[i];
@@ -53,91 +79,100 @@ public class ItemBalloon extends ItemMekanism
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
 	{
+		ItemStack itemstack = entityplayer.getHeldItem(hand);
+		
 		if(!world.isRemote)
 		{
-			Pos3D pos = new Pos3D();
-			pos.zPos += 0.3;
-			pos.xPos -= 0.4;
-			pos.rotateYaw(entityplayer.renderYawOffset);
-			pos.translate(new Pos3D(entityplayer));
+			Pos3D pos = new Pos3D(hand == EnumHand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
 
-			world.spawnEntityInWorld(new EntityBalloon(world, pos.xPos-0.5, pos.yPos-0.25, pos.zPos-0.5, getColor(itemstack)));
+			world.spawnEntity(new EntityBalloon(world, pos.x-0.5, pos.y-0.25, pos.z-0.5, getColor(itemstack)));
 		}
 
-		itemstack.stackSize--;
+		if(!entityplayer.capabilities.isCreativeMode)
+		{
+			itemstack.shrink(1);
+		}
 
-		return itemstack;
+		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 	}
 
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		String color = getColor(stack).getDyedName();
+		EnumColor color = getColor(stack);
+        String dyeName = color.getDyedName();
+
+        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + color.dyeName))
+        {
+            return LangUtils.localize(getUnlocalizedName(stack) + "." + color.dyeName);
+        }
 
 		if(getColor(stack) == EnumColor.BLACK)
 		{
-			color = EnumColor.DARK_GREY + getColor(stack).getDyeName();
+			dyeName = EnumColor.DARK_GREY + color.getDyeName();
 		}
 
-		return color + " " + LangUtils.localize("tooltip.balloon");
+		return dyeName + " " + LangUtils.localize("tooltip.balloon");
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
+		ItemStack stack = player.getHeldItem(hand);
+		
 		if(player.isSneaking())
 		{
-			AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+3, z+1);
+			AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));
 
-			List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
+			List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
 
 			if(balloonsNear.size() > 0)
 			{
-				return true;
+				return EnumActionResult.FAIL;
 			}
 
-			Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
-
-			if(obj.getBlock(world).isReplaceable(world, x, y, z))
+			if(world.getBlockState(pos).getBlock().isReplaceable(world, pos))
 			{
-				obj.yCoord--;
+				pos = pos.down();
 			}
 			
-			if(!world.isSideSolid(x, y, z, ForgeDirection.UP))
+			if(!world.isSideSolid(pos, EnumFacing.UP))
 			{
-				return true;
+				return EnumActionResult.FAIL;
 			}
 
-			if(canReplace(world, obj.xCoord, obj.yCoord+1, obj.zCoord) && canReplace(world, obj.xCoord, obj.yCoord+2, obj.zCoord))
+			if(canReplace(world, pos.up()) && canReplace(world, pos.up(2)))
 			{
-				world.setBlockToAir(obj.xCoord, obj.yCoord+1, obj.zCoord);
-				world.setBlockToAir(obj.xCoord, obj.yCoord+2, obj.zCoord);
+				world.setBlockToAir(pos.up());
+				world.setBlockToAir(pos.up(2));
 
 				if(!world.isRemote)
 				{
-					world.spawnEntityInWorld(new EntityBalloon(world, obj, getColor(stack)));
-					stack.stackSize--;
+					world.spawnEntity(new EntityBalloon(world, new Coord4D(pos, world), getColor(stack)));
+					stack.shrink(1);
 				}
+				
+				return EnumActionResult.SUCCESS;
 			}
 
-			return true;
+			return EnumActionResult.FAIL;
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
+	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
 	{
 		if(player.isSneaking())
 		{
-			if(!player.worldObj.isRemote)
+			if(!player.world.isRemote)
 			{
-				AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.ySize + 4, entity.posZ + 0.2);
+				AxisAlignedBB bound = new AxisAlignedBB(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.height + 4, entity.posZ + 0.2);
 
-				List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
+				List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
 
 				for(EntityBalloon balloon : balloonsNear)
 				{
@@ -147,8 +182,8 @@ public class ItemBalloon extends ItemMekanism
 					}
 				}
 
-				player.worldObj.spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
-				stack.stackSize--;
+				player.world.spawnEntity(new EntityBalloon(entity, getColor(stack)));
+				stack.shrink(1);
 			}
 
 			return true;
@@ -157,29 +192,25 @@ public class ItemBalloon extends ItemMekanism
 		return false;
 	}
 
-	private boolean canReplace(World world, int x, int y, int z)
+	private boolean canReplace(World world, BlockPos pos)
 	{
-		return world.isAirBlock(x, y, z) || world.getBlock(x, y, z).isReplaceable(world, x, y, z);
+		return world.isAirBlock(pos) || world.getBlockState(pos).getBlock().isReplaceable(world, pos);
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
 	
 	public class DispenserBehavior extends BehaviorDefaultDispenseItem
 	{
 		@Override
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
-			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
-			ForgeDirection side = ForgeDirection.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
+			Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimension());
+			EnumFacing side = (EnumFacing)source.getBlockState().getValue(BlockDispenser.FACING);
 
-			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.getFromSide(side).getBoundingBox());
+			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
 			boolean latched = false;
 			
 			for(EntityLivingBase entity : entities)
 			{
-				AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.ySize + 4, entity.posZ + 0.2);
+				AxisAlignedBB bound = new AxisAlignedBB(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.height + 4, entity.posZ + 0.2);
 
 				List<EntityBalloon> balloonsNear = source.getWorld().getEntitiesWithinAABB(EntityBalloon.class, bound);
 				boolean hasBalloon = false;
@@ -194,34 +225,34 @@ public class ItemBalloon extends ItemMekanism
 				
 				if(!hasBalloon)
 				{
-					source.getWorld().spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
+					source.getWorld().spawnEntity(new EntityBalloon(entity, getColor(stack)));
 					latched = true;
 				}
 			}
 			
 			if(!latched)
 			{
-				Pos3D pos = new Pos3D(coord);
+				Pos3D pos = new Pos3D(coord).translate(0, -0.5, 0);
 				
 				switch(side)
 				{
 					case DOWN:
-						pos.translate(0, -2.5, 0);
+						pos = pos.translate(0, -2.5, 0);
 						break;
 					case UP:
-						pos.translate(0, 0, 0);
+						pos = pos.translate(0, 0, 0);
 						break;
 					case NORTH:
-						pos.translate(0, -1, -0.5);
+						pos = pos.translate(0, -1, -0.5);
 						break;
 					case SOUTH:
-						pos.translate(0, -1, 0.5);
+						pos = pos.translate(0, -1, 0.5);
 						break;
 					case WEST:
-						pos.translate(-0.5, -1, 0);
+						pos = pos.translate(-0.5, -1, 0);
 						break;
 					case EAST:
-						pos.translate(0.5, -1, 0);
+						pos = pos.translate(0.5, -1, 0);
 						break;
 					default:
 						break;
@@ -229,11 +260,12 @@ public class ItemBalloon extends ItemMekanism
 				
 				if(!source.getWorld().isRemote)
 				{
-					source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), pos.xPos, pos.yPos, pos.zPos, getColor(stack)));
+					source.getWorld().spawnEntity(new EntityBalloon(source.getWorld(), pos.x, pos.y, pos.z, getColor(stack)));
 				}
 			}
 			
-			stack.stackSize--;
+			stack.shrink(1);
+			
 			return stack;
 		}
 	}

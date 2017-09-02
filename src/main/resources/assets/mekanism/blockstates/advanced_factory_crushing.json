@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryRight",
+      "front": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryFront",
+      "south": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryBack",
+      "west": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryRight",
+      "east": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryLeft",
+      "up": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryTop",
+      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryFrontOn",
+          "south": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryBackOn",
+          "west": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryRightOn",
+          "east": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryLeftOn",
+          "up": "mekanism:blocks/factory/advanced/crushing/AdvancedCrushingFactoryTopOn"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

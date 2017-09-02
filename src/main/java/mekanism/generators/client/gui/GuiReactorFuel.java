@@ -1,38 +1,36 @@
 package mekanism.generators.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.gas.GasTank;
-import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge.Type;
+import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
+import mekanism.generators.client.gui.element.GuiHeatTab;
+import mekanism.generators.client.gui.element.GuiStatTab;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorFuel extends GuiMekanism
@@ -45,40 +43,12 @@ public class GuiReactorFuel extends GuiMekanism
 	{
 		super(new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
-		{
-			@Override
-			public List<String> getInfo()
-			{
-				return tileEntity.isFormed() ? ListUtils.asList(
-						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler()
-		{
-			@Override
-			public GasTank getTank()
-			{
-				return tentity.deuteriumTank;
-			}
-		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 25, 64));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler()
-		{
-			@Override
-			public GasTank getTank()
-			{
-				return tentity.fuelTank;
-			}
-		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 79, 50));
-		guiElements.add(new GuiGasGauge(new IGasInfoHandler()
-		{
-			@Override
-			public GasTank getTank()
-			{
-				return tentity.tritiumTank;
-			}
-		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 133, 64));
+		guiElements.add(new GuiEnergyInfo(() -> tileEntity.isFormed() ? ListUtils.asList(
+                LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList(), this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
+		guiElements.add(new GuiGasGauge(() -> tentity.deuteriumTank, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 25, 64));
+		guiElements.add(new GuiGasGauge(() -> tentity.fuelTank, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 79, 50));
+		guiElements.add(new GuiGasGauge(() -> tentity.tritiumTank, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 133, 64));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -104,10 +74,10 @@ public class GuiReactorFuel extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getName(), 46, 6, 0x404040);
 		String str = LangUtils.localize("gui.reactor.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate());
-		fontRendererObj.drawString(str, (xSize / 2) - (fontRendererObj.getStringWidth(str) / 2), 35, 0x404040);
-		fontRendererObj.drawString("Edit Rate" + ":", 50, 117, 0x404040);
+		fontRenderer.drawString(str, (xSize / 2) - (fontRenderer.getStringWidth(str) / 2), 35, 0x404040);
+		fontRenderer.drawString("Edit Rate" + ":", 50, 117, 0x404040);
 	}
 
 	@Override
@@ -144,7 +114,7 @@ public class GuiReactorFuel extends GuiMekanism
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button)
+	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -157,14 +127,14 @@ public class GuiReactorFuel extends GuiMekanism
 		{
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
-				SoundHandler.playSound("gui.button.press");
-				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 10));
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 10));
 			}
 		}
 	}
 
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!injectionRateField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -179,7 +149,7 @@ public class GuiReactorFuel extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || isTextboxKey(c, i))
 		{
 			injectionRateField.textboxKeyTyped(c, i);
 		}
@@ -190,8 +160,9 @@ public class GuiReactorFuel extends GuiMekanism
 		if(!injectionRateField.getText().isEmpty())
 		{
 			int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
-
-			ArrayList data = new ArrayList();
+			toUse -= toUse%2;
+			
+			ArrayList<Object> data = new ArrayList<>();
 			data.add(0);
 			data.add(toUse);
 
@@ -211,7 +182,7 @@ public class GuiReactorFuel extends GuiMekanism
 
 		String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
 
-		injectionRateField = new GuiTextField(fontRendererObj, guiWidth + 98, guiHeight + 115, 26, 11);
+		injectionRateField = new GuiTextField(0, fontRenderer, guiWidth + 98, guiHeight + 115, 26, 11);
 		injectionRateField.setMaxStringLength(2);
 		injectionRateField.setText(prevRad);
 	}

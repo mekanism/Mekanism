@@ -8,11 +8,11 @@ import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-import cpw.mods.fml.client.config.DummyConfigElement.DummyCategoryElement;
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.GuiConfigEntries;
-import cpw.mods.fml.client.config.GuiConfigEntries.CategoryEntry;
-import cpw.mods.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.client.config.DummyConfigElement.DummyCategoryElement;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiConfigEntries;
+import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
+import net.minecraftforge.fml.client.config.IConfigElement;
 
 /**
  * Created by ben on 27/06/14.
@@ -27,7 +27,7 @@ public class GuiToolsConfig extends GuiConfig
 
 	private static List<IConfigElement> getConfigElements()
 	{
-		List<IConfigElement> list = new ArrayList<IConfigElement>();
+		List<IConfigElement> list = new ArrayList<>();
 		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tools.general"), "mekanism.configgui.ctgy.tools.general", GeneralEntry.class));
 		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tools.armor"), "mekanism.configgui.ctgy.tools.armor", ArmorEntry.class));
 		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tools.tools"), "mekanism.configgui.ctgy.tools.tools", ToolsEntry.class));

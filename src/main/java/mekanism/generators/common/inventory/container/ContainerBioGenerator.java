@@ -3,14 +3,13 @@ package mekanism.generators.common.inventory.container;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerBioGenerator extends Container
 {
@@ -36,7 +35,7 @@ public class ContainerBioGenerator extends Container
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
 
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 		tileEntity.open(inventory.player);
 	}
 
@@ -45,20 +44,20 @@ public class ContainerBioGenerator extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 		tileEntity.close(entityplayer);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -72,14 +71,14 @@ public class ContainerBioGenerator extends Container
 				{
 					if(!mergeItemStack(slotStack, 1, 2, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID == 1)
 				{
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -89,13 +88,13 @@ public class ContainerBioGenerator extends Container
 				{
 					if (!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -104,38 +103,38 @@ public class ContainerBioGenerator extends Container
 				{
 					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > 28)
 				{
 					if(!mergeItemStack(slotStack, 2, 28, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;
@@ -145,13 +144,7 @@ public class ContainerBioGenerator extends Container
 	{
 		if(FluidRegistry.isFluidRegistered("bioethanol"))
 		{
-			if(FluidContainerRegistry.getFluidForFilledItem(itemStack) != null)
-			{
-				if(FluidContainerRegistry.getFluidForFilledItem(itemStack).getFluid() == FluidRegistry.getFluid("bioethanol"))
-				{
-					return true;
-				}
-			}
+			return FluidUtil.getFluidContained(itemStack) != null && FluidUtil.getFluidContained(itemStack).getFluid() == FluidRegistry.getFluid("bioethanol");
 		}
 
 		return false;

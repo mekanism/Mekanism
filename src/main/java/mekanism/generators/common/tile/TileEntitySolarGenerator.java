@@ -1,27 +1,20 @@
 package mekanism.generators.common.tile;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
-import mekanism.api.MekanismConfig.generators;
-import mekanism.common.Mekanism;
-import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.MekanismUtils;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.biome.BiomeGenDesert;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import io.netty.buffer.ByteBuf;
 
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
+import java.util.ArrayList;
+
+import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
+import net.minecraft.world.biome.BiomeDesert;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
 {
@@ -40,11 +33,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public TileEntitySolarGenerator(String name, double maxEnergy, double output)
 	{
 		super("solar", name, maxEnergy, output);
-		inventory = new ItemStack[1];
+		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return new int[] {0};
 	}
@@ -53,7 +46,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
-		return 0.05F;
+		return 0.05F*super.getVolume();
 	}
 
 	@Override
@@ -67,11 +60,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		super.onUpdate();
 
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord))
+			if(world.isDaytime() && ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.isNether() && world.canSeeSky(getPos().add(0, 4, 0))) // TODO Check isNether call, maybe it should be hasSkyLight
 			{
 				seesSun = true;
 			}
@@ -92,11 +85,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert;
+		return world.provider.getBiomeForCoords(getPos()).getBiomeClass() == BiomeDesert.class;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 0)
 		{
@@ -125,15 +118,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public double getProduction()
 	{
-		double ret = 0;
-
 		if(seesSun)
 		{
-			ret = GENERATION_RATE;
+			double ret = GENERATION_RATE;
 
-			if(MekanismUtils.existsAndInstance(worldObj.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
+			if(MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
 			{
-				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
+				ret *= ((ISolarLevel)world.provider).getSolarEnergyMultiplier();
 			}
 
 			if(isDesert())
@@ -147,16 +138,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		return 0;
 	}
 
+    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
+
 	@Override
-	@Method(modid = "ComputerCraft")
-	public String[] getMethodNames()
+	public String[] getMethods()
 	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
+		return methods;
 	}
 
 	@Override
-	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -171,8 +162,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			case 4:
 				return new Object[] {seesSun};
 			default:
-				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
-				return null;
+				throw new NoSuchMethodException();
 		}
 	}
 
@@ -180,11 +170,15 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-		seesSun = dataStream.readBoolean();
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			seesSun = dataStream.readBoolean();
+		}
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 		data.add(seesSun);
@@ -192,9 +186,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public boolean sideIsOutput(EnumFacing side)
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(0));
+		return side == EnumFacing.DOWN;
 	}
 
 	@Override

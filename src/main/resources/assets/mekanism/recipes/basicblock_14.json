@@ -1,0 +1,28 @@
+{
+  "result": {
+    "item": "mekanism:basicblock",
+    "data": 14
+  },
+  "pattern": [
+    "CGC",
+    "IBI",
+    "III"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "#CIRCUITADVANCED"
+    },
+    "G": {
+      "ore": "paneGlass",
+      "type": "forge:ore_dict"
+    },
+    "I": {
+      "item": "mekanism:basicblock2",
+      "data": 0
+    }
+  }
+}

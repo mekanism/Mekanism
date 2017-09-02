@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -12,20 +12,23 @@ import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificatorFilter extends GuiMekanism
@@ -40,7 +43,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	
 	public boolean isNew;
 	
-	public ItemStack renderStack;
+	public ItemStack renderStack = ItemStack.EMPTY;
 	
 	public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tentity, int index)
 	{
@@ -120,10 +123,10 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 		if(isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 
-		filterText = new GuiTextField(fontRendererObj, guiWidth + 33, guiHeight + 48, 96, 12);
+		filterText = new GuiTextField(2, fontRenderer, guiWidth + 33, guiHeight + 48, 96, 12);
 		filterText.setMaxStringLength(TileEntityOredictionificator.MAX_LENGTH);
 		filterText.setFocused(true);
 		
@@ -137,49 +140,49 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.filter");
-		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 6, 0x404040);
+		fontRenderer.drawString(text, (xSize/2)-(fontRenderer.getStringWidth(text)/2), 6, 0x404040);
 		
-		fontRendererObj.drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
 		
 		if(filter.filter != null)
 		{
 			renderScaledText(filter.filter, 32, 38, 0x404040, 111);
 		}
 
-		if(renderStack != null)
+		if(!renderStack.isEmpty())
 		{
 			try {
-				GL11.glPushMatrix();
-				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 45, 19);
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glPopMatrix();
+				GlStateManager.pushMatrix();
+				RenderHelper.enableGUIStandardItemLighting();
+				itemRender.renderItemAndEffectIntoGUI(renderStack, 45, 19);
+				RenderHelper.disableStandardItemLighting();
+				GlStateManager.popMatrix();
 			} catch(Exception e) {}
 		}
 		
 		if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60)
 		{
-			drawCreativeTabHoveringText(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
+			drawHoveringText(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35)
 		{
-			if(renderStack != null)
+			if(!renderStack.isEmpty())
 			{
-				String name = MekanismUtils.getMod(renderStack);
+				String name = ItemRegistryUtils.getMod(renderStack);
 				String extra = name.equals("null") ? "" : " (" + name + ")";
 				
-				drawCreativeTabHoveringText(renderStack.getDisplayName() + extra, xAxis, yAxis);
+				drawHoveringText(renderStack.getDisplayName() + extra, xAxis, yAxis);
 			}
 		}
 
@@ -236,7 +239,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	}
 	
 	@Override
-	public void keyTyped(char c, int i)
+	public void keyTyped(char c, int i) throws IOException
 	{
 		if(!filterText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
@@ -249,14 +252,14 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			return;
 		}
 
-		if(Character.isLetter(c) || Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isLetter(c) || Character.isDigit(c) || isTextboxKey(c, i))
 		{
 			filterText.textboxKeyTyped(c, i);
 		}
 	}
 	
 	@Override
-	protected void actionPerformed(GuiButton guibutton)
+	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
 		
@@ -277,13 +280,13 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 					Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 52));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 			}
 		}
 		else if(guibutton.id == 1)
 		{
 			Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 52));
+			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 		}
 	}
 	
@@ -296,7 +299,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	}
 	
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button)
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
@@ -309,19 +312,19 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 52));
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 			}
 			
 			if(xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60)
 			{
-                SoundHandler.playSound("gui.button.press");
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setFilter();
 			}
 
 			if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				
 				if(filter.filter != null)
 				{
@@ -341,7 +344,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			
 			if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 			{
-				SoundHandler.playSound("gui.button.press");
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				
 				if(filter.filter != null)
 				{
@@ -365,7 +368,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	{
 		if(filter.filter == null || filter.filter.isEmpty())
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 			return;
 		}
 		
@@ -373,7 +376,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		
 		if(stacks.isEmpty())
 		{
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 			return;
 		}
 		
@@ -382,7 +385,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			renderStack = stacks.get(filter.index).copy();
 		}
 		else {
-			renderStack = null;
+			renderStack = ItemStack.EMPTY;
 			return;
 		}
 	}

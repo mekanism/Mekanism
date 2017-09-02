@@ -2,14 +2,17 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.inventory.InventoryList;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
-import mekanism.common.tile.TileEntityContainerBlock;
-
+import mekanism.common.tile.TileEntityQuantumEntangloporter;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class ContainerUpgradeManagement extends Container
 {
@@ -18,7 +21,19 @@ public class ContainerUpgradeManagement extends Container
 	public ContainerUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile)
 	{
 		tileEntity = tile;
-		addSlotToContainer(new SlotMachineUpgrade((TileEntityContainerBlock)tile, tileEntity.getComponent().getUpgradeSlot(), 154, 7));
+
+		//Bit of a hack I guess, but we need to give it access to the inventory list, not the Frequency
+		IInventory upgradeInv;
+		if (tileEntity instanceof TileEntityQuantumEntangloporter)
+		{
+			upgradeInv = new InventoryList(((TileEntityQuantumEntangloporter) tileEntity).inventory, (TileEntity) tileEntity);
+		}
+		else
+		{
+			upgradeInv = (TileEntityContainerBlock)tile;
+		}
+
+		addSlotToContainer(new SlotMachineUpgrade(upgradeInv, tileEntity.getComponent().getUpgradeSlot(), 154, 7));
 		
 		int slotY;
 
@@ -36,7 +51,7 @@ public class ContainerUpgradeManagement extends Container
 		}
 
 		((TileEntityContainerBlock)tileEntity).open(inventory.player);
-		((TileEntityContainerBlock)tileEntity).openInventory();
+		((TileEntityContainerBlock)tileEntity).openInventory(inventory.player);
 	}
 
 	@Override
@@ -45,19 +60,19 @@ public class ContainerUpgradeManagement extends Container
 		super.onContainerClosed(entityplayer);
 
 		((TileEntityContainerBlock)tileEntity).close(entityplayer);
-		((TileEntityContainerBlock)tileEntity).closeInventory();
+		((TileEntityContainerBlock)tileEntity).closeInventory(entityplayer);
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return ((TileEntityContainerBlock)tileEntity).isUseableByPlayer(entityplayer);
+		return ((TileEntityContainerBlock)tileEntity).isUsableByPlayer(entityplayer);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
@@ -71,13 +86,13 @@ public class ContainerUpgradeManagement extends Container
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
@@ -86,38 +101,38 @@ public class ContainerUpgradeManagement extends Container
 				{
 					if(!mergeItemStack(slotStack, 28, inventorySlots.size(), false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if(slotID > 27)
 				{
 					if(!mergeItemStack(slotStack, 1, 27, false))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else {
 					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}
 
-			if(slotStack.stackSize == 0)
+			if(slotStack.getCount() == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(ItemStack.EMPTY);
 			}
 			else {
 				currentSlot.onSlotChanged();
 			}
 
-			if(slotStack.stackSize == stack.stackSize)
+			if(slotStack.getCount() == stack.getCount())
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
-			currentSlot.onPickupFromSlot(player, slotStack);
+			currentSlot.onTake(player, slotStack);
 		}
 
 		return stack;

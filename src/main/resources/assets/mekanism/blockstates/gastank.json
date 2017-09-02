@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:gas_tank"
+  },
+  "variants": {
+    "facing": {
+      "up":    {"x": -90},
+      "down":  {"x":  90},
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y":  90},
+      "west":  {"y": -90}
+    },
+    "tier": {
+      "basic": {"textures": {"all": "mekanism:blocks/models/gas_tank_basic"}},
+      "advanced": {"textures": {"all": "mekanism:blocks/models/gas_tank_advanced"}},
+      "elite": {"textures": {"all": "mekanism:blocks/models/gas_tank_elite"}},
+      "ultimate": {"textures": {"all": "mekanism:blocks/models/gas_tank_ultimate"}},
+      "creative": {"textures": {"all": "mekanism:blocks/models/gas_tank_creative"}}
+    },
+    "inventory": [{}]
+  }
+}
+

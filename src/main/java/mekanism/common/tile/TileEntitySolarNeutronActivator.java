@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -10,33 +11,48 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
+import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IUpgradeTile;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
+import mekanism.common.security.ISecurityTile;
+import mekanism.common.tile.component.TileComponentSecurity;
+import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.GasUtils;
+import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.biome.BiomeGenDesert;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.biome.BiomeDesert;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager
+public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler
 {
 	public GasTank inputTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
 	
 	public static final int MAX_GAS = 10000;
-	public static final int TICKS_REQUIRED = 5;
 	
 	public int updateDelay;
 	
@@ -46,34 +62,36 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	
 	public int gasOutput = 256;
 	
-	public int recipeTicks = 0;
-	
 	public SolarNeutronRecipe cachedRecipe;
 	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
+	
 	public TileEntitySolarNeutronActivator()
 	{
 		super("SolarNeutronActivator");
-		inventory = new ItemStack[3];
+		upgradeComponent.setSupported(Upgrade.ENERGY, false);
+		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}
 
 	@Override
 	public void onUpdate() 
 	{
-		if(worldObj.isRemote && updateDelay > 0)
+		if(world.isRemote && updateDelay > 0)
 		{
 			updateDelay--;
 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(world, getPos());
 			}
 		}
 		
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
 			if(updateDelay > 0)
 			{
@@ -81,62 +99,53 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 				}
 			}
 			
-			if(inventory[0] != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
+			if(!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
-				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
+				inputTank.receive(GasUtils.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 			
-			if(inventory[1] != null && outputTank.getGas() != null)
+			if(!inventory.get(1).isEmpty() && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory[1], outputTank.getGas()), true);
+				outputTank.draw(GasUtils.addGas(inventory.get(1), outputTank.getGas()), true);
 			}
 			
 			SolarNeutronRecipe recipe = getRecipe();
 
-			boolean sky =  ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord);
+			boolean sky =  ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.isNether() && world.canSeeSky(getPos().up()); // TODO Check isNether call, maybe it should be hasSkyLight
 			
-			if(worldObj.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this))
+			if(world.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 				
-				if(recipeTicks == TICKS_REQUIRED)
-				{
-					operate(recipe);
-					recipeTicks = 0;
-				}
-				else {
-					recipeTicks++;
-				}
+				int operations = operate(recipe);
 			}
 			else {
 				setActive(false);
-				recipeTicks = 0;
 			}
 
 			if(outputTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), outputTank.getGas().getGas()))
-					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
-					}
-				}
+				outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
 			}
 		}
 	}
 	
+	public int getUpgradedUsage()
+	{
+		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+		possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
+		
+		return possibleProcess;
+	}
+	
 	public boolean isDesert()
 	{
-		return worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert;
+		return world.provider.getBiomeForCoords(getPos()) instanceof BiomeDesert;
 	}
 	
 	public SolarNeutronRecipe getRecipe()
@@ -161,9 +170,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		return recipe != null && recipe.canOperate(inputTank, outputTank);
 	}
 
-	public void operate(SolarNeutronRecipe recipe)
+	public int operate(SolarNeutronRecipe recipe)
 	{
-		recipe.operate(inputTank, outputTank);
+		int operations = getUpgradedUsage();
+		
+		recipe.operate(inputTank, outputTank, operations);
+		
+		return operations;
 	}
 	
 	@Override
@@ -171,36 +184,42 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super.handlePacketData(dataStream);
 
-		isActive = dataStream.readBoolean();
-		recipeTicks = dataStream.readInt();
-		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		if(dataStream.readBoolean())
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			isActive = dataStream.readBoolean();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
+	
+			if(dataStream.readBoolean())
+			{
+				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				inputTank.setGas(null);
+			}
+	
+			if(dataStream.readBoolean())
+			{
+				outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			}
+			else {
+				outputTank.setGas(null);
+			}
+	
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				updateDelay = general.UPDATE_DELAY;
+				isActive = clientActive;
+				MekanismUtils.updateBlock(world, getPos());
+			}
 		}
-		else {
-			inputTank.setGas(null);
-		}
-
-		if(dataStream.readBoolean())
-		{
-			outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			outputTank.setGas(null);
-		}
-
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList data)
+	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
 	{
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(recipeTicks);
 		data.add(controlType.ordinal());
 
 		if(inputTank.getGas() != null)
@@ -232,7 +251,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		super.readFromNBT(nbtTags);
 
 		isActive = nbtTags.getBoolean("isActive");
-		recipeTicks = nbtTags.getInteger("recipeTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
 		inputTank.read(nbtTags.getCompoundTag("inputTank"));
@@ -240,16 +258,17 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("recipeTicks", recipeTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		
 		nbtTags.setTag("inputTank", inputTank.write(new NBTTagCompound()));
 		nbtTags.setTag("outputTank", outputTank.write(new NBTTagCompound()));
+		
+		return nbtTags;
 	}
 
 	@Override
@@ -261,18 +280,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onPlace() 
 	{
-		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Coord4D.get(this));
+		MekanismUtils.makeBoundingBlock(world, Coord4D.get(this).offset(EnumFacing.UP).getPos(), Coord4D.get(this));
 	}
 
 	@Override
 	public void onBreak() 
 	{
-		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
-		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		world.setBlockToAir(getPos().up());
+		world.setBlockToAir(getPos());
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer) 
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
@@ -283,13 +302,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
-	{
-		return receiveGas(side, stack, true);
-	}
-
-	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer) 
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
@@ -300,27 +313,39 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return drawGas(side, amount, true);
+		return side == EnumFacing.DOWN && inputTank.canReceive(type);
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type) 
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return side == ForgeDirection.DOWN && inputTank.canReceive(type);
-	}
-
-	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type) 
-	{
-		return side == ForgeDirection.getOrientation(facing) && outputTank.canDraw(type);
+		return side == facing && outputTank.canDraw(type);
 	}
 	
 	@Override
-	public boolean canTubeConnect(ForgeDirection side) 
+	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == ForgeDirection.getOrientation(facing) || side == ForgeDirection.DOWN;
+		return side == facing || side == EnumFacing.DOWN;
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	{
+		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
+				|| super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	{
+		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
+		{
+			return (T)this;
+		}
+		
+		return super.getCapability(capability, side);
 	}
 
 	@Override
@@ -328,20 +353,20 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		if(inputTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+			ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 	
 	@Override
 	public void readSustainedData(ItemStack itemStack)
 	{
-		inputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputTank")));
-		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
+		inputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
+		outputTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
 	}
 
 	@Override
@@ -376,7 +401,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
@@ -399,5 +424,30 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public Object[] getTanks() 
 	{
 		return new Object[] {inputTank, outputTank};
+	}
+	
+	@Override
+	public TileComponentSecurity getSecurity()
+	{
+		return securityComponent;
+	}
+	
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
+	}
+	
+	@Override
+	public List<String> getInfo(Upgrade upgrade) 
+	{
+		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 }

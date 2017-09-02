@@ -1,26 +1,22 @@
 package mekanism.common.content.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.PacketHandler;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
-import mekanism.common.util.InventoryUtils;
-
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TOreDictFilter extends TransporterFilter
 {
 	public String oreDictName;
 
 	@Override
-	public boolean canFilter(ItemStack itemStack)
+	public boolean canFilter(ItemStack itemStack, boolean strict)
 	{
-		if(itemStack == null)
+		if(itemStack.isEmpty())
 		{
 			return false;
 		}
@@ -29,9 +25,9 @@ public class TOreDictFilter extends TransporterFilter
 	}
 
 	@Override
-	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
+	public Finder getFinder()
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new OreDictFinder(oreDictName));
+		return new OreDictFinder(oreDictName);
 	}
 
 	@Override
@@ -52,7 +48,7 @@ public class TOreDictFilter extends TransporterFilter
 	}
 
 	@Override
-	public void write(ArrayList data)
+	public void write(ArrayList<Object> data)
 	{
 		data.add(1);
 
@@ -88,6 +84,7 @@ public class TOreDictFilter extends TransporterFilter
 	public TOreDictFilter clone()
 	{
 		TOreDictFilter filter = new TOreDictFilter();
+		filter.allowDefault = allowDefault;
 		filter.color = color;
 		filter.oreDictName = oreDictName;
 
