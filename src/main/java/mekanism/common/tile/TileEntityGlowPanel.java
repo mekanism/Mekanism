@@ -112,7 +112,9 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	public static int hash(IExtendedBlockState state)
 	{
 		int hash = 1;
-		hash = 31 * hash + state.getValue(PropertyColor.INSTANCE).color.ordinal();
+		PropertyColor propColor = state.getValue(PropertyColor.INSTANCE);
+		EnumColor color = propColor != null ? propColor.color : EnumColor.WHITE;
+		hash = 31 * hash + color.ordinal();
 		hash = 31 * hash + state.getValue(BlockStateFacing.facingProperty).ordinal();
 		
 		return hash;

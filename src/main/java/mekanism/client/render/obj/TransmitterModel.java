@@ -178,7 +178,7 @@ public class TransmitterModel extends OBJBakedModelBase
 			EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
 			PropertyColor prop = ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE);
 			PropertyConnection connection = ((IExtendedBlockState)tempState).getValue(PropertyConnection.INSTANCE);
-			boolean sideIconOverride = getIconStatus(side, connection) > 0;
+			boolean sideIconOverride = connection != null && getIconStatus(side, connection) > 0;
 			
 			if(MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT)
 			{
@@ -228,7 +228,7 @@ public class TransmitterModel extends OBJBakedModelBase
 			EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
 			PropertyConnection connection = ((IExtendedBlockState)tempState).getValue(PropertyConnection.INSTANCE);
 			
-			if(groupName.endsWith("NONE") && getIconStatus(side, connection) == 2)
+			if(connection != null && groupName.endsWith("NONE") && getIconStatus(side, connection) == 2)
 			{
 				return true;
 			}

@@ -67,7 +67,7 @@ public class GlowPanelModel extends OBJBakedModelBase
 			return EnumColor.DYES[tempStack.getItemDamage()];
 		}
 		
-		if(tempState != null)
+		if(tempState != null && ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE) != null)
 		{
 			return ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE).color;
 		}
