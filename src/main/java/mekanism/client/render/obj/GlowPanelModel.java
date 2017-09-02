@@ -137,7 +137,6 @@ public class GlowPanelModel extends OBJBakedModelBase
     	if(state != null && tempState == null)
     	{
 	    	int hash = TileEntityGlowPanel.hash((IExtendedBlockState)state);
-			EnumColor color = ((IExtendedBlockState)state).getValue(PropertyColor.INSTANCE).color;
 			
 			if(!glowPanelCache.containsKey(hash))
 			{

@@ -122,7 +122,7 @@ public class TransmitterModel extends OBJBakedModelBase
 			
 			if(colorProp != null && colorProp.color != null)
 			{
-				color = extended.getValue(PropertyColor.INSTANCE).color.ordinal();
+				color = colorProp.color.ordinal();
 			}
 			
 			OBJState obj = extended.getValue(OBJProperty.INSTANCE);
