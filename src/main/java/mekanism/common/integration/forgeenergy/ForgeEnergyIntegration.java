@@ -20,25 +20,25 @@ public class ForgeEnergyIntegration implements IEnergyStorage
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) 
 	{
-		return rfToForge(tileEntity.receiveEnergy(side, forgeToRF(maxReceive), simulate));
+		return mekToForge(tileEntity.acceptEnergy(side, forgeToMek(maxReceive), simulate));
 	}
 
 	@Override
 	public int extractEnergy(int maxExtract, boolean simulate) 
 	{
-		return rfToForge(tileEntity.extractEnergy(side, forgeToRF(maxExtract), simulate));
+		return mekToForge(tileEntity.pullEnergy(side, forgeToMek(maxExtract), simulate));
 	}
 
 	@Override
 	public int getEnergyStored() 
 	{
-		return (int)Math.round(Math.min(Integer.MAX_VALUE, tileEntity.getEnergy()*general.TO_FORGE));
+		return Math.min(Integer.MAX_VALUE, mekToForge(tileEntity.getEnergy()));
 	}
 
 	@Override
 	public int getMaxEnergyStored()
 	{
-		return (int)Math.round(Math.min(Integer.MAX_VALUE, tileEntity.getMaxEnergy()*general.TO_FORGE));
+		return Math.min(Integer.MAX_VALUE, mekToForge(tileEntity.getMaxEnergy()));
 	}
 
 	@Override
@@ -52,14 +52,12 @@ public class ForgeEnergyIntegration implements IEnergyStorage
 	{
 		return tileEntity.sideIsConsumer(side);
 	}
-	
-	public static int rfToForge(int rf)
-	{
-		return (int)Math.round(rf*general.FROM_RF*general.TO_FORGE);
+
+	public static double forgeToMek(int forge){
+		return forge*general.FROM_FORGE;
 	}
-	
-	public static int forgeToRF(int forge)
-	{
-		return (int)Math.round(forge*general.FROM_FORGE*general.TO_RF);
+
+	public static int mekToForge(double mek){
+		return (int)Math.round(mek*general.TO_FORGE);
 	}
 }
