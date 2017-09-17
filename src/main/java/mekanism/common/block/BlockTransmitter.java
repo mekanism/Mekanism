@@ -63,8 +63,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
 	public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];
 	
-	public static AxisAlignedBB smallDefault = smallSides[6];
-	public static AxisAlignedBB largeDefault = largeSides[6];
+	public static AxisAlignedBB smallDefault;
+	public static AxisAlignedBB largeDefault;
 	
 	static
 	{
@@ -83,6 +83,9 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		largeSides[4] = new AxisAlignedBB(0.0, 0.25, 0.25, 0.25, 0.75, 0.75);
 		largeSides[5] = new AxisAlignedBB(0.75, 0.25, 0.25, 1.0, 0.75, 0.75);
 		largeSides[6] = new AxisAlignedBB(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
+
+		smallDefault = smallSides[6];
+		largeDefault = largeSides[6];
 	}
 	
 	public BlockTransmitter() 
@@ -402,6 +405,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     	{
     		return;
     	}
+
+    	if (box == null){
+    		throw new IllegalStateException("box should not be null");
+		}
     	
     	if(tile.getTransmitterType().getSize() == Size.SMALL)
     	{
