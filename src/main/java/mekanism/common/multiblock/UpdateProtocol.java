@@ -35,7 +35,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 	/**
 	 * Recursively loops through each node connected to the given TileEntity.
-	 * @param tile - the TileEntity to loop over
+	 * @param coord - coord to start with
+	 * @param queue - the queue to add next nodes to to avoid recursion
 	 */
 	public void loopThrough(Coord4D coord, Deque<Coord4D> queue)
 	{
