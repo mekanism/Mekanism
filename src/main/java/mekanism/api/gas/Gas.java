@@ -41,6 +41,11 @@ public class Gas
 		iconLocation = new ResourceLocation(icon);
 	}
 
+	public Gas(String s, ResourceLocation icon){
+		unlocalizedName = name = s;
+		iconLocation = icon;
+	}
+
 	/**
 	 * Creates a new Gas object that corresponds to the given Fluid
 	 */
