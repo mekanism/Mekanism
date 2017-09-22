@@ -9,13 +9,18 @@ public class GasRegistry
 {
 	private static ArrayList<Gas> registeredGasses = new ArrayList<>();
 
+	private static boolean initFinished = false;
+
 	/**
-	 * Register a new gas into GasRegistry.
+	 * Register a new gas into GasRegistry. Call this BEFORE post-init.
 	 * @param gas - Gas to register
 	 * @return the gas that has been registered, pulled right out of GasRegistry
 	 */
 	public static Gas register(Gas gas)
 	{
+		if (initFinished){
+			throw new IllegalStateException("Gasses must be registered before postInit.");
+		}
 		if(gas == null)
 		{
 			return null;
@@ -109,5 +114,12 @@ public class GasRegistry
 		}
 
 		return registeredGasses.indexOf(gas);
+	}
+
+	/**
+	 * Internal use only, don't call this.
+	 */
+	public static void postInit(){
+		initFinished = true;
 	}
 }

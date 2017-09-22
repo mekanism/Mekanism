@@ -834,6 +834,8 @@ public class Mekanism
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 		
 		logger.info("Hooking complete.");
+
+		GasRegistry.postInit();
 	}
 	
 	@SubscribeEvent
