@@ -34,9 +34,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	public Set<ValveData> valveViewing = new HashSet<ValveData>();
 
 	/** The capacity this tank has on the client-side. */
-	public int clientCapacity;
+	public int clientCapacity = 0;
 
-	public float prevScale;
+	public float prevScale = 0;
 
 	public TileEntityDynamicTank()
 	{
@@ -56,13 +56,16 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		
 		if(worldObj.isRemote)
 		{
-			if(structure != null && clientHasStructure && isRendering)
+			if(structure != null && clientHasStructure && isRendering && clientCapacity > 0)
 			{
 				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
 				
 				if(Math.abs(prevScale - targetScale) > 0.01)
 				{
 					prevScale = (9*prevScale + targetScale)/10;
+					if (prevScale < 0){
+						Mekanism.logger.error("prevScale < 0, target = {}, prev = {}", targetScale, prevScale);
+					}
 				}
 			}
 

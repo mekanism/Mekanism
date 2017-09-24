@@ -45,7 +45,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
 					FluidRenderer.getTankDisplay(data).render();
 				}
 				else {
-					FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();
+					FluidRenderer.getTankDisplay(data, tileEntity.prevScale > 0 ? tileEntity.prevScale : 0).render();
 				}
 
 				MekanismRenderer.glowOff();
