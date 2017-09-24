@@ -92,7 +92,7 @@ public class ContainerThermalEvaporationController extends Container
 					}
 				}
 			}
-			else if(tileEntity.hasRecipe(FluidUtil.getFluidContained(slotStack).getFluid()))
+			else if(FluidContainerUtils.isFluidContainer(slotStack) && tileEntity.hasRecipe(FluidUtil.getFluidContained(slotStack).getFluid()))
 			{
 				if(slotID != 0)
 				{
