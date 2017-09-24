@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:ingot",
+    "data": 3
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "nuggetRefinedGlowstone",
+      "type": "forge:ore_dict"
+    }
+  }
+}
