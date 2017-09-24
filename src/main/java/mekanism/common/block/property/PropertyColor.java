@@ -3,7 +3,7 @@ package mekanism.common.block.property;
 import mekanism.api.EnumColor;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public final class PropertyColor implements IUnlistedProperty<PropertyColor>
+public class PropertyColor implements IUnlistedProperty<PropertyColor>
 {
 	public static PropertyColor INSTANCE = new PropertyColor();
 	
