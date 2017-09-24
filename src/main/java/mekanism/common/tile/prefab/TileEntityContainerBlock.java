@@ -289,7 +289,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
 	}
 	
-	private CapabilityWrapperManager itemManager = new CapabilityWrapperManager(ISidedInventory.class, ItemHandlerWrapper.class);
+	private CapabilityWrapperManager<ISidedInventory, ItemHandlerWrapper> itemManager = new CapabilityWrapperManager<>(ISidedInventory.class, ItemHandlerWrapper.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)

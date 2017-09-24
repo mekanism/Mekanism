@@ -117,7 +117,7 @@ public final class ComputerCraftAPI
 	 * @see dan200.computercraft.api.peripheral.IComputerAccess#mountWritable(String, IWritableMount)
 	 * @see dan200.computercraft.api.filesystem.IMount
 	 */
-	public static IMount createResourceMount( Class modClass, String domain, String subPath )
+	public static IMount createResourceMount( Class<?> modClass, String domain, String subPath )
 	{
 		findCC();
 		if( computerCraft_createResourceMount != null )
@@ -288,7 +288,7 @@ public final class ComputerCraftAPI
 		}
 	}
 
-	private static Method findCCMethod( String name, Class[] args )
+	private static Method findCCMethod( String name, Class<?>[] args )
 	{
 		try {
             if( computerCraft != null )
@@ -303,7 +303,7 @@ public final class ComputerCraftAPI
 	}	
 	
 	private static boolean ccSearched = false;	
-	private static Class computerCraft = null;
+	private static Class<?> computerCraft = null;
     private static Method computerCraft_getVersion = null;
 	private static Method computerCraft_createUniqueNumberedSaveDir = null;
 	private static Method computerCraft_createSaveDirMount = null;

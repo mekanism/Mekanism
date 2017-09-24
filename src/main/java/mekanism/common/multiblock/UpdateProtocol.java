@@ -467,7 +467,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 						
 						if(tile instanceof TileEntityMultiblock)
 						{
-							((TileEntityMultiblock)tile).structure = null;
+							((TileEntityMultiblock<?>)tile).structure = null;
 						}
 						else if(tile instanceof IStructuralMultiblock)
 						{

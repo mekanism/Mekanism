@@ -39,7 +39,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
             {
                 if(tileEntity instanceof TileEntityMultiblock)
                 {
-                    ((TileEntityMultiblock)tileEntity).sendStructure = true;
+                    ((TileEntityMultiblock<?>)tileEntity).sendStructure = true;
                 }
 
                 if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))

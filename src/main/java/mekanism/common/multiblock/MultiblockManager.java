@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 public class MultiblockManager<T extends SynchronizedData<T>>
 {
-	private static Set<MultiblockManager> managers = new HashSet<>();
+	private static Set<MultiblockManager<?>> managers = new HashSet<>();
 	
 	public String name;
 	
@@ -65,7 +65,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	
 	public static void tick(World world)
 	{
-		for(MultiblockManager manager : managers)
+		for(MultiblockManager<?> manager : managers)
 		{
 			manager.tickSelf(world);
 		}
@@ -148,7 +148,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	
 	public static void reset()
 	{
-		for(MultiblockManager manager : managers)
+		for(MultiblockManager<?> manager : managers)
 		{
 			manager.inventories.clear();
 		}

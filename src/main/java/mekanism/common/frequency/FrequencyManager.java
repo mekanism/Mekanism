@@ -39,7 +39,7 @@ public class FrequencyManager
 	
 	private Class<? extends Frequency> frequencyClass;
 	
-	public FrequencyManager(Class c, String n)
+	public FrequencyManager(Class<? extends Frequency> c, String n)
 	{
 		frequencyClass = c;
 		name = n;
@@ -47,7 +47,7 @@ public class FrequencyManager
 		managers.add(this);
 	}
 	
-	public FrequencyManager(Class c, String n, UUID uuid)
+	public FrequencyManager(Class<? extends Frequency> c, String n, UUID uuid)
 	{
 		this(c, n);
 		
@@ -347,7 +347,7 @@ public class FrequencyManager
 				{
 					NBTTagCompound compound = list.getCompoundTagAt(i);
 					
-					Constructor c = Class.forName(frequencyClass).getConstructor(new Class[] {NBTTagCompound.class});
+					Constructor<?> c = Class.forName(frequencyClass).getConstructor(new Class[] {NBTTagCompound.class});
 					Frequency freq = (Frequency)c.newInstance(compound);
 					
 					loadedFrequencies.add(freq);

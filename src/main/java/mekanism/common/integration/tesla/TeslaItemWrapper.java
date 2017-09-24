@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.Optional.Method;
 public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, ITeslaConsumer, ITeslaProducer
 {
 	@Override
-	public boolean canProcess(Capability capability) 
+	public boolean canProcess(Capability<?> capability) 
 	{
 		return capability == Capabilities.TESLA_HOLDER_CAPABILITY ||
 				capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getItem().canReceive(getStack()) ||

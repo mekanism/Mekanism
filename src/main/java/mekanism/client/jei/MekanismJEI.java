@@ -318,7 +318,7 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipeCatalyst(type.getStack(), "mekanism." + type.getName());
 	}
 
-	private void addRecipes(IModRegistry registry, Recipe type, Class recipe, Class<? extends IRecipeWrapper> wrapper, String recipeCategoryUid)
+	private void addRecipes(IModRegistry registry, Recipe type, Class<?> recipe, Class<? extends IRecipeWrapper> wrapper, String recipeCategoryUid)
 	{
 		List<IRecipeWrapper> recipes = new ArrayList<>();
 

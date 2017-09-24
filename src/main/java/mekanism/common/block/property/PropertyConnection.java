@@ -5,7 +5,7 @@ import java.util.Arrays;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class PropertyConnection implements IUnlistedProperty<PropertyConnection>
+public final class PropertyConnection implements IUnlistedProperty<PropertyConnection>
 {
 	public static PropertyConnection INSTANCE = new PropertyConnection();
 	
@@ -37,9 +37,9 @@ public class PropertyConnection implements IUnlistedProperty<PropertyConnection>
 	}
 
 	@Override
-	public Class getType() 
+	public Class<PropertyConnection> getType() 
 	{
-		return getClass();
+		return PropertyConnection.class;
 	}
 
 	@Override
