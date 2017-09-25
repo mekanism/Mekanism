@@ -50,24 +50,20 @@ public class VoiceConnection extends Thread
 					try {
 						List<EntityPlayerMP> l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
-						for(Object obj : l)
+						for(EntityPlayerMP playerMP : l)
 						{
-							if(obj instanceof EntityPlayerMP)
-							{
-								EntityPlayerMP playerMP = (EntityPlayerMP)obj;
-								String playerIP = playerMP.getPlayerIP();
+							String playerIP = playerMP.getPlayerIP();
 
-								if(!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.foundLocal)
-								{
-									Mekanism.voiceManager.foundLocal = true;
-									username = playerMP.getName();
-									break;
-								}
-								else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
-								{
-									username = playerMP.getName();
-									break;
-								}
+							if(!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.foundLocal)
+							{
+								Mekanism.voiceManager.foundLocal = true;
+								username = playerMP.getName();
+								break;
+							}
+							else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
+							{
+								username = playerMP.getName();
+								break;
 							}
 						}
 
