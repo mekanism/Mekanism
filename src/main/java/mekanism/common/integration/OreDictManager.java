@@ -266,6 +266,7 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("dustDiamond"))
 		{
+			RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 3), new ItemStack(Blocks.DIAMOND_ORE));
 			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.DIAMOND));
 		}
