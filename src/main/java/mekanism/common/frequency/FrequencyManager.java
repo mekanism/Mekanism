@@ -110,25 +110,6 @@ public class FrequencyManager
 		}
 	}
 	
-	public int removeAll(String user)
-	{
-		int amount = 0;
-		
-		for(Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext();)
-		{
-			Frequency iterFreq = iter.next();
-			
-			if(iterFreq.ownerUUID.equals(user))
-			{
-				iter.remove();
-				dataHandler.markDirty();
-				amount++;
-			}
-		}
-		
-		return amount;
-	}
-	
 	public void deactivate(Coord4D coord)
 	{
 		for(Frequency freq : frequencies)
