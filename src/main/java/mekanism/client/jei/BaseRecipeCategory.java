@@ -14,6 +14,7 @@ import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.recipe.IRecipeCategory;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -27,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
+public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapper>, IGuiWrapper
 {
 	private static final GuiDummy gui = new GuiDummy();
 	
@@ -145,7 +146,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory, IGuiWrapper
 	}
 
 	@Override
-	public List getTooltipStrings(int mouseX, int mouseY) 
+	public List<String> getTooltipStrings(int mouseX, int mouseY) 
 	{
 		return Collections.emptyList();
 	}

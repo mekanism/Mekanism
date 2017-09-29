@@ -57,7 +57,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider
 	{
 		private ItemCapabilityWrapper wrapper;
 		
-		public abstract boolean canProcess(Capability capability);
+		public abstract boolean canProcess(Capability<?> capability);
 		
 		public ItemStack getStack()
 		{

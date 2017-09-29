@@ -208,7 +208,7 @@ public abstract class BlockBasic extends Block
 
 			if(tileEntity instanceof IMultiblock)
 			{
-				((IMultiblock)tileEntity).doUpdate();
+				((IMultiblock<?>)tileEntity).doUpdate();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
@@ -315,7 +315,7 @@ public abstract class BlockBasic extends Block
 					case 2:
 					case 7:
 					case 8:
-						TileEntityMultiblock tileEntity = (TileEntityMultiblock) MekanismUtils.getTileEntitySafe(world, pos);
+						TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
 
 						if(tileEntity != null)
 						{
@@ -506,7 +506,7 @@ public abstract class BlockBasic extends Block
 				return true;
 			}
 			
-			return ((IMultiblock)world.getTileEntity(pos)).onActivate(entityplayer, hand, stack);
+			return ((IMultiblock<?>)world.getTileEntity(pos)).onActivate(entityplayer, hand, stack);
 		}
 		else if(tile instanceof IStructuralMultiblock)
 		{
@@ -791,7 +791,7 @@ public abstract class BlockBasic extends Block
 
 			if(tileEntity instanceof IMultiblock)
 			{
-				((IMultiblock)tileEntity).doUpdate();
+				((IMultiblock<?>)tileEntity).doUpdate();
 			}
 			
 			if(tileEntity instanceof IStructuralMultiblock)

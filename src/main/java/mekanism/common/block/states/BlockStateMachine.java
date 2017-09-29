@@ -77,7 +77,7 @@ public class BlockStateMachine extends ExtendedBlockState
 	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 	public static final PropertyEnum<RecipeType> recipeProperty = PropertyEnum.create("recipe", RecipeType.class);
 
-	public BlockStateMachine(BlockMachine block, PropertyEnum typeProperty)
+	public BlockStateMachine(BlockMachine block, PropertyEnum<?> typeProperty)
 	{
 		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty, recipeProperty}, new IUnlistedProperty[] {});
 	}

@@ -37,9 +37,9 @@ public class PropertyConnection implements IUnlistedProperty<PropertyConnection>
 	}
 
 	@Override
-	public Class getType() 
+	public Class<PropertyConnection> getType() 
 	{
-		return getClass();
+		return PropertyConnection.class;
 	}
 
 	@Override

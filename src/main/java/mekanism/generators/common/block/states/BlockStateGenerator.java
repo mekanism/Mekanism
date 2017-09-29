@@ -47,7 +47,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
 
-	public BlockStateGenerator(BlockGenerator block, PropertyEnum typeProperty)
+	public BlockStateGenerator(BlockGenerator block, PropertyEnum<?> typeProperty)
 	{
 		super(block, new IProperty[] {BlockStateFacing.facingProperty, typeProperty, activeProperty}, new IUnlistedProperty[] {});
 	}

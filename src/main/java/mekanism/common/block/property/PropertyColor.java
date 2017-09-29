@@ -29,9 +29,9 @@ public class PropertyColor implements IUnlistedProperty<PropertyColor>
 	}
 
 	@Override
-	public Class getType() 
+	public Class<PropertyColor> getType() 
 	{
-		return getClass();
+		return PropertyColor.class;
 	}
 
 	@Override
