@@ -1,7 +1,9 @@
 package mekanism.common.multiblock;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +35,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 
 	/**
 	 * Recursively loops through each node connected to the given TileEntity.
-	 * @param tile - the TileEntity to loop over
+	 * @param coord - coord to start with
+	 * @param queue - the queue to add next nodes to to avoid recursion
 	 */
-	public void loopThrough(Coord4D coord)
+	public void loopThrough(Coord4D coord, Deque<Coord4D> queue)
 	{
 		World world = pointer.getWorld();
 
@@ -229,7 +232,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			{
 				if(!iteratedNodes.contains(sideCoord))
 				{
-					loopThrough(sideCoord);
+					queue.addLast(sideCoord);
 				}
 			}
 		}
@@ -466,7 +469,14 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public void doUpdate()
 	{
-		loopThrough(Coord4D.get(pointer));
+		Deque<Coord4D> pathingQueue = new LinkedList<>();
+		pathingQueue.add(Coord4D.get(pointer));
+		while (pathingQueue.peek() != null) {
+			Coord4D next = pathingQueue.removeFirst();
+			if (!iteratedNodes.contains(next)) {
+				loopThrough(next, pathingQueue);
+			}
+		}
 		
 		if(structureFound != null)
 		{

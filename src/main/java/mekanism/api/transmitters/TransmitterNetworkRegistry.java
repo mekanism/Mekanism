@@ -1,11 +1,14 @@
 package mekanism.api.transmitters;
 
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.LinkedList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
+import mekanism.common.Mekanism;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -239,6 +242,8 @@ public class TransmitterNetworkRegistry
 		public HashSet<IGridTransmitter<A, N>> connectedTransmitters = Sets.newHashSet();
 		public HashSet<N> networksFound = Sets.newHashSet();
 
+		private Deque<Coord4D> queue = new LinkedList<>();
+
 		public OrphanPathFinder(IGridTransmitter<A, N> start)
 		{
 			startPoint = start;
@@ -246,7 +251,14 @@ public class TransmitterNetworkRegistry
 
 		public void start()
 		{
-			iterate(startPoint.coord());
+			if (queue.peek() != null){
+				Mekanism.logger.error("OrphanPathFinder queue was not empty?!");
+				queue.clear();
+			}
+			queue.push(startPoint.coord());
+			while (queue.peek() != null) {
+				iterate(queue.removeFirst());
+			}
 		}
 
 		public void iterate(Coord4D from)
@@ -273,7 +285,7 @@ public class TransmitterNetworkRegistry
 						
 						if(directionCoord != null && !iterated.contains(directionCoord))
 						{
-							iterate(directionCoord);
+							queue.addLast(directionCoord);
 						}
 					}
 				}
