@@ -286,6 +286,15 @@ item.steelIngot.name=Steel Ingot
 item.copperIngot.name=Copper Ingot
 item.tinIngot.name=Tin Ingot
 
+//Nuggets
+item.obsidianNugget.name=Refined Obsidian Nugget
+item.osmiumNugget.name=Osmium Nugget
+item.bronzeNugget.name=Bronze Nugget
+item.glowstoneNugget.name=Glowstone Nugget
+item.steelNugget.name=Steel Nugget
+item.copperNugget.name=Copper Nugget
+item.tinNugget.name=Tin Nugget
+
 //Gasses
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen

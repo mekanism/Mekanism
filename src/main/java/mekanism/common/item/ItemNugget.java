@@ -5,35 +5,31 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class ItemIngot extends ItemMekanism implements IMetaItem
+public class ItemNugget extends ItemMekanism implements IMetaItem
 {
-	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze",
-										"Glowstone", "Steel", "Copper", 
-										"Tin"};
-
-	public ItemIngot()
+	public ItemNugget()
 	{
 		super();
 		setHasSubtypes(true);
 	}
-	
+
 	@Override
 	public String getTexture(int meta)
 	{
-		return en_USNames[meta] + "Ingot";
+		return ItemIngot.en_USNames[meta] + "Nugget";
 	}
-	
+
 	@Override
 	public int getVariants()
 	{
-		return en_USNames.length;
+		return ItemIngot.en_USNames.length;
 	}
 
 	@Override
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
 		if(!isInCreativeTab(tabs)) return;
-		for(int counter = 0; counter < en_USNames.length; counter++)
+		for(int counter = 0; counter < ItemIngot.en_USNames.length; counter++)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}
@@ -42,6 +38,6 @@ public class ItemIngot extends ItemMekanism implements IMetaItem
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + en_USNames[item.getItemDamage()].toLowerCase() + "Ingot";
+		return "item." + ItemIngot.en_USNames[item.getItemDamage()].toLowerCase() + "Nugget";
 	}
 }
