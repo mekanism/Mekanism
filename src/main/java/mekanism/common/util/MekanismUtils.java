@@ -199,7 +199,7 @@ public final class MekanismUtils
 		} catch(Exception e) {
 			result.clear();
 			result.add("null");
-			Mekanism.logger.error("An error occured while connecting to URL '" + urlToRead + ".'");
+			Mekanism.logger.error("An error occurred while connecting to URL '" + urlToRead + "'", e);
 		}
 
 		return result;
