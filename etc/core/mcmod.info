@@ -1,6 +1,6 @@
 [
 {
-  "modid": "Mekanism",
+  "modid": "mekanism",
   "name": "Mekanism",
   "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
   "version": "${version}",
