@@ -30,6 +30,7 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
 import mekanism.client.jei.machine.ChanceMachineRecipeCategory;
+import mekanism.client.jei.machine.DoubleMachineRecipeCategory;
 import mekanism.client.jei.machine.MachineRecipeCategory;
 import mekanism.client.jei.machine.advanced.ChemicalInjectionChamberRecipeWrapper;
 import mekanism.client.jei.machine.advanced.CombinerRecipeWrapper;
@@ -81,6 +82,7 @@ import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
@@ -179,7 +181,8 @@ public class MekanismJEI implements IModPlugin
 		SolarNeutronRecipeCategory solarNeutronCategory = new SolarNeutronRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		ThermalEvaporationRecipeCategory thermalEvaporationCategory = new ThermalEvaporationRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 
-		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryCombiner = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.COMBINER.name().toLowerCase(), "tile.MachineBlock.Combiner.name", ProgressBar.STONE);
+		DoubleMachineRecipeCategory doubleMachineRecipeCategoryCombiner = new DoubleMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.COMBINER.name().toLowerCase(), "tile.MachineBlock.Combiner.name", ProgressBar.STONE);
+
 		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryPurificationChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PURIFICATION_CHAMBER.name().toLowerCase(), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED);
 		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryOsmiumCompressor = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.OSMIUM_COMPRESSOR.name().toLowerCase(), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED);
 		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryChemicalInjectionChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CHEMICAL_INJECTION_CHAMBER.name().toLowerCase(), "nei.chemicalInjectionChamber", ProgressBar.YELLOW);
@@ -191,7 +194,7 @@ public class MekanismJEI implements IModPlugin
 
 		registry.addRecipeCategories(chemicalCrystallizerCategory, chemicalDissolutionChamberCategory, chemicalInfuserCategory, chemicalOxidizerCategory,
 				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, rotaryCondensentratorCategory, solarNeutronCategory,
-				thermalEvaporationCategory, advancedMachineRecipeCategoryCombiner, advancedMachineRecipeCategoryPurificationChamber, advancedMachineRecipeCategoryOsmiumCompressor,
+				thermalEvaporationCategory, doubleMachineRecipeCategoryCombiner, advancedMachineRecipeCategoryPurificationChamber, advancedMachineRecipeCategoryOsmiumCompressor,
 				advancedMachineRecipeCategoryChemicalInjectionChamber, chanceMachineRecipeCategoryPrecisionSawmill, machineRecipeCategoryEnrichment,
 				machineRecipeCategoryCrusher
 		);
@@ -212,7 +215,7 @@ public class MekanismJEI implements IModPlugin
 		addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
 
 		registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, "mekanism.combiner");
-		addRecipes(registry, Recipe.COMBINER, AdvancedMachineRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
+		addRecipes(registry, Recipe.COMBINER, DoubleMachineRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
 
 		registry.handleRecipes(PurificationRecipe.class, PurificationChamberRecipeWrapper::new, "mekanism.purification_chamber");
 		addRecipes(registry, Recipe.PURIFICATION_CHAMBER, AdvancedMachineRecipe.class, PurificationChamberRecipeWrapper.class, "mekanism.purification_chamber");

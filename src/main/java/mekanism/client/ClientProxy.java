@@ -190,6 +190,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
@@ -788,7 +789,7 @@ public class ClientProxy extends CommonProxy
 			case 4:
 				return new GuiOsmiumCompressor(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 5:
-				return new GuiCombiner(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new GuiCombiner(player.inventory, (TileEntityDoubleElectricMachine)tileEntity);
 			case 6:
 				return new GuiCrusher(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:

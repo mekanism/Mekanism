@@ -13,6 +13,7 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
+import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.inputs.InfusionInput;
@@ -29,6 +30,7 @@ import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
@@ -114,9 +116,21 @@ public final class RecipeHandler
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
 	 */
+	@Deprecated
 	public static void addCombinerRecipe(ItemStack input, ItemStack output)
 	{
 		addRecipe(Recipe.COMBINER, new CombinerRecipe(input, output));
+	}
+
+	/**
+	 * Add a Combiner recipe.
+	 * @param input - input ItemStack
+	 * @param extra - extra ItemStack
+	 * @param output - output ItemStack
+	 */
+	public static void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output)
+	{
+		addRecipe(Recipe.COMBINER, new CombinerRecipe(input, extra, output));
 	}
 
 	/**
@@ -445,6 +459,30 @@ public final class RecipeHandler
 		return null;
 	}
 
+
+	/**
+	 * Gets the DoubleMachineRecipe of the DoubleInput in the parameters, using the map in the paramaters.
+	 * @param input - DoubleInput
+	 * @param recipes - Map of recipes
+	 * @return DoubleMachineRecipe
+	 */
+	public static <RECIPE extends DoubleMachineRecipe<RECIPE>> RECIPE getRecipe(DoubleMachineInput input, Map<DoubleMachineInput, RECIPE> recipes)
+	{
+		if(input.isValid())
+		{
+			RECIPE recipe = recipes.get(input);
+
+			if(recipe == null)
+			{
+				recipe = recipes.get(input.wildCopy());
+			}
+
+			return recipe == null ? null : recipe.copy();
+		}
+
+		return null;
+	}
+
 	/**
 	 * Get the Electrolytic Separator Recipe corresponding to electrolysing a given fluid.
 	 * @param input - the FluidInput to electrolyse fluid from
@@ -580,7 +618,7 @@ public final class RecipeHandler
 		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.blockName, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
 		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.blockName, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
 		OSMIUM_COMPRESSOR(MachineType.OSMIUM_COMPRESSOR.blockName, AdvancedMachineInput.class, ItemStackOutput.class, OsmiumCompressorRecipe.class),
-		COMBINER(MachineType.COMBINER.blockName, AdvancedMachineInput.class, ItemStackOutput.class, CombinerRecipe.class),
+		COMBINER(MachineType.COMBINER.blockName, DoubleMachineInput.class, ItemStackOutput.class, CombinerRecipe.class),
 		CRUSHER(MachineType.CRUSHER.blockName, ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class),
 		PURIFICATION_CHAMBER(MachineType.PURIFICATION_CHAMBER.blockName, AdvancedMachineInput.class, ItemStackOutput.class, PurificationRecipe.class),
 		METALLURGIC_INFUSER(MachineType.METALLURGIC_INFUSER.blockName, InfusionInput.class, ItemStackOutput.class, MetallurgicInfuserRecipe.class),

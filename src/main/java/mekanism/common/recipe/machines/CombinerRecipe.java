@@ -1,20 +1,26 @@
 package mekanism.common.recipe.machines;
 
-import mekanism.common.MekanismFluids;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
+import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
-public class CombinerRecipe extends AdvancedMachineRecipe<CombinerRecipe>
+public class CombinerRecipe extends DoubleMachineRecipe<CombinerRecipe>
 {
-	public CombinerRecipe(AdvancedMachineInput input, ItemStackOutput output)
+	public CombinerRecipe(DoubleMachineInput input, ItemStackOutput output)
 	{
 		super(input, output);
 	}
 
+	public CombinerRecipe(ItemStack input, ItemStack extra, ItemStack output)
+	{
+		super(input, extra, output);
+	}
+
+	@Deprecated
 	public CombinerRecipe(ItemStack input, ItemStack output)
 	{
-		super(input, MekanismFluids.LiquidStone, output);
+		super(input, new ItemStack(Blocks.COBBLESTONE), output);
 	}
 
 	@Override
