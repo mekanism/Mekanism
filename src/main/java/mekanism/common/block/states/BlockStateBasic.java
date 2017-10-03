@@ -167,11 +167,15 @@ public class BlockStateBasic extends ExtendedBlockState
 		@Nullable
 		public static BasicBlockType get(BasicBlock blockType, int metadata)
 		{
-			BasicBlockType firstTry = values()[blockType.ordinal() << 4 | metadata];
-			
-			if(firstTry.blockType == blockType && firstTry.meta == metadata)
+			int index = blockType.ordinal() << 4 | metadata;
+			if (index < values().length)
 			{
-				return firstTry;
+				BasicBlockType firstTry = values()[index];
+
+				if(firstTry.blockType == blockType && firstTry.meta == metadata)
+				{
+					return firstTry;
+				}
 			}
 			
 			for(BasicBlockType type : values())
