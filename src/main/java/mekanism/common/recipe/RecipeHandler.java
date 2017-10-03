@@ -115,8 +115,10 @@ public final class RecipeHandler
 	 * Add a Combiner recipe.
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
+	 * @deprecated Replaced by {@link #addCombinerRecipe(ItemStack, ItemStack, ItemStack)}.
+	 * May be removed with Minecraft 1.13.
 	 */
-	@Deprecated // TODO remove this method in MC 1.13
+	@Deprecated
 	public static void addCombinerRecipe(ItemStack input, ItemStack output)
 	{
 		addRecipe(Recipe.COMBINER, new CombinerRecipe(input, output));

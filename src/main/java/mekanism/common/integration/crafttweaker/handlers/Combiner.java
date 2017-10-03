@@ -47,8 +47,12 @@ public class Combiner
         CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER.get(), recipe));
     }
 
+    /**
+     * @deprecated Replaced by {@link #addRecipe(IItemStack, IItemStack, IItemStack)}.
+     * May be removed with Minecraft 1.13.
+     */
     @ZenMethod
-    @Deprecated // TODO remove this method in MC 1.13
+    @Deprecated
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput)
     {
         if (itemInput == null || itemOutput == null)
