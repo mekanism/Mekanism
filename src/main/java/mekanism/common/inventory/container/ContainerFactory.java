@@ -144,7 +144,7 @@ public class ContainerFactory extends Container
 					return ItemStack.EMPTY;
 				}
 			}
-			else if(tileEntity.recipeType.getAnyRecipe(slotStack, tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null)
+			else if(tileEntity.recipeType.getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null)
 			{
 				if(!isInputSlot(slotID))
 				{
