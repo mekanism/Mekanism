@@ -40,6 +40,8 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
+import javax.annotation.Nullable;
+
 public class BlockStateBasic extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
@@ -134,6 +136,7 @@ public class BlockStateBasic extends ExtendedBlockState
 			isBeaconBase = beaconBase;
 		}
 
+		@Nullable
 		public static BasicBlockType get(IBlockState state)
 		{
 			if(state.getBlock() instanceof BlockBasic)
@@ -144,11 +147,13 @@ public class BlockStateBasic extends ExtendedBlockState
 			return null;
 		}
 
+		@Nullable
 		public static BasicBlockType get(ItemStack stack)
 		{
 			return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
 		}
 
+		@Nullable
 		public static BasicBlockType get(Block block, int meta)
 		{
 			if(block instanceof BlockBasic)
@@ -159,6 +164,7 @@ public class BlockStateBasic extends ExtendedBlockState
 			return null;
 		}
 
+		@Nullable
 		public static BasicBlockType get(BasicBlock blockType, int metadata)
 		{
 			BasicBlockType firstTry = values()[blockType.ordinal() << 4 | metadata];

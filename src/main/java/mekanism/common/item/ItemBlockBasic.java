@@ -144,7 +144,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		BasicBlockType type = BasicBlockType.get(itemstack);
 		
-		if(type.hasDescription)
+		if(type != null && type.hasDescription)
 		{
 			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 			{
@@ -289,7 +289,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		
 		if(type != null)
 		{
-			String name = getUnlocalizedName() + "." + BasicBlockType.get(itemstack).name;
+			String name = getUnlocalizedName() + "." + type.name;
 			
 			if(type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
 			{
