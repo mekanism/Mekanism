@@ -300,7 +300,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 			return name;
 		}
 
-		return "null";
+		return "Invalid Basic Block";
 	}
 	
 	@Override

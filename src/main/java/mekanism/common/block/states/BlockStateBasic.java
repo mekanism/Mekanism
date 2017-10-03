@@ -185,6 +185,8 @@ public class BlockStateBasic extends ExtendedBlockState
 					return type;
 				}
 			}
+
+			Mekanism.logger.error("Invalid BasicBlock. type: {}, meta: {}", blockType.ordinal(), metadata);
 			
 			return null;
 		}
