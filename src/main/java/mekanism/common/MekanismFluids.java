@@ -23,7 +23,6 @@ public class MekanismFluids
 	
 	//Internal gases
 	public static final Gas LiquidOsmium = new Gas("liquidosmium", "mekanism:blocks/liquid/LiquidOsmium");
-	public static final Gas LiquidStone = new Gas("liquidstone", "mekanism:blocks/liquid/LiquidStone");
 	public static final Gas Ethene = new Gas("ethene", "mekanism:blocks/liquid/LiquidEthene");
 	public static final Gas Sodium = new Gas("sodium", "mekanism:blocks/liquid/LiquidSodium");
 	public static final Gas Brine = new Gas("brine", "mekanism:blocks/liquid/LiquidBrine");
@@ -51,7 +50,6 @@ public class MekanismFluids
 		GasRegistry.register(Lithium).registerFluid("liquidlithium");
 		
 		GasRegistry.register(LiquidOsmium).setVisible(false);
-		GasRegistry.register(LiquidStone).setVisible(false);
 		
 		FluidRegistry.registerFluid(HeavyWater);
 		FluidRegistry.registerFluid(Steam);
