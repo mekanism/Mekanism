@@ -62,7 +62,7 @@ public class GuiDoubleElectricMachine extends GuiMekanism
 			}
 		}, getProgressType(), this, tileEntity.guiLocation, 77, 37));
 	}
-	
+
 	public ProgressBar getProgressType()
 	{
 		return ProgressBar.BLUE;

@@ -48,7 +48,7 @@ public class Combiner
     }
 
     @ZenMethod
-    @Deprecated
+    @Deprecated // TODO remove this method in MC 1.13
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput)
     {
         if (itemInput == null || itemOutput == null)

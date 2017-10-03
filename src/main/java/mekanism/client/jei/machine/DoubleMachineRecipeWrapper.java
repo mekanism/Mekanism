@@ -12,14 +12,14 @@ import net.minecraft.item.ItemStack;
 public abstract class DoubleMachineRecipeWrapper implements IRecipeWrapper
 {
 	private final DoubleMachineRecipe recipe;
-	
+
 	public DoubleMachineRecipeWrapper(DoubleMachineRecipe r)
 	{
 		recipe = r;
 	}
 
 	@Override
-	public void getIngredients(IIngredients ingredients) 
+	public void getIngredients(IIngredients ingredients)
 	{
 		DoubleMachineInput input = (DoubleMachineInput)recipe.getInput();
 		ingredients.setInputs(ItemStack.class, Arrays.asList(input.itemStack, input.extraStack));

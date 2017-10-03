@@ -17,9 +17,9 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput>
 		itemStack = item;
 		extraStack = extra;
 	}
-	
+
 	public DoubleMachineInput() {}
-	
+
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
@@ -47,10 +47,10 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput>
 			{
 				inventory.set(index, StackUtils.subtract(inventory.get(index), stack));
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -83,7 +83,7 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput>
 		{
 			return !other.isValid();
 		}
-		
+
 		return StackUtils.equalsWildcardWithNBT(itemStack, other.itemStack) && StackUtils.equalsWildcardWithNBT(extraStack, other.extraStack);
 	}
 

@@ -41,7 +41,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 		super(soundPath, name, maxEnergy, baseEnergyUsage, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "guibasicmachine.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
-		
+
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {0}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
@@ -56,7 +56,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
-	
+
 	@Override
 	public boolean upgrade(BaseTier upgradeTier)
 	{
@@ -64,13 +64,13 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 		{
 			return false;
 		}
-		
+
 		world.setBlockToAir(getPos());
 		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
-		
+
 		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
 		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-		
+
 		//Basic
 		factory.facing = facing;
 		factory.clientFacing = clientFacing;
@@ -78,13 +78,13 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 		factory.redstone = redstone;
 		factory.redstoneLastTick = redstoneLastTick;
 		factory.doAutoSync = doAutoSync;
-		
+
 		//Electric
 		factory.electricityStored = electricityStored;
 
 		//Noisy
 		factory.soundURL = soundURL;
-		
+
 		//Machine
 		factory.progress[0] = operatingTicks;
 		factory.updateDelay = updateDelay;
@@ -99,28 +99,28 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 		factory.recipeType = type;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
 		factory.securityComponent.readFrom(securityComponent);
-		
+
 		for(TransmissionType transmission : configComponent.transmissions)
 		{
 			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
 			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
 		}
-		
+
 		//Double Machine
 		factory.inventory.set(5, inventory.get(0));
 		factory.inventory.set(4, inventory.get(1));
 		factory.inventory.set(5+3, inventory.get(2));
 		factory.inventory.set(1, inventory.get(3));
 		factory.inventory.set(0, inventory.get(4));
-		
+
 		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
 		{
 			factory.recalculateUpgradables(upgrade);
 		}
-		
+
 		factory.upgraded = true;
 		factory.markDirty();
-		
+
 		return true;
 	}
 

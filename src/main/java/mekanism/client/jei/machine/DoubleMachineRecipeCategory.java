@@ -30,14 +30,14 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory
 
 	@Nullable
 	private DoubleMachineRecipe tempRecipe;
-	
+
 	public DoubleMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
 		super(helper, "mekanism:gui/guibasicmachine.png", name, unlocalized, progress);
-		
+
 		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), 28, 16, 144, 54);
 	}
-	
+
 	@Override
 	public void addGuiElements()
 	{
@@ -45,7 +45,7 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory
 		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 30, 34).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 52));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 111, 30));
-		
+
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
 			public double getLevel()
@@ -64,13 +64,13 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory
 	}
 
 	@Override
-	public IDrawable getBackground() 
+	public IDrawable getBackground()
 	{
 		return background;
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) 
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		if(!(recipeWrapper instanceof DoubleMachineRecipeWrapper))
 		{
@@ -78,11 +78,11 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory
 		}
 
 		tempRecipe = ((DoubleMachineRecipeWrapper)recipeWrapper).getRecipe();
-		
+
 		DoubleMachineInput input = (DoubleMachineInput)tempRecipe.recipeInput;
-		
+
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-		
+
 		itemStacks.init(0, true, 27, 0);
 		itemStacks.init(1, false, 87, 18);
 		itemStacks.init(2, false, 27, 36);

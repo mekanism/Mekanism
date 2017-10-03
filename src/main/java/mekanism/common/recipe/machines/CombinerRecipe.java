@@ -17,7 +17,7 @@ public class CombinerRecipe extends DoubleMachineRecipe<CombinerRecipe>
 		super(input, extra, output);
 	}
 
-	@Deprecated
+	@Deprecated // TODO remove this method in MC 1.13
 	public CombinerRecipe(ItemStack input, ItemStack output)
 	{
 		super(input, new ItemStack(Blocks.COBBLESTONE), output);

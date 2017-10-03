@@ -116,7 +116,7 @@ public final class RecipeHandler
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
 	 */
-	@Deprecated
+	@Deprecated // TODO remove this method in MC 1.13
 	public static void addCombinerRecipe(ItemStack input, ItemStack output)
 	{
 		addRecipe(Recipe.COMBINER, new CombinerRecipe(input, output));
