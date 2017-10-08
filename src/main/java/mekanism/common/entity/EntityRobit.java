@@ -293,7 +293,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		{
 			for(EntityItem item : items)
 			{
-				if(item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit)
+				if(item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || item.isDead)
 				{
 					continue;
 				}
