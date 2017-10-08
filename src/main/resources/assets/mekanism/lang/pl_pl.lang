@@ -423,7 +423,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=Komora wtrysku chemicznego
-nei.rotaryCondensentrator=Koncentrator obrotowy
 
 //**********//
 //GENERATORS//

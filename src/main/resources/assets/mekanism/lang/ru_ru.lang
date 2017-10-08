@@ -959,7 +959,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=Хим. инъекционная камера
-nei.rotaryCondensentrator=Рот. сгуститель
 
 //**********//
 //GENERATORS//

@@ -953,7 +953,6 @@ itemGroup.tabMekanism=通用机械
 
 //NEI stuff
 nei.chemicalInjectionChamber=化学压射室
-nei.rotaryCondensentrator=回旋式气液转换机
 
 //**********//
 //GENERATORS//

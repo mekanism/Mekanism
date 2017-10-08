@@ -619,7 +619,6 @@ itemGroup.tabMekanism=메카니즘[Mekanism]
 
 //NEI stuff
 nei.chemicalInjectionChamber=C. 주입기
-nei.rotaryCondensentrator=R. Condensentrator
 
 //**********//
 //GENERATORS//
