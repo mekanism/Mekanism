@@ -805,6 +805,7 @@ tooltip.flamethrower.modeBump=Flamethrower mode bumped to
 
 tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations
+tooltip.mekanism.SeismicReader=A portable machine that uses seismic vibrations to provide information on differing layers of the world.
 
 tooltip.Bin=A block used to store large quantities of a single type of item.
 tooltip.TeleporterFrame=The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.
