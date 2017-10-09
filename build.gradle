@@ -79,7 +79,7 @@ repositories {
     }
     maven {
         name 'thiakil'
-        url 'https://maven.thiakil.com'
+        url 'http://maven.thiakil.com'
     }
 }
 
