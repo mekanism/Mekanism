@@ -122,7 +122,7 @@ public final class OreDictManager
 			try {
 				for(ItemStack ore : OreDictionary.getOres("dust" + resource.getName()))
 				{
-					RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), StackUtils.size(OreDictionary.getOres("ore" + resource.getName()).get(0), 1));
+					RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), new ItemStack(Blocks.COBBLESTONE), StackUtils.size(OreDictionary.getOres("ore" + resource.getName()).get(0), 1));
 				}
 			} catch(Exception e) {}
 		}
@@ -146,7 +146,7 @@ public final class OreDictManager
 			for(ItemStack ore : OreDictionary.getOres("dust" + s))
 			{
 				try {
-					RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), StackUtils.size(OreDictionary.getOres("ore" + s).get(0), 1));
+					RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), new ItemStack(Blocks.COBBLESTONE), StackUtils.size(OreDictionary.getOres("ore" + s).get(0), 1));
 				} catch(Exception e) {}
 			}
 		}
@@ -260,13 +260,13 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
-			RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 4), new ItemStack(Blocks.OBSIDIAN));
+			RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 4), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.OBSIDIAN));
 			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 5));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustDiamond"))
 		{
-			RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 3), new ItemStack(Blocks.DIAMOND_ORE));
+			RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 3), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.DIAMOND_ORE));
 			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("DIAMOND"), 10));
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.DIAMOND));
 		}

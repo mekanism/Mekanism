@@ -16,6 +16,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.item.ItemGaugeDropper;
@@ -76,7 +77,7 @@ public class GuiFactory extends GuiMekanism
 
 		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
 		{
-			if(tileEntity.recipeType.usesFuel())
+			if(tileEntity.recipeType.getFuelType() == MachineFuelType.ADVANCED)
 			{
 				drawHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : LangUtils.localize("gui.none"), xAxis, yAxis);
 			}
@@ -119,7 +120,7 @@ public class GuiFactory extends GuiMekanism
 			drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
 		}
 
-		if(tileEntity.recipeType.usesFuel())
+		if(tileEntity.recipeType.getFuelType() == MachineFuelType.ADVANCED)
 		{
 			if(tileEntity.getScaledGasLevel(160) > 0)
 			{
