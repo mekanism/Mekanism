@@ -87,7 +87,7 @@ public abstract class Finder
 		@Override
 		public boolean modifies(ItemStack stack)
 		{
-			return StackUtils.equalsWildcard(itemType, stack);
+			return itemType.getHasSubtypes() ? StackUtils.equalsWildcard(itemType, stack) : itemType.getItem() == stack.getItem();
 		}
 	}
 	
