@@ -18,18 +18,25 @@ import javax.annotation.Nullable;
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
+	private final boolean condensentrating;
 
 	@Nullable
 	private RotaryCondensentratorRecipeWrapper tempRecipe;
 	
-	public RotaryCondensentratorRecipeCategory(IGuiHelper helper)
+	public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating)
 	{
-		super(helper, "mekanism:gui/nei/GuiRotaryCondensentrator.png", "rotary_condensentrator", "nei.rotaryCondensentrator", null);
+		super(helper,
+				"mekanism:gui/nei/GuiRotaryCondensentrator.png",
+				condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating",
+				condensentrating ? "gui.condensentrating" : "gui.decondensentrating",
+				null);
 
 		xOffset = 3;
 		yOffset = 12;
 		
 		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), xOffset, yOffset, 170, 71);
+
+		this.condensentrating = condensentrating;
 	}
 	
 	@Override
@@ -42,7 +49,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 		
-		if(tempRecipe.condensentrating)
+		if(condensentrating)
 		{
 			drawTexturedRect(64-xOffset, 39-yOffset, 176, 123, 48, 8);
 		}

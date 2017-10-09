@@ -940,7 +940,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=Ch. Vstřikovací Komora
-nei.rotaryCondensentrator=R. Kondenzátor
 
 //**********//
 //GENERATORS//

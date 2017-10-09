@@ -940,7 +940,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=化学注入室
-nei.rotaryCondensentrator=回転式流体凝縮器
 
 //**********//
 //GENERATORS//

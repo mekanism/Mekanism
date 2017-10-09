@@ -287,13 +287,13 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	private void collectItems()
 	{
-		List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().expand(1.5, 1.5, 1.5));
+		List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().grow(1.5, 1.5, 1.5));
 
 		if(items != null && !items.isEmpty())
 		{
 			for(EntityItem item : items)
 			{
-				if(item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit)
+				if(item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || item.isDead)
 				{
 					continue;
 				}
