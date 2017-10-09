@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:nugget",
+    "data": 5,
+    "count": 9
+  },
+  "pattern": [
+    "*"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotCopper",
+      "type": "forge:ore_dict"
+    }
+  }
+}

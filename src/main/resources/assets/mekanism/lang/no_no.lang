@@ -259,7 +259,6 @@ gas.sulfurTrioxideGas=Svoveltrioksyd
 gas.sulfuricAcid=Svovelsyre
 gas.hydrogenChloride=Hydrogenklorid
 gas.liquidOsmium=Flytende Osmium
-gas.liquidStone=Flytende Stein
 gas.ethene=Etylen
 gas.sodium=Natrium
 gas.brine=Brine i gassform
@@ -762,7 +761,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=C. Injeksjons Kammer
-nei.rotaryCondensentrator=R. Condensentrator
 
 //**********//
 //GENERATORS//

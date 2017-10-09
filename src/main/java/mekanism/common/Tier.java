@@ -700,7 +700,7 @@ public final class Tier
 			return;
 		}
 
-		for(Class c : Tier.class.getDeclaredClasses())
+		for(Class<?> c : Tier.class.getDeclaredClasses())
 		{
 			if(c.isEnum())
 			{

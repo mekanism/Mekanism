@@ -291,7 +291,6 @@ gas.sulfurTrioxideGas=Schwefeltrioxid
 gas.sulfuricAcid=Schwefelsäure
 gas.hydrogenChloride=Chlorwasserstoff
 gas.liquidOsmium=Flüssiges Osmium
-gas.liquidStone=Flüssiges Gestein
 gas.ethene=Ethylen
 gas.sodium=Natrium
 gas.brine=Gasförmiges Salzwasser
@@ -940,7 +939,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=C. Injektionskammer
-nei.rotaryCondensentrator=R.-Kondensentrator
 
 //**********//
 //GENERATORS//

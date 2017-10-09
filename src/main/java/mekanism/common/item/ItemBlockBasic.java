@@ -89,7 +89,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
     {
 		if(BasicBlockType.get(stack) == BasicBlockType.BIN)
 		{
-			return new InventoryBin(stack).getItemCount() == 0 ? super.getItemStackLimit(stack) : 1;
+			return 1; // Temporary no stacking due to #
 		}
 		
 		return super.getItemStackLimit(stack);
@@ -145,7 +145,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		BasicBlockType type = BasicBlockType.get(itemstack);
 		
-		if(type.hasDescription)
+		if(type != null && type.hasDescription)
 		{
 			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 			{
@@ -290,7 +290,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		
 		if(type != null)
 		{
-			String name = getUnlocalizedName() + "." + BasicBlockType.get(itemstack).name;
+			String name = getUnlocalizedName() + "." + type.name;
 			
 			if(type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
 			{
@@ -300,7 +300,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 			return name;
 		}
 
-		return "null";
+		return "Invalid Basic Block";
 	}
 	
 	@Override

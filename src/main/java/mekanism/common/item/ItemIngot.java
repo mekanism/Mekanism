@@ -33,7 +33,7 @@ public class ItemIngot extends ItemMekanism implements IMetaItem
 	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
 	{
 		if(!isInCreativeTab(tabs)) return;
-		for(int counter = 0; counter <= 6; counter++)
+		for(int counter = 0; counter < en_USNames.length; counter++)
 		{
 			itemList.add(new ItemStack(this, 1, counter));
 		}

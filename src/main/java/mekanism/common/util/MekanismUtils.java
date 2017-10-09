@@ -188,6 +188,7 @@ public final class MekanismUtils
 			URL url = new URL(urlToRead);
 			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 			conn.setRequestMethod("GET");
+			conn.setRequestProperty("User-Agent","Mekanism/"+Mekanism.versionNumber.toString());
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 			while((line = rd.readLine()) != null)
@@ -199,7 +200,7 @@ public final class MekanismUtils
 		} catch(Exception e) {
 			result.clear();
 			result.add("null");
-			Mekanism.logger.error("An error occured while connecting to URL '" + urlToRead + ".'");
+			Mekanism.logger.error("An error occurred while connecting to URL '" + urlToRead + "'", e);
 		}
 
 		return result;

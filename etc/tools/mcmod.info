@@ -1,6 +1,6 @@
 [
 {
-  "modid": "MekanismTools",
+  "modid": "mekanismtools",
   "name": "MekanismTools",
   "description": "Tools module for Mekanism.",
   "version": "${version}",

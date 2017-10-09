@@ -23,6 +23,7 @@ import mekanism.common.inventory.container.ContainerChemicalOxidizer;
 import mekanism.common.inventory.container.ContainerChemicalWasher;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
+import mekanism.common.inventory.container.ContainerDoubleElectricMachine;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.inventory.container.ContainerElectricMachine;
 import mekanism.common.inventory.container.ContainerElectricPump;
@@ -109,6 +110,7 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
@@ -432,7 +434,7 @@ public class CommonProxy implements IGuiProvider
 			case 4:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 5:
-				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
+				return new ContainerDoubleElectricMachine(player.inventory, (TileEntityDoubleElectricMachine)tileEntity);
 			case 6:
 				return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine)tileEntity);
 			case 7:

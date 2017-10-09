@@ -10,7 +10,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergyStorage
 {
 	@Override
-	public boolean canProcess(Capability capability) 
+	public boolean canProcess(Capability<?> capability) 
 	{
 		return capability == CapabilityEnergy.ENERGY;
 	}

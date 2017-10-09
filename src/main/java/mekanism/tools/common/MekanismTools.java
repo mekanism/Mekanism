@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig.tools;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -30,6 +32,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid = "mekanismtools", name = "MekanismTools", version = "9.4.1", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
 @Mod.EventBusSubscriber()
@@ -100,6 +103,9 @@ public class MekanismTools implements IModule
 
 		//Load the proxy
 		proxy.loadConfiguration();
+
+		//Load this module
+		addRecipes();
 		
 		//Finalization
 		Mekanism.logger.info("Loaded MekanismTools module.");
@@ -298,6 +304,67 @@ public class MekanismTools implements IModule
 
 		ToolsItems.initializeItems();
 		ToolsItems.setHarvestLevels();
+	}
+
+	public void addRecipes() {
+		//Furnace Recipes
+		GameRegistry.addSmelting(ToolsItems.IronPaxel, new ItemStack(Items.IRON_NUGGET), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GoldPaxel, new ItemStack(Items.GOLD_NUGGET), 0.1F);
+
+		GameRegistry.addSmelting(ToolsItems.GlowstonePaxel, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstonePickaxe, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneAxe, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneShovel, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneHoe, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneSword, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneHelmet, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneChestplate, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneLeggings, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.GlowstoneBoots, new ItemStack(MekanismItems.Nugget, 1, 3), 0.1F);
+
+		GameRegistry.addSmelting(ToolsItems.BronzePaxel, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzePickaxe, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeAxe, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeShovel, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeHoe, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeSword, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeHelmet, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeChestplate, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeLeggings, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.BronzeBoots, new ItemStack(MekanismItems.Nugget, 1, 2), 0.1F);
+
+		GameRegistry.addSmelting(ToolsItems.OsmiumPaxel, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumPickaxe, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumAxe, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumShovel, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumHoe, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumSword, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumHelmet, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumChestplate, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumLeggings, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.OsmiumBoots, new ItemStack(MekanismItems.Nugget, 1, 1), 0.1F);
+
+		GameRegistry.addSmelting(ToolsItems.ObsidianPaxel, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianPickaxe, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianAxe, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianShovel, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianHoe, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianSword, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianHelmet, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianChestplate, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianLeggings, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.ObsidianBoots, new ItemStack(MekanismItems.Nugget, 1, 0), 0.1F);
+
+		GameRegistry.addSmelting(ToolsItems.SteelPaxel, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelPickaxe, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelAxe, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelShovel, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelHoe, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelSword, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelHelmet, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelChestplate, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelLeggings, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
+		GameRegistry.addSmelting(ToolsItems.SteelBoots, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
 	}
 
 	@SubscribeEvent

@@ -1,6 +1,6 @@
 [
 {
-  "modid": "MekanismGenerators",
+  "modid": "mekanismgenerators",
   "name": "MekanismGenerators",
   "description": "Generators module of Mekanism.",
   "version": "${version}",

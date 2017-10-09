@@ -1,0 +1,18 @@
+{
+  "result": {
+    "item": "mekanism:ingot",
+    "data": 1
+  },
+  "pattern": [
+    "***",
+    "***",
+    "***"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "nuggetOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

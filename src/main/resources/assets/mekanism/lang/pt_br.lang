@@ -291,7 +291,6 @@ gas.sulfurTrioxideGas=Trióxido de Enxofre
 gas.sulfuricAcid=Ácido Sulfúrico
 gas.hydrogenChloride=Cloreto de Hidrogênio
 gas.liquidOsmium=Ósmio Líquido
-gas.liquidStone=Pedra Líquida
 gas.ethene=Etileno
 gas.sodium=Sódio
 gas.brine=Salmoura Gasosa
@@ -941,7 +940,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=Câm. Injeção Quím.
-nei.rotaryCondensentrator=Condensentrador Rot.
 
 //**********//
 //GENERATORS//

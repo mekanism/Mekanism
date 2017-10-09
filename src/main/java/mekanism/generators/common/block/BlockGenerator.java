@@ -154,7 +154,7 @@ public abstract class BlockGenerator extends BlockContainer
 			
 			if(tileEntity instanceof IMultiblock)
 			{
-				((IMultiblock)tileEntity).doUpdate();
+				((IMultiblock<?>)tileEntity).doUpdate();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
@@ -206,7 +206,7 @@ public abstract class BlockGenerator extends BlockContainer
 		
 		if(!world.isRemote && tileEntity instanceof IMultiblock)
 		{
-			((IMultiblock)tileEntity).doUpdate();
+			((IMultiblock<?>)tileEntity).doUpdate();
 		}
 	}
 
@@ -411,7 +411,7 @@ public abstract class BlockGenerator extends BlockContainer
 		
 		if(metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta || metadata == GeneratorType.TURBINE_VENT.meta)
 		{
-			return ((IMultiblock)tileEntity).onActivate(entityplayer, hand, stack);
+			return ((IMultiblock<?>)tileEntity).onActivate(entityplayer, hand, stack);
 		}
 		
 		if(metadata == GeneratorType.TURBINE_ROTOR.meta)

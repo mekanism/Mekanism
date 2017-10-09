@@ -9,10 +9,12 @@ import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
+import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -45,21 +47,27 @@ public interface IFactory
 	 */
     void setRecipeType(int type, ItemStack itemStack);
 
+	public static enum MachineFuelType {
+		BASIC,
+		ADVANCED,
+		DOUBLE
+	}
+
 	public static enum RecipeType implements IStringSerializable
 	{
-		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, false, false, Recipe.ENERGIZED_SMELTER),
-		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, false, false, Recipe.ENRICHMENT_CHAMBER),
-		CRUSHING("Crushing", "crusher", MachineType.CRUSHER, false, false, Recipe.CRUSHER),
-		COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR, true, false, Recipe.OSMIUM_COMPRESSOR),
-		COMBINING("Combining", "combiner", MachineType.COMBINER, true, false, Recipe.COMBINER),
-		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER, true, true, Recipe.PURIFICATION_CHAMBER),
-		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, true, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
-		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, false, false, Recipe.METALLURGIC_INFUSER);
+		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, MachineFuelType.BASIC, false, Recipe.ENERGIZED_SMELTER),
+		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false, Recipe.ENRICHMENT_CHAMBER),
+		CRUSHING("Crushing", "crusher", MachineType.CRUSHER, MachineFuelType.BASIC, false, Recipe.CRUSHER),
+		COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false, Recipe.OSMIUM_COMPRESSOR),
+		COMBINING("Combining", "combiner", MachineType.COMBINER, MachineFuelType.DOUBLE, false, Recipe.COMBINER),
+		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.PURIFICATION_CHAMBER),
+		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
+		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER);
 
 		private String name;
 		private ResourceLocation sound;
 		private MachineType type;
-		private boolean usesFuel;
+		private MachineFuelType fuelType;
 		private boolean fuelSpeed;
 		private Recipe recipe;
 		private TileEntityAdvancedElectricMachine cacheTile;
@@ -83,7 +91,17 @@ public interface IFactory
 		{
 			return getRecipe(new AdvancedMachineInput(input, gas));
 		}
-		
+
+		public DoubleMachineRecipe getRecipe(DoubleMachineInput input)
+		{
+			return RecipeHandler.getRecipe(input, recipe.get());
+		}
+
+		public DoubleMachineRecipe getRecipe(ItemStack input, ItemStack extra)
+		{
+			return getRecipe(new DoubleMachineInput(input, extra));
+		}
+
 		public MetallurgicInfuserRecipe getRecipe(InfusionInput input)
 		{
 			return RecipeHandler.getMetallurgicInfuserRecipe(input);
@@ -94,11 +112,15 @@ public interface IFactory
 			return getRecipe(new InfusionInput(storage, input));
 		}
 
-		public MachineRecipe getAnyRecipe(ItemStack slotStack, Gas gasType, InfuseStorage infuse)
+		public MachineRecipe getAnyRecipe(ItemStack slotStack, ItemStack extraStack, Gas gasType, InfuseStorage infuse)
 		{
-			if(usesFuel())
+			if(fuelType == MachineFuelType.ADVANCED)
 			{
 				return getRecipe(slotStack, gasType);
+			}
+			else if(fuelType == MachineFuelType.DOUBLE)
+			{
+				return getRecipe(slotStack, extraStack);
 			}
 			else if(this == INFUSING)
 			{
@@ -125,7 +147,7 @@ public interface IFactory
 
 		public GasStack getItemGas(ItemStack itemstack)
 		{
-			if(usesFuel)
+			if(fuelType == MachineFuelType.ADVANCED)
 			{
 				return getTile().getItemGas(itemstack);
 			}
@@ -135,7 +157,7 @@ public interface IFactory
 
 		public int getSecondaryEnergyPerTick()
 		{
-			if(usesFuel)
+			if(fuelType == MachineFuelType.ADVANCED)
 			{
 				return getTile().BASE_SECONDARY_ENERGY_PER_TICK;
 			}
@@ -145,7 +167,7 @@ public interface IFactory
 
 		public boolean canReceiveGas(EnumFacing side, Gas type)
 		{
-			if(usesFuel)
+			if(fuelType == MachineFuelType.ADVANCED)
 			{
 				return getTile().canReceiveGas(side, type);
 			}
@@ -155,7 +177,7 @@ public interface IFactory
 
 		public boolean canTubeConnect(EnumFacing side)
 		{
-			if(usesFuel)
+			if(fuelType == MachineFuelType.ADVANCED)
 			{
 				return getTile().canTubeConnect(side);
 			}
@@ -165,7 +187,7 @@ public interface IFactory
 
 		public boolean isValidGas(Gas gas)
 		{
-			if(usesFuel)
+			if(fuelType == MachineFuelType.ADVANCED)
 			{
 				return getTile().isValidGas(gas);
 			}
@@ -188,6 +210,30 @@ public interface IFactory
 					ItemStack stack = ((AdvancedMachineInput)entry.getKey()).itemStack;
 
 					if(StackUtils.equalsWildcard(stack, itemStack))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		public boolean hasRecipeForExtra(ItemStack extraStack)
+		{
+			if(extraStack.isEmpty())
+			{
+				return false;
+			}
+
+			for(Object obj : recipe.get().entrySet())
+			{
+				if(((Map.Entry)obj).getKey() instanceof DoubleMachineInput)
+				{
+					Map.Entry entry = (Map.Entry)obj;
+					ItemStack stack = ((DoubleMachineInput)entry.getKey()).extraStack;
+
+					if(StackUtils.equalsWildcard(stack, extraStack))
 					{
 						return true;
 					}
@@ -238,9 +284,9 @@ public interface IFactory
 			return sound;
 		}
 
-		public boolean usesFuel()
+		public MachineFuelType getFuelType()
 		{
-			return usesFuel;
+			return fuelType;
 		}
 		
 		public boolean fuelEnergyUpgrades()
@@ -266,12 +312,12 @@ public interface IFactory
 			return type;
 		}
 
-		RecipeType(String s, String s1, MachineType t, boolean b, boolean b1, Recipe r)
+		RecipeType(String s, String s1, MachineType t, MachineFuelType ft, boolean b1, Recipe r)
 		{
 			name = s;
 			sound = new ResourceLocation("mekanism", "tile.machine." + s1);
 			type = t;
-			usesFuel = b;
+			fuelType = ft;
 			fuelSpeed = b1;
 			recipe = r;
 		}

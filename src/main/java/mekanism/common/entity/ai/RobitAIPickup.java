@@ -63,14 +63,14 @@ public class RobitAIPickup extends EntityAIBase
 			return true;
 		}
 
-		List items = theRobit.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
-		Iterator iter = items.iterator();
+		List<EntityItem> items = theRobit.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
+		Iterator<EntityItem> iter = items.iterator();
 		//Cached for slight performance
 		double closestDistance = -1;
 
 		while(iter.hasNext())
 		{
-			EntityItem entity = (EntityItem)iter.next();
+			EntityItem entity = iter.next();
 
 			double distance = theRobit.getDistanceToEntity(entity);
 

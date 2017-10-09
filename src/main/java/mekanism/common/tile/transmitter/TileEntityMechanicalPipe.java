@@ -335,7 +335,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
 	
-	public CapabilityWrapperManager manager = new CapabilityWrapperManager(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
+	public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)

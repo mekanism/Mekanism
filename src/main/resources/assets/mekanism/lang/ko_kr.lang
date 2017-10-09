@@ -232,7 +232,6 @@ gas.sulfurTrioxideGas=산산화 황
 gas.sulfuricAcid=황산
 gas.hydrogenChloride=염화 수소
 gas.liquidOsmium=액화 오스뮴
-gas.liquidStone=액화 돌
 gas.ethene=에틸렌
 gas.sodium=나트륨
 gas.brine=기체 소금물
@@ -619,7 +618,6 @@ itemGroup.tabMekanism=메카니즘[Mekanism]
 
 //NEI stuff
 nei.chemicalInjectionChamber=C. 주입기
-nei.rotaryCondensentrator=R. Condensentrator
 
 //**********//
 //GENERATORS//

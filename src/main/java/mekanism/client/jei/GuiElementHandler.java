@@ -18,7 +18,7 @@ public class GuiElementHandler implements IAdvancedGuiHandler
 	}
 
 	@Override
-	public List getGuiExtraAreas(GuiContainer gui)
+	public List<Rectangle> getGuiExtraAreas(GuiContainer gui)
 	{
 		if(gui instanceof GuiMekanism)
 		{

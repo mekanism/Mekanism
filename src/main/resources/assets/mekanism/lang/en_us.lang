@@ -286,6 +286,15 @@ item.steelIngot.name=Steel Ingot
 item.copperIngot.name=Copper Ingot
 item.tinIngot.name=Tin Ingot
 
+//Nuggets
+item.obsidianNugget.name=Refined Obsidian Nugget
+item.osmiumNugget.name=Osmium Nugget
+item.bronzeNugget.name=Bronze Nugget
+item.glowstoneNugget.name=Glowstone Nugget
+item.steelNugget.name=Steel Nugget
+item.copperNugget.name=Copper Nugget
+item.tinNugget.name=Tin Nugget
+
 //Gasses
 gas.hydrogen=Hydrogen
 gas.oxygen=Oxygen
@@ -296,7 +305,6 @@ gas.sulfurtrioxide=Sulfur Trioxide
 gas.sulfuricacid=Sulfuric Acid
 gas.hydrogenchloride=Hydrogen Chloride
 gas.liquidosmium=Liquid Osmium
-gas.liquidstone=Liquid Stone
 gas.ethene=Ethylene
 gas.sodium=Sodium
 gas.brine=Gaseous Brine
@@ -796,6 +804,7 @@ tooltip.flamethrower.modeBump=Flamethrower mode bumped to
 
 tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations
+tooltip.mekanism.SeismicReader=A portable machine that uses seismic vibrations to provide information on differing layers of the world.
 
 tooltip.Bin=A block used to store large quantities of a single type of item.
 tooltip.TeleporterFrame=The frame used to construct the Teleporter multiblock, allowing a portal to be generated within the structure.
@@ -963,7 +972,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=C. Injection Chamber
-nei.rotaryCondensentrator=R. Condensentrator
 
 //**********//
 //GENERATORS//

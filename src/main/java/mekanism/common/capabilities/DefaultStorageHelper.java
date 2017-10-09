@@ -18,7 +18,7 @@ public class DefaultStorageHelper
         public NBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side)
         {
             if(instance instanceof INBTSerializable)
-                return ((INBTSerializable)instance).serializeNBT();
+                return ((INBTSerializable<?>)instance).serializeNBT();
             return new NBTTagCompound();
         }
 
@@ -27,7 +27,7 @@ public class DefaultStorageHelper
         {
             if(instance instanceof INBTSerializable)
             {
-                Class<? extends NBTBase> nbtClass = ((INBTSerializable)instance).serializeNBT().getClass();
+                Class<? extends NBTBase> nbtClass = ((INBTSerializable<?>)instance).serializeNBT().getClass();
 
                 if(nbtClass.isInstance(nbt))
                 {

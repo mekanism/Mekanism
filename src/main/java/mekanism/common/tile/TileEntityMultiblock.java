@@ -45,7 +45,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public boolean isRendering;
 	
 	/** This multiblock segment's cached data */
-	public MultiblockCache cachedData = getNewCache();
+	public MultiblockCache<T> cachedData = getNewCache();
 	
 	/** This multiblock segment's cached inventory ID */
 	public String cachedID = null;

@@ -291,7 +291,6 @@ gas.sulfurTrioxideGas=三酸化硫黄
 gas.sulfuricAcid=硫酸
 gas.hydrogenChloride=塩化水素
 gas.liquidOsmium=オスミウム
-gas.liquidStone=石
 gas.ethene=エチレン
 gas.sodium=ナトリウム
 gas.brine=気化した鹹水
@@ -941,7 +940,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=化学注入室
-nei.rotaryCondensentrator=回転式流体凝縮器
 
 //**********//
 //GENERATORS//

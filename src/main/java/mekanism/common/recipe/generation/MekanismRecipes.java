@@ -42,6 +42,20 @@ public class MekanismRecipes {
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 13), "***", "***", "***", '*', "ingotTin");
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 9, 6), "*", '*', new ItemStack(MekanismBlocks.BasicBlock, 1, 13));
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.SaltBlock), "**", "**", '*', MekanismItems.Salt);
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 1, 0), "***", "***", "***", '*', "nuggetObsidian");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Nugget, 9, 0), "*", '*', "ingotObsidian");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 1, 1), "***", "***", "***", '*', "nuggetOsmium");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Nugget, 9, 1), "*", '*', "ingotOsmium");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 1, 2), "***", "***", "***", '*', "nuggetBronze");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Nugget, 9, 2), "*", '*', "ingotBronze");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 1, 3), "***", "***", "***", '*', "nuggetGlowstone");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Nugget, 9, 3), "*", '*', "ingotGlowstone");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 1, 4), "***", "***", "***", '*', "nuggetSteel");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Nugget, 9, 4), "*", '*', "ingotSteel");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 1, 5), "***", "***", "***", '*', "nuggetCopper");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Nugget, 9, 5), "*", '*', "ingotCopper");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Ingot, 1, 6), "***", "***", "***", '*', "nuggetTin");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.Nugget, 9, 6), "*", '*', "ingotTin");
 
         //Base Recipes
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.ObsidianTNT, 1), "***", "XXX", "***", '*', Blocks.OBSIDIAN, 'X', Blocks.TNT);

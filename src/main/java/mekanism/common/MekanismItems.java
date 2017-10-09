@@ -23,6 +23,7 @@ import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
+import mekanism.common.item.ItemNugget;
 import mekanism.common.item.ItemOtherDust;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
@@ -88,6 +89,7 @@ public class MekanismItems
 	public static final Item Sawdust = new ItemMekanism();
 	public static final Item Salt = new ItemMekanism();
 	public static final Item Ingot = new ItemIngot();
+	public static final Item Nugget = new ItemNugget();
 	public static final Item Clump = new ItemClump();
 	public static final Item DirtyDust = new ItemDirtyDust();
 	public static final Item Shard = new ItemShard();
@@ -103,6 +105,7 @@ public class MekanismItems
 		registry.register(init(ElectricBow, "ElectricBow"));
 		registry.register(init(Dust, "Dust"));
 		registry.register(init(Ingot, "Ingot"));
+		registry.register(init(Nugget, "Nugget"));
 		registry.register(init(EnergyTablet, "EnergyTablet"));
 		registry.register(init(SpeedUpgrade, "SpeedUpgrade"));
 		registry.register(init(EnergyUpgrade, "EnergyUpgrade"));

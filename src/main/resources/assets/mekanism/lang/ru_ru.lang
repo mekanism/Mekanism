@@ -296,7 +296,6 @@ gas.sulfurtrioxide=Триоксид серы
 gas.sulfuricacid=Серная кислота
 gas.hydrogenchloride=Хлороводород
 gas.liquidosmium=Жидкий осмий
-gas.liquidstone=Разжиженный камень
 gas.ethene=Этилен
 gas.sodium=Натрий
 gas.brine=Газообразный рассол
@@ -959,7 +958,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=Хим. инъекционная камера
-nei.rotaryCondensentrator=Рот. сгуститель
 
 //**********//
 //GENERATORS//

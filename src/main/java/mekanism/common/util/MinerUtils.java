@@ -43,7 +43,7 @@ public final class MinerUtils
 
 		if(silk && block.canSilkHarvest(world, obj.getPos(), state, null))
 		{
-			List<ItemStack> ret = new ArrayList<ItemStack>();
+			List<ItemStack> ret = new ArrayList<>();
 			if (getSilkTouchDrop != null)
 			{
 				try

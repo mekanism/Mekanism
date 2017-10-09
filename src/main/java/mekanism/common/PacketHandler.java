@@ -207,7 +207,7 @@ public class PacketHandler
 				}
 				else if(data instanceof ArrayList)
 				{
-					encode(((ArrayList)data).toArray(), output);
+					encode(((ArrayList<?>)data).toArray(), output);
 				}
 				else {
 					throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));

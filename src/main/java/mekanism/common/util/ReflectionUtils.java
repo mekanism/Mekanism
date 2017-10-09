@@ -12,7 +12,7 @@ public final class ReflectionUtils
 	 * @param fields - possible names of field to iterate through
 	 * @return value as an Object, cast as necessary
 	 */
-	public static Object getPrivateValue(Object obj, Class c, String[] fields)
+	public static <T> Object getPrivateValue(T obj, Class<? super T> c, String[] fields)
 	{
 		for(String field : fields)
 		{
@@ -35,7 +35,7 @@ public final class ReflectionUtils
 	 * @param c - Class the operation will be performed on
 	 * @param fields - possible names of field to iterate through
 	 */
-	public static void setPrivateValue(Object obj, Object value, Class c, String[] fields)
+	public static <T> void setPrivateValue(T obj, Object value, Class<? super T> c, String[] fields)
 	{
 		for(String field : fields)
 		{
@@ -56,7 +56,7 @@ public final class ReflectionUtils
 	 * @param params - the Types inserted as parameters into the method
 	 * @return private method
 	 */
-	public static Method getPrivateMethod(Class c, String[] methods, Class... params)
+	public static Method getPrivateMethod(Class<?> c, String[] methods, Class<?>... params)
 	{
 		for(String method : methods)
 		{

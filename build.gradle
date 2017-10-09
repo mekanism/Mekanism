@@ -77,6 +77,10 @@ repositories {
         name 'BlameJared - Crafttweaker'
         url 'http://maven.blamejared.com/'
     }
+    maven {
+        name 'thiakil'
+        url 'http://maven.thiakil.com'
+    }
 }
 
 // Define properties file
@@ -119,6 +123,7 @@ dependencies {
     deobfProvided "CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}"
     runtime "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}"
     deobfCompile "com.blamejared:MTLib:${config.mtlib_version}"
+    compile "dan200.computercraft:ComputerCraft:${config.computercraft_version}"
 }
 
 processResources

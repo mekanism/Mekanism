@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "mekanism:nugget",
+    "data": 3,
+    "count": 9
+  },
+  "pattern": [
+    "*"
+  ],
+  "type": "mekanism:ore_shaped",
+  "key": {
+    "*": {
+      "ore": "ingotRefinedGlowstone",
+      "type": "forge:ore_dict"
+    }
+  }
+}

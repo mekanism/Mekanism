@@ -265,7 +265,6 @@ gas.sulfurTrioxideGas=Triossido di zolfo
 gas.sulfuricAcid=Acido solforico
 gas.hydrogenChloride=Cloruro di idrogeno
 gas.liquidOsmium=Osmio liquido
-gas.liquidStone=Pietra liquida
 gas.ethene=Etilene
 gas.sodium=Sodio
 gas.brine=Salamoia gassosa
@@ -819,7 +818,6 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff -maybe will be added-
 //nei.chemicalInjectionChamber=C. Injection Chamber
-//nei.rotaryCondensentrator=R. Condensentrator
 
 //**********//
 //GENERATORS//

@@ -12,17 +12,17 @@ public class BlockStateFacing extends BlockStateContainer
 {
 	public static final PropertyDirection facingProperty = PropertyDirection.create("facing");
 
-	public BlockStateFacing(Block block, PropertyEnum typeProperty, PropertyBool activeProperty, PropertyEnum<BaseTier> tierProperty, PropertyEnum<RecipeType> recipeProperty)
+	public BlockStateFacing(Block block, PropertyEnum<?> typeProperty, PropertyBool activeProperty, PropertyEnum<BaseTier> tierProperty, PropertyEnum<RecipeType> recipeProperty)
 	{
 		super(block, facingProperty, typeProperty, activeProperty, tierProperty, recipeProperty);
 	}
 	
-	public BlockStateFacing(Block block, PropertyEnum typeProperty, PropertyBool activeProperty)
+	public BlockStateFacing(Block block, PropertyEnum<?> typeProperty, PropertyBool activeProperty)
 	{
 		super(block, facingProperty, typeProperty, activeProperty);
 	}
 
-	public BlockStateFacing(Block block, PropertyEnum typeProperty)
+	public BlockStateFacing(Block block, PropertyEnum<?> typeProperty)
 	{
 		super(block, facingProperty, typeProperty);
 	}
