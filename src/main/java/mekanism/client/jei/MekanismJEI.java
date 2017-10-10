@@ -195,7 +195,7 @@ public class MekanismJEI implements IModPlugin
 		MachineRecipeCategory machineRecipeCategoryCrusher = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CRUSHER.name().toLowerCase(), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH);
 
 		registry.addRecipeCategories(chemicalCrystallizerCategory, chemicalDissolutionChamberCategory, chemicalInfuserCategory, chemicalOxidizerCategory,
-				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, solarNeutronCategory,
+				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, rotaryCondensentratorCondensentratingCategory, rotaryCondensentratorDecondensentratingCategory solarNeutronCategory,
 				thermalEvaporationCategory, doubleMachineRecipeCategoryCombiner, advancedMachineRecipeCategoryPurificationChamber, advancedMachineRecipeCategoryOsmiumCompressor,
 				advancedMachineRecipeCategoryChemicalInjectionChamber, chanceMachineRecipeCategoryPrecisionSawmill, machineRecipeCategoryEnrichment,
 				machineRecipeCategoryCrusher
