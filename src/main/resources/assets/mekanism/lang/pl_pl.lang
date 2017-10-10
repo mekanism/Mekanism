@@ -286,6 +286,15 @@ item.steelIngot.name=Sztabka stali
 item.copperIngot.name=Sztabka miedzi
 item.tinIngot.name=Sztabka cyny
 
+//Nuggets
+item.obsidianNugget.name=Rafinowany samorodek obsydianu
+item.osmiumNugget.name=Samorodek osmu
+item.bronzeNugget.name=Samorodek brązu
+item.glowstoneNugget.name=Samorodek jasnogłazu
+item.steelNugget.name=Samorodek stali
+item.copperNugget.name=Samorodek miedzi
+item.tinNugget.name=Samorodek cyny
+
 //Gasses
 gas.hydrogen=Wodór
 gas.oxygen=Tlen
