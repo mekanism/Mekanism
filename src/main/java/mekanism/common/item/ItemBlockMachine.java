@@ -1000,18 +1000,4 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			}
 		}
 	}
-
-	@Override
-	public int getItemStackLimit(ItemStack stack)
-	{
-		if(MachineType.get(stack) == MachineType.FLUID_TANK)
-		{
-			if(getFluidStack(stack) != null)
-			{
-				return 1;
-			}
-			return 16;
-		}
-		return super.getItemStackLimit(stack);
-	}
 }
