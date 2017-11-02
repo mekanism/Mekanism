@@ -207,13 +207,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF));
+		return structure != null ? (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_RF)) : 0;
 	}
 
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF));
+		return structure != null ? (int)Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy()*general.TO_RF)) : 0;
 	}
 
 	@Override
