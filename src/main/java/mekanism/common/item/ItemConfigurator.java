@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import cofh.api.item.IToolHammer;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -53,9 +56,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @InterfaceList({
-	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = MekanismHooks.BUILDCRAFT_MOD_ID)
+	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = MekanismHooks.BUILDCRAFT_MOD_ID),
+	@Interface(iface = "cofh.api.item.IToolHammer", modid = MekanismHooks.COFH_API_MOD_ID)
 })
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IItemNetwork
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IItemNetwork, IToolHammer
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -282,7 +286,25 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	{
 		return getState(stack) == ConfiguratorMode.WRENCH;
 	}
-	
+
+	/*cofh IToolHammer */
+	@Override
+	public boolean isUsable(ItemStack stack, EntityLivingBase user, BlockPos pos) {
+		return getState(stack) == ConfiguratorMode.WRENCH;
+	}
+
+	@Override
+	public boolean isUsable(ItemStack stack, EntityLivingBase user, Entity entity) {
+		return getState(stack) == ConfiguratorMode.WRENCH;
+	}
+
+	@Override
+	public void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos) {}
+
+	@Override
+	public void toolUsed(ItemStack item, EntityLivingBase user, Entity entity) {}
+	/*end cofh IToolHammer */
+
 	public enum ConfiguratorMode
 	{
 		CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.localize() + ")", EnumColor.BRIGHT_GREEN, true),
