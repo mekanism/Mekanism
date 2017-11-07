@@ -54,6 +54,7 @@ public class FusionReactor
 	public static double burnTemperature = TemperatureUnit.AMBIENT.convertFromK(1E8, true);
 	public static double burnRatio = 1;
 	public int injectionRate = 0;
+	public static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
 
 	//Thermal characteristics
 	public static double plasmaHeatCapacity = 100;
@@ -449,7 +450,9 @@ public class FusionReactor
 	{
 		injectionRate = rate;
 		
-		int capRate = Math.max(1, rate);
+		int capRate = Math.min(Math.max(1, rate), MAX_INJECTION);
+
+		capRate -= capRate%2;
 		
 		controller.waterTank.setCapacity(TileEntityReactorController.MAX_WATER*capRate);
 		controller.steamTank.setCapacity(TileEntityReactorController.MAX_STEAM*capRate);
