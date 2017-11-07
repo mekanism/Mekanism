@@ -6,6 +6,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
@@ -15,6 +16,7 @@ import mekanism.common.block.states.BlockStateTransmitter;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.integration.multipart.MultipartMekanism;
+import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -212,14 +214,19 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 			return false;
 		}
 
-		if(MekanismUtils.hasUsableWrench(player, pos) && player.isSneaking())
+		IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+		if(wrenchHandler != null)
 		{
-			if(!world.isRemote)
+			RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), facing, pos);
+			if(wrenchHandler.canUseWrench(player, hand, stack, raytrace) && player.isSneaking())
 			{
-				dismantleBlock(state, world, pos, false);
-			}
+				if(!world.isRemote)
+				{
+					dismantleBlock(state, world, pos, false);
+				}
 
-			return true;
+				return true;
+			}
 		}
 
 		return false;

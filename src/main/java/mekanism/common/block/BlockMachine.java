@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
+import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
@@ -25,6 +26,7 @@ import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.content.entangloporter.InventoryFrequency;
+import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
@@ -420,51 +422,55 @@ public abstract class BlockMachine extends BlockContainer
 
 		if(!stack.isEmpty())
 		{
-			Item tool = stack.getItem();
-
-			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
+			IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+			if(wrenchHandler != null)
 			{
-				if(SecurityUtils.canAccess(entityplayer, tileEntity))
+				RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
+				if(wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace))
 				{
-					if(entityplayer.isSneaking())
+					if(SecurityUtils.canAccess(entityplayer, tileEntity))
 					{
-						dismantleBlock(state, world, pos, false);
+						wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
 
-						return true;
-					}
-
-					if(MekanismUtils.isBCWrench(tool))
-					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
-					}
-
-					int change = tileEntity.facing.rotateY().ordinal();
-
-					if(tileEntity instanceof TileEntityLogisticalSorter)
-					{
-						if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
+						if(entityplayer.isSneaking())
 						{
-							for(EnumFacing dir : EnumFacing.VALUES)
-							{
-								TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
+							dismantleBlock(state, world, pos, false);
 
-								if(tile instanceof IInventory)
+							return true;
+						}
+
+						if(tileEntity != null)
+						{
+							int change = tileEntity.facing.rotateY().ordinal();
+
+							if(tileEntity instanceof TileEntityLogisticalSorter)
+							{
+								if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
 								{
-									change = dir.getOpposite().ordinal();
-									break;
+									for(EnumFacing dir : EnumFacing.VALUES)
+									{
+										TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
+
+										if(tile instanceof IInventory)
+										{
+											change = dir.getOpposite().ordinal();
+											break;
+										}
+									}
 								}
 							}
+
+							tileEntity.setFacing((short)change);
+							world.notifyNeighborsOfStateChange(pos, this, true);
 						}
 					}
+					else
+					{
+						SecurityUtils.displayNoAccess(entityplayer);
+					}
 
-					tileEntity.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this, true);
-				} 
-				else {
-					SecurityUtils.displayNoAccess(entityplayer);
+					return true;
 				}
-
-				return true;
 			}
 		}
 

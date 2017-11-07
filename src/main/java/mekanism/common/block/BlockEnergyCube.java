@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.Random;
 
+import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -11,6 +12,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateEnergyCube;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -197,34 +199,34 @@ public class BlockEnergyCube extends BlockContainer
 
 		if(!stack.isEmpty())
 		{
-			Item tool = stack.getItem();
+			IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+			if (wrenchHandler != null) {
+				RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
+				if(wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
+					if(SecurityUtils.canAccess(entityplayer, tileEntity)) {
 
-			if(MekanismUtils.hasUsableWrench(entityplayer, pos))
-			{
-				if(SecurityUtils.canAccess(entityplayer, tileEntity))
-				{
-					if(entityplayer.isSneaking())
-					{
-						dismantleBlock(state, world, pos, false);
-						
-						return true;
+						wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
+
+						if(entityplayer.isSneaking())
+						{
+							dismantleBlock(state, world, pos, false);
+
+							return true;
+						}
+
+						if(tileEntity != null)
+						{
+							int change = tileEntity.facing.rotateAround(side.getAxis()).ordinal();
+
+							tileEntity.setFacing((short)change);
+							world.notifyNeighborsOfStateChange(pos, this, true);
+						}
+					} else {
+						SecurityUtils.displayNoAccess(entityplayer);
 					}
-	
-					if(MekanismUtils.isBCWrench(tool))
-	                {
-						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
-	                }
-	
-					int change = tileEntity.facing.rotateAround(side.getAxis()).ordinal();
-	
-					tileEntity.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this, true);
+
+					return true;
 				}
-				else {
-					SecurityUtils.displayNoAccess(entityplayer);
-				}
-				
-				return true;
 			}
 		}
 
