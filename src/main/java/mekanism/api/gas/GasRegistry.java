@@ -3,13 +3,14 @@ package mekanism.api.gas;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
 
 public class GasRegistry
 {
 	private static ArrayList<Gas> registeredGasses = new ArrayList<>();
-
-	private static boolean initFinished = false;
 
 	/**
 	 * Register a new gas into GasRegistry. Call this BEFORE post-init.
@@ -18,9 +19,7 @@ public class GasRegistry
 	 */
 	public static Gas register(Gas gas)
 	{
-		if (initFinished){
-			throw new IllegalStateException("Gasses must be registered before postInit.");
-		}
+		checkPhase();
 		if(gas == null)
 		{
 			return null;
@@ -116,10 +115,7 @@ public class GasRegistry
 		return registeredGasses.indexOf(gas);
 	}
 
-	/**
-	 * Internal use only, don't call this.
-	 */
-	public static void postInit(){
-		initFinished = true;
+	private static void checkPhase(){
+		Preconditions.checkState(Loader.instance().getLoaderState().ordinal() > LoaderState.INITIALIZATION.ordinal(), "Gasses must be registered before postInit.");
 	}
 }
