@@ -14,6 +14,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.content.miner.MModIDFilter;
@@ -241,7 +242,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 						{
 							// Process up button click
-							final ArrayList<Object> data = new ArrayList<>();
+							final TileNetworkList data = new TileNetworkList();
 							data.add(11);
 							data.add(getFilterIndex() + i);
 
@@ -257,7 +258,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 						{
 							// Process down button click
-							final ArrayList<Object> data = new ArrayList<>();
+							final TileNetworkList data = new TileNetworkList();
 							data.add(12);
 							data.add(getFilterIndex() + i);
 
@@ -322,7 +323,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
 			{
-				ArrayList<Object> data = new ArrayList<>();
+				TileNetworkList data = new TileNetworkList();
 				data.add(10);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -692,7 +693,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), 32));
 
-			ArrayList<Object> data = new ArrayList<>();
+			TileNetworkList data = new TileNetworkList();
 			data.add(6);
 			data.add(toUse);
 
@@ -708,7 +709,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
 
-			ArrayList<Object> data = new ArrayList<>();
+			TileNetworkList data = new TileNetworkList();
 			data.add(7);
 			data.add(toUse);
 
@@ -724,7 +725,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
 
-			ArrayList<Object> data = new ArrayList<>();
+			TileNetworkList data = new TileNetworkList();
 			data.add(8);
 			data.add(toUse);
 

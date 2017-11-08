@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.infuse.InfuseObject;
@@ -19,6 +17,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
@@ -338,7 +337,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

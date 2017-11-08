@@ -12,6 +12,7 @@ import mcmultipart.api.slot.EnumFaceSlot;
 import mcmultipart.api.slot.IPartSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.TileNetworkList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
@@ -91,9 +92,9 @@ public class MultipartTileNetworkJoiner implements ITileNetwork
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
-		ArrayList<Object> childData = new ArrayList<>();
+		TileNetworkList childData = new TileNetworkList();
 		for(byte slotValue : tileSideMap.keySet())
 		{
 			tileSideMap.get(slotValue).getNetworkedData(childData);
@@ -111,7 +112,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork
 	 * @param data The network data list
 	 * @param facing The side this part is attached to or <code>null</code> for the center slot
 	 */
-	public static void addMultipartHeader(TileEntity entity, ArrayList<Object> data, EnumFacing facing)
+	public static void addMultipartHeader(TileEntity entity, TileNetworkList data, EnumFacing facing)
 	{
 		int tileNetworkParts = 0;
 		IMultipartContainer container = MultipartMekanism.getContainer(entity.getWorld(), entity.getPos());

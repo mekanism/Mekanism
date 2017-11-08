@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
@@ -42,7 +43,7 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 
                     for(EntityPlayer iterPlayer : sorter.playersUsing)
                     {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)iterPlayer);
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
                     }
                 }
                 else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
@@ -53,7 +54,7 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 
                     for(EntityPlayer iterPlayer : miner.playersUsing)
                     {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)iterPlayer);
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
                     }
                 }
                 else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
@@ -64,7 +65,7 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 
                     for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
                     {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)iterPlayer);
+                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
                     }
                 }
             }
@@ -114,8 +115,8 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 			coord4D.write(dataStream);
 	
 			dataStream.writeByte(type);
-	
-			ArrayList<Object> data = new ArrayList<>();
+
+			TileNetworkList data = new TileNetworkList();
 	
 			if(type == 0)
 			{

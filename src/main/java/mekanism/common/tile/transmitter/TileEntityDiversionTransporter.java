@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -73,7 +74,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		data = super.getNetworkedData(data);
 
@@ -88,9 +89,9 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 	}
 
 	@Override
-	public ArrayList<Object> getSyncPacket(TransporterStack stack, boolean kill)
+	public TileNetworkList getSyncPacket(TransporterStack stack, boolean kill)
 	{
-		ArrayList<Object> data = super.getSyncPacket(stack, kill);
+		TileNetworkList data = super.getSyncPacket(stack, kill);
 
 		data.add(modes[0]);
 		data.add(modes[1]);
@@ -127,7 +128,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 		notifyTileChange();
 		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 		Coord4D coord = new Coord4D(getPos(), getWorld());
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new ArrayList<>())), new Range4D(coord));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())), new Range4D(coord));
 
 		return EnumActionResult.SUCCESS;
 	}

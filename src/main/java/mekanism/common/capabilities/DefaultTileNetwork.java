@@ -2,9 +2,8 @@ package mekanism.common.capabilities;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -14,7 +13,7 @@ public class DefaultTileNetwork implements ITileNetwork
 	public void handlePacketData(ByteBuf dataStream) throws Exception {}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data) 
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		return data;
 	}

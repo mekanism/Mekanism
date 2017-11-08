@@ -20,6 +20,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
@@ -84,16 +85,14 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 
 		if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
 		{
-			ArrayList<Object> data = new ArrayList<>();
-			data.add((byte)0);
+			TileNetworkList data = TileNetworkList.of((byte)0);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 		}
 		else if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			ArrayList<Object> data = new ArrayList<>();
-			data.add((byte)1);
+			TileNetworkList data = TileNetworkList.of((byte)1);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import mekanism.api.gas.Gas;
@@ -10,6 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
@@ -84,7 +84,7 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		if(collectedGas.getGasType() != null)
 		{

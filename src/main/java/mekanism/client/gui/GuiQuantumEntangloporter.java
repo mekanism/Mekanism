@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
@@ -107,8 +108,8 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		{
 			return;
 		}
-		
-		ArrayList<Object> data = new ArrayList<>();
+
+		TileNetworkList data = new TileNetworkList();
 		data.add(0);
 		data.add(freq);
 		data.add(!privateMode);
@@ -270,8 +271,8 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			if(selection != -1)
 			{
 				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
-				
-				ArrayList<Object> data = new ArrayList<>();
+
+				TileNetworkList data = new TileNetworkList();
 				data.add(1);
 				data.add(freq.name);
 				data.add(freq.publicFreq);

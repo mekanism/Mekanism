@@ -9,6 +9,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
@@ -123,8 +124,8 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 			if(xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				
-				ArrayList<Object> data = new ArrayList<>();
+
+				TileNetworkList data = new TileNetworkList();
 				data.add(0);
 				
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -139,8 +140,8 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 					if(type != tileEntity.logicType)
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-						
-						ArrayList<Object> data = new ArrayList<>();
+
+						TileNetworkList data = new TileNetworkList();
 						data.add(1);
 						data.add(type.ordinal());
 						

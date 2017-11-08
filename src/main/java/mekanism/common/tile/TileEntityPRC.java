@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
@@ -20,6 +19,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
@@ -212,7 +212,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

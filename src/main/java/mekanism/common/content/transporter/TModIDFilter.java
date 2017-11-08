@@ -2,9 +2,8 @@ package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,7 +47,7 @@ public class TModIDFilter extends TransporterFilter
 	}
 
 	@Override
-	public void write(ArrayList<Object> data)
+	public void write(TileNetworkList data)
 	{
 		data.add(3);
 

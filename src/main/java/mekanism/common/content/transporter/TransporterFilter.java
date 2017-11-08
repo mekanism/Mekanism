@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,7 +51,7 @@ public abstract class TransporterFilter
 		}
 	}
 
-	public void write(ArrayList<Object> data)
+	public void write(TileNetworkList data)
 	{
 		data.add(allowDefault);
 		

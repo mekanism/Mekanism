@@ -2,8 +2,7 @@ package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
@@ -61,7 +60,7 @@ public class MItemStackFilter extends MinerFilter
 	}
 
 	@Override
-	public void write(ArrayList<Object> data)
+	public void write(TileNetworkList data)
 	{
 		data.add(0);
 		

@@ -33,6 +33,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.SoundWrapper;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
@@ -232,7 +233,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		factory.upgraded = true;
 		
 		factory.markDirty();
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(factory)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(factory)));
 		
 		return true;
 	}
@@ -825,7 +826,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

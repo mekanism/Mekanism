@@ -2,12 +2,11 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -45,7 +44,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	}
 	
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		if(Mekanism.hooks.MCMPLoaded)
 		{

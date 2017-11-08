@@ -2,8 +2,7 @@ package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
@@ -126,7 +125,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 		

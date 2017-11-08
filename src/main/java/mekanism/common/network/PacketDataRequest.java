@@ -9,6 +9,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -58,7 +59,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
                 {
                     ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
 
-                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new ArrayList<>())), (EntityPlayerMP)player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP)player);
                 }
             }
         }, player);

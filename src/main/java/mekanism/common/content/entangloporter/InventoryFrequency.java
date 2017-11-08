@@ -9,6 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
@@ -124,7 +125,7 @@ public class InventoryFrequency extends Frequency
 	}
 
 	@Override
-	public void write(ArrayList<Object> data)
+	public void write(TileNetworkList data)
 	{
 		super.write(data);
 		

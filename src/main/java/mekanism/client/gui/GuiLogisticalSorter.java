@@ -17,6 +17,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.content.transporter.TModIDFilter;
@@ -261,7 +262,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 							if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 							{
 								// Process up button click
-								final ArrayList<Object> data = new ArrayList<>();
+								final TileNetworkList data = new TileNetworkList();
 								data.add(3);
 								data.add(getFilterIndex() + i);
 
@@ -277,7 +278,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 							if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 							{
 								// Process down button click
-								final ArrayList<Object> data = new ArrayList<>();
+								final TileNetworkList data = new TileNetworkList();
 								data.add(4);
 								data.add(getFilterIndex() + i);
 
@@ -317,7 +318,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			// Check for auto eject button
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
 			{
-				final ArrayList<Object> data = new ArrayList<>();
+				final TileNetworkList data = new TileNetworkList();
 				data.add(1);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -327,7 +328,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			// Check for round robin button
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
 			{
-				final ArrayList<Object> data = new ArrayList<>();
+				final TileNetworkList data = new TileNetworkList();
 				data.add(2);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -343,7 +344,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		// Check for default colour button
 		if(xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153)
 		{
-			final ArrayList<Object> data = new ArrayList<>();
+			final TileNetworkList data = new TileNetworkList();
 			data.add(0);
 			data.add(mouseBtn);
 

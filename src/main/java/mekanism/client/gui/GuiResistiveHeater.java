@@ -14,6 +14,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -121,7 +122,7 @@ public class GuiResistiveHeater extends GuiMekanism
 		{
 			int toUse = Integer.parseInt(energyUsageField.getText());
 
-			ArrayList<Object> data = new ArrayList<>();
+			TileNetworkList data = new TileNetworkList();
 			data.add(toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));

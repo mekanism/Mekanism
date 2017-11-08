@@ -9,6 +9,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
@@ -118,7 +119,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 			
 			if(packet)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 			}
 		}
 	}
@@ -201,7 +202,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 		
@@ -299,7 +300,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

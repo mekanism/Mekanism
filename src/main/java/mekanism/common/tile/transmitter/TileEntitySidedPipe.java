@@ -16,6 +16,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -106,7 +107,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			
 			if(sendDesc)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 				sendDesc = false;
 			}
 		}
@@ -372,7 +373,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		if(Mekanism.hooks.MCMPLoaded)
 		{

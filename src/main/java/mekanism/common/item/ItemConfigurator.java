@@ -17,6 +17,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -111,7 +112,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									if(config instanceof TileEntityBasicBlock)
 									{
 										TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-										Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
+										Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
 									}
 								}
 								else {

@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -15,6 +13,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
@@ -242,7 +241,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

@@ -14,6 +14,7 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -243,7 +244,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		data.add(0);
 		
@@ -269,9 +270,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		return data;
 	}
 
-	public ArrayList<Object> getSyncPacket(TransporterStack stack, boolean kill)
+	public TileNetworkList getSyncPacket(TransporterStack stack, boolean kill)
 	{
-		ArrayList<Object> data = new ArrayList<>();
+		TileNetworkList data = new TileNetworkList();
 		
 		if(Mekanism.hooks.MCMPLoaded)
 		{
@@ -350,7 +351,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		TransporterUtils.incrementColor(getTransmitter());
 		onPartChanged(null);
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new ArrayList<>())), new Range4D(new Coord4D(getPos(), getWorld())));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new TileNetworkList())), new Range4D(new Coord4D(getPos(), getWorld())));
 		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return EnumActionResult.SUCCESS;

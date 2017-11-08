@@ -9,6 +9,7 @@ import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockCache;
@@ -133,7 +134,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	{
 		if(!player.isSneaking() && structure != null)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 			player.openGui(MekanismGenerators.instance, 6, world, getPos().getX(), getPos().getY(), getPos().getZ());
 			
 			return true;
@@ -175,7 +176,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	}
 	
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 		

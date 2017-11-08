@@ -2,10 +2,9 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -70,7 +69,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	}
 
 	@Override
-	public ArrayList getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

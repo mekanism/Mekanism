@@ -2,9 +2,8 @@ package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -45,7 +44,7 @@ public class MOreDictFilter extends MinerFilter
 	}
 
 	@Override
-	public void write(ArrayList<Object> data)
+	public void write(TileNetworkList data)
 	{
 		data.add(1);
 		

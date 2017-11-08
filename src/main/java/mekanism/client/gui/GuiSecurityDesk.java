@@ -10,6 +10,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -86,8 +87,8 @@ public class GuiSecurityDesk extends GuiMekanism
 		{
 			return;
 		}
-		
-		ArrayList<Object> data = new ArrayList<>();
+
+		TileNetworkList data = new TileNetworkList();
 		data.add(0);
 		data.add(trusted);
 		
@@ -154,8 +155,8 @@ public class GuiSecurityDesk extends GuiMekanism
 					trustedField.setText("");
 		            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				}
-				
-				ArrayList<Object> data = new ArrayList<>();
+
+				TileNetworkList data = new TileNetworkList();
 				
 				if(xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75)
 				{
@@ -235,7 +236,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			{
 				if(tileEntity != null)
 				{
-					ArrayList<Object> data = new ArrayList<>();
+					TileNetworkList data = new TileNetworkList();
 					data.add(1);
 					data.add(tileEntity.frequency.trusted.get(selection));
 					

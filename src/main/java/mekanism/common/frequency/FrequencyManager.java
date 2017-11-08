@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
+import mekanism.common.base.TileNetworkList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -238,7 +239,7 @@ public class FrequencyManager
 		}
 	}
 	
-	public void writeFrequencies(ArrayList<Object> data)
+	public void writeFrequencies(TileNetworkList data)
 	{
 		data.add(frequencies.size());
 		

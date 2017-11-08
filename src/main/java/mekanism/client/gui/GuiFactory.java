@@ -18,6 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -168,8 +169,7 @@ public class GuiFactory extends GuiMekanism
 				
 				if(!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 				{
-					ArrayList<Object> data = new ArrayList<>();
-					data.add(1);
+					TileNetworkList data = TileNetworkList.of(1);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

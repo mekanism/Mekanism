@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.transmitters.TransmissionType;
@@ -11,6 +10,7 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -320,7 +320,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		data.add(tier.ordinal());
 		

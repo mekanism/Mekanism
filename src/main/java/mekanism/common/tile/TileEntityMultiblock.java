@@ -8,6 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -121,7 +122,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 					}
 				}
 
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 			}
 
 			prevStructure = structure != null;
@@ -164,7 +165,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 		}
@@ -179,7 +180,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	public abstract MultiblockManager<T> getManager();
 	
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

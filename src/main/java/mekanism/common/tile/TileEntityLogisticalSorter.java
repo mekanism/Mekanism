@@ -16,6 +16,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.client;
@@ -168,7 +169,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -371,7 +372,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -401,7 +402,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		return data;
 	}
 
-	public ArrayList<Object> getGenericPacket(ArrayList<Object> data)
+	public TileNetworkList getGenericPacket(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -425,7 +426,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	}
 
-	public ArrayList<Object> getFilterPacket(ArrayList<Object> data)
+	public TileNetworkList getFilterPacket(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -493,7 +494,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		if(!world.isRemote)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 		}
 	}
 
@@ -522,7 +523,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 
 			if(active && client.enableMachineSounds)
 			{
@@ -829,7 +830,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		for(EntityPlayer player : playersUsing)
 		{
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP)player);
 		}
 
 		return null;

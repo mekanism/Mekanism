@@ -13,6 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -148,7 +149,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			{
 				if(Math.abs((float)inputTank.getFluidAmount()/inputTank.getCapacity()-prevScale) > 0.01)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 					prevScale = (float)inputTank.getFluidAmount()/inputTank.getCapacity();
 				}
 			}
@@ -197,7 +198,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 				
 				if(structured != clientStructured)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 					clientStructured = structured;
 				}
 				
@@ -602,7 +603,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	}
 	
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 		

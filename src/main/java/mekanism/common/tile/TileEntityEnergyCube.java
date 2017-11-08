@@ -16,6 +16,7 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -99,7 +100,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	
 			if(newScale != prevScale)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 			}
 	
 			prevScale = newScale;
@@ -116,7 +117,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		
 		tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
 		
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 		markDirty();
 		
 		return true;
@@ -245,7 +246,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
