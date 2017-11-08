@@ -77,7 +77,7 @@ public final class MinerUtils
 			List<ItemStack> blockDrops = block.getDrops(world, obj.getPos(), state, 0);
 			if (blockDrops.size() > 0)
 			{
-				net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(blockDrops, world, obj.getPos(), state, 0, 1.0f, true, null);
+				net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(blockDrops, world, obj.getPos(), state, 0, 1.0f, false, null);
 			}
 			return blockDrops;
 		}
