@@ -163,9 +163,7 @@ public class GuiReactorFuel extends GuiMekanism
 			int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
 			toUse -= toUse%2;
 
-			TileNetworkList data = new TileNetworkList();
-			data.add(0);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(0, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 

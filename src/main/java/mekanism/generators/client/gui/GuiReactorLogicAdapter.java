@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -125,8 +124,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				TileNetworkList data = new TileNetworkList();
-				data.add(0);
+				TileNetworkList data = TileNetworkList.withContents(0);
 				
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				
@@ -141,9 +139,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-						TileNetworkList data = new TileNetworkList();
-						data.add(1);
-						data.add(type.ordinal());
+						TileNetworkList data = TileNetworkList.withContents(1, type.ordinal());
 						
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 						

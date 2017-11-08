@@ -109,10 +109,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			return;
 		}
 
-		TileNetworkList data = new TileNetworkList();
-		data.add(0);
-		data.add(freq);
-		data.add(!privateMode);
+		TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
 		
 		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 	}
@@ -272,10 +269,7 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 			{
 				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
 
-				TileNetworkList data = new TileNetworkList();
-				data.add(1);
-				data.add(freq.name);
-				data.add(freq.publicFreq);
+				TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
 				
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				

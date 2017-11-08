@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanism;
@@ -179,7 +178,7 @@ public class GuiIndustrialTurbine extends GuiMekanism
 
 		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			TileNetworkList data = TileNetworkList.of((byte)0);
+			TileNetworkList data = TileNetworkList.withContents((byte)0);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

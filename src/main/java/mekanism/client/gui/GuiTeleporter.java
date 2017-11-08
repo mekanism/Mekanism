@@ -206,7 +206,7 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(tileEntity != null)
 		{
-			TileNetworkList data = TileNetworkList.of(0, freq, !privateMode);
+			TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
 			
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 		}
@@ -385,7 +385,7 @@ public class GuiTeleporter extends GuiMekanism
 				
 				if(tileEntity != null)
 				{
-					TileNetworkList data = TileNetworkList.of(1, freq.name, freq.publicFreq);
+					TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}

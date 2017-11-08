@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -169,7 +168,7 @@ public class GuiFactory extends GuiMekanism
 				
 				if(!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper)
 				{
-					TileNetworkList data = TileNetworkList.of(1);
+					TileNetworkList data = TileNetworkList.withContents(1);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

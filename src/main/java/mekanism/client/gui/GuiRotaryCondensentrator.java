@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -154,8 +153,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 			if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
 			{
-				TileNetworkList data = new TileNetworkList();
-				data.add(0);
+				TileNetworkList data = TileNetworkList.withContents(0);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

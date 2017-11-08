@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -252,8 +251,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-					TileNetworkList data = new TileNetworkList();
-					data.add(4);
+					TileNetworkList data = TileNetworkList.withContents(4);
 
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}
@@ -266,8 +264,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 						{
 							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-							TileNetworkList data = new TileNetworkList();
-							data.add(1);
+							TileNetworkList data = TileNetworkList.withContents(1);
 		
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 						}
@@ -277,8 +274,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-						TileNetworkList data = new TileNetworkList();
-						data.add(2);
+						TileNetworkList data = TileNetworkList.withContents(2);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 					}
@@ -287,8 +283,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-						TileNetworkList data = new TileNetworkList();
-						data.add(3);
+						TileNetworkList data = TileNetworkList.withContents(3);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 					}
@@ -301,8 +296,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-					TileNetworkList data = new TileNetworkList();
-					data.add(0);
+					TileNetworkList data = TileNetworkList.withContents(0);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}
@@ -311,8 +305,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-					TileNetworkList data = new TileNetworkList();
-					data.add(5);
+					TileNetworkList data = TileNetworkList.withContents(5);
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}

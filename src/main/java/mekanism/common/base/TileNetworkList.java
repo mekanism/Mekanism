@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import net.minecraft.util.NonNullList;
+import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -15,9 +16,10 @@ public class TileNetworkList extends NonNullList<Object>
 
 	public TileNetworkList(@Nonnull List<Object> contents){
 		super(contents, null);
+		Validate.noNullElements(contents);
 	}
 
-	public static TileNetworkList of(@Nonnull Object... contents){
+	public static TileNetworkList withContents(@Nonnull Object... contents){
 		return new TileNetworkList(Arrays.asList(contents));
 	}
 }

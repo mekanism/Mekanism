@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -85,14 +84,14 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 
 		if(xAxis > 8 && xAxis < 17 && yAxis > 73 && yAxis < 82)
 		{
-			TileNetworkList data = TileNetworkList.of((byte)0);
+			TileNetworkList data = TileNetworkList.withContents((byte)0);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 		}
 		else if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			TileNetworkList data = TileNetworkList.of((byte)1);
+			TileNetworkList data = TileNetworkList.withContents((byte)1);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

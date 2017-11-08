@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -96,8 +95,7 @@ public class GuiGasTank extends GuiMekanism
 
 		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
-			TileNetworkList data = new TileNetworkList();
-			data.add(0);
+			TileNetworkList data = TileNetworkList.withContents(0);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -88,9 +88,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			return;
 		}
 
-		TileNetworkList data = new TileNetworkList();
-		data.add(0);
-		data.add(trusted);
+		TileNetworkList data = TileNetworkList.withContents(0, trusted);
 		
 		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 	}
@@ -236,9 +234,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			{
 				if(tileEntity != null)
 				{
-					TileNetworkList data = new TileNetworkList();
-					data.add(1);
-					data.add(tileEntity.frequency.trusted.get(selection));
+					TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}

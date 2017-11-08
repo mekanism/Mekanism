@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -122,8 +121,7 @@ public class GuiResistiveHeater extends GuiMekanism
 		{
 			int toUse = Integer.parseInt(energyUsageField.getText());
 
-			TileNetworkList data = new TileNetworkList();
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 

@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiAmplifierTab;
@@ -170,9 +169,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			TileNetworkList data = new TileNetworkList();
-			data.add(0);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(0, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
@@ -193,9 +190,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			TileNetworkList data = new TileNetworkList();
-			data.add(1);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(1, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
@@ -209,9 +204,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		{
 			int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
 
-			TileNetworkList data = new TileNetworkList();
-			data.add(2);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(2, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
