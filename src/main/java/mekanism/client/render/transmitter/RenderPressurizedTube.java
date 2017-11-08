@@ -1,5 +1,6 @@
 package mekanism.client.render.transmitter;
 
+import mekanism.api.gas.Gas;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig.client;
@@ -47,6 +48,9 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 	public void renderGasSide(BufferBuilder renderer, EnumFacing side, TileEntityPressurizedTube tube)
 	{
 		bindTexture(MekanismRenderer.getBlocksTexture());
-		renderTransparency(renderer, tube.getTransmitter().getTransmitterNetwork().refGas.getSprite(), getModelForSide(tube, side), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
+		Gas gas = tube.getTransmitter().getTransmitterNetwork().refGas;
+		ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale);
+		c.setRGBFromInt(gas.getTint());
+		renderTransparency(renderer, gas.getSprite(), getModelForSide(tube, side), c);
 	}
 }

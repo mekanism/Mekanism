@@ -279,9 +279,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 			int color = fn.buffer != null ? fn.buffer.getFluid().getColor(fn.buffer) : fn.refFluid.getColor();
 			ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale);
 			if (color != 0xFFFFFFFF){
-				c.valR = (byte)((color >> 16)   & 0xFF);
-				c.valG = (byte)((color >> 8)    & 0xFF);
-				c.valB = (byte)( color          & 0xFF);
+				c.setRGBFromInt(color);
 			}
 			renderTransparency(renderer, tex, getModelForSide(pipe, side), c);
 
