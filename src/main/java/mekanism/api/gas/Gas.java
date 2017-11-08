@@ -144,7 +144,7 @@ public class Gas
 		}
 
 		if (sprite == null){
-			sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+			sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getIcon().toString());
 		}
 		
 		return sprite;
