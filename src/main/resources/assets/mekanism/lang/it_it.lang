@@ -615,6 +615,11 @@ tooltip.configurator.plenisherReset=Azzera calcolazione del Riempitore fluido
 tooltip.configurator.inductionPortMode=Cambiato modalità di trasferimento della porta di induzione a
 tooltip.configurator.toggleColor=Colore cambiato a
 tooltip.configurator.viewColor=Colore corrente
+tooltip.configurator.modeChange=Tipo di connessione cambiato a
+mekanism.pipe.connectiontype.normal=Normale
+mekanism.pipe.connectiontype.push=Spingere
+mekanism.pipe.connectiontype.pull=Tirare
+mekanism.pipe.connectiontype.none=Sconnesso
 
 tooltip.upgrade.speed=Velocità
 tooltip.upgrade.energy=Energia
