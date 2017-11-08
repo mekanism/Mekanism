@@ -55,16 +55,12 @@ public final class MinerUtils
 					}
 				} catch (InvocationTargetException|IllegalAccessException e){
 					Mekanism.logger.error("Block.getSilkTouchDrop errored", e);
+					fallbackGetSilkTouch(block, state, ret);
 				}
 			}
 			else//fallback to old method
 			{
-				Item item = Item.getItemFromBlock(block);
-				if (item != null && item != Items.AIR)
-				{
-					int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
-					ret.add(new ItemStack(item, 1, meta));
-				}
+				fallbackGetSilkTouch(block, state, ret);
 			}
 
 			if (ret.size() > 0)
@@ -87,5 +83,14 @@ public final class MinerUtils
 		}
 
 		return new LinkedList<>();
+	}
+
+	private static void fallbackGetSilkTouch(Block block, IBlockState state, List<ItemStack> ret){
+		Item item = Item.getItemFromBlock(block);
+		if (item != null && item != Items.AIR)
+		{
+			int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
+			ret.add(new ItemStack(item, 1, meta));
+		}
 	}
 }
