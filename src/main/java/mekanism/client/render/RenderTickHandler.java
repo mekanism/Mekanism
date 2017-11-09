@@ -104,7 +104,7 @@ public class RenderTickHandler
 					ClientTickHandler.wheelStatus = 0;
 				}
 	
-				if(mc.currentScreen == null && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
+				if(mc.currentScreen == null && !mc.gameSettings.hideGUI && !player.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
 				{
 					ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 	
