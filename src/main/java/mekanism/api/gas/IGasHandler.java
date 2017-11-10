@@ -48,5 +48,5 @@ public interface IGasHandler
 	 * @return an array of GasTankInfo elements corresponding to all tanks.
 	 */
 	@Nonnull
-	GasTankInfo[] getTankInfo();
+	default GasTankInfo[] getTankInfo(){ return NONE; }
 }
