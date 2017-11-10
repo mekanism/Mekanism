@@ -20,6 +20,10 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+
+import javax.annotation.Nonnull;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable
 {
@@ -291,12 +295,40 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	
 	private CapabilityWrapperManager<ISidedInventory, ItemHandlerWrapper> itemManager = new CapabilityWrapperManager<>(ISidedInventory.class, ItemHandlerWrapper.class);
 
+	/**
+	 * Read only itemhandler for the null facing.
+	 */
+	private IItemHandler nullHandler = new InvWrapper(this){
+		@Nonnull
+		@Override
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+		{
+			return stack;
+		}
+
+		@Nonnull
+		@Override
+		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		{
+			return ItemStack.EMPTY;
+		}
+
+		@Override
+		public void setStackInSlot(int slot, @Nonnull ItemStack stack)
+		{
+			//no
+		}
+	};
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			return (T)itemManager.getWrapper(this, facing);
+			if(facing == null){
+				return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(nullHandler);
+			}
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemManager.getWrapper(this, facing));
 		}
 		
 		return super.getCapability(capability, facing);
