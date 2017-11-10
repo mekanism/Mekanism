@@ -109,21 +109,21 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart:${config.mcmp_version}"
-    deobfProvided "mezz.jei:jei_1.12:${config.jei_version}:api"
+    compileOnly "mezz.jei:jei_1.12:${config.jei_version}:api"
     runtime "mezz.jei:jei_1.12:${config.jei_version}"
-    compile "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
-    compile "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
-    compile "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
+    compileOnly "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
+    compileOnly "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
+    compileOnly "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "cofh:RedstoneFlux:1.12-${config.redstoneflux_version}:universal"
     deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
-    deobfProvided "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}:api"
+    compileOnly "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}"
-    compile "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
-    deobfProvided "CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}"
+    compileOnly "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
+    compileOnly "CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}"
     runtime "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}"
-    deobfCompile "com.blamejared:MTLib:${config.mtlib_version}"
-    compile "dan200.computercraft:ComputerCraft:${config.computercraft_version}"
+    compileOnly "com.blamejared:MTLib:${config.mtlib_version}"
+    compileOnly "dan200.computercraft:ComputerCraft:${config.computercraft_version}:api"
 }
 
 processResources
