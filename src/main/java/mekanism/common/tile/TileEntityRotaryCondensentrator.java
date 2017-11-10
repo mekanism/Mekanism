@@ -10,6 +10,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
@@ -46,6 +47,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, ITubeConnection, IUpgradeInfoHandler, ITankManager
 {
@@ -318,7 +321,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 	{
 		return (mode == 0 && side == MekanismUtils.getLeft(facing)) && gasTank.canReceive(type);
 	}
-	
+
+	@Nonnull
+	@Override
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[]{gasTank};
+	}
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{

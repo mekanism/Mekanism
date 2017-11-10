@@ -9,6 +9,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -39,6 +40,8 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile
 {
@@ -285,6 +288,13 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 		}
 
 		return null;
+	}
+
+	@Nonnull
+	@Override
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[]{leftTank, centerTank, rightTank};
 	}
 
 	@Override

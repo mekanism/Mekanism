@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
  * @author aidancbrady
  *
  */
-public class GasTank
+public class GasTank implements GasTankInfo
 {
 	public GasStack stored;
 

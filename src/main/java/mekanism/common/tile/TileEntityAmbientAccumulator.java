@@ -8,6 +8,7 @@ import java.util.Random;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.recipe.RecipeHandler;
@@ -18,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection
 {
@@ -75,6 +78,13 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return type == collectedGas.getGasType();
+	}
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[]{collectedGas};
 	}
 
 	@Override
