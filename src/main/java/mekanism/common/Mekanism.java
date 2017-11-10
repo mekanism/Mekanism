@@ -799,6 +799,9 @@ public class Mekanism
 		//Integrate with Waila
 		FMLInterModComms.sendMessage(MekanismHooks.WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
 
+		//Register TOP handler
+		FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", "mekanism.common.integration.TOPProvider");
+
 		//Integrate with OpenComputers
 		if(Loader.isModLoaded(MekanismHooks.OPENCOMPUTERS_MOD_ID))
 		{
