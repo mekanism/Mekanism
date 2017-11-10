@@ -325,4 +325,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		
 		return super.getCapability(capability, side);
 	}
+
+	private static FluidTankInfo[] ALL_TANKS = new FluidTankInfo[0];
+
+	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return ALL_TANKS;
+	}
 }

@@ -361,6 +361,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		if(!canFill(from, resource != null ? resource.getFluid() : null))

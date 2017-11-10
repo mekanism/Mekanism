@@ -528,6 +528,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return hasFrequency() ? new FluidTankInfo[] { frequency.storedFluid.getInfo() } : PipeUtils.EMPTY;
+	}
+
+	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return !hasFrequency() ? 0 : frequency.storedGas.receive(stack, doTransfer);

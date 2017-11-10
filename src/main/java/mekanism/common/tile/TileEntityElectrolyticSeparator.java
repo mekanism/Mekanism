@@ -555,6 +555,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return 0;

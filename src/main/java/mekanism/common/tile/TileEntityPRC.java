@@ -403,6 +403,12 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return new FluidTankInfo[]{inputFluidTank.getInfo()};
+	}
+
+	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack.getGas()))

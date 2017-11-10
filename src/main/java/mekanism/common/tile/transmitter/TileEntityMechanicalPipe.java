@@ -266,6 +266,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 		return PipeUtils.EMPTY;
 	}
 
+	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return new FluidTankInfo[]{buffer.getInfo()};
+	}
+
 	public int getPullAmount()
 	{
 		return tier.pipePullAmount;

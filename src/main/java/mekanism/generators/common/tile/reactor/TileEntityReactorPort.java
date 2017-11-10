@@ -173,6 +173,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(getReactor() != null)

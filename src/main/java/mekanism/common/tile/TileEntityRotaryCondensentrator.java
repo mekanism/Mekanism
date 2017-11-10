@@ -409,6 +409,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return new FluidTankInfo[]{fluidTank.getInfo()};
+	}
+
+	@Override
 	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(canDrain(from, null))

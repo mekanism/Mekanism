@@ -18,4 +18,6 @@ public interface IFluidHandlerWrapper
     boolean canDrain(EnumFacing from, Fluid fluid);
     
     FluidTankInfo[] getTankInfo(EnumFacing from);
+
+    FluidTankInfo[] getAllTanks();
 }

@@ -102,6 +102,12 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public double getTemp() 
 	{
 		return 0;

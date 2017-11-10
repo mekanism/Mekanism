@@ -456,6 +456,12 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return new FluidTankInfo[] {fluidTank.getInfo()};
+	}
+
+	@Override
 	public void writeSustainedData(ItemStack itemStack) 
 	{
 		if(fluidTank.getFluid() != null)

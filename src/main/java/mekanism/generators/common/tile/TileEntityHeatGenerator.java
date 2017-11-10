@@ -355,6 +355,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public void writeSustainedData(ItemStack itemStack) 
 	{
 		if(lavaTank.getFluid() != null)

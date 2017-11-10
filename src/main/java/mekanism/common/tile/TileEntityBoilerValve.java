@@ -84,6 +84,12 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return new FluidTankInfo[] { steamTank.getInfo(), waterTank.getInfo() };
+	}
+
+	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		if(structure != null && structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y -1)
