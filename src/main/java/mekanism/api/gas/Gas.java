@@ -2,6 +2,7 @@ package mekanism.api.gas;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,6 +42,11 @@ public class Gas
 	{
 		unlocalizedName = name = s;
 		iconLocation = new ResourceLocation(icon);
+	}
+
+	public Gas(String s, ResourceLocation icon){
+		unlocalizedName = name = s;
+		iconLocation = icon;
 	}
 
 	/**
@@ -138,6 +144,10 @@ public class Gas
 		if(from_fluid)
 		{
 			return MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+		}
+
+		if (sprite == null){
+			sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getIcon().toString());
 		}
 		
 		return sprite;
