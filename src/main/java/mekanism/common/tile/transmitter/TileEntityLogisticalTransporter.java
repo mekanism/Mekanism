@@ -27,8 +27,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TextComponentGroup;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +37,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -352,7 +352,19 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		onPartChanged(null);
 		PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new TileNetworkList())), new Range4D(new Coord4D(getPos(), getWorld())));
-		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
+		TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
+			.string("[Mekanism] ", TextFormatting.DARK_BLUE)
+			.translation("tooltip.configurator.toggleColor")
+			.string(": " );
+
+		if (getTransmitter().getColor() != null)
+		{
+			msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
+		} else {
+			msg.translation("gui.none", TextFormatting.BLACK);
+		}
+
+		player.sendMessage(msg);
 
 		return EnumActionResult.SUCCESS;
 	}
@@ -361,7 +373,17 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 	public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		super.onRightClick(player, side);
-		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getColoredName() : "None")));
+		TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
+				.string("[Mekanism] ", TextFormatting.DARK_BLUE)
+				.translation("tooltip.configurator.viewColor");
+		if (getTransmitter().getColor() != null)
+		{
+			msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
+		} else {
+			msg.translation("gui.none");
+		}
+
+		player.sendMessage(msg);
 		
 		return EnumActionResult.SUCCESS;
 	}

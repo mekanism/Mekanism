@@ -418,6 +418,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(EnumFacing.UP);
+	}
+
+	@Override
 	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
 		fluidTank.setFluid(fluidStack);

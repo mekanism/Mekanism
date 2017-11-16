@@ -12,6 +12,7 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -67,6 +68,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler, ITubeConnection, ISpecialConfigData, ITierUpgradeable
 {
@@ -1036,7 +1039,14 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	{
 		return false;
 	}
-	
+
+	@Nonnull
+	@Override
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[]{gasTank};
+	}
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{

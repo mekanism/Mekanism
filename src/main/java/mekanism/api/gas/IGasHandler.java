@@ -2,6 +2,8 @@ package mekanism.api.gas;
 
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nonnull;
+
 /**
  * Implement this if your tile entity accepts gas from an external source.
  * @author AidanBrady
@@ -38,4 +40,13 @@ public interface IGasHandler
 	 * @return if block can be drawn of gas
 	 */
     boolean canDrawGas(EnumFacing side, Gas type);
+
+	static GasTankInfo[] NONE = new GasTankInfo[0];
+
+	/**
+	 * Gets the tanks present on this handler. READ ONLY. DO NOT MODIFY.
+	 * @return an array of GasTankInfo elements corresponding to all tanks.
+	 */
+	@Nonnull
+	default GasTankInfo[] getTankInfo(){ return NONE; }
 }

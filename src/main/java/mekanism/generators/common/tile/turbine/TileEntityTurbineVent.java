@@ -57,6 +57,12 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return 0;

@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
@@ -60,6 +61,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile
 {
@@ -529,6 +532,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return hasFrequency() ? new FluidTankInfo[] { frequency.storedFluid.getInfo() } : PipeUtils.EMPTY;
+	}
+
+	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return !hasFrequency() ? 0 : frequency.storedGas.receive(stack, doTransfer);
@@ -561,7 +570,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		
 		return false;
 	}
-	
+
+	@Nonnull
+	@Override
+	public GasTankInfo[] getTankInfo()
+	{
+		return hasFrequency() ? new GasTankInfo[]{frequency.storedGas} : IGasHandler.NONE;
+	}
+
 	@Override
 	public boolean handleInventory()
 	{

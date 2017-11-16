@@ -29,6 +29,12 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return fluidTank.fill(resource, doFill);

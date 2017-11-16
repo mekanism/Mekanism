@@ -8,6 +8,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -50,6 +51,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, ITubeConnection, IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager
 {
@@ -337,6 +340,13 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 		return getTank(side) == outputTank && getTank(side).canDraw(type);
 	}
 
+	@Nonnull
+	@Override
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[]{inputTank, outputTank};
+	}
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -453,6 +463,12 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 		}
 
 		return PipeUtils.EMPTY;
+	}
+
+	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return new FluidTankInfo[] {fluidTank.getInfo()};
 	}
 
 	@Override

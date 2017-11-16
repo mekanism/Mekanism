@@ -13,6 +13,8 @@ public class OreGas extends Gas
 		super(s, "mekanism:blocks/liquid/Liquid" + (s.contains("clean") ? "Clean" : "") + "Ore");
 
 		oreName = name;
+
+		setTint(0xf2cd67);//default old tint
 	}
 
 	public boolean isClean()

@@ -454,6 +454,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(EnumFacing.UP);
+	}
+
+	@Override
 	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
 		fluidTank.setFluid(fluidStack);

@@ -116,4 +116,15 @@ public class GuiGasGauge extends GuiGauge<Gas>
 	{
 		GasTank getTank();
 	}
+
+	@Override
+	public int getRenderColor()
+	{
+		if(dummy)
+		{
+			return dummyType.getTint();
+		}
+
+		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getTint() : super.getRenderColor();
+	}
 }

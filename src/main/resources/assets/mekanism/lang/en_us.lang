@@ -721,6 +721,11 @@ tooltip.configurator.inductionPortMode=Toggled Induction Port transfer mode to
 tooltip.configurator.toggleColor=Color bumped to
 tooltip.configurator.viewColor=Current color
 tooltip.configurator.reactorPortEject=Toggled Reactor Port eject mode to
+tooltip.configurator.modeChange=Connection type changed to
+mekanism.pipe.connectiontype.normal=Normal
+mekanism.pipe.connectiontype.push=Push
+mekanism.pipe.connectiontype.pull=Pull
+mekanism.pipe.connectiontype.none=None
 
 tooltip.upgrade.speed=Speed
 tooltip.upgrade.energy=Energy

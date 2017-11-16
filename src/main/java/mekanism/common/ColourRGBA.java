@@ -32,4 +32,10 @@ public class ColourRGBA
     {
     	return (valA & 0xFF) << 24 | (valR & 0xFF) << 16 | (valG & 0xFF) << 8 | (valB & 0xFF);
     }
+
+    public void setRGBFromInt(int color){
+	    valR = (byte)((color >> 16)   & 0xFF);
+	    valG = (byte)((color >> 8)    & 0xFF);
+	    valB = (byte)( color          & 0xFF);
+    }
 }

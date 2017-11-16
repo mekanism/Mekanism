@@ -31,6 +31,8 @@ public class Gas
 
 	private boolean from_fluid = false;
 
+	private int tint = 0xFFFFFF;
+
 	/**
 	 * Creates a new Gas object with a defined name or key value.
 	 * @param s - name or key to associate this Gas with
@@ -50,6 +52,7 @@ public class Gas
 		iconLocation = f.getStill();
 		fluid = f;
 		from_fluid = true;
+		tint = f.getColor() & 0xFFFFFF;
 	}
 
 	/**
@@ -254,5 +257,23 @@ public class Gas
 	public String toString()
 	{
 		return name;
+	}
+
+	/**
+	 * Get the tint for rendering the gas
+	 * @return int representation of color in 0xRRGGBB format
+	 */
+	public int getTint()
+	{
+		return tint;
+	}
+
+	/**
+	 * Sets the tint for the gas
+	 * @param tint int representation of color in 0xRRGGBB format
+	 */
+	public void setTint(int tint)
+	{
+		this.tint = tint;
 	}
 }

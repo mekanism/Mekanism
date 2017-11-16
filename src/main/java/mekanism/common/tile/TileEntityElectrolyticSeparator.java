@@ -8,6 +8,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -51,6 +52,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeInfoHandler, ITankManager
 {
@@ -555,6 +558,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	}
 
 	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
+	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		return 0;
@@ -595,7 +604,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
 		return false;
 	}
-	
+
+	@Nonnull
+	@Override
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[]{leftTank, rightTank};
+	}
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{

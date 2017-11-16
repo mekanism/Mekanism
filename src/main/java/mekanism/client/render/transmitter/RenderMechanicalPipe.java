@@ -10,6 +10,7 @@ import mekanism.common.ColourRGBA;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
+import mekanism.common.transmitters.grid.FluidNetwork;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -17,6 +18,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe>
@@ -59,13 +61,16 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 		}
 
 		Fluid fluid;
+		FluidStack fluidStack;
 
 		if(pipe.getTransmitter().hasTransmitterNetwork())
 		{
 			fluid = pipe.getTransmitter().getTransmitterNetwork().refFluid;
+			fluidStack = pipe.getTransmitter().getTransmitterNetwork().buffer;
 		}
 		else {
-			fluid = pipe.getBuffer() == null ? null : pipe.getBuffer().getFluid();
+			fluidStack = pipe.getBuffer();
+			fluid = fluidStack == null ? null : pipe.getBuffer().getFluid();
 		}
 
 		float scale = Math.min(pipe.currentScale, 1);
@@ -75,7 +80,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 			push();
 
 			MekanismRenderer.glowOn(fluid.getLuminosity());
-			MekanismRenderer.colorFluid(fluid);
+			MekanismRenderer.color(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslated(x, y, z);
@@ -263,18 +268,24 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
 		return displays;
 	}
-	
+
 	public boolean renderFluidInOut(BufferBuilder renderer, EnumFacing side, TileEntityMechanicalPipe pipe)
 	{
 		if(pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null)
 		{
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(pipe.getTransmitter().getTransmitterNetwork().refFluid, FluidType.STILL);
-			renderTransparency(renderer, tex, getModelForSide(pipe, side), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
-			
+			FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
+			int color = fn.buffer != null ? fn.buffer.getFluid().getColor(fn.buffer) : fn.refFluid.getColor();
+			ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale);
+			if (color != 0xFFFFFFFF){
+				c.setRGBFromInt(color);
+			}
+			renderTransparency(renderer, tex, getModelForSide(pipe, side), c);
+
 			return true;
 		}
-		
+
 		return false;
 	}
 	

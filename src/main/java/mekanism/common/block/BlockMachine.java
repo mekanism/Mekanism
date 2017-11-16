@@ -712,6 +712,10 @@ public abstract class BlockMachine extends BlockContainer
 						{
 							itemStack.shrink(1);
 						}
+						else {
+							player.dropItem(copyStack, false, true);
+							itemStack.shrink(1);
+						}
 						
 						if(tileEntity.tier != FluidTankTier.CREATIVE)
 						{

@@ -8,6 +8,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
@@ -37,6 +38,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine implements IGasHandler, ITubeConnection, ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess
 {
@@ -247,7 +250,14 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 	{
 		return false;
 	}
-	
+
+	@Override
+	@Nonnull
+	public GasTankInfo[] getTankInfo()
+	{
+		return new GasTankInfo[]{inputTank};
+	}
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing side)
 	{

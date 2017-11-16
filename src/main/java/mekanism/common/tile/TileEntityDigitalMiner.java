@@ -225,7 +225,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 							IBlockState state = coord.getBlockState(world);
 							Block block = state.getBlock();
-							int meta = block.getMetaFromState(state);
+							int meta = block.damageDropped(state);
 	
 							if(block == null || coord.isAirBlock(world))
 							{
@@ -242,10 +242,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							}
 	
 							boolean hasFilter = false;
+							ItemStack is = new ItemStack(block, 1, meta);
 	
 							for(MinerFilter filter : filters)
 							{
-								if(filter.canFilter(new ItemStack(block, 1, meta)))
+								if(filter.canFilter(is))
 								{
 									hasFilter = true;
 									break;

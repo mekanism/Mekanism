@@ -29,6 +29,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
+import mekanism.common.util.TextComponentGroup;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -610,7 +611,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 					sendDesc = true;
 
 					onModeChange(EnumFacing.getFront(hitSide.ordinal()));
-					player.sendMessage(new TextComponentString("Connection type changed to " + connectionTypes[hitSide.ordinal()].toString()));
+					player.sendMessage(new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ").translation(connectionTypes[hitSide.ordinal()].translationKey()));
 
 					return EnumActionResult.SUCCESS;
 				}
@@ -748,6 +749,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		public String getName()
 		{
 			return name().toLowerCase();
+		}
+
+		public String translationKey(){
+			return "mekanism.pipe.connectiontype."+getName();
 		}
 	}
 }

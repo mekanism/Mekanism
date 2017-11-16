@@ -608,7 +608,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		return new FluidTankInfo[] {fluidTank.getInfo()};
 	}
-	
+
+	@Override
+	public FluidTankInfo[] getAllTanks()
+	{
+		return getTankInfo(null);
+	}
+
 	@Override
 	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
