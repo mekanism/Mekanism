@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +13,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.content.miner.MModIDFilter;
@@ -241,9 +241,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 						{
 							// Process up button click
-							final ArrayList<Object> data = new ArrayList<>();
-							data.add(11);
-							data.add(getFilterIndex() + i);
+							final TileNetworkList data = TileNetworkList.withContents(11, getFilterIndex() + i);
 
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -257,9 +255,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 						{
 							// Process down button click
-							final ArrayList<Object> data = new ArrayList<>();
-							data.add(12);
-							data.add(getFilterIndex() + i);
+							final TileNetworkList data = TileNetworkList.withContents(12, getFilterIndex() + i);
 
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -322,8 +318,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
 			{
-				ArrayList<Object> data = new ArrayList<>();
-				data.add(10);
+				TileNetworkList data = TileNetworkList.withContents(10);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -692,9 +687,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), 32));
 
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(6);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(6, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
@@ -708,9 +701,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
 
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(7);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(7, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
@@ -724,9 +715,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
 
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(8);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(8, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 

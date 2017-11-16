@@ -9,6 +9,7 @@ import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.GuiOredictionificatorFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
@@ -143,7 +144,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 	
 				for(EntityPlayer player : tile.playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)player);
 				}
 			}
 		}

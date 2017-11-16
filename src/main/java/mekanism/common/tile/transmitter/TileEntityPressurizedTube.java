@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.gas.Gas;
@@ -14,6 +13,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.TubeTier;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.grid.GasNetwork;
@@ -313,7 +313,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		data.add(tier.ordinal());
 		

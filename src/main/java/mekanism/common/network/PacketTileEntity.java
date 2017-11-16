@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CapabilityUtils;
@@ -56,13 +57,13 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 	{
 		public Coord4D coord4D;
 	
-		public ArrayList<Object> parameters;
+		public TileNetworkList parameters;
 		
 		public ByteBuf storedBuffer = null;
 		
 		public TileEntityMessage() {}
 	
-		public TileEntityMessage(Coord4D coord, ArrayList<Object> params)
+		public TileEntityMessage(Coord4D coord, TileNetworkList params)
 		{
 			coord4D = coord;
 			parameters = params;

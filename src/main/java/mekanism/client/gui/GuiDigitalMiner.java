@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -17,6 +16,7 @@ import mekanism.client.gui.element.GuiVisualsTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
@@ -111,15 +111,13 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(3);
+			TileNetworkList data = TileNetworkList.withContents(3);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 		}
 		else if(guibutton.id == 1)
 		{
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(4);
+			TileNetworkList data = TileNetworkList.withContents(4);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 		}
@@ -303,8 +301,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<>();
-				data.add(0);
+				TileNetworkList data = TileNetworkList.withContents(0);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			}
@@ -313,8 +310,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<>();
-				data.add(1);
+				TileNetworkList data = TileNetworkList.withContents(1);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			}
@@ -323,8 +319,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<>();
-				data.add(5);
+				TileNetworkList data = TileNetworkList.withContents(5);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			}
@@ -333,8 +328,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
-				ArrayList<Object> data = new ArrayList<>();
-				data.add(9);
+				TileNetworkList data = TileNetworkList.withContents(9);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			}

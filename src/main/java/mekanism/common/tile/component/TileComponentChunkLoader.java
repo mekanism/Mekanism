@@ -2,7 +2,6 @@ package mekanism.common.tile.component;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -188,7 +188,7 @@ public class TileComponentChunkLoader implements ITileComponent
 	}
 
 	@Override
-	public void write(ArrayList<Object> data) {}
+	public void write(TileNetworkList data) {}
 
 	@Override
 	public void invalidate() 

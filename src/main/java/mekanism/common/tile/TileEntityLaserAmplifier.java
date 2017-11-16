@@ -12,6 +12,7 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -131,7 +132,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				{
 					on = true;
 					lastFired = firing;
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50D));
+					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
 				LaserInfo info = LaserManager.fireLaser(this, facing, firing, world);
@@ -169,7 +170,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			{
 				on = false;
 				diggingProgress = 0;
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50D));
 			}
 			
 			if(outputMode != RedstoneOutput.ENTITY_DETECTION)
@@ -244,7 +245,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

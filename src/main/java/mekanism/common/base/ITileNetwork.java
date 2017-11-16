@@ -22,5 +22,5 @@ public interface ITileNetwork
 	 * @param data - list of data
 	 * @return ArrayList of network data
 	 */
-    ArrayList<Object> getNetworkedData(ArrayList<Object> data);
+    TileNetworkList getNetworkedData(TileNetworkList data);
 }

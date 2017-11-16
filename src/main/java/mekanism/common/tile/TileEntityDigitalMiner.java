@@ -23,6 +23,7 @@ import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -331,7 +332,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getSmallPacket(new ArrayList<>())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getSmallPacket(new TileNetworkList())), (EntityPlayerMP)player);
 				}
 			}
 
@@ -646,7 +647,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(!world.isRemote)
 		{
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), (EntityPlayerMP)player);
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP)player);
 		}
 	}
 
@@ -790,7 +791,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP)player);
 			}
 
 			return;
@@ -894,7 +895,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -942,7 +943,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public ArrayList<Object> getSmallPacket(ArrayList<Object> data)
+	public TileNetworkList getSmallPacket(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -972,7 +973,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public ArrayList<Object> getGenericPacket(ArrayList<Object> data)
+	public TileNetworkList getGenericPacket(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -1013,7 +1014,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return data;
 	}
 
-	public ArrayList<Object> getFilterPacket(ArrayList<Object> data)
+	public TileNetworkList getFilterPacket(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -1094,7 +1095,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 
 			clientActive = active;
 		}
@@ -1415,7 +1416,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		for(EntityPlayer player : playersUsing)
 		{
-			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList<>())), (EntityPlayerMP)player);
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new TileNetworkList())), (EntityPlayerMP)player);
 		}
 		
 		return null;

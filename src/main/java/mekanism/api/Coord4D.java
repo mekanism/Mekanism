@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.common.base.TileNetworkList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -141,9 +142,18 @@ public class Coord4D
 	}
 
 	/**
-	 * Writes this Coord4D's data to an ArrayList for packet transfer.
-	 * @param data - the ArrayList to add the data to
+	 * Writes this Coord4D's data to an TileNetworkList for packet transfer.
+	 * @param data - the TileNetworkList to add the data to
 	 */
+	public void write(TileNetworkList data)
+	{
+		data.add(x);
+		data.add(y);
+		data.add(z);
+		data.add(dimensionId);
+	}
+
+	@Deprecated//binary compat - use write(TileNetworkData)
 	public void write(ArrayList<Object> data)
 	{
 		data.add(x);

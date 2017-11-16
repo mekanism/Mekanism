@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiAmplifierTab;
@@ -12,6 +11,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;
@@ -169,9 +169,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(0);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(0, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
@@ -192,9 +190,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return;
 			}
 
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(1);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(1, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
@@ -208,9 +204,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		{
 			int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
 
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(2);
-			data.add(toUse);
+			TileNetworkList data = TileNetworkList.withContents(2, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 

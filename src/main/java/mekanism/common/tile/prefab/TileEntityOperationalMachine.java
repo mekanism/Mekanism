@@ -2,9 +2,8 @@ package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.common.Upgrade;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -42,7 +41,7 @@ public class TileEntityOperationalMachine extends TileEntityMachine
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import mekanism.common.HashList;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.NBTTagCompound;
@@ -86,7 +87,7 @@ public class SecurityFrequency extends Frequency
 	}
 
 	@Override
-	public void write(ArrayList<Object> data)
+	public void write(TileNetworkList data)
 	{
 		super.write(data);
 		

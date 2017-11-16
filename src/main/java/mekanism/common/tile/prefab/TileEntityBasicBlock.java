@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
@@ -84,7 +85,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -140,7 +141,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		data.add(facing == null ? -1 : facing.ordinal());
 		data.add(redstone);
@@ -241,7 +242,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 		if(!(facing == clientFacing || world.isRemote))
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 			markDirty();
 			clientFacing = facing;
 		}
@@ -284,7 +285,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 		if(redstone != power)
 		{
 			redstone = power;
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 		
 			onPowerChange();
 		}

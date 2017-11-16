@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -9,6 +8,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
@@ -123,9 +123,8 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 			if(xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				
-				ArrayList<Object> data = new ArrayList<>();
-				data.add(0);
+
+				TileNetworkList data = TileNetworkList.withContents(0);
 				
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				
@@ -139,10 +138,8 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 					if(type != tileEntity.logicType)
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-						
-						ArrayList<Object> data = new ArrayList<>();
-						data.add(1);
-						data.add(type.ordinal());
+
+						TileNetworkList data = TileNetworkList.withContents(1, type.ordinal());
 						
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 						

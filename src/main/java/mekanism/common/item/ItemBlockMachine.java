@@ -32,6 +32,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig.general;
@@ -409,7 +410,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				factory.setRecipeType(recipeType);
 				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
 				
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
 			}
 
 			if(tileEntity instanceof ISustainedTank)

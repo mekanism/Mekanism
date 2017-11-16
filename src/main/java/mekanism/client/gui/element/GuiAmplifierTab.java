@@ -1,11 +1,10 @@
 package mekanism.client.gui.element;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.LangUtils;
@@ -78,8 +77,7 @@ public class GuiAmplifierTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 			{
-				ArrayList<Object> data = new ArrayList<>();
-				data.add(3);
+				TileNetworkList data = TileNetworkList.withContents(3);
 				
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

@@ -10,6 +10,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -86,10 +87,8 @@ public class GuiSecurityDesk extends GuiMekanism
 		{
 			return;
 		}
-		
-		ArrayList<Object> data = new ArrayList<>();
-		data.add(0);
-		data.add(trusted);
+
+		TileNetworkList data = TileNetworkList.withContents(0, trusted);
 		
 		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 	}
@@ -154,8 +153,8 @@ public class GuiSecurityDesk extends GuiMekanism
 					trustedField.setText("");
 		            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				}
-				
-				ArrayList<Object> data = new ArrayList<>();
+
+				TileNetworkList data = new TileNetworkList();
 				
 				if(xAxis >= 146 && xAxis <= 162 && yAxis >= 59 && yAxis <= 75)
 				{
@@ -235,9 +234,7 @@ public class GuiSecurityDesk extends GuiMekanism
 			{
 				if(tileEntity != null)
 				{
-					ArrayList<Object> data = new ArrayList<>();
-					data.add(1);
-					data.add(tileEntity.frequency.trusted.get(selection));
+					TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}

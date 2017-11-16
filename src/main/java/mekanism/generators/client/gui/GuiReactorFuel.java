@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -161,10 +162,8 @@ public class GuiReactorFuel extends GuiMekanism
 		{
 			int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
 			toUse -= toUse%2;
-			
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(0);
-			data.add(toUse);
+
+			TileNetworkList data = TileNetworkList.withContents(0, toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 

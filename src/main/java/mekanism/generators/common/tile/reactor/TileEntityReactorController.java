@@ -13,6 +13,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.SoundWrapper;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -115,7 +116,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			
 			if(!world.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50D));
 				clientBurning = getReactor().isBurning();
 				clientTemp = getReactor().getPlasmaTemp();
 			}
@@ -203,7 +204,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 

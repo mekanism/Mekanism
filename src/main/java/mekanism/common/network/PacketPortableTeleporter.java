@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -301,8 +302,8 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 				}
 				
 				buffer.writeByte(status);
-				
-				ArrayList<Object> data = new ArrayList<>();
+
+				TileNetworkList data = new TileNetworkList();
 				data.add(publicCache.size());
 				
 				for(Frequency freq : publicCache)

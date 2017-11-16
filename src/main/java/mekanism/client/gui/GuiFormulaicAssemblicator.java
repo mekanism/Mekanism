@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -17,6 +16,7 @@ import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -250,9 +250,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				if(xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91)
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-					
-					ArrayList<Object> data = new ArrayList<>();
-					data.add(4);
+
+					TileNetworkList data = TileNetworkList.withContents(4);
 
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}
@@ -264,9 +263,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 						if(xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59)
 						{
 							SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-							
-							ArrayList<Object> data = new ArrayList<>();
-							data.add(1);
+
+							TileNetworkList data = TileNetworkList.withContents(1);
 		
 							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 						}
@@ -275,9 +273,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					if(xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91)
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-						
-						ArrayList<Object> data = new ArrayList<>();
-						data.add(2);
+
+						TileNetworkList data = TileNetworkList.withContents(2);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 					}
@@ -285,9 +282,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 					if(xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91)
 					{
 						SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-						
-						ArrayList<Object> data = new ArrayList<>();
-						data.add(3);
+
+						TileNetworkList data = TileNetworkList.withContents(3);
 	
 						Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 					}
@@ -299,9 +295,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				if(xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91)
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-					
-					ArrayList<Object> data = new ArrayList<>();
-					data.add(0);
+
+					TileNetworkList data = TileNetworkList.withContents(0);
 	
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}
@@ -309,9 +304,8 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				if(xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91)
 				{
 					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-					
-					ArrayList<Object> data = new ArrayList<>();
-					data.add(5);
+
+					TileNetworkList data = TileNetworkList.withContents(5);
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}

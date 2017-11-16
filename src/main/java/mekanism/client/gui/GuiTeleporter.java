@@ -19,6 +19,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerNull;
@@ -205,10 +206,7 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(tileEntity != null)
 		{
-			ArrayList<Object> data = new ArrayList<>();
-			data.add(0);
-			data.add(freq);
-			data.add(!privateMode);
+			TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
 			
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 		}
@@ -387,10 +385,7 @@ public class GuiTeleporter extends GuiMekanism
 				
 				if(tileEntity != null)
 				{
-					ArrayList<Object> data = new ArrayList<>();
-					data.add(1);
-					data.add(freq.name);
-					data.add(freq.publicFreq);
+					TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}

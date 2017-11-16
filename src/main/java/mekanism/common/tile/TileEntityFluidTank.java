@@ -18,6 +18,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -97,7 +98,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		tier = FluidTankTier.values()[upgradeTier.ordinal()];
 		fluidTank.setCapacity(tier.storage);
 		
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 		markDirty();
 		
 		return true;
@@ -182,7 +183,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			if(needsPacket)
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), Coord4D.get(this).getTargetPoint(50));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), Coord4D.get(this).getTargetPoint(50));
 			}
 			
 			needsPacket = false;
@@ -405,7 +406,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 	
 	@Override
-	public ArrayList<Object> getNetworkedData(ArrayList<Object> data)
+	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
 
@@ -439,7 +440,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

@@ -17,6 +17,7 @@ import mekanism.common.Tier.BinTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.base.ITierItem;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -258,7 +259,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 
 				if(!world.isRemote)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 			else if(type == BasicBlockType.INDUCTION_PROVIDER)
@@ -268,7 +269,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 
 				if(!world.isRemote)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList<>())), new Range4D(Coord4D.get(tileEntity)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 

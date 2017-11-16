@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -116,7 +117,7 @@ public class Frequency
 		publicFreq = nbtTags.getBoolean("publicFreq");
 	}
 
-	public void write(ArrayList<Object> data)
+	public void write(TileNetworkList data)
 	{
 		data.add(name);
 		data.add(ownerUUID.toString());

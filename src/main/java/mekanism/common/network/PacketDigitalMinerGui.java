@@ -14,6 +14,7 @@ import mekanism.client.gui.GuiMModIDFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.TileNetworkList;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -160,7 +161,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 	
 				for(EntityPlayer player : tile.playersUsing)
 				{
-					Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new ArrayList<>())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(obj, tile.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)player);
 				}
 			}
 		}
