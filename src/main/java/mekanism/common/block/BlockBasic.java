@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
+import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
@@ -17,6 +18,7 @@ import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.multiblock.IMultiblock;
@@ -434,30 +436,31 @@ public abstract class BlockBasic extends Block
 		{
 			TileEntityBin bin = (TileEntityBin)tile;
 
-			if(!stack.isEmpty() && MekanismUtils.hasUsableWrench(entityplayer, pos))
+			IMekWrench wrenchHandler;
+
+			if(!stack.isEmpty() && (wrenchHandler = Wrenches.getHandler(stack)) != null)
 			{
-				if(!world.isRemote)
+				RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
+				if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace))
 				{
-					Item tool = stack.getItem();
-					
-					if(entityplayer.isSneaking())
+					if(!world.isRemote)
 					{
-						dismantleBlock(state, world, pos, false);
-						return true;
+						wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
+
+						if(entityplayer.isSneaking())
+						{
+							dismantleBlock(state, world, pos, false);
+							return true;
+						}
+
+						int change = bin.facing.rotateY().ordinal();
+
+						bin.setFacing((short)change);
+						world.notifyNeighborsOfStateChange(pos, this, true);
 					}
-	
-					if(MekanismUtils.isBCWrench(tool))
-					{
-						((IToolWrench)tool).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
-					}
-	
-					int change = bin.facing.rotateY().ordinal();
-	
-					bin.setFacing((short)change);
-					world.notifyNeighborsOfStateChange(pos, this, true);
+
+					return true;
 				}
-				
-				return true;
 			}
 
 			if(!world.isRemote)

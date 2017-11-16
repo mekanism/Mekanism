@@ -1496,7 +1496,10 @@ public final class MekanismUtils
 	 * @param player - the player using the wrench
 	 * @param pos - the coordinate of the block being wrenched
 	 * @return if the player can use the wrench
+	 *
+	 * @deprecated use {@link mekanism.common.integration.wrenches.Wrenches#getHandler(ItemStack)}
 	 */
+	@Deprecated
 	public static boolean hasUsableWrench(EntityPlayer player, BlockPos pos)
 	{
 		ItemStack tool = player.inventory.getCurrentItem();

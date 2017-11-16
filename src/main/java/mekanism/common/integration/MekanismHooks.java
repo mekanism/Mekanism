@@ -17,6 +17,7 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.computer.CCPeripheral;
 import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
+import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
@@ -35,6 +36,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 public final class MekanismHooks
 {
 	public static final String COFH_CORE_MOD_ID = "cofhcore";
+	public static final String COFH_API_MOD_ID = "cofhapi";
 	public static final String IC2_MOD_ID = "ic2";
 	public static final String RAILCRAFT_MOD_ID = "railcraft";
 	public static final String THERMALEXPANSION_MOD_ID = "thermalexpansion";
@@ -97,6 +99,8 @@ public final class MekanismHooks
 		{
 			CrafttweakerIntegration.applyRecipeChanges();
 		}
+
+		Wrenches.initialise();
 	}
 
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
