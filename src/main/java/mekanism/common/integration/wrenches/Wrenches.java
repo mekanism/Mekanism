@@ -16,8 +16,7 @@ public enum Wrenches
 	MEKANISM_PASSTHROUGH(IMekWrench.class.getName(), MekPassthrough::new),
 	BUILDCRAFT(BuildCraftProxy.BUILDCRAFT_WRENCH_CLASS, BuildCraftProxy::new),
 	COFH(CofhProxy.COFH_HAMMER_CLASS, CofhProxy::new),
-	IC2(IC2Proxy.IC2_WRENCH_CLASS, IC2Proxy::new),
-	;
+	IC2(IC2Proxy.IC2_WRENCH_CLASS, IC2Proxy::new);
 
 	private final String classname;
 	private Class<?> itemClass;
@@ -40,29 +39,25 @@ public enum Wrenches
 	{
 		for(Wrenches w : values())
 		{
-			try
-			{
+			try {
 				w.itemClass = Class.forName(w.classname);
-			} catch(ClassNotFoundException e)
-			{
+			} catch(ClassNotFoundException e) {
 				w.enabled = false;
 				w.provider = null;
 				w.itemClass = null;
 				continue;
 			}
-			try
-			{
+			
+			try {
 				w.provider = w.mekProxy.get();
-			} catch(Exception e)
-			{
+			} catch(Exception e) {
 				w.enabled = false;
 				w.provider = null;
 			}
 		}
 	}
 
-	public static @Nullable
-	IMekWrench getHandler(ItemStack it)
+	public static @Nullable IMekWrench getHandler(ItemStack it)
 	{
 		for(Wrenches w : values())
 		{
@@ -71,6 +66,7 @@ public enum Wrenches
 				return w.provider.get(it);
 			}
 		}
+		
 		return null;
 	}
 }

@@ -36,21 +36,30 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
 	@Override
 	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
 	{
-		if (mode != ProbeMode.EXTENDED){
+		if(mode != ProbeMode.EXTENDED)
+		{
 			return;
 		}
 
 		final TileEntity tile = world.getTileEntity( data.getPos() );
 
-		if (tile != null){
-			if (tile.hasCapability(Capabilities.GAS_HANDLER_CAPABILITY, null)){
+		if(tile != null)
+		{
+			if(tile.hasCapability(Capabilities.GAS_HANDLER_CAPABILITY, null))
+			{
 				IGasHandler handler = tile.getCapability(Capabilities.GAS_HANDLER_CAPABILITY, null);
-				if (handler != null){
+				
+				if(handler != null)
+				{
 					GasTankInfo[] tanks = handler.getTankInfo();
-					for (GasTankInfo tank : tanks){
-						if (tank.getGas() != null){
+					
+					for(GasTankInfo tank : tanks)
+					{
+						if(tank.getGas() != null)
+						{
 							probeInfo.text(TextStyleClass.NAME + "Gas: " + tank.getGas().getGas().getLocalizedName());
 						}
+						
 						IProgressStyle style = probeInfo.defaultProgressStyle().suffix("mB");
 						probeInfo.progress(tank.getStored(), tank.getMaxGas(), style);
 					}

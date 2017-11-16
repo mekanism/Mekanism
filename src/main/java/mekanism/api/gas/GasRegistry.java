@@ -115,7 +115,8 @@ public class GasRegistry
 		return registeredGasses.indexOf(gas);
 	}
 
-	private static void checkPhase(){
-		Preconditions.checkState(Loader.instance().getLoaderState().ordinal() > LoaderState.INITIALIZATION.ordinal(), "Gasses must be registered before postInit.");
+	private static void checkPhase()
+	{
+		Preconditions.checkState(Loader.instance().getLoaderState().ordinal() < LoaderState.INITIALIZATION.ordinal(), "Gasses must be registered before postInit.");
 	}
 }

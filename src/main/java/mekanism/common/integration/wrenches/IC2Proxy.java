@@ -14,28 +14,26 @@ public class IC2Proxy implements MekWrenchProxy, IMekWrench
 
 	private final Class<?> wrenchClass;
 
-	public IC2Proxy(){
+	public IC2Proxy()
+	{
 		Class<?> w = null;
-		try
-		{
+		
+		try {
 			 w = Class.forName(IC2_WRENCH_CLASS);
-		}
-		catch(ClassNotFoundException e)
-		{
-			//no-op
-		}
-		this.wrenchClass = w;
+		} catch(ClassNotFoundException e) {}
+		
+		wrenchClass = w;
 	}
 
 	@Override
 	public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos)
 	{
-		return this.wrenchClass != null && this.wrenchClass.isInstance(stack.getItem());
+		return wrenchClass != null && wrenchClass.isInstance(stack.getItem());
 	}
 
 	@Override
 	public IMekWrench get(ItemStack stack)
 	{
-		return this.wrenchClass != null && this.wrenchClass.isInstance(stack.getItem()) ? this : null;
+		return wrenchClass != null && wrenchClass.isInstance(stack.getItem()) ? this : null;
 	}
 }
