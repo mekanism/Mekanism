@@ -168,7 +168,7 @@ tile.PlasticBlock.name=blok plastiku
 tile.SlickPlasticBlock.name=elastyczny blok plastiku
 tile.GlowPlasticBlock.name=świecący blok plastiku
 tile.ReinforcedPlasticBlock.name=wzmocniony blok plastiku
-tile.RoadPlasticBlock.name=plastikowa droga
+tile.RoadPlasticBlock.name=blok plastikowej drogi
 
 tile.PlasticFence.name=plastikowa bariera
 
@@ -187,31 +187,31 @@ tile.OreBlock.CopperOre.name=Ruda miedzi
 tile.OreBlock.TinOre.name=Ruda cyny
 
 //Transmitters
-tile.Transmitter.BasicPressurizedTube.name=Podstawowa rura ciśnieniowa
-tile.Transmitter.AdvancedPressurizedTube.name=Zaawansowana rura ciśnieniowa
-tile.Transmitter.ElitePressurizedTube.name=Profesjonalna rura ciśnieniowa
-tile.Transmitter.UltimatePressurizedTube.name=Najlepsza rura ciśnieniowa
-tile.Transmitter.BasicUniversalCable.name=Podstawowy kabel uniwersalny
-tile.Transmitter.AdvancedUniversalCable.name=Zaawansowany kabel uniwersalny
-tile.Transmitter.EliteUniversalCable.name=Profesjonalny kabel uniwersalny
-tile.Transmitter.UltimateUniversalCable.name=Najlepszy kabel uniwersalny
-tile.Transmitter.BasicMechanicalPipe.name=Podstawowa rurka mechaniczna
-tile.Transmitter.AdvancedMechanicalPipe.name=Zaawansowana rurka mechaniczna
-tile.Transmitter.EliteMechanicalPipe.name=Profesjonalna rurka mechaniczna
-tile.Transmitter.UltimateMechanicalPipe.name=Najlepsza rurka mechaniczna
-tile.Transmitter.BasicLogisticalTransporter.name=Podstawowy transporter logistyczny
-tile.Transmitter.AdvancedLogisticalTransporter.name=Zaawansowany transporter logistyczny
-tile.Transmitter.EliteLogisticalTransporter.name=Profesjonalny transporter logistyczny
-tile.Transmitter.UltimateLogisticalTransporter.name=Najlepszy transporter logistyczny
-tile.Transmitter.RestrictiveTransporter.name=Transporter z ogranicznikiem
-tile.Transmitter.DiversionTransporter.name=Transporter różnicujący
-tile.Transmitter.BasicThermodynamicConductor.name=Podstawowy przewodnik termodynamiczny
-tile.Transmitter.AdvancedThermodynamicConductor.name=Zaawansowany przewodnik termodynamiczny
-tile.Transmitter.EliteThermodynamicConductor.name=Profesjonalny przewodnik termodynamiczny
-tile.Transmitter.UltimateThermodynamicConductor.name=Najlepszy przewodnik termodynamiczny
+tile.Transmitter.BasicPressurizedTube.name=Podstawowy gazociąg
+tile.Transmitter.AdvancedPressurizedTube.name=Zaawansowany gazociąg
+tile.Transmitter.ElitePressurizedTube.name=Profesjonalny gazociąg
+tile.Transmitter.UltimatePressurizedTube.name=Najlepszy gazociąg
+tile.Transmitter.BasicUniversalCable.name=Podstawowy kabel energetyczny
+tile.Transmitter.AdvancedUniversalCable.name=Zaawansowany kabel energetyczny
+tile.Transmitter.EliteUniversalCable.name=Profesjonalny kabel energetyczny
+tile.Transmitter.UltimateUniversalCable.name=Najlepszy kabel energetyczny
+tile.Transmitter.BasicMechanicalPipe.name=Podstawowy rurociąg
+tile.Transmitter.AdvancedMechanicalPipe.name=Zaawansowany rurociąg
+tile.Transmitter.EliteMechanicalPipe.name=Profesjonalny rurociąg
+tile.Transmitter.UltimateMechanicalPipe.name=Najlepszy rurociąg
+tile.Transmitter.BasicLogisticalTransporter.name=Podstawowy taśmociąg
+tile.Transmitter.AdvancedLogisticalTransporter.name=Zaawansowany taśmociąg
+tile.Transmitter.EliteLogisticalTransporter.name=Profesjonalny taśmociąg
+tile.Transmitter.UltimateLogisticalTransporter.name=Najlepszy taśmociąg
+tile.Transmitter.RestrictiveTransporter.name=Taśmociąg z ogranicznikiem
+tile.Transmitter.DiversionTransporter.name=Taśmociąg różnicujący
+tile.Transmitter.BasicThermodynamicConductor.name=Podstawowy ciepłociąg
+tile.Transmitter.AdvancedThermodynamicConductor.name=Zaawansowany ciepłociąg
+tile.Transmitter.EliteThermodynamicConductor.name=Profesjonalny ciepłociąg
+tile.Transmitter.UltimateThermodynamicConductor.name=Najlepszy ciepłociąg
 
 //Glow Panel
-item.GlowPanel.name=panel świetlny
+tile.GlowPanel.name=panel świetlny
 
 //Energy Cubes
 tile.EnergyCubeBasic.name=Podstawowa bateria kondensac.
@@ -598,7 +598,7 @@ gui.dictionary.noKey=Brak klucza
 gui.configuration=Ustawienia
 gui.config=Ustawienia
 gui.configuration.side=Ustawienia stron urządzenia
-gui.configuration.transporter=Ustawienia przyłączy
+gui.configuration.transporter=Ustawienia przyłączy rur i taśmociągów
 gui.configuration.strictInput=Stałe wejście
 
 gui.rotaryCondensentrator.toggleOperation=Przełącz pracę
@@ -742,7 +742,7 @@ tooltip.blocks=Bloki
 tooltip.universal=uniwersalne
 tooltip.fluids=Płyny
 tooltip.gasses=Gazy
-tooltip.capableTrans=Zdolny do przenoszenia
+tooltip.capableTrans=Umożliwia przesył
 tooltip.restrictiveDesc=Używany tylko, o ile nie ma innych dróg
 tooltip.diversionDesc=Kontrolowane przez czerwony proszek
 tooltip.noGas=Brak gazu
@@ -835,16 +835,16 @@ tooltip.PurificationChamber=Zaawansowana maszyna przetwarzająca rudy w trzy bry
 tooltip.EnergizedSmelter=Maszyna służąca za piec, wykorzystująca energię do pracy.
 tooltip.Teleporter=Maszyna służąca do teleportacji graczy między innymi teleporterami.
 tooltip.ElectricPump=Zaawansowana pompa potrafiąca szybko wypompować duże jeziora lawy.
-tooltip.ElectricChest=Przenośna skrzynia z 54 miejscami używająca energii do zabezpieczenia hasłem przed niechcianymi oczami.
+tooltip.PersonalChest=Przenośna skrzynia z 54 miejscami używająca energii do zabezpieczenia hasłem przed niechcianymi oczami.
 tooltip.Chargepad=Uniwersalna ładowarka potrafiąca naładować każdy przedmiot z różnych modów wymagających energii.
-tooltip.LogisticalSorter=Inteligentny transporter z filtrem sortowania potrafiący automatycznie wyjmować przedmioty ze skrzyń i kierować je do odpowiedniego miejsca poprzez transportery. Działa jednokierunkowo od szerszej do węższej kryzy.
+tooltip.LogisticalSorter=Inteligentny sortownik z filtrem sortowania potrafiący automatycznie wyjmować przedmioty ze skrzyń i kierować je do odpowiedniego miejsca poprzez taśmociągi.
 tooltip.RotaryCondensentrator=Maszyna zmieniająca stan skupienia gazów w ciecze i na odwrót.
 tooltip.ChemicalInjectionChamber=Maszyna zdolna przetworzyć rudy na cztery odłamki metali wykorzystywane w początkowej fazie czterokrotnego otrzymywaniu metali.
 tooltip.ElectrolyticSeparator=Maszyna służąca do rozdzielania gazów i cieczy na dwa różne gazy za pomocą elektrolizy.
 tooltip.PrecisionSawmill=Maszyna służąca do przetwarzania drewna i drewnopodobnych produktów jak również do otrzymywania trocin.
 tooltip.ChemicalDissolutionChamber=Maszyna służąca do chemicznego rozkładu wszystkich zanieczyszczeń w rudach pozostawiając tylko zawiesinę rudy wykorzystywaną fazie pięciokrotnego otrzymywania metali.
 tooltip.ChemicalWasher=Maszyna służąca do oczyszczania nieprzetworzonej zawiesiny przygotowując ją do krystalizacji.
-tooltip.ChemicalCrystalizer=Maszyna służąca do krystalizacji oczyszczonej zawiesiny w kryształy rud.
+tooltip.ChemicalCrystallizer=Maszyna służąca do krystalizacji oczyszczonej zawiesiny w kryształy rud.
 tooltip.ChemicalOxidizer=Maszyna służąca do utleniania materiałów stałych do stanu gazowego.
 tooltip.ChemicalInfuser=Maszyna, która wytwarza nowy gaz przez infuzję dwóch innych.
 tooltip.SeismicVibrator=Maszyna używająca wibracji sejsmicznych w celu uzyskania informacji o różnych warstwach świata.
@@ -972,6 +972,7 @@ itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
 nei.chemicalInjectionChamber=Komora wtrysku chemicz.
+nei.rotaryCondensentrator=Kondensentr. rotac.
 
 //**********//
 //GENERATORS//
@@ -1080,28 +1081,28 @@ item.BronzeHoe.name=Motyka z brązu
 item.BronzeSword.name=Miecz z brązu
 
 //Glow
-item.GlowstoneHelmet.name=Jasnogłazowy hełm
-item.GlowstoneChestplate.name=Jasnogłazowy napierśnik
-item.GlowstoneLeggings.name=Jasnogłazowe nogawice
-item.GlowstoneBoots.name=Jasnogłazowe buty
 item.GlowstonePaxel.name=Jasnogłazowy łopasiekilof
 item.GlowstonePickaxe.name=Jasnogłazowy kilof
 item.GlowstoneAxe.name=Jasnogłazowa siekiera
 item.GlowstoneShovel.name=Jasnogłazowa łopata
 item.GlowstoneHoe.name=Jasnogłazowa motyka
 item.GlowstoneSword.name=Jasnogłazowy miecz
+item.GlowstoneHelmet.name=Jasnogłazowy hełm
+item.GlowstoneChestplate.name=Jasnogłazowy napierśnik
+item.GlowstoneLeggings.name=Jasnogłazowe nogawice
+item.GlowstoneBoots.name=Jasnogłazowe buty
 
 //Steel
-item.SteelHelmet.name=Stalowy hełm
-item.SteelChestplate.name=Stalowy napierśnik
-item.SteelLeggings.name=Stalowe nogawice
-item.SteelBoots.name=Stalowe buty
 item.SteelPaxel.name=Stalowy łopasiekilof
 item.SteelPickaxe.name=Stalowy kilof
 item.SteelAxe.name=Stalowa siekiera
 item.SteelShovel.name=Stalowa łopata
 item.SteelHoe.name=Stalowa motyka
 item.SteelSword.name=Stalowy miecz
+item.SteelHelmet.name=Stalowy hełm
+item.SteelChestplate.name=Stalowy napierśnik
+item.SteelLeggings.name=Stalowe nogawice
+item.SteelBoots.name=Stalowe buty
 
 //Lapis Lazuli
 item.LapisLazuliHelmet.name=Lazurytowy hełm
