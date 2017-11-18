@@ -11,9 +11,13 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
     }
 }
 
@@ -27,6 +31,7 @@ idea {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.matthewprenger.cursegradle'
 
 repositories {
     maven {
@@ -250,6 +255,60 @@ uploadArchives {
                     }
                 }
             }
+        }
+    }
+}
+
+tasks.curseforge.dependsOn coreJar, toolsJar, generatorsJar, apiJar
+
+if (System.getenv("CURSEFORGE_KEY") != null) {
+    curseforge {
+        apiKey = System.getenv("CURSEFORGE_KEY")
+
+        //Core
+        project {
+            id = '268560'
+            changelogType = "html"
+            changelog = "Please see <a href=\"http://aidancbrady.com/mekanism/download/legacy/\">http://aidancbrady.com/mekanism/download/legacy/</a> for changelog."
+            // A file can also be set using: changelog = file('changelog.txt')
+            releaseType = 'release'
+            mainArtifact coreJar
+            addArtifact apiJar
+            addGameVersion '1.12'
+            addGameVersion '1.12.1'
+            addGameVersion '1.12.2'
+        }
+
+        //Tools
+        project {
+            id = '268567'
+            changelogType = "html"
+            changelog = "Please see <a href=\"http://aidancbrady.com/mekanism/download/legacy/\">http://aidancbrady.com/mekanism/download/legacy/</a> for changelog." // A file can also be set using: changelog = file('changelog.txt')
+            releaseType = 'release'
+            mainArtifact(toolsJar){
+                relations {
+                    requiredLibrary "mekanism"
+                }
+            }
+            addGameVersion '1.12'
+            addGameVersion '1.12.1'
+            addGameVersion '1.12.2'
+        }
+
+        //Generators
+        project {
+            id = '268566'
+            changelogType = "html"
+            changelog = "Please see <a href=\"http://aidancbrady.com/mekanism/download/legacy/\">http://aidancbrady.com/mekanism/download/legacy/</a> for changelog." // A file can also be set using: changelog = file('changelog.txt')
+            releaseType = 'release'
+            mainArtifact(generatorsJar) {
+                relations {
+                    requiredLibrary "mekanism"
+                }
+            }
+            addGameVersion '1.12'
+            addGameVersion '1.12.1'
+            addGameVersion '1.12.2'
         }
     }
 }
