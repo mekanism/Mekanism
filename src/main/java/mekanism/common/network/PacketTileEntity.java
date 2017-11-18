@@ -82,7 +82,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 				PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.getTileEntity(world) + ")");
 			}
 			
-			PacketHandler.encode(new Object[] {parameters}, dataStream);
+			PacketHandler.encode(parameters.toArray(), dataStream);
 		}
 	
 		@Override

@@ -77,7 +77,7 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
 				PacketHandler.log("Sending ItemStack packet");
 			}
 			
-			PacketHandler.encode(new Object[] {parameters}, dataStream);
+			PacketHandler.encode(parameters.toArray(), dataStream);
 		}
 	
 		@Override
