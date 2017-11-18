@@ -54,6 +54,7 @@ public enum Wrenches
 				w.enabled = false;
 				w.provider = null;
 			}
+			w.enabled = w.provider != null;
 		}
 	}
 
