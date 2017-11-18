@@ -16,6 +16,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -116,7 +117,7 @@ public class BlockCardboardBox extends BlockContainer
 			}
 		}
 
-		return false;
+		return entityplayer.isSneaking();
 	}
 	
 	@Override
@@ -197,7 +198,7 @@ public class BlockCardboardBox extends BlockContainer
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
-		return null;
+		return Items.AIR;
 	}
 
 	public static class BlockData
