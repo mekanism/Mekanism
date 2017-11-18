@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class MinerUtils
 {
-	public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ICE);
+	public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ICE,Blocks.CHORUS_FLOWER);
 
 	private static Method getSilkTouchDrop = null;
 	static {
@@ -53,6 +53,8 @@ public final class MinerUtils
 					if (it != null && it instanceof ItemStack && !((ItemStack)it).isEmpty())
 					{
 						ret.add((ItemStack)it);
+					} else if (it != null && it instanceof ItemStack && ((ItemStack)it).isEmpty()){//silk touch drop is empty, fallback to grabbing an itemblock
+						fallbackGetSilkTouch(block, state, ret);
 					}
 				} catch (InvocationTargetException|IllegalAccessException e){
 					Mekanism.logger.error("Block.getSilkTouchDrop errored", e);
@@ -75,6 +77,8 @@ public final class MinerUtils
 			if (blockDrops.size() > 0)
 			{
 				net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(blockDrops, world, obj.getPos(), state, 0, 1.0f, false, null);
+			} else if (block == Blocks.CHORUS_FLOWER){//Chorus flower returns AIR for itemDropped... and for silkTouchDrop.
+				blockDrops.add(new ItemStack(Blocks.CHORUS_FLOWER));
 			}
 			return blockDrops;
 		}
