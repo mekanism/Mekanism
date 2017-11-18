@@ -71,6 +71,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -208,6 +209,9 @@ public class PacketHandler
 				else if(data instanceof ArrayList)
 				{
 					encode(((ArrayList<?>)data).toArray(), output);
+				}
+				else if (data instanceof NonNullList){
+					encode(((NonNullList) data).toArray(), output);
 				}
 				else {
 					throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
