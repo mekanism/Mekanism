@@ -28,6 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class BlockCardboardBox extends BlockContainer
 {
@@ -39,6 +43,7 @@ public class BlockCardboardBox extends BlockContainer
 		setCreativeTab(Mekanism.tabMekanism);
 		setHardness(0.5F);
 		setResistance(1F);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@Override
@@ -252,6 +257,18 @@ public class BlockCardboardBox extends BlockContainer
 			}
 
 			return data;
+		}
+	}
+
+	/**
+	 * If the player is sneaking and the dest block is a cardboard box, ensure onBlockActivated is called, and that the item use is not.
+	 * @param blockEvent event
+	 */
+	@SubscribeEvent
+	public void rightClickEvent(PlayerInteractEvent.RightClickBlock blockEvent){
+		if (blockEvent.getEntityPlayer().isSneaking() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() == this){
+			blockEvent.setUseBlock(Event.Result.ALLOW);
+			blockEvent.setUseItem(Event.Result.DENY);
 		}
 	}
 }
