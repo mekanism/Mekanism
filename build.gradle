@@ -125,8 +125,12 @@ dependencies {
     compileOnly "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
-    compileOnly "CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}"
-    runtime "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}"
+    compileOnly ("CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}") {
+        exclude module: "asm-debug-all"
+    }
+    runtime ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}") {
+        exclude module: "asm-debug-all"
+    }
     compileOnly "com.blamejared:MTLib:${config.mtlib_version}"
     compileOnly "dan200.computercraft:ComputerCraft:${config.computercraft_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${config.top_version}:api"
