@@ -758,8 +758,7 @@ public final class MekanismUtils
 
 			if(offset.exists(world))
 			{
-				Block block1 = offset.getBlock(world);
-				block1.onNeighborChange(world, offset.getPos(), coord.getPos());
+				notifyNeighborofChange(world, offset, coord.getPos());
 				
 				if(offset.getBlockState(world).isNormalCube())
 				{
@@ -767,7 +766,7 @@ public final class MekanismUtils
 					
 					if(offset.exists(world))
 					{
-						block1 = offset.getBlock(world);
+						Block block1 = offset.getBlock(world);
 
 						if(block1.getWeakChanges(world, offset.getPos()))
 						{
@@ -777,6 +776,19 @@ public final class MekanismUtils
 				}
 			}
 		}
+	}
+
+	/**
+	 * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
+	 * @param world world the change exists in
+	 * @param coord neighbor to notify
+	 * @param fromPos pos of our block that updated
+	 */
+	@SuppressWarnings("deprecation")//MOJENG
+	public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos){
+		Block block1 = coord.getBlock(world);
+		block1.onNeighborChange(world, coord.getPos(), fromPos);
+		block1.neighborChanged(coord.getBlockState(world), world, coord.getPos(), block1, fromPos);
 	}
 
 	/**

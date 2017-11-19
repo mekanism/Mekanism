@@ -16,6 +16,7 @@ import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -118,7 +119,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 					if(!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()))
 					{
-						obj.getBlock(world).onNeighborChange(world, obj.getPos(), getPos());
+						MekanismUtils.notifyNeighborofChange(world, obj, getPos());
 					}
 				}
 

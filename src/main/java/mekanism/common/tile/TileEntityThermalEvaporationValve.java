@@ -5,6 +5,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -30,9 +31,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
 
-					if(!obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock))
+					if(obj.exists(world) && !obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock))
 					{
-						obj.getBlock(world).onNeighborChange(world, obj.getPos(), getPos());
+						MekanismUtils.notifyNeighborofChange(world, obj, this.pos);
 					}
 				}
 			}
