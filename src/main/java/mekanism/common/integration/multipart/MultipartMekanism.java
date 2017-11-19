@@ -52,6 +52,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @MCMPAddon
 public class MultipartMekanism implements IMCMPAddon
@@ -233,6 +235,7 @@ public class MultipartMekanism implements IMCMPAddon
 
 	//No idea why mcmultipart doesnt do this itself...
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public void drawBlockHighlightEvent(DrawMultipartHighlightEvent ev){
 		IBlockState state = ev.getPartInfo().getState();
 		if (state.getBlock() == MekanismBlocks.GlowPanel || state.getBlock() == MekanismBlocks.Transmitter)
