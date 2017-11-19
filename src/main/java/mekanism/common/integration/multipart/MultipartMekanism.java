@@ -13,6 +13,7 @@ import mcmultipart.api.addon.IMCMPAddon;
 import mcmultipart.api.addon.MCMPAddon;
 import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.container.IPartInfo;
+import mcmultipart.api.event.DrawMultipartHighlightEvent;
 import mcmultipart.api.item.ItemBlockMultipart;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.multipart.IMultipartRegistry;
@@ -32,6 +33,8 @@ import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -226,5 +229,31 @@ public class MultipartMekanism implements IMCMPAddon
 	public static boolean placeMultipartBlock(Block block, ItemStack is, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
 		return ItemBlockMultipart.placeAt(is, player, player.getActiveHand(), world, pos, side, hitX, hitY, hitZ, block::getStateForPlacement, is.getMetadata(), MultipartRegistry.INSTANCE.getPart(block), ((ItemBlock)is.getItem())::placeBlockAt, ItemBlockMultipart::placePartAt);
+	}
+
+	//No idea why mcmultipart doesnt do this itself...
+	@SubscribeEvent
+	public void drawBlockHighlightEvent(DrawMultipartHighlightEvent ev){
+		IBlockState state = ev.getPartInfo().getState();
+		if (state.getBlock() == MekanismBlocks.GlowPanel || state.getBlock() == MekanismBlocks.Transmitter)
+		{
+			EntityPlayer player = ev.getPlayer();
+			@SuppressWarnings("deprecation")
+			AxisAlignedBB bb = state.getBlock().getSelectedBoundingBox(state, ev.getPartInfo().getPartWorld(), ev.getPartInfo().getPartPos());
+			//NB rendering code copied from MCMultipart
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+			GlStateManager.glLineWidth(2.0F);
+			GlStateManager.disableTexture2D();
+			GlStateManager.depthMask(false);
+			double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * ev.getPartialTicks();
+			double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * ev.getPartialTicks();
+			double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * ev.getPartialTicks();
+			RenderGlobal.drawSelectionBoundingBox(bb.grow(0.002).offset(-x, -y, -z), 0.0F, 0.0F, 0.0F, 0.4F);
+			GlStateManager.depthMask(true);
+			GlStateManager.enableTexture2D();
+			GlStateManager.disableBlend();
+			ev.setCanceled(true);
+		}
 	}
 }
