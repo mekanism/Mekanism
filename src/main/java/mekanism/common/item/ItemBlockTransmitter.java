@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.ArrayList;
 import java.util.List;
 
+import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -15,6 +16,8 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
+import mekanism.common.integration.MekanismHooks;
+import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.LangUtils;
@@ -24,16 +27,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemBlockTransmitter extends ItemBlock implements ITierItem
+public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITierItem
 {
 	public Block metaBlock;
 	
@@ -50,7 +54,7 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 	{
 		return i;
 	}
-	
+
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
@@ -200,5 +204,12 @@ public class ItemBlockTransmitter extends ItemBlock implements ITierItem
 		}
 
 		itemstack.getTagCompound().setInteger("tier", tier.ordinal());
+	}
+
+	@Override
+	@Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
+	protected IMultipart getMultiPart()
+	{
+		return MultipartMekanism.TRANSMITTER_MP;
 	}
 }

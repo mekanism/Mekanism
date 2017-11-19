@@ -13,6 +13,7 @@ import mcmultipart.api.addon.IMCMPAddon;
 import mcmultipart.api.addon.MCMPAddon;
 import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.container.IPartInfo;
+import mcmultipart.api.item.ItemBlockMultipart;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.multipart.IMultipartRegistry;
 import mcmultipart.api.multipart.IMultipartTile;
@@ -21,6 +22,7 @@ import mcmultipart.api.multipart.MultipartOcclusionHelper;
 import mcmultipart.api.ref.MCMPCapabilities;
 import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
+import mcmultipart.multipart.MultipartRegistry;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -28,7 +30,11 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -36,6 +42,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -46,6 +53,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @MCMPAddon
 public class MultipartMekanism implements IMCMPAddon
 {
+
+	public static MultipartTransmitter TRANSMITTER_MP;
+	public static MultipartGlowPanel GLOWPANEL_MP;
+
 	@SubscribeEvent
 	public void onAttachTile(AttachCapabilitiesEvent<TileEntity> event)
 	{
@@ -66,10 +77,10 @@ public class MultipartMekanism implements IMCMPAddon
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 		
-		registry.registerPartWrapper(MekanismBlocks.Transmitter, new MultipartTransmitter());
-		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
-		registry.registerPartWrapper(MekanismBlocks.GlowPanel, new MultipartGlowPanel());
-		registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
+		registry.registerPartWrapper(MekanismBlocks.Transmitter, TRANSMITTER_MP = new MultipartTransmitter());
+		//registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
+		registry.registerPartWrapper(MekanismBlocks.GlowPanel, GLOWPANEL_MP = new MultipartGlowPanel());
+		//registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
 		MultipartCapabilityHelper.registerCapabilityJoiner(Capabilities.TILE_NETWORK_CAPABILITY, MultipartTileNetworkJoiner::new);
     }
 	
@@ -210,5 +221,10 @@ public class MultipartMekanism implements IMCMPAddon
 			tile = ((IMultipartBlockAccess)world).getPartInfo().getTile().getTileEntity();
 		}
 		return tile;
+	}
+
+	public static boolean placeMultipartBlock(Block block, ItemStack is, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	{
+		return ItemBlockMultipart.placeAt(is, player, player.getActiveHand(), world, pos, side, hitX, hitY, hitZ, block::getStateForPlacement, is.getMetadata(), MultipartRegistry.INSTANCE.getPart(block), ((ItemBlock)is.getItem())::placeBlockAt, ItemBlockMultipart::placePartAt);
 	}
 }
