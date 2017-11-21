@@ -253,7 +253,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								}
 							}
 	
-							if(inverse == hasFilter)
+							if(inverse == hasFilter || !canMine(coord))
 							{
 								set.clear(index);
 								
@@ -368,47 +368,45 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	 */
 	public boolean setReplace(Coord4D obj, int index)
 	{
-		IBlockState state = obj.getBlockState(world);
-		Block block = state.getBlock();
-		
-		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, obj.x, obj.y, obj.z).get();
-		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, obj.getPos(), state, dummy);
-		MinecraftForge.EVENT_BUS.post(event);
-		
-		if(!event.isCanceled())
-		{
-			ItemStack stack = getReplace(index);
-			 
-			if(!stack.isEmpty())
-			{
-				world.setBlockState(obj.getPos(), Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
+		ItemStack stack = getReplace(index);
 
-				IBlockState s = obj.getBlockState(world);
-				if(s.getBlock() instanceof BlockBush && !((BlockBush)s.getBlock()).canBlockStay(world, obj.getPos(), s))
-				{
-					s.getBlock().dropBlockAsItem(world, obj.getPos(), s, 1);
-					world.setBlockToAir(obj.getPos());
-				}
-				
+		if(!stack.isEmpty())
+		{
+			world.setBlockState(obj.getPos(), Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
+
+			IBlockState s = obj.getBlockState(world);
+			if(s.getBlock() instanceof BlockBush && !((BlockBush)s.getBlock()).canBlockStay(world, obj.getPos(), s))
+			{
+				s.getBlock().dropBlockAsItem(world, obj.getPos(), s, 1);
+				world.setBlockToAir(obj.getPos());
+			}
+
+			return true;
+		}
+		else {
+			MinerFilter filter = replaceMap.get(index);
+
+			if(filter == null || (filter.replaceStack.isEmpty() || !filter.requireStack))
+			{
+				world.setBlockToAir(obj.getPos());
+
 				return true;
 			}
-			else {
-				MinerFilter filter = replaceMap.get(index);
 
-				if(filter == null || (filter.replaceStack.isEmpty() || !filter.requireStack))
-				{
-					world.setBlockToAir(obj.getPos());
-					
-					return true;
-				}
-				
-				missingStack = filter.replaceStack;
-				
-				return false;
-			}
+			missingStack = filter.replaceStack;
+
+			return false;
 		}
-		
-		return false;
+	}
+
+	private boolean canMine(Coord4D coord){
+		IBlockState state = coord.getBlockState(world);
+
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, coord.x, coord.y, coord.z).get();
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
+		MinecraftForge.EVENT_BUS.post(event);
+
+		return !event.isCanceled();
 	}
 
 	public ItemStack getReplace(int index)
