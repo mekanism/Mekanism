@@ -1580,6 +1580,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T getCapability(Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY)
