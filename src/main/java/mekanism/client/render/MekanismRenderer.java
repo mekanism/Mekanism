@@ -18,6 +18,7 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -84,7 +85,7 @@ public class MekanismRenderer
 
 	public static TextureAtlasSprite missingIcon;
 
-	public static Map<FluidType, Map<Fluid, TextureAtlasSprite>> textureMap = new HashMap<>();
+	private static Map<FluidType, Map<Fluid, TextureAtlasSprite>> textureMap = new HashMap<>();
 
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
@@ -212,12 +213,23 @@ public class MekanismRenderer
 
 	public static TextureAtlasSprite getFluidTexture(Fluid fluid, FluidType type) 
 	{
-		if(fluid == null || type == null) 
+		if(fluid == null || type == null)
 		{
 			return missingIcon;
 		}
 		
 		Map<Fluid, TextureAtlasSprite> map = textureMap.get(type);
+
+		if (map == null){
+			String errorType;
+			if (textureMap.containsKey(type)){
+				errorType = "a null got into";
+			} else {
+				errorType = "key "+type.name()+" is missing from";
+			}
+			Mekanism.logger.fatal("MekanismRenderer: Somehow "+errorType+" the texture map cache. This is not normal! Please reload your resources.");
+			return missingIcon;
+		}
 		
 		return map.getOrDefault(fluid, missingIcon);
 	}
