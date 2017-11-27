@@ -4,13 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GasRegistry
 {
 	private static ArrayList<Gas> registeredGasses = new ArrayList<>();
+
+	private static Logger LOG = LogManager.getLogger("Mekanism GasRegistry");
 
 	/**
 	 * Register a new gas into GasRegistry. Call this BEFORE post-init.
@@ -19,10 +27,18 @@ public class GasRegistry
 	 */
 	public static Gas register(Gas gas)
 	{
-		checkPhase();
 		if(gas == null)
 		{
 			return null;
+		}
+
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
+			if (hasAlreadyStitched()){
+				gas.updateIcon(Minecraft.getMinecraft().getTextureMapBlocks());
+				if (gas.getSpriteRaw() == null){
+					LOG.error("Gas {} registered post texture stitch without valid sprite!", gas.getName());
+				}
+			}
 		}
 
 		registeredGasses.add(gas);
@@ -115,8 +131,7 @@ public class GasRegistry
 		return registeredGasses.indexOf(gas);
 	}
 
-	private static void checkPhase()
-	{
-		Preconditions.checkState(Loader.instance().getLoaderState().ordinal() < LoaderState.INITIALIZATION.ordinal(), "Gasses must be registered before postInit.");
+	private static boolean hasAlreadyStitched(){
+		return Loader.instance().getLoaderState().ordinal() > LoaderState.PREINITIALIZATION.ordinal();
 	}
 }

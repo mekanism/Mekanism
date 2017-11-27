@@ -153,6 +153,10 @@ public class Gas
 		return sprite;
 	}
 
+	TextureAtlasSprite getSpriteRaw(){
+		return sprite;
+	}
+
 	/**
 	 * Sets this gas's icon.
 	 * @param map - IIcon to associate with this Gas
