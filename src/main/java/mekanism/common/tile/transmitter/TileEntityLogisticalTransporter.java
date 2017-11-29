@@ -361,7 +361,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		{
 			msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
 		} else {
-			msg.translation("gui.none", TextFormatting.BLACK);
+			msg.translation("gui.none");
 		}
 
 		player.sendMessage(msg);
@@ -375,7 +375,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 		super.onRightClick(player, side);
 		TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
 				.string("[Mekanism] ", TextFormatting.DARK_BLUE)
-				.translation("tooltip.configurator.viewColor");
+				.translation("tooltip.configurator.viewColor")
+				.string(": " );
+
 		if (getTransmitter().getColor() != null)
 		{
 			msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
