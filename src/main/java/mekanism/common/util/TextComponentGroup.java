@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -9,14 +8,16 @@ import net.minecraft.util.text.TextFormatting;
 /**
  * Created by Thiakil on 8/11/2017.
  */
-public class TextComponentGroup extends TextComponentBase
+public class TextComponentGroup extends TextComponentString
 {
 
 	public TextComponentGroup(){
+		super("");
 	}
 
 	public TextComponentGroup(TextFormatting color)
 	{
+		super("");
 		getStyle().setColor(color);
 	}
 
@@ -27,7 +28,7 @@ public class TextComponentGroup extends TextComponentBase
 	}
 
 	@Override
-	public ITextComponent createCopy()
+	public TextComponentGroup createCopy()
 	{
 		TextComponentGroup textcomponentstring = new TextComponentGroup();
 		textcomponentstring.setStyle(this.getStyle().createShallowCopy());
