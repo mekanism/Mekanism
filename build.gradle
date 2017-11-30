@@ -121,7 +121,7 @@ dependencies {
     compileOnly "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "cofh:RedstoneFlux:1.12-${config.redstoneflux_version}:universal"
-    deobfCompile "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
+    compileOnly "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
     compileOnly "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
