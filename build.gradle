@@ -138,6 +138,16 @@ dependencies {
 
 processResources
 {
+    inputs.property "version", project.version
+    inputs.property "mc_version", config.minecraft_version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+
+        // replace version and mcversion
+        expand "version": project.version, "mc_version": config.minecraft_version
+    }
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
