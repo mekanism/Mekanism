@@ -27,6 +27,13 @@
   "credits": "Thanks to everyone who has contributed to this ongoing project.",
   "logoFile": "logo.png",
   "screenshots": [
+  ],
+  "useDependencyInformation": true,
+  "dependencies":[
+    "mekanism@[${version}]"
+  ],
+  "requiredMods":[
+    "mekanism@[${version}]"
   ]
 },
 {
@@ -42,6 +49,13 @@
   "credits": "Thanks to everyone who has contributed to this ongoing project.",
   "logoFile": "logo.png",
   "screenshots": [
+  ],
+  "useDependencyInformation": true,
+  "dependencies":[
+    "mekanism@[${version}]"
+  ],
+  "requiredMods":[
+    "mekanism@[${version}]"
   ]
 }
 ]

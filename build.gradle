@@ -110,6 +110,9 @@ minecraft {
     mappings = "${config.mappings_version}"
     runDir = "run"
     useDepAts = true
+
+    replace '${version}', project.version
+    replaceIn "Mekanism.java"
 }
 
 dependencies {
@@ -169,7 +172,7 @@ task coreJar(type: Jar) {
 
     from('etc/core') {
         include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -188,7 +191,7 @@ task toolsJar(type: Jar) {
 
     from('etc/tools') {
         include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -203,7 +206,7 @@ task generatorsJar(type: Jar) {
 
     from('etc/generators') {
         include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
