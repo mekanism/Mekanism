@@ -784,11 +784,10 @@ public final class MekanismUtils
 	 * @param coord neighbor to notify
 	 * @param fromPos pos of our block that updated
 	 */
-	@SuppressWarnings("deprecation")//MOJENG
 	public static void notifyNeighborofChange(World world, Coord4D coord, BlockPos fromPos){
-		Block block1 = coord.getBlock(world);
-		block1.onNeighborChange(world, coord.getPos(), fromPos);
-		block1.neighborChanged(coord.getBlockState(world), world, coord.getPos(), block1, fromPos);
+		IBlockState state = coord.getBlockState(world);
+		state.getBlock().onNeighborChange(world, coord.getPos(), fromPos);
+		state.neighborChanged(world, coord.getPos(), world.getBlockState(fromPos).getBlock(), fromPos);
 	}
 
 	/**
