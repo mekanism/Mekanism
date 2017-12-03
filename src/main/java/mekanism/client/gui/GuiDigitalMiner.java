@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -32,6 +33,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -59,8 +61,16 @@ public class GuiDigitalMiner extends GuiMekanism
 		guiElements.add(new GuiVisualsTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
 		guiElements.add(new GuiEnergyInfo(() ->
         {
-            String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.getPerTick());
-            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+            double perTick = tileEntity.getPerTick();
+        	String multiplier = MekanismUtils.getEnergyDisplay(perTick);
+			ArrayList<String > ret = new ArrayList<>(4);
+			ret.add(LangUtils.localize("mekanism.gui.digitalMiner.capacity")+": "+MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()));
+			ret.add(LangUtils.localize("gui.needed") + ": " + multiplier + "/t");
+			if (perTick > tileEntity.getMaxEnergy()){
+				ret.add(TextFormatting.RED+LangUtils.localize("mekanism.gui.insufficientbuffer"));
+			}
+			ret.add(LangUtils.localize("mekanism.gui.bufferfree") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+            return ret;
         }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 151, 5).with(SlotOverlay.POWER));
@@ -166,7 +176,15 @@ public class GuiDigitalMiner extends GuiMekanism
 		fontRenderer.drawString(tileEntity.getName(), 69, 6, 0x404040);
 		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRenderer.drawString(tileEntity.running ? LangUtils.localize("gui.digitalMiner.running") : LangUtils.localize("gui.idle"), 9, 10, 0x00CD00);
+		String runningType;
+		if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()){
+			runningType = LangUtils.localize("mekanism.gui.digitalMiner.lowPower");
+		} else if (tileEntity.running){
+			runningType = LangUtils.localize("gui.digitalMiner.running");
+		} else {
+			runningType = LangUtils.localize("gui.idle");
+		}
+		fontRenderer.drawString(runningType, 9, 10, 0x00CD00);
 		fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
 
 		fontRenderer.drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);

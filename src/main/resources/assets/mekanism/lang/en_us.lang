@@ -512,6 +512,8 @@ gui.storing=Storing
 gui.skyBlocked=Sky blocked
 gui.using=Using
 gui.needed=Needed
+mekanism.gui.bufferfree=Free Buffer
+mekanism.gui.insufficientbuffer=Insufficient energy buffer!
 gui.noRecipe=No recipe
 gui.conflict=Conflict
 gui.height=Height
@@ -693,6 +695,8 @@ gui.digitalMiner.inverse=Inverse mode
 gui.digitalMiner.requireReplace=Require replace
 gui.digitalMiner.fuzzyMode=Fuzzy mode
 gui.digitalMiner.missingBlock=Missing block
+mekanism.gui.digitalMiner.capacity=Energy Capacity
+mekanism.gui.digitalMiner.lowPower=Low Power
 
 //Recipe names
 recipe.mekanismShaped=Shaped
