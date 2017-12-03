@@ -11,6 +11,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.Mekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
@@ -185,6 +186,15 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			didTransfer = true;
 			transferDelay = 2;
+		}
+
+		if (fluidSent > fluidToSend.amount){
+			Mekanism.logger.error("Some fluid handler took more fluid than we gave it?!");
+			Mekanism.logger.error("Handler list:");
+			for(Pair<Coord4D, IFluidHandler> pair : availableAcceptors){
+				Mekanism.logger.error(pair.getRight().toString());
+			}
+			fluidSent = fluidToSend.amount;
 		}
 
 		return fluidSent;
