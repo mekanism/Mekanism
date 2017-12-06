@@ -89,6 +89,7 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
+group = "mekanism"
 version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
