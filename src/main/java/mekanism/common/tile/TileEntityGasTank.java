@@ -236,13 +236,22 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
+		if(canDrawGas(side, null))
+		{
+			return gasTank.draw(amount, doTransfer);
+		}
+
 		return null;
 	}
 
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return gasTank.canDraw(type);
+		if(configComponent.hasSideForData(TransmissionType.GAS, facing, 2, side))
+		{
+			return gasTank.canDraw(type);
+		}
+		return false;
 	}
 
 	@Override
