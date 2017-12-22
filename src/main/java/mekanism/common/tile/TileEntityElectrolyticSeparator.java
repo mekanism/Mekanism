@@ -646,4 +646,21 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	{
 		return new Object[] {fluidTank, leftTank, rightTank};
 	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case ENERGY:
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				energyPerTick = BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
+				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
+				break;
+			default:
+				break;
+		}
+	}
 }
