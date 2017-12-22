@@ -81,13 +81,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public void deregister()
 	{
-		if(!worldObj.isRemote)
+		if(!worldObj.isRemote && ic2Registered)
 		{
 			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
+				ic2Registered = false;
 			}
 		}
 	}
