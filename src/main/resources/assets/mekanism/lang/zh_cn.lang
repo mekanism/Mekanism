@@ -220,7 +220,7 @@ tile.EnergyCubeElite.name=精英能量立方
 tile.EnergyCubeUltimate.name=终极能量立方
 tile.EnergyCubeCreative.name=创造能量立方
 
-//Energy Cubes
+//Factory Installers
 item.basicTierInstaller.name=基础工厂安装器
 item.advancedTierInstaller.name=高级工厂安装器
 item.eliteTierInstaller.name=精英工厂安装器
