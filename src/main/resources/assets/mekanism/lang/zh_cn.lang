@@ -83,9 +83,9 @@ tile.SaltBlock.name=盐块
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=锇方块
 tile.BasicBlock.BronzeBlock.name=青铜方块
-tile.BasicBlock.RefinedObsidian.name=强化黑曜石
+tile.BasicBlock.RefinedObsidian.name=强化黑曜石块
 tile.BasicBlock.CharcoalBlock.name=煤炭方块
-tile.BasicBlock.RefinedGlowstone.name=强化荧石
+tile.BasicBlock.RefinedGlowstone.name=强化荧石块
 tile.BasicBlock.SteelBlock.name=钢方块
 tile.BasicBlock.BinBasic.name=基础箱柜
 tile.BasicBlock.BinAdvanced.name=高级箱柜
@@ -211,7 +211,7 @@ tile.Transmitter.EliteThermodynamicConductor.name=精英热导线缆
 tile.Transmitter.UltimateThermodynamicConductor.name=终极热导线缆
 
 //Glow Panel
-item.GlowPanel.name=荧光板
+tile.GlowPanel.name=荧光板
 
 //Energy Cubes
 tile.EnergyCubeBasic.name=基础能量立方
@@ -220,7 +220,7 @@ tile.EnergyCubeElite.name=精英能量立方
 tile.EnergyCubeUltimate.name=终极能量立方
 tile.EnergyCubeCreative.name=创造能量立方
 
-//Factory Installers
+//Energy Cubes
 item.basicTierInstaller.name=基础工厂安装器
 item.advancedTierInstaller.name=高级工厂安装器
 item.eliteTierInstaller.name=精英工厂安装器
@@ -278,13 +278,22 @@ item.dirtySilverDust.name=污浊的银粉
 item.dirtyLeadDust.name=污浊的铅粉
 
 //Ingots
-item.obsidianIngot.name=黑曜石锭
+item.obsidianIngot.name=强化黑曜石锭
 item.osmiumIngot.name=锇锭
 item.bronzeIngot.name=青铜锭
-item.glowstoneIngot.name=荧石锭
+item.glowstoneIngot.name=强化荧石锭
 item.steelIngot.name=钢锭
 item.copperIngot.name=铜锭
 item.tinIngot.name=锡锭
+
+//Nuggets
+item.obsidianNugget.name=强化黑曜石颗粒
+item.osmiumNugget.name=锇颗粒
+item.bronzeNugget.name=青铜颗粒
+item.glowstoneNugget.name=强化荧石颗粒
+item.steelNugget.name=钢颗粒
+item.copperNugget.name=铜颗粒
+item.tinNugget.name=锡颗粒
 
 //Gasses
 gas.hydrogen=氢气
@@ -338,10 +347,10 @@ fluid.brine=盐水
 fluid.ethene=液态乙烯
 fluid.sodium=液态钠
 fluid.heavyWater=重水
-fluid.lithium=液态锂
-fluid.deuterium=液态氘
-fluid.tritium=液态氚
-fluid.fusionFuelDT=液态D-T燃料
+fluid.liquidlithium=液态锂
+fluid.liquiddeuterium=液态氘
+fluid.liquidtritium=液态氚
+fluid.liquidfusionFuelDT=液态D-T燃料
 fluid.steam=蒸汽
 
 //OreGas names
@@ -502,7 +511,7 @@ gui.storing=存量
 gui.skyBlocked=Sky blocked
 gui.using=消耗
 gui.needed=需要
-mekanism.gui.bufferfree=无缓冲
+mekanism.gui.bufferfree=空闲能量缓冲
 mekanism.gui.insufficientbuffer=能量缓冲不足！
 gui.noRecipe=没有配方
 gui.conflict=冲突
@@ -682,8 +691,8 @@ gui.digitalMiner.inverse=反选模式
 gui.digitalMiner.requireReplace=需要重新放置
 gui.digitalMiner.fuzzyMode=模糊模式
 gui.digitalMiner.missingBlock=缺失方块
-mekanism.gui.digitalMiner.capacity=能量
-mekanism.gui.digitalMiner.lowPower=低耗能
+mekanism.gui.digitalMiner.capacity=能量容量
+mekanism.gui.digitalMiner.lowPower=能量低
 
 //Recipe names
 recipe.mekanismShaped=有序
@@ -763,6 +772,9 @@ tooltip.itemAmount=物品数量
 tooltip.invalid=无效
 tooltip.encoded=编码
 tooltip.ingredients=原料
+tooltip.conduction=传导性
+tooltip.insulation=隔热性
+tooltip.heatCapacity=热容量
 
 tooltip.portableTank.bucketMode=水桶模式
 
@@ -781,6 +793,9 @@ tooltip.balloon=气球
 tooltip.jetpack.regular=标准
 tooltip.jetpack.hover=悬浮
 tooltip.jetpack.disabled=禁用
+
+tooltip.freerunner.regular=标准
+tooltip.freerunner.disabled=禁用
 
 tooltip.flamethrower.combat=战斗
 tooltip.flamethrower.heat=热量
@@ -1028,18 +1043,6 @@ item.ObsidianAxe.name=黑曜石斧头
 item.ObsidianShovel.name=黑曜石铲子
 item.ObsidianHoe.name=黑曜石锄头
 item.ObsidianSword.name=黑曜石剑
-
-//Lapis Lazuli
-item.LazuliHelmet.name=青金石头盔
-item.LazuliChestplate.name=青金石胸甲
-item.LazuliLeggings.name=青金石护腿
-item.LazuliBoots.name=青金石靴子
-item.LazuliPaxel.name=青金石镐尖斧
-item.LazuliPickaxe.name=青金石镐
-item.LazuliAxe.name=青金石斧头
-item.LazuliShovel.name=青金石铲子
-item.LazuliHoe.name=青金石锄头
-item.LazuliSword.name=青金石剑
 
 //Osmium
 item.OsmiumHelmet.name=锇头盔
