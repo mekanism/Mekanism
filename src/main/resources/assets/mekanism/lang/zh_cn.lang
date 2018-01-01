@@ -721,6 +721,11 @@ tooltip.configurator.inductionPortMode=将端口传输模式调为
 tooltip.configurator.toggleColor=颜色切换为
 tooltip.configurator.viewColor=当前颜色
 tooltip.configurator.reactorPortEject=切换反应器端口喷射模式
+tooltip.configurator.modeChange=连接模式更改为
+mekanism.pipe.connectiontype.normal=正常
+mekanism.pipe.connectiontype.push=输入
+mekanism.pipe.connectiontype.pull=抽出
+mekanism.pipe.connectiontype.none=无
 
 tooltip.upgrade.speed=速度
 tooltip.upgrade.energy=能量
