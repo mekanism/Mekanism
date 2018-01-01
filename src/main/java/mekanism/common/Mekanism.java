@@ -534,6 +534,7 @@ public class Mekanism
 		//GregoriousT?
 		OreDictionary.registerOre("itemSalt", MekanismItems.Salt);
 		OreDictionary.registerOre("dustSalt", MekanismItems.Salt);
+		OreDictionary.registerOre("foodSalt", MekanismItems.Salt);
 		
 		OreDictionary.registerOre("dustDiamond", new ItemStack(MekanismItems.OtherDust, 1, 0));
 		OreDictionary.registerOre("dustSteel", new ItemStack(MekanismItems.OtherDust, 1, 1));
