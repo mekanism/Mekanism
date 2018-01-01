@@ -341,7 +341,7 @@ public class ClientTickHandler
 			{
 				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.player.inventory.getCurrentItem().getItem();
 				
-				if(!mc.player.capabilities.isCreativeMode)
+				if(!(mc.player.isCreative() || mc.player.isSpectator()))
 				{
 					flamethrower.useGas(mc.player.inventory.getCurrentItem());
 				}
@@ -480,7 +480,7 @@ public class ClientTickHandler
 
 		ItemStack stack = player.inventory.armorInventory.get(2);
 
-		if(!stack.isEmpty() && !player.capabilities.isCreativeMode)
+		if(!stack.isEmpty() && ! (player.isCreative() || player.isSpectator()))
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{

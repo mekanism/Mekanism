@@ -54,7 +54,7 @@ public class CommonPlayerTickHandler
 		{
 			player.world.spawnEntity(new EntityFlame(player));
 			
-			if(!player.capabilities.isCreativeMode)
+			if(!(player.isCreative() || player.isSpectator()))
 			{
 				((ItemFlamethrower)player.inventory.getCurrentItem().getItem()).useGas(player.inventory.getCurrentItem());
 			}
@@ -164,7 +164,7 @@ public class CommonPlayerTickHandler
 	{
 		ItemStack stack = player.inventory.armorInventory.get(2);
 
-		if(!stack.isEmpty() && !player.capabilities.isCreativeMode)
+		if(!stack.isEmpty() && !(player.isCreative() || player.isSpectator()))
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
