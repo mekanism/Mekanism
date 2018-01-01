@@ -329,6 +329,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	@Override
 	public boolean canConnect(EnumFacing side)
 	{
+		if(connectionTypes[side.ordinal()] == ConnectionType.NONE)
+		{
+			return false;
+		}
+
 		if(!redstoneSet)
 		{
 			if(redstoneReactive)
@@ -611,6 +616,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 					sendDesc = true;
 
 					onModeChange(EnumFacing.getFront(hitSide.ordinal()));
+
+					refreshConnections();
+					notifyTileChange();
+
 					player.sendMessage(new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ").translation(connectionTypes[hitSide.ordinal()].translationKey()));
 
 					return EnumActionResult.SUCCESS;
