@@ -50,6 +50,7 @@ public class Enrichment
         if (itemInput == null)
         {
             LogHelper.logError(String.format("Required parameters missing for %s recipe.", NAME));
+            return;
         }
 
         if (itemOutput == null)
