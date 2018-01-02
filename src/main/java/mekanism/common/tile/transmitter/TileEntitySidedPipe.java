@@ -482,6 +482,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	protected void onModeChange(EnumFacing side)
 	{
 		markDirtyAcceptor(side);
+		if (getPossibleTransmitterConnections() != currentTransmitterConnections)
+		{
+			markDirtyTransmitters();
+		}
 	}
 
 	protected void markDirtyTransmitters()
@@ -609,7 +613,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			}
 			else {
 				EnumFacing hitSide = sideHit(hit.subHit + 1);
-				
+
+				if(hitSide == null && connectionTypes[side.ordinal()] == ConnectionType.NONE)
+				{
+					hitSide = side;
+				}
+
 				if(hitSide != null)
 				{
 					connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
