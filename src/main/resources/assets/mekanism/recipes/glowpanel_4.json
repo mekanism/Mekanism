@@ -9,7 +9,7 @@
     "SDS",
     "GSG"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "P": {
       "ore": "paneGlass",

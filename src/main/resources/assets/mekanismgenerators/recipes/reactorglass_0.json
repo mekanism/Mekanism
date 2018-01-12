@@ -9,7 +9,7 @@
     "IGI",
     " I "
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "G": {
       "ore": "blockGlass",

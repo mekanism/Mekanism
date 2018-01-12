@@ -11,7 +11,7 @@
   "pattern": [
     "SGS"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "S": {
       "ore": "ingotSteel",

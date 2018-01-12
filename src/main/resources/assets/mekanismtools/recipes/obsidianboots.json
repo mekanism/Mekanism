@@ -6,7 +6,7 @@
     "* *",
     "* *"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "*": {
       "ore": "ingotRefinedObsidian",

@@ -2,8 +2,13 @@ package mekanism.common.recipe.generation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
+import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.security.ISecurityItem;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.generators.common.block.states.BlockStateGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -76,7 +81,27 @@ public class RecipeGenerator {
             }
         }
         json.put("key", key);
-        json.put("type", isOreDict ? "mekanism:ore_shaped" : "minecraft:crafting_shaped");
+
+        String type = "minecraft:crafting_shaped";
+        if(isOreDict)
+        {
+            Item resultItem = result.getItem();
+            if(resultItem instanceof IEnergizedItem ||
+                    resultItem instanceof IGasItem ||
+                    resultItem instanceof ISecurityItem ||
+                    FluidContainerUtils.isFluidContainer(result) ||
+                    BlockStateBasic.BasicBlockType.get(result) == BlockStateBasic.BasicBlockType.BIN ||
+                    BlockStateMachine.MachineType.get(result) != null && BlockStateMachine.MachineType.get(result).supportsUpgrades)
+            {
+                type = "mekanism:ore_shaped";
+            }
+            else
+            {
+                type = "forge:ore_shaped";
+            }
+        }
+
+        json.put("type", type);
         try {
             json.put("result", serializeItem(result));
         } catch (IllegalArgumentException e) {

@@ -8,7 +8,7 @@
     "ITI",
     "III"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "C": {
       "item": "#CIRCUITULTIMATE"
