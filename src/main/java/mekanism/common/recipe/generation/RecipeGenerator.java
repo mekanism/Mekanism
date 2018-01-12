@@ -81,27 +81,7 @@ public class RecipeGenerator {
             }
         }
         json.put("key", key);
-
-        String type = "minecraft:crafting_shaped";
-        if(isOreDict)
-        {
-            Item resultItem = result.getItem();
-            if(resultItem instanceof IEnergizedItem ||
-                    resultItem instanceof IGasItem ||
-                    resultItem instanceof ISecurityItem ||
-                    FluidContainerUtils.isFluidContainer(result) ||
-                    BlockStateBasic.BasicBlockType.get(result) == BlockStateBasic.BasicBlockType.BIN ||
-                    BlockStateMachine.MachineType.get(result) != null && BlockStateMachine.MachineType.get(result).supportsUpgrades)
-            {
-                type = "mekanism:ore_shaped";
-            }
-            else
-            {
-                type = "forge:ore_shaped";
-            }
-        }
-
-        json.put("type", type);
+        json.put("type", getRecipeType(result, isOreDict, true));
         try {
             json.put("result", serializeItem(result));
         } catch (IllegalArgumentException e) {
@@ -162,7 +142,8 @@ public class RecipeGenerator {
             }
         }
         json.put("ingredients", ingredients);
-        json.put("type", isOreDict ? "mekanism:ore_shapeless" : "minecraft:crafting_shapeless");
+        json.put("type", getRecipeType(result, isOreDict, false));
+
         try {
             json.put("result", serializeItem(result));
         } catch (IllegalArgumentException e) {
@@ -251,5 +232,29 @@ public class RecipeGenerator {
         }
 
         throw new IllegalArgumentException("Not a block, item, stack, or od name");
+    }
+
+    private String getRecipeType(ItemStack result, boolean isOreDict, boolean shaped)
+    {
+        String type = shaped ? "minecraft:crafting_shaped" : "minecraft:crafting_shapeless";
+        if(isOreDict)
+        {
+            Item resultItem = result.getItem();
+            if(resultItem instanceof IEnergizedItem ||
+                    resultItem instanceof IGasItem ||
+                    resultItem instanceof ISecurityItem ||
+                    FluidContainerUtils.isFluidContainer(result) ||
+                    BlockStateBasic.BasicBlockType.get(result) == BlockStateBasic.BasicBlockType.BIN ||
+                    BlockStateMachine.MachineType.get(result) != null && BlockStateMachine.MachineType.get(result).supportsUpgrades)
+            {
+                type = shaped ? "mekanism:ore_shaped" : "mekanism:ore_shapeless";
+            }
+            else
+            {
+                type = shaped ? "forge:ore_shaped" : "forge:ore_shapeless";
+            }
+        }
+
+        return type;
     }
 }

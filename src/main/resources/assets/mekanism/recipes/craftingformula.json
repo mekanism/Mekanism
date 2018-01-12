@@ -10,5 +10,5 @@
       "item": "#CIRCUITBASIC"
     }
   ],
-  "type": "mekanism:ore_shapeless"
+  "type": "forge:ore_shapeless"
 }
