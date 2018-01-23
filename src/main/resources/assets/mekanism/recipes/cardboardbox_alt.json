@@ -1,15 +1,15 @@
 {
   "result": {
-    "item": "minecraft:paper",
-    "count": 6
+    "item": "mekanism:cardboardbox"
   },
   "pattern": [
-    "SSS"
+    "SS",
+    "SS"
   ],
   "type": "mekanism:ore_shaped",
   "key": {
     "S": {
-      "ore": "pulpWood",
+      "ore": "dustWood",
       "type": "forge:ore_dict"
     }
   }
