@@ -6,6 +6,8 @@
 
 Source code.  More information can be found on the [mod's forum post](http://www.minecraftforum.net/topic/1361286-164-mekanism-557-universal-cable-dynamic-tanks-wind-power/).
 
+Build instructions and contributing guidelines can be found in the docs directory.
+
 # About #
 
 Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.
