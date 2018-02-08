@@ -369,7 +369,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(!canFill(from, resource != null ? resource.getFluid() : null))
+		if(resource == null || !canFill(from, resource != null ? resource.getFluid() : null))
 		{
 			return 0;
 		}
@@ -383,7 +383,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		
 		if(filled < structure.getFluidCapacity() && structure.dumpMode != GasMode.IDLE)
 		{
-			filled = structure.getFluidCapacity();
+			filled = Math.min(structure.getFluidCapacity(), resource.amount);
 		}
 		
 		return filled;

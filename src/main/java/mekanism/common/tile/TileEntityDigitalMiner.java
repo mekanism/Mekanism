@@ -225,7 +225,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 							IBlockState state = coord.getBlockState(world);
 							Block block = state.getBlock();
-							int meta = block.damageDropped(state);
+							int meta = block.getMetaFromState(state);
 	
 							if(block == null || coord.isAirBlock(world))
 							{

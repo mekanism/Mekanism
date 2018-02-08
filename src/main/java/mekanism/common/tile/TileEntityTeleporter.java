@@ -20,6 +20,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.chunkloading.IChunkLoader;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
@@ -506,15 +507,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
-		int energyCost = 1000;
+		int energyCost = MekanismConfig.usage.teleporterBaseUsage;
 
 		if(entity.world.provider.getDimension() != coords.dimensionId)
 		{
-			energyCost+=10000;
+			energyCost+=MekanismConfig.usage.teleporterDimensionPenalty;
 		}
 
 		int distance = (int)entity.getDistance(coords.x, coords.y, coords.z);
-		energyCost+=(distance*10);
+		energyCost+=(distance*MekanismConfig.usage.teleporterDistanceUsage);
 
 		return energyCost;
 	}

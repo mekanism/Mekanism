@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
@@ -115,9 +116,12 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				for(EnumFacing side : EnumFacing.VALUES)
 				{
 					Coord4D obj = Coord4D.get(this).offset(side);
+					if (structure != null && (structure.locations.contains(obj) || structure.internalLocations.contains(obj))){
+						continue;
+					}
 					TileEntity tile = obj.getTileEntity(world);
 
-					if(!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()))
+					if(!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock))
 					{
 						MekanismUtils.notifyNeighborofChange(world, obj, getPos());
 					}

@@ -117,6 +117,9 @@ public class MekanismConfig
 		public static double gasCentrifugeUsage;
 		public static double heavyWaterElectrolysisUsage;
 		public static double formulaicAssemblicatorUsage;
+		public static int teleporterBaseUsage;
+		public static int teleporterDistanceUsage;
+		public static int teleporterDimensionPenalty;
 	}
 
 	public static class generators
