@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/aidancbrady/Mekanism.svg?branch=master)](https://travis-ci.org/aidancbrady/Mekanism)
+﻿[![Build Status](https://travis-ci.org/aidancbrady/Mekanism.svg?branch=master)](https://travis-ci.org/aidancbrady/Mekanism)
 
 # Mekanism for Minecraft 1.12 #
 
@@ -6,7 +6,7 @@
 
 Source code.  More information can be found on the [mod's forum post](http://www.minecraftforum.net/topic/1361286-164-mekanism-557-universal-cable-dynamic-tanks-wind-power/).
 
-Build instructions and contributing guidelines can be found in the docs directory.
+Build instructions and contributing guidelines can be found in [the docs directory](https://github.com/aidancbrady/Mekanism/tree/master/docs).
 
 # About #
 
