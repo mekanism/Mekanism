@@ -8,10 +8,10 @@
     "***",
     "***"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "*": {
-      "ore": "nuggetRefinedObsidian",
+      "ore": "nuggetObsidian",
       "type": "forge:ore_dict"
     }
   }

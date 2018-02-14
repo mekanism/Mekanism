@@ -13,7 +13,7 @@
     "TET",
     "TTT"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "T": {
       "nbt": {

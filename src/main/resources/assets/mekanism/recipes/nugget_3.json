@@ -7,10 +7,10 @@
   "pattern": [
     "*"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "*": {
-      "ore": "ingotRefinedGlowstone",
+      "ore": "ingotGlowstone",
       "type": "forge:ore_dict"
     }
   }

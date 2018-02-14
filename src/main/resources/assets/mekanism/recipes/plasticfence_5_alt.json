@@ -9,7 +9,7 @@
     "PDP",
     " P "
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "P": {
       "item": "mekanism:plasticfence",

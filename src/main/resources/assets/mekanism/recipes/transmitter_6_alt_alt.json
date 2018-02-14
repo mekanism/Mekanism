@@ -13,7 +13,7 @@
     "TRT",
     "TTT"
   ],
-  "type": "mekanism:ore_shaped",
+  "type": "forge:ore_shaped",
   "key": {
     "R": {
       "ore": "alloyElite",
