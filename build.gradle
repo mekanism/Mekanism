@@ -48,7 +48,7 @@ repositories {
     }
     maven {
         name 'tesla'
-        url 'http://maven.epoxide.org'
+        url 'http://maven.mcmoddev.com'
     }
     maven {
         name 'curseforge'
