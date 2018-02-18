@@ -260,6 +260,8 @@ public class Mekanism
 		// Register items and itemBlocks
 		MekanismItems.registerItems(event.getRegistry());
 		MekanismBlocks.registerItemBlocks(event.getRegistry());
+		//Integrate certain OreDictionary recipes
+		registerOreDict();
 	}
 
 	@SubscribeEvent
@@ -285,7 +287,7 @@ public class Mekanism
 	/**
 	 * Adds all in-game crafting, smelting and machine recipes.
 	 */
-	public void addRecipes()
+	public static void addRecipes()
 	{
 		//Furnace Recipes
 		GameRegistry.addSmelting(new ItemStack(MekanismBlocks.OreBlock, 1, 0), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
@@ -516,7 +518,7 @@ public class Mekanism
 	/**
 	 * Registers specified items with the Ore Dictionary.
 	 */
-	public void registerOreDict()
+	public static void registerOreDict()
 	{
 		//Add specific items to ore dictionary for recipe usage in other mods.
 		OreDictionary.registerOre("universalCable", MekanismUtils.getTransmitter(TransmitterType.UNIVERSAL_CABLE, BaseTier.BASIC, 1));
@@ -792,9 +794,6 @@ public class Mekanism
 				}
 			}
 		}
-
-		//Integrate certain OreDictionary recipes
-		registerOreDict();
 
 		//Load this module
 		addRecipes();
