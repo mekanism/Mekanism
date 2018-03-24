@@ -945,11 +945,7 @@ public class Mekanism
 				{
 					TileEntity tileEntity = (TileEntity) obj;
 
-					if (tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
-					{
-						((TileEntityElectricBlock) tileEntity).register();
-					}
-					else if (tileEntity instanceof IChunkLoadHandler)
+					if (tileEntity instanceof IChunkLoadHandler)
 					{
 						((IChunkLoadHandler) tileEntity).onChunkLoad();
 					}
