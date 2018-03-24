@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.Locale;
+
 public enum Resource
 {
 	IRON("Iron", 0xccccd9),
@@ -23,7 +25,7 @@ public enum Resource
 	{
 		for(Resource r : values())
 		{
-			if(r.name.toLowerCase().equals(s.toLowerCase()))
+			if(r.name.toLowerCase(Locale.ROOT).equals(s.toLowerCase(Locale.ROOT)))
 			{
 				return r;
 			}

@@ -6,6 +6,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 
+import java.util.Locale;
+
 /**
  * Simple color enum for adding colors to in-game GUI strings of text.
  * @author AidanBrady
@@ -105,7 +107,7 @@ public enum EnumColor implements IStringSerializable
 	@Override
 	public String getName()
 	{
-		return unlocalizedName.toLowerCase();
+		return unlocalizedName.toLowerCase(Locale.ROOT);
 	}
 
 	/**

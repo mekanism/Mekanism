@@ -6,6 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.Locale;
+
 public class ItemDust extends ItemMekanism implements IMetaItem
 {
 	public ItemDust()
@@ -41,7 +43,7 @@ public class ItemDust extends ItemMekanism implements IMetaItem
 	{
 		if(item.getItemDamage() <= Resource.values().length-1)
 		{
-			return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase() + "Dust";
+			return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase(Locale.ROOT) + "Dust";
 		}
 		
 		return "Invalid";

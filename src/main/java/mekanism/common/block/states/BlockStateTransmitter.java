@@ -16,6 +16,8 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
+import java.util.Locale;
+
 public class BlockStateTransmitter extends ExtendedBlockState
 {
 	public static final PropertyEnum<TransmitterType> typeProperty = PropertyEnum.create("type", TransmitterType.class);
@@ -54,7 +56,7 @@ public class BlockStateTransmitter extends ExtendedBlockState
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 		
 		public String getUnlocalizedName()

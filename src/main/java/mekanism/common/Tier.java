@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
@@ -64,7 +65,7 @@ public final class Tier
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 	}
 	
@@ -127,7 +128,7 @@ public final class Tier
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 	}
 	
@@ -648,7 +649,7 @@ public final class Tier
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 	}
 	

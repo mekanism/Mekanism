@@ -27,6 +27,8 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 import com.google.common.base.Predicate;
 
+import java.util.Locale;
+
 public class BlockStateReactor extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
@@ -151,7 +153,7 @@ public class BlockStateReactor extends ExtendedBlockState
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 	
 		public String getDescription()

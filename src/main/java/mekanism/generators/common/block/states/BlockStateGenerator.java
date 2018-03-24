@@ -2,6 +2,7 @@ package mekanism.generators.common.block.states;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
@@ -219,7 +220,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 		
 		public String getDescription()

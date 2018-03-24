@@ -41,6 +41,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public class BlockStateBasic extends ExtendedBlockState
 {
@@ -205,7 +206,7 @@ public class BlockStateBasic extends ExtendedBlockState
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 
 		public String getDescription()

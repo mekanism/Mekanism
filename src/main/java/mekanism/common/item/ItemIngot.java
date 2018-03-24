@@ -5,6 +5,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.Locale;
+
 public class ItemIngot extends ItemMekanism implements IMetaItem
 {
 	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze",
@@ -42,6 +44,6 @@ public class ItemIngot extends ItemMekanism implements IMetaItem
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + en_USNames[item.getItemDamage()].toLowerCase() + "Ingot";
+		return "item." + en_USNames[item.getItemDamage()].toLowerCase(Locale.ROOT) + "Ingot";
 	}
 }

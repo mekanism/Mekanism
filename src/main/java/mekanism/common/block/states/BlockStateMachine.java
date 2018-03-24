@@ -2,6 +2,7 @@ package mekanism.common.block.states;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -367,7 +368,7 @@ public class BlockStateMachine extends ExtendedBlockState
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 
 		public boolean canRotateTo(EnumFacing side)

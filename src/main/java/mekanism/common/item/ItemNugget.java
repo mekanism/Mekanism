@@ -5,6 +5,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.Locale;
+
 public class ItemNugget extends ItemMekanism implements IMetaItem
 {
 	public ItemNugget()
@@ -38,6 +40,6 @@ public class ItemNugget extends ItemMekanism implements IMetaItem
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + ItemIngot.en_USNames[item.getItemDamage()].toLowerCase() + "Nugget";
+		return "item." + ItemIngot.en_USNames[item.getItemDamage()].toLowerCase(Locale.ROOT) + "Nugget";
 	}
 }

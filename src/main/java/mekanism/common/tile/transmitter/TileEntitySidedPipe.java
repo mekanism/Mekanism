@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
@@ -748,7 +749,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 
 		public String translationKey(){

@@ -1,6 +1,7 @@
 package mekanism.tools.item;
 
 import java.util.List;
+import java.util.Locale;
 
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
@@ -40,7 +41,7 @@ public class ItemMekanismArmor extends ItemArmor
 	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		int layer = (slot == EntityEquipmentSlot.LEGS) ? 2 : 1;
-		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase() + "_" + layer + ".png";
+		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase(Locale.ROOT) + "_" + layer + ".png";
 	}
 	
 	@Override

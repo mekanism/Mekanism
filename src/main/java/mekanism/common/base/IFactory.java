@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import java.util.Locale;
 import java.util.Map;
 
 import mekanism.api.gas.Gas;
@@ -325,7 +326,7 @@ public interface IFactory
 		@Override
 		public String getName() 
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 	}
 }

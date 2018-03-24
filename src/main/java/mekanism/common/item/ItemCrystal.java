@@ -6,6 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.Locale;
+
 public class ItemCrystal extends ItemMekanism implements IMetaItem
 {
 	public ItemCrystal()
@@ -41,7 +43,7 @@ public class ItemCrystal extends ItemMekanism implements IMetaItem
 	{
 		if(item.getItemDamage() <= Resource.values().length-1)
 		{
-			return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase() + "Crystal";
+			return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase(Locale.ROOT) + "Crystal";
 		}
 		
 		return "Invalid";

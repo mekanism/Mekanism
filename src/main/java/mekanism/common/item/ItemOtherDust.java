@@ -5,6 +5,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import java.util.Locale;
+
 public class ItemOtherDust extends ItemMekanism implements IMetaItem
 {
 	public static String[] subtypes = {"Diamond", "Steel", "null", "Sulfur",
@@ -49,6 +51,6 @@ public class ItemOtherDust extends ItemMekanism implements IMetaItem
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + subtypes[item.getItemDamage()].toLowerCase() + "Dust";
+		return "item." + subtypes[item.getItemDamage()].toLowerCase(Locale.ROOT) + "Dust";
 	}
 }

@@ -3,6 +3,7 @@ package mekanism.client.jei;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import mekanism.api.gas.Gas;
@@ -142,7 +143,7 @@ public class MekanismJEI implements IModPlugin
 			ret += ":" + (((ItemBlockEnergyCube)itemStack.getItem()).getEnergy(itemStack) > 0 ? "filled" : "empty");
 		}
 
-        return ret.isEmpty() ? null : ret.toLowerCase();
+        return ret.isEmpty() ? null : ret.toLowerCase(Locale.ROOT);
     };
 	
 	@Override
@@ -183,16 +184,16 @@ public class MekanismJEI implements IModPlugin
 		SolarNeutronRecipeCategory solarNeutronCategory = new SolarNeutronRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		ThermalEvaporationRecipeCategory thermalEvaporationCategory = new ThermalEvaporationRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 
-		DoubleMachineRecipeCategory doubleMachineRecipeCategoryCombiner = new DoubleMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.COMBINER.name().toLowerCase(), "tile.MachineBlock.Combiner.name", ProgressBar.STONE);
+		DoubleMachineRecipeCategory doubleMachineRecipeCategoryCombiner = new DoubleMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.COMBINER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.Combiner.name", ProgressBar.STONE);
 
-		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryPurificationChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PURIFICATION_CHAMBER.name().toLowerCase(), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED);
-		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryOsmiumCompressor = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.OSMIUM_COMPRESSOR.name().toLowerCase(), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED);
-		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryChemicalInjectionChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CHEMICAL_INJECTION_CHAMBER.name().toLowerCase(), "nei.chemicalInjectionChamber", ProgressBar.YELLOW);
+		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryPurificationChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PURIFICATION_CHAMBER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED);
+		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryOsmiumCompressor = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.OSMIUM_COMPRESSOR.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED);
+		AdvancedMachineRecipeCategory advancedMachineRecipeCategoryChemicalInjectionChamber = new AdvancedMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CHEMICAL_INJECTION_CHAMBER.name().toLowerCase(Locale.ROOT), "nei.chemicalInjectionChamber", ProgressBar.YELLOW);
 
-		ChanceMachineRecipeCategory chanceMachineRecipeCategoryPrecisionSawmill = new ChanceMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PRECISION_SAWMILL.name().toLowerCase(), "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE);
+		ChanceMachineRecipeCategory chanceMachineRecipeCategoryPrecisionSawmill = new ChanceMachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.PRECISION_SAWMILL.name().toLowerCase(Locale.ROOT), "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE);
 
-		MachineRecipeCategory machineRecipeCategoryEnrichment = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.ENRICHMENT_CHAMBER.name().toLowerCase(), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE);
-		MachineRecipeCategory machineRecipeCategoryCrusher = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CRUSHER.name().toLowerCase(), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH);
+		MachineRecipeCategory machineRecipeCategoryEnrichment = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.ENRICHMENT_CHAMBER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE);
+		MachineRecipeCategory machineRecipeCategoryCrusher = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CRUSHER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH);
 
 		registry.addRecipeCategories(chemicalCrystallizerCategory, chemicalDissolutionChamberCategory, chemicalInfuserCategory, chemicalOxidizerCategory,
 				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, rotaryCondensentratorCondensentratingCategory, rotaryCondensentratorDecondensentratingCategory, solarNeutronCategory,

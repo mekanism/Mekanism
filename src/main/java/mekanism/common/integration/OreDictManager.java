@@ -4,6 +4,7 @@ import ic2.api.recipe.Recipes;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -111,7 +112,7 @@ public final class OreDictManager
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Dust, 2, resource.ordinal()));
 				RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
 				RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride, new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
-				RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas(resource.getName().toLowerCase()), 1000));
+				RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas(resource.getName().toLowerCase(Locale.ROOT)), 1000));
 			}
 			
 			for(ItemStack ore : OreDictionary.getOres("ingot" + resource.getName()))

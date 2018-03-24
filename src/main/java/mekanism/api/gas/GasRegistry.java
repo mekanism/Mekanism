@@ -2,6 +2,7 @@ package mekanism.api.gas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.client.Minecraft;
@@ -107,7 +108,7 @@ public class GasRegistry
 	{
 		for(Gas gas : registeredGasses)
 		{
-			if(gas.getName().toLowerCase().equals(name.toLowerCase()))
+			if(gas.getName().toLowerCase(Locale.ROOT).equals(name.toLowerCase(Locale.ROOT)))
 			{
 				return gas;
 			}

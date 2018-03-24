@@ -7,6 +7,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
+import java.util.Locale;
+
 public class MekanismFluids
 {
 	public static final Gas Hydrogen = new Gas("hydrogen", "mekanism:blocks/liquid/LiquidHydrogen");
@@ -57,7 +59,7 @@ public class MekanismFluids
 		for(Resource resource : Resource.values())
 		{
 			String name = resource.getName();
-			String nameLower = name.toLowerCase();
+			String nameLower = name.toLowerCase(Locale.ROOT);
 			
 			OreGas clean = new OreGas("clean" + name, "oregas." + nameLower);
 			clean.setVisible(false).setTint(resource.tint);

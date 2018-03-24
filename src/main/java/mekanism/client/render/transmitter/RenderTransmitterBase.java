@@ -1,6 +1,7 @@
 package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import mekanism.client.render.MekanismRenderer;
@@ -108,7 +109,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 	
 	public IBakedModel getModelForSide(TileEntityTransmitter part, EnumFacing side)
 	{
-		String sideName = side.name().toLowerCase();
+		String sideName = side.name().toLowerCase(Locale.ROOT);
 		String typeName = part.getConnectionType(side).name().toUpperCase();
 		String name = sideName + typeName;
 

@@ -15,6 +15,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Locale;
+
 public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 {
 	public ItemTierInstaller()
@@ -87,6 +89,6 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase() + "TierInstaller";
+		return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase(Locale.ROOT) + "TierInstaller";
 	}
 }

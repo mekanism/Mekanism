@@ -20,7 +20,7 @@ public final class ItemRegistryUtils
 	{
 		for(Map.Entry<String, ModContainer> entry : Loader.instance().getIndexedModList().entrySet()) 
 		{
-			modIDMap.put(entry.getKey().toLowerCase(), entry.getValue().getName());
+			modIDMap.put(entry.getKey().toLowerCase(Locale.ROOT), entry.getValue().getName());
 		}
 	}
 	

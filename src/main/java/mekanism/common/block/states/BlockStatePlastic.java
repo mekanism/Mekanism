@@ -10,6 +10,8 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Locale;
+
 public class BlockStatePlastic extends BlockStateContainer
 {
 	public static PropertyEnum<EnumDyeColor> colorProperty = PropertyEnum.create("color", EnumDyeColor.class);
@@ -30,7 +32,7 @@ public class BlockStatePlastic extends BlockStateContainer
 		@Override
 		public String getName()
 		{
-			return name().toLowerCase();
+			return name().toLowerCase(Locale.ROOT);
 		}
 	}
 

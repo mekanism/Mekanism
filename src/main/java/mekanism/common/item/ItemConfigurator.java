@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
@@ -230,7 +231,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	public String getViewModeText(TransmissionType type)
 	{
 		String base = LangUtils.localize("tooltip.configurator.viewMode");
-		return String.format(base, type.localize().toLowerCase());
+		return String.format(base, type.localize().toLowerCase(Locale.ROOT));
 	}
 	
 	public String getToggleModeText(TransmissionType type)
