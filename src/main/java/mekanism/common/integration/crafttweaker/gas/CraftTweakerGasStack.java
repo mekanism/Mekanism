@@ -137,7 +137,7 @@ public class CraftTweakerGasStack implements IGasStack
     @Override
     public IGasStack withAmount(int amount)
     {
-        return null;
+        return new CraftTweakerGasStack(new GasStack(stack.getGas(), amount));
     }
 
     @Override
@@ -149,6 +149,6 @@ public class CraftTweakerGasStack implements IGasStack
     @Override
     public String toString()
     {
-        return "<gas:" + stack.getGas().getName() + ">";
+        return String.format("<gas:%sx%dmb>", stack.getGas().getName(), stack.amount);
     }
 }
