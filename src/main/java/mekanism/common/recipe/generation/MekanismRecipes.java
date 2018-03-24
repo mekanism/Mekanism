@@ -102,8 +102,6 @@ public class MekanismRecipes {
         recipeGenerator.addShapedRecipe(MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), "RCR", "GPG", "RCR", 'C', MekanismUtils.getControlCircuit(BaseTier.ELITE), 'R', "alloyElite", 'G', "ingotGold", 'P', MachineType.PURIFICATION_CHAMBER.getStack());
         recipeGenerator.addShapedRecipe(MachineType.ELECTROLYTIC_SEPARATOR.getStack(), "IRI", "ECE", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'E', MekanismItems.EnrichedAlloy, 'C', MekanismItems.ElectrolyticCore);
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.ElectrolyticCore), "EPE", "IEG", "EPE", 'E', MekanismItems.EnrichedAlloy, 'P', "dustOsmium", 'I', "dustIron", 'G', "dustGold");
-        recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.CardboardBox), "SS", "SS", 'S', "pulpWood");
-        recipeGenerator.addShapedRecipe(new ItemStack(Items.PAPER, 6), "SSS", 'S', MekanismItems.Sawdust);
         recipeGenerator.addShapedRecipe(MachineType.PRECISION_SAWMILL.getStack(), "ICI", "ASA", "ICI", 'I', "ingotIron", 'C', MekanismUtils.getControlCircuit(BaseTier.BASIC), 'A', MekanismItems.EnrichedAlloy, 'S', new ItemStack(MekanismBlocks.BasicBlock, 1, 8));
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 14), "CGC", "IBI", "III", 'C', MekanismUtils.getControlCircuit(BaseTier.ADVANCED), 'G', "paneGlass", 'I', new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), 'B', Items.BUCKET);
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 15), " I ", "ICI", " I ", 'I', new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), 'C', MekanismUtils.getControlCircuit(BaseTier.ADVANCED));
@@ -142,6 +140,10 @@ public class MekanismRecipes {
         recipeGenerator.addShapelessRecipe(new ItemStack(MekanismItems.CraftingFormula), Items.PAPER, MekanismUtils.getControlCircuit(BaseTier.BASIC));
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 1, 9), "SGS", "CIC", "STS", 'S', "ingotSteel", 'G', "blockGlass", 'C', MekanismUtils.getControlCircuit(BaseTier.ELITE), 'I', new ItemStack(MekanismBlocks.BasicBlock, 1, 8), 'T', MekanismItems.TeleportationCore);
         recipeGenerator.addShapedRecipe(MachineType.FUELWOOD_HEATER.getStack(), "SCS", "FHF", "SSS", 'S', "ingotSteel", 'C', MekanismUtils.getControlCircuit(BaseTier.BASIC), 'F', Blocks.FURNACE, 'H', new ItemStack(MekanismBlocks.BasicBlock, 1, 8));
+        recipeGenerator.addShapedRecipe(new ItemStack(Items.PAPER, 6), "SSS", 'S', "pulpWood");
+        recipeGenerator.addShapedRecipe(new ItemStack(Items.PAPER, 6), "SSS", 'S', "dustWood");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.CardboardBox), "SS", "SS", 'S', "pulpWood");
+        recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.CardboardBox), "SS", "SS", 'S', "dustWood");
 
         //Energy Cube recipes
         recipeGenerator.addShapedRecipe(MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), "RTR", "iIi", "RTR", 'R', "alloyBasic", 'i', "ingotIron", 'T', MekanismItems.EnergyTablet.getUnchargedItem(), 'I', new ItemStack(MekanismBlocks.BasicBlock, 1, 8));
