@@ -286,7 +286,7 @@ public class CommonProxy implements IGuiProvider
 		general.portableTeleporterDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "PortableTeleporterDelay", 0).getInt();
 		general.quantumEntangloporterEnergyTransfer = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "QuantumEntangloporterEnergyTransfer", 16000000D).getDouble();
 		
-		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
+		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false, "Disables IC2 power integration. Requires world restart (server-side option in SMP)").getBoolean();
 		general.blacklistRF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistRFPower", false).getBoolean();
 		general.blacklistTesla = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistTeslaPower", false).getBoolean();
 		general.blacklistForge = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistForgePower", false).getBoolean();
