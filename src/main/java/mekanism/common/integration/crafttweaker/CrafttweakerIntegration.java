@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
+import mekanism.common.Mekanism;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +21,23 @@ public class CrafttweakerIntegration
      */
     public static void applyRecipeChanges()
     {
-        LATE_REMOVALS.forEach(CraftTweakerAPI::apply);
-        LATE_ADDITIONS.forEach(CraftTweakerAPI::apply);
+        LATE_REMOVALS.forEach(action->{
+            try
+            {
+                CraftTweakerAPI.apply(action);
+            } catch (Exception e){
+                Mekanism.logger.error("CT action failed", e);
+                CraftTweakerAPI.logError("Mekanism CT action failed", e);
+            }
+        });
+        LATE_ADDITIONS.forEach(action->{
+            try
+            {
+                CraftTweakerAPI.apply(action);
+            } catch (Exception e){
+                Mekanism.logger.error("CT action failed", e);
+                CraftTweakerAPI.logError("Mekanism CT action failed", e);
+            }
+        });
     }
 }
