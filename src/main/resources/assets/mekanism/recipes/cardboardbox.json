@@ -9,8 +9,11 @@
   "type": "forge:ore_shaped",
   "key": {
     "S": {
-      "ore": "pulpWood",
-      "type": "forge:ore_dict"
+      "ores": [
+        "pulpWood",
+        "dustWood"
+      ],
+      "type": "mekanism:multi_ore"
     }
   }
 }

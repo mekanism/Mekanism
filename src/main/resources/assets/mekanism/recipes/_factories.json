@@ -4,7 +4,8 @@
     "ore_shapeless": "mekanism.common.recipe.ShapelessMekanismRecipe$RecipeFactory"
   },
   "ingredients": {
-    "item_nbt": "mekanism.common.recipe.MekanismIngredient$IngredientFactory"
+    "item_nbt": "mekanism.common.recipe.MekanismIngredient$IngredientFactory",
+    "multi_ore": "mekanism.common.recipe.MultiOredictIngredient$Factory"
   },
   "conditions": {
     "recipe_enabled": "mekanism.common.recipe.MekanismRecipeEnabledCondition"

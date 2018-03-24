@@ -102,8 +102,9 @@ public class MekanismRecipes {
         recipeGenerator.addShapedRecipe(MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), "RCR", "GPG", "RCR", 'C', MekanismUtils.getControlCircuit(BaseTier.ELITE), 'R', "alloyElite", 'G', "ingotGold", 'P', MachineType.PURIFICATION_CHAMBER.getStack());
         recipeGenerator.addShapedRecipe(MachineType.ELECTROLYTIC_SEPARATOR.getStack(), "IRI", "ECE", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'E', MekanismItems.EnrichedAlloy, 'C', MekanismItems.ElectrolyticCore);
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismItems.ElectrolyticCore), "EPE", "IEG", "EPE", 'E', MekanismItems.EnrichedAlloy, 'P', "dustOsmium", 'I', "dustIron", 'G', "dustGold");
-        recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.CardboardBox), "SS", "SS", 'S', "pulpWood");
-        recipeGenerator.addShapedRecipe(new ItemStack(Items.PAPER, 6), "SSS", 'S', MekanismItems.Sawdust);
+        //NB: custom json
+        //recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.CardboardBox), "SS", "SS", 'S', "pulpWood");
+        //recipeGenerator.addShapedRecipe(new ItemStack(Items.PAPER, 6), "SSS", 'S', MekanismItems.Sawdust);
         recipeGenerator.addShapedRecipe(MachineType.PRECISION_SAWMILL.getStack(), "ICI", "ASA", "ICI", 'I', "ingotIron", 'C', MekanismUtils.getControlCircuit(BaseTier.BASIC), 'A', MekanismItems.EnrichedAlloy, 'S', new ItemStack(MekanismBlocks.BasicBlock, 1, 8));
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 14), "CGC", "IBI", "III", 'C', MekanismUtils.getControlCircuit(BaseTier.ADVANCED), 'G', "paneGlass", 'I', new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), 'B', Items.BUCKET);
         recipeGenerator.addShapedRecipe(new ItemStack(MekanismBlocks.BasicBlock, 1, 15), " I ", "ICI", " I ", 'I', new ItemStack(MekanismBlocks.BasicBlock2, 1, 0), 'C', MekanismUtils.getControlCircuit(BaseTier.ADVANCED));
