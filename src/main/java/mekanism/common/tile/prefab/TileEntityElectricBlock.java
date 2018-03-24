@@ -342,16 +342,16 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
-	public double injectEnergy(EnumFacing direction, double amount, double voltage)
-	{
-		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
+	public double injectEnergy(EnumFacing pushDirection, double amount, double voltage)
+	{// nb: the facing param contains the side relative to the pushing block
+		TileEntity tile = getWorld().getTileEntity(getPos().offset(pushDirection.getOpposite()));
 		
-		if(general.blacklistIC2 || tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
+		if(general.blacklistIC2 || (tile != null && CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)))
 		{
 			return amount;
 		}
 
-		return amount-acceptEnergy(direction, amount*general.FROM_IC2, false)*general.TO_IC2;
+		return amount-acceptEnergy(pushDirection.getOpposite(), amount*general.FROM_IC2, false)*general.TO_IC2;
 	}
 
 	@Override
