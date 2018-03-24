@@ -46,7 +46,7 @@ public class CommonPlayerTickHandler
 		else {
 			if(player.stepHeight == 1.002F)
 			{
-				player.stepHeight = 0.5F;
+				player.stepHeight = 0.6F;
 			}
 		}
 		

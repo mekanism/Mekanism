@@ -220,7 +220,7 @@ public class ClientTickHandler
 			else {
 				if(mc.player.stepHeight == 1.002F)
 				{
-					mc.player.stepHeight = 0.5F;
+					mc.player.stepHeight = 0.6F;
 				}
 			}
 			
