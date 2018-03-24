@@ -18,7 +18,7 @@ public class GuiMekanismConfig extends GuiConfig
 {
 	public GuiMekanismConfig(GuiScreen parent)
 	{
-		super(parent, getConfigElements(), "Mekanism", false, false, "Mekanism");
+		super(parent, getConfigElements(), Mekanism.MODID, false, false, "Mekanism");
 	}
 
 	private static List<IConfigElement> getConfigElements()

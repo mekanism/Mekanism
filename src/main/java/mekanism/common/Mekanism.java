@@ -151,7 +151,7 @@ import com.mojang.authlib.GameProfile;
  * @author AidanBrady
  *
  */
-@Mod(modid = "mekanism", name = "Mekanism", version = "${version}", guiFactory = "mekanism.client.gui.ConfigGuiFactory", useMetadata = true,
+@Mod(modid = Mekanism.MODID, name = "Mekanism", version = "${version}", guiFactory = "mekanism.client.gui.ConfigGuiFactory", useMetadata = true,
 		acceptedMinecraftVersions = "[1.12,1.13)",
 		dependencies =	"required-after:forge@[14.21.0.2373,);" +
 						"after:redstoneflux;" +
@@ -167,6 +167,8 @@ import com.mojang.authlib.GameProfile;
 @Mod.EventBusSubscriber()
 public class Mekanism
 {
+	public static final String MODID = "mekanism";
+
 	/** Mekanism Packet Pipeline */
 	public static PacketHandler packetHandler = new PacketHandler();
 
