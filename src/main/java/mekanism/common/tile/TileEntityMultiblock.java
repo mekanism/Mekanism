@@ -205,7 +205,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 				data.add(getSynchronizedData().volLength);
 
 				getSynchronizedData().renderLocation.write(data);
-				data.add(getSynchronizedData().inventoryID);
+				data.add(getSynchronizedData().inventoryID != null);//boolean for if has inv id
+				if (getSynchronizedData().inventoryID != null)
+					data.add(getSynchronizedData().inventoryID);
 			}
 			else {
 				data.add(false);
@@ -239,7 +241,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 					getSynchronizedData().volLength = dataStream.readInt();
 	
 					getSynchronizedData().renderLocation = Coord4D.read(dataStream);
-					getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
+					if (dataStream.readBoolean()){
+						getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
+					} else {
+						getSynchronizedData().inventoryID = null;
+					}
 				}
 			}
 		}
