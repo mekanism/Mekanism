@@ -13,7 +13,9 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.ChunkPos;
@@ -134,7 +136,12 @@ public class TileComponentChunkLoader implements ITileComponent
 			
 			if(canOperate() && chunkTicket == null)
 			{
-				Ticket ticket = ForgeChunkManager.requestTicket(Mekanism.instance, tileEntity.getWorld(), Type.NORMAL);
+				Ticket ticket;
+				if (tileEntity instanceof ISecurityTile){
+					ticket = ForgeChunkManager.requestPlayerTicket(Mekanism.instance, MekanismUtils.getLastKnownUsername(((ISecurityTile) tileEntity).getSecurity().getOwnerUUID()), tileEntity.getWorld(), Type.NORMAL);
+				} else {
+					ticket = ForgeChunkManager.requestTicket(Mekanism.instance, tileEntity.getWorld(), Type.NORMAL);
+				}
 	            
 				if(ticket != null) 
 	            {
