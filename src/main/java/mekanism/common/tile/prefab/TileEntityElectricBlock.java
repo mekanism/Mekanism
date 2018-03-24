@@ -235,36 +235,41 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getSinkTier()
 	{
-		return 4;
+		return !general.blacklistIC2 ? 4 : 0;
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int getSourceTier()
 	{
-		return 4;
+		return !general.blacklistIC2 ? 4 : 0;
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void setStored(int energy)
 	{
-		setEnergy(energy*general.FROM_IC2);
+		if (!general.blacklistIC2)
+			setEnergy(energy*general.FROM_IC2);
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public int addEnergy(int amount)
 	{
-		setEnergy(getEnergy() + amount*general.FROM_IC2);
-		return (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_IC2));
+		if (!general.blacklistIC2)
+		{
+			setEnergy(getEnergy() + amount * general.FROM_IC2);
+			return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_IC2));
+		}
+		return 0;
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public boolean isTeleporterCompatible(EnumFacing side)
 	{
-		return sideIsOutput(side);
+		return !general.blacklistIC2 && sideIsOutput(side);
 	}
 
 	@Override
@@ -277,14 +282,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction)
 	{
-		return sideIsConsumer(direction);
+		return !general.blacklistIC2 && sideIsConsumer(direction);
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction)
 	{
-		return sideIsOutput(direction) && receiver instanceof IEnergyConductor;
+		return !general.blacklistIC2 && sideIsOutput(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
@@ -312,14 +317,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double getDemandedEnergy()
 	{
-		return (getMaxEnergy() - getEnergy())*general.TO_IC2;
+		return !general.blacklistIC2 ? (getMaxEnergy() - getEnergy())*general.TO_IC2 : 0;
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double getOfferedEnergy()
 	{
-		return Math.min(getEnergy(), getMaxOutput())*general.TO_IC2;
+		return !general.blacklistIC2 ? Math.min(getEnergy(), getMaxOutput())*general.TO_IC2 : 0;
 	}
 
 	@Override
@@ -332,7 +337,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public double getOutputEnergyUnitsPerTick()
 	{
-		return getMaxOutput()*general.TO_IC2;
+		return !general.blacklistIC2 ? getMaxOutput()*general.TO_IC2 : 0;
 	}
 
 	@Override
@@ -341,7 +346,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(direction));
 		
-		if(tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
+		if(general.blacklistIC2 || tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()))
 		{
 			return amount;
 		}
