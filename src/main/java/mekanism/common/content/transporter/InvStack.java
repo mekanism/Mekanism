@@ -72,18 +72,22 @@ public final class InvStack
 			for(int i = 0; i < slotIDs.size(); i++)
 			{
 				ItemStack stack = itemStacks.get(i);
+				ItemStack stackInSlot = inventory.getStackInSlot(slotIDs.get(i));
 				
-				if(inventory.getStackInSlot(slotIDs.get(i)).stackSize == stack.stackSize && stack.stackSize <= amount)
-				{
-					inventory.setInventorySlotContents(slotIDs.get(i), null);
-					amount -= stack.stackSize;
-				}
-				else {
-					ItemStack ret = stack.copy();
-					int toUse = Math.min(amount, stack.stackSize);
-					ret.stackSize = inventory.getStackInSlot(slotIDs.get(i)).stackSize - toUse;
-					inventory.setInventorySlotContents(slotIDs.get(i), ret);
-					amount -= toUse;
+				if (stackInSlot != null) {
+					if (stackInSlot.stackSize == stack.stackSize && stack.stackSize <= amount) {
+						inventory.setInventorySlotContents(slotIDs.get(i), null);
+						amount -= stack.stackSize;
+					} else {
+						ItemStack ret = stack.copy();
+						int toUse = Math.min(amount, stack.stackSize);
+						ret.stackSize = stackInSlot.stackSize - toUse;
+						if (ret.stackSize == 0){
+							ret = null;
+						}
+						inventory.setInventorySlotContents(slotIDs.get(i), ret);
+						amount -= toUse;
+					}
 				}
 				
 				if(amount == 0)
@@ -100,8 +104,8 @@ public final class InvStack
 			{
 				ItemStack stack = itemStacks.get(i);
 				int toUse = Math.min(amount, stack.stackSize);
-				handler.extractItem(slotIDs.get(i), toUse, false);
-				amount -= toUse;
+				ItemStack extracted = handler.extractItem(slotIDs.get(i), toUse, false);
+				amount -= (extracted != null) ? extracted.stackSize : 0;
 				
 				if(amount == 0)
 				{
