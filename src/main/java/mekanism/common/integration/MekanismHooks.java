@@ -1,11 +1,16 @@
 package mekanism.common.integration;
 
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.MachineRecipe;
 import ic2.api.recipe.Recipes;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import li.cil.oc.api.Driver;
 import mekanism.api.transmitters.TransmissionType;
@@ -20,9 +25,12 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -101,6 +109,10 @@ public final class MekanismHooks
 		}
 
 		Wrenches.initialise();
+
+		if (AE2Loaded){
+			registerAE2Recipes();
+		}
 	}
 
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
@@ -171,30 +183,100 @@ public final class MekanismHooks
 
 		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
 	}
-	
-	@Method(modid = APPLIED_ENERGISTICS_2_MOD_ID)
+
 	public void registerAE2P2P() 
 	{
 		for(TransmitterType type : TransmitterType.values())
 		{
-			if(type.getTransmission().equals(TransmissionType.ITEM))
-			{
+			if(type.getTransmission().equals(TransmissionType.ITEM)){
 				FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
-				continue;
-			}
-			
-			if(type.getTransmission().equals(TransmissionType.FLUID))
-			{
+			} else if(type.getTransmission().equals(TransmissionType.FLUID)){
 				FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
-				continue;
-			}
-			
-			if(type.getTransmission().equals(TransmissionType.ENERGY))
-			{
+			} else if(type.getTransmission().equals(TransmissionType.ENERGY)) {
 				FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-forge-power", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
-				continue;
+			}
+		}		
+	}
+
+	public void registerAE2Recipes(){
+		try {
+			IItems itemApi = AEApi.instance().definitions().items();
+			IMaterials materialsApi = AEApi.instance().definitions().materials();
+			IBlocks blocksApi = AEApi.instance().definitions().blocks();
+
+			Optional<ItemStack> certusCrystal = materialsApi.certusQuartzCrystal().maybeStack(1);
+			Optional<ItemStack> certusDust = materialsApi.certusQuartzDust().maybeStack(1);
+			Optional<ItemStack> pureCertus = materialsApi.purifiedCertusQuartzCrystal().maybeStack(1);
+			Optional<ItemStack> chargedCrystal = materialsApi.certusQuartzCrystalCharged().maybeStack(1);
+			Optional<ItemStack> fluixCrystal = materialsApi.fluixCrystal().maybeStack(1);
+			Optional<ItemStack> pureFluix = materialsApi.purifiedFluixCrystal().maybeStack(1);
+			Optional<ItemStack> fluixDust = materialsApi.fluixDust().maybeStack(1);
+			Optional<ItemStack> certusOre = blocksApi.quartzOre().maybeStack(1);
+			Optional<ItemStack> chargedOre = blocksApi.quartzOreCharged().maybeStack(1);
+			Optional<Item> crystalSeed = itemApi.crystalSeed().maybeItem();
+			Optional<ItemStack> pureNether = materialsApi.purifiedNetherQuartzCrystal().maybeStack(1);
+
+			if (certusCrystal.isPresent() && certusDust.isPresent()){
+				RecipeHandler.addCrusherRecipe(certusCrystal.get().copy(), certusDust.get().copy());
 			}
 
-		}		
+			if (chargedCrystal.isPresent() && certusDust.isPresent()){
+				RecipeHandler.addCrusherRecipe(chargedCrystal.get().copy(), certusDust.get().copy());
+			}
+
+			if (fluixCrystal.isPresent() && fluixDust.isPresent()){
+				RecipeHandler.addCrusherRecipe(fluixCrystal.get().copy(), fluixDust.get().copy());
+			}
+
+			if (certusOre.isPresent() && certusCrystal.isPresent()){
+				ItemStack crystalOut = certusCrystal.get().copy();
+				crystalOut.setCount(4);
+				RecipeHandler.addEnrichmentChamberRecipe(certusOre.get().copy(), crystalOut);
+			}
+
+			if (chargedOre.isPresent() && chargedCrystal.isPresent()){
+				ItemStack crystalOut = chargedCrystal.get().copy();
+				crystalOut.setCount(4);
+				RecipeHandler.addEnrichmentChamberRecipe(chargedOre.get().copy(), crystalOut);
+			}
+
+			if (certusDust.isPresent() && pureCertus.isPresent()){
+				ItemStack crystalOut = pureCertus.get().copy();
+				RecipeHandler.addEnrichmentChamberRecipe(certusDust.get().copy(), crystalOut);
+			}
+
+			if (fluixDust.isPresent() && pureFluix.isPresent()){
+				ItemStack crystalOut = pureFluix.get().copy();
+				RecipeHandler.addEnrichmentChamberRecipe(fluixDust.get().copy(), crystalOut);
+			}
+
+			if (fluixCrystal.isPresent() && pureFluix.isPresent()){
+				RecipeHandler.addEnrichmentChamberRecipe(fluixCrystal.get().copy(), pureFluix.get().copy());
+			}
+
+			if (certusCrystal.isPresent() && pureCertus.isPresent()){
+				RecipeHandler.addEnrichmentChamberRecipe(certusCrystal.get().copy(), pureCertus.get().copy());
+			}
+
+			if (crystalSeed.isPresent()){
+				NonNullList<ItemStack> seeds = NonNullList.create();
+				crystalSeed.get().getSubItems(CreativeTabs.SEARCH, seeds);//there appears to be no way to get this via api, so fall back to unloc names
+				seeds.forEach(stack->{
+					String unloc = crystalSeed.get().getUnlocalizedName(stack);
+					if (unloc.endsWith("certus") && pureCertus.isPresent()){
+						RecipeHandler.addEnrichmentChamberRecipe(stack, pureCertus.get().copy());
+					} else if (unloc.endsWith("nether") && pureNether.isPresent()){
+						RecipeHandler.addEnrichmentChamberRecipe(stack, pureNether.get().copy());
+					} else if (unloc.endsWith("fluix") && pureFluix.isPresent()){
+						RecipeHandler.addEnrichmentChamberRecipe(stack, pureFluix.get().copy());
+					}
+				});
+			}
+
+		} catch (Exception e){
+			Mekanism.logger.error("Something went wrong with ae2 integration", e);
+		} catch (IncompatibleClassChangeError e){
+			Mekanism.logger.error("AE2 api has changed unexpectedly", e);
+		}
 	}
 }
