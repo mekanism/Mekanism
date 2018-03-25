@@ -129,7 +129,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 				block = Blocks.REDSTONE_ORE;
 			}
 
-			ItemStack stack = new ItemStack(block, 1, meta);
+			ItemStack stack = block.getPickBlock(state, null, player.world, pos, player);
 			Coord4D orig = new Coord4D(pos, player.world);
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
@@ -369,6 +369,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 		public Set<Coord4D> found = new HashSet<>();
 
+		private Block startBlock;
+
 		public static Map<Block, List<Block>> ignoreBlocks = new HashMap<>();
 
 		public Finder(World w, ItemStack s, Coord4D loc)
@@ -376,6 +378,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			world = w;
 			stack = s;
 			location = loc;
+			startBlock = loc.getBlock(w);
 		}
 
 		public void loop(Coord4D pointer)
@@ -391,7 +394,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			{
 				Coord4D coord = pointer.offset(side);
 
-				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getBlockMeta(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4)))
+				ItemStack blockStack = coord.getBlock(world).getPickBlock(coord.getBlockState(world), null, world, coord.getPos(), null);
+
+				if(coord.exists(world) && checkID(coord.getBlock(world)) && (stack.isItemEqual(blockStack) || (coord.getBlock(world) == startBlock && MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4)))
 				{
 					loop(coord);
 				}
