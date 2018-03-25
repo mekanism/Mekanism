@@ -895,12 +895,6 @@ public abstract class BlockMachine extends BlockContainer
 			ItemDataUtils.setInt(itemStack, "controlType", control.getControlType().ordinal());
 		}
 
-		if(tileEntity instanceof IStrictEnergyStorage)
-		{
-			IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
-			energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage)tileEntity).getEnergy());
-		}
-
 		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.size() > 0)
 		{
 			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
@@ -922,6 +916,13 @@ public abstract class BlockMachine extends BlockContainer
 		{
 			IFactory factoryItem = (IFactory)itemStack.getItem();
 			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType.ordinal(), itemStack);
+		}
+
+		//this MUST be done after the factory info is saved, as it caps the energy to max, which is based on the recipe type
+		if(tileEntity instanceof IStrictEnergyStorage)
+		{
+			IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
+			energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage)tileEntity).getEnergy());
 		}
 
 		if(tileEntity instanceof TileEntityQuantumEntangloporter)
