@@ -25,8 +25,6 @@ import net.minecraft.world.World;
 
 public class MultipartGlowPanel implements IMultipart
 {
-	private static Random rand = new Random();
-	
 	@Override
 	public IPartSlot getSlotForPlacement(World world, BlockPos pos, IBlockState state, EnumFacing facing, float hitX, float hitY,float hitZ, EntityLivingBase placer) 
 	{
@@ -60,17 +58,10 @@ public class MultipartGlowPanel implements IMultipart
 		TileEntity tile = part.getTile().getTileEntity();
 		if(tile instanceof TileEntityGlowPanel && !BlockGlowPanel.canStay(part.getPartWorld(), part.getPartPos()))
 		{
-			float motion = 0.7F;
-			double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
 			BlockPos pos = part.getPartPos();
 			TileEntityGlowPanel glowPanel = (TileEntityGlowPanel)tile;
 			ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, glowPanel.colour.getMetaValue());
-			EntityItem entityItem = new EntityItem(glowPanel.getWorld(), pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, stack);
-
-			part.getActualWorld().spawnEntity(entityItem);
+			Block.spawnAsEntity(part.getActualWorld(), pos, stack);
 			part.remove();
 		}
 	}

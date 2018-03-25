@@ -140,7 +140,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 			{
 				if(entityplayer.isSneaking())
 				{
-					dismantleBlock(world, pos, false);
+					MekanismUtils.dismantleBlock(this, state, world, pos);
 					return true;
 				}
 
@@ -290,28 +290,6 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 			default:
 				return false;
 		}
-	}
-
-	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
-	{
-		IBlockState state = world.getBlockState(pos);
-		ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
-
-		world.setBlockToAir(pos);
-
-		if(!returnBlock)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
-
-			world.spawnEntity(entityItem);
-		}
-
-		return itemStack;
 	}
 
 	public PropertyEnum<ReactorBlockType> getTypeProperty()

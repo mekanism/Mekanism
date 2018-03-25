@@ -28,6 +28,7 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.IModule;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
@@ -772,6 +773,7 @@ public class Mekanism
 		
 		//Register to receive subscribed events
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(BlockBounding.class);
 		
 		//Register this module's GUI handler in the simple packet protocol
 		PacketSimpleGui.handlers.add(0, proxy);

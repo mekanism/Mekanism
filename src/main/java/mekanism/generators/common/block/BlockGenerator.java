@@ -32,6 +32,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -347,14 +348,7 @@ public abstract class BlockGenerator extends BlockContainer
 			
 			if(amount > 0)
 			{
-				float motion = 0.7F;
-				double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-				double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-				double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-				EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
-
-				world.spawnEntity(entityItem);
+				spawnAsEntity(world, pos, new ItemStack(GeneratorsItems.TurbineBlade, amount));
 			}
 		}
 
@@ -392,8 +386,7 @@ public abstract class BlockGenerator extends BlockContainer
 
 						if(entityplayer.isSneaking())
 						{
-							dismantleBlock(state, world, pos, false);
-
+							MekanismUtils.dismantleBlock(this, state, world, pos);
 							return true;
 						}
 
@@ -502,12 +495,6 @@ public abstract class BlockGenerator extends BlockContainer
 	}
 
 	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
-
-	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
 		int metadata = state.getBlock().getMetaFromState(state);
@@ -518,12 +505,6 @@ public abstract class BlockGenerator extends BlockContainer
 		}
 
 		return GeneratorType.get(getGeneratorBlock(), metadata).create();
-	}
-
-	@Override
-	public Item getItemDropped(IBlockState state, Random random, int fortune)
-	{
-		return null;
 	}
 	
 	@Override
@@ -574,28 +555,13 @@ public abstract class BlockGenerator extends BlockContainer
 		}
 	}
 
-	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
+	private ItemStack getDropItem(IBlockState state, IBlockAccess world, BlockPos pos) {
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		if(tileEntity == null)
 		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-
-			world.spawnEntity(entityItem);
+			return ItemStack.EMPTY;
 		}
 
-		return world.setBlockToAir(pos);
-	}
-
-	@Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
-	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
 		if(itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock))
@@ -650,25 +616,61 @@ public abstract class BlockGenerator extends BlockContainer
 		return itemStack;
 	}
 
-	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
+	@Override
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
+		return getDropItem(state, world, pos);
+	}
 
+	@Override
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+	{
+		drops.add(getDropItem(state, world, pos));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Keep tile entity in world until after
+	 * {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)}.
+	 * Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)}.
+	 *
+	 * @author Forge
+	 * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
+	 */
+	@Override
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
+	                               boolean willHarvest)
+	{
+		return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)}.
+	 *
+	 * @author Forge
+	 * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
+	 */
+	@Override
+	public void harvestBlock(World world, EntityPlayer player, BlockPos pos,
+	                         IBlockState state, TileEntity te, ItemStack stack)
+	{
+		MekanismUtils.harvestBlockPatched(this, getDropItem(state, world, pos), world, player, pos, te);
 		world.setBlockToAir(pos);
+	}
 
-		if(!returnBlock)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
-
-			world.spawnEntity(entityItem);
-		}
-
-		return itemStack;
+	/**
+	 * Returns that this "cannot" be silk touched.
+	 * This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not called, because only
+	 * {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile entities.
+	 * Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
+	 *
+	 * @return false
+	 */
+	@Override
+	protected boolean canSilkHarvest()
+	{
+		return false;
 	}
 
 	@Override

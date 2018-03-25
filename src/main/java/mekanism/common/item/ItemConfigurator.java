@@ -169,22 +169,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									break;
 								}
 
-								float xRandom = random.nextFloat() * 0.8F + 0.1F;
-								float yRandom = random.nextFloat() * 0.8F + 0.1F;
-								float zRandom = random.nextFloat() * 0.8F + 0.1F;
-
-								EntityItem item = new EntityItem(world, pos.getX() + xRandom, pos.getY() + yRandom, pos.getZ() + zRandom, slotStack.copy());
-
-								if(slotStack.hasTagCompound())
-								{
-									item.getItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
-								}
-
-								float k = 0.05F;
-								item.motionX = random.nextGaussian() * k;
-								item.motionY = random.nextGaussian() * k + 0.2F;
-								item.motionZ = random.nextGaussian() * k;
-								world.spawnEntity(item);
+								Block.spawnAsEntity(world, pos, slotStack.copy());
 
 								inv.setInventorySlotContents(i, ItemStack.EMPTY);
 								setEnergy(stack, getEnergy(stack) - ENERGY_PER_ITEM_DUMP);
