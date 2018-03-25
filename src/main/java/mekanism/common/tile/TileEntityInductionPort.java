@@ -50,8 +50,6 @@ import net.minecraftforge.fml.common.Optional.Method;
 })
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState
 {
-	public boolean ic2Registered = false;
-	
 	/** false = input, true = output */
 	public boolean mode;
 	
@@ -65,10 +63,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		super.onUpdate();
 		
-		if(!ic2Registered && MekanismUtils.useIC2())
+		/*if(!ic2Registered && MekanismUtils.useIC2())
 		{
 			register();
-		}
+		}*/
 		
 		if(!worldObj.isRemote)
 		{
@@ -118,20 +116,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		if(!worldObj.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
-			
-			if(registered != this)
-			{
-				if(registered instanceof IEnergyTile)
-				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-				}
-				else if(registered == null)
-				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-					ic2Registered = true;
-				}
-			}
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 		}
 	}
 
@@ -140,12 +125,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	{
 		if(!worldObj.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
-			
-			if(registered instanceof IEnergyTile)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-			}
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 	}
 

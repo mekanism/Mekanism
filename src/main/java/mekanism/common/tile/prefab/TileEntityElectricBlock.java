@@ -40,9 +40,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	/** Actual maximum energy storage, including upgrades */
 	public double maxEnergy;
 
-	/** Is this registered with IC2 */
-	public boolean ic2Registered = false;
-
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
 	 * and a current amount of stored energy.
@@ -61,45 +58,26 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
-			
-			if(registered != this)
-			{
-				if(registered instanceof IEnergyTile)
-				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-				}
-				else if(registered == null)
-				{
-					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-					ic2Registered = true;
-				}
-			}
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 		}
 	}
 
 	@Method(modid = "IC2")
 	public void deregister()
 	{
-		if(!worldObj.isRemote && ic2Registered)
+		if(!worldObj.isRemote)
 		{
-			IEnergyTile registered = EnergyNet.instance.getTile(worldObj, getPos());
-			
-			if(registered instanceof IEnergyTile)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-				ic2Registered = false;
-			}
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 		}
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(!ic2Registered && MekanismUtils.useIC2())
+		/*if(!ic2Registered && MekanismUtils.useIC2())
 		{
 			register();
-		}
+		}*/
 	}
 
 	@Override
