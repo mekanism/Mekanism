@@ -32,6 +32,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.SoundWrapper;
 import mekanism.common.base.TileNetworkList;
@@ -71,7 +72,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
-public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler, ITubeConnection, ISpecialConfigData, ITierUpgradeable
+public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration, IGasHandler, ITubeConnection, ISpecialConfigData, ITierUpgradeable, ISustainedData
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -1108,5 +1109,19 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	public String getDataType() 
 	{
 		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getName();
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack)
+	{
+		infuseStored.writeSustainedData(itemStack);
+		GasUtils.writeSustainedData(gasTank, itemStack);
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack)
+	{
+		infuseStored.readSustainedData(itemStack);
+		GasUtils.readSustainedData(gasTank, itemStack);
 	}
 }

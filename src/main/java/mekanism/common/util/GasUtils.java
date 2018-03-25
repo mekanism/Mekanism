@@ -8,11 +8,13 @@ import java.util.List;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -176,5 +178,23 @@ public final class GasUtils
 		}
 
 		return prevSending-toSend;
+	}
+
+	public static void writeSustainedData(GasTank gasTank, ItemStack itemStack)
+	{
+		if(gasTank.stored != null && gasTank.stored.getGas() != null)
+		{
+			ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.stored.write(new NBTTagCompound()));
+		}
+	}
+
+	public static void readSustainedData(GasTank gasTank, ItemStack itemStack)
+	{
+		if(ItemDataUtils.hasData(itemStack, "gasStored"))
+		{
+			gasTank.stored = GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored"));
+		} else {
+			gasTank.stored = null;
+		}
 	}
 }

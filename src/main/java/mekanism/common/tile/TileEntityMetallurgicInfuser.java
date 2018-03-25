@@ -16,6 +16,7 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
@@ -40,7 +41,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable
+public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, ITierUpgradeable, ISustainedData
 {
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
@@ -433,5 +434,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 		}
 		
 		return super.getCapability(capability, side);
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack)
+	{
+		infuseStored.writeSustainedData(itemStack);
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack)
+	{
+		infuseStored.readSustainedData(itemStack);
 	}
 }

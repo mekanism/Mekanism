@@ -16,6 +16,7 @@ import mekanism.common.SideData;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
@@ -27,6 +28,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -40,7 +42,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 
-public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection, ITierUpgradeable
+public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection, ITierUpgradeable, ISustainedData
 {
 	/** How much secondary energy (fuel) this machine uses per tick, not including upgrades. */
 	public int BASE_SECONDARY_ENERGY_PER_TICK;
@@ -498,5 +500,17 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 			default:
 				throw new NoSuchMethodException();
 		}
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack)
+	{
+		GasUtils.writeSustainedData(gasTank, itemStack);
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack)
+	{
+		GasUtils.readSustainedData(gasTank, itemStack);
 	}
 }
