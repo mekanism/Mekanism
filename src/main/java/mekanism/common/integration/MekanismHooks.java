@@ -110,21 +110,17 @@ public final class MekanismHooks
 		{
 			if(!entry.getInput().getInputs().isEmpty())
 			{
-				List<String> names = MekanismUtils.getOreDictName(entry.getInput().getInputs().get(0));
-
-				for(String name : names)
+				if (!RecipeHandler.Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0)))
 				{
-					boolean did = false;
+					List<String> names = MekanismUtils.getOreDictName(entry.getInput().getInputs().get(0));
 
-					if(name.startsWith("ingot"))
+					for(String name : names)
 					{
-						RecipeHandler.addCrusherRecipe(entry.getInput().getInputs().get(0), entry.getOutput().iterator().next());
-						did = true;
-					}
-
-					if(did)
-					{
-						break;
+						if(name.startsWith("ingot") || name.startsWith("crystal"))
+						{
+							RecipeHandler.addCrusherRecipe(entry.getInput().getInputs().get(0), entry.getOutput().iterator().next());
+							break;
+						}
 					}
 				}
 			}
