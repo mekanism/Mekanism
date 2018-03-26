@@ -85,7 +85,7 @@ public class MekanismRenderer
 
 	public static TextureAtlasSprite missingIcon;
 
-	private static Map<FluidType, Map<Fluid, TextureAtlasSprite>> textureMap = new HashMap<>();
+	private static TextureMap texMap = null;
 
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
@@ -168,47 +168,7 @@ public class MekanismRenderer
 	{
 		missingIcon = map.getMissingSprite();
 
-		textureMap.clear();
-
-		for(FluidType type : FluidType.values()) 
-		{
-			textureMap.put(type, new HashMap<>());
-		}
-
-		for(Fluid fluid : FluidRegistry.getRegisteredFluids().values()) 
-		{
-			if(fluid.getFlowing() != null) 
-			{
-				String flow = fluid.getFlowing().toString();
-				TextureAtlasSprite sprite;
-				
-				if(map.getTextureExtry(flow) != null) 
-				{
-					sprite = map.getTextureExtry(flow);
-				} 
-				else {
-					sprite = map.registerSprite(fluid.getStill());
-				}
-				
-				textureMap.get(FluidType.FLOWING).put(fluid, sprite);
-			}
-
-			if(fluid.getStill() != null) 
-			{
-				String still = fluid.getStill().toString();
-				TextureAtlasSprite sprite;
-				
-				if(map.getTextureExtry(still) != null) 
-				{
-					sprite = map.getTextureExtry(still);
-				} 
-				else {
-					sprite = map.registerSprite(fluid.getStill());
-				}
-				
-				textureMap.get(FluidType.STILL).put(fluid, sprite);
-			}
-		}
+		texMap = map;
 	}
 
 	public static TextureAtlasSprite getFluidTexture(Fluid fluid, FluidType type) 
@@ -218,20 +178,16 @@ public class MekanismRenderer
 			return missingIcon;
 		}
 		
-		Map<Fluid, TextureAtlasSprite> map = textureMap.get(type);
-
-		if (map == null){
-			String errorType;
-			if (textureMap.containsKey(type)){
-				errorType = "a null got into";
-			} else {
-				errorType = "key "+type.name()+" is missing from";
-			}
-			Mekanism.logger.fatal("MekanismRenderer: Somehow "+errorType+" the texture map cache. This is not normal! Please reload your resources.");
-			return missingIcon;
+		ResourceLocation spriteLocation;
+		if (type == FluidType.STILL){
+			spriteLocation = fluid.getStill();
+		} else {
+			spriteLocation = fluid.getFlowing();
 		}
+
+		TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
 		
-		return map.getOrDefault(fluid, missingIcon);
+		return sprite != null ? sprite : missingIcon;
 	}
 	
 	private static VertexFormat prevFormat = null;
