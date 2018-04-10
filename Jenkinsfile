@@ -1,9 +1,9 @@
 pipeline {
   agent any
 
-  tools {
+  /*tools {
     gradle "Gradle 4.4"
-  }
+  }*/
 
   stages {
     stage('Build') {
