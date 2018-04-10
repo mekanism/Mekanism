@@ -37,7 +37,7 @@ item.Salt.name=Соль
 item.BrineBucket.name=Ведро рассола
 item.LithiumBucket.name=Ведро лития
 item.HeavyWaterBucket.name=Ведро тяжелой воды
-item.FreeRunners.name=Свободные бегунки
+item.FreeRunners.name=Бегунки
 item.ArmoredJetpack.name=Бронированный реактивный ранец
 item.ConfigurationCard.name=Карта настройки
 item.SeismicReader.name=Сейсмический считыватель
@@ -103,7 +103,7 @@ tile.BasicBlock.ThermalEvaporationController.name=Контроллер тепл�
 tile.BasicBlock.ThermalEvaporationValve.name=Вентиль теплового испарителя
 
 //Basic Block 2 (second ID iteration)
-tile.BasicBlock2.ThermalEvaporationBlock.name=Тепловой испаритель
+tile.BasicBlock2.ThermalEvaporationBlock.name=Блок теплового испарителя
 tile.BasicBlock2.InductionCasing.name=Индукционный корпус
 tile.BasicBlock2.InductionPort.name=Индукционный порт
 tile.BasicBlock2.InductionCellBasic.name=Базовая индукционная ячейка
@@ -131,7 +131,7 @@ tile.MachineBlock.PurificationChamber.name=Камера очистки
 tile.MachineBlock.EnergizedSmelter.name=Энергетическая плавильня
 tile.MachineBlock.Teleporter.name=Телепорт
 tile.MachineBlock.ElectricPump.name=Электрическая помпа
-tile.MachineBlock.PersonalChest.name=Электрический сундук
+tile.MachineBlock.PersonalChest.name=Личный сундук
 tile.MachineBlock.Chargepad.name=Зарядник
 tile.MachineBlock.LogisticalSorter.name=Логистический сортировщик
 tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
@@ -286,6 +286,15 @@ item.steelIngot.name=Стальной слиток
 item.copperIngot.name=Медный слиток
 item.tinIngot.name=Оловянный слиток
 
+//Nuggets
+item.obsidianNugget.name=Очищенного обсидиана кусочек
+item.osmiumNugget.name=Осмиевый кусочек
+item.bronzeNugget.name=Бронзовый кусочек
+item.glowstoneNugget.name=Светокаменный кусочек
+item.steelNugget.name=Стальной кусочек
+item.copperNugget.name=Медный кусочек
+item.tinNugget.name=Оловянный кусочек
+
 //Gasses
 gas.hydrogen=Водород
 gas.oxygen=Кислород
@@ -393,6 +402,7 @@ upgrade.anchor.desc=Сохраняет чанк с машиной загруже
 //Key description text
 key.mode=Переключить режим предмета
 key.armorMode=Переключить режим брони
+key.feetMode=Переключить режим бегунков
 key.voice=Голос
 
 //Entities
@@ -427,7 +437,7 @@ gui.save=Сохранить
 gui.output=Выход
 gui.delete=Убрать
 gui.status=Статус
-gui.autoEject=Авто-извлечение
+gui.autoEject=Авто-выброс
 gui.itemstack=Стопка предметов
 gui.oredict=Словарь руд
 gui.material=Материал
@@ -439,13 +449,13 @@ gui.start=Запуск
 gui.stop=Стоп
 gui.config=Настройка
 gui.teleport=Телепорт
-gui.eject=Извлечение
+gui.eject=Выброс
 gui.input=Вход
 gui.strictInput=Строгий вход
 gui.slots=Слоты
 gui.state=Состояние
-gui.on=Вкл.
-gui.off=Выкл.
+gui.on=Да
+gui.off=Нет
 gui.filters=Фильтры
 gui.filter=Фильтр
 gui.idle=Простой
@@ -485,8 +495,8 @@ gui.structure=Структура
 gui.dynamicTank=Динамический резервуар
 gui.industrialTurbine=Промышленная турбина
 gui.thermoelectricBoiler=Термоэлектрический бойлер
-gui.visuals=Визуальные
-gui.noEject=Невозможно извлечь
+gui.visuals=Маркеры
+gui.noEject=Нет выброса
 gui.undefined=Неопределенно
 gui.owner=Владелец
 gui.public=Общий
@@ -502,6 +512,8 @@ gui.storing=Накапливается
 gui.skyBlocked=Не видно неба
 gui.using=Используется
 gui.needed=Нужно
+mekanism.gui.bufferfree=Свободно
+mekanism.gui.insufficientbuffer=Недостаточный буфер энергии!
 gui.noRecipe=Нет рецепта
 gui.conflict=Конфликт
 gui.height=Высота
@@ -675,7 +687,7 @@ gui.digitalMiner.autoPull=Авто-сбор
 gui.digitalMiner.replaceBlock=Замена блоков
 gui.digitalMiner.reset=Сброс
 gui.digitalMiner.silkTouch=Шёлковое касание
-gui.digitalMiner.pull=Собирать
+gui.digitalMiner.pull=Сбор
 gui.digitalMiner.silk=Шёлк
 gui.digitalMiner.toMine=Копать
 gui.digitalMiner.running=Работает
@@ -683,6 +695,8 @@ gui.digitalMiner.inverse="Обратный" режим
 gui.digitalMiner.requireReplace=Требуется замена
 gui.digitalMiner.fuzzyMode="Нечёткий" режим
 gui.digitalMiner.missingBlock=Отсутствует блок
+mekanism.gui.digitalMiner.capacity=Энергоёмкость
+mekanism.gui.digitalMiner.lowPower=Нехватка энергии
 
 //Recipe names
 recipe.mekanismShaped=Форменное создание
@@ -711,6 +725,11 @@ tooltip.configurator.inductionPortMode=Режим передачи индукц�
 tooltip.configurator.toggleColor=Цвет изменён на
 tooltip.configurator.viewColor=Текущий цвет
 tooltip.configurator.reactorPortEject=Режим передачи порта реактора переключен на
+tooltip.configurator.modeChange=Тип подключения изменён на
+mekanism.pipe.connectiontype.normal=Обычный
+mekanism.pipe.connectiontype.push=Выброс
+mekanism.pipe.connectiontype.pull=Сбор
+mekanism.pipe.connectiontype.none=Нет
 
 tooltip.upgrade.speed=Скорость
 tooltip.upgrade.energy=Энергия
@@ -772,7 +791,7 @@ tooltip.disassembler.normal=нормальный
 tooltip.disassembler.slow=медленный
 tooltip.disassembler.fast=быстрый
 tooltip.disassembler.vein=жила
-tooltip.disassembler.off=выкл.
+tooltip.disassembler.off=нет
 
 tooltip.configurationCard.got=Получена конфигурация из %s
 tooltip.configurationCard.set=Введена конфигурация типа %s
@@ -784,6 +803,9 @@ tooltip.jetpack.regular=Обычный
 tooltip.jetpack.hover=Зависание
 tooltip.jetpack.disabled=Отключен
 
+tooltip.freerunner.regular=Обычный
+tooltip.freerunner.disabled=Отключен
+
 tooltip.flamethrower.combat=Бой
 tooltip.flamethrower.heat=Нагрев
 tooltip.flamethrower.inferno=Перегрев
@@ -791,6 +813,7 @@ tooltip.flamethrower.modeBump=Режим огнемета изменен на
 
 tooltip.seismicReader.needsEnergy=Недостаточно энергии, чтобы интерпретировать вибрацию
 tooltip.seismicReader.noVibrations=Не удаётся обнаружить вибрации
+tooltip.mekanism.SeismicReader=Переносной механизм, который использует сейсмические колебания для предоставления информации о различных слоях мира.
 
 tooltip.Bin=Блок для хранения большого кол-ва одного и того же предмета.
 tooltip.TeleporterFrame=Рамка для создания порталов.
@@ -821,7 +844,7 @@ tooltip.PurificationChamber=Продвинутый механизм, спосо�
 tooltip.EnergizedSmelter=Простой механизм, который служит в качестве базовой Mekanism-печи, работающей от энергии.
 tooltip.Teleporter=Механизм, способный телепортировать игроков в различные места, определённые другим телепортом.
 tooltip.ElectricPump=Продвинутая помпа, способная выкачать целое озеро лавы.
-tooltip.PersonalChest=Переносной 54-слотовый сундук, который использует энергию для блокировки содержимого паролем.
+tooltip.PersonalChest=54-слотовый сундук, который можно открыть везде, даже из инвентаря игрока.
 tooltip.Chargepad=Универсальная зарядная панель, которая может заряжать любой заряжаемый предмет из любой модификации.
 tooltip.LogisticalSorter=Основанный на фильтре, продвинутый сортировочный механизм, который может автоматически извлекать указанные предметы в мир и соседние инвентари, а также в логистические транспортеры.
 tooltip.RotaryCondensentrator=Механизм, способный конвертировать газы в жидкость и наоборот.
