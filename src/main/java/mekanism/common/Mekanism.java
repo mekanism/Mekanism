@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -106,6 +107,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -701,6 +703,14 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		//sanity check the api location if not deobf
+		if (!((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))){
+			String apiLocation = MekanismAPI.class.getProtectionDomain().getCodeSource().getLocation().toString();
+			if (apiLocation.toLowerCase(Locale.ROOT).contains("-api.jar")){
+				proxy.throwApiPresentException();
+			}
+		}
+
 		File config = event.getSuggestedConfigurationFile();
 		
 		//Set the mod's configuration

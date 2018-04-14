@@ -708,4 +708,10 @@ public class CommonProxy implements IGuiProvider
 	{
 		return null;
 	}
+
+	protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),", "please delete it from your mods folder and restart the game."};
+
+	public void throwApiPresentException(){
+		throw new RuntimeException(String.join(" ", API_PRESENT_MESSAGE));
+	}
 }
