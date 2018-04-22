@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.LoaderState;
 
 public class APIHandler implements MekanismRecipeHelper {
 	private static void checkPhase(){
-		Preconditions.checkState(Loader.instance().getLoaderState().ordinal() > LoaderState.INITIALIZATION.ordinal(), "Recipes should be registered during Init.");
+		Preconditions.checkState(Loader.instance().getLoaderState().ordinal() > LoaderState.INITIALIZATION.ordinal(), "Recipes should be registered before Init. Try net.minecraftforge.event.RegistryEvent.Register<IRecipe>");
 	}
 	
 	@Override
