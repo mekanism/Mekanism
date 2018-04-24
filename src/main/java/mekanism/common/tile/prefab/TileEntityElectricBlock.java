@@ -38,6 +38,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	/** Actual maximum energy storage, including upgrades */
 	public double maxEnergy;
+	
+	private boolean ic2Registered = false;
 
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
@@ -55,18 +57,20 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void register()
 	{
-		if(!world.isRemote)
+		if(!world.isRemote && !ic2Registered)
 		{
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+			ic2Registered = true;
 		}
 	}
 
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
 	public void deregister()
 	{
-		if(!world.isRemote)
+		if(!world.isRemote && ic2Registered)
 		{
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			ic2Registered = false;
 		}
 	}
 
@@ -167,7 +171,16 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			deregister();
 		}
 	}
-
+	
+	@Override
+	public void validate() {
+		boolean wasInvalid = this.tileEntityInvalid;//workaround for pending tile entity invalidate/revalidate cycle
+		super.validate();
+		if (wasInvalid && MekanismUtils.useIC2()){//re-register if we got invalidated
+			register();
+		}
+	}
+	
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
