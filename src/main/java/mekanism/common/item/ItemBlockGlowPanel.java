@@ -48,6 +48,9 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
 	{
+		if (stack.getItemDamage() >= EnumColor.DYES.length){
+			return false;
+		}
 		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
 		if(place)
@@ -86,7 +89,11 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
 	{
-		EnumColor colour = EnumColor.DYES[stack.getItemDamage()];
+		int itemDamage = stack.getItemDamage();
+		if (itemDamage >= EnumColor.DYES.length){
+			return "Invalid Damage: "+itemDamage;
+		}
+		EnumColor colour = EnumColor.DYES[itemDamage];
 		String colourName;
 
         if(I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
