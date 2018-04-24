@@ -142,13 +142,17 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 		{
 			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-			for(SideData data : config.getConfig().getOutputs(TransmissionType.ITEM))
+			List<SideData> datas = config.getConfig().getOutputs(TransmissionType.ITEM);
+			if (datas != null)
 			{
-				for(int id : data.availableSlots)
+				for(SideData data : datas)
 				{
-					if(id == slot.getSlotIndex())
+					for(int id : data.availableSlots)
 					{
-						return data;
+						if(id == slot.getSlotIndex())
+						{
+							return data;
+						}
 					}
 				}
 			}
