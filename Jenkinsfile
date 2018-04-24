@@ -20,6 +20,7 @@ pipeline {
         withAWS(region: 'us-east-1', credentials:'add82375-f3a1-4b2c-bf52-f557247e9c9e') {
           s3Upload(bucket:"aidancbrady", path:"mekanism/${env.BUILD_ID}", includePathPattern:'**/*', workingDir:'output') 
         }
+        sh "./gradlew curseforge"
       }
     }
     stage('Cleanup') {
