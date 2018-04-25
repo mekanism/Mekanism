@@ -95,11 +95,12 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 					
 					if(burnTime > 0)
 					{
+						ItemStack preShrunk = inventory.get(0).copy();
 						inventory.get(0).shrink(1);
 						
 						if(inventory.get(0).getCount() == 0)
 						{
-							inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
+							inventory.set(0, preShrunk.getItem().getContainerItem(preShrunk));
 						}
 						
 						burning = true;
