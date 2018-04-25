@@ -46,6 +46,7 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
+import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -103,6 +104,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
 	/** This machine's recipe type. */
 	public RecipeType recipeType = RecipeType.SMELTING;
+
+	private MachineRecipe cachedRecipe = null;
 	
 	/** The amount of infuse this machine has stored. */
 	public InfuseStorage infuseStored = new InfuseStorage();
@@ -647,22 +650,41 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
 		if(recipeType.getFuelType() == MachineFuelType.ADVANCED)
 		{
+			if (cachedRecipe instanceof AdvancedMachineRecipe){
+				if (((AdvancedMachineRecipe) cachedRecipe).canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick)){
+					return true;
+				}
+			}
+
 			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), gasTank.getGasType());
+			cachedRecipe = recipe;
 
 			return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 
 		}
 		else if(recipeType.getFuelType() == MachineFuelType.DOUBLE)
 		{
+			if (cachedRecipe instanceof DoubleMachineRecipe){
+				if (((DoubleMachineRecipe) cachedRecipe).canOperate(inventory, inputSlot, 4, outputSlot)){
+					return true;
+				}
+			}
 			DoubleMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), inventory.get(4));
+			cachedRecipe = recipe;
 
 			return recipe != null && recipe.canOperate(inventory, inputSlot, 4, outputSlot);
 		}
 		
 		if(recipeType == RecipeType.INFUSING)
 		{
+			if (cachedRecipe instanceof MetallurgicInfuserRecipe){
+				if (((MetallurgicInfuserRecipe) cachedRecipe).canOperate(inventory, inputSlot, outputSlot, infuseStored)){
+					return true;
+				}
+			}
 			InfusionInput input = new InfusionInput(infuseStored, inventory.get(inputSlot));
 			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
+			cachedRecipe = recipe;
 			
 			if(recipe == null)
 			{
@@ -672,7 +694,14 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			return recipe.canOperate(inventory, inputSlot, outputSlot, infuseStored);
 		}
 
+		if (cachedRecipe instanceof BasicMachineRecipe){
+			if (((BasicMachineRecipe) cachedRecipe).canOperate(inventory, inputSlot, outputSlot)){
+				return true;
+			}
+		}
+
 		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot));
+		cachedRecipe = recipe;
 
 		return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot);
 
@@ -685,27 +714,31 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			return;
 		}
 
-		if(recipeType.getFuelType() == MachineFuelType.ADVANCED)
+		if (cachedRecipe == null){//should never happen, but cant be too sure.
+			Mekanism.logger.debug("cachedRecipe was null, but we were asked to operate anyway?! {} @ {}", this, this.pos);
+			return;
+		}
+
+		if(recipeType.getFuelType() == MachineFuelType.ADVANCED && cachedRecipe instanceof AdvancedMachineRecipe)
 		{
-			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), gasTank.getGasType());
+			AdvancedMachineRecipe<?> recipe = (AdvancedMachineRecipe<?>) cachedRecipe;
 
 			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 		}
-		else if(recipeType.getFuelType() == MachineFuelType.DOUBLE)
+		else if(recipeType.getFuelType() == MachineFuelType.DOUBLE && cachedRecipe instanceof DoubleMachineRecipe)
 		{
-			DoubleMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), inventory.get(4));
+			DoubleMachineRecipe<?> recipe = (DoubleMachineRecipe<?>) cachedRecipe;
 
 			recipe.operate(inventory, inputSlot, 4, outputSlot);
 		}
-		else if(recipeType == RecipeType.INFUSING)
+		else if(recipeType == RecipeType.INFUSING && cachedRecipe instanceof MetallurgicInfuserRecipe)
 		{
-			InfusionInput input = new InfusionInput(infuseStored, inventory.get(inputSlot));
-			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
+			MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) cachedRecipe;
 			
 			recipe.output(inventory, inputSlot, outputSlot, infuseStored);
 		}
 		else {
-			BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot));
+			BasicMachineRecipe<?> recipe = (BasicMachineRecipe<?>) cachedRecipe;
 
 			recipe.operate(inventory, inputSlot, outputSlot);
 		}
