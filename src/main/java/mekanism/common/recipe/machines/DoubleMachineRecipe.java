@@ -17,9 +17,14 @@ public abstract class DoubleMachineRecipe<RECIPE extends DoubleMachineRecipe<REC
 		this(new DoubleMachineInput(input, extra), new ItemStackOutput(output));
 	}
 
+	public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex)
+	{
+		return getInput().useItem(inventory, inputIndex, false) && getInput().useExtra(inventory, extraIndex, false);
+	}
+
 	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex)
 	{
-		return getInput().useItem(inventory, inputIndex, false) && getInput().useExtra(inventory, extraIndex, false) && getOutput().applyOutputs(inventory, outputIndex, false);
+		return inputMatches(inventory, inputIndex, extraIndex) && getOutput().applyOutputs(inventory, outputIndex, false);
 	}
 
 	public void operate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex)

@@ -18,9 +18,14 @@ public class MetallurgicInfuserRecipe extends MachineRecipe<InfusionInput, ItemS
 		this(input, new ItemStackOutput(output));
 	}
 
+	public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, InfuseStorage infuse)
+	{
+		return getInput().use(inventory, inputIndex, infuse, false);
+	}
+
 	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, InfuseStorage infuse)
 	{
-		return getInput().use(inventory, inputIndex, infuse, false) && getOutput().applyOutputs(inventory, outputIndex, false);
+		return inputMatches(inventory, inputIndex, infuse) && getOutput().applyOutputs(inventory, outputIndex, false);
 	}
 
 	@Override

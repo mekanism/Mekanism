@@ -17,9 +17,14 @@ public abstract class BasicMachineRecipe<RECIPE extends BasicMachineRecipe<RECIP
 		this(new ItemStackInput(input), new ItemStackOutput(output));
 	}
 
+	public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex)
+	{
+		return getInput().useItemStackFromInventory(inventory, inputIndex, false);
+	}
+
 	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex)
 	{
-		return getInput().useItemStackFromInventory(inventory, inputIndex, false) && getOutput().applyOutputs(inventory, outputIndex, false);
+		return inputMatches(inventory, inputIndex) && getOutput().applyOutputs(inventory, outputIndex, false);
 	}
 
 	public void operate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex)

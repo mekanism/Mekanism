@@ -19,9 +19,13 @@ public abstract class AdvancedMachineRecipe<RECIPE extends AdvancedMachineRecipe
 		this(new AdvancedMachineInput(input, gas), new ItemStackOutput(output));
 	}
 
+	public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, GasTank gasTank, int amount){
+		return getInput().useItem(inventory, inputIndex, false) && getInput().useSecondary(gasTank, amount, false);
+	}
+
 	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, GasTank gasTank, int amount)
 	{
-		return getInput().useItem(inventory, inputIndex, false) && getInput().useSecondary(gasTank, amount, false) && getOutput().applyOutputs(inventory, outputIndex, false);
+		 return inputMatches(inventory, inputIndex, gasTank, amount) && getOutput().applyOutputs(inventory, outputIndex, false);
 	}
 
 	public void operate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, GasTank gasTank, int needed)
