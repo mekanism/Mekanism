@@ -1,5 +1,3 @@
-defaultTasks 'fullBuild'
-
 buildscript {
     repositories {
         jcenter()
@@ -21,7 +19,13 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.ajoberstar.grgit' version '2.2.0'
+}
+
 apply plugin: 'idea'
+
+defaultTasks 'fullBuild'
 
 idea {
     module {
@@ -288,11 +292,32 @@ if (project.hasProperty('curseforgeKey')) {
     curseforge {
         apiKey = project.findProperty("curseforgeKey")
 
+        def generatedChangelog = "Unable to generate changelog :("
+        def currentCommit = System.getenv("GIT_COMMIT")
+        def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT")
+
+        if (currentCommit != null && prevCommit != null) {
+            generatedChangelog = "<pre>"
+            grgit.log {
+                range(prevCommit, currentCommit)
+            }.reverse().each { commit ->
+                String message = commit.shortMessage
+                if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {//Ignore PRs and Merges
+                    message = message.replaceAll("#(\\d+)", {match->//turn issues/prs into links (github currently supports prs being linked as issues)
+                        return "<a href=\"https://github.com/aidancbrady/Mekanism/issues/${match[1]}\">${match[0]}</a>"
+                    })
+                    generatedChangelog += "<a href=\"https://github.com/aidancbrady/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
+                }
+            }
+            generatedChangelog += "</pre>"
+            println "Changelog generated"
+        }
+
         //Core
         project {
             id = '268560'
             changelogType = "html"
-            changelog = "Please see <a href=\"http://aidancbrady.com/mekanism/download/legacy/\">http://aidancbrady.com/mekanism/download/legacy/</a> for changelog."
+            changelog = generatedChangelog
             // A file can also be set using: changelog = file('changelog.txt')
             releaseType = 'release'
             mainArtifact coreJar
@@ -306,7 +331,7 @@ if (project.hasProperty('curseforgeKey')) {
         project {
             id = '268567'
             changelogType = "html"
-            changelog = "Please see <a href=\"http://aidancbrady.com/mekanism/download/legacy/\">http://aidancbrady.com/mekanism/download/legacy/</a> for changelog." // A file can also be set using: changelog = file('changelog.txt')
+            changelog = generatedChangelog
             releaseType = 'release'
             mainArtifact(toolsJar){
                 relations {
@@ -322,7 +347,7 @@ if (project.hasProperty('curseforgeKey')) {
         project {
             id = '268566'
             changelogType = "html"
-            changelog = "Please see <a href=\"http://aidancbrady.com/mekanism/download/legacy/\">http://aidancbrady.com/mekanism/download/legacy/</a> for changelog." // A file can also be set using: changelog = file('changelog.txt')
+            changelog = generatedChangelog
             releaseType = 'release'
             mainArtifact(generatorsJar) {
                 relations {
