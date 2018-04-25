@@ -10,10 +10,13 @@ import net.minecraftforge.oredict.OreDictionary;
 public class ItemStackInput extends MachineInput<ItemStackInput>
 {
 	public ItemStack ingredient = ItemStack.EMPTY;
+	private ItemStackInput wildVersion = null;
+	private int ingredientHash;
 
 	public ItemStackInput(ItemStack stack)
 	{
 		ingredient = stack;
+		ingredientHash = hashIngredients();
 	}
 	
 	public ItemStackInput() {}
@@ -22,6 +25,8 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 	public void load(NBTTagCompound nbtTags)
 	{
 		ingredient = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
+		ingredientHash = hashIngredients();
+		wildVersion = null;
 	}
 
 	@Override
@@ -38,7 +43,14 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 
 	public ItemStackInput wildCopy()
 	{
-		return new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.getCount(), OreDictionary.WILDCARD_VALUE));
+		if (wildVersion == null){
+			if (ingredient.getMetadata() != OreDictionary.WILDCARD_VALUE){
+				this.wildVersion = new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.getCount(), OreDictionary.WILDCARD_VALUE));
+			} else {
+				this.wildVersion = this;
+			}
+		}
+		return this.wildVersion;
 	}
 
 	public boolean useItemStackFromInventory(NonNullList<ItemStack> inventory, int index, boolean deplete)
@@ -72,5 +84,11 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 	public boolean isInstance(Object other)
 	{
 		return other instanceof ItemStackInput;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return ingredientHash;
 	}
 }
