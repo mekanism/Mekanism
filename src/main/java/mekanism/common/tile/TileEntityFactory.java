@@ -105,7 +105,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	/** This machine's recipe type. */
 	public RecipeType recipeType = RecipeType.SMELTING;
 
-	private MachineRecipe cachedRecipe = null;
+	private final MachineRecipe[] cachedRecipe;
 	
 	/** The amount of infuse this machine has stored. */
 	public InfuseStorage infuseStored = new InfuseStorage();
@@ -160,6 +160,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		inventory = NonNullList.withSize(5+type.processes*2, ItemStack.EMPTY);
 		progress = new int[type.processes];
 		isActive = false;
+		cachedRecipe = new MachineRecipe[tier.processes];
 
 		gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS*tier.processes);
 		maxInfuse = BASE_MAX_INFUSE*tier.processes;
@@ -648,43 +649,42 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			return false;
 		}
 
+		int process = getOperation(inputSlot);
+
 		if(recipeType.getFuelType() == MachineFuelType.ADVANCED)
 		{
-			if (cachedRecipe instanceof AdvancedMachineRecipe){
-				if (((AdvancedMachineRecipe) cachedRecipe).canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick)){
-					return true;
-				}
+			if (cachedRecipe[process] instanceof AdvancedMachineRecipe &&
+					((AdvancedMachineRecipe) cachedRecipe[process]).inputMatches(inventory, inputSlot, gasTank, secondaryEnergyThisTick)){
+				return ((AdvancedMachineRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 			}
 
 			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), gasTank.getGasType());
-			cachedRecipe = recipe;
+			cachedRecipe[process] = recipe;
 
 			return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 
 		}
 		else if(recipeType.getFuelType() == MachineFuelType.DOUBLE)
 		{
-			if (cachedRecipe instanceof DoubleMachineRecipe){
-				if (((DoubleMachineRecipe) cachedRecipe).canOperate(inventory, inputSlot, 4, outputSlot)){
-					return true;
-				}
+			if (cachedRecipe[process] instanceof DoubleMachineRecipe &&
+					((DoubleMachineRecipe) cachedRecipe[process]).inputMatches(inventory, inputSlot, 4)){
+				return ((DoubleMachineRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, 4, outputSlot);
 			}
 			DoubleMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), inventory.get(4));
-			cachedRecipe = recipe;
+			cachedRecipe[process] = recipe;
 
 			return recipe != null && recipe.canOperate(inventory, inputSlot, 4, outputSlot);
 		}
 		
 		if(recipeType == RecipeType.INFUSING)
 		{
-			if (cachedRecipe instanceof MetallurgicInfuserRecipe){
-				if (((MetallurgicInfuserRecipe) cachedRecipe).canOperate(inventory, inputSlot, outputSlot, infuseStored)){
-					return true;
-				}
+			if (cachedRecipe[process] instanceof MetallurgicInfuserRecipe &&
+					((MetallurgicInfuserRecipe) cachedRecipe[process]).inputMatches(inventory, inputSlot, infuseStored)){
+				return ((MetallurgicInfuserRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, outputSlot, infuseStored);
 			}
 			InfusionInput input = new InfusionInput(infuseStored, inventory.get(inputSlot));
 			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(input);
-			cachedRecipe = recipe;
+			cachedRecipe[process] = recipe;
 			
 			if(recipe == null)
 			{
@@ -694,14 +694,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			return recipe.canOperate(inventory, inputSlot, outputSlot, infuseStored);
 		}
 
-		if (cachedRecipe instanceof BasicMachineRecipe){
-			if (((BasicMachineRecipe) cachedRecipe).canOperate(inventory, inputSlot, outputSlot)){
-				return true;
-			}
+		if (cachedRecipe[process] instanceof BasicMachineRecipe && ((BasicMachineRecipe) cachedRecipe[process]).inputMatches(inventory, inputSlot)){
+			return (((BasicMachineRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, outputSlot));
 		}
 
 		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot));
-		cachedRecipe = recipe;
+		cachedRecipe[process] = recipe;
 
 		return recipe != null && recipe.canOperate(inventory, inputSlot, outputSlot);
 
@@ -714,31 +712,33 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			return;
 		}
 
-		if (cachedRecipe == null){//should never happen, but cant be too sure.
+		int process = getOperation(inputSlot);
+
+		if (cachedRecipe[process] == null){//should never happen, but cant be too sure.
 			Mekanism.logger.debug("cachedRecipe was null, but we were asked to operate anyway?! {} @ {}", this, this.pos);
 			return;
 		}
 
-		if(recipeType.getFuelType() == MachineFuelType.ADVANCED && cachedRecipe instanceof AdvancedMachineRecipe)
+		if(recipeType.getFuelType() == MachineFuelType.ADVANCED && cachedRecipe[process] instanceof AdvancedMachineRecipe)
 		{
-			AdvancedMachineRecipe<?> recipe = (AdvancedMachineRecipe<?>) cachedRecipe;
+			AdvancedMachineRecipe<?> recipe = (AdvancedMachineRecipe<?>) cachedRecipe[process];
 
 			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 		}
-		else if(recipeType.getFuelType() == MachineFuelType.DOUBLE && cachedRecipe instanceof DoubleMachineRecipe)
+		else if(recipeType.getFuelType() == MachineFuelType.DOUBLE && cachedRecipe[process] instanceof DoubleMachineRecipe)
 		{
-			DoubleMachineRecipe<?> recipe = (DoubleMachineRecipe<?>) cachedRecipe;
+			DoubleMachineRecipe<?> recipe = (DoubleMachineRecipe<?>) cachedRecipe[process];
 
 			recipe.operate(inventory, inputSlot, 4, outputSlot);
 		}
-		else if(recipeType == RecipeType.INFUSING && cachedRecipe instanceof MetallurgicInfuserRecipe)
+		else if(recipeType == RecipeType.INFUSING && cachedRecipe[process] instanceof MetallurgicInfuserRecipe)
 		{
-			MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) cachedRecipe;
+			MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) cachedRecipe[process];
 			
 			recipe.output(inventory, inputSlot, outputSlot, infuseStored);
 		}
 		else {
-			BasicMachineRecipe<?> recipe = (BasicMachineRecipe<?>) cachedRecipe;
+			BasicMachineRecipe<?> recipe = (BasicMachineRecipe<?>) cachedRecipe[process];
 
 			recipe.operate(inventory, inputSlot, outputSlot);
 		}
@@ -902,6 +902,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	public int getInputSlot(int operation)
 	{
 		return 5+operation;
+	}
+
+	/* reverse of the above */
+	private int getOperation(int inputSlot){
+		return inputSlot - 5;
 	}
 
 	public int getOutputSlot(int operation)
