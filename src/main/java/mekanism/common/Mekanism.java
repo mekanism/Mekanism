@@ -339,7 +339,7 @@ public class Mekanism
 		RecipeHandler.addCombinerRecipe(new ItemStack(Items.FLINT), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.GRAVEL));
 		RecipeHandler.addCombinerRecipe(new ItemStack(Items.EMERALD, 3), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.EMERALD_ORE));
 		RecipeHandler.addCombinerRecipe(new ItemStack(Items.COAL, 3), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.COAL_ORE));
-		RecipeHandler.addCombinerRecipe(new ItemStack(Items.QUARTZ, 3), new ItemStack(Blocks.NETHERRACK), new ItemStack(Blocks.QUARTZ_ORE));
+		RecipeHandler.addCombinerRecipe(new ItemStack(Items.QUARTZ, 8), new ItemStack(Blocks.NETHERRACK), new ItemStack(Blocks.QUARTZ_ORE));//enrich makes 6 from one ore
 		
 		//Osmium Compressor Recipes
 		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.GLOWSTONE_DUST), new ItemStack(MekanismItems.Ingot, 1, 3));
