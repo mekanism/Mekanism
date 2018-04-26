@@ -112,6 +112,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
@@ -949,18 +950,13 @@ public class Mekanism
 	{
 		if(event.getChunk() != null && !event.getWorld().isRemote)
 		{
-			Map copy = (Map)((HashMap)event.getChunk().getTileEntityMap()).clone();
+			Map<BlockPos, TileEntity> copy = new HashMap<>(event.getChunk().getTileEntityMap());
 
-			for (Object obj : copy.values())
+			for (TileEntity tileEntity : copy.values())
 			{
-				if (obj instanceof TileEntity)
+				if (tileEntity instanceof IChunkLoadHandler)
 				{
-					TileEntity tileEntity = (TileEntity) obj;
-
-					if (tileEntity instanceof IChunkLoadHandler)
-					{
-						((IChunkLoadHandler) tileEntity).onChunkLoad();
-					}
+					((IChunkLoadHandler) tileEntity).onChunkLoad();
 				}
 			}
 		}
