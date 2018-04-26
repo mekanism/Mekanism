@@ -288,9 +288,10 @@ uploadArchives {
 
 tasks.curseforge.dependsOn coreJar, toolsJar, generatorsJar, apiJar
 
-if (project.hasProperty('curseforgeKey')) {
+if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
+    println "Enabling Curseforge config"
     curseforge {
-        apiKey = project.findProperty("curseforgeKey")
+        apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
 
         def generatedChangelog = "Unable to generate changelog :("
         def currentCommit = System.getenv("GIT_COMMIT")
