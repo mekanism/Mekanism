@@ -161,7 +161,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer entityplayer)
 	{
-		return !isInvalid();
+		return !isInvalid() && this.world.isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
 	}
 
 	@Override
