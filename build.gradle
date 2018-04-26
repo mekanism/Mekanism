@@ -295,7 +295,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
 
         def generatedChangelog = "Unable to generate changelog :("
         def currentCommit = System.getenv("GIT_COMMIT")
-        def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT")
+        def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT") ?: System.getenv("GIT_PREVIOUS_COMMIT")
 
         if (currentCommit != null && prevCommit != null) {
             generatedChangelog = "<pre>"
