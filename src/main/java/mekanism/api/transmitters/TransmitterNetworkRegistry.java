@@ -82,10 +82,8 @@ public class TransmitterNetworkRegistry
 
 	public void removeNetwork(DynamicNetwork network)
 	{
-		if(networks.contains(network))
-		{
-			networks.remove(network);
-		}
+		networks.remove(network);
+		networksToChange.remove(network);
 	}
 
 	@SubscribeEvent

@@ -279,6 +279,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public void deregister()
 	{
 		transmitters.clear();
+		transmittersToAdd.clear();
+		transmittersAdded.clear();
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
