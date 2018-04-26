@@ -78,6 +78,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 		if(scale > 0.01 && fluid != null)
 		{
 			push();
+			GL11.glDisable(GL11.GL_BLEND);
 
 			MekanismRenderer.glowOn(fluid.getLuminosity());
 			MekanismRenderer.color(fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : fluid.getColor());
