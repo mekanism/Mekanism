@@ -24,7 +24,7 @@ public class TransitRequest
 	
 	public void setItem(ItemStack stack, int slot)
 	{
-		itemMap.put(stack, slot);
+		itemMap.put(stack.copy(), slot);
 	}
 	
 	public ItemStack getSingleStack()
