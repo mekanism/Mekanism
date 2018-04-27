@@ -317,8 +317,10 @@ public class MekanismRenderer
         {
             int j = quad.getFormat().getIntegerSize() * i;
             int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
-            vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
-            vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
+            if (j + uvIndex + 1 < vertices.length) {
+	            vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
+	            vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
+            }
         }
 	    
 		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), quad.getFormat());
@@ -334,8 +336,10 @@ public class MekanismRenderer
 			int nextIndex = (i+amount)%4;
 			int quadSize = quad.getFormat().getIntegerSize();
             int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
-            vertices[quadSize*i + uvIndex] = quad.getVertexData()[quadSize*nextIndex + uvIndex];
-            vertices[quadSize*i + uvIndex + 1] = quad.getVertexData()[quadSize*nextIndex + uvIndex + 1];
+			if (i + uvIndex + 1 < vertices.length) {
+				vertices[quadSize * i + uvIndex] = quad.getVertexData()[quadSize * nextIndex + uvIndex];
+				vertices[quadSize * i + uvIndex + 1] = quad.getVertexData()[quadSize * nextIndex + uvIndex + 1];
+			}
 		}
 		
 		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
