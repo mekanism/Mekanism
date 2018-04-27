@@ -478,6 +478,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 	protected void onModeChange(EnumFacing side)
 	{
 		markDirtyAcceptor(side);
+		markDirty();
 	}
 
 	protected void markDirtyTransmitters()
