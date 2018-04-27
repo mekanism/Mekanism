@@ -45,7 +45,7 @@ public class MekanismTools implements IModule
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(9, 4, 4);
+	public static Version versionNumber = new Version(9, 4, 5);
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;
