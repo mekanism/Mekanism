@@ -316,16 +316,17 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		if(type == MachineType.DIGITAL_MINER)
 		{
+			BlockPos.MutableBlockPos testPos = new BlockPos.MutableBlockPos();
 			for(int xPos = -1; xPos <= +1; xPos++)
 			{
 				for(int yPos = 0; yPos <= +1; yPos++)
 				{
 					for(int zPos = -1; zPos <= +1; zPos++)
 					{
-						BlockPos pos1 = pos.add(xPos, yPos, zPos);
-						Block b = world.getBlockState(pos1).getBlock();
+						testPos.setPos(pos.getX()+xPos, pos.getY()+yPos, pos.getZ()+zPos);
+						Block b = world.getBlockState(testPos).getBlock();
 
-						if(pos1.getY() > 255 || !b.isReplaceable(world, pos1))
+						if(!world.isValid(testPos) || !world.isBlockLoaded(testPos, false) || !b.isReplaceable(world, testPos))
 						{
 							place = false;
 						}
@@ -335,7 +336,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR || type == MachineType.SEISMIC_VIBRATOR)
 		{
-			if(pos.getY()+1 > 255 || !world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
+			BlockPos abovePos = pos.up();
+			if(!world.isValid(abovePos) || !world.getBlockState(abovePos).getBlock().isReplaceable(world, abovePos))
 			{
 				place = false;
 			}
