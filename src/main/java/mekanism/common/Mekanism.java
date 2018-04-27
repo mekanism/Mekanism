@@ -504,17 +504,6 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(Blocks.BROWN_MUSHROOM), new InfuseObject(InfuseRegistry.get("FUNGI"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedDiamond), new InfuseObject(InfuseRegistry.get("DIAMOND"), 80));
         InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedObsidian), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 80));
-        
-        //Fuels
-        GameRegistry.registerFuelHandler(fuel ->
-		{
-            if(fuel.isItemEqual(new ItemStack(MekanismBlocks.BasicBlock, 1, 3)))
-            {
-                return 200*8*9;
-            }
-
-            return 0;
-        });
 
 		//Fuel Gases
 		FuelHandler.addGas(MekanismFluids.Hydrogen, 1, general.FROM_H2);

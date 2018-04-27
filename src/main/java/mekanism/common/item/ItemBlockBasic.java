@@ -352,4 +352,9 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		return false;
 	}
+	
+	@Override
+	public int getItemBurnTime(ItemStack itemStack) {
+		return this.metaBlock == MekanismBlocks.BasicBlock && itemStack.getMetadata() == 3 ? 200*8*9 : super.getItemBurnTime(itemStack);
+	}
 }
