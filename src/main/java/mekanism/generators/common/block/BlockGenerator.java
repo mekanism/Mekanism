@@ -37,6 +37,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -57,6 +58,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import buildcraft.api.tools.IToolWrench;
@@ -731,5 +733,38 @@ public abstract class BlockGenerator extends BlockContainer
 	public PropertyEnum<GeneratorType> getTypeProperty()
 	{
 		return getGeneratorBlock().getProperty();
+	}
+
+	@Override
+	public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, EntityLiving.SpawnPlacementType type)
+	{
+		int meta = state.getBlock().getMetaFromState(state);
+
+		switch (meta)
+		{
+			case 10: // Turbine Casing
+			case 11: // Turbine Valve
+			case 12: // Turbine Vent
+				TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
+
+				if(tileEntity != null)
+				{
+					if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+					{
+						if(tileEntity.structure != null)
+						{
+							return false;
+						}
+					}
+					else {
+						if(tileEntity.clientHasStructure)
+						{
+							return false;
+						}
+					}
+				}
+			default:
+				return super.canCreatureSpawn(state, world, pos, type);
+		}
 	}
 }
