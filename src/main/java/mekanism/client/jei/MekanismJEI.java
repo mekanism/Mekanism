@@ -18,6 +18,7 @@ import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiElectrolyticSeparator;
+import mekanism.client.gui.GuiEnergizedSmelter;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
@@ -39,6 +40,7 @@ import mekanism.client.jei.machine.advanced.OsmiumCompressorRecipeWrapper;
 import mekanism.client.jei.machine.advanced.PurificationChamberRecipeWrapper;
 import mekanism.client.jei.machine.basic.CrusherRecipeWrapper;
 import mekanism.client.jei.machine.basic.EnrichmentRecipeWrapper;
+import mekanism.client.jei.machine.basic.SmeltingRecipeWrapper;
 import mekanism.client.jei.machine.chance.PrecisionSawmillRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeWrapper;
@@ -94,6 +96,7 @@ import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.recipe.machines.SeparatorRecipe;
+import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
@@ -170,6 +173,7 @@ public class MekanismJEI implements IModPlugin
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registry)
 	{
+
 		ChemicalCrystallizerRecipeCategory chemicalCrystallizerCategory = new ChemicalCrystallizerRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		ChemicalDissolutionChamberRecipeCategory chemicalDissolutionChamberCategory = new ChemicalDissolutionChamberRecipeCategory(registry.getJeiHelpers().getGuiHelper());
 		ChemicalInfuserRecipeCategory chemicalInfuserCategory = new ChemicalInfuserRecipeCategory(registry.getJeiHelpers().getGuiHelper());
@@ -194,12 +198,13 @@ public class MekanismJEI implements IModPlugin
 
 		MachineRecipeCategory machineRecipeCategoryEnrichment = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.ENRICHMENT_CHAMBER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE);
 		MachineRecipeCategory machineRecipeCategoryCrusher = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.CRUSHER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH);
+		MachineRecipeCategory machineRecipeCategoryEnergizedSmelter = new MachineRecipeCategory(registry.getJeiHelpers().getGuiHelper(), Recipe.ENERGIZED_SMELTER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnergizedSmelter.name", ProgressBar.BLUE);
 
 		registry.addRecipeCategories(chemicalCrystallizerCategory, chemicalDissolutionChamberCategory, chemicalInfuserCategory, chemicalOxidizerCategory,
 				chemicalWasherCategory, electrolyticSeparatorCategory, metallurgicInfuserCategory, prcCategory, rotaryCondensentratorCondensentratingCategory, rotaryCondensentratorDecondensentratingCategory, solarNeutronCategory,
 				thermalEvaporationCategory, doubleMachineRecipeCategoryCombiner, advancedMachineRecipeCategoryPurificationChamber, advancedMachineRecipeCategoryOsmiumCompressor,
 				advancedMachineRecipeCategoryChemicalInjectionChamber, chanceMachineRecipeCategoryPrecisionSawmill, machineRecipeCategoryEnrichment,
-				machineRecipeCategoryCrusher
+				machineRecipeCategoryCrusher, machineRecipeCategoryEnergizedSmelter
 		);
 	}
 
@@ -216,6 +221,9 @@ public class MekanismJEI implements IModPlugin
 
 		registry.handleRecipes(CrusherRecipe.class, CrusherRecipeWrapper::new, "mekanism.crusher");
 		addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
+
+		registry.handleRecipes(SmeltingRecipe.class, SmeltingRecipeWrapper::new, "mekanism.energized_smelter");
+		addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, "mekanism.energized_smelter");
 
 		registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, "mekanism.combiner");
 		addRecipes(registry, Recipe.COMBINER, DoubleMachineRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
@@ -278,6 +286,7 @@ public class MekanismJEI implements IModPlugin
 
 		registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, "mekanism.enrichment_chamber");
 		registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, "mekanism.crusher");
+		registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, "mekanism.energized_smelter", VanillaRecipeCategoryUid.SMELTING);
 		registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, "mekanism.combiner");
 		registry.addRecipeClickArea(GuiPurificationChamber.class, 79, 40, 24, 7, "mekanism.purification_chamber");
 		registry.addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, "mekanism.osmium_compressor");
@@ -298,6 +307,7 @@ public class MekanismJEI implements IModPlugin
 		
 		registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER);
 		registerRecipeItem(registry, MachineType.CRUSHER);
+		registerRecipeItem(registry, MachineType.ENERGIZED_SMELTER);
 		registerRecipeItem(registry, MachineType.COMBINER);
 		registerRecipeItem(registry, MachineType.PURIFICATION_CHAMBER);
 		registerRecipeItem(registry, MachineType.OSMIUM_COMPRESSOR);

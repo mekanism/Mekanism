@@ -647,15 +647,6 @@ public class Mekanism
 			voiceManager.start();
 		}
 		
-		//Load cached furnace recipes
-		Recipe.ENERGIZED_SMELTER.get().clear();
-		
-		for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
-		{
-			SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
-			Recipe.ENERGIZED_SMELTER.put(recipe);
-		}
-		
 		event.registerServerCommand(new CommandMekanism());
 	}
 	
