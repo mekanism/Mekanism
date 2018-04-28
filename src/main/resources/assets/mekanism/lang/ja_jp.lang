@@ -1,8 +1,8 @@
-//********//
-//MEKANISM//
-//********//
+###########
+# MEKANISM
+###########
 
-//Items
+# Items
 tile.ObsidianTNT.name=黒曜石TNT
 item.EnrichedAlloy.name=濃縮合金
 item.ReinforcedAlloy.name=強化合金
@@ -50,34 +50,34 @@ item.GaugeDropper.name=ゲージドロッパー
 item.BioFuel.name=バイオ燃料
 item.CraftingFormula.name=クラフトレシピ
 
-//Control Circuits
+# Control Circuits
 item.BasicControlCircuit.name=基本制御回路
 item.AdvancedControlCircuit.name=発展制御回路
 item.EliteControlCircuit.name=精鋭制御回路
 item.UltimateControlCircuit.name=究極制御回路
 
-//Gas Tank
+# Gas Tank
 tile.GasTankBasic.name=基本ガスタンク
 tile.GasTankAdvanced.name=発展ガスタンク
 tile.GasTankElite.name=精鋭ガスタンク
 tile.GasTankUltimate.name=究極ガスタンク
 
-//Fluid Tank (part of MachineBlock2, naming handled differently)
+# Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=基本液体タンク
 tile.FluidTankAdvanced.name=発展液体タンク
 tile.FluidTankElite.name=精鋭液体タンク
 tile.FluidTankUltimate.name=究極液体タンク
 
-//Cardboard Box
+# Cardboard Box
 tile.CardboardBox.name=段ボール箱
 
-//Bounding Block
+# Bounding Block
 tile.BoundingBlock.name=プレースホルダー
 
-//Salt
+# Salt
 tile.SaltBlock.name=塩ブロック
 
-//Basic Block
+# Basic Block
 tile.BasicBlock.OsmiumBlock.name=オスミウムブロック
 tile.BasicBlock.BronzeBlock.name=青銅ブロック
 tile.BasicBlock.RefinedObsidian.name=精錬された黒曜石
@@ -98,7 +98,7 @@ tile.BasicBlock.TinBlock.name=錫ブロック
 tile.BasicBlock.ThermalEvaporationController.name=加温蒸発濃縮コントローラ
 tile.BasicBlock.ThermalEvaporationValve.name=加温蒸発濃縮バルブ
 
-//Basic Block 2 (second ID iteration)
+# Basic Block 2 (second ID iteration)
 tile.BasicBlock2.ThermalEvaporationBlock.name=加温蒸発濃縮ブロック
 tile.BasicBlock2.InductionCasing.name=インダクションケーシング
 tile.BasicBlock2.InductionPort.name=インダクションポート
@@ -116,7 +116,7 @@ tile.BasicBlock2.BoilerCasing.name=ボイラーケース
 tile.BasicBlock2.BoilerValve.name=ボイラーバルブ
 tile.BasicBlock2.SecurityDesk.name=セキュリティーデスク
 
-//Machine Block
+# Machine Block
 tile.MachineBlock.EnrichmentChamber.name=濃縮チャンバー
 tile.MachineBlock.OsmiumCompressor.name=オスミウム圧縮機
 tile.MachineBlock.Combiner.name=抱合機
@@ -132,7 +132,7 @@ tile.MachineBlock.Chargepad.name=チャージパッド
 tile.MachineBlock.LogisticalSorter.name=ロジスティカルソーター
 tile.MachineBlock.DigitalMiner.name=デジタルマイナー
 
-//Machine Block 2 (second ID iteration)
+# Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=回転式流体凝縮器
 tile.MachineBlock2.ChemicalOxidizer.name=化学酸化機
 tile.MachineBlock2.ChemicalInfuser.name=化学混成機
@@ -151,7 +151,7 @@ tile.MachineBlock2.Laser.name=レーザー
 tile.MachineBlock2.LaserAmplifier.name=レーザー増幅器
 tile.MachineBlock2.LaserTractorBeam.name=レーザートラクタービーム
 
-//Machine Block 3 (third ID iteration)
+# Machine Block 3 (third ID iteration)
 tile.MachineBlock3.QuantumEntangloporter.name=量子もつれ転送機
 tile.MachineBlock3.SolarNeutronActivator.name=太陽中性子反応機
 tile.MachineBlock3.Oredictionificator.name=鉱石統合器
@@ -159,7 +159,7 @@ tile.MachineBlock3.ResistiveHeater.name=抵抗型発熱器
 tile.MachineBlock3.FormulaicAssemblicator.name=組立機
 tile.MachineBlock3.FuelwoodHeater.name=薪木ストーブ
 
-//Plastic
+# Plastic
 tile.PlasticBlock.name=プラスチックブロック
 tile.SlickPlasticBlock.name=滑らかなプラスチックブロック
 tile.GlowPlasticBlock.name=輝くプラスチックブロック
@@ -168,7 +168,7 @@ tile.RoadPlasticBlock.name=プラスチックロード
 
 tile.PlasticFence.name=プラスチックの柵
 
-//Infuse types
+# Infuse types
 infuse.carbon=炭素
 infuse.tin=錫
 infuse.diamond=ダイヤモンド
@@ -177,12 +177,12 @@ infuse.fungi=菌糸
 infuse.obsidian=黒曜石
 infuse.bio=バイオマス
 
-//Ore Block
+# Ore Block
 tile.OreBlock.OsmiumOre.name=オスミウム鉱石
 tile.OreBlock.CopperOre.name=銅鉱石
 tile.OreBlock.TinOre.name=錫鉱石
 
-//Transmitters
+# Transmitters
 item.MultipartTransmitter.BasicPressurizedTube.name=基本加圧チューブ
 item.MultipartTransmitter.AdvancedPressurizedTube.name=発展加圧チューブ
 item.MultipartTransmitter.ElitePressurizedTube.name=精鋭加圧チューブ
@@ -206,22 +206,22 @@ item.MultipartTransmitter.AdvancedThermodynamicConductor.name=発展サーモダ
 item.MultipartTransmitter.EliteThermodynamicConductor.name=精鋭サーモダイナミックコンダクター
 item.MultipartTransmitter.UltimateThermodynamicConductor.name=究極サーモダイナミックコンダクター
 
-//Glow Panel
+# Glow Panel
 item.GlowPanel.name=発光パネル
 
-//Energy Cubes
+# Energy Cubes
 tile.EnergyCubeBasic.name=基本エネルギーキューブ
 tile.EnergyCubeAdvanced.name=発展エネルギーキューブ
 tile.EnergyCubeElite.name=精鋭エネルギーキューブ
 tile.EnergyCubeUltimate.name=究極エネルギーキューブ
 tile.EnergyCubeCreative.name=クリエイティブエネルギーキューブ
 
-//Factory Installers
+# Factory Installers
 item.basicFactoryInstaller.name=基本ファクトリーインストーラ
 item.advancedFactoryInstaller.name=発展ファクトリーインストーラ
 item.eliteFactoryInstaller.name=精鋭ファクトリーインストーラ
 
-//Dust
+# Dust
 item.ironDust.name=鉄の粉
 item.goldDust.name=金の粉
 item.osmiumDust.name=オスミウムの粉
@@ -236,7 +236,7 @@ item.leadDust.name=鉛の粉
 item.sulfurDust.name=硫黄の粉
 item.lithiumDust.name=リチウムの粉
 
-//Clumps
+# Clumps
 item.ironClump.name=鉄の塊
 item.goldClump.name=金の塊
 item.osmiumClump.name=オスミウムの塊
@@ -245,7 +245,7 @@ item.tinClump.name=錫の塊
 item.silverClump.name=銀の塊
 item.leadClump.name=鉛の塊
 
-//Shards
+# Shards
 item.ironShard.name=鉄の欠片
 item.goldShard.name=金の欠片
 item.osmiumShard.name=オスミウムの欠片
@@ -254,7 +254,7 @@ item.tinShard.name=錫の欠片
 item.silverShard.name=銀の欠片
 item.leadShard.name=鉛の欠片
 
-//Crystals
+# Crystals
 item.ironCrystal.name=鉄の結晶
 item.goldCrystal.name=金の結晶
 item.osmiumCrystal.name=オスミウムの結晶
@@ -263,7 +263,7 @@ item.tinCrystal.name=錫の結晶
 item.silverCrystal.name=銀の結晶
 item.leadCrystal.name=鉛の結晶
 
-//Dirty Dust
+# Dirty Dust
 item.dirtyIronDust.name=汚れた鉄の粉
 item.dirtyGoldDust.name=汚れた金の粉
 item.dirtyOsmiumDust.name=汚れたオスミウムの粉
@@ -272,7 +272,7 @@ item.dirtyTinDust.name=汚れた錫の粉
 item.dirtySilverDust.name=汚れた銀の粉
 item.dirtyLeadDust.name=汚れた鉛の粉
 
-//Ingots
+# Ingots
 item.obsidianIngot.name=黒曜石のインゴット
 item.osmiumIngot.name=オスミウムインゴット
 item.bronzeIngot.name=青銅インゴット
@@ -281,7 +281,7 @@ item.steelIngot.name=鋼鉄インゴット
 item.copperIngot.name=銅インゴット
 item.tinIngot.name=錫インゴット
 
-//Gasses
+# Gasses
 gas.hydrogen=水素
 gas.oxygen=酸素
 gas.water=水蒸気
@@ -317,11 +317,11 @@ gas.cleanSilver=純粋な銀の懸濁液
 gas.cleanObsidian=純粋な黒曜石の懸濁液
 gas.cleanLead=純粋な鉛の懸濁液
 
-//BC Fuel Gases
+# BC Fuel Gases
 gas.fuel=気化燃料
 gas.oil=気化油
 
-//Fluids
+# Fluids
 fluid.hydrogen=液体水素
 fluid.oxygen=液体酸素
 fluid.chlorine=液体塩素
@@ -339,7 +339,7 @@ fluid.tritium=液体三重水素
 fluid.fusionFuelDT=液体 D-T 燃料
 fluid.steam=蒸気
 
-//OreGas names
+# OreGas names
 oregas.iron=鉄鉱石
 oregas.gold=金鉱石
 oregas.osmium=オスミウム鉱石
@@ -349,21 +349,21 @@ oregas.silver=銀鉱石
 oregas.obsidian=黒曜石鉱石
 oregas.lead=鉛鉱石
 
-//Tier names
+# Tier names
 tier.Basic=基本
 tier.Advanced=発展
 tier.Elite=精鋭
 tier.Ultimate=究極
 tier.Creative=クリエイティブ
 
-//Transmission types
+# Transmission types
 transmission.Energy=エネルギー
 transmission.Fluids=液体
 transmission.Gases=ガス
 transmission.Items=アイテム
 transmission.Heat=熱
 
-//Update handler text
+# Update handler text
 update.consider=新バージョンへのアップデートはどうでしょう
 update.newFeatures=新たな要素
 update.visit=Visit
@@ -371,7 +371,7 @@ update.toDownload=to download
 update.devBuild=開発版ビルドを利用中
 update.outdated=古いバージョンのモジュールを利用しています
 
-//Upgrades
+# Upgrades
 upgrade.energy=エネルギー
 upgrade.energy.desc=マシンのエネルギー効率と蓄電量を増やします。
 upgrade.speed=スピード
@@ -383,30 +383,30 @@ upgrade.gas.desc=ガスの使用効率を上昇させます。
 upgrade.muffling=消音
 upgrade.muffling.desc=マシンの騒音を減らします。
 
-//Key description text
+# Key description text
 key.mode=アイテムモード切り替え
 key.armorMode=アーマーモード切り替え
 key.voice=周波数
 
-//Entities
+# Entities
 entity.Robit.name=ロビット
 entity.BabySkeleton.name=ベビースケルトン
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.general=Mekanism 基本設定
 mekanism.configgui.ctgy.machines=マシンの設定
 mekanism.configgui.ctgy.tier=ランクの設定
 mekanism.configgui.ctgy.usage=エネルギー使用率の設定
 mekanism.configgui.ctgy.client=クライアント設定
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Mekanismとそのモジュールに関する基本的な設定
 mekanism.configgui.ctgy.machines.tooltip=機械ごとの有効・無効化の設定
 mekanism.configgui.ctgy.tier.tooltip=Mekanismのランクされた機械に対応する値の設定
 mekanism.configgui.ctgy.usage.tooltip=機械に関する設定とエネルギー使用量
 mekanism.configgui.ctgy.client.tooltip=Mekanismとそのモジュールにおけるクライアント設定
 
-//Gui text
+# Gui text
 gui.condensentrating=凝縮
 gui.decondensentrating=気化
 gui.power=エネルギー
@@ -582,7 +582,7 @@ gui.rotaryCondensentrator.toggleOperation=処理の変更
 gui.factory.secondaryEnergy=Secondary energy
 gui.factory.autoSort=自動分配
 
-//Recipe types
+# Recipe types
 gui.factory.Smelting=精煉
 gui.factory.Enriching=濃縮
 gui.factory.Crushing=粉砕
@@ -671,16 +671,16 @@ gui.digitalMiner.requireReplace=置き換えの強制
 gui.digitalMiner.fuzzyMode=曖昧モード
 gui.digitalMiner.missingBlock=ブロックがありません
 
-//Recipe names
+# Recipe names
 recipe.mekanismShaped=Shaped
 recipe.mekanismShapeless=Shapeless
 
-//Security types
+# Security types
 security.public=公開
 security.private=非公開
 security.trusted=許可プレイヤーのみ
 
-//Item and block tooltip text
+# Item and block tooltip text
 tooltip.configurator.configurate=コンフィギュレーター
 tooltip.configurator.empty=空
 tooltip.configurator.rotate=回転
@@ -856,7 +856,7 @@ tooltip.OsmiumOre=どんな高度でも見つかる頑健な鉱物です。機�
 tooltip.CopperOre=ワイヤーに使われる普遍的で電導性の高い鉱物です。高熱に耐えられるその性能は、先進的な機械に必須です。
 tooltip.TinOre=軽くて、それでいて頑丈な、電導性のある金属です。銅より少し見つけづらいでしょう。
 
-//Side data
+# Side data
 sideData.None=なし
 sideData.Input=インプット
 sideData.Output=アウトプット
@@ -870,7 +870,7 @@ sideData.Empty=Empty
 sideData.Charge=Charge
 sideData.Discharge=Discharge
 
-//Redstone control
+# Redstone control
 control.disabled=無効
 control.high=RS入力あり
 control.low=RS入力なし
@@ -880,12 +880,12 @@ control.high.desc=RS信号入力時有効
 control.low.desc=RS信号未入力時有効
 control.pulse.desc=パルス信号入力時有効
 
-//Container edit modes
+# Container edit modes
 fluidedit.both=両方
 fluidedit.fill=満たす
 fluidedit.empty=空にする
 
-//Colors
+# Colors
 color.black=黒色
 color.darkBlue=暗い青色
 color.darkGreen=暗い緑色
@@ -905,7 +905,7 @@ color.white=白色
 color.brown=茶色
 color.brightPink=明るい桃色
 
-//Dyes
+# Dyes
 dye.black=黒色
 dye.darkBlue=青色
 dye.brown=茶色
@@ -925,7 +925,7 @@ dye.pink=赤紫色
 dye.yellow=黄色
 dye.white=白色
 
-//Reactor Logic modes
+# Reactor Logic modes
 reactor.disabled=無効
 reactor.disabled.desc=レッドストーン信号を出力しません
 reactor.ready=起動準備完了時
@@ -935,22 +935,22 @@ reactor.capacity.desc=熱の値が更新した時
 reactor.depleted=燃料不足時
 reactor.depleted.desc=反応に十分な量の燃料が不足している時
 
-//Creative tab
+# Creative tab
 itemGroup.tabMekanism=Mekanism
 
-//NEI stuff
+# NEI stuff
 nei.chemicalInjectionChamber=化学注入室
 
-//**********//
-//GENERATORS//
-//**********//
+#############
+# GENERATORS
+#############
 
-//Items
+# Items
 item.SolarPanel.name=ソーラーパネル
 item.Hohlraum.name=フーラム
 item.TurbineBlade.name=タービンの羽
 
-//Generators
+# Generators
 tile.Generator.HeatGenerator.name=熱発電機
 tile.Generator.SolarGenerator.name=太陽光発電機
 tile.Generator.GasGenerator.name=ガス燃焼発電機
@@ -973,7 +973,7 @@ tile.Reactor.ReactorLogicAdapter.name=核融合炉論理アダプター
 tile.ReactorGlass.ReactorGlass.name=核融合炉窓
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=レーザーフォーカスマトリックス
 
-//Gui text
+# Gui text
 gui.heatGenerator.fuel=燃料
 gui.solarGenerator.sun=日光
 gui.bioGenerator.bioFuel=バイオ燃料
@@ -989,18 +989,17 @@ gui.maxCasing=最高炉内温度
 gui.passiveGeneration=熱平衡状態時の発電量
 gui.steamProduction=蒸気の生成量
 
-//*****//
-//TOOLS//
-//*****//
+# TOOLS
+#########
 
-//Vanilla Paxels
+# Vanilla Paxels
 item.WoodPaxel.name=木のパクセル
 item.StonePaxel.name=石のパクセル
 item.IronPaxel.name=鉄のパクセル
 item.DiamondPaxel.name=ダイヤのパクセル
 item.GoldPaxel.name=金のパクセル
 
-//Obsidian
+# Obsidian
 item.ObsidianHelmet.name=黒曜石のヘルメット
 item.ObsidianChestplate.name=黒曜石のチェストプレート
 item.ObsidianLeggings.name=黒曜石のレギンス
@@ -1012,7 +1011,7 @@ item.ObsidianShovel.name=黒曜石のシャベル
 item.ObsidianHoe.name=黒曜石のクワ
 item.ObsidianSword.name=黒曜石の剣
 
-//Lapis Lazuli
+# Lapis Lazuli
 item.LazuliHelmet.name=ラピスラズリのヘルメット
 item.LazuliChestplate.name=ラピスラズリのチェストプレート
 item.LazuliLeggings.name=ラピスラズリのレギンス
@@ -1024,7 +1023,7 @@ item.LazuliShovel.name=ラピスラズリのシャベル
 item.LazuliHoe.name=ラピスラズリのクワ
 item.LazuliSword.name=ラピスラズリの剣
 
-//Osmium
+# Osmium
 item.OsmiumHelmet.name=オスミウムのヘルメット
 item.OsmiumChestplate.name=オスミウムのチェストプレート
 item.OsmiumLeggings.name=オスミウムのレギンス
@@ -1036,7 +1035,7 @@ item.OsmiumShovel.name=オスミウムのシャベル
 item.OsmiumHoe.name=オスミウムのクワ
 item.OsmiumSword.name=オスミウムの剣
 
-//Bronze
+# Bronze
 item.BronzeHelmet.name=青銅のヘルメット
 item.BronzeChestplate.name=青銅のチェストプレート
 item.BronzeLeggings.name=青銅のレギンス
@@ -1048,7 +1047,7 @@ item.BronzeShovel.name=青銅のシャベル
 item.BronzeHoe.name=青銅のクワ
 item.BronzeSword.name=青銅の剣
 
-//Glow
+# Glow
 item.GlowstoneHelmet.name=グロウストーンのヘルメット
 item.GlowstoneChestplate.name=グロウストーンのチェストプレート
 item.GlowstoneLeggings.name=グロウストーンのレギンス
@@ -1060,7 +1059,7 @@ item.GlowstoneShovel.name=グロウストーンのシャベル
 item.GlowstoneHoe.name=グロウストーンのクワ
 item.GlowstoneSword.name=グロウストーンの剣
 
-//Steel
+# Steel
 item.SteelHelmet.name=鋼鉄のヘルメット
 item.SteelChestplate.name=鋼鉄のチェストプレート
 item.SteelLeggings.name=鋼鉄のレギンス
@@ -1072,7 +1071,7 @@ item.SteelShovel.name=鋼鉄のシャベル
 item.SteelHoe.name=鋼鉄のクワ
 item.SteelSword.name=鋼鉄の剣
 
-//Lapis Lazuli
+# Lapis Lazuli
 item.LapisLazuliHelmet.name=ラピスラズリのヘルメット
 item.LapisLazuliChestplate.name=ラピスラズリのチェストプレート
 item.LapisLazuliLeggings.name=ラピスラズリのレギンス
@@ -1084,12 +1083,12 @@ item.LapisLazuliShovel.name=ラピスラズリのシャベル
 item.LapisLazuliHoe.name=ラピスラズリのクワ
 item.LapisLazuliSword.name=ラピスラズリの剣
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.tools.general=General
 mekanism.configgui.ctgy.tools.armor=Armor Balance
 mekanism.configgui.ctgy.tools.tools=Tools Balance
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
 mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
 mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets

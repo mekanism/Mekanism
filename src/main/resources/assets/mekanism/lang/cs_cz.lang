@@ -1,8 +1,8 @@
-//********//
-//MEKANISM//
-//********//
+###########
+# MEKANISM
+###########
 
-//Items
+# Items
 tile.ObsidianTNT.name=Obsidiánové TNT
 item.EnrichedAlloy.name=Obohacená Slitina
 item.ReinforcedAlloy.name=Tvrzená Slitina
@@ -50,34 +50,34 @@ item.GaugeDropper.name=Kapátko
 item.BioFuel.name=Bio Palivo
 item.CraftingFormula.name=Výrobní Formule
 
-//Control Circuits
+# Control Circuits
 item.BasicControlCircuit.name=Základní Ovládací Obvod
 item.AdvancedControlCircuit.name=Pokročilý Ovládací Obvod
 item.EliteControlCircuit.name=Elitní Ovládací Obvod
 item.UltimateControlCircuit.name=Ultimátní Ovládací Obvod
 
-//Gas Tank
+# Gas Tank
 tile.GasTankBasic.name=Základní Plynová Nádrž
 tile.GasTankAdvanced.name=Pokročilá Plynová Nádrž
 tile.GasTankElite.name=Elitní Plynová Nádrž
 tile.GasTankUltimate.name=Ultimátní Plynová Nádrž
 
-//Fluid Tank (part of MachineBlock2, naming handled differently)
+# Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=Základní Kapalinová Nádrž
 tile.FluidTankAdvanced.name=Pokročilá Kapalinová Nádrž
 tile.FluidTankElite.name=Elitní Kapalinová Nádrž
 tile.FluidTankUltimate.name=Ultimátní Kapalinová Nádrž
 
-//Cardboard Box
+# Cardboard Box
 tile.CardboardBox.name=Kartonová Krabice
 
-//Bounding Block
+# Bounding Block
 tile.BoundingBlock.name=Vázací Blok
 
-//Salt
+# Salt
 tile.SaltBlock.name=Solný Blok
 
-//Basic Block
+# Basic Block
 tile.BasicBlock.OsmiumBlock.name=Blok Osmia
 tile.BasicBlock.BronzeBlock.name=Blok Bronzu
 tile.BasicBlock.RefinedObsidian.name=Rafinovaný Obsidián
@@ -98,7 +98,7 @@ tile.BasicBlock.TinBlock.name=Blok Cínu
 tile.BasicBlock.ThermalEvaporationController.name=Ovladač Slunečního Výparu
 tile.BasicBlock.ThermalEvaporationValve.name=Ventil Slunečního Výparu
 
-//Basic Block 2 (second ID iteration)
+# Basic Block 2 (second ID iteration)
 tile.BasicBlock2.ThermalEvaporationBlock.name=Blok Slunečního Výparu
 tile.BasicBlock2.InductionCasing.name=Indukční Plášť
 tile.BasicBlock2.InductionPort.name=Indukční Port
@@ -116,7 +116,7 @@ tile.BasicBlock2.BoilerCasing.name=Plášť Bojleru
 tile.BasicBlock2.BoilerValve.name=Ventil Bojleru
 tile.BasicBlock2.SecurityDesk.name=Bezpečnostní Pult
 
-//Machine Block
+# Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Obohacovací Komora
 tile.MachineBlock.OsmiumCompressor.name=Osmiový Kompresor
 tile.MachineBlock.Combiner.name=Kombinér
@@ -132,7 +132,7 @@ tile.MachineBlock.Chargepad.name=Nabíječka
 tile.MachineBlock.LogisticalSorter.name=Dopravní Třídič
 tile.MachineBlock.DigitalMiner.name=Digitální Těžička
 
-//Machine Block 2 (second ID iteration)
+# Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotační Kondenzátor
 tile.MachineBlock2.ChemicalOxidizer.name=Chemický Oxidovač
 tile.MachineBlock2.ChemicalInfuser.name=Chemický Infúzer
@@ -151,7 +151,7 @@ tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Zesilovač Laseru
 tile.MachineBlock2.LaserTractorBeam.name=Laserový Tažný Paprsek
 
-//Machine Block 3 (third ID iteration)
+# Machine Block 3 (third ID iteration)
 tile.MachineBlock3.QuantumEntangloporter.name=Kvantový Vztahoportač
 tile.MachineBlock3.SolarNeutronActivator.name=Solární Aktivátor Neutronů
 tile.MachineBlock3.Oredictionificator.name=Rudo-Slovníkovač
@@ -159,7 +159,7 @@ tile.MachineBlock3.ResistiveHeater.name=Odporový Ohřívač
 tile.MachineBlock3.FormulaicAssemblicator.name=Skladač Formulí
 tile.MachineBlock3.FuelwoodHeater.name=Ohřívač na Palivové Dřevo
 
-//Plastic
+# Plastic
 tile.PlasticBlock.name=Plastový Blok
 tile.SlickPlasticBlock.name=Uhlazený Plastový Blok
 tile.GlowPlasticBlock.name=Svítivý Plastový Blok
@@ -168,7 +168,7 @@ tile.RoadPlasticBlock.name=Plastová Cesta
 
 tile.PlasticFence.name=Plastová Bariéra
 
-//Infuse types
+# Infuse types
 infuse.carbon=Uhlík
 infuse.tin=Cín
 infuse.diamond=Diamant
@@ -177,12 +177,12 @@ infuse.fungi=Houba
 infuse.obsidian=Obsidián
 infuse.bio=Biomasa
 
-//Ore Block
+# Ore Block
 tile.OreBlock.OsmiumOre.name=Ruda Osmia
 tile.OreBlock.CopperOre.name=Ruda Mědi
 tile.OreBlock.TinOre.name=Ruda Cínu
 
-//Transmitters
+# Transmitters
 item.MultipartTransmitter.BasicPressurizedTube.name=Základní Trubka pod Tlakem
 item.MultipartTransmitter.AdvancedPressurizedTube.name=Pokročilá Trubka pod Tlakem
 item.MultipartTransmitter.ElitePressurizedTube.name=Elitní Trubka pod Tlakem
@@ -206,22 +206,22 @@ item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Pokročilý Termod
 item.MultipartTransmitter.EliteThermodynamicConductor.name=Elitní Termodynamický Vodič
 item.MultipartTransmitter.UltimateThermodynamicConductor.name=Ultimátní Termodynamický Vodič
 
-//Glow Panel
+# Glow Panel
 item.GlowPanel.name=Svítící Panel
 
-//Energy Cubes
+# Energy Cubes
 tile.EnergyCubeBasic.name=Základní Energetická Kostka
 tile.EnergyCubeAdvanced.name=Pokročilá Energetická Kostka
 tile.EnergyCubeElite.name=Elitní Energetická Kostka
 tile.EnergyCubeUltimate.name=Ultimátní Energetická Kostka
 tile.EnergyCubeCreative.name=Kreativní Energetická Kostka
 
-//Factory Installers
+# Factory Installers
 item.basicFactoryInstaller.name=Základní Instalátor Továrny
 item.advancedFactoryInstaller.name=Pokročilý Instalátor Továrny
 item.eliteFactoryInstaller.name=Elitní Instalátor Továrny
 
-//Dust
+# Dust
 item.ironDust.name=Železný Prášek
 item.goldDust.name=Zlatý Prášek
 item.osmiumDust.name=Osmiový Prášek
@@ -236,7 +236,7 @@ item.leadDust.name=Olověný Prášek
 item.sulfurDust.name=Sírový Prášek
 item.lithiumDust.name=Lithný Prášek
 
-//Clumps
+# Clumps
 item.ironClump.name=Železný Chomáč
 item.goldClump.name=Zlatý Chomáč
 item.osmiumClump.name=Osmiový Chomáč
@@ -245,7 +245,7 @@ item.tinClump.name=Cínový Chomáč
 item.silverClump.name=Stříbrný Chomáč
 item.leadClump.name=Olověný Chomáč
 
-//Shards
+# Shards
 item.ironShard.name=Železný Střep
 item.goldShard.name=Zlatý Střep
 item.osmiumShard.name=Osmiový Střep
@@ -254,7 +254,7 @@ item.tinShard.name=Cínový Střep
 item.silverShard.name=Stříbrný Střep
 item.leadShard.name=Olověný Střep
 
-//Crystals
+# Crystals
 item.ironCrystal.name=Železný Krystal
 item.goldCrystal.name=Zlatý Krystal
 item.osmiumCrystal.name=Osmiový Krystal
@@ -263,7 +263,7 @@ item.tinCrystal.name=Cínový Krystal
 item.silverCrystal.name=Stříbrný Krystal
 item.leadCrystal.name=Olověný Krystal
 
-//Dirty Dust
+# Dirty Dust
 item.dirtyIronDust.name=Špinavý Železný Prášek
 item.dirtyGoldDust.name=Špinavý Zlatý Prášek
 item.dirtyOsmiumDust.name=Špinavý Osmiový Prášek
@@ -272,7 +272,7 @@ item.dirtyTinDust.name=Špinavý Cínový Prášek
 item.dirtySilverDust.name=Špinavý Stříbrný Prášek
 item.dirtyLeadDust.name=Špinavý Olověný Prášek
 
-//Ingots
+# Ingots
 item.obsidianIngot.name=Rafinovaný Obsidiánový Ingot
 item.osmiumIngot.name=Osmiový Ingot
 item.bronzeIngot.name=Bronzový Ingot
@@ -281,7 +281,7 @@ item.steelIngot.name=Ocelový Ingot
 item.copperIngot.name=Měďený Ingot
 item.tinIngot.name=Cínový Ingot
 
-//Gasses
+# Gasses
 gas.hydrogen=Vodík
 gas.oxygen=Kyslík
 gas.water=Vodní Pára
@@ -317,11 +317,11 @@ gas.cleanSilver=Čistá Stříbrná Kaše
 gas.cleanObsidian=Čistá Obsidiánová Kaše
 gas.cleanLead=Čistá Olovnatá Kaše
 
-//BC Fuel Gases
+# BC Fuel Gases
 gas.fuel=Vypařené Palivo
 gas.oil=Vypařený Olej
 
-//Fluids
+# Fluids
 fluid.hydrogen=Tekutý Vodík
 fluid.oxygen=Tekutý Kyslík
 fluid.chlorine=Tekutý Chlor
@@ -339,7 +339,7 @@ fluid.tritium=Tekuté Tritium
 fluid.fusionFuelDT=Tekuté D-T Palivo
 fluid.steam=Pára
 
-//OreGas names
+# OreGas names
 oregas.iron=Ruda Železa
 oregas.gold=Ruda Zlata
 oregas.osmium=Ruda Osmia
@@ -349,21 +349,21 @@ oregas.silver=Ruda Stříbra
 oregas.obsidian=Ruda Obsidiánu
 oregas.lead=Ruda Olova
 
-//Tier names
+# Tier names
 tier.Basic=Základní
 tier.Advanced=Pokročilý
 tier.Elite=Elitní
 tier.Ultimate=Ultimátní
 tier.Creative=Kreativní
 
-//Transmission types
+# Transmission types
 transmission.Energy=Energie
 transmission.Fluids=Tekutiny
 transmission.Gases=Plyny
 transmission.Items=Předměty
 transmission.Heat=Teplo
 
-//Update handler text
+# Update handler text
 update.consider=Zvaž update na verzi
 update.newFeatures=Nové funkce
 update.visit=Navštiv
@@ -371,7 +371,7 @@ update.toDownload=pro stažení
 update.devBuild=Je používáno vývojářské sestavení
 update.outdated=Je používána stará verze jednoho nebo více modulů
 
-//Upgrades
+# Upgrades
 upgrade.energy=Energie
 upgrade.energy.desc=Zvyšuje energetickou efektivitu a kapacitu stroje.
 upgrade.speed=Rychlost
@@ -383,30 +383,30 @@ upgrade.gas.desc=Zvyšuje efektivitu strojů využívajících plyn.
 upgrade.muffling=Dušení
 upgrade.muffling.desc=Snižuje hluk generovaný strojem.
 
-//Key description text
+# Key description text
 key.mode=Přepínání Módů Předmětů
 key.armorMode=Přepínání Módů Brnění
 key.voice=Hlas
 
-//Entities
+# Entities
 entity.Robit.name=Robit
 entity.BabySkeleton.name=Dítě Kostlivce
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.general=Základní Nastavení Mekanismu
 mekanism.configgui.ctgy.machines=Nastavení Strojů
 mekanism.configgui.ctgy.tier=Nastavení Stupňů
 mekanism.configgui.ctgy.usage=Nastavení Odběru
 mekanism.configgui.ctgy.client=Nastavení Klienta
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Základní nastavení týkající se Mekanismu a všech jeho modulů
 mekanism.configgui.ctgy.machines.tooltip=Nastavení týkající se zápínání a vypínání specifických strojů
 mekanism.configgui.ctgy.tier.tooltip=Nastavení týkající se stupňů Mekanismu a jejich souvisejících hodnot
 mekanism.configgui.ctgy.usage.tooltip=Nastavení týkající se strojů a jejich odběru energie
 mekanism.configgui.ctgy.client.tooltip=Klientská nastavení týkající se Mekanismu a všech jeho modulů
 
-//Gui text
+# Gui text
 gui.condensentrating=Kondenzace
 gui.decondensentrating=Dekondenzace
 gui.power=Energie
@@ -582,7 +582,7 @@ gui.rotaryCondensentrator.toggleOperation=Sepnout operaci
 gui.factory.secondaryEnergy=Sekundární energie
 gui.factory.autoSort=Auto-třídění
 
-//Recipe types
+# Recipe types
 gui.factory.Smelting=Vypalování
 gui.factory.Enriching=Obohacování
 gui.factory.Crushing=Drcení
@@ -644,7 +644,7 @@ gui.password=Heslo
 gui.logisticalSorter.default=Výchozí
 gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Zaoblená-červenka
-//previous DEFINITELLY wrong, dunno what the original means
+# previous DEFINITELLY wrong, dunno what the original means
 gui.teleporter.notReady=Nepřipraven
 gui.teleporter.ready=Připraven
 gui.teleporter.noFrame=Není rám
@@ -671,16 +671,16 @@ gui.digitalMiner.requireReplace=Vyžaduje nahrazení
 gui.digitalMiner.fuzzyMode=Nejasný mód
 gui.digitalMiner.missingBlock=Chybějící blok
 
-//Recipe names
+# Recipe names
 recipe.mekanismShaped=Tvarovaný
 recipe.mekanismShapeless=Beztvarý
 
-//Security types
+# Security types
 security.public=Veřejný
 security.private=Privátní
 security.trusted=Důvěřivý
 
-//Item and block tooltip text
+# Item and block tooltip text
 tooltip.configurator.configurate=Konfigurovat
 tooltip.configurator.empty=Prázdný
 tooltip.configurator.rotate=Otočit
@@ -750,7 +750,7 @@ tooltip.encoded=Zakódovaný
 tooltip.ingredients=Ingredience
 
 tooltip.portableTank.bucketMode=Kyblíkový Mód
-//totally legit and not funny sounding :D
+# totally legit and not funny sounding :D
 tooltip.disassembler.normal=normální
 tooltip.disassembler.slow=pomalý
 tooltip.disassembler.fast=rychlý
@@ -856,7 +856,7 @@ tooltip.OsmiumOre=Silný minerál který lze nalézt v jakékoli hloubce. Je zn�
 tooltip.CopperOre=Běžný, vodivý materiál který se využívá k výrobě kabelů. Jeho schopnost vydržet velké teploty ho činí podstatným pro pokročilé stroje.
 tooltip.TinOre=Lehký, ale tvrdý, vodivý materiál který je o trochu vzácnější než Měď.
 
-//Side data
+# Side data
 sideData.None=Nic
 sideData.Input=Vstup
 sideData.Output=Výstup
@@ -870,7 +870,7 @@ sideData.Empty=Prázdný
 sideData.Charge=Náboj
 sideData.Discharge=Výboj
 
-//Redstone control
+# Redstone control
 control.disabled=Vyplý
 control.high=Silný
 control.low=Slabý
@@ -880,12 +880,12 @@ control.high.desc=Vždy se signálem
 control.low.desc=Vždy bez signálu
 control.pulse.desc=Pouze aktivní s prvním příchozím signálem
 
-//Container edit modes
+# Container edit modes
 fluidedit.both=Oboje
 fluidedit.fill=Plný
 fluidedit.empty=Prázdný
 
-//Colors
+# Colors
 color.black=Černá
 color.darkBlue=Tmavě Modrá
 color.darkGreen=Tmavě Zelená
@@ -905,7 +905,7 @@ color.white=Bílá
 color.brown=Hnědá
 color.brightPink=Světle Růžová
 
-//Dyes
+# Dyes
 dye.black=Černá
 dye.darkBlue=Modrá
 dye.brown=Hnědá
@@ -925,7 +925,7 @@ dye.pink=Magenta
 dye.yellow=Žlutá
 dye.white=Bílá
 
-//Reactor Logic modes
+# Reactor Logic modes
 reactor.disabled=Deaktivovaný
 reactor.disabled.desc=Nebude vysílat ruditový signál
 reactor.ready=Připraven na Zážeh
@@ -935,22 +935,22 @@ reactor.capacity.desc=Tepelná kapacita jádra reaktoru byla dosažena
 reactor.depleted=Nedostatek Paliva
 reactor.depleted.desc=Reaktor má nedostatek paliva k udržení reakce
 
-//Creative tab
+# Creative tab
 itemGroup.tabMekanism=Mekanism
 
-//NEI stuff
+# NEI stuff
 nei.chemicalInjectionChamber=Ch. Vstřikovací Komora
 
-//**********//
-//GENERATORS//
-//**********//
+#############
+# GENERATORS
+#############
 
-//Items
+# Items
 item.SolarPanel.name=Solární Panel
 item.Hohlraum.name=Hohlraum
 item.TurbineBlade.name=Turbínová Lopatka
 
-//Generators
+# Generators
 tile.Generator.HeatGenerator.name=Tepelný Generátor
 tile.Generator.SolarGenerator.name=Solární Generátor
 tile.Generator.GasGenerator.name=Plyno-Spalovací Generátor
@@ -973,7 +973,7 @@ tile.Reactor.ReactorLogicAdapter.name=Logický Adaptér Reaktoru
 tile.ReactorGlass.ReactorGlass.name=Sklo Reaktoru
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laserová Zaměřovací Matice
 
-//Gui text
+# Gui text
 gui.heatGenerator.fuel=Palivo
 gui.solarGenerator.sun=Slunce
 gui.bioGenerator.bioFuel=Bio Palivo
@@ -989,18 +989,18 @@ gui.maxCasing=Max. Teplota Pláště
 gui.passiveGeneration=Pasivní Generace
 gui.steamProduction=Produkce Páry
 
-//*****//
-//TOOLS//
-//*****//
+#########
+# TOOLS
+#########
 
-//Vanilla Paxels
+# Vanilla Paxels
 item.WoodPaxel.name=Dřevěný Sekrumpáč
 item.StonePaxel.name=Kamenný Sekrumpáč
 item.IronPaxel.name=Železný Sekrumpáč
 item.DiamondPaxel.name=Diamantový Sekrumpáč
 item.GoldPaxel.name=Zlatý Sekrumpáč
 
-//Obsidian
+# Obsidian
 item.ObsidianHelmet.name=Obsidiánová Helma
 item.ObsidianChestplate.name=Obsidiánové Brnění
 item.ObsidianLeggings.name=Obsidiánové Kalhoty
@@ -1012,7 +1012,7 @@ item.ObsidianShovel.name=Obsidiánová Lopata
 item.ObsidianHoe.name=Obsidiánová Motyka
 item.ObsidianSword.name=Obsidiánový Meč
 
-//Lapis Lazuli
+# Lapis Lazuli
 item.LazuliHelmet.name=Lapis Lazuli Helma
 item.LazuliChestplate.name=Lapis Lazuli Brnění
 item.LazuliLeggings.name=Lapis Lazuli Kalhoty
@@ -1024,7 +1024,7 @@ item.LazuliShovel.name=Lapis Lazuli Lopata
 item.LazuliHoe.name=Lapis Lazuli Motyka
 item.LazuliSword.name=Lapis Lazuli Meč
 
-//Osmium
+# Osmium
 item.OsmiumHelmet.name=Osmiová Helma
 item.OsmiumChestplate.name=Osmiové Brnění
 item.OsmiumLeggings.name=Osmiové Kalhoty
@@ -1036,7 +1036,7 @@ item.OsmiumShovel.name=Osmiová Lopata
 item.OsmiumHoe.name=Osmiová Motyka
 item.OsmiumSword.name=Osmiový Meč
 
-//Bronze
+# Bronze
 item.BronzeHelmet.name=Bronzová Helma
 item.BronzeChestplate.name=Bronzové Brnění
 item.BronzeLeggings.name=Bronzové Kalhoty
@@ -1048,7 +1048,7 @@ item.BronzeShovel.name=Bronzová Lopata
 item.BronzeHoe.name=Bronzová Motyka
 item.BronzeSword.name=Bronzový Meč
 
-//Glow
+# Glow
 item.GlowstoneHelmet.name=Světlitová Helma
 item.GlowstoneChestplate.name=Světlitové Brnění
 item.GlowstoneLeggings.name=Světlitové Kalhoty
@@ -1060,7 +1060,7 @@ item.GlowstoneShovel.name=Světlitová Lopata
 item.GlowstoneHoe.name=Světlitová Motyka
 item.GlowstoneSword.name=Světlitový Meč
 
-//Steel
+# Steel
 item.SteelHelmet.name=Ocelová Helma
 item.SteelChestplate.name=Ocelové Brnění
 item.SteelLeggings.name=Ocelové Kalhoty
@@ -1072,12 +1072,12 @@ item.SteelShovel.name=Ocelová Lopata
 item.SteelHoe.name=Ocelová Motyka
 item.SteelSword.name=Ocelové Meč
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.tools.general=Základní
 mekanism.configgui.ctgy.tools.armor=Vyvážení Brnění
 mekanism.configgui.ctgy.tools.tools=Vyvážení Nástrojů
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Nastavení týkající se základní konfigurace MekanismTools
 mekanism.configgui.ctgy.tools.armor.tooltip=Nastavení týkající se protekčních hodnot a vyvážení setů brnění MekanismTools
 mekanism.configgui.ctgy.tools.tools.tooltip=Nastavení týkající se efektivních hodnot a vyvážení setů nástrojů MekanismTools

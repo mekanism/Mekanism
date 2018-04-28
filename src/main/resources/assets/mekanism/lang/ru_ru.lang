@@ -1,8 +1,8 @@
-//********//
-//MEKANISM//
-//********//
+###########
+# MEKANISM
+###########
 
-//Items
+# Items
 tile.ObsidianTNT.name=Обсидиановый динамит
 item.EnrichedAlloy.name=Обогащённый сплав
 item.ReinforcedAlloy.name=Укреплённый сплав
@@ -51,36 +51,36 @@ item.GaugeDropper.name=Датчик выбрасывателя
 item.BioFuel.name=Биотопливо
 item.CraftingFormula.name=Формула создания
 
-//Control Circuits
+# Control Circuits
 item.BasicControlCircuit.name=Базовая схема управления
 item.AdvancedControlCircuit.name=Продвинутая схема управления
 item.EliteControlCircuit.name=Элитная схема управления
 item.UltimateControlCircuit.name=Совершенная схема управления
 
-//Gas Tank
+# Gas Tank
 tile.GasTankBasic.name=Базовый газовый баллон
 tile.GasTankAdvanced.name=Продвинутый газовый баллон
 tile.GasTankElite.name=Элитный газовый баллон
 tile.GasTankUltimate.name=Совершенный газовый баллон
 tile.GasTankCreative.name=Творческий газовый баллон
 
-//Fluid Tank (part of MachineBlock2, naming handled differently)
+# Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=Базовый жидкостный бак
 tile.FluidTankAdvanced.name=Продвинутый жидкостный бак
 tile.FluidTankElite.name=Элитный жидкостный бак
 tile.FluidTankUltimate.name=Совершенный жидкостный бак
 tile.FluidTankCreative.name=Творческий жидкостный бак
 
-//Cardboard Box
+# Cardboard Box
 tile.CardboardBox.name=Картонная коробка
 
-//Bounding Block
+# Bounding Block
 tile.BoundingBlock.name=Скреплённый блок
 
-//Salt
+# Salt
 tile.SaltBlock.name=Блок соли
 
-//Basic Block
+# Basic Block
 tile.BasicBlock.OsmiumBlock.name=Осмиевый блок
 tile.BasicBlock.BronzeBlock.name=Бронзовый блок
 tile.BasicBlock.RefinedObsidian.name=Очищенный обсидиан
@@ -102,7 +102,7 @@ tile.BasicBlock.TinBlock.name=Оловянный блок
 tile.BasicBlock.ThermalEvaporationController.name=Контроллер теплового испарителя
 tile.BasicBlock.ThermalEvaporationValve.name=Вентиль теплового испарителя
 
-//Basic Block 2 (second ID iteration)
+# Basic Block 2 (second ID iteration)
 tile.BasicBlock2.ThermalEvaporationBlock.name=Блок теплового испарителя
 tile.BasicBlock2.InductionCasing.name=Индукционный корпус
 tile.BasicBlock2.InductionPort.name=Индукционный порт
@@ -120,7 +120,7 @@ tile.BasicBlock2.BoilerCasing.name=Обшивка бойлера
 tile.BasicBlock2.BoilerValve.name=Вентиль бойлера
 tile.BasicBlock2.SecurityDesk.name=Защитный блок
 
-//Machine Block
+# Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Камера обогащения
 tile.MachineBlock.OsmiumCompressor.name=Осмиевый компрессор
 tile.MachineBlock.Combiner.name=Объединитель
@@ -136,7 +136,7 @@ tile.MachineBlock.Chargepad.name=Зарядник
 tile.MachineBlock.LogisticalSorter.name=Логистический сортировщик
 tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
 
-//Machine Block 2 (second ID iteration)
+# Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Роторный сгуститель
 tile.MachineBlock2.ChemicalOxidizer.name=Химический окислитель
 tile.MachineBlock2.ChemicalInfuser.name=Химический наполнитель
@@ -155,7 +155,7 @@ tile.MachineBlock2.Laser.name=Лазер
 tile.MachineBlock2.LaserAmplifier.name=Усилитель лазера
 tile.MachineBlock2.LaserTractorBeam.name=Лазерный притягиватель
 
-//Machine Block 3 (third ID iteration)
+# Machine Block 3 (third ID iteration)
 tile.MachineBlock3.QuantumEntangloporter.name=Квантовый телепорт
 tile.MachineBlock3.SolarNeutronActivator.name=Солнечный активатор нейтронов
 tile.MachineBlock3.Oredictionificator.name=Унификатор словаря руд
@@ -163,7 +163,7 @@ tile.MachineBlock3.ResistiveHeater.name=Устойчивый нагревате�
 tile.MachineBlock3.FormulaicAssemblicator.name=Формульный сборщик
 tile.MachineBlock3.FuelwoodHeater.name=Твердотопливный нагреватель
 
-//Plastic
+# Plastic
 tile.PlasticBlock.name=Пластиковый блок
 tile.SlickPlasticBlock.name=Гладкий пластиковый блок
 tile.GlowPlasticBlock.name=Пластиковый светящийся блок
@@ -172,7 +172,7 @@ tile.RoadPlasticBlock.name=Пластиковый путь
 
 tile.PlasticFence.name=Пластиковый забор
 
-//Infuse types
+# Infuse types
 infuse.carbon=Углерод
 infuse.tin=Олово
 infuse.diamond=Алмаз
@@ -181,12 +181,12 @@ infuse.fungi=Грибок
 infuse.obsidian=Обсидиан
 infuse.bio=Биомасса
 
-//Ore Block
+# Ore Block
 tile.OreBlock.OsmiumOre.name=Осмиевая руда
 tile.OreBlock.CopperOre.name=Медная руда
 tile.OreBlock.TinOre.name=Оловянная руда
 
-//Transmitters
+# Transmitters
 tile.Transmitter.BasicPressurizedTube.name=Базовая герметичная труба
 tile.Transmitter.AdvancedPressurizedTube.name=Продвинутая герметичная труба
 tile.Transmitter.ElitePressurizedTube.name=Элитная герметичная труба
@@ -210,23 +210,23 @@ tile.Transmitter.AdvancedThermodynamicConductor.name=Продвинутый те
 tile.Transmitter.EliteThermodynamicConductor.name=Элитный теплопровод
 tile.Transmitter.UltimateThermodynamicConductor.name=Совершенный теплопровод
 
-//Glow Panel
+# Glow Panel
 tile.GlowPanel.name=Cветящийся полублок
 
-//Energy Cubes
+# Energy Cubes
 tile.EnergyCubeBasic.name=Основной энергетический куб
 tile.EnergyCubeAdvanced.name=Продвинутый энергетический куб
 tile.EnergyCubeElite.name=Элитный энергетический куб
 tile.EnergyCubeUltimate.name=Совершенный энергетический куб
 tile.EnergyCubeCreative.name=Творческий энергетический куб
 
-//Tier Installers
+# Tier Installers
 item.basicTierInstaller.name=Установщик основного уровня
 item.advancedTierInstaller.name=Установщик продвинутого уровня
 item.eliteTierInstaller.name=Установщик элитного уровня
 item.ultimateTierInstaller.name=Установщик совершенного уровня
 
-//Dust
+# Dust
 item.ironDust.name=Железная пыль
 item.goldDust.name=Золотая пыль
 item.osmiumDust.name=Осмиевая пыль
@@ -241,7 +241,7 @@ item.leadDust.name=Свинцовая пыль
 item.sulfurDust.name=Серная пыль
 item.lithiumDust.name=Литиевая пыль
 
-//Clumps
+# Clumps
 item.ironClump.name=Железная глыба
 item.goldClump.name=Золотая глыба
 item.osmiumClump.name=Осмиевая глыба
@@ -250,7 +250,7 @@ item.tinClump.name=Оловянная глыба
 item.silverClump.name=Серебряная глыба
 item.leadClump.name=Свинцовая глыба
 
-//Shards
+# Shards
 item.ironShard.name=Железный осколок
 item.goldShard.name=Золотой осколок
 item.osmiumShard.name=Осмиевый осколок
@@ -259,7 +259,7 @@ item.tinShard.name=Оловянный осколок
 item.silverShard.name=Серебряный осколок
 item.leadShard.name=Свинцовый осколок
 
-//Crystals
+# Crystals
 item.ironCrystal.name=Железный кристалл
 item.goldCrystal.name=Золотой кристалл
 item.osmiumCrystal.name=Осмиевый кристалл
@@ -268,7 +268,7 @@ item.tinCrystal.name=Оловянный кристалл
 item.silverCrystal.name=Серебряный кристалл
 item.leadCrystal.name=Свинцовый кристалл
 
-//Dirty Dust
+# Dirty Dust
 item.dirtyIronDust.name=Загрязненная железная пыль
 item.dirtyGoldDust.name=Загрязненная золотая пыль
 item.dirtyOsmiumDust.name=Загрязненная осмиевая пыль
@@ -277,7 +277,7 @@ item.dirtyTinDust.name=Загрязненная оловянная пыль
 item.dirtySilverDust.name=Загрязненная серебряная пыль
 item.dirtyLeadDust.name=Загрязненная свинцовая пыль
 
-//Ingots
+# Ingots
 item.obsidianIngot.name=Обсидиановый слиток
 item.osmiumIngot.name=Осмиевый слиток
 item.bronzeIngot.name=Бронзовый слиток
@@ -286,7 +286,7 @@ item.steelIngot.name=Стальной слиток
 item.copperIngot.name=Медный слиток
 item.tinIngot.name=Оловянный слиток
 
-//Nuggets
+# Nuggets
 item.obsidianNugget.name=Очищенного обсидиана кусочек
 item.osmiumNugget.name=Осмиевый кусочек
 item.bronzeNugget.name=Бронзовый кусочек
@@ -295,7 +295,7 @@ item.steelNugget.name=Стальной кусочек
 item.copperNugget.name=Медный кусочек
 item.tinNugget.name=Оловянный кусочек
 
-//Gasses
+# Gasses
 gas.hydrogen=Водород
 gas.oxygen=Кислород
 gas.water=Водяной пар
@@ -331,11 +331,11 @@ gas.cleanSilver=Очищенная взвесь серебра
 gas.cleanObsidian=Очищенная взвесь обсидиана
 gas.cleanLead=Очищенная взвесь свинца
 
-//BC Fuel Gases
+# BC Fuel Gases
 gas.fuel=Парообразное топливо
 gas.oil=Парообразная нефть
 
-//Fluids
+# Fluids
 fluid.liquidhydrogen=Жидкий водород
 fluid.liquidoxygen=Жидкий кислород
 fluid.liquidchlorine=Жидкий хлор
@@ -353,7 +353,7 @@ fluid.liquidtritium=Жидкий тритий
 fluid.liquidfusionfuel=Жидкое Д-Т топливо
 fluid.steam=Пар
 
-//OreGas names
+# OreGas names
 oregas.iron=Железная руда
 oregas.gold=Золотая руда
 oregas.osmium=Осмиевая руда
@@ -363,21 +363,21 @@ oregas.silver=Серебряная руда
 oregas.obsidian=Обсидиановая руда
 oregas.lead=Свинцовая руда
 
-//Tier names
+# Tier names
 tier.Basic=Базовый
 tier.Advanced=Продвинутый
 tier.Elite=Элитный
 tier.Ultimate=Совершенный
 tier.Creative=Творческий
 
-//Transmission types
+# Transmission types
 transmission.Energy=Энергия
 transmission.Fluids=Жидкости
 transmission.Gases=Газы
 transmission.Items=Предметы
 transmission.Heat=Нагрев
 
-//Update handler text
+# Update handler text
 update.consider=Подумайте о обновлении до версии
 update.newFeatures=Нововведения
 update.visit=Посетите
@@ -385,7 +385,7 @@ update.toDownload=чтобы загрузить
 update.devBuild=Используется сборка разработчиков
 update.outdated=Используется устаревшая версия одного или нескольких модулей
 
-//Upgrades
+# Upgrades
 upgrade.energy=Энергия
 upgrade.energy.desc=Увеличивает энергоэффективность и ёмкость механизмов.
 upgrade.speed=Скорость
@@ -399,31 +399,31 @@ upgrade.muffling.desc=Уменьшает громкость механизмов
 upgrade.anchor=Якорь
 upgrade.anchor.desc=Сохраняет чанк с машиной загруженным.
 
-//Key description text
+# Key description text
 key.mode=Переключить режим предмета
 key.armorMode=Переключить режим брони
 key.feetMode=Переключить режим бегунков
 key.voice=Голос
 
-//Entities
+# Entities
 entity.Robit.name=Робит
 entity.BabySkeleton.name=Скелет-ребёнок
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.general=Общие настройки
 mekanism.configgui.ctgy.machines=Настройки механизмов
 mekanism.configgui.ctgy.tier=Настройки уровней
 mekanism.configgui.ctgy.usage=Настройки потребления
 mekanism.configgui.ctgy.client=Настройки клиента
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Общие настройки, касающиеся Mekanism и всех его модулей
 mekanism.configgui.ctgy.machines.tooltip=Настройки, касающиеся включения и отключения определённых механизмов
 mekanism.configgui.ctgy.tier.tooltip=Настройки, касающиеся уровней Mekanism и их соответствующих значений
 mekanism.configgui.ctgy.usage.tooltip=Настройки, касающиеся механизмов, и использования ими же энергии
 mekanism.configgui.ctgy.client.tooltip=Настройки клиента относительно Mekanism и всех его модулей
 
-//Gui text
+# Gui text
 gui.condensentrating=Конденсация
 gui.decondensentrating=Деконденсация
 gui.power=Энергия
@@ -607,7 +607,7 @@ gui.rotaryCondensentrator.toggleOperation=Переключить операци�
 gui.factory.secondaryEnergy=Вторичная энергия
 gui.factory.autoSort=Авто-сортировка
 
-//Recipe types
+# Recipe types
 gui.factory.Smelting=Плавящий
 gui.factory.Enriching=Обогащающий
 gui.factory.Crushing=Дробящий
@@ -698,16 +698,16 @@ gui.digitalMiner.missingBlock=Отсутствует блок
 mekanism.gui.digitalMiner.capacity=Энергоёмкость
 mekanism.gui.digitalMiner.lowPower=Нехватка энергии
 
-//Recipe names
+# Recipe names
 recipe.mekanismShaped=Форменное создание
 recipe.mekanismShapeless=Бесформенное создание
 
-//Security types
+# Security types
 security.public=Общий
 security.private=Частный
 security.trusted=Доверенный
 
-//Item and block tooltip text
+# Item and block tooltip text
 tooltip.configurator.configurate=Настройка
 tooltip.configurator.empty=Опустошать
 tooltip.configurator.rotate=Вращение
@@ -897,7 +897,7 @@ tooltip.OsmiumOre=Крепкий минерал, который можно на�
 tooltip.CopperOre=Общий проводящий материал, который может быть использован при производстве проводов. Способность выдерживать высокие температуры делает его незаменимым в современном оборудовании.
 tooltip.TinOre=Лёгкий, но крепкий проводящий материал, который встречается немного реже, чем медь.
 
-//Side data
+# Side data
 sideData.None=Нет
 sideData.Input=Вход
 sideData.Output=Выход
@@ -911,7 +911,7 @@ sideData.Empty=Опустошать
 sideData.Charge=Зарядка
 sideData.Discharge=Разрядка
 
-//Redstone control
+# Redstone control
 control.disabled=Отключен
 control.high=Высокий
 control.low=Низкий
@@ -921,12 +921,12 @@ control.high.desc=Активен по сигналу
 control.low.desc=Активен без сигнала
 control.pulse.desc=Активируется только при первом сигнале
 
-//Container edit modes
+# Container edit modes
 fluidedit.both=Оба
 fluidedit.fill=Заполнять
 fluidedit.empty=Опустошать
 
-//Colors
+# Colors
 color.black=Черный
 color.darkBlue=Темно-Синий
 color.darkGreen=Темно-Зеленый
@@ -946,7 +946,7 @@ color.white=Белый
 color.brown=Коричневый
 color.brightPink=Светло-Розовый
 
-//Dyes
+# Dyes
 dye.black=Черный
 dye.darkBlue=Синий
 dye.brown=Коричневый
@@ -966,7 +966,7 @@ dye.pink=Пурпурный
 dye.yellow=Желтый
 dye.white=Белый
 
-//Reactor Logic modes
+# Reactor Logic modes
 reactor.disabled=Отключен
 reactor.disabled.desc=Не излучает редстоун сигнал
 reactor.ready=Реактор вот-вот взорвется
@@ -976,22 +976,22 @@ reactor.capacity.desc=Ядро реактора перегрелось
 reactor.depleted=Недостаточно топлива
 reactor.depleted.desc=Реактору не хватает топлива для поддержания реакции
 
-//Creative tab
+# Creative tab
 itemGroup.tabMekanism=Mekanism
 
-//NEI stuff
+# NEI stuff
 nei.chemicalInjectionChamber=Хим. инъекционная камера
 
-//**********//
-//GENERATORS//
-//**********//
+#############
+# GENERATORS
+#############
 
-//Items
+# Items
 item.SolarPanel.name=Солнечная панель
 item.Hohlraum.name=Реакционная камера
 item.TurbineBlade.name=Лезвие турбины
 
-//Generators
+# Generators
 tile.Generator.HeatGenerator.name=Тепловой генератор
 tile.Generator.SolarGenerator.name=Солнечный генератор
 tile.Generator.GasGenerator.name=Газовый генератор
@@ -1015,7 +1015,7 @@ tile.Reactor.ReactorLogicAdapter.name=Логический адаптер реа
 tile.ReactorGlass.ReactorGlass.name=Стекло реактора
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Матрица лазерного фокуса
 
-//Gui text
+# Gui text
 gui.heatGenerator.fuel=Топливо
 gui.solarGenerator.sun=Солнце
 gui.bioGenerator.bioFuel=Биотопливо
@@ -1031,28 +1031,28 @@ gui.maxCasing=Макс. темп. корпуса
 gui.passiveGeneration=Пассивное генерирование
 gui.steamProduction=Производство пара
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.generators.general=Общие настройки
 mekanism.configgui.ctgy.generators.generators=Настройки генератора
 mekanism.configgui.ctgy.generators.generation=Настройки генерации
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.generators.general.tooltip=Настройки, касающиеся конфигурации MekanismGenerators
 mekanism.configgui.ctgy.generators.generators.tooltip=Настройки, касающиеся включения и отключения определённых генераторов
 mekanism.configgui.ctgy.generators.generation.tooltip=Настройки, касающиеся использования энергии генераторов
 
-//*****//
-//TOOLS//
-//*****//
+#########
+# TOOLS
+#########
 
-//Vanilla Paxels
+# Vanilla Paxels
 item.WoodPaxel.name=Деревянный мульти-инcтрумент
 item.StonePaxel.name=Каменный мульти-инcтрумент
 item.IronPaxel.name=Железный мульти-инcтрумент
 item.DiamondPaxel.name=Алмазный мульти-инcтрумент
 item.GoldPaxel.name=Золотой мульти-инcтрумент
 
-//Obsidian
+# Obsidian
 item.ObsidianHelmet.name=Обсидиановый шлем
 item.ObsidianChestplate.name=Обсидиановая кираса
 item.ObsidianLeggings.name=Обсидиановые поножи
@@ -1064,7 +1064,7 @@ item.ObsidianShovel.name=Обсидиановая лопата
 item.ObsidianHoe.name=Обсидиановая мотыга
 item.ObsidianSword.name=Обсидиановый меч
 
-//Osmium
+# Osmium
 item.OsmiumHelmet.name=Осмиевый шлем
 item.OsmiumChestplate.name=Осмиевая кираса
 item.OsmiumLeggings.name=Осмиевые поножи
@@ -1076,7 +1076,7 @@ item.OsmiumShovel.name=Осмиевая лопата
 item.OsmiumHoe.name=Осмиевая мотыга
 item.OsmiumSword.name=Осмиевый меч
 
-//Bronze
+# Bronze
 item.BronzeHelmet.name=Бронзовый шлем
 item.BronzeChestplate.name=Бронзовая кираса
 item.BronzeLeggings.name=Бронзовые поножи
@@ -1088,7 +1088,7 @@ item.BronzeShovel.name=Бронзовая лопата
 item.BronzeHoe.name=Бронзовая мотыга
 item.BronzeSword.name=Бронзовый меч
 
-//Glow
+# Glow
 item.GlowstoneHelmet.name=Светокаменный шлем
 item.GlowstoneChestplate.name=Светокаменная кираса
 item.GlowstoneLeggings.name=Светокаменные поножи
@@ -1100,7 +1100,7 @@ item.GlowstoneShovel.name=Светокаменная лопата
 item.GlowstoneHoe.name=Светокаменная мотыга
 item.GlowstoneSword.name=Светокаменный меч
 
-//Steel
+# Steel
 item.SteelHelmet.name=Стальной шлем
 item.SteelChestplate.name=Стальная кираса
 item.SteelLeggings.name=Стальные поножи
@@ -1112,7 +1112,7 @@ item.SteelShovel.name=Стальная лопата
 item.SteelHoe.name=Стальная мотыга
 item.SteelSword.name=Стальной меч
 
-//Lapis Lazuli
+# Lapis Lazuli
 item.LapisLazuliHelmet.name=Лазуритовый шлем
 item.LapisLazuliChestplate.name=Лазуритовая кираса
 item.LapisLazuliLeggings.name=Лазуритовые поножи
@@ -1124,12 +1124,12 @@ item.LapisLazuliShovel.name=Лазуритовая лопата
 item.LapisLazuliHoe.name=Лазуритовая мотыга
 item.LapisLazuliSword.name=Лазуритовый меч
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.tools.general=Общие настройки
 mekanism.configgui.ctgy.tools.armor=Баланс брони
 mekanism.configgui.ctgy.tools.tools=Баланс инструментов
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Настройки, касающиеся основной настройки MekanismTools
 mekanism.configgui.ctgy.tools.armor.tooltip=Настройки, касающиеся значений защиты и баланса наборов брони MekanismTools
 mekanism.configgui.ctgy.tools.tools.tooltip=Настройки, касающиеся значений эффективности и баланса наборов инструментов MekanismTools

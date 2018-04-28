@@ -1,8 +1,8 @@
-//********//
-//MEKANISM//
-//********//
+###########
+# MEKANISM
+###########
 
-//Items
+# Items
 tile.ObsidianTNT.name=옵시디언 TNT
 item.EnrichedAlloy.name=강화 합금
 item.ReinforcedAlloy.name=강화된 합금
@@ -41,25 +41,25 @@ item.HDPESheet.name=HDPE Sheet
 item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 
-//Control Circuits
+# Control Circuits
 item.BasicControlCircuit.name=기본 조작 회로
 item.AdvancedControlCircuit.name=고급 조작 회로
 item.EliteControlCircuit.name=엘리트 조작 회로
 item.UltimateControlCircuit.name=울티베이트 조작 회로
 
-//Gas Tank
+# Gas Tank
 tile.GasTank.GasTank.name=Gas 탱크
 
-//Cardboard Box
+# Cardboard Box
 tile.CardboardBox.name=Cardboard Box
 
-//Bounding Block
+# Bounding Block
 tile.BoundingBlock.name=Bounding 블럭
 
-//Salt
+# Salt
 tile.SaltBlock.name=소금 블럭
 
-//Basic Block
+# Basic Block
 tile.BasicBlock.OsmiumBlock.name=오스뮴 블럭
 tile.BasicBlock.BronzeBlock.name=청동 블럭
 tile.BasicBlock.RefinedObsidian.name=강화된 옵시디언
@@ -77,10 +77,10 @@ tile.BasicBlock.TinBlock.name=주석 블럭
 tile.BasicBlock.SalinationController.name=Salination 제어기
 tile.BasicBlock.SalinationValve.name=Salination 밸브
 
-//Basic Block 2 (second ID iteration)
+# Basic Block 2 (second ID iteration)
 tile.BasicBlock2.SalinationBlock.name=Salination 블럭
 
-//Machine Block
+# Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
 tile.MachineBlock.OsmiumCompressor.name=오스뮴 Compressor
 tile.MachineBlock.Combiner.name=Combiner
@@ -98,7 +98,7 @@ tile.MachineBlock.Chargepad.name=차지패드
 tile.MachineBlock.LogisticalSorter.name=논리 정렬기
 tile.MachineBlock.DigitalMiner.name=디지털 마이너
 
-//Machine Block 2 (second ID iteration)
+# Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
 tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
 tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
@@ -115,7 +115,7 @@ tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.PortableTank.name=Portable 탱크
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 
-//Plastic
+# Plastic
 tile.PlasticBlock.name=플라스틱 블럭
 tile.SlickPlasticBlock.name=끈적거리는 플라스틱 블럭
 tile.GlowPlasticBlock.name=빛나는 플라스틱 블럭
@@ -124,7 +124,7 @@ tile.RoadPlasticBlock.name=플라스틱 길
 
 tile.PlasticFence.name=플라스틱 배리어
 
-//Infuse types
+# Infuse types
 infuse.carbon=탄소
 infuse.tin=주석
 infuse.diamond=다이아몬드
@@ -132,12 +132,12 @@ infuse.redstone=레드스톤
 infuse.fungi=균류
 infuse.obsidian=옵시디언
 
-//Ore Block
+# Ore Block
 tile.OreBlock.OsmiumOre.name=오스뮴 광석
 tile.OreBlock.CopperOre.name=구리 광석
 tile.OreBlock.TinOre.name=주석 광석
 
-//Transmitters
+# Transmitters
 item.MultipartTransmitter.PressurizedTube.name=가압 튜브
 item.MultipartTransmitter.BasicUniversalCable.name=기본 범용 케이블
 item.MultipartTransmitter.AdvancedUniversalCable.name=고급 범용 케이블
@@ -151,16 +151,16 @@ item.MultipartTransmitter.LogisticalTransporter.name=논리적 수송기
 item.MultipartTransmitter.RestrictiveTransporter.name=제한적 수송기
 item.MultipartTransmitter.DiversionTransporter.name=우회적 수송기
 
-//Glow Panel
+# Glow Panel
 item.GlowPanel.name=발광 패널
 
-//Energy Cubes
+# Energy Cubes
 tile.EnergyCube.Basic.name=기본 에너지 큐브
 tile.EnergyCube.Advanced.name=고급 에너지 큐브
 tile.EnergyCube.Elite.name=엘리트 에너지 큐브
 tile.EnergyCube.Ultimate.name=궁극의 에너지 큐브
 
-//가루
+# 가루
 item.ironDust.name=철 가루
 item.goldDust.name=금 가루
 item.osmiumDust.name=오스뮴 가루
@@ -173,7 +173,7 @@ item.silverDust.name=은 가루
 item.leadDust.name=납 가루
 item.sulfurDust.name=유황 가루
 
-//Clumps
+# Clumps
 item.ironClump.name=철 덩어리
 item.goldClump.name=금 덩어리
 item.osmiumClump.name=오스뮴 덩어리
@@ -183,7 +183,7 @@ item.silverClump.name=은 덩어리
 item.obsidianClump.name=옵시디언 덩어리
 item.leadClump.name=납 덩어리
 
-//Shards
+# Shards
 item.ironShard.name=철 조각
 item.goldShard.name=금 조각
 item.osmiumShard.name=오스뮴 조각
@@ -193,7 +193,7 @@ item.silverShard.name=은 조각
 item.obsidianShard.name=옵시디언 조각
 item.leadShard.name=납 조각
 
-//Crystals
+# Crystals
 item.ironCrystal.name=철 수정
 item.goldCrystal.name=금 수정
 item.osmiumCrystal.name=오스뮴 수정
@@ -203,7 +203,7 @@ item.silverCrystal.name=은 수정
 item.obsidianCrystal.name=옵시디언 수정
 item.leadCrystal.name=납 수정
 
-//Dirty Dust
+# Dirty Dust
 item.dirtyIronDust.name=더러운 철 가루
 item.dirtyGoldDust.name=더러운 금 가루
 item.dirtyOsmiumDust.name=더러운 오스뮴 가루
@@ -213,7 +213,7 @@ item.dirtySilverDust.name=더러운 은 가루
 item.dirtyObsidianDust.name=더러운 옵시디언 가루
 item.dirtyLeadDust.name=더러운 납 가루
 
-//Ingots
+# Ingots
 item.obsidianIngot.name=옵시디언 주괴
 item.osmiumIngot.name=오스뮴 주괴
 item.bronzeIngot.name=청동 주괴
@@ -222,7 +222,7 @@ item.steelIngot.name=강철 주괴
 item.copperIngot.name=구리 주괴
 item.tinIngot.name=주석 주괴
 
-//Gasses
+# Gasses
 gas.hydrogen=수소
 gas.oxygen=산소
 gas.water=증류수
@@ -254,11 +254,11 @@ gas.cleanSilver=깨끗한 은 슬러리
 gas.cleanObsidian=깨끗한 옵시디언 슬러리
 gas.cleanLead=깨끗한 납 슬러리
 
-//BC Fuel Gases
+# BC Fuel Gases
 gas.fuel=증류 정제유
 gas.oil=증류 석유
 
-//Fluids
+# Fluids
 fluid.hydrogen=액화 수소
 fluid.oxygen=액화 산소
 fluid.chlorine=액화 염소
@@ -270,7 +270,7 @@ fluid.brine=소금물
 fluid.ethene=액화 에틸렌
 fluid.sodium=액화 나트륨
 
-//OreGas names
+# OreGas names
 oregas.iron=철 광석
 oregas.gold=금 광석
 oregas.osmium=오스뮴 광석
@@ -280,7 +280,7 @@ oregas.silver=은 광석
 oregas.obsidian=옵시디언 광석
 oregas.lead=납 광석
 
-//Update handler text
+# Update handler text
 update.consider=Consider updating to version
 update.newFeatures=New features
 update.visit=Visit
@@ -288,15 +288,15 @@ update.toDownload=다운로드 하러가기
 update.devBuild=개발버전이 빌드되었습니다
 update.outdated=Using outdated version on one or more modules
 
-//Key description text
+# Key description text
 key.mode=모드 스위치
 key.voice=소리
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
 
-//Gui text
+# Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
 gui.removeEnergyUpgrade=Remove energy upgrade
 gui.condensentrating=Condensentrating
@@ -436,10 +436,10 @@ gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Running
 gui.digitalMiner.inverse=Inverse mode
 
-//Recipe names
+# Recipe names
 recipe.mekanismShaped=Shaped
 
-//Item and block tooltip text
+# Item and block tooltip text
 tooltip.configurator.configurate=Configurate
 tooltip.configurator.empty=비어있음
 tooltip.configurator.rotate=Rotate
@@ -560,7 +560,7 @@ tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in t
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than 구리.
 
-//Redstone control
+# Redstone control
 control.disabled=비활성화
 control.high=높음
 control.low=낮음
@@ -568,12 +568,12 @@ control.disabled.desc=언제나 실행
 control.high.desc=신호가 있으면 실행
 control.low.desc=신호가 없는 실행
 
-//Container edit modes
+# Container edit modes
 fluidedit.both=양방향
 fluidedit.fill=가득
 fluidedit.empty=비어있음
 
-//Colors
+# Colors
 color.black=검은색
 color.darkBlue=짙은 파란색
 color.darkGreen=짙은 초록색
@@ -593,7 +593,7 @@ color.white=하양색
 color.brown=갈색
 color.brightPink=밝은 분홍
 
-//Dyes
+# Dyes
 dye.black=검은색
 dye.darkBlue=파랑색
 dye.brown=갈색
@@ -613,24 +613,24 @@ dye.pink=다홍색
 dye.yellow=노랑색
 dye.white=하양색
 
-//Creative tab
+# Creative tab
 itemGroup.tabMekanism=메카니즘[Mekanism]
 
-//NEI stuff
+# NEI stuff
 nei.chemicalInjectionChamber=C. 주입기
 
-//**********//
-//GENERATORS//
-//**********//
+#############
+# GENERATORS
+#############
 
-//Items
+# Items
 item.BioFuel.name=바이오연료
 item.SolarPanel.name=태양열 패널
 
-//Infuse types
+# Infuse types
 infuse.bio=바이오매스
 
-//Generators
+# Generators
 tile.Generator.HeatGenerator.name=지열 발전기
 tile.Generator.SolarGenerator.name=태양열 발전기
 tile.Generator.GasGenerator.name=가스 발전기
@@ -638,24 +638,23 @@ tile.Generator.BioGenerator.name=바이오연료 발전기
 tile.Generator.AdvancedSolarGenerator.name=고급 태양열 발전기
 tile.Generator.WindTurbine.name=풍차
 
-//Gui text
+# Gui text
 gui.heatGenerator.fuel=연료
 gui.solarGenerator.sun=태양
 gui.bioGenerator.bioFuel=바이오연료
 gui.electrolyticSeparator.dump=덤프
 
-//*****//
-//TOOLS//
-//*****//
+# TOOLS
+#########
 
-//Vanilla Paxels
+# Vanilla Paxels
 item.WoodPaxel.name=나무 팩셀
 item.StonePaxel.name=돌 팩셀
 item.IronPaxel.name=철 팩셀
 item.DiamondPaxel.name=다이아몬드 팩셀
 item.GoldPaxel.name=금 팩셀
 
-//Obsidian
+# Obsidian
 item.ObsidianHelmet.name=옵시디언 헬맷
 item.ObsidianChestplate.name=옵시디언 갑옷
 item.ObsidianLeggings.name=옵시디언 레깅스
@@ -667,7 +666,7 @@ item.ObsidianShovel.name=옵시디언 삽
 item.ObsidianHoe.name=옵시디언 괭이
 item.ObsidianSword.name=옵시디언 검
 
-//Lazuli
+# Lazuli
 item.LazuliHelmet.name=라피스 헬맷
 item.LazuliChestplate.name=라피스 갑옷
 item.LazuliLeggings.name=라피스 레깅스
@@ -679,7 +678,7 @@ item.LazuliShovel.name=라피스 삽
 item.LazuliHoe.name=라피스 괭이
 item.LazuliSword.name=라피스 검
 
-//Osmium
+# Osmium
 item.OsmiumHelmet.name=오스뮴 헬맷
 item.OsmiumChestplate.name=오스뮴 갑옷
 item.OsmiumLeggings.name=오스뮴 레깅스
@@ -691,7 +690,7 @@ item.OsmiumShovel.name=오스뮴 삽
 item.OsmiumHoe.name=오스뮴 괭이
 item.OsmiumSword.name=오스뮴 검
 
-//청동
+# 청동
 item.BronzeHelmet.name=청동 헬맷
 item.BronzeChestplate.name=청동 갑옷
 item.BronzeLeggings.name=청동 레깅스
@@ -703,7 +702,7 @@ item.BronzeShovel.name=청동 삽
 item.BronzeHoe.name=청동 괭이
 item.BronzeSword.name=청동 검
 
-//Glow
+# Glow
 item.GlowstoneHelmet.name=발광석 헬맷
 item.GlowstoneChestplate.name=발광석 갑옷
 item.GlowstoneLeggings.name=발광석 레깅스
@@ -715,7 +714,7 @@ item.GlowstoneShovel.name=발광석 삽
 item.GlowstoneHoe.name=발광석 괭이
 item.GlowstoneSword.name=발광석 검
 
-//Steel
+# Steel
 item.SteelHelmet.name=강철 헬맷
 item.SteelChestplate.name=강철 갑옷
 item.SteelLeggings.name=강철 레깅스
@@ -727,7 +726,7 @@ item.SteelShovel.name=강철 삽
 item.SteelHoe.name=강철 괭이
 item.SteelSword.name=강철 검
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.tools.general.tooltip=일반 설정
 mekanism.configgui.ctgy.tools.armor.tooltip=갑옷 툴팁 설정
 mekanism.configgui.ctgy.tools.tools.tooltip=도구 툴팁 설정

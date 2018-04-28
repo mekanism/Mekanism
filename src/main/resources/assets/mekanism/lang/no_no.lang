@@ -1,8 +1,8 @@
-//********//
-//MEKANISM//
-//********//
+###########
+# MEKANISM
+###########
 
-//Items
+# Items
 tile.ObsidianTNT.name=Obsidian TNT
 item.EnrichedAlloy.name=Beriket Legering
 item.ReinforcedAlloy.name=Forsterket Legering
@@ -46,25 +46,25 @@ item.Flamethrower.name=Flammekaster
 item.GaugeDropper.name=Gauge Dropper
 item.BioFuel.name=Biobrensel
 
-//Control Circuits
+# Control Circuits
 item.BasicControlCircuit.name=Enkel Kontroll Krets
 item.AdvancedControlCircuit.name=Avansert Kontroll Krets
 item.EliteControlCircuit.name=Elite Kontroll Krets
 item.UltimateControlCircuit.name=Ultimat Kontroll Krets
 
-//Gas Tank
+# Gas Tank
 tile.GasTank.GasTank.name=Gasstank
 
-//Cardboard Box
+# Cardboard Box
 tile.CardboardBox.name=Pappeske
 
-//Bounding Block
+# Bounding Block
 tile.BoundingBlock.name=Markerings Blokk
 
-//Salt
+# Salt
 tile.SaltBlock.name=Salt Blokk
 
-//Basic Block
+# Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmium Blokk
 tile.BasicBlock.BronzeBlock.name=Bronse Blokk
 tile.BasicBlock.RefinedObsidian.name=Raffinert Obsidian
@@ -82,7 +82,7 @@ tile.BasicBlock.TinBlock.name=Tin Blokk
 tile.BasicBlock.SolarEvaporationController.name=Sol Fordampnings Controller
 tile.BasicBlock.SolarEvaporationValve.name=Sol Fordampnings Ventil
 
-//Basic Block 2 (second ID iteration)
+# Basic Block 2 (second ID iteration)
 tile.BasicBlock2.SolarEvaporationBlock.name=Sol Fordampnings Blokk
 tile.BasicBlock2.InductionCasing.name=Induksjons Kasse
 tile.BasicBlock2.InductionPort.name=Induksjons Port
@@ -95,7 +95,7 @@ tile.BasicBlock2.InductionProviderAdvanced.name=Advansert Induksjons Provider
 tile.BasicBlock2.InductionProviderElite.name=Elite Induksjons Provider
 tile.BasicBlock2.InductionProviderUltimate.name=Ultimat Induksjons Provider
 
-//Machine Block
+# Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Berikings Kammer
 tile.MachineBlock.OsmiumCompressor.name=Osmium Kompressor
 tile.MachineBlock.Combiner.name=Kombinerer
@@ -113,7 +113,7 @@ tile.MachineBlock.Chargepad.name=Ladepad
 tile.MachineBlock.LogisticalSorter.name=Logistical Sorterer
 tile.MachineBlock.DigitalMiner.name=Digital Graver
 
-//Machine Block 2 (second ID iteration)
+# Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
 tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
 tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
@@ -133,11 +133,11 @@ tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
 tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
 
-//Machine Block 3 (third ID iteration)
+# Machine Block 3 (third ID iteration)
 tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
 tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 
-//Plastic
+# Plastic
 tile.PlasticBlock.name=Plast Blokk
 tile.SlickPlasticBlock.name=Slick Plastic Block
 tile.GlowPlasticBlock.name=Plast Gløde Blokk
@@ -146,7 +146,7 @@ tile.RoadPlasticBlock.name=Plast Vei
 
 tile.PlasticFence.name=Plast Barriere
 
-//Infuse types
+# Infuse types
 infuse.carbon=Karbon
 infuse.tin=Tin
 infuse.diamond=Diamant
@@ -155,12 +155,12 @@ infuse.fungi=Sopp
 infuse.obsidian=Obsidian
 infuse.bio=Biomasse
 
-//Ore Block
+# Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Malm
 tile.OreBlock.CopperOre.name=Kobber Malm
 tile.OreBlock.TinOre.name=Tin Malm
 
-//Transmitters
+# Transmitters
 item.MultipartTransmitter.PressurizedTube.name=Trykk rør
 item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Kabel
 item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Kabel
@@ -174,22 +174,22 @@ item.MultipartTransmitter.LogisticalTransporter.name=Logistikk Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiv Transporter
 item.MultipartTransmitter.DiversionTransporter.name=Avlednings Transporter
 
-//Glow Panel
+# Glow Panel
 item.GlowPanel.name=Gløde Panel
 
-//Energy Cubes
+# Energy Cubes
 tile.EnergyCube.Basic.name=Enkel Energi Kube
 tile.EnergyCube.Advanced.name=Advansert Energi Kube
 tile.EnergyCube.Elite.name=Elite Energi Kube
 tile.EnergyCube.Ultimate.name=Ultimat Energi Kube
 tile.EnergyCube.Creative.name=Kreativ Energi Kube
 
-//Factory Installers
+# Factory Installers
 item.basicFactoryInstaller.name=Enkel Fabrikk Installerer
 item.advancedFactoryInstaller.name=Advansert Fabrikk Installerer
 item.eliteFactoryInstaller.name=Elite Fabrikk Installerer
 
-//Dust
+# Dust
 item.ironDust.name=Jern Støv
 item.goldDust.name=Gull Støv
 item.osmiumDust.name=Osmium Støv
@@ -204,7 +204,7 @@ item.leadDust.name=Lead Støv
 item.sulfurDust.name=Svovel Støv
 item.lithiumDust.name=Lithium Støv
 
-//Clumps
+# Clumps
 item.ironClump.name=Jern Klump
 item.goldClump.name=Gull Klump
 item.osmiumClump.name=Osmium Klump
@@ -213,7 +213,7 @@ item.tinClump.name=Tin Klump
 item.silverClump.name=Sølv Klump
 item.leadClump.name=Lead Klump
 
-//Shards
+# Shards
 item.ironShard.name=Jern Shard
 item.goldShard.name=Gull Shard
 item.osmiumShard.name=Osmium Shard
@@ -222,7 +222,7 @@ item.tinShard.name=Tin Shard
 item.silverShard.name=Sølv Shard
 item.leadShard.name=Lead Shard
 
-//Crystals
+# Crystals
 item.ironCrystal.name=Jern Crystal
 item.goldCrystal.name=Gull Crystal
 item.osmiumCrystal.name=Osmium Crystal
@@ -231,7 +231,7 @@ item.tinCrystal.name=Tin Crystal
 item.silverCrystal.name=Sølv Crystal
 item.leadCrystal.name=Lead Crystal
 
-//Dirty Dust
+# Dirty Dust
 item.dirtyIronDust.name=Skittent Jern Støv
 item.dirtyGoldDust.name=Skittent Gull Støv
 item.dirtyOsmiumDust.name=Skittent Osmium Støv
@@ -240,7 +240,7 @@ item.dirtyTinDust.name=Skittent Tin Støv
 item.dirtySilverDust.name=Skittent Sølv Støv
 item.dirtyLeadDust.name=Skittent Lead Støv
 
-//Ingots
+# Ingots
 item.obsidianIngot.name=Obsidian Barre
 item.osmiumIngot.name=Osmium Barre
 item.bronzeIngot.name=Bronse Barre
@@ -249,7 +249,7 @@ item.steelIngot.name=Stål Barre
 item.copperIngot.name=Kobber Barre
 item.tinIngot.name=Tin Barre
 
-//Gasses
+# Gasses
 gas.hydrogen=Hydrogen
 gas.oxygen=Oksygen
 gas.water=Vann Vapor
@@ -285,11 +285,11 @@ gas.cleanSilver=Ren Sølv Slurry
 gas.cleanObsidian=Ren Obsidian Slurry
 gas.cleanLead=Ren Lead Slurry
 
-//BC Fuel Gases
+# BC Fuel Gases
 gas.fuel=Fordampet Brensel
 gas.oil=Fordampet Olje
 
-//Fluids
+# Fluids
 fluid.hydrogen=Flytende Hydrogen
 fluid.oxygen=Flytende Oksygen
 fluid.chlorine=Flytende Klor
@@ -306,7 +306,7 @@ fluid.deuterium=Flytende Deuterium
 fluid.tritium=Flytende Tritium
 fluid.fusionFuelDT=Flytende D-T Brensel
 
-//OreGas names
+# OreGas names
 oregas.iron=Jern Malm
 oregas.gold=Gull Malm
 oregas.osmium=Osmium Malm
@@ -316,14 +316,14 @@ oregas.silver=Sølv Malm
 oregas.obsidian=Obsidian Malm
 oregas.lead=Lead Malm
 
-//Transmission types
+# Transmission types
 transmission.Energy=Energi
 transmission.Fluids=Vesker
 transmission.Gases=Gasser
 transmission.Items=Ting
 transmission.Heat=Varme
 
-//Update handler text
+# Update handler text
 update.consider=Tenk på å oppdatere til version
 update.newFeatures=Nye funksjoner
 update.visit=Besøk
@@ -331,7 +331,7 @@ update.toDownload=til nedlasting
 update.devBuild=Du bruker en utvikler versjon
 update.outdated=Du bruker en utdatert versjon på en eller flere moduler
 
-//Upgrades
+# Upgrades
 upgrade.energy=Energi
 upgrade.energy.desc=Øker energi effektivitet !nog kapasitet på maskinen.
 upgrade.speed=Hastighet
@@ -339,27 +339,27 @@ upgrade.speed.desc=Øker hastighet på maskinen.
 upgrade.filter=Filter
 upgrade.filter.desc=Et filer som separerer !ntungtvann fra vanlig vann.
 
-//Key description text
+# Key description text
 key.mode=Endre modus
 key.voice=Stemme
 
-//Entities
+# Entities
 entity.Robit.name=Robit
 entity.BabySkeleton.name=Baby Skeleton
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.general=Mekanism Generelle Innstillinger
 mekanism.configgui.ctgy.machines=Maskin Innstillinger
 mekanism.configgui.ctgy.usage=Bruk Innstillinger
 mekanism.configgui.ctgy.client=Klient Innstillinger
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
 mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
 mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 
-//Gui text
+# Gui text
 gui.removeSpeedUpgrade=Fjern hastighet oppgradering
 gui.removeEnergyUpgrade=Fjern energi oppgradering
 gui.condensentrating=Condensentrating
@@ -552,10 +552,10 @@ gui.digitalMiner.requireReplace=Krev erstattning
 gui.digitalMiner.fuzzyMode=Fuzzy modus
 gui.digitalMiner.missingBlock=Manglende blokk
 
-//Recipe names
+# Recipe names
 recipe.mekanismShaped=Formet
 
-//Item and block tooltip text
+# Item and block tooltip text
 tooltip.configurator.configurate=Konfigurate
 tooltip.configurator.empty=Tom
 tooltip.configurator.rotate=Roter
@@ -691,7 +691,7 @@ tooltip.OsmiumOre=En sterk mineral som kan bli funnet !nved nesten hvilken som h
 tooltip.CopperOre=Et felles, ledende materiale som !nkan brukes i produksjon av !nkabler. Dens evne til å tåle !nhøy varme gjør den også viktig !nfor avanserte maskiner.
 tooltip.TinOre=En lett, men likevel solid, ledende !nmateriale som er funnet litt !nmindre enn Kobber.
 
-//Side data
+# Side data
 sideData.None=Ingen
 sideData.Input=Inngang
 sideData.Output=Utgang
@@ -701,7 +701,7 @@ sideData.Extra=Ekstra
 sideData.Infuse=Sette mot
 sideData.Fluid=Veske
 
-//Redstone control
+# Redstone control
 control.disabled=Deaktivert
 control.high=Høy
 control.low=Lav
@@ -711,12 +711,12 @@ control.high.desc=Aktiv med signal
 control.low.desc=Aktiv uten signal
 control.pulse.desc=Bare aktiv når mottatt første signal
 
-//Container edit modes
+# Container edit modes
 fluidedit.both=Begge
 fluidedit.fill=Fyll
 fluidedit.empty=Tom
 
-//Colors
+# Colors
 color.black=Svart
 color.darkBlue=Mørkeblå
 color.darkGreen=Mørkegrønn
@@ -736,7 +736,7 @@ color.white=Hvit
 color.brown=Brun
 color.brightPink=Lyserosa
 
-//Dyes
+# Dyes
 dye.black=Svart
 dye.darkBlue=Blå
 dye.brown=Brun
@@ -756,21 +756,21 @@ dye.pink=Magenta
 dye.yellow=Gul
 dye.white=Hvit
 
-//Creative tab
+# Creative tab
 itemGroup.tabMekanism=Mekanism
 
-//NEI stuff
+# NEI stuff
 nei.chemicalInjectionChamber=C. Injeksjons Kammer
 
-//**********//
-//GENERATORS//
-//**********//
+#############
+# GENERATORS
+#############
 
-//Items
+# Items
 item.SolarPanel.name=Solcellepanel
 item.Hohlraum.name=Hohlraum
 
-//Generators
+# Generators
 tile.Generator.HeatGenerator.name=Varme Generator
 tile.Generator.SolarGenerator.name=Solcelle Generator
 tile.Generator.GasGenerator.name=Brensel-Brennende Generator
@@ -786,7 +786,7 @@ tile.Reactor.ReactorInOutPort.name=Reaktor Port
 tile.ReactorGlass.ReactorGlass.name=Reaktor Glass
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Fokus Matrix
 
-//Gui text
+# Gui text
 gui.heatGenerator.fuel=Brensel
 gui.solarGenerator.sun=Sol
 gui.bioGenerator.bioFuel=Biobrensel
@@ -802,18 +802,18 @@ gui.maxCasing=Maks. Kasse Temp
 gui.passiveGeneration=Passiv Generering
 gui.steamProduction=Dampproduksjon
 
-//*****//
-//TOOLS//
-//*****//
+#########
+# TOOLS
+#########
 
-//Vanilla Paxels
+# Vanilla Paxels
 item.WoodPaxel.name=Tre Paxel
 item.StonePaxel.name=Stein Paxel
 item.IronPaxel.name=Jern Paxel
 item.DiamondPaxel.name=Diamant Paxel
 item.GoldPaxel.name=Gull Paxel
 
-//Obsidian
+# Obsidian
 item.ObsidianHelmet.name=Obsidian Hjelm
 item.ObsidianChestplate.name=Obsidian Brystplate
 item.ObsidianLeggings.name=Obsidian Benplater
@@ -825,7 +825,7 @@ item.ObsidianShovel.name=Obsidian Spade
 item.ObsidianHoe.name=Obsidian Ljå
 item.ObsidianSword.name=Obsidian Sverd
 
-//Lapis Lazuli
+# Lapis Lazuli
 item.LazuliHelmet.name=Lapis Lazuli Hjelm
 item.LazuliChestplate.name=Lapis Lazuli Brystplate
 item.LazuliLeggings.name=Lapis Lazuli Benplater
@@ -837,7 +837,7 @@ item.LazuliShovel.name=Lapis Lazuli Spade
 item.LazuliHoe.name=Lapis Lazuli Ljå
 item.LazuliSword.name=Lapis Lazuli Sverd
 
-//Osmium
+# Osmium
 item.OsmiumHelmet.name=Osmium Hjelm
 item.OsmiumChestplate.name=Osmiumbrystplate
 item.OsmiumLeggings.name=Osmium Benplater
@@ -849,7 +849,7 @@ item.OsmiumShovel.name=Osmium Spade
 item.OsmiumHoe.name=Osmium Ljå
 item.OsmiumSword.name=Osmium Sverd
 
-//Bronze
+# Bronze
 item.BronzeHelmet.name=Bronse Hjelm
 item.BronzeChestplate.name=Bronse Brystplate
 item.BronzeLeggings.name=Bronse Benplater
@@ -861,7 +861,7 @@ item.BronzeShovel.name=Bronse Spade
 item.BronzeHoe.name=Bronse Ljå
 item.BronzeSword.name=Bronse Sverd
 
-//Glow
+# Glow
 item.GlowstoneHelmet.name=Glødestein Hjelm
 item.GlowstoneChestplate.name=Glødestein Brystplate
 item.GlowstoneLeggings.name=Glødestein Benplater
@@ -873,7 +873,7 @@ item.GlowstoneShovel.name=Glødestein Spade
 item.GlowstoneHoe.name=Glødestein Ljå
 item.GlowstoneSword.name=Glødestein Sverd
 
-//Steel
+# Steel
 item.SteelHelmet.name=Stål Hjelm
 item.SteelChestplate.name=Stål Brystplate
 item.SteelLeggings.name=Stål Benplater
@@ -885,12 +885,12 @@ item.SteelShovel.name=Stål Spade
 item.SteelHoe.name=Stål Ljå
 item.SteelSword.name=Stål Sverd
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.tools.general=Generelt
 mekanism.configgui.ctgy.tools.armor=Rustnings Balanse
 mekanism.configgui.ctgy.tools.tools=Verktøy Balanse
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Innstillinger vedrørende MekanismTools' generell konfigurasjon.
 mekanism.configgui.ctgy.tools.armor.tooltip=Innstillinger vedrørende beskyttelses verdier og balanse for MekanismTools rustninger.
 mekanism.configgui.ctgy.tools.tools.tooltip=Innstillinger vedrørende effektivitet verdier og balanse for MekanismTools verktøy.

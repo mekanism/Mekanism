@@ -1,8 +1,8 @@
-//********//
-//MEKANISM//
-//********//
+###########
+# MEKANISM
+###########
 
-//Items
+# Items
 tile.ObsidianTNT.name=TNT de Obsidiana
 item.EnrichedAlloy.name=Liga Enriquecida
 item.ReinforcedAlloy.name=Liga Reforçada
@@ -50,34 +50,34 @@ item.GaugeDropper.name=Medidor Conta-Gotas
 item.BioFuel.name=Biocombustível
 item.CraftingFormula.name=Fórmula
 
-//Control Circuits
+# Control Circuits
 item.BasicControlCircuit.name=Circuito de Controle Básico
 item.AdvancedControlCircuit.name=Circuito de Controle Avançado
 item.EliteControlCircuit.name=Circuito de Controle Elite
 item.UltimateControlCircuit.name=Circuito de Controle Final
 
-//Gas Tank
+# Gas Tank
 tile.GasTankBasic.name=Tanque de Gás Básico
 tile.GasTankAdvanced.name=Tanque de Gás Avançado
 tile.GasTankElite.name=Tanque de Gás Elite
 tile.GasTankUltimate.name=Tanque de Gás Final
 
-//Fluid Tank (part of MachineBlock2, naming handled differently)
+# Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=Tanque Líquido Básico
 tile.FluidTankAdvanced.name=Tanque Líquido Avançado
 tile.FluidTankElite.name=Tanque Líquido Elite
 tile.FluidTankUltimate.name=Tanque Líquido Final
 
-//Cardboard Box
+# Cardboard Box
 tile.CardboardBox.name=Caixa de Papelão
 
-//Bounding Block
+# Bounding Block
 tile.BoundingBlock.name=Delimitador de Bloco
 
-//Salt
+# Salt
 tile.SaltBlock.name=Bloco de Sal
 
-//Basic Block
+# Basic Block
 tile.BasicBlock.OsmiumBlock.name=Bloco de Ósmio
 tile.BasicBlock.BronzeBlock.name=Bloco de Bronze
 tile.BasicBlock.RefinedObsidian.name=Obsidiana Refinada
@@ -98,7 +98,7 @@ tile.BasicBlock.TinBlock.name=Bloco de Estanho
 tile.BasicBlock.ThermalEvaporationController.name=Controlador de Evaporação Térmica
 tile.BasicBlock.ThermalEvaporationValve.name=Válvula de Evaporação Térmica
 
-//Basic Block 2 (second ID iteration)
+# Basic Block 2 (second ID iteration)
 tile.BasicBlock2.ThermalEvaporationBlock.name=Bloco de Evaporação Térmica
 tile.BasicBlock2.InductionCasing.name=Caixa de Indução
 tile.BasicBlock2.InductionPort.name=Porta de Indução
@@ -116,7 +116,7 @@ tile.BasicBlock2.BoilerCasing.name=Carcaça da Caldeira
 tile.BasicBlock2.BoilerValve.name=Válvula da Caldeira
 tile.BasicBlock2.SecurityDesk.name=Mesa de Segurança
 
-//Machine Block
+# Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Câmara de Enriquecimento
 tile.MachineBlock.OsmiumCompressor.name=Prensa de Ósmio
 tile.MachineBlock.Combiner.name=Combinador
@@ -132,7 +132,7 @@ tile.MachineBlock.Chargepad.name=Base de Recarga
 tile.MachineBlock.LogisticalSorter.name=Classificador Logístico
 tile.MachineBlock.DigitalMiner.name=Minerador Digital
 
-//Machine Block 2 (second ID iteration)
+# Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Condensentrador Rotativo
 tile.MachineBlock2.ChemicalOxidizer.name=Oxidador Químico
 tile.MachineBlock2.ChemicalInfuser.name=Infusor Químico
@@ -151,7 +151,7 @@ tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Amplificador de Laser
 tile.MachineBlock2.LaserTractorBeam.name=Feixe Trator do Laser
 
-//Machine Block 3 (third ID iteration)
+# Machine Block 3 (third ID iteration)
 tile.MachineBlock3.QuantumEntangloporter.name=Transportador Quântico
 tile.MachineBlock3.SolarNeutronActivator.name=Ativador Neutrônico Solar
 tile.MachineBlock3.Oredictionificator.name=Oredictionificador
@@ -159,7 +159,7 @@ tile.MachineBlock3.ResistiveHeater.name=Aquecedor Resistivo
 tile.MachineBlock3.FormulaicAssemblicator.name=Montador Formular
 tile.MachineBlock3.FuelwoodHeater.name=Aquecedor Sólido
 
-//Plastic
+# Plastic
 tile.PlasticBlock.name=Bloco de Plástico
 tile.SlickPlasticBlock.name=Bloco de Plástico Liso
 tile.GlowPlasticBlock.name=Bloco de Plástico Fluorescente
@@ -168,7 +168,7 @@ tile.RoadPlasticBlock.name=Estrada de Plástico
 
 tile.PlasticFence.name=Barreira de Plástico
 
-//Infuse types
+# Infuse types
 infuse.carbon=Carbono
 infuse.tin=Estanho
 infuse.diamond=Diamante
@@ -177,12 +177,12 @@ infuse.fungi=Fungos
 infuse.obsidian=Obsidiana
 infuse.bio=Biomassa
 
-//Ore Block
+# Ore Block
 tile.OreBlock.OsmiumOre.name=Minério de Ósmio
 tile.OreBlock.CopperOre.name=Minério de Cobre
 tile.OreBlock.TinOre.name=Minério de Estanho
 
-//Transmitters
+# Transmitters
 item.MultipartTransmitter.BasicPressurizedTube.name=Tubo Pressurizado Básico
 item.MultipartTransmitter.AdvancedPressurizedTube.name=Tubo Pressurizado Avançado
 item.MultipartTransmitter.ElitePressurizedTube.name=Tubo Pressurizado Elite
@@ -206,22 +206,22 @@ item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Conduíte Térmico
 item.MultipartTransmitter.EliteThermodynamicConductor.name=Conduíte Térmico Elite
 item.MultipartTransmitter.UltimateThermodynamicConductor.name=Conduíte Térmico Final
 
-//Glow Panel
+# Glow Panel
 item.GlowPanel.name=Painel Luminoso
 
-//Energy Cubes
+# Energy Cubes
 tile.EnergyCubeBasic.name=Cubo de Energia Básico
 tile.EnergyCubeAdvanced.name=Cubo de Energia Avançado
 tile.EnergyCubeElite.name=Cubo de Energia de Elite
 tile.EnergyCubeUltimate.name=Cubo de Energia Final
 tile.EnergyCubeCreative.name=Cubo de Energia Criativo
 
-//Factory Installers
+# Factory Installers
 item.basicFactoryInstaller.name=Instalador Fabril Básico
 item.advancedFactoryInstaller.name=Instalador Fabril Avançado
 item.eliteFactoryInstaller.name=Instalador Fabril Elite
 
-//Dust
+# Dust
 item.ironDust.name=Pó de Ferro
 item.goldDust.name=Pó de Ouro
 item.osmiumDust.name=Pó de Ósmio
@@ -236,7 +236,7 @@ item.leadDust.name=Pó de Chumbo
 item.sulfurDust.name=Pó de Enxofre
 item.lithiumDust.name=Pó de Lítio
 
-//Clumps
+# Clumps
 item.ironClump.name=Aglomerado de Ferro
 item.goldClump.name=Aglomerado de Ouro
 item.osmiumClump.name=Aglomerado de Ósmio
@@ -245,7 +245,7 @@ item.tinClump.name=Aglomerado de Estanho
 item.silverClump.name=Aglomerado de Prata
 item.leadClump.name=Aglomerado de Chumbo
 
-//Shards
+# Shards
 item.ironShard.name=Estilhaço de Ferro
 item.goldShard.name=Estilhaço de Ouro
 item.osmiumShard.name=Estilhaço de Ósmio
@@ -254,7 +254,7 @@ item.tinShard.name=Estilhaço de Estanho
 item.silverShard.name=Estilhaço de Prata
 item.leadShard.name=Estilhaço de Chumbo
 
-//Crystals
+# Crystals
 item.ironCrystal.name=Cristal de Ferro
 item.goldCrystal.name=Cristal de Ouro
 item.osmiumCrystal.name=Cristal de Ósmio
@@ -263,7 +263,7 @@ item.tinCrystal.name=Cristal de Estanho
 item.silverCrystal.name=Cristal de Prata
 item.leadCrystal.name=Cristal de Chumbo
 
-//Dirty Dust
+# Dirty Dust
 item.dirtyIronDust.name=Pó de Ferro Sujo
 item.dirtyGoldDust.name=Pó de Ouro Sujo
 item.dirtyOsmiumDust.name=Pó de Ósmio Sujo
@@ -272,7 +272,7 @@ item.dirtyTinDust.name=Pó de Estanho Sujo
 item.dirtySilverDust.name=Pó de Prata Sujo
 item.dirtyLeadDust.name=Pó de Chumbo Sujo
 
-//Ingots
+# Ingots
 item.obsidianIngot.name=Barra de Obsidiana
 item.osmiumIngot.name=Barra de Ósmio
 item.bronzeIngot.name=Barra de Bronze
@@ -281,7 +281,7 @@ item.steelIngot.name=Barra de Aço
 item.copperIngot.name=Barra de Cobre
 item.tinIngot.name=Barra de Estanho
 
-//Gasses
+# Gasses
 gas.hydrogen=Hidrogênio
 gas.oxygen=Oxigênio
 gas.water=Vapor de Água
@@ -317,11 +317,11 @@ gas.cleanSilver=Polpa de Prata Pura
 gas.cleanObsidian=Polpa de Obsidiana Pura
 gas.cleanLead=Polpa de Chumbo Pura
 
-//BC Fuel Gases
+# BC Fuel Gases
 gas.fuel=Combustível Vaporizado
 gas.oil=Óleo Vaporizado
 
-//Fluids
+# Fluids
 fluid.hydrogen=Hidrogênio Líquido
 fluid.oxygen=Oxigênio Líquido
 fluid.chlorine=Cloro Líquido
@@ -339,7 +339,7 @@ fluid.tritium=Trítio Líquido
 fluid.fusionFuelDT=Combustível D-T Líquido
 fluid.steam=Vapor Aquecido
 
-//OreGas names
+# OreGas names
 oregas.iron=Minério de Ferro
 oregas.gold=Minério de Ouro
 oregas.osmium=Minério de Ósmio
@@ -349,21 +349,21 @@ oregas.silver=Minério de Prata
 oregas.obsidian=Minério de Obsidiana
 oregas.lead=Minério de Chumbo
 
-//Tier names
+# Tier names
 tier.Basic=Básico
 tier.Advanced=Avançado
 tier.Elite=Elite
 tier.Ultimate=Final
 tier.Creative=Criativo
 
-//Transmission types
+# Transmission types
 transmission.Energy=Energia
 transmission.Fluids=Fluidos
 transmission.Gases=Gases
 transmission.Items=Itens
 transmission.Heat=Calor
 
-//Update handler text
+# Update handler text
 update.consider=Considere atualizar para a versão
 update.newFeatures=Novas funcionalidades
 update.visit=Visite
@@ -371,7 +371,7 @@ update.toDownload=para fazer o download
 update.devBuild=Usando a versão de desenvolvedor 
 update.outdated=Usando a versão desatualizada em um ou mais módulos
 
-//Upgrades
+# Upgrades
 upgrade.energy=Energia
 upgrade.energy.desc=Aumenta a eficiência e capacidade energética.
 upgrade.speed=Velocid.
@@ -383,30 +383,30 @@ upgrade.gas.desc=Aumenta a eficiência de uso de gás.
 upgrade.muffling=Silenc.
 upgrade.muffling.desc=Reduz ruídos causados por maquinários.
 
-//Key description text
+# Key description text
 key.mode=Alternar Modo de Ferramenta
 key.armorMode=Alternar Modo de Armadura
 key.voice=Voz
 
-//Entities
+# Entities
 entity.Robit.name=Robit
 entity.BabySkeleton.name=Esqueleto Bebê
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.general=Configurações Gerais do Mekanism
 mekanism.configgui.ctgy.machines=Configurações das Máquinas
 mekanism.configgui.ctgy.tier=Configurações dos Níveis
 mekanism.configgui.ctgy.usage=Configurações de Uso
 mekanism.configgui.ctgy.client=Configurações do Cliente
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Configurações gerais relativas a Mekanism e todos os seus módulos
 mekanism.configgui.ctgy.machines.tooltip=Configurações relativas a habilitar e desabilitar maquinário especifico
 mekanism.configgui.ctgy.tier.tooltip=Configurações relativas a níveis do Mekanism e seus valores correspondentes
 mekanism.configgui.ctgy.usage.tooltip=Configurações relativas a máquinas e seu consumo de energia
 mekanism.configgui.ctgy.client.tooltip=Configurações específicas do cliente sobre Mekanism e todos os seus módulos
 
-//Gui text
+# Gui text
 gui.condensentrating=Condensentrando
 gui.decondensentrating=Descondensentrando
 gui.power=Energia
@@ -582,7 +582,7 @@ gui.rotaryCondensentrator.toggleOperation=Alternar Operação
 gui.factory.secondaryEnergy=Energia Secundária
 gui.factory.autoSort=Autoclassificar 
 
-//Recipe types
+# Recipe types
 gui.factory.Smelting=||Fundição||
 gui.factory.Enriching=||Enriquecimento||
 gui.factory.Crushing=||Trituração||
@@ -671,16 +671,16 @@ gui.digitalMiner.requireReplace=Requer substituição
 gui.digitalMiner.fuzzyMode=Modo Impreciso
 gui.digitalMiner.missingBlock=Falta de Bloco
 
-//Recipe names
+# Recipe names
 recipe.mekanismShaped=Exata
 recipe.mekanismShapeless=Disforme
 
-//Security types
+# Security types
 security.public=Público
 security.private=Privado
 security.trusted=Confiável
 
-//Item and block tooltip text
+# Item and block tooltip text
 tooltip.configurator.configurate=Configurar
 tooltip.configurator.empty=Vazio
 tooltip.configurator.rotate=Girar
@@ -856,7 +856,7 @@ tooltip.OsmiumOre=Um mineral forte que pode ser achado em quase qualquer altura 
 tooltip.CopperOre=Um material condutivo e comum que pode ser usado na produção de fios. Sua habilidade de suportar altas temperaturas também o faz importante em maquinaria avançada.
 tooltip.TinOre=Um material condutivo leve, porém resistente, que é encontrado com um pouco menos de frequência que Cobre.
 
-//Side data
+# Side data
 sideData.None=Nada
 sideData.Input=Entrada
 sideData.Output=Saída
@@ -870,7 +870,7 @@ sideData.Empty=Esvaziar
 sideData.Charge=Carga
 sideData.Discharge=Descarga
 
-//Redstone control
+# Redstone control
 control.disabled=Desativado
 control.high=Alto
 control.low=Fraco
@@ -880,12 +880,12 @@ control.high.desc=Ativo com sinal
 control.low.desc=Ativo sem sinal
 control.pulse.desc=Apenas ativo mediante ao primeiro sinal
 
-//Container edit modes
+# Container edit modes
 fluidedit.both=Ambos
 fluidedit.fill=Encher
 fluidedit.empty=Vazio
 
-//Colors
+# Colors
 color.black=Preto
 color.darkBlue=Azul
 color.darkGreen=Verde
@@ -905,7 +905,7 @@ color.white=Branco
 color.brown=Marrom
 color.brightPink=Rosa
 
-//Dyes
+# Dyes
 dye.black=Preto
 dye.darkBlue=Azul
 dye.brown=Marrom
@@ -925,7 +925,7 @@ dye.pink=Magenta
 dye.yellow=Amarelo
 dye.white=Branco
 
-//Reactor Logic modes
+# Reactor Logic modes
 reactor.disabled=Desativado
 reactor.disabled.desc=Não irá emitir sinal de redstone
 reactor.ready=Pronto para ignição
@@ -935,22 +935,22 @@ reactor.capacity.desc=A capacidade de calor do núcleo do reator foi atendida
 reactor.depleted=Pouco Combustível
 reactor.depleted.desc=O reator tem combustível insuficiente para manter uma reação
 
-//Creative tab
+# Creative tab
 itemGroup.tabMekanism=Mekanism
 
-//NEI stuff
+# NEI stuff
 nei.chemicalInjectionChamber=Câm. Injeção Quím.
 
-//**********//
-//GENERATORS//
-//**********//
+#############
+# GENERATORS
+#############
 
-//Items
+# Items
 item.SolarPanel.name=Painel Solar
 item.Hohlraum.name=Hohlraum
 item.TurbineBlade.name=Hélice de Turbina
 
-//Generators
+# Generators
 tile.Generator.HeatGenerator.name=Gerador a Calor
 tile.Generator.SolarGenerator.name=Gerador a Energia Solar
 tile.Generator.GasGenerator.name=Gerador a Queima de Gás
@@ -973,7 +973,7 @@ tile.Reactor.ReactorLogicAdapter.name=Adaptador Lógica do Reator
 tile.ReactorGlass.ReactorGlass.name=Vidro do Reator
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matriz Focal do Laser
 
-//Gui text
+# Gui text
 gui.heatGenerator.fuel=Combustível
 gui.solarGenerator.sun=Sol
 gui.bioGenerator.bioFuel=Biocombustível
@@ -989,18 +989,18 @@ gui.maxCasing=Temp. Máx. da Carcaça
 gui.passiveGeneration=Geração Passiva
 gui.steamProduction=Produção de Vapor
 
-//*****//
-//TOOLS//
-//*****//
+#########
+# TOOLS
+#########
 
-//Vanilla Paxels
+# Vanilla Paxels
 item.WoodPaxel.name=Pacachado de Madeira
 item.StonePaxel.name=Pacachado de Pedra
 item.IronPaxel.name=Pacachado de Ferro
 item.DiamondPaxel.name=Pacachado de Diamante
 item.GoldPaxel.name=Pacachado de Ouro
 
-//Obsidian
+# Obsidian
 item.ObsidianHelmet.name=Elmo de Obsidiana
 item.ObsidianChestplate.name=Peitoral de Obsidiana
 item.ObsidianLeggings.name=Calças de Obsidiana
@@ -1012,7 +1012,7 @@ item.ObsidianShovel.name=Pá de Obsidiana
 item.ObsidianHoe.name=Enxada de Obsidiana
 item.ObsidianSword.name=Espada de Obsidiana
 
-//Lapis Lazuli
+# Lapis Lazuli
 item.LazuliHelmet.name=Elmo de Lápis-Lazúli
 item.LazuliChestplate.name=Peitoral de Lápis-Lazúli
 item.LazuliLeggings.name=Calças de Lápis-Lazúli
@@ -1024,7 +1024,7 @@ item.LazuliShovel.name=Pá de Lápis-Lazúli
 item.LazuliHoe.name=Enxada de Lápis-Lazúli
 item.LazuliSword.name=Espada de Lápis-Lazúli
 
-//Osmium
+# Osmium
 item.OsmiumHelmet.name=Elmo de Ósmio
 item.OsmiumChestplate.name=Peitoral de Ósmio
 item.OsmiumLeggings.name=Calças de Ósmio
@@ -1036,7 +1036,7 @@ item.OsmiumShovel.name=Pá de Ósmio
 item.OsmiumHoe.name=Enxada de Ósmio
 item.OsmiumSword.name=Espada de Ósmio
 
-//Bronze
+# Bronze
 item.BronzeHelmet.name=Elmo de Bronze
 item.BronzeChestplate.name=Peitoral de Bronze
 item.BronzeLeggings.name=Calças de Bronze
@@ -1048,7 +1048,7 @@ item.BronzeShovel.name=Pá de Bronze
 item.BronzeHoe.name=Enxada de Bronze
 item.BronzeSword.name=Espada de Bronze
 
-//Glow
+# Glow
 item.GlowstoneHelmet.name=Elmo de Pedra Luminosa
 item.GlowstoneChestplate.name=Peitoral de Pedra Luminosa
 item.GlowstoneLeggings.name=Calças de Pedra Luminosa
@@ -1060,7 +1060,7 @@ item.GlowstoneShovel.name=Pá de Pedra Luminosa
 item.GlowstoneHoe.name=Enxada de Pedra Luminosa
 item.GlowstoneSword.name=Espada de Pedra Luminosa
 
-//Steel
+# Steel
 item.SteelHelmet.name=Elmo de Aço
 item.SteelChestplate.name=Peitoral de Aço
 item.SteelLeggings.name=Calças de Aço
@@ -1072,12 +1072,12 @@ item.SteelShovel.name=Pá de Aço
 item.SteelHoe.name=Enxada de Aço
 item.SteelSword.name=Espada de Aço
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.tools.general=Geral
 mekanism.configgui.ctgy.tools.armor=Balanceamento de Armadura
 mekanism.configgui.ctgy.tools.tools=Balanceamento de Ferramentas
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Definições relativas a configuração geral do MekanismTools
 mekanism.configgui.ctgy.tools.armor.tooltip=Configurações relativas aos valores de proteção e balanço de armaduras do MekanismTools
 mekanism.configgui.ctgy.tools.tools.tooltip=Configurações relativas aos valores de eficiência e balanço de ferramentas do MekanismTools

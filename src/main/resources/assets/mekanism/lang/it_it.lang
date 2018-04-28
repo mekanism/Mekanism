@@ -1,8 +1,8 @@
-//********//
-//MEKANISM//
-//********//
+###########
+# MEKANISM
+###########
 
-//Items
+# Items
 tile.ObsidianTNT.name=Tritolo di ossidiana
 item.EnrichedAlloy.name=Lega arricchita
 item.ReinforcedAlloy.name=Lega rinforzata
@@ -47,25 +47,25 @@ item.Flamethrower.name=Lanciafiamme
 item.GaugeDropper.name=Contagocce tarato
 item.BioFuel.name=Biocarburante
 
-//Control Circuits
+# Control Circuits
 item.BasicControlCircuit.name=Circuito di controllo base
 item.AdvancedControlCircuit.name=Circuito di controllo avanzato
 item.EliteControlCircuit.name=Circuito di controllo élite
 item.UltimateControlCircuit.name=Circuito di controllo definitivo
 
-//Gas Tank
+# Gas Tank
 tile.GasTank.GasTank.name=Serbatoio per gas
 
-//Cardboard Box
+# Cardboard Box
 tile.CardboardBox.name=Scatola di cartone
 
-//Bounding Block
+# Bounding Block
 tile.BoundingBlock.name=Blocco delimitante
 
-//Salt
+# Salt
 tile.SaltBlock.name=Blocco di sale
 
-//Basic Block
+# Basic Block
 tile.BasicBlock.OsmiumBlock.name=Blocco di osmio
 tile.BasicBlock.BronzeBlock.name=Blocco di bronzo
 tile.BasicBlock.RefinedObsidian.name=Ossidiana raffinata
@@ -83,7 +83,7 @@ tile.BasicBlock.TinBlock.name=Blocco di stagno
 tile.BasicBlock.SolarEvaporationController.name=Regolatore per evaporazione solare
 tile.BasicBlock.SolarEvaporationValve.name=Valvola per evaporazione solare
 
-//Basic Block 2 (second ID iteration)
+# Basic Block 2 (second ID iteration)
 tile.BasicBlock2.SolarEvaporationBlock.name=Blocco per evaporazione solare
 tile.BasicBlock2.InductionCasing.name=Involucro di induzione
 tile.BasicBlock2.InductionPort.name=Porta di induzione
@@ -96,7 +96,7 @@ tile.BasicBlock2.InductionProviderAdvanced.name=Fornitore di induzione avanzato
 tile.BasicBlock2.InductionProviderElite.name=Fornitore di induzione élite
 tile.BasicBlock2.InductionProviderUltimate.name=Fornitore di induzione definitivo
 
-//Machine Block
+# Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Camera di arricchimento
 tile.MachineBlock.OsmiumCompressor.name=Compressore a osmio
 tile.MachineBlock.Combiner.name=Combinatore
@@ -113,7 +113,7 @@ tile.MachineBlock.LogisticalSorter.name=Smistatore logistico
 tile.MachineBlock.DigitalMiner.name=Scavatrice digitale
 tile.MachineBlock.DigitalMiner.short.name=Scavatrice digit.
 
-//Machine Block 2 (second ID iteration)
+# Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Condensatore rotativo
 tile.MachineBlock2.ChemicalOxidizer.name=Ossidatore chimico
 tile.MachineBlock2.ChemicalInfuser.name=Infusore chimico
@@ -133,11 +133,11 @@ tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Amplificatore per laser
 tile.MachineBlock2.LaserTractorBeam.name=Raggio traente laser
 
-//Machine Block 3 (third ID iteration)
+# Machine Block 3 (third ID iteration)
 tile.MachineBlock3.SolarNeutronActivator.name=Attivatore di neutroni solare
 tile.MachineBlock3.Oredictionificator.name=Oredictionificatore
 
-//Plastic
+# Plastic
 tile.PlasticBlock.name=Blocco di plastica
 tile.SlickPlasticBlock.name=Blocco di plastica scivoloso
 tile.GlowPlasticBlock.name=Blocco di plastica risplendente
@@ -146,7 +146,7 @@ tile.RoadPlasticBlock.name=Strada di plastica
 
 tile.PlasticFence.name=Staccionata di plastica
 
-//Infuse types
+# Infuse types
 infuse.carbon=Carbonio
 infuse.tin=Stagno
 infuse.diamond=Diamante
@@ -155,12 +155,12 @@ infuse.fungi=Funghi
 infuse.obsidian=Ossidiana
 infuse.bio=Biomassa
 
-//Ore Block
+# Ore Block
 tile.OreBlock.OsmiumOre.name=Osmio grezzo
 tile.OreBlock.CopperOre.name=Rame grezzo
 tile.OreBlock.TinOre.name=Stagno grezzo
 
-//Transmitters
+# Transmitters
 item.MultipartTransmitter.BasicPressurizedTube.name=Tubo pressurizzato base
 item.MultipartTransmitter.AdvancedPressurizedTube.name=Tubo pressurizzato avanzato
 item.MultipartTransmitter.ElitePressurizedTube.name=Tubo pressurizzato élite
@@ -180,22 +180,22 @@ item.MultipartTransmitter.UltimateLogisticalTransporter.name=Trasportatore logis
 item.MultipartTransmitter.RestrictiveTransporter.name=Trasportatore restrittivo
 item.MultipartTransmitter.DiversionTransporter.name=Trasportatore diversivo
 
-//Glow Panel
+# Glow Panel
 item.GlowPanel.name=Pannello risplendente
 
-//Energy Cubes
+# Energy Cubes
 tile.EnergyCubeBasic.name=Cubo di energia base
 tile.EnergyCubeAdvanced.name=Cubo di energia avanzato
 tile.EnergyCubeRlite.name=Cubo di energia élite
 tile.EnergyCubeUltimate.name=Cubo di energia definitivo
 tile.EnergyCubeCreative.name=Cubo di energia creativa
 
-//Factory Installers
+# Factory Installers
 item.basicFactoryInstaller.name=Installatore di fabbrica base
 item.advancedFactoryInstaller.name=Installatore di fabbrica avanzato
 item.eliteFactoryInstaller.name=Installatore di fabbrica élite
 
-//Dust
+# Dust
 item.ironDust.name=Polvere di ferro
 item.goldDust.name=Polvere d'oro
 item.osmiumDust.name=Polvere di osmio
@@ -210,7 +210,7 @@ item.leadDust.name=Polvere di piombo
 item.sulfurDust.name=Polvere di zolfo
 item.lithiumDust.name=Polvere di litio
 
-//Clumps
+# Clumps
 item.ironClump.name=Grumo di ferro
 item.goldClump.name=Grumo d'oro
 item.osmiumClump.name=Grumo di osmio
@@ -219,7 +219,7 @@ item.tinClump.name=Grumo di stagno
 item.silverClump.name=Grumo d'argento
 item.leadClump.name=Grumo di piombo
 
-//Shards
+# Shards
 item.ironShard.name=Frammento di ferro
 item.goldShard.name=Frammento d'oro
 item.osmiumShard.name=Frammento di osmio
@@ -228,7 +228,7 @@ item.tinShard.name=Frammento di stagno
 item.silverShard.name=Frammento d'argento
 item.leadShard.name=Frammento di piombo
 
-//Crystals
+# Crystals
 item.ironCrystal.name=Cristallo di ferro
 item.goldCrystal.name=Cristallo d'oro
 item.osmiumCrystal.name=Cristallo di osmio
@@ -237,7 +237,7 @@ item.tinCrystal.name=Cristallo di stagno
 item.silverCrystal.name=Cristallo d'argento
 item.leadCrystal.name=Cristallo di piombo
 
-//Dirty Dust
+# Dirty Dust
 item.dirtyIronDust.name=Polvere sporca di ferro
 item.dirtyGoldDust.name=Polvere sporca d'oro
 item.dirtyOsmiumDust.name=Polvere sporca di osmio
@@ -246,7 +246,7 @@ item.dirtyTinDust.name=Polvere sporca di stagno
 item.dirtySilverDust.name=Polvere sporca d'argento
 item.dirtyLeadDust.name=Polvere sporca di piombo
 
-//Ingots
+# Ingots
 item.obsidianIngot.name=Lingotto di ossidiana raffinata
 item.osmiumIngot.name=Lingotto di osmio
 item.bronzeIngot.name=Lingotto di bronzo
@@ -255,7 +255,7 @@ item.steelIngot.name=Lingotto d'acciaio
 item.copperIngot.name=Lingotto di rame
 item.tinIngot.name=Lingotto di stagno
 
-//Gasses
+# Gasses
 gas.hydrogen=Idrogeno
 gas.oxygen=Ossigeno
 gas.water=Vapore acqueo
@@ -291,11 +291,11 @@ gas.cleanSilver=Fanghiglia pulita d'argento
 gas.cleanObsidian=Fanghiglia pulita di ossidiana
 gas.cleanLead=Fanghiglia pulita di piombo
 
-//BC Fuel Gases
+# BC Fuel Gases
 gas.fuel=Carburante vaporizato
 gas.oil=Petrolio vaporizato
 
-//Fluids
+# Fluids
 fluid.hydrogen=Idrogeno liquido
 fluid.oxygen=Ossigeno liquido
 fluid.chlorine=Cloro liquido
@@ -312,7 +312,7 @@ fluid.deuterium=Deuterio liquido
 fluid.tritium=Trizio liquido
 fluid.fusionFuelDT=Carburante D-T liquido
 
-//OreGas names
+# OreGas names
 oregas.iron=Ferro grezzo
 oregas.gold=Oro grezzo
 oregas.osmium=Osmio grezzo
@@ -322,21 +322,21 @@ oregas.silver=Argento grezzo
 oregas.obsidian=Ossidiana grezza
 oregas.lead=Piombo grezzo
 
-//Tier names
+# Tier names
 tier.Basic=base
 tier.Advanced=avanzato
 tier.Elite=élite
 tier.Ultimate=definitivo
 tier.Creative=creativa
 
-//Transmission types
+# Transmission types
 transmission.Energy=Energia
 transmission.Fluids=Fluidi
 transmission.Gases=Gas
 transmission.Items=Oggetti
 transmission.Heat=Calore
 
-//Update handler text
+# Update handler text
 update.consider=Considera scaricare la versione
 update.newFeatures=Novità
 update.visit=Visita
@@ -344,7 +344,7 @@ update.toDownload=per scaricare
 update.devBuild=Stai usando una versione sotto sviluppo
 update.outdated=Stai usando una versione vecchia di uno o più moduli
 
-//Upgrades
+# Upgrades
 upgrade.energy=Energia
 upgrade.energy.desc=Aumenta l'efficienza elettrica!ne la capacità del macchinario.
 upgrade.speed=Velocità
@@ -354,30 +354,30 @@ upgrade.filter.desc=Un filtro che separa l'acqua !npesante da quella normale.
 upgrade.gas=Gas
 upgrade.gas.desc=Aumenta l'efficienza dei !nmacchinari che vanno a gas.
 
-//Key description text
+# Key description text
 key.mode=Scambia modalità oggetto
 key.armorMode=Scambia modalità armatura
 key.voice=Voce
 
-//Entities
+# Entities
 entity.Robit.name=Robit
 entity.BabySkeleton.name=Scheletro baby
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.general=Impostazioni generali di Mekanism
 mekanism.configgui.ctgy.machines=Impostazioni dei macchinario
 mekanism.configgui.ctgy.tier=Impostazioni dei livelli
 mekanism.configgui.ctgy.usage=Impostazioni dell'uso
 mekanism.configgui.ctgy.client=Impostazioni del client
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Impostazioni generali riguardo a Mekanism e ai suoi moduli
 mekanism.configgui.ctgy.machines.tooltip=Impostazioni riguardo all'attivare e disattivare di macchinari specifici
 mekanism.configgui.ctgy.tier.tooltip=Impostazioni riguardo ai livelli di Mekanism e i loro valori corrispondenti
 mekanism.configgui.ctgy.usage.tooltip=Impostazioni riguardo ai macchinari e al loro uso di energia
 mekanism.configgui.ctgy.client.tooltip=Impostazioni specifici del Client riguardo a Mekanism e ai suoi moduli
 
-//Gui text
+# Gui text
 gui.removeSpeedUpgrade=Rimuovi potenziamento velocità
 gui.removeEnergyUpgrade=Rimuovi potenziamento energia
 gui.condensentrating=Condensando
@@ -506,7 +506,7 @@ gui.rotaryCondensentrator.toggleOperation=Scambia operazione
 gui.factory.secondaryEnergy=Energia secondaria
 gui.factory.autoSort=Auto-smistamento
 
-//Recipe types
+# Recipe types
 gui.factory.Smelting=Fusione
 gui.factory.Enriching=Arricchimento
 gui.factory.Crushing=Frantumazione
@@ -594,10 +594,10 @@ gui.digitalMiner.requireReplace=Richiede rimpiazzamento
 gui.digitalMiner.fuzzyMode=Modalità vago
 gui.digitalMiner.missingBlock=Blocco mancante
 
-//Recipe names
+# Recipe names
 recipe.mekanismShaped=con forma
 
-//Item and block tooltip text
+# Item and block tooltip text
 tooltip.configurator.configurate=Configura
 tooltip.configurator.empty=Vuoto
 tooltip.configurator.rotate=Ruota
@@ -743,7 +743,7 @@ tooltip.OsmiumOre=Un forte minerale che può essere trovato !na quasi tutte le a
 tooltip.CopperOre=Un materiale comune e conduttivo che !npuò essere usato nella produzione di !ncavi. La sua abilità nel resistere a !nmolto calore lo rende essenziale !nin macchinari avanzati.
 tooltip.TinOre=Un materiale leggero e conduttivo, !nma anche robusto che è leggermente !npiù raro del rame.
 
-//Side data
+# Side data
 sideData.None=Niente
 sideData.Input=Entrata
 sideData.Output=Uscita
@@ -753,7 +753,7 @@ sideData.Extra=Extra
 sideData.Infuse=Infondi
 sideData.Fluid=Fluido
 
-//Redstone control
+# Redstone control
 control.disabled=Disabilitato
 control.high=Alto
 control.low=Basso
@@ -763,12 +763,12 @@ control.high.desc=Attivo con segnale
 control.low.desc=Attivo senza segnale
 control.pulse.desc=Soltanto attivo quando riceve il primo segnale
 
-//Container edit modes
+# Container edit modes
 fluidedit.both=Entrambe
 fluidedit.fill=Pieno
 fluidedit.empty=Vuoto
 
-//Colors
+# Colors
 color.black=Nero
 color.darkBlue=Blu scuro
 color.darkGreen=Verde scuro
@@ -788,7 +788,7 @@ color.white=Bianco
 color.brown=Marrone
 color.brightPink=Rosa acceso
 
-//Dyes
+# Dyes
 dye.black=Nero
 dye.darkBlue=Blu
 dye.brown=Marrone
@@ -808,7 +808,7 @@ dye.pink=Magenta
 dye.yellow=Giallo
 dye.white=Bianco
 
-//Reactor Logic modes
+# Reactor Logic modes
 reactor.disabled=Disabilitato
 reactor.disabled.desc=Non emetterà un segnale di pietrarossa
 reactor.ready=Pronto per accensione
@@ -818,21 +818,21 @@ reactor.capacity.desc=La capacità di calore del nocciolo del reattore è stata 
 reactor.depleted=Carburante insufficiente
 reactor.depleted.desc=Il reattore non ha carburante sufficiente per sostenere una reazione
 
-//Creative tab
+# Creative tab
 itemGroup.tabMekanism=Mekanism
 
-//NEI stuff -maybe will be added-
-//nei.chemicalInjectionChamber=C. Injection Chamber
+# NEI stuff -maybe will be added-
+# nei.chemicalInjectionChamber=C. Injection Chamber
 
-//**********//
-//GENERATORS//
-//**********//
+#############
+# GENERATORS
+#############
 
-//Items
+# Items
 item.SolarPanel.name=Pannello solare
 item.Hohlraum.name=Hohlraum
 
-//Generators
+# Generators
 tile.Generator.HeatGenerator.name=Generatore a calore
 tile.Generator.SolarGenerator.name=Generatore solare
 tile.Generator.GasGenerator.name=Generatore a gas
@@ -849,7 +849,7 @@ tile.Reactor.ReactorLogicAdapter.name=Adattatore logico del reattore
 tile.ReactorGlass.ReactorGlass.name=Vetro del reattore
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matrice concentrante per laser
 
-//Gui text
+# Gui text
 gui.heatGenerator.fuel=Carburante
 gui.solarGenerator.sun=Sole
 gui.bioGenerator.bioFuel=Biocarburante
@@ -865,18 +865,17 @@ gui.maxCasing=Max. temp del telaio
 gui.passiveGeneration=Generazione passiva
 gui.steamProduction=Produzione di vapore
 
-//*****//
-//TOOLS//
-//*****//
+# TOOLS
+#########
 
-//Vanilla Paxels
+# Vanilla Paxels
 item.WoodPaxel.name=Paxel di legno
 item.StonePaxel.name=Paxel di pietra
 item.IronPaxel.name=Paxel di ferro
 item.DiamondPaxel.name=Paxel di diamante
 item.GoldPaxel.name=Paxel d'oro
 
-//Obsidian
+# Obsidian
 item.ObsidianHelmet.name=Elmo di ossidiana
 item.ObsidianChestplate.name=Corazza di ossidiana
 item.ObsidianLeggings.name=Gambiera di ossidiana
@@ -888,7 +887,7 @@ item.ObsidianShovel.name=Pala di ossidiana
 item.ObsidianHoe.name=Zappa di ossidiana
 item.ObsidianSword.name=Spada di ossidiana
 
-//Lapis Lazuli
+# Lapis Lazuli
 item.LazuliHelmet.name=Elmo di lapislazuli
 item.LazuliChestplate.name=Corazza di lapislazuli
 item.LazuliLeggings.name=Gambiera di lapislazuli
@@ -900,7 +899,7 @@ item.LazuliShovel.name=Pala di lapislazuli
 item.LazuliHoe.name=Zappa di lapislazuli
 item.LazuliSword.name=Spada di lapislazuli
 
-//Osmium
+# Osmium
 item.OsmiumHelmet.name=Elmo di osmio
 item.OsmiumChestplate.name=Corazza di osmio
 item.OsmiumLeggings.name=Gambiera di osmio
@@ -912,7 +911,7 @@ item.OsmiumShovel.name=Pala di osmio
 item.OsmiumHoe.name=Zappa di osmio
 item.OsmiumSword.name=Spada di osmio
 
-//Bronze
+# Bronze
 item.BronzeHelmet.name=Elmo di bronzo
 item.BronzeChestplate.name=Corazza di bronzo
 item.BronzeLeggings.name=Gambiera di bronzo
@@ -924,7 +923,7 @@ item.BronzeShovel.name=Pala di bronzo
 item.BronzeHoe.name=Zappa di bronzo
 item.BronzeSword.name=Spada di bronzo
 
-//Glow
+# Glow
 item.GlowstoneHelmet.name=Elmo di luminite
 item.GlowstoneChestplate.name=Corazza di luminite
 item.GlowstoneLeggings.name=Gambiera di luminite
@@ -936,7 +935,7 @@ item.GlowstoneShovel.name=Pala di luminite
 item.GlowstoneHoe.name=Zappa di luminite
 item.GlowstoneSword.name=Spada di luminite
 
-//Steel
+# Steel
 item.SteelHelmet.name=Elmo d'acciaio
 item.SteelChestplate.name=Corazza d'acciaio
 item.SteelLeggings.name=Gambiera d'acciaio
@@ -948,12 +947,12 @@ item.SteelShovel.name=Pala d'acciaio
 item.SteelHoe.name=Zappa d'acciaio
 item.SteelSword.name=Spada d'acciaio
 
-//Config Gui
+# Config Gui
 mekanism.configgui.ctgy.tools.general=Generale
 mekanism.configgui.ctgy.tools.armor=Equilibrio delle armature
 mekanism.configgui.ctgy.tools.tools=Equilibrio degli attrezzi
 
-//Config Tooltips
+# Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Impostazioni riguardo alle configurazioni generali di MekanismTools
 mekanism.configgui.ctgy.tools.armor.tooltip=Impostazioni riguardo ai valori di protezione ed equilibrio delle armature di MekanismTools
 mekanism.configgui.ctgy.tools.tools.tooltip=Impostazioni riguardo ai valori di efficienza ed equilibrio degli attrezzi di MekanismTools
