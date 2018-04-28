@@ -636,7 +636,7 @@ tile.Generator.SolarGenerator.name=태양열 발전기
 tile.Generator.GasGenerator.name=가스 발전기
 tile.Generator.BioGenerator.name=바이오연료 발전기
 tile.Generator.AdvancedSolarGenerator.name=고급 태양열 발전기
-tile.Generator.WindTurbine.name=풍차
+tile.Generator.WindGenerator.name=풍차
 
 # Gui text
 gui.heatGenerator.fuel=연료

@@ -776,7 +776,7 @@ tile.Generator.SolarGenerator.name=Solcelle Generator
 tile.Generator.GasGenerator.name=Brensel-Brennende Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Avansert Solcelle Generator
-tile.Generator.WindTurbine.nameVind Turbin
+tile.Generator.WindGenerator.nameVind Turbin
 
 tile.Reactor.ReactorController.name=Reaktor Kontroller
 tile.Reactor.ReactorFrame.name=Reaktor Ramme

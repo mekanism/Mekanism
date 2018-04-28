@@ -778,7 +778,7 @@ tile.Generator.SolarGenerator.name=太陽能發電機
 tile.Generator.GasGenerator.name=燃氣發電機
 tile.Generator.BioGenerator.name=生物能發電機
 tile.Generator.AdvancedSolarGenerator.name=高級太陽能發電機
-tile.Generator.WindTurbine.name=風力渦輪機
+tile.Generator.WindGenerator.name=風力渦輪機
 
 tile.Reactor.ReactorController.name=反應控制器
 tile.Reactor.ReactorFrame.name=反應器框架
