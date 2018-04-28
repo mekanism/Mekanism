@@ -80,11 +80,11 @@ tile.BasicBlock.DynamicGlass.name=Vetro dinamico
 tile.BasicBlock.DynamicValve.name=Valvola dinamica
 tile.BasicBlock.CopperBlock.name=Blocco di rame
 tile.BasicBlock.TinBlock.name=Blocco di stagno
-tile.BasicBlock.SolarEvaporationController.name=Regolatore per evaporazione solare
-tile.BasicBlock.SolarEvaporationValve.name=Valvola per evaporazione solare
+tile.BasicBlock.ThermalEvaporationController.name=Regolatore per evaporazione termica
+tile.BasicBlock.ThermalEvaporationValve.name=Valvola per evaporazione termica
 
 # Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SolarEvaporationBlock.name=Blocco per evaporazione solare
+tile.BasicBlock2.ThermalEvaporationBlock.name=Blocco per evaporazione termica
 tile.BasicBlock2.InductionCasing.name=Involucro di induzione
 tile.BasicBlock2.InductionPort.name=Porta di induzione
 tile.BasicBlock2.InductionCellBasic.name=Cella di induzione base
@@ -107,11 +107,10 @@ tile.MachineBlock.PurificationChamber.name=Camera di purificazione
 tile.MachineBlock.EnergizedSmelter.name=Fonderia energizata
 tile.MachineBlock.Teleporter.name=Teleportatore
 tile.MachineBlock.ElectricPump.name=Pompa elettrica
-tile.MachineBlock.ElectricChest.name=Baule elettrico
+tile.MachineBlock.PersonalChest.name=Baule personale
 tile.MachineBlock.Chargepad.name=Piattaforma di ricarica
 tile.MachineBlock.LogisticalSorter.name=Smistatore logistico
 tile.MachineBlock.DigitalMiner.name=Scavatrice digitale
-tile.MachineBlock.DigitalMiner.short.name=Scavatrice digit.
 
 # Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Condensatore rotativo
@@ -186,14 +185,14 @@ item.GlowPanel.name=Pannello risplendente
 # Energy Cubes
 tile.EnergyCubeBasic.name=Cubo di energia base
 tile.EnergyCubeAdvanced.name=Cubo di energia avanzato
-tile.EnergyCubeRlite.name=Cubo di energia élite
+tile.EnergyCubeElite.name=Cubo di energia élite
 tile.EnergyCubeUltimate.name=Cubo di energia definitivo
 tile.EnergyCubeCreative.name=Cubo di energia creativa
 
 # Factory Installers
-item.basicFactoryInstaller.name=Installatore di fabbrica base
-item.advancedFactoryInstaller.name=Installatore di fabbrica avanzato
-item.eliteFactoryInstaller.name=Installatore di fabbrica élite
+item.basicTierInstaller.name=Installatore di livello base
+item.advancedTierInstaller.name=Installatore di livello avanzato
+item.eliteTierInstaller.name=Installatore di livello élite
 
 # Dust
 item.ironDust.name=Polvere di ferro
@@ -378,8 +377,7 @@ mekanism.configgui.ctgy.usage.tooltip=Impostazioni riguardo ai macchinari e al l
 mekanism.configgui.ctgy.client.tooltip=Impostazioni specifici del Client riguardo a Mekanism e ai suoi moduli
 
 # Gui text
-gui.removeSpeedUpgrade=Rimuovi potenziamento velocità
-gui.removeEnergyUpgrade=Rimuovi potenziamento energia
+gui.remove=Rimuovi
 gui.condensentrating=Condensando
 gui.decondensentrating=Decondensando
 gui.power=Corrente
@@ -838,7 +836,7 @@ tile.Generator.SolarGenerator.name=Generatore solare
 tile.Generator.GasGenerator.name=Generatore a gas
 tile.Generator.BioGenerator.name=Bio-generatore
 tile.Generator.AdvancedSolarGenerator.name=Generatore solare avanzato
-tile.Generator.WindTurbine.name=Turbina eolica
+tile.Generator.WindGenerator.name=Turbina eolica
 
 tile.Reactor.ReactorController.name=Regolatore del reattore
 tile.Reactor.ReactorFrame.name=Struttura del reattore
