@@ -183,28 +183,28 @@ tile.OreBlock.CopperOre.name=Ruda Mědi
 tile.OreBlock.TinOre.name=Ruda Cínu
 
 # Transmitters
-item.MultipartTransmitter.BasicPressurizedTube.name=Základní Trubka pod Tlakem
-item.MultipartTransmitter.AdvancedPressurizedTube.name=Pokročilá Trubka pod Tlakem
-item.MultipartTransmitter.ElitePressurizedTube.name=Elitní Trubka pod Tlakem
-item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimátní Trubka pod Tlakem
-item.MultipartTransmitter.BasicUniversalCable.name=Základní Univerzální Kabel
-item.MultipartTransmitter.AdvancedUniversalCable.name=Pokročilý Univerzální Kabel
-item.MultipartTransmitter.EliteUniversalCable.name=Elitní Univerzální Kabel
-item.MultipartTransmitter.UltimateUniversalCable.name=Ultimátní Univerzální Kabel
-item.MultipartTransmitter.BasicMechanicalPipe.name=Základní Mechanická Trubka
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Pokročilá Mechanická Trubka
-item.MultipartTransmitter.EliteMechanicalPipe.name=Elitní Mechanická Trubka
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimátní Mechanická Trubka
-item.MultipartTransmitter.BasicLogisticalTransporter.name=Základní Přepravní Transportér
-item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Pokročilý Přepravní Transportér
-item.MultipartTransmitter.EliteLogisticalTransporter.name=Elitní Přepravní Transportér
-item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimátní Přepravní Transportér
-item.MultipartTransmitter.RestrictiveTransporter.name=Omezovací Transportér
-item.MultipartTransmitter.DiversionTransporter.name=Diverzní Transportér
-item.MultipartTransmitter.BasicThermodynamicConductor.name=Základní Termodynamický Vodič
-item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Pokročilý Termodynamický Vodič
-item.MultipartTransmitter.EliteThermodynamicConductor.name=Elitní Termodynamický Vodič
-item.MultipartTransmitter.UltimateThermodynamicConductor.name=Ultimátní Termodynamický Vodič
+tile.Transmitter.BasicPressurizedTube.name=Základní Trubka pod Tlakem
+tile.Transmitter.AdvancedPressurizedTube.name=Pokročilá Trubka pod Tlakem
+tile.Transmitter.ElitePressurizedTube.name=Elitní Trubka pod Tlakem
+tile.Transmitter.UltimatePressurizedTube.name=Ultimátní Trubka pod Tlakem
+tile.Transmitter.BasicUniversalCable.name=Základní Univerzální Kabel
+tile.Transmitter.AdvancedUniversalCable.name=Pokročilý Univerzální Kabel
+tile.Transmitter.EliteUniversalCable.name=Elitní Univerzální Kabel
+tile.Transmitter.UltimateUniversalCable.name=Ultimátní Univerzální Kabel
+tile.Transmitter.BasicMechanicalPipe.name=Základní Mechanická Trubka
+tile.Transmitter.AdvancedMechanicalPipe.name=Pokročilá Mechanická Trubka
+tile.Transmitter.EliteMechanicalPipe.name=Elitní Mechanická Trubka
+tile.Transmitter.UltimateMechanicalPipe.name=Ultimátní Mechanická Trubka
+tile.Transmitter.BasicLogisticalTransporter.name=Základní Přepravní Transportér
+tile.Transmitter.AdvancedLogisticalTransporter.name=Pokročilý Přepravní Transportér
+tile.Transmitter.EliteLogisticalTransporter.name=Elitní Přepravní Transportér
+tile.Transmitter.UltimateLogisticalTransporter.name=Ultimátní Přepravní Transportér
+tile.Transmitter.RestrictiveTransporter.name=Omezovací Transportér
+tile.Transmitter.DiversionTransporter.name=Diverzní Transportér
+tile.Transmitter.BasicThermodynamicConductor.name=Základní Termodynamický Vodič
+tile.Transmitter.AdvancedThermodynamicConductor.name=Pokročilý Termodynamický Vodič
+tile.Transmitter.EliteThermodynamicConductor.name=Elitní Termodynamický Vodič
+tile.Transmitter.UltimateThermodynamicConductor.name=Ultimátní Termodynamický Vodič
 
 # Glow Panel
 item.GlowPanel.name=Svítící Panel
@@ -215,11 +215,6 @@ tile.EnergyCubeAdvanced.name=Pokročilá Energetická Kostka
 tile.EnergyCubeElite.name=Elitní Energetická Kostka
 tile.EnergyCubeUltimate.name=Ultimátní Energetická Kostka
 tile.EnergyCubeCreative.name=Kreativní Energetická Kostka
-
-# Factory Installers
-item.basicFactoryInstaller.name=Základní Instalátor Továrny
-item.advancedFactoryInstaller.name=Pokročilý Instalátor Továrny
-item.eliteFactoryInstaller.name=Elitní Instalátor Továrny
 
 # Dust
 item.ironDust.name=Železný Prášek
@@ -430,7 +425,6 @@ gui.empty=Prázdný
 gui.volume=Objem
 gui.start=Start
 gui.stop=Stop
-gui.config=Konfig
 gui.teleport=Teleport
 gui.eject=Vyhodit
 gui.input=Vstup

@@ -350,7 +350,7 @@ fluid.heavyWater=重水
 fluid.liquidlithium=液态锂
 fluid.liquiddeuterium=液态氘
 fluid.liquidtritium=液态氚
-fluid.liquidfusionFuelDT=液态D-T燃料
+fluid.liquidfusionfuel=液态D-T燃料
 fluid.steam=蒸汽
 
 # OreGas names
@@ -412,13 +412,11 @@ entity.BabySkeleton.name=骷髅射手宝宝
 mekanism.configgui.ctgy.general=通用机械常规设定
 mekanism.configgui.ctgy.machines=机器设定
 mekanism.configgui.ctgy.usage=能耗设定
-mekanism.configgui.ctgy.usage=使用设定
 mekanism.configgui.ctgy.client=客户端设定
 
 # Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=通用机械及其下所有模块的常规设定
 mekanism.configgui.ctgy.machines.tooltip=是否启用特定机器的设定
-mekanism.configgui.ctgy.usage.tooltip=通用机械物品等级以及属性设定
 mekanism.configgui.ctgy.usage.tooltip=有关机械以及能耗的设定
 mekanism.configgui.ctgy.client.tooltip=通用机械及其下所有模块在客户端的特殊设定
 
@@ -588,12 +586,10 @@ gui.upgrades.effect=效果
 
 gui.chemicalInfuser.short=化学灌注器
 gui.chemicalDissolutionChamber.short=化学溶解室
-gui.solarEvaporationController.short=盐化控制器
 
 gui.dictionary.noKey=无关键字.
 
 gui.configuration=配置
-gui.config=配置
 gui.configuration.side=侧面配置
 gui.configuration.transporter=传输配置
 gui.configuration.strictInput=精确输入
@@ -839,7 +835,6 @@ tooltip.PurificationChamber=一台能够将矿石加工成三块矿石疙瘩的�
 tooltip.EnergizedSmelter=一台简单的消耗通用机器能量的熔炉。
 tooltip.Teleporter=一台能够将玩家传送到其他传送器标定的各种位置的设备。
 tooltip.ElectricPump=一台能支持升级，过滤，自动弹射的高级泵
-tooltip.ElectricChest=便携的54格容量的箱子，具有耗能的密码锁功能。
 tooltip.Chargepad=通用充能板，能够为各种模组中的物品补充能量。
 tooltip.LogisticalSorter=一台以过滤为基础功能的高级整理机器，能够自动将指定物品弹射到依附的物品栏或物流管道中。
 tooltip.RotaryCondensentrator=一台能够将气体和其液态形式相互转化的机器。
@@ -853,7 +848,6 @@ tooltip.ChemicalOxidizer=一台能够将固态材料氧化成气态产物的机�
 tooltip.ChemicalInfuser=一台能够通过注入其它两种气体产生新的气体的机器。
 tooltip.SeismicVibrator=一台能够利用地震震动提供关于这个世界地质结构的机器。
 tooltip.PressurizedReactionChamber=一台能够处理固体，液体和气体混合物，并且能产生气态和固态产物的高级机器。
-tooltip.PortableTank=一个便利的携带式水槽，能够让你无论何处都能携带14桶液体。 同时可以当做水桶来用!
 tooltip.FluidicPlenisher=一台能够用液体填充沟壑，从而产生一片湖的机器。
 tooltip.Laser=一种高级的能量传输形式，利用平行光线实现能量的直线传输。
 tooltip.LaserAmplifier=一个能用于合并，转向和增幅激光的方块，易于控制。
@@ -871,7 +865,6 @@ tooltip.SolarGenerator=一台使用太阳能量发电的发电机。
 tooltip.GasGenerator=一台利用不同的气体供能的发电机。
 tooltip.BioGenerator=一台利用燃烧有机材料产生能量的发电机。
 tooltip.AdvancedSolarGenerator=一台直接吸收大部分太阳光产生能量的高级发电机。
-tooltip.WindTurbine=一台利用风能产生能量的发电机，高度越高效率越高。
 tooltip.TurbineRotor=放置在工业涡轮中的钢制转子
 tooltip.RotationalComplex=放置在涡轮转子上方的转化元件，能够将转子的动能转化。
 tooltip.ElectromagneticCoil=一块类似磁铁的装置，能使得动能在其中转化为电磁能，它必须放置在旋钮装置的上方并保证它们是相连的。

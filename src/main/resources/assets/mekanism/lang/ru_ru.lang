@@ -597,7 +597,6 @@ gui.thermalEvaporationController.short=Контроллер Т. испарите
 gui.dictionary.noKey=Нет ключа.
 
 gui.configuration=Конфигурация
-gui.config=Настройка
 gui.configuration.side=Настройка сторон
 gui.configuration.transporter=Настройка транспортера
 gui.configuration.strictInput=Строгий вход

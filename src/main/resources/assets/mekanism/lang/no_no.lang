@@ -35,7 +35,6 @@ item.BrineBucket.name=Saltlake Bøtte
 item.LithiumBucket.name=Lithium Bøtte
 item.FreeRunners.name=Frie løpere
 item.ArmoredJetpack.name=Armert Jetpack
-item.FilterCard.name=Filter Kort
 item.SeismicReader.name=Seismisk Avleser
 item.HDPEPellet.name=HDPE Pellets
 item.HDPERod.name=HDPE Stang
@@ -51,9 +50,6 @@ item.BasicControlCircuit.name=Enkel Kontroll Krets
 item.AdvancedControlCircuit.name=Avansert Kontroll Krets
 item.EliteControlCircuit.name=Elite Kontroll Krets
 item.UltimateControlCircuit.name=Ultimat Kontroll Krets
-
-# Gas Tank
-tile.GasTank.GasTank.name=Gasstank
 
 # Cardboard Box
 tile.CardboardBox.name=Pappeske
@@ -71,19 +67,14 @@ tile.BasicBlock.RefinedObsidian.name=Raffinert Obsidian
 tile.BasicBlock.CharcoalBlock.name=Trekull Blokk
 tile.BasicBlock.RefinedGlowstone.name=Raffinert glødestein
 tile.BasicBlock.SteelBlock.name=Stål Blokk
-tile.BasicBlock.Bin.name=Papirkurv
 tile.BasicBlock.TeleporterFrame.name=Teleportør Ramme
 tile.BasicBlock.SteelCasing.name=Stål Casing
 tile.BasicBlock.DynamicTank.name=Dynamisk Tank
-tile.BasicBlock.DynamicGlass.name=Dynamisk Glass
 tile.BasicBlock.DynamicValve.name=Dynamisk Ventil
 tile.BasicBlock.CopperBlock.name=Kobber Blokk
 tile.BasicBlock.TinBlock.name=Tin Blokk
-tile.BasicBlock.SolarEvaporationController.name=Sol Fordampnings Controller
-tile.BasicBlock.SolarEvaporationValve.name=Sol Fordampnings Ventil
 
 # Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SolarEvaporationBlock.name=Sol Fordampnings Blokk
 tile.BasicBlock2.InductionCasing.name=Induksjons Kasse
 tile.BasicBlock2.InductionPort.name=Induksjons Port
 tile.BasicBlock2.InductionCellBasic.name=Grunnleggende Induksjons Celle
@@ -100,15 +91,11 @@ tile.MachineBlock.EnrichmentChamber.name=Berikings Kammer
 tile.MachineBlock.OsmiumCompressor.name=Osmium Kompressor
 tile.MachineBlock.Combiner.name=Kombinerer
 tile.MachineBlock.Crusher.name=Knuser
-tile.MachineBlock.BasicFactory.name=Enkel Fabrikk
-tile.MachineBlock.AdvancedFactory.name=Advansert Fabrikk
-tile.MachineBlock.EliteFactory.name=Elite Fabrikk
 tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
 tile.MachineBlock.PurificationChamber.name=Purification Chamber
 tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
 tile.MachineBlock.Teleporter.name=Teleporter
 tile.MachineBlock.ElectricPump.name=Elektrisk Pumpe
-tile.MachineBlock.ElectricChest.name=Elektrisk Kiste
 tile.MachineBlock.Chargepad.name=Ladepad
 tile.MachineBlock.LogisticalSorter.name=Logistical Sorterer
 tile.MachineBlock.DigitalMiner.name=Digital Graver
@@ -127,7 +114,6 @@ tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.PortableTank.name=Portable Tank
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
@@ -161,33 +147,26 @@ tile.OreBlock.CopperOre.name=Kobber Malm
 tile.OreBlock.TinOre.name=Tin Malm
 
 # Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Trykk rør
-item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Kabel
-item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Kabel
-item.MultipartTransmitter.EliteUniversalCable.name=Elite Universal Kabel
-item.MultipartTransmitter.UltimateUniversalCable.name=Ultimat Universal Kabel
-item.MultipartTransmitter.BasicMechanicalPipe.name=Enkel Mekanisk Rør
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Advansert Mekanisk Rør
-item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mekanisk Rør
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimat Mekanisk Rør
-item.MultipartTransmitter.LogisticalTransporter.name=Logistikk Transporter
-item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiv Transporter
-item.MultipartTransmitter.DiversionTransporter.name=Avlednings Transporter
+tile.Transmitter.BasicUniversalCable.name=Basic Universal Kabel
+tile.Transmitter.AdvancedUniversalCable.name=Advanced Universal Kabel
+tile.Transmitter.EliteUniversalCable.name=Elite Universal Kabel
+tile.Transmitter.UltimateUniversalCable.name=Ultimat Universal Kabel
+tile.Transmitter.BasicMechanicalPipe.name=Enkel Mekanisk Rør
+tile.Transmitter.AdvancedMechanicalPipe.name=Advansert Mekanisk Rør
+tile.Transmitter.EliteMechanicalPipe.name=Elite Mekanisk Rør
+tile.Transmitter.UltimateMechanicalPipe.name=Ultimat Mekanisk Rør
+tile.Transmitter.RestrictiveTransporter.name=Restriktiv Transporter
+tile.Transmitter.DiversionTransporter.name=Avlednings Transporter
 
 # Glow Panel
 item.GlowPanel.name=Gløde Panel
 
 # Energy Cubes
-tile.EnergyCube.Basic.name=Enkel Energi Kube
-tile.EnergyCube.Advanced.name=Advansert Energi Kube
-tile.EnergyCube.Elite.name=Elite Energi Kube
-tile.EnergyCube.Ultimate.name=Ultimat Energi Kube
-tile.EnergyCube.Creative.name=Kreativ Energi Kube
-
-# Factory Installers
-item.basicFactoryInstaller.name=Enkel Fabrikk Installerer
-item.advancedFactoryInstaller.name=Advansert Fabrikk Installerer
-item.eliteFactoryInstaller.name=Elite Fabrikk Installerer
+tile.EnergyCubeBasic.name=Enkel Energi Kube
+tile.EnergyCubeAdvanced.name=Advansert Energi Kube
+tile.EnergyCubeElite.name=Elite Energi Kube
+tile.EnergyCubeUltimate.name=Ultimat Energi Kube
+tile.EnergyCubeCreative.name=Kreativ Energi Kube
 
 # Dust
 item.ironDust.name=Jern Støv
@@ -360,8 +339,6 @@ mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their ene
 mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 
 # Gui text
-gui.removeSpeedUpgrade=Fjern hastighet oppgradering
-gui.removeEnergyUpgrade=Fjern energi oppgradering
 gui.condensentrating=Condensentrating
 gui.decondensentrating=Decondensentrating
 gui.power=Kraft
@@ -451,12 +428,10 @@ gui.upgrades.effect=Effekt
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Oppløsnings Kammer
-gui.solarEvaporationController.short=Sol E. Kontroller
 
 gui.dictionary.noKey=Ingen nøkkel.
 
 gui.configuration=Konfigurasjon
-gui.config=Konfig
 gui.configuration.side=Side Konfig
 gui.configuration.transporter=Transportør Konfig
 gui.configuration.strictInput=Streng Input
@@ -464,13 +439,6 @@ gui.configuration.strictInput=Streng Input
 gui.rotaryCondensentrator.toggleOperation=Bytt operasjon
 
 gui.factory.secondaryEnergy=Sekundær energi
-gui.factory.smelting=Smelting
-gui.factory.enriching=Beriking
-gui.factory.crushing=Knusing
-gui.factory.compressing=Komprimering
-gui.factory.combining=Combinering
-gui.factory.purifying=Purifisering
-gui.factory.injecting=Injisering
 gui.factory.autoSort=Auto-sorter
 
 gui.seismicReader.short=S. Avleser
@@ -526,8 +494,6 @@ gui.logisticalSorter.default=Standard
 gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Round-robin
 
-gui.electricChest.editPassword=Endre Passord
-
 gui.teleporter.notReady=Ikke klar
 gui.teleporter.ready=Klar
 gui.teleporter.noFrame=Ingen ramme
@@ -564,7 +530,6 @@ tooltip.configurator.pumpReset=Resett Elektrisk Pumpe kalkulering
 tooltip.configurator.toggleDiverter=Avleder modus endret til
 tooltip.configurator.toggleMode=%s oppførsel endret til
 tooltip.configurator.viewMode=Nåværende %s oppførsel
-tooltip.configurator.unauth=Denne kisten er låst
 tooltip.configurator.noLink=Ingen forbindelse
 tooltip.configurator.linkMsg=Bundet til
 tooltip.configurator.dim=dimensjon
@@ -624,13 +589,6 @@ tooltip.disassembler.fast=rask
 tooltip.disassembler.vein=åre
 tooltip.disassembler.off=av
 
-tooltip.filterCard.got=Hentet filter data fra %s
-tooltip.filterCard.set=Injiserte filter data av typen %s
-tooltip.filterCard.unequal=Ulik filter data formater
-tooltip.filterCard.logisticalSorter=Logistical Sorterer
-tooltip.filterCard.digitalMiner=Digital Graver
-tooltip.filterCard.oredictionificator=Oredictionificator
-
 tooltip.balloon=Ballong
 
 tooltip.jetpack.regular=Vanlig
@@ -645,15 +603,11 @@ tooltip.OsmiumCompressor=En rimelig avansert maskin brukt til å komprimere !nos
 tooltip.Combiner=En maskin bruk til å combinere støv og cobblestone !for å lage tilsvarnde malm.
 tooltip.Crusher=En maskin bruk til å knuse barrer til støv, !nog utføre mange andre operasjoner.
 tooltip.DigitalMiner=En meget avansert, filer-basert, auto-graver !nsom kan grave hvilken som helst blokk du ber den om !ninnenfor en 32 blokkers (maks) radius.
-tooltip.BasicFactory=Den første i linjen av Fabrikker, !nsom kan bli brukt til å prossessere mange !nmachine operasjoner samtidig.
-tooltip.AdvancedFactory=Den mellomste i linjen av Fabrikker, !nsom kan bli brukt til å prossessere mange !nmachine operasjoner samtidig.
-tooltip.EliteFactory=Den siste i linjen av Fabrikker, !nsom kan bli brukt til å prossessere mange !nmachine operasjoner samtidig.
 tooltip.MetallurgicInfuser=En maskin brukt til å sette materialer !nmot (generellt) metaller for å lage metall legeringer !nog andre forbindelser.
 tooltip.PurificationChamber=En avansert maskin i stand til å prosessere en !nmalm til tree klumper, fungerer som den første !nsteget i 300% malm prosessering.
 tooltip.EnergizedSmelter=En enkel maskin som fungerer som en Mekanism-basert !novn som kjører på energi.
 tooltip.Teleporter=En maskin som er i stand til å teleportere spillere til forskjellige !nsteder definert av en annen teleportør.
 tooltip.ElectricPump=En avansert pumpe som er i stand til å pumpe !nopp en hel lava sjø.
-tooltip.ElectricChest=En mobil, 54-slots kiste som bruker energi til å låse !seg selv fra andre spillere ved hjelp av passordbeskyttelse.
 tooltip.Chargepad=En universal ladepad som kan lade !nalle energi baserte ting fra alle modder.
 tooltip.LogisticalSorter=En filter-basert, avansert sorterings maskin som !kan auto-utløse spesifiserte ting ut av seg og inn i !ntilstøtende inventarer and Logistical Transporters.
 tooltip.RotaryCondensentrator=En maskin i stand til å convertere gasser til !nderes flytende form og omvendt.
@@ -667,7 +621,6 @@ tooltip.ChemicalOxidizer=En maskin i stand til å oxidere !solide materialer til
 tooltip.ChemicalInfuser=En maskin som produserer en ny !ngass ved å infusere to andre gasser.
 tooltip.SeismicVibrator=En maskin som bruker seismiske vibrasjoner til å !ngi informasjon om ulike lag !nav verden.
 tooltip.PressurizedReactionChamber=En avansert maskin som prosseserer en !nsolid, flytende og gass blanding og !nlager både en gass og et solid produkt.
-tooltip.PortableTank=En hendig, mobil tank som lar deg !nbære 14 bøtter veske hvor du !vil. Også dobbler som en bøtte!
 tooltip.FluidicPlenisher=En maskin som lar deg lage hele !nsjøer ved å fylle raviner med vesker.
 tooltip.Laser=En avansert form for linær energi !noverføring som bruker en ekstremt !nkollimert lysstråle.
 tooltip.LaserAmplifier=En blokk som kan bli brukt til å slå sammen, !nomdirigere og forsterke laser stråler,!nmed kontroll over når den skal avfyre.
@@ -679,7 +632,6 @@ tooltip.SolarGenerator=En generator som utnytter energi !nfra solen til å produ
 tooltip.GasGenerator=En generator som utnytter molekylære !nvarierende gasser å produsere energi.
 tooltip.BioGenerator=En generator som produserer energi !nved å brenne organisk materiale.
 tooltip.AdvancedSolarGenerator=En avansert generator som direkte absorberer solens stråler med lite tap !nfor produsere energi.
-tooltip.WindTurbine=En generator som bruker styrken fra vinden !ntil å produsere energi, med større effektivitet !npå høyere nivåer.
 tooltip.ReactorGlass=Forsterket glass som kan anvendes !ni fusjonsreaktor multiblokken.
 tooltip.ReactorLaserFocusMatrix=Et panel av Reaktor Glass som er !ni stand til å absorbere optisk energi, og !ndermed varme opp fusjonsreaktoren.
 tooltip.ReactorController=Den kontrollerende blokken for hele !nfusjonsreaktor strukturen.
@@ -776,12 +728,11 @@ tile.Generator.SolarGenerator.name=Solcelle Generator
 tile.Generator.GasGenerator.name=Brensel-Brennende Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Avansert Solcelle Generator
-tile.Generator.WindGenerator.nameVind Turbin
+tile.Generator.WindGenerator.name=Vind Turbin
 
 tile.Reactor.ReactorController.name=Reaktor Kontroller
 tile.Reactor.ReactorFrame.name=Reaktor Ramme
 tile.Reactor.ReactorNeutronCapturePlate.name=Nøytron Fange Plate
-tile.Reactor.ReactorInOutPort.name=Reaktor Port
 
 tile.ReactorGlass.ReactorGlass.name=Reaktor Glass
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Fokus Matrix

@@ -38,7 +38,6 @@ item.LithiumBucket.name=Lithiumsspand
 item.HeavyWaterBucket.name=Tungtvandsspand
 item.FreeRunners.name=Fritløbere
 item.ArmoredJetpack.name=Panseret Jetpack
-item.FilterCard.name=Filterkort
 item.SeismicReader.name=Seismisk Aflæser
 item.HDPEPellet.name=HDPE-pellet
 item.HDPERod.name=HDPE-stav
@@ -127,7 +126,6 @@ tile.MachineBlock.PurificationChamber.name=Rensningskammer
 tile.MachineBlock.EnergizedSmelter.name=Energibaseret Smelteværk
 tile.MachineBlock.Teleporter.name=Teleporter
 tile.MachineBlock.ElectricPump.name=Elektrisk Pumpe
-tile.MachineBlock.ElectricChest.name=Elektrisk Kiste
 tile.MachineBlock.Chargepad.name=Chargepad
 tile.MachineBlock.LogisticalSorter.name=Logistisk Sorterer
 tile.MachineBlock.DigitalMiner.name=Digital Miner
@@ -182,28 +180,28 @@ tile.OreBlock.CopperOre.name=Kobbermalm
 tile.OreBlock.TinOre.name=Tinmalm
 
 # Transmitters
-item.MultipartTransmitter.BasicPressurizedTube.name=Basal Tryk-tube
-item.MultipartTransmitter.AdvancedPressurizedTube.name=Avanceret Tryk-tube
-item.MultipartTransmitter.ElitePressurizedTube.name=Elite Tryk-tube
-item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimativ Tryk-tube
-item.MultipartTransmitter.BasicUniversalCable.name=Basalt Universalkabel
-item.MultipartTransmitter.AdvancedUniversalCable.name=Avanceret Universalkabel
-item.MultipartTransmitter.EliteUniversalCable.name=Elite Universalkabel
-item.MultipartTransmitter.UltimateUniversalCable.name=Ultimativt Universalkabel
-item.MultipartTransmitter.BasicMechanicalPipe.name=Basalt Mekanisk Rør
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Avanceret Mekanisk Rør
-item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mekanisk Rør
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimativt Mekanisk Rør
-item.MultipartTransmitter.BasicLogisticalTransporter.name=Basal Logistisk Transportør
-item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Avanceret Logistisk Transportør
-item.MultipartTransmitter.EliteLogisticalTransporter.name=Elite Logistisk Transportør
-item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimativ Logistisk Transportør
-item.MultipartTransmitter.RestrictiveTransporter.name=Begrænsende Transporter
-item.MultipartTransmitter.DiversionTransporter.name=Afledningstransporter
-item.MultipartTransmitter.BasicThermodynamicConductor.name=Basal Termodynamisk Leder
-item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Avanceret Termodynamisk Leder
-item.MultipartTransmitter.EliteThermodynamicConductor.name=Elite Termodynamisk Leder
-item.MultipartTransmitter.UltimateThermodynamicConductor.name=Ultimativ Thermodynamisk Leder
+tile.Transmitter.BasicPressurizedTube.name=Basal Tryk-tube
+tile.Transmitter.AdvancedPressurizedTube.name=Avanceret Tryk-tube
+tile.Transmitter.ElitePressurizedTube.name=Elite Tryk-tube
+tile.Transmitter.UltimatePressurizedTube.name=Ultimativ Tryk-tube
+tile.Transmitter.BasicUniversalCable.name=Basalt Universalkabel
+tile.Transmitter.AdvancedUniversalCable.name=Avanceret Universalkabel
+tile.Transmitter.EliteUniversalCable.name=Elite Universalkabel
+tile.Transmitter.UltimateUniversalCable.name=Ultimativt Universalkabel
+tile.Transmitter.BasicMechanicalPipe.name=Basalt Mekanisk Rør
+tile.Transmitter.AdvancedMechanicalPipe.name=Avanceret Mekanisk Rør
+tile.Transmitter.EliteMechanicalPipe.name=Elite Mekanisk Rør
+tile.Transmitter.UltimateMechanicalPipe.name=Ultimativt Mekanisk Rør
+tile.Transmitter.BasicLogisticalTransporter.name=Basal Logistisk Transportør
+tile.Transmitter.AdvancedLogisticalTransporter.name=Avanceret Logistisk Transportør
+tile.Transmitter.EliteLogisticalTransporter.name=Elite Logistisk Transportør
+tile.Transmitter.UltimateLogisticalTransporter.name=Ultimativ Logistisk Transportør
+tile.Transmitter.RestrictiveTransporter.name=Begrænsende Transporter
+tile.Transmitter.DiversionTransporter.name=Afledningstransporter
+tile.Transmitter.BasicThermodynamicConductor.name=Basal Termodynamisk Leder
+tile.Transmitter.AdvancedThermodynamicConductor.name=Avanceret Termodynamisk Leder
+tile.Transmitter.EliteThermodynamicConductor.name=Elite Termodynamisk Leder
+tile.Transmitter.UltimateThermodynamicConductor.name=Ultimativ Thermodynamisk Leder
 
 # Glow Panel
 item.GlowPanel.name=Glødepanel
@@ -214,11 +212,6 @@ tile.EnergyCubeAdvanced.name=Avanceret Energikube
 tile.EnergyCubeElite.name=Elite Energikube
 tile.EnergyCubeUltimate.name=Ultimativ Energikube
 tile.EnergyCubeCreative.name=Kreativ Energikube
-
-# Factory Installers
-item.basicFactoryInstaller.name=Basal Fabrikinstallerer
-item.advancedFactoryInstaller.name=Avanceret Fabrikinstallerer
-item.eliteFactoryInstaller.name=Elite Fabrikinstallerer
 
 # Dust
 item.ironDust.name=Jernstøv
@@ -406,8 +399,6 @@ mekanism.configgui.ctgy.usage.tooltip=Indstillinger vedr. machinery og deres ene
 mekanism.configgui.ctgy.client.tooltip=Klientspecifikke indstillinger vedr. Mekanism og alle dets moduler
 
 # Gui text
-gui.removeSpeedUpgrade=Fjern hastighedsopgradering
-gui.removeEnergyUpgrade=Fjern energiopgradering
 gui.condensentrating=Condensentrating
 gui.decondensentrating=Decondensentrating
 gui.power=Strøm
@@ -562,12 +553,10 @@ gui.upgrades.effect=Effekt
 
 gui.chemicalInfuser.short=K. Infuser
 gui.chemicalDissolutionChamber.short=K. Opløsningskammer
-gui.solarEvaporationController.short=Sol E. Kontrollør
 
 gui.dictionary.noKey=Ingen nøgle.
 
 gui.configuration=Konfiguration
-gui.config=Konfig
 gui.configuration.side=Sidekonfig
 gui.configuration.transporter=Transporter-konfig
 gui.configuration.strictInput=Striks Input
@@ -794,15 +783,11 @@ tooltip.OsmiumCompressor=En nogenlunde avanceret maskine brugt til at komprimere
 tooltip.Combiner=En maskine brugt til at kombinere støv og brosten for at forme deres malmmodparter.
 tooltip.Crusher=En maskine brugt til at knuse barrer om til deres støvmodparter, så vel som at udføre mange andre operationer.
 tooltip.DigitalMiner=En højtavanceret, filterbaseret, auto-miner der kan mine hvilken som helst blok du beder den om inden for en 32-bloks(maks)radius.
-tooltip.BasicFactory=Det laveste tier i linjen af Fabrikker, der kan bruges til at processere forskellige maskinoperationer ad gangen.
-tooltip.AdvancedFactory=Det mellemste tier i linjen af Fabrikker, der kan bruges til at processere forskellige maskinoperationer ad gangen.
-tooltip.EliteFactory=The højeste tier i linjen af Fabrikker, der kan bruges til at processere forskellige maskinoperationer ad gangen.
 tooltip.MetallurgicInfuser=En maskine brugt til at infuse adskillige materialer om til (generelt) metaller til at lave legeringer og andre sammensætninger.
 tooltip.PurificationChamber=En avanceret maskine i stand til at processere malm om til the klumper: Bruges som det indledende fase i 300%-malmforarbejdning.
 tooltip.EnergizedSmelter=En simpel maskine der bruges som en Mekanism-baseret ovn, der kører på energy.
 tooltip.Teleporter=En maskine i stand til at teleportere spillere til forskellige steder defineret af en anden teleporter.
 tooltip.ElectricPump=En avanceret pumpe i stand til at pumpe en hele lavasø op.
-tooltip.ElectricChest=En mobil kiste, med 54 pladser, der bruger energi til at låse sig selv fra andre vha. adgangskodebeskyttelse.
 tooltip.Chargepad=En universal chargepad der kan lade enhver energibaseret ting fra enhver mod.
 tooltip.LogisticalSorter=En filterbaseret, avanceret sorteringsmaskine, der automatisk kan ustøde specifikke ting ud fra og ind i inventarer og Logistiske Transporters ved siden af.
 tooltip.RotaryCondensentrator=En maskine i stand til at konvertere gasser om til deres flydende form og vice versa.
@@ -816,7 +801,6 @@ tooltip.ChemicalOxidizer=En maskine i stand til at oxidere fast materiale ind ti
 tooltip.ChemicalInfuser=En maskine, der producerer en ny gas ved infuse til andre.
 tooltip.SeismicVibrator=En maskine, der bruger seismiske vibrationer til at give information om forskellige lag i verdenen.
 tooltip.PressurizedReactionChamber=En avanceret maskine der forarbejder en fast, flydende og gasformig blanding og laver både et gasformigt og fast produkt.
-tooltip.PortableTank=En handy, mobil tank, der lader dig bære 14 spande væske hvorhen du ønsker. Kan også bruges som spand!
 tooltip.FluidicPlenisher=En maskine i stand til at lave hele søer ved at fylde slugter op med væske.
 tooltip.Laser=En avanceret form for linærenergitransfer der udnytter enekstremt kollimeret lysstråle.
 tooltip.LaserAmplifier=En blok that can be brugt til at merge,omdirigere og forstærke laserstråler,med finkontrollering over hvornår der skydes.
@@ -829,7 +813,6 @@ tooltip.SolarGenerator=En generator der bruger solens kraft til producere energi
 tooltip.GasGenerator=En generator der udnytter de molekulært variende gasser til producere energi.
 tooltip.BioGenerator=En generator der brænder organisk materiale i verdenen til producere energi.
 tooltip.AdvancedSolarGenerator=En avanceret generator der direkte absorberer solens stråler med lille tab til at producere energi.
-tooltip.WindTurbine=En generator der bruger vindens styrke til at producere energi med større effektivitet ved højere niveauer.
 tooltip.TurbineRotor=Stålstangen, der bruges til at huse Turbineblad indeni en Industriel Turbine.
 tooltip.RotationalComplex=En connector, der er placeret på den højeste Turbinerotor på en Industriel Turbine til at bære kinetisk energi ind i sine Elektromagnetiske Spoler.
 tooltip.ElectromagneticCoil=En blok, der konverterer kinetisk energi fra et Rotationskompleks omtil brugbar elektricitet. Disse kan placeres på hvilken som helst måde ovenpå dit Rotationscompleks, så længe de alle stadig rør hinanden og complekset sig selv.
@@ -900,7 +883,7 @@ color.brightPink=Lyserød
 
 # Dyes
 dye.black=Sort
-dye.darkBlu=Blå
+dye.darkBlue=Blå
 dye.brown=Brun
 dye.darkGreen=Grøn
 dye.darkAqua=Cyan
@@ -960,7 +943,6 @@ tile.Generator.TurbineVent.name=Turbineventilator
 tile.Reactor.ReactorController.name=Reaktor-controller
 tile.Reactor.ReactorFrame.name=Reaktorindramning
 tile.Reactor.ReactorNeutronCapturePlate.name=Neutronfanger-plade
-tile.Reactor.ReactorInOutPort.name=Reaktor-port
 tile.Reactor.ReactorLogicAdapter.name=Reaktorlogiks-adapter
 
 tile.ReactorGlass.ReactorGlass.name=Reaktorglas

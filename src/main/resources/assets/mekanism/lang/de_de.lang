@@ -183,28 +183,28 @@ tile.OreBlock.CopperOre.name=Kupfererz
 tile.OreBlock.TinOre.name=Zinnerz
 
 # Transmitters
-item.MultipartTransmitter.BasicPressurizedTube.name=Basis-Druckröhre
-item.MultipartTransmitter.AdvancedPressurizedTube.name=Fortgeschrittene Druckröhre
-item.MultipartTransmitter.ElitePressurizedTube.name=Elite-Druckröhre
-item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimative Druckröhre
-item.MultipartTransmitter.BasicUniversalCable.name=Universelles Basiskabel
-item.MultipartTransmitter.AdvancedUniversalCable.name=Fortgeschrittenes Universelles Kabel
-item.MultipartTransmitter.EliteUniversalCable.name=Universelles Elitekabel
-item.MultipartTransmitter.UltimateUniversalCable.name=Ultimatives Universelles Kabel
-item.MultipartTransmitter.BasicMechanicalPipe.name=Mechanisches Basisrohr
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Fortgeschrittenes Mechanisches Rohr
-item.MultipartTransmitter.EliteMechanicalPipe.name=Mechanisches Eliterohr
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimatives Mechanisches Rohr
-item.MultipartTransmitter.BasicLogisticalTransporter.name=Logistischer Basistransporter
-item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Fortgeschrittener Logistischer Transporter
-item.MultipartTransmitter.EliteLogisticalTransporter.name=Logistischer Elitetransporter
-item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimativer Logistischer Transporter
-item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiver Transporter
-item.MultipartTransmitter.DiversionTransporter.name=Diversionstransporter
-item.MultipartTransmitter.BasicThermodynamicConductor.name=Thermodynamischer Basisleiter
-item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Fortgeschr. Thermodynamischer Leiter
-item.MultipartTransmitter.EliteThermodynamicConductor.name=Thermodynamischer Eliteleiter
-item.MultipartTransmitter.UltimateThermodynamicConductor.name=Ultimativer Thermodynamischer Leiter
+tile.Transmitter.BasicPressurizedTube.name=Basis-Druckröhre
+tile.Transmitter.AdvancedPressurizedTube.name=Fortgeschrittene Druckröhre
+tile.Transmitter.ElitePressurizedTube.name=Elite-Druckröhre
+tile.Transmitter.UltimatePressurizedTube.name=Ultimative Druckröhre
+tile.Transmitter.BasicUniversalCable.name=Universelles Basiskabel
+tile.Transmitter.AdvancedUniversalCable.name=Fortgeschrittenes Universelles Kabel
+tile.Transmitter.EliteUniversalCable.name=Universelles Elitekabel
+tile.Transmitter.UltimateUniversalCable.name=Ultimatives Universelles Kabel
+tile.Transmitter.BasicMechanicalPipe.name=Mechanisches Basisrohr
+tile.Transmitter.AdvancedMechanicalPipe.name=Fortgeschrittenes Mechanisches Rohr
+tile.Transmitter.EliteMechanicalPipe.name=Mechanisches Eliterohr
+tile.Transmitter.UltimateMechanicalPipe.name=Ultimatives Mechanisches Rohr
+tile.Transmitter.BasicLogisticalTransporter.name=Logistischer Basistransporter
+tile.Transmitter.AdvancedLogisticalTransporter.name=Fortgeschrittener Logistischer Transporter
+tile.Transmitter.EliteLogisticalTransporter.name=Logistischer Elitetransporter
+tile.Transmitter.UltimateLogisticalTransporter.name=Ultimativer Logistischer Transporter
+tile.Transmitter.RestrictiveTransporter.name=Restriktiver Transporter
+tile.Transmitter.DiversionTransporter.name=Diversionstransporter
+tile.Transmitter.BasicThermodynamicConductor.name=Thermodynamischer Basisleiter
+tile.Transmitter.AdvancedThermodynamicConductor.name=Fortgeschr. Thermodynamischer Leiter
+tile.Transmitter.EliteThermodynamicConductor.name=Thermodynamischer Eliteleiter
+tile.Transmitter.UltimateThermodynamicConductor.name=Ultimativer Thermodynamischer Leiter
 
 # Glow Panel
 item.GlowPanel.name=Leuchtplatte
@@ -215,11 +215,6 @@ tile.EnergyCubeAdvanced.name=Fortgeschrittener Energiewürfel
 tile.EnergyCubeElite.name=Elite-Energiewürfel
 tile.EnergyCubeUltimate.name=Ultimativer Energiewürfel
 tile.EnergyCubeCreative.name=Kreativer Energiewürfel
-
-# Factory Installers
-item.basicFactoryInstaller.name=Basis-Fabriken-Installer
-item.advancedFactoryInstaller.name=Fortgeschrittener Fabriken-Installer
-item.eliteFactoryInstaller.name=Elite-Fabriken-Installer
 
 # Dust
 item.ironDust.name=Eisenstaub
@@ -572,7 +567,6 @@ gui.thermalEvaporationController.short=Thermalv.-Controller
 gui.dictionary.noKey=Kein Key.
 
 gui.configuration=Konfiguration
-gui.config=Konfigurieren
 gui.configuration.side=Seitenkonfig
 gui.configuration.transporter=Transporterkonfig
 gui.configuration.strictInput=Strikter Input

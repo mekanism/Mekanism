@@ -81,7 +81,6 @@ tile.SaltBlock.name=Bloc de sel
 tile.BasicBlock.OsmiumBlock.name=Bloc d'osmium
 tile.BasicBlock.BronzeBlock.name=Bloc de bronze
 tile.BasicBlock.RefinedObsidian.name=Obsidienne raffinée
-tile.BasicBlock.CoalBlock.name=Bloc de charbon
 tile.BasicBlock.RefinedGlowstone.name=Pierre lumineuse raffinée
 tile.BasicBlock.SteelBlock.name=Bloc d'acier
 tile.BasicBlock.BinBasic.name=Silo basique
@@ -91,7 +90,6 @@ tile.BasicBlock.BinUltimate.name=Silo ultime
 tile.BasicBlock.TeleporterFrame.name=Cadre de téléporteur
 tile.BasicBlock.SteelCasing.name=Boîtier en acier
 tile.BasicBlock.DynamicTank.name=Réservoir dynamique
-tile.BasicBlock.DynamicGlass.name=Vitre dynamique
 tile.BasicBlock.DynamicValve.name=Valve dynamique
 tile.BasicBlock.CopperBlock.name=Bloc de cuivre
 tile.BasicBlock.TinBlock.name=Bloc d'étain
@@ -182,50 +180,45 @@ tile.OreBlock.CopperOre.name=Minerai de cuivre
 tile.OreBlock.TinOre.name=Minerai d'étain
 
 # Transmitters
-item.MultipartTransmitter.BasicPressurizedTube.name=Tube pressurisé de base
-item.MultipartTransmitter.AdvancedPressurizedTube.name=Tube pressurisé avancé
-item.MultipartTransmitter.ElitePressurizedTube.name=Tube pressurisé élite
-item.MultipartTransmitter.UltimatePressurizedTube.name=Tube pressurisé ultime
-item.MultipartTransmitter.BasicUniversalCable.name=Câble universel de base
-item.MultipartTransmitter.AdvancedUniversalCable.name=Câble universel avancé
-item.MultipartTransmitter.EliteUniversalCable.name=Câble universel élite
-item.MultipartTransmitter.UltimateUniversalCable.name=Câble universel ultime
-item.MultipartTransmitter.BasicMechanicalPipe.name=Tuyau mécanique de base
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Tuyau mécanique avancé
-item.MultipartTransmitter.EliteMechanicalPipe.name=Tuyau mécanique élite
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Tuyau mécanique ultime
-item.MultipartTransmitter.BasicLogisticalTransporter.name=Transporteur logistique de base
-item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Transporteur logistique avancé
-item.MultipartTransmitter.EliteLogisticalTransporter.name=Transporteur logistique élite
-item.MultipartTransmitter.UltimateLogisticalTransporter.name=Transporteur logistique ultime
-item.MultipartTransmitter.RestrictiveTransporter.name=Transporteur restrictif
-item.MultipartTransmitter.DiversionTransporter.name=Transporteur diversif
-item.MultipartTransmitter.BasicThermodynamicConductor.name=Conducteur Thermodynamique Basique
-item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Conducteur Thermodynamique Avancé
-item.MultipartTransmitter.EliteThermodynamicConductor.name=Conducteur Thermodynamique Elite
-item.MultipartTransmitter.UltimateThermodynamicConductor.name=Conducteur Thermodynamique Ultime
+tile.Transmitter.BasicPressurizedTube.name=Tube pressurisé de base
+tile.Transmitter.AdvancedPressurizedTube.name=Tube pressurisé avancé
+tile.Transmitter.ElitePressurizedTube.name=Tube pressurisé élite
+tile.Transmitter.UltimatePressurizedTube.name=Tube pressurisé ultime
+tile.Transmitter.BasicUniversalCable.name=Câble universel de base
+tile.Transmitter.AdvancedUniversalCable.name=Câble universel avancé
+tile.Transmitter.EliteUniversalCable.name=Câble universel élite
+tile.Transmitter.UltimateUniversalCable.name=Câble universel ultime
+tile.Transmitter.BasicMechanicalPipe.name=Tuyau mécanique de base
+tile.Transmitter.AdvancedMechanicalPipe.name=Tuyau mécanique avancé
+tile.Transmitter.EliteMechanicalPipe.name=Tuyau mécanique élite
+tile.Transmitter.UltimateMechanicalPipe.name=Tuyau mécanique ultime
+tile.Transmitter.BasicLogisticalTransporter.name=Transporteur logistique de base
+tile.Transmitter.AdvancedLogisticalTransporter.name=Transporteur logistique avancé
+tile.Transmitter.EliteLogisticalTransporter.name=Transporteur logistique élite
+tile.Transmitter.UltimateLogisticalTransporter.name=Transporteur logistique ultime
+tile.Transmitter.RestrictiveTransporter.name=Transporteur restrictif
+tile.Transmitter.DiversionTransporter.name=Transporteur diversif
+tile.Transmitter.BasicThermodynamicConductor.name=Conducteur Thermodynamique Basique
+tile.Transmitter.AdvancedThermodynamicConductor.name=Conducteur Thermodynamique Avancé
+tile.Transmitter.EliteThermodynamicConductor.name=Conducteur Thermodynamique Elite
+tile.Transmitter.UltimateThermodynamicConductor.name=Conducteur Thermodynamique Ultime
 
 # Glow Panel
 item.GlowPanel.name=Panneau lumineux
 
 # Energy Cubes
-tile.EnergyCube.Basic.name=Cube d'énergie basique
-tile.EnergyCube.Advanced.name=Cube d'énergie avancé
-tile.EnergyCube.Elite.name=Cube d'énergie d'élite
-tile.EnergyCube.Ultimate.name=Cube d'énergie ultime
+tile.EnergyCubeBasic.name=Cube d'énergie basique
+tile.EnergyCubeAdvanced.name=Cube d'énergie avancé
+tile.EnergyCubeElite.name=Cube d'énergie d'élite
+tile.EnergyCubeUltimate.name=Cube d'énergie ultime
 tile.EnergyCubeCreative.name=Cube d'énergie en créatif
-
-# Factory Installers
-item.basicFactoryInstaller.name=Installeur d'usine de base
-item.advancedFactoryInstaller.name=Installeur d'usine avancé
-item.eliteFactoryInstaller.name=Installeur d'usine élite
 
 # Dust
 item.ironDust.name=Poudre de fer
 item.goldDust.name=Poudre d'or
 item.osmiumDust.name=Poudre d'osmium
 item.obsidianDust.name=Poudre d'obsidienne
-item.obsidianDust.name=Poudre d'obsidienne raffinée
+item.refinedobsidianDust.name=Poudre d'obsidienne raffinée
 item.diamondDust.name=Poudre de diamant
 item.steelDust.name=Poudre d'acier
 item.copperDust.name=Poudre de cuivre
@@ -562,12 +555,10 @@ gui.upgrades.effect=Effet
 
 gui.chemicalInfuser.short=Infus. chim.
 gui.chemicalDissolutionChamber.short=Ch. de dissol. chim.
-gui.solarEvaporationController.short=Ctrl d'évap. solaire
 
 gui.dictionary.noKey=Pas de clef.
 
 gui.configuration=Configuration
-gui.config=Config.
 gui.configuration.side=Config. coté
 gui.configuration.transporter=Config. transporteur
 gui.configuration.strictInput=Entrée stricte
@@ -794,15 +785,11 @@ tooltip.OsmiumCompressor=Une machine assez avancée utilisée pour !ncomprimer l
 tooltip.Combiner=Une machine utilisée pour combiner les poussières !net les pavés pour former leurs équivalents minerais.
 tooltip.Crusher=Une machine utilisée pour broyer les lingots en poussières, !naussi bien qu'exécutez beaucoup d'autres opérations.
 tooltip.DigitalMiner=Un hautement-advancé avec filtrage mineur automatique !nqui peut miner quelque soit le bloc que vous lui demandiez !nDans un rayon de 32 blocs maxi.
-tooltip.BasicFactory=The lowest tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
-tooltip.AdvancedFactory=The middle tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
-tooltip.EliteFactory=The highest tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
 tooltip.MetallurgicInfuser=A machine used to infuse various materials !ninto (generally) metals to create metal alloys !nand other compounds.
 tooltip.PurificationChamber=An advanced machine capable of processing !nores into three clumps, serving as the initial !nstage of 300% ore processing.
 tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based !nfurnace that runs off of energy.
 tooltip.Teleporter=A machine capable of teleporting players to various !nlocations defined by another teleporter.
 tooltip.ElectricPump=An advanced pump capable of pumping !nout an entire lava lake.
-tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock !nitself from others by means of password protection.
 tooltip.Chargepad=A universal chargepad that can charge !nany energized item from any mod.
 tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
@@ -816,7 +803,6 @@ tooltip.ChemicalOxidizer=A machine capable of oxidizing !nsolid materials into g
 tooltip.ChemicalInfuser=A machine that produces a new !ngas by infusing two others.
 tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
 tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
-tooltip.PortableTank=A handy, portable tank that lets you !ncarry 14 buckets of fluid wherever you !nplease. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
 tooltip.Laser=An advanced form of linear energy!ntransfer that utilizes an extremely!ncollimated beam of light.
 tooltip.LaserAmplifier=A block that can be used to merge,!nredirect and amplify laser beams,!nwith fine controls over when to fire.
@@ -829,7 +815,6 @@ tooltip.SolarGenerator=Générateur qui utilise la puissance  !nsolaire pour pro
 tooltip.GasGenerator=Générateur qui exploite le changement !nmoléculaire des gaz pour produire de l'énergie.
 tooltip.BioGenerator=Générateur qui brule les matériaux organiques !ndu monde pour produire de l'énergie.
 tooltip.AdvancedSolarGenerator=Générateur avancé qui absorbe directement !nles rayons solaire avec peu de pertes !npour produire de l'énergie..
-tooltip.WindTurbine=Générateur qui utilise la force du vent !pour produire de l'énergie, l'efficacité augmentant !naux niveaux les plus haut.
 tooltip.TurbineRotor=La barre d'acier utilisée pour loger les Lames de Turbine dans une Turbine Industrielle.
 tooltip.RotationalComplex=Un connecteur qui est placé sur le plus Rotor d'une Turbine Industrielle pour quider l'énergie kinétique dans ses Bobines Electromagnétiques.
 tooltip.ElectromagneticCoil=Un bloc qui transforme l'énergie kinétique d'un Complexe Rotatif en électricité. Ils peuvent être placés dans n'importe quel agencement au-dessus de votre Complexe Rotatif , tant qu'ils se touchent tous entre eux et le Complexe lui-même.
@@ -946,7 +931,6 @@ item.TurbineBlade.name=Lame de Turbine
 # Generators
 tile.Generator.HeatGenerator.name=Générateur thermique
 tile.Generator.SolarGenerator.name=Générateur solaire
-tile.Generator.HydrogenGenerator.name=Générateur à hydrogène
 tile.Generator.BioGenerator.name=Bio-Générateur
 tile.Generator.AdvancedSolarGenerator.name=Générateur solaire avancé
 tile.Generator.WindGenerator.name=Éolienne

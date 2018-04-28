@@ -35,7 +35,6 @@ item.BrineBucket.name=鹽水桶
 item.LithiumBucket.name=鋰桶
 item.FreeRunners.name=自由助跑器
 item.ArmoredJetpack.name=裝甲噴氣背包
-item.FilterCard.name=過濾卡
 item.SeismicReader.name=地震讀取器
 item.HDPEPellet.name=HDPE彈
 item.HDPERod.name=HDPE棒
@@ -51,9 +50,6 @@ item.BasicControlCircuit.name=基礎控制電路
 item.AdvancedControlCircuit.name=高級控制電路
 item.EliteControlCircuit.name=精英控制電路
 item.UltimateControlCircuit.name=終極控制電路
-
-# Gas Tank
-tile.GasTank.GasTank.name=燃氣儲罐
 
 # Cardboard Box
 tile.CardboardBox.name=紙箱
@@ -71,19 +67,14 @@ tile.BasicBlock.RefinedObsidian.name=強化黑曜石
 tile.BasicBlock.CharcoalBlock.name=煤炭方塊
 tile.BasicBlock.RefinedGlowstone.name=強化螢石
 tile.BasicBlock.SteelBlock.name=鋼方塊
-tile.BasicBlock.Bin.name=箱柜
 tile.BasicBlock.TeleporterFrame.name=傳送框架
 tile.BasicBlock.SteelCasing.name=鋼質機殼
 tile.BasicBlock.DynamicTank.name=動態儲罐
-tile.BasicBlock.DynamicGlass.name=動態玻璃
 tile.BasicBlock.DynamicValve.name=動態閥門
 tile.BasicBlock.CopperBlock.name=銅塊
 tile.BasicBlock.TinBlock.name=錫塊
-tile.BasicBlock.SolarEvaporationController.name=鹽化控制器
-tile.BasicBlock.SolarEvaporationValve.name=鹽化閥門
 
 # Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SalinationBlock.name=鹽化方塊
 tile.BasicBlock2.InductionCasing.name=輸導套管
 tile.BasicBlock2.InductionPort.name=輸導端口
 tile.BasicBlock2.InductionCellBasic.name=基礎輸導元件
@@ -100,15 +91,11 @@ tile.MachineBlock.EnrichmentChamber.name=富集倉
 tile.MachineBlock.OsmiumCompressor.name=鋨壓縮機
 tile.MachineBlock.Combiner.name=融合機
 tile.MachineBlock.Crusher.name=粉碎機
-tile.MachineBlock.BasicFactory.name=基礎工廠
-tile.MachineBlock.AdvancedFactory.name=高級工廠
-tile.MachineBlock.EliteFactory.name=精英工廠
 tile.MachineBlock.MetallurgicInfuser.name=冶金灌注機
 tile.MachineBlock.PurificationChamber.name=凈化倉
 tile.MachineBlock.EnergizedSmelter.name=充能冶煉爐
 tile.MachineBlock.Teleporter.name=傳送機
 tile.MachineBlock.ElectricPump.name=電動泵
-tile.MachineBlock.ElectricChest.name=電動箱子
 tile.MachineBlock.Chargepad.name=充電臺
 tile.MachineBlock.LogisticalSorter.name=物流整理機
 tile.MachineBlock.DigitalMiner.name=數字型采礦機
@@ -127,7 +114,6 @@ tile.MachineBlock2.ChemicalCrystallizer.name=化學結晶器
 tile.MachineBlock2.SeismicVibrator.name=地震振動器
 tile.MachineBlock2.PressurizedReactionChamber.name=加壓反應室
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.PortableTank.name=攜帶式水槽
 tile.MachineBlock2.FluidicPlenisher.name=流體裝填機
 tile.MachineBlock2.Laser.name=激光
 tile.MachineBlock2.LaserAmplifier.name=激光增幅器
@@ -161,33 +147,26 @@ tile.OreBlock.CopperOre.name=銅礦石
 tile.OreBlock.TinOre.name=錫礦石
 
 # Transmitters
-item.MultipartTransmitter.PressurizedTube.name=加壓管道
-item.MultipartTransmitter.BasicUniversalCable.name=基礎通用線纜
-item.MultipartTransmitter.AdvancedUniversalCable.name=高級通用線纜
-item.MultipartTransmitter.EliteUniversalCable.name=精英通用線纜
-item.MultipartTransmitter.UltimateUniversalCable.name=終極通用線纜
-item.MultipartTransmitter.BasicMechanicalPipe.name=基礎機械管道
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=高級機械管道
-item.MultipartTransmitter.EliteMechanicalPipe.name=精英機械管道
-item.MultipartTransmitter.UltimateMechanicalPipe.name=終極機械管道
-item.MultipartTransmitter.LogisticalTransporter.name=物流傳送管道
-item.MultipartTransmitter.RestrictiveTransporter.name=限制傳送管道
-item.MultipartTransmitter.DiversionTransporter.name=轉移傳送管道
+tile.Transmitter.BasicUniversalCable.name=基礎通用線纜
+tile.Transmitter.AdvancedUniversalCable.name=高級通用線纜
+tile.Transmitter.EliteUniversalCable.name=精英通用線纜
+tile.Transmitter.UltimateUniversalCable.name=終極通用線纜
+tile.Transmitter.BasicMechanicalPipe.name=基礎機械管道
+tile.Transmitter.AdvancedMechanicalPipe.name=高級機械管道
+tile.Transmitter.EliteMechanicalPipe.name=精英機械管道
+tile.Transmitter.UltimateMechanicalPipe.name=終極機械管道
+tile.Transmitter.RestrictiveTransporter.name=限制傳送管道
+tile.Transmitter.DiversionTransporter.name=轉移傳送管道
 
 # Glow Panel
 item.GlowPanel.name=熒光板
 
 # Energy Cubes
-tile.EnergyCube.Basic.name=基礎能量立方
-tile.EnergyCube.Advanced.name=高級能量立方
-tile.EnergyCube.Elite.name=精英能量立方
-tile.EnergyCube.Ultimate.name=終極能量立方
-tile.EnergyCube.Creative.name=創造能量立方
-
-# Factory Installers
-item.basicFactoryInstaller.name=基礎工廠安裝器
-item.advancedFactoryInstaller.name=高級工廠安裝器
-item.eliteFactoryInstaller.name=精英工廠安裝器
+tile.EnergyCubeBasic.name=基礎能量立方
+tile.EnergyCubeAdvanced.name=高級能量立方
+tile.EnergyCubeElite.name=精英能量立方
+tile.EnergyCubeUltimate.name=終極能量立方
+tile.EnergyCubeCreative.name=創造能量立方
 
 # Dust
 item.ironDust.name=鐵粉
@@ -360,8 +339,6 @@ mekanism.configgui.ctgy.usage.tooltip=機械及其能耗的設定
 mekanism.configgui.ctgy.client.tooltip=通用機械及其下所有模塊在客戶端的特殊設定
 
 # Gui text
-gui.removeSpeedUpgrade=移除速度升級
-gui.removeEnergyUpgrade=移除能量升級
 gui.condensentrating=凝聚液體中...
 gui.decondensentrating=生成氣體中...
 gui.power=功率
@@ -451,12 +428,10 @@ gui.upgrades.effect=效果
 
 gui.chemicalInfuser.short=化學灌注器
 gui.chemicalDissolutionChamber.short=化學溶解室
-gui.solarEvaporationController.short=鹽化控制器
 
 gui.dictionary.noKey=無關鍵字.
 
 gui.configuration=配置
-gui.config=配置
 gui.configuration.side=側面配置
 gui.configuration.transporter=傳輸配置
 gui.configuration.strictInput=精確輸入
@@ -464,13 +439,6 @@ gui.configuration.strictInput=精確輸入
 gui.rotaryCondensentrator.toggleOperation=切換操作
 
 gui.factory.secondaryEnergy=二次能源
-gui.factory.smelting=熔煉中...
-gui.factory.enriching=富集中...
-gui.factory.crushing=粉碎中...
-gui.factory.compressing=壓縮中...
-gui.factory.combining=融合中...
-gui.factory.purifying=提純中...
-gui.factory.injecting=注入中...
 gui.factory.autoSort=自動整理
 
 gui.seismicReader.short=地震讀取器
@@ -526,8 +494,6 @@ gui.logisticalSorter.default=默認
 gui.logisticalSorter.auto=自動
 gui.logisticalSorter.roundRobin=循環模式
 
-gui.electricChest.editPassword=編輯密碼
-
 gui.teleporter.notReady=未準備
 gui.teleporter.ready=已準備
 gui.teleporter.noFrame=無框架
@@ -564,7 +530,6 @@ tooltip.configurator.pumpReset=重置電力泵計數
 tooltip.configurator.toggleDiverter=分流模式更改為
 tooltip.configurator.toggleColor=顏色切換為
 tooltip.configurator.viewColor=當前顏色
-tooltip.configurator.unauth=該箱子已鎖
 tooltip.configurator.noLink=無鏈接
 tooltip.configurator.linkMsg=綁定到
 tooltip.configurator.dim=位面
@@ -624,13 +589,6 @@ tooltip.disassembler.fast=快
 tooltip.disassembler.vein=礦脈
 tooltip.disassembler.off=關
 
-tooltip.filterCard.got=從%s恢復過濾器數據
-tooltip.filterCard.set=導入類型%s的過濾器數據
-tooltip.filterCard.unequal=過濾器數據格式不符規則
-tooltip.filterCard.logisticalSorter=物流分類器
-tooltip.filterCard.digitalMiner=數字型采礦機
-tooltip.filterCard.oredictionificator=礦典轉換器
-
 tooltip.balloon=氣球
 
 tooltip.jetpack.regular=標準
@@ -645,15 +603,11 @@ tooltip.OsmiumCompressor=一臺非常高級的設備,能夠將鋨礦石壓縮成
 tooltip.Combiner=A machine 一臺用來將粉末與圓石融合為相應礦石的機器.
 tooltip.Crusher=一臺用來將金屬錠磨成相應粉末的機器, !n也可以進行一些其他操作.
 tooltip.DigitalMiner=一臺高度先進,以過濾為基礎功能的自動采礦機, !n它可以挖掉指定的32格范圍(最大)內的所有方塊.
-tooltip.BasicFactory=最低級的自動生產線 !n可以立即處理多個工序.
-tooltip.AdvancedFactory=中級的自動生產線,!n可以立即處理多個工序.
-tooltip.EliteFactory=最高級的自動生產線,!n能夠一次處理多個工序.
 tooltip.MetallurgicInfuser=一臺用來將多種材料的金屬熔煉成!n合金或其他化合物的設備.
 tooltip.PurificationChamber=一臺能夠將礦石加工成三塊礦石疙瘩的高級設備,!n能夠提供300%的礦石加工效率.
 tooltip.EnergizedSmelter=一臺簡單的消耗通用機器能量的熔爐.
 tooltip.Teleporter=一臺能夠將玩家傳送到其他傳送器標定的各種位置的設備.
 tooltip.ElectricPump=能夠抽干巖漿湖的高級泵.
-tooltip.ElectricChest=便攜的54格容量的箱子,!n具有耗能的密碼鎖功能.
 tooltip.Chargepad=通用充能板,能夠為各種模組中的物品補充能量.
 tooltip.LogisticalSorter=一臺以過濾為基礎功能的高級整理機器, !n能夠自動將指定物品彈射到依附的物品欄或物流管道中.
 tooltip.RotaryCondensentrator=一臺能夠將氣體和其液態形式,!n相互轉化的機器.
@@ -667,7 +621,6 @@ tooltip.ChemicalOxidizer=一臺能夠將!n固態材料氧化成氣態產物的�
 tooltip.ChemicalInfuser=一臺能夠通過注入其它兩種!n氣體產生新的氣體的機器.
 tooltip.SeismicVibrator=一臺能夠利用地震震動!n提供關于這個世界!n地質結構的機器.
 tooltip.PressurizedReactionChamber=一臺能夠處理!n固體,液體和氣體混合物,并且能!n產生氣態和固態產物的高級機器.
-tooltip.PortableTank=一個便利的攜帶式水槽,能夠讓你!n無論何處都能攜帶!n14桶液體. 同時可以當做水桶來用!
 tooltip.FluidicPlenisher=一臺能夠用液體填充溝壑!n從而產生一整個湖的機器.
 tooltip.Laser=一種高級的能量傳輸形式!n,利用平行光線實現能量!n的直線傳輸.
 tooltip.LaserAmplifier=一個能用于合并,轉向和!n增幅激光的方塊,易于控!n制.
@@ -680,7 +633,6 @@ tooltip.SolarGenerator=一臺使用!n太陽能量發電的發電機.
 tooltip.GasGenerator=一臺利用!n不同的氣體供能的發電機.
 tooltip.BioGenerator=一臺利用燃燒!n有機材料產生能量的發電機.
 tooltip.AdvancedSolarGenerator=一臺直接!n吸收大部分太陽光!n產生能量的高級發電機.
-tooltip.WindTurbine=一臺利用風能!n產生能量的發電機, 高度越高!n效率越高.
 
 tooltip.ReactorGlass=能用于聚變反應結構的!n強化玻璃.
 tooltip.ReactorLaserFocusMatrix=一個可吸收光能并加熱!n聚變反應堆的強化玻璃!n板.
@@ -783,7 +735,6 @@ tile.Generator.WindGenerator.name=風力渦輪機
 tile.Reactor.ReactorController.name=反應控制器
 tile.Reactor.ReactorFrame.name=反應器框架
 tile.Reactor.ReactorNeutronCapturePlate.name=中子吸收板
-tile.Reactor.ReactorInOutPort.name=反應器端口
 
 tile.ReactorGlass.ReactorGlass.name=強化玻璃
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=激光聚焦矩陣

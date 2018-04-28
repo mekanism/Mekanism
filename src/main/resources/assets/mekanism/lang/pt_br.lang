@@ -183,28 +183,28 @@ tile.OreBlock.CopperOre.name=Minério de Cobre
 tile.OreBlock.TinOre.name=Minério de Estanho
 
 # Transmitters
-item.MultipartTransmitter.BasicPressurizedTube.name=Tubo Pressurizado Básico
-item.MultipartTransmitter.AdvancedPressurizedTube.name=Tubo Pressurizado Avançado
-item.MultipartTransmitter.ElitePressurizedTube.name=Tubo Pressurizado Elite
-item.MultipartTransmitter.UltimatePressurizedTube.name=Tubo Pressurizado Final
-item.MultipartTransmitter.BasicUniversalCable.name=Cabo Universal Básico
-item.MultipartTransmitter.AdvancedUniversalCable.name=Cabo Universal Avançado
-item.MultipartTransmitter.EliteUniversalCable.name=Cabo Universal Elite
-item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Final
-item.MultipartTransmitter.BasicMechanicalPipe.name=Tubo Mecânico Básico
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Tubo Mecânico Avançado
-item.MultipartTransmitter.EliteMechanicalPipe.name=Tubo Mecânico Elite
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Tubo Mecânico Final
-item.MultipartTransmitter.BasicLogisticalTransporter.name=Transportador Logístico Básico
-item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Transportador Logístico Avançado
-item.MultipartTransmitter.EliteLogisticalTransporter.name=Transportador Logístico Elite
-item.MultipartTransmitter.UltimateLogisticalTransporter.name=Transportador Logístico Final
-item.MultipartTransmitter.RestrictiveTransporter.name=Transportador Restritivo
-item.MultipartTransmitter.DiversionTransporter.name=Transportador Redirecionador
-item.MultipartTransmitter.BasicThermodynamicConductor.name=Conduíte Térmico Básico
-item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Conduíte Térmico Avançado
-item.MultipartTransmitter.EliteThermodynamicConductor.name=Conduíte Térmico Elite
-item.MultipartTransmitter.UltimateThermodynamicConductor.name=Conduíte Térmico Final
+tile.Transmitter.BasicPressurizedTube.name=Tubo Pressurizado Básico
+tile.Transmitter.AdvancedPressurizedTube.name=Tubo Pressurizado Avançado
+tile.Transmitter.ElitePressurizedTube.name=Tubo Pressurizado Elite
+tile.Transmitter.UltimatePressurizedTube.name=Tubo Pressurizado Final
+tile.Transmitter.BasicUniversalCable.name=Cabo Universal Básico
+tile.Transmitter.AdvancedUniversalCable.name=Cabo Universal Avançado
+tile.Transmitter.EliteUniversalCable.name=Cabo Universal Elite
+tile.Transmitter.UltimateUniversalCable.name=Cabo Universal Final
+tile.Transmitter.BasicMechanicalPipe.name=Tubo Mecânico Básico
+tile.Transmitter.AdvancedMechanicalPipe.name=Tubo Mecânico Avançado
+tile.Transmitter.EliteMechanicalPipe.name=Tubo Mecânico Elite
+tile.Transmitter.UltimateMechanicalPipe.name=Tubo Mecânico Final
+tile.Transmitter.BasicLogisticalTransporter.name=Transportador Logístico Básico
+tile.Transmitter.AdvancedLogisticalTransporter.name=Transportador Logístico Avançado
+tile.Transmitter.EliteLogisticalTransporter.name=Transportador Logístico Elite
+tile.Transmitter.UltimateLogisticalTransporter.name=Transportador Logístico Final
+tile.Transmitter.RestrictiveTransporter.name=Transportador Restritivo
+tile.Transmitter.DiversionTransporter.name=Transportador Redirecionador
+tile.Transmitter.BasicThermodynamicConductor.name=Conduíte Térmico Básico
+tile.Transmitter.AdvancedThermodynamicConductor.name=Conduíte Térmico Avançado
+tile.Transmitter.EliteThermodynamicConductor.name=Conduíte Térmico Elite
+tile.Transmitter.UltimateThermodynamicConductor.name=Conduíte Térmico Final
 
 # Glow Panel
 item.GlowPanel.name=Painel Luminoso
@@ -215,11 +215,6 @@ tile.EnergyCubeAdvanced.name=Cubo de Energia Avançado
 tile.EnergyCubeElite.name=Cubo de Energia de Elite
 tile.EnergyCubeUltimate.name=Cubo de Energia Final
 tile.EnergyCubeCreative.name=Cubo de Energia Criativo
-
-# Factory Installers
-item.basicFactoryInstaller.name=Instalador Fabril Básico
-item.advancedFactoryInstaller.name=Instalador Fabril Avançado
-item.eliteFactoryInstaller.name=Instalador Fabril Elite
 
 # Dust
 item.ironDust.name=Pó de Ferro
@@ -572,7 +567,6 @@ gui.thermalEvaporationController.short=Controlador Ev. Térmica
 gui.dictionary.noKey=Sem Entrada.
 
 gui.configuration=Configuração
-gui.config=Configurar
 gui.configuration.side=Configurar Lados
 gui.configuration.transporter=Configurar Transportador
 gui.configuration.strictInput=Entrada Restrita

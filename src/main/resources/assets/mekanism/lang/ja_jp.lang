@@ -38,7 +38,6 @@ item.LithiumBucket.name=リチウムバケツ
 item.HeavyWaterBucket.name=重水バケツ
 item.FreeRunners.name=フリーランナー
 item.ArmoredJetpack.name=装甲ジェットパック
-item.FilterCard.name=設定カード
 item.SeismicReader.name=弾性波解析器
 item.HDPEPellet.name=HDPE ペレット
 item.HDPERod.name=HDPE ロッド
@@ -183,28 +182,28 @@ tile.OreBlock.CopperOre.name=銅鉱石
 tile.OreBlock.TinOre.name=錫鉱石
 
 # Transmitters
-item.MultipartTransmitter.BasicPressurizedTube.name=基本加圧チューブ
-item.MultipartTransmitter.AdvancedPressurizedTube.name=発展加圧チューブ
-item.MultipartTransmitter.ElitePressurizedTube.name=精鋭加圧チューブ
-item.MultipartTransmitter.UltimatePressurizedTube.name=究極加圧チューブ
-item.MultipartTransmitter.BasicUniversalCable.name=ベーシックユニバーサルケーブル
-item.MultipartTransmitter.AdvancedUniversalCable.name=アドバンスドユニバーサルケーブル
-item.MultipartTransmitter.EliteUniversalCable.name=エリートユニバーサルケーブル
-item.MultipartTransmitter.UltimateUniversalCable.name=アルティメットユニバーサルケーブル
-item.MultipartTransmitter.BasicMechanicalPipe.name=ベーシックメカニカルパイプ
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=アドバンスドメカニカルパイプ
-item.MultipartTransmitter.EliteMechanicalPipe.name=エリートメカニカルパイプ
-item.MultipartTransmitter.UltimateMechanicalPipe.name=アルティメットメカニカルパイプ
-item.MultipartTransmitter.BasicLogisticalTransporter.name=基本ロジスティカルトランスポーター
-item.MultipartTransmitter.AdvancedLogisticalTransporter.name=発展ロジスティカルトランスポーター
-item.MultipartTransmitter.EliteLogisticalTransporter.name=精鋭ロジスティカルトランスポーター
-item.MultipartTransmitter.UltimateLogisticalTransporter.name=究極ロジスティカルトランスポーター
-item.MultipartTransmitter.RestrictiveTransporter.name=制限トランスポーター
-item.MultipartTransmitter.DiversionTransporter.name=迂回トランスポーター
-item.MultipartTransmitter.BasicThermodynamicConductor.name=基本サーモダイナミックコンダクター
-item.MultipartTransmitter.AdvancedThermodynamicConductor.name=発展サーモダイナミックコンダクター
-item.MultipartTransmitter.EliteThermodynamicConductor.name=精鋭サーモダイナミックコンダクター
-item.MultipartTransmitter.UltimateThermodynamicConductor.name=究極サーモダイナミックコンダクター
+tile.Transmitter.BasicPressurizedTube.name=基本加圧チューブ
+tile.Transmitter.AdvancedPressurizedTube.name=発展加圧チューブ
+tile.Transmitter.ElitePressurizedTube.name=精鋭加圧チューブ
+tile.Transmitter.UltimatePressurizedTube.name=究極加圧チューブ
+tile.Transmitter.BasicUniversalCable.name=ベーシックユニバーサルケーブル
+tile.Transmitter.AdvancedUniversalCable.name=アドバンスドユニバーサルケーブル
+tile.Transmitter.EliteUniversalCable.name=エリートユニバーサルケーブル
+tile.Transmitter.UltimateUniversalCable.name=アルティメットユニバーサルケーブル
+tile.Transmitter.BasicMechanicalPipe.name=ベーシックメカニカルパイプ
+tile.Transmitter.AdvancedMechanicalPipe.name=アドバンスドメカニカルパイプ
+tile.Transmitter.EliteMechanicalPipe.name=エリートメカニカルパイプ
+tile.Transmitter.UltimateMechanicalPipe.name=アルティメットメカニカルパイプ
+tile.Transmitter.BasicLogisticalTransporter.name=基本ロジスティカルトランスポーター
+tile.Transmitter.AdvancedLogisticalTransporter.name=発展ロジスティカルトランスポーター
+tile.Transmitter.EliteLogisticalTransporter.name=精鋭ロジスティカルトランスポーター
+tile.Transmitter.UltimateLogisticalTransporter.name=究極ロジスティカルトランスポーター
+tile.Transmitter.RestrictiveTransporter.name=制限トランスポーター
+tile.Transmitter.DiversionTransporter.name=迂回トランスポーター
+tile.Transmitter.BasicThermodynamicConductor.name=基本サーモダイナミックコンダクター
+tile.Transmitter.AdvancedThermodynamicConductor.name=発展サーモダイナミックコンダクター
+tile.Transmitter.EliteThermodynamicConductor.name=精鋭サーモダイナミックコンダクター
+tile.Transmitter.UltimateThermodynamicConductor.name=究極サーモダイナミックコンダクター
 
 # Glow Panel
 item.GlowPanel.name=発光パネル
@@ -215,11 +214,6 @@ tile.EnergyCubeAdvanced.name=発展エネルギーキューブ
 tile.EnergyCubeElite.name=精鋭エネルギーキューブ
 tile.EnergyCubeUltimate.name=究極エネルギーキューブ
 tile.EnergyCubeCreative.name=クリエイティブエネルギーキューブ
-
-# Factory Installers
-item.basicFactoryInstaller.name=基本ファクトリーインストーラ
-item.advancedFactoryInstaller.name=発展ファクトリーインストーラ
-item.eliteFactoryInstaller.name=精鋭ファクトリーインストーラ
 
 # Dust
 item.ironDust.name=鉄の粉
@@ -567,12 +561,10 @@ gui.upgrades.effect=効果
 
 gui.chemicalInfuser.short=化学混成機
 gui.chemicalDissolutionChamber.short=化学溶解機
-gui.solarEvaporationController.short=太陽中性子反応機
 
 gui.dictionary.noKey=対応する鉱石辞書名がありません。
 
 gui.configuration=設定
-gui.config=設定
 gui.configuration.side=側面の設定
 gui.configuration.transporter=搬入の設定
 gui.configuration.strictInput=精密な搬入
@@ -757,10 +749,6 @@ tooltip.disassembler.fast=早い
 tooltip.disassembler.vein=鉱脈
 tooltip.disassembler.off=オフ
 
-tooltip.filterCard.got=%sの設定を保存しました。
-tooltip.filterCard.set=%sの設定を適用しました。
-tooltip.filterCard.unequal=データ形式に互換がありません。
-
 tooltip.balloon=風船
 
 tooltip.jetpack.regular=通常
@@ -836,7 +824,6 @@ tooltip.SolarGenerator=太陽光で発電します。
 tooltip.GasGenerator=いろいろなガスで発電します。
 tooltip.BioGenerator=世界中のオーガニックな素材から発電します。
 tooltip.AdvancedSolarGenerator=よりエネルギーの変換効率が良い、太陽光を直接的に吸収して発電する発電機です。
-tooltip.WindTurbine=風力を基に発電します。より高いところだと、発電量も増えます
 tooltip.TurbineRotor=工業用タービンの内部にある、タービンの羽の軸となる鋼鉄製の棒です。
 tooltip.RotationalComplex=電磁コイルに運動エネルギーを伝えるために、タービンローターの上に設置するコネクターです。
 tooltip.ElectromagneticCoil=回転機構からの運動エネルギーを電力に変換するブロックです。回転機構より上でなおかつ回転機構に一つでもつながっていれば、どんなふうにおいても大丈夫です。
