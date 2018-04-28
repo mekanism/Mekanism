@@ -7,47 +7,22 @@ tile.ObsidianTNT.name=옵시디언 TNT
 item.EnrichedAlloy.name=강화 합금
 item.ReinforcedAlloy.name=강화된 합금
 item.AtomicAlloy.name=Atomic 합금
-item.EnergyTablet.name=Energy Tablet
-item.SpeedUpgrade.name=Speed Upgrade
-item.EnergyUpgrade.name=Energy Upgrade
-item.Robit.name=Robit
-item.AtomicDisassembler.name=Atomic Disassembler
 item.ElectricBow.name=전기 Bow
 item.EnrichedIron.name=Enriched 철
 item.CompressedCarbon.name=압축된 Carbon
 item.CompressedRedstone.name=압축된 Redstone
 item.CompressedDiamond.name=압축된 다이아몬드
 item.CompressedObsidian.name=압축된 옵시디언
-item.PortableTeleporter.name=Portable Teleporter
-item.TeleportationCore.name=Teleportation Core
-item.Configurator.name=Configurator
-item.NetworkReader.name=Network Reader
-item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=제트팩
 item.ScubaTank.name=Scuba 탱크
 item.GasMask.name=가스 마스크
-item.Dictionary.name=Dictionary
-item.ElectrolyticCore.name=Electrolytic Core
-item.Sawdust.name=Sawdust
-item.Salt.name=Salt
-item.BrineBucket.name=Brine Bucket
-item.FreeRunners.name=Free Runners
-item.ArmoredJetpack.name=Armored Jetpack
-item.SeismicReader.name=Seismic Reader
-item.HDPEPellet.name=HDPE Pellet
 item.HDPERod.name=HDPE 길
-item.HDPESheet.name=HDPE Sheet
-item.PlaStick.name=PlaStick
-item.Substrate.name=Substrate
 
 # Control Circuits
 item.BasicControlCircuit.name=기본 조작 회로
 item.AdvancedControlCircuit.name=고급 조작 회로
 item.EliteControlCircuit.name=엘리트 조작 회로
 item.UltimateControlCircuit.name=울티베이트 조작 회로
-
-# Cardboard Box
-tile.CardboardBox.name=Cardboard Box
 
 # Bounding Block
 tile.BoundingBlock.name=Bounding 블럭
@@ -62,7 +37,6 @@ tile.BasicBlock.RefinedObsidian.name=강화된 옵시디언
 tile.BasicBlock.CharcoalBlock.name=목탄 블럭
 tile.BasicBlock.RefinedGlowstone.name=강화된 발광석
 tile.BasicBlock.SteelBlock.name=강철 블럭
-tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
 tile.BasicBlock.SteelCasing.name=강철 Casing
 tile.BasicBlock.DynamicTank.name=다이나믹 탱크
 tile.BasicBlock.DynamicValve.name=다이나믹 밸브
@@ -70,34 +44,11 @@ tile.BasicBlock.CopperBlock.name=구리 블럭
 tile.BasicBlock.TinBlock.name=주석 블럭
 
 # Machine Block
-tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
-tile.MachineBlock.OsmiumCompressor.name=오스뮴 Compressor
-tile.MachineBlock.Combiner.name=Combiner
-tile.MachineBlock.Crusher.name=Crusher
-tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
-tile.MachineBlock.PurificationChamber.name=Purification Chamber
-tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
 tile.MachineBlock.Teleporter.name=텔레포터
 tile.MachineBlock.ElectricPump.name=전기 펌프
 tile.MachineBlock.Chargepad.name=차지패드
 tile.MachineBlock.LogisticalSorter.name=논리 정렬기
 tile.MachineBlock.DigitalMiner.name=디지털 마이너
-
-# Machine Block 2 (second ID iteration)
-tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
-tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
-tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
-tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
-tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
-tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
-tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
-tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
-tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
-tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
-tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
-tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
-tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 
 # Plastic
 tile.PlasticBlock.name=플라스틱 블럭
@@ -259,210 +210,39 @@ oregas.obsidian=옵시디언 광석
 oregas.lead=납 광석
 
 # Update handler text
-update.consider=Consider updating to version
-update.newFeatures=New features
-update.visit=Visit
 update.toDownload=다운로드 하러가기
 update.devBuild=개발버전이 빌드되었습니다
-update.outdated=Using outdated version on one or more modules
 
 # Key description text
 key.mode=모드 스위치
 key.voice=소리
 
-# Config Gui
-mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
-mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
-
-# Gui text
-gui.condensentrating=Condensentrating
-gui.decondensentrating=Decondensentrating
-gui.power=Power
-gui.confirm=Confirm
-gui.open=Open
-gui.allOK=All OK
-gui.none=None
-gui.new=New
-gui.edit=Edit
-gui.save=Save
-gui.output=Output
-gui.delete=Delete
-gui.status=Status
-gui.autoEject=Auto-eject
-gui.itemstack=ItemStack
-gui.oredict=OreDict
-gui.material=Material
-gui.out=Out
-gui.noFluid=No fluid
-gui.empty=Empty
-gui.volume=Volume
-gui.start=Start
-gui.stop=Stop
-gui.config=Config
-gui.teleport=Teleport
-gui.eject=Eject
-gui.input=Input
-gui.slots=Slots
-gui.state=State
-gui.on=On
-gui.off=Off
-gui.filters=Filters
-gui.idle=Idle
-gui.data=Data
-gui.newFilter=New Filter
-gui.energy=Energy
-gui.gas=Gas
-gui.dumping=Dumping
-gui.dumping_excess=Dumping Excess
-gui.modID=Mod ID
-gui.key=Key
-gui.id=ID
-gui.finished=Finished
-
-gui.chemicalInfuser.short=C. Infuser
-gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
-
-gui.dictionary.noKey=No key.
-
-gui.configuration=Configuration
-gui.configuration.strictInput=Strict Input
-
-gui.rotaryCondensentrator.toggleOperation=Toggle operation
-
-gui.factory.secondaryEnergy=Secondary energy
-gui.factory.autoSort=Auto-sort
-
-gui.seismicReader.short=S. Reader
-gui.seismicReader.solids=Solids
-gui.seismicReader.fluids=Fluids
-gui.seismicReader.reading=Reading
-
-gui.filterSelect.title=Create New Filter
-
-gui.oredictFilter=OreDict Filter
-gui.oredictFilter.noKey=No key
-gui.oredictFilter.sameKey=Same key
-
-gui.modIDFilter=Mod ID Filter
-gui.modIDFilter.noID=No ID
-gui.modIDFilter.sameID=Same ID
-
-gui.itemFilter=Item Filter
-gui.itemFilter.noItem=No item
-gui.itemFilter.details=ItemStack Details
-gui.itemFilter.min=Min
-gui.itemFilter.max=Max
-
-gui.materialFilter=Material Filter
-gui.materialFilter.details=Using material of
-
-gui.portableTeleporter=Portable Teleporter
-
-gui.robit=Robit
-entity.Robit.name=Robit
-gui.robit.smelting=Robit Smelting
-gui.robit.inventory=Robit Inventory
-gui.robit.crafting=Robit Crafting
-gui.robit.greeting=Hi, I'm
-gui.robit.toggleFollow=Toggle 'follow' mode
-gui.robit.rename=Rename this Robit
-gui.robit.teleport=Teleport back home
-gui.robit.togglePickup=Toggle 'drop pickup' mode
-gui.robit.following=Following
-gui.robit.dropPickup=Drop pickup
-gui.robit.owner=Owner
-
-gui.password.setPassword=Set password
-gui.password.enterPassword=Enter password
-gui.password.fieldsEmpty=Field(s) empty
-gui.password.notMatching=Not matching
-gui.password.identical=Identical
-gui.password.invalid=Invalid
-gui.password=Password
-
-gui.logisticalSorter.default=Default
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round-robin
-
-gui.teleporter.notReady=Not ready
-gui.teleporter.ready=Ready
-gui.teleporter.noFrame=No frame
-gui.teleporter.noLink=No link
-gui.teleporter.exceeds=Links > 2
-gui.teleporter.needsEnergy=Needs energy
-
-gui.digitalMinerConfig=Digital Miner Config
-
-gui.digitalMiner.autoPull=Auto-pull
-gui.digitalMiner.replaceBlock=Replace block
-gui.digitalMiner.reset=Reset
-gui.digitalMiner.silkTouch=Silk touch
-gui.digitalMiner.pull=Pull
-gui.digitalMiner.silk=Silk
-gui.digitalMiner.toMine=To mine
-gui.digitalMiner.running=Running
-gui.digitalMiner.inverse=Inverse mode
-
-# Recipe names
-recipe.mekanismShaped=Shaped
-
 # Item and block tooltip text
-tooltip.configurator.configurate=Configurate
 tooltip.configurator.empty=비어있음
-tooltip.configurator.rotate=Rotate
 tooltip.configurator.wrench=렌치
-tooltip.configurator.pumpReset=Reset 전기 Pump calculation
-tooltip.configurator.toggleDiverter=Diverter mode changed to
-tooltip.configurator.toggleColor=Color bumped to
-tooltip.configurator.viewColor=Current color
-tooltip.configurator.noLink=No link
-tooltip.configurator.linkMsg=Bound to
-tooltip.configurator.dim=dimension
-tooltip.configurator.setLink=Set link to block
-tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
 
 tooltip.upgrade.speed=속도
 tooltip.upgrade.energy=에너지
 
 tooltip.inventory=인벤토리
 tooltip.storedEnergy=저장 전력
-tooltip.auth=Authenticated
 tooltip.locked=잠겨 있음
 tooltip.recipeType=레시피 속성
-tooltip.hold=Hold
-tooltip.forDesc=for a description
 tooltip.forDetails=더 자세한 정도
 tooltip.fireMode=파이어 모드
-tooltip.capacity=Capacity
-tooltip.pumpRate=Pump Rate
 tooltip.items=아이템
 tooltip.blocks=블럭
 tooltip.universal=범용
 tooltip.fluids=액체
 tooltip.gasses=가스
-tooltip.capableTrans=Capable of transferring
-tooltip.restrictiveDesc=Only used if no other paths available
-tooltip.diversionDesc=Controllable by redstone
 tooltip.noGas=가스가 저장되어있지 않습니다
-tooltip.stored=Stored
 tooltip.channel=채널
 tooltip.mode=모드
 tooltip.efficiency=효율
-tooltip.modeToggle=Mode toggled to
-tooltip.flowing=Flowing
 tooltip.yes=예
 tooltip.no=아니오
-tooltip.name=Name
 tooltip.blockData=블럭 data
 tooltip.block=블럭
-tooltip.meta=Metadata
-tooltip.tile=Tile
-tooltip.keysFound=Key(s) found
-tooltip.noKey=No key
-tooltip.hp=HP
-tooltip.configureState=Configure State
-
-tooltip.portableTank.bucketMode=Bucket Mode
 
 tooltip.disassembler.normal=기본
 tooltip.disassembler.slow=느림
@@ -472,46 +252,7 @@ tooltip.disassembler.off=꺼짐
 
 tooltip.balloon=풍선
 
-tooltip.jetpack.regular=Regular
-tooltip.jetpack.hover=Hover
 tooltip.jetpack.disabled=비활성화
-
-tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
-tooltip.seismicReader.noVibrations=Unable to discover any vibrations
-
-tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
-tooltip.OsmiumCompressor=A fairly advanced machine used to compress !nosmium into various dusts in order to create !ntheir ingot counterparts.
-tooltip.Combiner=A machine used to combine dusts and cobblestone !nto form their ore counterparts.
-tooltip.Crusher=A machine used to crush ingots into their dust counterparts, !nas well as perform many other operations.
-tooltip.MetallurgicInfuser=A machine used to infuse various materials !ninto (generally) metals to create metal alloys !nand other compounds.
-tooltip.PurificationChamber=An advanced machine capable of processing !nores into three clumps, serving as the initial !nstage of 300% ore processing.
-tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based !nfurnace that runs off of energy.
-tooltip.Teleporter=A machine capable of teleporting players to various !nlocations defined by another teleporter.
-tooltip.ElectricPump=An advanced pump capable of pumping !nout an entire lava lake.
-tooltip.Chargepad=A universal chargepad that can charge !nany energized item from any mod.
-tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and 논리적 Transporters.
-tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
-tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
-tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
-tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
-tooltip.ChemicalDissolutionChamber=An ultimate machine used to chemically !ndissolve all impurities of an ore, !nleaving an unprocessed slurry behind.
-tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
-tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
-tooltip.ChemicalOxidizer=A machine capable of oxidizing !nsolid materials into gas phase.
-tooltip.ChemicalInfuser=A machine that produces a new !ngas by infusing two others.
-tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
-tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
-tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
-
-tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
-tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.
-tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
-tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
-tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
-
-tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
-tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
-tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than 구리.
 
 # Redstone control
 control.disabled=비활성화
@@ -567,10 +308,7 @@ dye.yellow=노랑색
 dye.white=하양색
 
 # Creative tab
-itemGroup.tabMekanism=메카니즘[Mekanism]
-
-# NEI stuff
-nei.chemicalInjectionChamber=C. 주입기
+itemGroup.tabMekanism=Mekanism [메카니즘]
 
 #############
 # GENERATORS

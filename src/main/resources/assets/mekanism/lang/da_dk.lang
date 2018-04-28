@@ -142,8 +142,6 @@ tile.MachineBlock2.ChemicalDissolutionChamber.name=Kemisk Opløsningskammer
 tile.MachineBlock2.ChemicalWasher.name=Kemisk vasker
 tile.MachineBlock2.ChemicalCrystallizer.name=Kemisk Krystalisator
 tile.MachineBlock2.SeismicVibrator.name=Seismisk Vibrator
-tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
-tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.FluidicPlenisher.name=Fluidisk Plenisher
 tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Laserfortstærker
@@ -816,7 +814,6 @@ tooltip.AdvancedSolarGenerator=En avanceret generator der direkte absorberer sol
 tooltip.TurbineRotor=Stålstangen, der bruges til at huse Turbineblad indeni en Industriel Turbine.
 tooltip.RotationalComplex=En connector, der er placeret på den højeste Turbinerotor på en Industriel Turbine til at bære kinetisk energi ind i sine Elektromagnetiske Spoler.
 tooltip.ElectromagneticCoil=En blok, der konverterer kinetisk energi fra et Rotationskompleks omtil brugbar elektricitet. Disse kan placeres på hvilken som helst måde ovenpå dit Rotationscompleks, så længe de alle stadig rør hinanden og complekset sig selv.
-tooltip.TurbineCasing=Pressure-resistant casing used in the creation of an Industrial Turbine.
 tooltip.TurbineValve=Et slags Turbinekabinet, der inkluderer en port til overførsel af energi og damp.
 tooltip.TurbineVent=Et slags Turbinekabinet med en integreret ventilator til udledningen af damp. Disse bør placeres på samme niveau som eller over turbinens Rotationscompleks.
 

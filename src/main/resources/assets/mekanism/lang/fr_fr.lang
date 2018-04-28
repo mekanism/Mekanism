@@ -785,30 +785,6 @@ tooltip.OsmiumCompressor=Une machine assez avancée utilisée pour !ncomprimer l
 tooltip.Combiner=Une machine utilisée pour combiner les poussières !net les pavés pour former leurs équivalents minerais.
 tooltip.Crusher=Une machine utilisée pour broyer les lingots en poussières, !naussi bien qu'exécutez beaucoup d'autres opérations.
 tooltip.DigitalMiner=Un hautement-advancé avec filtrage mineur automatique !nqui peut miner quelque soit le bloc que vous lui demandiez !nDans un rayon de 32 blocs maxi.
-tooltip.MetallurgicInfuser=A machine used to infuse various materials !ninto (generally) metals to create metal alloys !nand other compounds.
-tooltip.PurificationChamber=An advanced machine capable of processing !nores into three clumps, serving as the initial !nstage of 300% ore processing.
-tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based !nfurnace that runs off of energy.
-tooltip.Teleporter=A machine capable of teleporting players to various !nlocations defined by another teleporter.
-tooltip.ElectricPump=An advanced pump capable of pumping !nout an entire lava lake.
-tooltip.Chargepad=A universal chargepad that can charge !nany energized item from any mod.
-tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
-tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
-tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
-tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
-tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
-tooltip.ChemicalDissolutionChamber=An ultimate machine used to chemically !ndissolve all impurities of an ore, !nleaving an unprocessed slurry behind.
-tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
-tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
-tooltip.ChemicalOxidizer=A machine capable of oxidizing !nsolid materials into gas phase.
-tooltip.ChemicalInfuser=A machine that produces a new !ngas by infusing two others.
-tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
-tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
-tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
-tooltip.Laser=An advanced form of linear energy!ntransfer that utilizes an extremely!ncollimated beam of light.
-tooltip.LaserAmplifier=A block that can be used to merge,!nredirect and amplify laser beams,!nwith fine controls over when to fire.
-tooltip.LaserTractorBeam=A block used to merge and!nredirect laser beams. Collects!ndrops from blocks it has broken.
-tooltip.SolarNeutronActivator=A machine that directs the neutron radiation !nof the sun into its internal reservoir, allowing !nfor the slow creation of various isotopes.
-tooltip.Oredictionificator=A machine used to unify and translate between various items !nand blocks using the Ore Dictionary.
 
 tooltip.HeatGenerator=Générateur qui utilise la chaleur de !nla lave ou d'autres ressources pour produire !nde l'énergie.
 tooltip.SolarGenerator=Générateur qui utilise la puissance  !nsolaire pour produire de l'énergie.
@@ -821,18 +797,6 @@ tooltip.ElectromagneticCoil=Un bloc qui transforme l'énergie kinétique d'un Co
 tooltip.TurbineCasing=Encadrement résistant à la pression utilisé dans la construction d'une Turbine Industrielle.
 tooltip.TurbineValve=Un type d'encadrement de Turbine qui inclu un port pour le transfert d'énergie et de vapeur.
 tooltip.TurbineVent=Un type d'encadrement de Turbine avec une aération intégrée pour libérer la vapeur. Il doit être placésur le niveau ou au-dessus du Complexe Rotatif.
-
-tooltip.ReactorGlass=Reinforced glass that can be used in !nthe Fusion Reactor multiblock.
-tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that !nis capable of absorbing optical energy and !nthereby heating up the Fusion Reactor.
-tooltip.ReactorController=The controlling block for the entire !nFusion Reactor structure.
-tooltip.ReactorFrame=Reinforced framing that can be used in !nthe Fusion Reactor multiblock.
-tooltip.ReactorNeutronCapturePlate=A block that can be used to !nboth block Fusion Reactor radiation and assist !nin the production of Tritium.
-tooltip.ReactorPort=A block of reinforced framing that is capable !nof managing both the gas and energy transfer !nof the Fusion Reactor.
-tooltip.ReactorLogicAdapter=A block that can be used to !nallow basic monitoring of a reactor using redstone.
-
-tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
-tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
-tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
 
 # Side data
 sideData.None=Aucune

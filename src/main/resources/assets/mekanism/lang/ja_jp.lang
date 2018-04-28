@@ -360,8 +360,6 @@ transmission.Heat=熱
 # Update handler text
 update.consider=新バージョンへのアップデートはどうでしょう
 update.newFeatures=新たな要素
-update.visit=Visit
-update.toDownload=to download
 update.devBuild=開発版ビルドを利用中
 update.outdated=古いバージョンのモジュールを利用しています
 
@@ -462,13 +460,10 @@ gui.matrixStats=インダクションマトリックスの状態
 gui.turbineStats=タービンの状態
 gui.boilerStats=ボイラーの状態
 gui.main=メイン画面
-gui.outputting=Outputting
-gui.receiving=Receiving
 gui.dimensions=体積
 gui.constituents=内容
 gui.cells=セル
 gui.providers=プロバイダ
-gui.structure=Structure
 gui.dynamicTank=ダイナミックタンク
 gui.industrialTurbine=工業用タービン
 gui.thermoelectricBoiler=ボイラー室
@@ -521,7 +516,6 @@ gui.capacity=容量
 gui.unit=単位
 gui.temp=温度
 gui.usage=使用
-gui.transferred=Transferred
 gui.dissipated=発散
 gui.boilRate=沸騰量
 gui.maxBoil=蒸気生成量
@@ -542,11 +536,8 @@ gui.trustedPlayers=認可されたプレイヤー
 gui.publicMode=公開モード
 gui.privateMode=非公開モード
 gui.trustedMode=認可モード
-gui.securityOffline=Security Offline
 gui.noAccessDesc=貴方はアクセスできません
-gui.overridden=Overridden
 gui.nowOwn=貴方はこのアイテムの所有者になりました。
-gui.frequency=Frequency
 gui.mode=モード
 gui.burnRate=燃焼効率
 
@@ -571,7 +562,6 @@ gui.configuration.strictInput=精密な搬入
 
 gui.rotaryCondensentrator.toggleOperation=処理の変更
 
-gui.factory.secondaryEnergy=Secondary energy
 gui.factory.autoSort=自動分配
 
 # Recipe types
@@ -662,10 +652,6 @@ gui.digitalMiner.inverse=反転モード
 gui.digitalMiner.requireReplace=置き換えの強制
 gui.digitalMiner.fuzzyMode=曖昧モード
 gui.digitalMiner.missingBlock=ブロックがありません
-
-# Recipe names
-recipe.mekanismShaped=Shaped
-recipe.mekanismShapeless=Shapeless
 
 # Security types
 security.public=公開
@@ -852,10 +838,6 @@ sideData.Gas=ガス搬入
 sideData.Extra=その他
 sideData.Infuse=注入剤
 sideData.Fluid=液体
-sideData.Fill=Fill
-sideData.Empty=Empty
-sideData.Charge=Charge
-sideData.Discharge=Discharge
 
 # Redstone control
 control.disabled=無効
@@ -921,9 +903,6 @@ reactor.capacity=熱が飽和した時
 reactor.capacity.desc=熱の値が更新した時
 reactor.depleted=燃料不足時
 reactor.depleted.desc=反応に十分な量の燃料が不足している時
-
-# Creative tab
-itemGroup.tabMekanism=Mekanism
 
 # NEI stuff
 nei.chemicalInjectionChamber=化学注入室
@@ -1069,13 +1048,3 @@ item.LapisLazuliAxe.name=ラピスラズリの斧
 item.LapisLazuliShovel.name=ラピスラズリのシャベル
 item.LapisLazuliHoe.name=ラピスラズリのクワ
 item.LapisLazuliSword.name=ラピスラズリの剣
-
-# Config Gui
-mekanism.configgui.ctgy.tools.general=General
-mekanism.configgui.ctgy.tools.armor=Armor Balance
-mekanism.configgui.ctgy.tools.tools=Tools Balance
-
-# Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
-mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
-mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets

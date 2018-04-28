@@ -11,7 +11,6 @@ item.EnergyTablet.name=Energi Brett
 item.SpeedUpgrade.name=Hastighetoppgradering
 item.EnergyUpgrade.name=Energioppgradering
 item.FilterUpgrade.name=Filteroppgradering
-item.Robit.name=Robit
 item.AtomicDisassembler.name=Kjernefysysk oppløser
 item.ElectricBow.name=Elektrisk Bue
 item.EnrichedIron.name=Beriket Jern
@@ -30,7 +29,6 @@ item.GasMask.name=Gassmaske
 item.Dictionary.name=Ordbok
 item.ElectrolyticCore.name=Elektrolytisk Kjerne
 item.Sawdust.name=Sagflis
-item.Salt.name=Salt
 item.BrineBucket.name=Saltlake Bøtte
 item.LithiumBucket.name=Lithium Bøtte
 item.FreeRunners.name=Frie løpere
@@ -39,7 +37,6 @@ item.SeismicReader.name=Seismisk Avleser
 item.HDPEPellet.name=HDPE Pellets
 item.HDPERod.name=HDPE Stang
 item.HDPESheet.name=HDPE Skjema
-item.PlaStick.name=PlaStick
 item.Substrate.name=Substrat
 item.Flamethrower.name=Flammekaster
 item.GaugeDropper.name=Gauge Dropper
@@ -91,41 +88,13 @@ tile.MachineBlock.EnrichmentChamber.name=Berikings Kammer
 tile.MachineBlock.OsmiumCompressor.name=Osmium Kompressor
 tile.MachineBlock.Combiner.name=Kombinerer
 tile.MachineBlock.Crusher.name=Knuser
-tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
-tile.MachineBlock.PurificationChamber.name=Purification Chamber
-tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
 tile.MachineBlock.Teleporter.name=Teleporter
 tile.MachineBlock.ElectricPump.name=Elektrisk Pumpe
 tile.MachineBlock.Chargepad.name=Ladepad
-tile.MachineBlock.LogisticalSorter.name=Logistical Sorterer
 tile.MachineBlock.DigitalMiner.name=Digital Graver
-
-# Machine Block 2 (second ID iteration)
-tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
-tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
-tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
-tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
-tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
-tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
-tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
-tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
-tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
-tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
-tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
-tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
-tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
-tile.MachineBlock2.Laser.name=Laser
-tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
-tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
-
-# Machine Block 3 (third ID iteration)
-tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
-tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 
 # Plastic
 tile.PlasticBlock.name=Plast Blokk
-tile.SlickPlasticBlock.name=Slick Plastic Block
 tile.GlowPlasticBlock.name=Plast Gløde Blokk
 tile.ReinforcedPlasticBlock.name=Forsterket Plast Blokk
 tile.RoadPlasticBlock.name=Plast Vei
@@ -322,25 +291,13 @@ upgrade.filter.desc=Et filer som separerer !ntungtvann fra vanlig vann.
 key.mode=Endre modus
 key.voice=Stemme
 
-# Entities
-entity.Robit.name=Robit
-entity.BabySkeleton.name=Baby Skeleton
-
 # Config Gui
 mekanism.configgui.ctgy.general=Mekanism Generelle Innstillinger
 mekanism.configgui.ctgy.machines=Maskin Innstillinger
 mekanism.configgui.ctgy.usage=Bruk Innstillinger
 mekanism.configgui.ctgy.client=Klient Innstillinger
 
-# Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
-mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
-mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
-mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
-
 # Gui text
-gui.condensentrating=Condensentrating
-gui.decondensentrating=Decondensentrating
 gui.power=Kraft
 gui.confirm=Bekreft
 gui.open=Åpne
@@ -448,15 +405,11 @@ gui.seismicReader.reading=Leser
 
 gui.filterSelect.title=Lag Nytt Filer
 
-gui.oredictFilter=OreDict Filter
 gui.oredictFilter.noKey=Ingen nøkkel
 gui.oredictFilter.sameKey=Samme nøkkel
 
-gui.modIDFilter=Mod ID Filter
 gui.modIDFilter.noID=Ingen ID
 gui.modIDFilter.sameID=Samme ID
-
-gui.oredictionificatorFilter=Oredictionificator Filter
 
 gui.itemFilter=Gjenstands Filter
 gui.itemFilter.noItem=Ingen gjenstand
@@ -464,15 +417,9 @@ gui.itemFilter.details=ItemStack Detaljer
 gui.itemFilter.min=Min
 gui.itemFilter.max=Maks
 
-gui.materialFilter=Material Filter
-gui.materialFilter.details=Using material of
-
 gui.portableTeleporter=Portabel Teleportør
 
-gui.robit=Robit
-gui.robit.smelting=Robit Smelting
 gui.robit.inventory=Robit Inventar
-gui.robit.crafting=Robit Crafting
 gui.robit.greeting=Hei, jeg er
 gui.robit.toggleFollow=Bytt 'følge' modus
 gui.robit.rename=Gi nytt navn til denne Robit'en
@@ -489,10 +436,6 @@ gui.password.notMatching=Samsvarer ikke
 gui.password.identical=Idenstisk
 gui.password.invalid=Ugyldig
 gui.password=Passord
-
-gui.logisticalSorter.default=Standard
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round-robin
 
 gui.teleporter.notReady=Ikke klar
 gui.teleporter.ready=Klar
@@ -726,7 +669,6 @@ item.Hohlraum.name=Hohlraum
 tile.Generator.HeatGenerator.name=Varme Generator
 tile.Generator.SolarGenerator.name=Solcelle Generator
 tile.Generator.GasGenerator.name=Brensel-Brennende Generator
-tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Avansert Solcelle Generator
 tile.Generator.WindGenerator.name=Vind Turbin
 
