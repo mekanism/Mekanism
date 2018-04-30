@@ -32,6 +32,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
@@ -112,6 +114,17 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 		return true;
 	}
+	
+	private RayTraceResult doRayTrace(IBlockState state, BlockPos pos, EntityPlayer player)
+	{
+		Vec3d positionEyes = player.getPositionEyes(1.0F);
+		Vec3d playerLook = player.getLook(1.0F);
+		double blockReachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+		Vec3d maxReach = positionEyes.addVector(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
+		RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
+		//noinspection ConstantConditions - idea thinks it's nonnull due to package level annotations, but it's not
+		return res != null ? res : new RayTraceResult(RayTraceResult.Type.MISS, Vec3d.ZERO, EnumFacing.UP, pos);
+	}
 
 	@Override
 	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
@@ -129,7 +142,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 				block = Blocks.REDSTONE_ORE;
 			}
 
-			ItemStack stack = block.getPickBlock(state, null, player.world, pos, player);
+			RayTraceResult raytrace = doRayTrace(state, pos, player);
+			ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
 			Coord4D orig = new Coord4D(pos, player.world);
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
@@ -146,7 +160,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
 			{
-				Set<Coord4D> found = new Finder(player.world, stack, new Coord4D(pos, player.world)).calc();
+				Set<Coord4D> found = new Finder(player.world, stack, new Coord4D(pos, player.world), raytrace).calc();
 
 				for(Coord4D coord : found)
 				{
@@ -372,13 +386,16 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		private Block startBlock;
 
 		public static Map<Block, List<Block>> ignoreBlocks = new HashMap<>();
+		
+		RayTraceResult rayTraceResult;
 
-		public Finder(World w, ItemStack s, Coord4D loc)
+		public Finder(World w, ItemStack s, Coord4D loc, RayTraceResult traceResult)
 		{
 			world = w;
 			stack = s;
 			location = loc;
 			startBlock = loc.getBlock(w);
+			rayTraceResult = traceResult;
 		}
 
 		public void loop(Coord4D pointer)
@@ -394,7 +411,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			{
 				Coord4D coord = pointer.offset(side);
 
-				ItemStack blockStack = coord.getBlock(world).getPickBlock(coord.getBlockState(world), null, world, coord.getPos(), null);
+				ItemStack blockStack = coord.getBlock(world).getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), null);
 
 				if(coord.exists(world) && checkID(coord.getBlock(world)) && (stack.isItemEqual(blockStack) || (coord.getBlock(world) == startBlock && MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4)))
 				{
