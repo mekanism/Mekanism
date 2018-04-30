@@ -59,9 +59,6 @@ import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.recipe.BinRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.generation.MekanismGeneratorRecipes;
-import mekanism.common.recipe.generation.MekanismRecipes;
-import mekanism.common.recipe.generation.MekanismToolsRecipes;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -92,7 +89,6 @@ import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
@@ -828,6 +824,15 @@ public class Mekanism
 		logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
 
 		OreDictManager.init();
+
+		// Add all furnace recipes to the energized smelter
+		// Must happen after CraftTweaker for vanilla stuff has run.
+		for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
+		{
+			SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
+			Recipe.ENERGIZED_SMELTER.put(recipe);
+		}
+
 		hooks.hook();
 		
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());

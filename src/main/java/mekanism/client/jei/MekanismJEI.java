@@ -2,8 +2,11 @@ package mekanism.client.jei;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import mekanism.api.gas.Gas;
@@ -72,11 +75,13 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
+import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
@@ -111,6 +116,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fluids.Fluid;
 
 @JEIPlugin
@@ -222,9 +228,6 @@ public class MekanismJEI implements IModPlugin
 		registry.handleRecipes(CrusherRecipe.class, CrusherRecipeWrapper::new, "mekanism.crusher");
 		addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
 
-		registry.handleRecipes(SmeltingRecipe.class, SmeltingRecipeWrapper::new, "mekanism.energized_smelter");
-		addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, "mekanism.energized_smelter");
-
 		registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, "mekanism.combiner");
 		addRecipes(registry, Recipe.COMBINER, DoubleMachineRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
 
@@ -284,9 +287,27 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipes(condensentratorRecipes, "mekanism.rotary_condensentrator_condensentrating");
 		registry.addRecipes(decondensentratorRecipes, "mekanism.rotary_condensentrator_decondensentrating");
 
+		registry.handleRecipes(SmeltingRecipe.class, SmeltingRecipeWrapper::new, "mekanism.energized_smelter");
+
+		if(EnergizedSmelter.hasRemovedRecipe()) // Removed / Removed + Added
+		{
+			// Add all recipes
+			addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, "mekanism.energized_smelter");
+		}
+		else if (EnergizedSmelter.hasAddedRecipe()) // Added but not removed
+		{
+			// Only add added recipes
+			HashMap<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
+			Collection<SmeltingRecipe> recipes = smeltingRecipes.entrySet().stream()
+					.filter(entry -> !FurnaceRecipes.instance().getSmeltingList().keySet().contains(entry.getKey().ingredient))
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).values();
+
+			addRecipes(registry, recipes, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, "mekanism.energized_smelter");
+		}
+		// else - Only use furnace list, so no extra registration.
+
 		registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, "mekanism.enrichment_chamber");
 		registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, "mekanism.crusher");
-		registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, "mekanism.energized_smelter", VanillaRecipeCategoryUid.SMELTING);
 		registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, "mekanism.combiner");
 		registry.addRecipeClickArea(GuiPurificationChamber.class, 79, 40, 24, 7, "mekanism.purification_chamber");
 		registry.addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, "mekanism.osmium_compressor");
@@ -304,6 +325,20 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38, "mekanism.thermal_evaporation_plant");
 		registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, "mekanism.pressurized_reaction_chamber");
 		registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, "mekanism.rotary_condensentrator_condensentrating", "mekanism.rotary_condensentrator_decondensentrating");
+
+		// Energized smelter
+		if(EnergizedSmelter.hasRemovedRecipe())
+		{
+			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, "mekanism.energized_smelter");
+		}
+		else if(EnergizedSmelter.hasAddedRecipe())
+		{
+			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, "mekanism.energized_smelter", VanillaRecipeCategoryUid.SMELTING);
+		}
+		else
+		{
+			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING);
+		}
 		
 		registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER);
 		registerRecipeItem(registry, MachineType.CRUSHER);
@@ -338,10 +373,15 @@ public class MekanismJEI implements IModPlugin
 
 	private void addRecipes(IModRegistry registry, Recipe type, Class<?> recipe, Class<? extends IRecipeWrapper> wrapper, String recipeCategoryUid)
 	{
+		addRecipes(registry, type.get().values(), recipe, wrapper, recipeCategoryUid);
+	}
+
+	private void addRecipes(IModRegistry registry, Collection recipeList, Class<?> recipe, Class<? extends IRecipeWrapper> wrapper, String recipeCategoryUid)
+	{
 		List<IRecipeWrapper> recipes = new ArrayList<>();
 
 		//add all recipes with wrapper to the list
-		for(Object obj : type.get().values())
+		for(Object obj : recipeList)
 		{
 			if(obj instanceof MachineRecipe)
 			{
