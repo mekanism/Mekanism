@@ -261,7 +261,7 @@ public final class MekanismHooks
 			if (crystalSeed.isPresent()){
 				NonNullList<ItemStack> seeds = NonNullList.create();
 				crystalSeed.get().getSubItems(CreativeTabs.SEARCH, seeds);//there appears to be no way to get this via api, so fall back to unloc names
-				seeds.forEach(stack->{
+				for (ItemStack stack : seeds) {
 					String unloc = crystalSeed.get().getUnlocalizedName(stack);
 					if (unloc.endsWith("certus") && pureCertus.isPresent()){
 						RecipeHandler.addEnrichmentChamberRecipe(stack, pureCertus.get().copy());
@@ -270,7 +270,7 @@ public final class MekanismHooks
 					} else if (unloc.endsWith("fluix") && pureFluix.isPresent()){
 						RecipeHandler.addEnrichmentChamberRecipe(stack, pureFluix.get().copy());
 					}
-				});
+				}
 			}
 
 		} catch (Exception e){
