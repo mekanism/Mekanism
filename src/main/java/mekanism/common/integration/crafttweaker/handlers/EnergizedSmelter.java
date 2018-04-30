@@ -29,6 +29,18 @@ import java.util.Map;
 public class EnergizedSmelter
 {
     public static final String NAME = "Mekanism Smelter";
+    private static boolean removedRecipe = false;
+    private static boolean addedRecipe = false;
+
+    public static boolean hasRemovedRecipe()
+    {
+        return removedRecipe;
+    }
+
+    public static boolean hasAddedRecipe()
+    {
+        return addedRecipe;
+    }
 
     @ZenMethod
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput)
@@ -42,6 +54,7 @@ public class EnergizedSmelter
         SmeltingRecipe recipe = new SmeltingRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
         CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ENERGIZED_SMELTER.get(), recipe));
+        addedRecipe = true;
     }
 
     @ZenMethod
@@ -57,6 +70,7 @@ public class EnergizedSmelter
             itemOutput = IngredientAny.INSTANCE;
 
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.ENERGIZED_SMELTER.get(), itemInput, itemOutput));
+        removedRecipe = true;
     }
 
     private static class Remove extends RemoveMekanismRecipe

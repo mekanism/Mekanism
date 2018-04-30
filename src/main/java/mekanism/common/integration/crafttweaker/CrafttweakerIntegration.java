@@ -21,6 +21,7 @@ public class CrafttweakerIntegration
      */
     public static void applyRecipeChanges()
     {
+        // Remove before addition, so recipes can be overwritten
         LATE_REMOVALS.forEach(action->{
             try
             {

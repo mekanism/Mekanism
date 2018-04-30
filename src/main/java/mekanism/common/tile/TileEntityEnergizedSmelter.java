@@ -23,18 +23,8 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<Smelti
 	}
 
 	@Override
-	public synchronized Map<ItemStackInput, SmeltingRecipe> getRecipes()
+	public Map<ItemStackInput, SmeltingRecipe> getRecipes()
 	{
-		if(cachedRecipes == null)
-		{
-			cachedRecipes = new HashMap<>();
-			cachedRecipes.putAll(Recipe.ENERGIZED_SMELTER.get());
-			for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
-			{
-				SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
-				cachedRecipes.put(recipe.getInput(), recipe);
-			}
-		}
-		return cachedRecipes;
+		return Recipe.ENERGIZED_SMELTER.get();
 	}
 }
