@@ -333,7 +333,7 @@ public class MekanismJEI implements IModPlugin
 		}
 		else if(EnergizedSmelter.hasAddedRecipe())
 		{
-			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, "mekanism.energized_smelter", VanillaRecipeCategoryUid.SMELTING);
+			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING, "mekanism.energized_smelter");
 		}
 		else
 		{
