@@ -162,7 +162,9 @@ import com.mojang.authlib.GameProfile;
 						"after:cofhcore;" +
 						"after:computercraft;" +
 						"after:galacticraft api;" +
-						"after:metallurgycore")
+						"after:metallurgycore;"+
+						"after:crafttweaker"
+)
 @Mod.EventBusSubscriber()
 public class Mekanism
 {
