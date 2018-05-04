@@ -52,7 +52,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(9, 4, 8);
+	public static Version versionNumber = new Version(9, 4, 9);
 	
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
 
