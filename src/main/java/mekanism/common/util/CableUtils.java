@@ -75,7 +75,8 @@ public final class CableUtils
 		}
 		
 		return isAcceptor(cableEntity, tile, side) || isOutputter(tile, side) || 
-				(MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection)tile).canConnectEnergy(side.getOpposite()));
+				(MekanismUtils.useRF() && tile instanceof IEnergyConnection && ((IEnergyConnection)tile).canConnectEnergy(side.getOpposite())) ||
+				(MekanismUtils.useForge() && CapabilityUtils.hasCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()));
 	}
 
 	/**
