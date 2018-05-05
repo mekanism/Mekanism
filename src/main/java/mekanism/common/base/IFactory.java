@@ -328,5 +328,10 @@ public interface IFactory
 		{
 			return name().toLowerCase(Locale.ROOT);
 		}
+		
+		public MachineType getType()
+		{
+			return type;
+		}
 	}
 }

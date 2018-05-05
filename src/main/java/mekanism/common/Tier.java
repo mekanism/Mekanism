@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 import mekanism.api.EnumColor;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.util.LangUtils;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
@@ -214,12 +215,13 @@ public final class Tier
 
 	public enum FactoryTier
 	{
-		BASIC(3, new ResourceLocation("mekanism", "gui/factory/GuiBasicFactory.png")),
-		ADVANCED(5, new ResourceLocation("mekanism", "gui/factory/GuiAdvancedFactory.png")),
-		ELITE(7, new ResourceLocation("mekanism", "gui/factory/GuiEliteFactory.png"));
+		BASIC(3, new ResourceLocation("mekanism", "gui/factory/GuiBasicFactory.png"), BlockStateMachine.MachineType.BASIC_FACTORY),
+		ADVANCED(5, new ResourceLocation("mekanism", "gui/factory/GuiAdvancedFactory.png"), BlockStateMachine.MachineType.ADVANCED_FACTORY),
+		ELITE(7, new ResourceLocation("mekanism", "gui/factory/GuiEliteFactory.png"), BlockStateMachine.MachineType.ELITE_FACTORY);
 
 		public int processes;
 		public ResourceLocation guiLocation;
+		public final BlockStateMachine.MachineType machineType;
 
 		public static FactoryTier getFromName(String tierName)
 		{
@@ -240,10 +242,11 @@ public final class Tier
 			return BaseTier.values()[ordinal()];
 		}
 
-		FactoryTier(int process, ResourceLocation gui)
+		FactoryTier(int process, ResourceLocation gui, BlockStateMachine.MachineType machineTypeIn)
 		{
 			processes = process;
 			guiLocation = gui;
+			machineType = machineTypeIn;
 		}
 	}
 

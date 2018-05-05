@@ -70,6 +70,7 @@ import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.Tier;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierItem;
@@ -105,6 +106,7 @@ import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.util.MekanismUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
@@ -371,7 +373,25 @@ public class MekanismJEI implements IModPlugin
 	
 	private void registerRecipeItem(IModRegistry registry, MachineType type)
 	{
-		registry.addRecipeCatalyst(type.getStack(), "mekanism." + type.getName());
+		String category = "mekanism." + type.getName();
+		registry.addRecipeCatalyst(type.getStack(), category);
+		RecipeType factoryType = null;
+		for (RecipeType t : RecipeType.values()){
+			if (t.getType() == type){
+				factoryType = t;
+				break;
+			}
+		}
+		if (factoryType != null)
+		{
+			for (Tier.FactoryTier tier : Tier.FactoryTier.values())
+			{
+				if(tier.machineType.isEnabled())
+				{
+					registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, factoryType), category);
+				}
+			}
+		}
 	}
 
 	private void addRecipes(IModRegistry registry, Recipe type, Class<?> recipe, Class<? extends IRecipeWrapper> wrapper, String recipeCategoryUid)
