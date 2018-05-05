@@ -118,11 +118,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.common.Loader;
 
 @JEIPlugin
 public class MekanismJEI implements IModPlugin
 {
 	private static final GasStackRenderer GAS_RENDERER = new GasStackRenderer();
+
+	private static final boolean CRAFTTWEAKER_LOADED = Loader.isModLoaded("crafttweaker");
 	
 	public static final ISubtypeInterpreter NBT_INTERPRETER = itemStack ->
 	{
@@ -289,12 +292,12 @@ public class MekanismJEI implements IModPlugin
 
 		registry.handleRecipes(SmeltingRecipe.class, SmeltingRecipeWrapper::new, "mekanism.energized_smelter");
 
-		if(EnergizedSmelter.hasRemovedRecipe()) // Removed / Removed + Added
+		if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasRemovedRecipe()) // Removed / Removed + Added
 		{
 			// Add all recipes
 			addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, "mekanism.energized_smelter");
 		}
-		else if (EnergizedSmelter.hasAddedRecipe()) // Added but not removed
+		else if (CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe()) // Added but not removed
 		{
 			// Only add added recipes
 			HashMap<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
@@ -327,11 +330,11 @@ public class MekanismJEI implements IModPlugin
 		registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, "mekanism.rotary_condensentrator_condensentrating", "mekanism.rotary_condensentrator_decondensentrating");
 
 		// Energized smelter
-		if(EnergizedSmelter.hasRemovedRecipe())
+		if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasRemovedRecipe())
 		{
 			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, "mekanism.energized_smelter");
 		}
-		else if(EnergizedSmelter.hasAddedRecipe())
+		else if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe())
 		{
 			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING, "mekanism.energized_smelter");
 		}
