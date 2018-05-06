@@ -297,7 +297,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
 			TileEntity tile = coord.getTileEntity(getWorld());
 
-			if(sides == null || sides.isEmpty())
+			if(sides == null || sides.isEmpty() || !(tile instanceof IFluidHandler))
 			{
 				continue;
 			}
