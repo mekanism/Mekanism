@@ -102,6 +102,10 @@ public final class MekanismHooks
 		{
 			loadCCPeripheralProviders();
 		}
+		
+		if (AE2Loaded){
+			registerAE2Recipes();
+		}
 
 		if(Loader.isModLoaded("crafttweaker"))
 		{
@@ -109,10 +113,6 @@ public final class MekanismHooks
 		}
 
 		Wrenches.initialise();
-
-		if (AE2Loaded){
-			registerAE2Recipes();
-		}
 	}
 
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
