@@ -81,7 +81,7 @@ public class ContainerFluidTank extends Container
 				}
 			}
 			else {
-				if(slotID >= 2 && slotID <= 8)
+				if(slotID >= 2 && slotID <= 28)
 				{
 					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
 					{

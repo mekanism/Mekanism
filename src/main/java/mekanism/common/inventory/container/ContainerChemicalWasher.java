@@ -135,7 +135,7 @@ public class ContainerChemicalWasher extends Container
 						return null;
 					}
 				}
-				else if(slotID > 31)
+				else if(slotID > 30)
 				{
 					if(!mergeItemStack(slotStack, 4, 30, false))
 					{
