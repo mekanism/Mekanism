@@ -81,9 +81,6 @@ public class BakedCustomItemModel implements IBakedModel
 	
 	private Minecraft mc = Minecraft.getMinecraft();
 	
-	private static final RenderFluidTank fluidTankRenderer = (RenderFluidTank)TileEntityRendererDispatcher.instance.renderers.get(TileEntityFluidTank.class);
-	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.renderers.get(TileEntityBin.class);
-	
 	public static ModelJetpack jetpack = new ModelJetpack();
 	public static ModelArmoredJetpack armoredJetpack = new ModelArmoredJetpack();
 	public static ModelGasMask gasMask = new ModelGasMask();
@@ -158,7 +155,7 @@ public class BakedCustomItemModel implements IBakedModel
 				float targetScale = (float)(itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0)/itemMachine.getCapacity(stack);
 				FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
 				Fluid fluid = itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).getFluid() : null;
-				fluidTankRenderer.render(tier, fluid, targetScale, false, null, -0.5, -0.5, -0.5);
+				RenderFluidTank.INSTANCE.render(tier, fluid, targetScale, false, null, -0.5, -0.5, -0.5);
 				GlStateManager.popMatrix();
 			}
 			else if(machineType == MachineType.PERSONAL_CHEST)
