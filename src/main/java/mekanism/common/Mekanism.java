@@ -793,6 +793,7 @@ public class Mekanism
 
 		//Load this module
 		addRecipes();
+		OreDictManager.init();
 		addEntities();
 		
 		//Integrate with Waila
@@ -829,8 +830,6 @@ public class Mekanism
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
-
-		OreDictManager.init();
 
 		// Add all furnace recipes to the energized smelter
 		// Must happen after CraftTweaker for vanilla stuff has run.
