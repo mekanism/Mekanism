@@ -92,7 +92,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.get(stack);
 		
-		if(type.maxEnergy == -1)
+		if(type!=null && type.maxEnergy == -1)
 		{
 			return 64;
 		}
@@ -110,12 +110,13 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		if(GeneratorType.get(itemstack) == null)
+		GeneratorType generatorType = GeneratorType.get(itemstack);
+		if(generatorType == null)
 		{
 			return "KillMe!";
 		}
 
-		return getUnlocalizedName() + "." + GeneratorType.get(itemstack).blockName;
+		return getUnlocalizedName() + "." + generatorType.blockName;
 	}
 
 	@Override
@@ -123,6 +124,8 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
 	{
 		GeneratorType type = GeneratorType.get(itemstack);
+		if (type==null)
+			return;
 		
 		if(type.maxEnergy > -1)
 		{
@@ -343,7 +346,8 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return GeneratorType.get(itemStack).maxEnergy;
+		GeneratorType generatorType = GeneratorType.get(itemStack);
+		return generatorType != null ? generatorType.maxEnergy : 0;
 	}
 
 	@Override
@@ -361,7 +365,8 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return GeneratorType.get(itemStack).maxEnergy != -1;
+		GeneratorType generatorType = GeneratorType.get(itemStack);
+		return generatorType != null && generatorType.maxEnergy != -1;
 	}
 
 	@Override
@@ -470,7 +475,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.get(stack);
 		
-		return type.hasModel;
+		return type!=null && type.hasModel;
 	}
 	
 	@Override
