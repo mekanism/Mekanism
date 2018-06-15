@@ -74,14 +74,14 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A,N>> extends Transmitt
 	@Override
 	public boolean isValid()
 	{
-		TileEntity cont = getTileEntity();
+		TileEntityTransmitter cont = getTileEntity();
 		
 		if(cont == null)
 		{
 			return false;
 		}
 
-		return !cont.isInvalid() && coord().exists(world());
+		return !cont.isInvalid() && coord().exists(world()) && coord().getTileEntity(world()) == cont && cont.getTransmitter() == this;
 	}
 
 	@Override
