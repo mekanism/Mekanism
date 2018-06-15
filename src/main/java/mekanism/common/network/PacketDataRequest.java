@@ -19,7 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -33,11 +33,12 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 		
 		PacketHandler.handlePacket(() ->
         {
-            World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
-            TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
+            World worldServer = DimensionManager.getWorld(message.coord4D.dimensionId);
 
             if(worldServer != null)
             {
+				TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
+
                 if(tileEntity instanceof TileEntityMultiblock)
                 {
                     ((TileEntityMultiblock<?>)tileEntity).sendStructure = true;
