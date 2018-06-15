@@ -46,6 +46,8 @@ public abstract class Transmitter<A, N extends DynamicNetwork<A, N>> implements 
 		{
 			theNetwork.transmitters.add(this);
 		}
+
+		setRequestsUpdate();
 	}
 
 	@Override
