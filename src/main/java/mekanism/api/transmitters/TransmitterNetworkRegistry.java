@@ -34,7 +34,7 @@ public class TransmitterNetworkRegistry
 	private HashMap<Coord4D, IGridTransmitter> orphanTransmitters = Maps.newHashMap();
 	private HashMap<Coord4D, IGridTransmitter> newOrphanTransmitters = Maps.newHashMap();
 
-	private Logger logger = LogManager.getLogger("MekanismTransmitters");
+	private static Logger logger = LogManager.getLogger("MekanismTransmitters");
 
 	public static void initiate()
 	{
@@ -62,7 +62,11 @@ public class TransmitterNetworkRegistry
 
 	public static void registerOrphanTransmitter(IGridTransmitter transmitter)
 	{
-		getInstance().newOrphanTransmitters.put(transmitter.coord(), transmitter);
+		Coord4D coord = transmitter.coord();
+		IGridTransmitter previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
+		if (previous != null && previous != transmitter){
+			logger.error("Different orphan transmitter was already registered at location! {}", coord.toString());
+		}
 	}
 
 	public static void registerChangedNetwork(DynamicNetwork network)
@@ -278,6 +282,9 @@ public class TransmitterNetworkRegistry
 					
 					for(EnumFacing direction : EnumFacing.VALUES)
 					{
+						if (direction.getAxis().isHorizontal() && !transmitter.world().isBlockLoaded(from.getPos().offset(direction))){
+							continue;
+						}
 						Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);
 						
 						if(directionCoord != null && !iterated.contains(directionCoord))
