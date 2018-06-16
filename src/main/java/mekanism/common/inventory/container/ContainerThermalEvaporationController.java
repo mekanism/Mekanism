@@ -8,6 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerThermalEvaporationController extends Container
@@ -67,6 +68,7 @@ public class ContainerThermalEvaporationController extends Container
 		{
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
+			FluidStack fluidContained = FluidUtil.getFluidContained(slotStack);
 
 			if(slotID == 1 || slotID == 3)
 			{
@@ -75,7 +77,7 @@ public class ContainerThermalEvaporationController extends Container
 					return ItemStack.EMPTY;
 				}
 			}
-			else if(FluidContainerUtils.isFluidContainer(slotStack) && FluidUtil.getFluidContained(slotStack) == null)
+			else if(FluidContainerUtils.isFluidContainer(slotStack) && fluidContained == null)
 			{
 				if(slotID != 2)
 				{
@@ -92,7 +94,7 @@ public class ContainerThermalEvaporationController extends Container
 					}
 				}
 			}
-			else if(tileEntity.hasRecipe(FluidUtil.getFluidContained(slotStack).getFluid()))
+			else if(fluidContained != null && tileEntity.hasRecipe(fluidContained.getFluid()))
 			{
 				if(slotID != 0)
 				{
