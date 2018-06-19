@@ -230,7 +230,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		
 		if(type == BasicBlockType.SECURITY_DESK)
 		{
-			if(pos.getY()+1 > 255 || !world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
+			if(world.isOutsideBuildHeight(pos.up()) || !world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
 			{
 				place = false;
 			}
