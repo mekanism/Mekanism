@@ -226,6 +226,11 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 				filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 			}
 		}
+
+		//to fix any badly placed blocks in the world
+		if (facing.getAxis() == EnumFacing.Axis.Y){
+			facing = EnumFacing.NORTH;
+		}
 	}
 	
 	@Override
@@ -445,6 +450,12 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		}
 		
 		return super.getCapability(capability, side);
+	}
+
+	@Override
+	public boolean canSetFacing(int i)
+	{
+		return i != 0 && i != 1;
 	}
 	
 	public static class OredictionificatorFilter
