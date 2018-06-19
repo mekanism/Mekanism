@@ -16,6 +16,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class MinerUtils
@@ -42,7 +43,7 @@ public final class MinerUtils
 			return Collections.EMPTY_LIST;
 		}
 
-		if(silk && (block.canSilkHarvest(world, obj.getPos(), state, null) || specialSilkIDs.contains(block)))
+		if(silk && (block.canSilkHarvest(world, obj.getPos(), state, Mekanism.proxy.getDummyPlayer((WorldServer)world).get()) || specialSilkIDs.contains(block)))
 		{
 			List<ItemStack> ret = new ArrayList<>();
 			if (getSilkTouchDrop != null)
