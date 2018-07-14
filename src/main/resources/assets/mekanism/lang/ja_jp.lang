@@ -13,6 +13,7 @@ item.EnergyUpgrade.name=エネルギーアップグレード
 item.FilterUpgrade.name=フィルターアップグレード
 item.MufflingUpgrade.name=消音アップグレード
 item.GasUpgrade.name=ガスアップグレード
+item.AnchorUpgrade.name=アンカーアップグレード
 item.Robit.name=ロビット
 item.AtomicDisassembler.name=原子分解機
 item.ElectricBow.name=電動弓
@@ -38,6 +39,7 @@ item.LithiumBucket.name=リチウムバケツ
 item.HeavyWaterBucket.name=重水バケツ
 item.FreeRunners.name=フリーランナー
 item.ArmoredJetpack.name=装甲ジェットパック
+item.ConfigurationCard.name=設定カード
 item.SeismicReader.name=弾性波解析器
 item.HDPEPellet.name=HDPE ペレット
 item.HDPERod.name=HDPE ロッド
@@ -60,12 +62,14 @@ tile.GasTankBasic.name=基本ガスタンク
 tile.GasTankAdvanced.name=発展ガスタンク
 tile.GasTankElite.name=精鋭ガスタンク
 tile.GasTankUltimate.name=究極ガスタンク
+tile.GasTankCreative.name=クリエイティブガスタンク
 
 # Fluid Tank (part of MachineBlock2, naming handled differently)
 tile.FluidTankBasic.name=基本液体タンク
 tile.FluidTankAdvanced.name=発展液体タンク
 tile.FluidTankElite.name=精鋭液体タンク
 tile.FluidTankUltimate.name=究極液体タンク
+tile.FluidTankCreative.name=クリエイティブ液体タンク
 
 # Cardboard Box
 tile.CardboardBox.name=段ボール箱
@@ -87,6 +91,7 @@ tile.BasicBlock.BinBasic.name=基本ビン
 tile.BasicBlock.BinAdvanced.name=発展ビン
 tile.BasicBlock.BinElite.name=精鋭ビン
 tile.BasicBlock.BinUltimate.name=究極ビン
+tile.BasicBlock.BinCreative.name=クリエイティブビン
 tile.BasicBlock.TeleporterFrame.name=テレポーターフレーム
 tile.BasicBlock.SteelCasing.name=鋼鉄ケース
 tile.BasicBlock.DynamicTank.name=ダイナミックタンク
@@ -215,6 +220,12 @@ tile.EnergyCubeElite.name=精鋭エネルギーキューブ
 tile.EnergyCubeUltimate.name=究極エネルギーキューブ
 tile.EnergyCubeCreative.name=クリエイティブエネルギーキューブ
 
+# Tier Installers
+item.basicTierInstaller.name=基本ランクインストーラ
+item.advancedTierInstaller.name=発展ランクインストーラ
+item.eliteTierInstaller.name=精鋭ランクインストーラ
+item.ultimateTierInstaller.name=究極ランクインストーラ
+
 # Dust
 item.ironDust.name=鉄の粉
 item.goldDust.name=金の粉
@@ -267,13 +278,22 @@ item.dirtySilverDust.name=汚れた銀の粉
 item.dirtyLeadDust.name=汚れた鉛の粉
 
 # Ingots
-item.obsidianIngot.name=黒曜石のインゴット
+item.obsidianIngot.name=精製黒曜石インゴット
 item.osmiumIngot.name=オスミウムインゴット
 item.bronzeIngot.name=青銅インゴット
 item.glowstoneIngot.name=グロウストーンインゴット
 item.steelIngot.name=鋼鉄インゴット
 item.copperIngot.name=銅インゴット
 item.tinIngot.name=錫インゴット
+
+# Nuggets
+item.obsidianNugget.name=精製黒曜石ナゲット
+item.osmiumNugget.name=オスミウムナゲット
+item.bronzeNugget.name=青銅ナゲット
+item.glowstoneNugget.name=グロウストーンナゲット
+item.steelNugget.name=鋼鉄ナゲット
+item.copperNugget.name=銅ナゲット
+item.tinNugget.name=錫ナゲット
 
 # Gasses
 gas.hydrogen=水素
@@ -360,6 +380,8 @@ transmission.Heat=熱
 # Update handler text
 update.consider=新バージョンへのアップデートはどうでしょう
 update.newFeatures=新たな要素
+update.visit=訪問先
+update.toDownload=でダウンロード
 update.devBuild=開発版ビルドを利用中
 update.outdated=古いバージョンのモジュールを利用しています
 
@@ -374,10 +396,13 @@ upgrade.gas=ガス
 upgrade.gas.desc=ガスの使用効率を上昇させます。
 upgrade.muffling=消音
 upgrade.muffling.desc=マシンの騒音を減らします。
+upgrade.anchor=アンカー
+upgrade.anchor.desc=マシンの置かれているチャンクを読み込みます。
 
 # Key description text
 key.mode=アイテムモード切り替え
 key.armorMode=アーマーモード切り替え
+key.feetMode=足装備モードの切り替え
 key.voice=周波数
 
 # Entities
@@ -460,10 +485,13 @@ gui.matrixStats=インダクションマトリックスの状態
 gui.turbineStats=タービンの状態
 gui.boilerStats=ボイラーの状態
 gui.main=メイン画面
+gui.outputting=アウトプット
+gui.receiving=インプット
 gui.dimensions=体積
 gui.constituents=内容
 gui.cells=セル
 gui.providers=プロバイダ
+gui.structure=Structure
 gui.dynamicTank=ダイナミックタンク
 gui.industrialTurbine=工業用タービン
 gui.thermoelectricBoiler=ボイラー室
@@ -484,6 +512,8 @@ gui.storing=蓄電量
 gui.skyBlocked=空に面していません
 gui.using=使用中
 gui.needed=必要
+mekanism.gui.bufferfree=空きRF容量
+mekanism.gui.insufficientbuffer=RF容量が足りません！
 gui.noRecipe=レシピ無し
 gui.conflict=衝突
 gui.height=高さ
@@ -497,9 +527,8 @@ gui.oreDictCompat=統合する鉱石辞書名
 gui.toggleCooling=値の尺度を切り替える
 gui.coolingMeasurements=冷却尺度
 gui.redstoneOutputMode=出力モード
-gui.entityDetection=エンティティの検出
 gui.moveUp=上に
-gui.moveDown=舌に
+gui.moveDown=下に
 gui.flowRate=流量
 gui.maxFlow=最大流量
 gui.tankVolume=タンクの容量
@@ -517,6 +546,7 @@ gui.unit=単位
 gui.temp=温度
 gui.usage=使用
 gui.dissipated=発散
+gui.dissipated=温度変化
 gui.boilRate=沸騰量
 gui.maxBoil=蒸気生成量
 gui.maxWater=水の最大容量
@@ -536,10 +566,20 @@ gui.trustedPlayers=認可されたプレイヤー
 gui.publicMode=公開モード
 gui.privateMode=非公開モード
 gui.trustedMode=認可モード
+gui.securityOffline=Security Offline
 gui.noAccessDesc=貴方はアクセスできません
+gui.overridden=上書き済み
 gui.nowOwn=貴方はこのアイテムの所有者になりました。
+gui.frequency=周波数
 gui.mode=モード
 gui.burnRate=燃焼効率
+gui.entityDetection=エンティティ検出
+gui.energyContents=エネルギー量
+gui.redstoneOutput=RS出力
+gui.maxWaterOutput=最大水排出量
+gui.stockControl=Stock Control
+gui.allowDefault=Allow Default
+gui.sizeMode=Size Mode
 
 gui.reactor.injectionRate=合成レート
 
@@ -552,6 +592,7 @@ gui.upgrades.effect=効果
 
 gui.chemicalInfuser.short=化学混成機
 gui.chemicalDissolutionChamber.short=化学溶解機
+gui.thermalEvaporationController.short=加温蒸縮ｺﾝﾄﾛｰﾗ
 
 gui.dictionary.noKey=対応する鉱石辞書名がありません。
 
@@ -562,6 +603,7 @@ gui.configuration.strictInput=精密な搬入
 
 gui.rotaryCondensentrator.toggleOperation=処理の変更
 
+gui.factory.secondaryEnergy=二次エネルギー
 gui.factory.autoSort=自動分配
 
 # Recipe types
@@ -652,6 +694,12 @@ gui.digitalMiner.inverse=反転モード
 gui.digitalMiner.requireReplace=置き換えの強制
 gui.digitalMiner.fuzzyMode=曖昧モード
 gui.digitalMiner.missingBlock=ブロックがありません
+mekanism.gui.digitalMiner.capacity=エネルギー容量
+mekanism.gui.digitalMiner.lowPower=エネルギーが足りません
+
+# Recipe names
+recipe.mekanismShaped=定形
+recipe.mekanismShapeless=不定形
 
 # Security types
 security.public=公開
@@ -675,6 +723,12 @@ tooltip.configurator.plenisherReset=流体再供給機の供給の推定をリ�
 tooltip.configurator.inductionPortMode=インダクションポートの設定を次に設定しました
 tooltip.configurator.toggleColor=色を次に設定しました
 tooltip.configurator.viewColor=現在の色
+tooltip.configurator.reactorPortEject=核融合搬入出ポートの設定を次に設定しました
+tooltip.configurator.modeChange=接続タイプを次に設定しました
+mekanism.pipe.connectiontype.normal=通常
+mekanism.pipe.connectiontype.push=搬入
+mekanism.pipe.connectiontype.pull=搬出
+mekanism.pipe.connectiontype.none=断絶
 
 tooltip.upgrade.speed=スピード
 tooltip.upgrade.energy=エネルギー
@@ -726,6 +780,9 @@ tooltip.itemAmount=アイテム量
 tooltip.invalid=不正
 tooltip.encoded=登録済み
 tooltip.ingredients=要素
+tooltip.conduction=伝導
+tooltip.insulation=絶縁
+tooltip.heatCapacity=熱容量
 
 tooltip.portableTank.bucketMode=バケツモード
 
@@ -735,11 +792,18 @@ tooltip.disassembler.fast=早い
 tooltip.disassembler.vein=鉱脈
 tooltip.disassembler.off=オフ
 
+tooltip.configurationCard.got=%sから設定データを読み取りました
+tooltip.configurationCard.set=%sの設定を適用しました
+tooltip.configurationCard.unequal=設定データに互換性がありません
+
 tooltip.balloon=風船
 
 tooltip.jetpack.regular=通常
 tooltip.jetpack.hover=ホバー
 tooltip.jetpack.disabled=無効
+
+tooltip.freerunner.regular=通常
+tooltip.freerunner.disabled=無効
 
 tooltip.flamethrower.combat=実戦
 tooltip.flamethrower.heat=加熱
@@ -748,6 +812,7 @@ tooltip.flamethrower.modeBump=火炎放射器のモードを変更
 
 tooltip.seismicReader.needsEnergy=弾性波の解析に必要なエネルギーがありません
 tooltip.seismicReader.noVibrations=弾性波を検出できません
+tooltip.mekanism.SeismicReader=弾性波からワールドの各層の情報を読み取れる携帯機器です。
 
 tooltip.Bin=大量のアイテムを貯めこむことが出来ます。
 tooltip.TeleporterFrame=テレポーターの組み立てに使います。テレポーターの中にポータルを生成します。
@@ -780,7 +845,7 @@ tooltip.Teleporter=設定したいろいろな別のテレポーターへとプ�
 tooltip.ElectricPump=溶岩湖全部を組み上げることが出来る良いポンプです。
 tooltip.PersonalChest=54スロットを有し、いたるところで開けられるあなただけのチェストです。
 tooltip.Chargepad=どのModのどんなアイテムも充電することが出来るユニーバーサルなチャージパッドです
-tooltip.LogisticalSorter=フィルターによる的確な仕分けができる機械です。隣接するインベントリからロジスティカルトランスポーターへと仕分けて搬出します。
+tooltip.LogisticalSorter=フィルターによる的確な仕分けができる機械です。 隣接するインベントリからロジスティカルトランスポーターへと仕分けて搬出します。
 tooltip.RotaryCondensentrator=ガスを液体にしたり液体をガスにしたりする機械です。
 tooltip.ChemicalInjectionChamber=鉱石を4つの欠片にする精鋭的な機械です。あなたを鉱石4倍加へと導いてくれるでしょう。
 tooltip.ElectrolyticSeparator=液体を2つの別のガスに電解する機械です。
@@ -810,12 +875,14 @@ tooltip.SolarGenerator=太陽光で発電します。
 tooltip.GasGenerator=いろいろなガスで発電します。
 tooltip.BioGenerator=世界中のオーガニックな素材から発電します。
 tooltip.AdvancedSolarGenerator=よりエネルギーの変換効率が良い、太陽光を直接的に吸収して発電する発電機です。
+tooltip.WindGenerator=風の力を利用して電力を生み出します。高い位置にあるほどより多く発電します。
 tooltip.TurbineRotor=工業用タービンの内部にある、タービンの羽の軸となる鋼鉄製の棒です。
 tooltip.RotationalComplex=電磁コイルに運動エネルギーを伝えるために、タービンローターの上に設置するコネクターです。
-tooltip.ElectromagneticCoil=回転機構からの運動エネルギーを電力に変換するブロックです。回転機構より上でなおかつ回転機構に一つでもつながっていれば、どんなふうにおいても大丈夫です。
+tooltip.ElectromagneticCoil=回転機構からの運動エネルギーを電力に変換するブロックです。 回転機構より上でなおかつ回転機構に一つでもつながっていれば、どんなふうにおいても大丈夫です。
 tooltip.TurbineCasing=工業用タービンを構成する、耐圧性の筐体です。
 tooltip.TurbineValve=タービン筐体の一つで、電力の出力口や蒸気の搬入口となります。
 tooltip.TurbineVent=タービン筐体の一つで、蒸気を排出するための通気口です。回転機構以上の高さにある必要があります。
+tooltip.SaturatingCondenser=工業用タービンで使用された蒸気を凝縮し、水として再利用できるようにします。 このブロックは回転機構より上の任意の場所に配置できます。
 
 tooltip.ReactorGlass=核融合炉を構成する強化ガラスです。
 tooltip.ReactorLaserFocusMatrix=レーザー光を受け入れ、炉を加熱するための核融合炉窓のパネルです。
@@ -838,6 +905,10 @@ sideData.Gas=ガス搬入
 sideData.Extra=その他
 sideData.Infuse=注入剤
 sideData.Fluid=液体
+sideData.Fill=Fill
+sideData.Empty=Empty
+sideData.Charge=Charge
+sideData.Discharge=Discharge
 
 # Redstone control
 control.disabled=無効
@@ -904,6 +975,9 @@ reactor.capacity.desc=熱の値が更新した時
 reactor.depleted=燃料不足時
 reactor.depleted.desc=反応に十分な量の燃料が不足している時
 
+# Creative tab
+itemGroup.tabMekanism=Mekanism
+
 # NEI stuff
 nei.chemicalInjectionChamber=化学注入室
 
@@ -929,6 +1003,7 @@ tile.Generator.ElectromagneticCoil.name=電磁コイル
 tile.Generator.TurbineCasing.name=タービン筐体
 tile.Generator.TurbineValve.name=タービンバルブ
 tile.Generator.TurbineVent.name=蒸気排出口
+tile.Generator.SaturatingCondenser.name=飽和凝縮器
 
 tile.Reactor.ReactorController.name=核融合炉制御装置
 tile.Reactor.ReactorFrame.name=核融合炉筐体
@@ -955,6 +1030,17 @@ gui.maxCasing=最高炉内温度
 gui.passiveGeneration=熱平衡状態時の発電量
 gui.steamProduction=蒸気の生成量
 
+# Config Gui
+mekanism.configgui.ctgy.generators.general=基本設定
+mekanism.configgui.ctgy.generators.generators=発電機の設定
+mekanism.configgui.ctgy.generators.generation=発電の設定
+
+# Config Tooltips
+mekanism.configgui.ctgy.generators.general.tooltip=MekanismGeneratorsの基本設定
+mekanism.configgui.ctgy.generators.generators.tooltip=機械ごとの有効・無効化の設定
+mekanism.configgui.ctgy.generators.generation.tooltip=機械のエネルギーに関する設定
+
+#########
 # TOOLS
 #########
 
@@ -976,18 +1062,6 @@ item.ObsidianAxe.name=黒曜石の斧
 item.ObsidianShovel.name=黒曜石のシャベル
 item.ObsidianHoe.name=黒曜石のクワ
 item.ObsidianSword.name=黒曜石の剣
-
-# Lapis Lazuli
-item.LazuliHelmet.name=ラピスラズリのヘルメット
-item.LazuliChestplate.name=ラピスラズリのチェストプレート
-item.LazuliLeggings.name=ラピスラズリのレギンス
-item.LazuliBoots.name=ラピスラズリのブーツ
-item.LazuliPaxel.name=ラピスラズリのパクセル
-item.LazuliPickaxe.name=ラピスラズリのピッケル
-item.LazuliAxe.name=ラピスラズリの斧
-item.LazuliShovel.name=ラピスラズリのシャベル
-item.LazuliHoe.name=ラピスラズリのクワ
-item.LazuliSword.name=ラピスラズリの剣
 
 # Osmium
 item.OsmiumHelmet.name=オスミウムのヘルメット
@@ -1048,3 +1122,13 @@ item.LapisLazuliAxe.name=ラピスラズリの斧
 item.LapisLazuliShovel.name=ラピスラズリのシャベル
 item.LapisLazuliHoe.name=ラピスラズリのクワ
 item.LapisLazuliSword.name=ラピスラズリの剣
+
+# Config Gui
+mekanism.configgui.ctgy.tools.general=基本設定
+mekanism.configgui.ctgy.tools.armor=防具のバランス
+mekanism.configgui.ctgy.tools.tools=道具のバランス
+
+# Config Tooltips
+mekanism.configgui.ctgy.tools.general.tooltip=MekanismToolsの基本設定
+mekanism.configgui.ctgy.tools.armor.tooltip=MekanismToolsの防具におけるパラメータの設定
+mekanism.configgui.ctgy.tools.tools.tooltip=MekanismToolsの道具におけるパラメータの設定
