@@ -339,10 +339,14 @@ public class MekanismJEI implements IModPlugin
 		else if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe())
 		{
 			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING, "mekanism.energized_smelter");
+
+			registerVanillaSmeltingRecipeCatalyst(registry);
 		}
 		else
 		{
 			registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING);
+
+			registerVanillaSmeltingRecipeCatalyst(registry);
 		}
 		
 		registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER);
@@ -420,5 +424,17 @@ public class MekanismJEI implements IModPlugin
 		}
 
 		registry.addRecipes(recipes, recipeCategoryUid);
+	}
+
+	private void registerVanillaSmeltingRecipeCatalyst(IModRegistry registry)
+	{
+		registry.addRecipeCatalyst(MachineType.ENERGIZED_SMELTER.getStack(), VanillaRecipeCategoryUid.SMELTING);
+		for (Tier.FactoryTier tier : Tier.FactoryTier.values())
+		{
+			if(tier.machineType.isEnabled())
+			{
+				registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING), VanillaRecipeCategoryUid.SMELTING);
+			}
+		}
 	}
 }
