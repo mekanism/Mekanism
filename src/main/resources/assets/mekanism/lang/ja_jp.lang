@@ -380,7 +380,7 @@ transmission.Heat=熱
 # Update handler text
 update.consider=新バージョンへのアップデートはどうでしょう
 update.newFeatures=新たな要素
-update.visit=訪問先
+update.visit=こちら
 update.toDownload=でダウンロード
 update.devBuild=開発版ビルドを利用中
 update.outdated=古いバージョンのモジュールを利用しています
