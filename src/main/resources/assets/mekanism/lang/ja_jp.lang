@@ -577,9 +577,9 @@ gui.entityDetection=エンティティ検出
 gui.energyContents=エネルギー量
 gui.redstoneOutput=RS出力
 gui.maxWaterOutput=最大水排出量
-gui.stockControl=Stock Control
-gui.allowDefault=Allow Default
-gui.sizeMode=Size Mode
+gui.stockControl=インベントリ制御
+gui.allowDefault=デフォルトルートに設定
+gui.sizeMode=スタックモード
 
 gui.reactor.injectionRate=合成レート
 
