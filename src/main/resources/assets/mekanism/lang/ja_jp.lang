@@ -149,7 +149,6 @@ tile.MachineBlock2.ChemicalWasher.name=化学洗浄機
 tile.MachineBlock2.ChemicalCrystallizer.name=化学結晶化装置
 tile.MachineBlock2.SeismicVibrator.name=弾性波発振装置
 tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応室
-tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.FluidicPlenisher.name=流体再供給機
 tile.MachineBlock2.Laser.name=レーザー
 tile.MachineBlock2.LaserAmplifier.name=レーザー増幅器
@@ -465,9 +464,7 @@ gui.energy=エネルギー
 gui.gas=ガス
 gui.dumping=廃棄
 gui.dumping_excess=余剰分を廃棄
-gui.modID=Mod ID
 gui.key=キー
-gui.id=ID
 gui.finished=完了
 gui.well=状態良好
 gui.upgrade=アップグレード
@@ -768,7 +765,6 @@ tooltip.meta=メタデータ
 tooltip.tile=タイル
 tooltip.keysFound=割り当てられている鉱石辞書名
 tooltip.noKey=該当なし
-tooltip.hp=HP
 tooltip.configureState=コンフィグの設定
 tooltip.outputRate=出力量
 tooltip.insufficientFuel=燃料不足
@@ -976,7 +972,6 @@ reactor.depleted=燃料不足時
 reactor.depleted.desc=反応に十分な量の燃料が不足している時
 
 # Creative tab
-itemGroup.tabMekanism=Mekanism
 
 # NEI stuff
 nei.chemicalInjectionChamber=化学注入室
