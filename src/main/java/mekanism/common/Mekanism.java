@@ -598,10 +598,11 @@ public class Mekanism
 		OreDictionary.registerOre("itemBioFuel", new ItemStack(MekanismItems.BioFuel));
 	}
 	
+	
 	/**
-	 * Adds and registers all entities and tile entities.
+	 * Adds and registers all tile entities.
 	 */
-	public void addEntities()
+	public void addMobEntities()
 	{
 		//Registrations
 		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "ObsidianTNT"), EntityObsidianTNT.class, "ObsidianTNT", 0, this, 64, 5, true);
@@ -609,6 +610,14 @@ public class Mekanism
 		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Balloon"), EntityBalloon.class, "Balloon", 2, this, 64, 1, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "BabySkeleton"), EntityBabySkeleton.class, "BabySkeleton", 3, this, 64, 5, true);
 		EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Flame"), EntityFlame.class, "Flame", 4, this, 64, 5, true);
+
+	}	
+	
+	/**
+	 * Adds and registers all tile entities.
+	 */
+	public void addEntities()
+	{
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
@@ -740,6 +749,10 @@ public class Mekanism
 		InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", new ResourceLocation("mekanism:blocks/infuse/Obsidian")).setUnlocalizedName("obsidian"));
 
 		Capabilities.registerCapabilities();
+		
+		//Register Mob Entities
+		addMobEntities();
+		
 	}
 	
 	@EventHandler
