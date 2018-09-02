@@ -105,7 +105,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	@Override
 	public void onChunkLoad()
 	{
-		markDirty();
+		
 	}
 
 	public void open(EntityPlayer player)
