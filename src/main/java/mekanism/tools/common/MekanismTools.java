@@ -368,7 +368,7 @@ public class MekanismTools implements IModule
 	}
 
 	@SubscribeEvent
-	public void onLivingSpecialSpawn(LivingSpawnEvent event)
+	public void onLivingSpecialSpawn(LivingSpawnEvent.SpecialSpawn event)
 	{
 		double chance = event.getWorld().rand.nextDouble();
 		int armorType = event.getWorld().rand.nextInt(4);
