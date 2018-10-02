@@ -15,12 +15,12 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
     }
 }
 
 plugins {
-    id 'org.ajoberstar.grgit' version '2.2.0'
+    id 'org.ajoberstar.grgit' version '2.3.0'
 }
 
 apply plugin: 'idea'
@@ -52,7 +52,7 @@ repositories {
     }
     maven {
         name 'tesla'
-        url 'http://maven.mcmoddev.com'
+        url 'https://maven.mcmoddev.com'
     }
     maven {
         name 'curseforge'
