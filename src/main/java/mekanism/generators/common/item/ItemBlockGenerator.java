@@ -108,7 +108,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getTranslationKey(ItemStack itemstack)
 	{
 		GeneratorType generatorType = GeneratorType.get(itemstack);
 		if(generatorType == null)
@@ -116,7 +116,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			return "KillMe!";
 		}
 
-		return getUnlocalizedName() + "." + generatorType.blockName;
+		return getTranslationKey() + "." + generatorType.blockName;
 	}
 
 	@Override

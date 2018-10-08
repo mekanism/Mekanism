@@ -262,7 +262,7 @@ public final class MekanismHooks
 				NonNullList<ItemStack> seeds = NonNullList.create();
 				crystalSeed.get().getSubItems(CreativeTabs.SEARCH, seeds);//there appears to be no way to get this via api, so fall back to unloc names
 				for (ItemStack stack : seeds) {
-					String unloc = crystalSeed.get().getUnlocalizedName(stack);
+					String unloc = crystalSeed.get().getTranslationKey(stack);
 					if (unloc.endsWith("certus") && pureCertus.isPresent()){
 						RecipeHandler.addEnrichmentChamberRecipe(stack, pureCertus.get().copy());
 					} else if (unloc.endsWith("nether") && pureNether.isPresent()){

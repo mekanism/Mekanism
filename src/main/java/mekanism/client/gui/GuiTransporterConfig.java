@@ -95,9 +95,9 @@ public class GuiTransporterConfig extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.byIndex(i));
 
-			if(configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.getFront(i)) != TileComponentConfig.EMPTY)
+			if(configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY)
 			{
 				if(color != null)
 				{
@@ -153,9 +153,9 @@ public class GuiTransporterConfig extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.byIndex(i));
 
-			if(configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.getFront(i)) != TileComponentConfig.EMPTY)
+			if(configurable.getConfig().getOutput(TransmissionType.ITEM, EnumFacing.byIndex(i)) != TileComponentConfig.EMPTY)
 			{
 				if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 				{

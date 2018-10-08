@@ -96,7 +96,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack itemstack, IBlockState state)
+	public float getDestroySpeed(ItemStack itemstack, IBlockState state)
 	{
 		return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
 	}
@@ -120,7 +120,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		Vec3d positionEyes = player.getPositionEyes(1.0F);
 		Vec3d playerLook = player.getLook(1.0F);
 		double blockReachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getAttributeValue();
-		Vec3d maxReach = positionEyes.addVector(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
+		Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
 		RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
 		//noinspection ConstantConditions - idea thinks it's nonnull due to package level annotations, but it's not
 		return res != null ? res : new RayTraceResult(RayTraceResult.Type.MISS, Vec3d.ZERO, EnumFacing.UP, pos);
@@ -171,7 +171,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 					Block block2 = coord.getBlock(player.world);
 
-					block2.onBlockDestroyedByPlayer(player.world, coord.getPos(), state);
+					block2.onPlayerDestroy(player.world, coord.getPos(), state);
 					player.world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
 					player.world.setBlockToAir(coord.getPos());
 					block2.breakBlock(player.world, coord.getPos(), state);

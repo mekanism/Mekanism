@@ -42,7 +42,7 @@ public class ItemIngot extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack item)
+	public String getTranslationKey(ItemStack item)
 	{
 		return "item." + en_USNames[item.getItemDamage()].toLowerCase(Locale.ROOT) + "Ingot";
 	}

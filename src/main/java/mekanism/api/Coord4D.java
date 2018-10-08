@@ -219,7 +219,7 @@ public class Coord4D
 			return this;
 		}
 		
-		return new Coord4D(x +(side.getFrontOffsetX()*amount), y +(side.getFrontOffsetY()*amount), z +(side.getFrontOffsetZ()*amount), dimensionId);
+		return new Coord4D(x +(side.getXOffset()*amount), y +(side.getYOffset()*amount), z +(side.getZOffset()*amount), dimensionId);
 	}
 	
 	public ItemStack getStack(IBlockAccess world)
@@ -286,7 +286,7 @@ public class Coord4D
 
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
-			if(side.getFrontOffsetX() == diff.x && side.getFrontOffsetY() == diff.y && side.getFrontOffsetZ() == diff.z)
+			if(side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z)
 			{
 				return side;
 			}
@@ -335,7 +335,7 @@ public class Coord4D
 	 */
 	public Coord4D step(EnumFacing side)
 	{
-		return translate(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
+		return translate(side.getXOffset(), side.getYOffset(), side.getZOffset());
 	}
 
 	/**
@@ -355,7 +355,7 @@ public class Coord4D
 	 */
 	public Chunk getChunk(World world)
 	{
-		return world.getChunkFromBlockCoords(getPos());
+		return world.getChunk(getPos());
 	}
 	
 	/**

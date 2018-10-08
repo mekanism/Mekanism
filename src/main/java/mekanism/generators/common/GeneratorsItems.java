@@ -34,6 +34,6 @@ public class GeneratorsItems
 	
 	public static Item init(Item item, String name)
 	{
-		return item.setUnlocalizedName(name).setRegistryName("mekanismgenerators:" + name);
+		return item.setTranslationKey(name).setRegistryName("mekanismgenerators:" + name);
 	}
 }

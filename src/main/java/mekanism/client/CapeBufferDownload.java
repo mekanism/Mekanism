@@ -68,7 +68,7 @@ public class CapeBufferDownload extends Thread
 	public ThreadDownloadImageData downloadCape() 
 	{
 		try {
-			File capeFile = new File(resourceLocation.getResourcePath() + ".png");
+			File capeFile = new File(resourceLocation.getPath() + ".png");
 			
 			if(capeFile.exists())
 			{

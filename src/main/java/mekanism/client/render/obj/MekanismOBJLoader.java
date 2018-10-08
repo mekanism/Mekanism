@@ -69,9 +69,9 @@ public class MekanismOBJLoader implements ICustomModelLoader
 			
 			for(String s : objModel.getMatLib().getMaterialNames())
 			{
-				if(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath().startsWith("#"))
+				if(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getPath().startsWith("#"))
 				{
-					FMLLog.severe("OBJLoader: Unresolved texture '%s' for obj model '%s'", objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(), modelLocation);
+					FMLLog.severe("OBJLoader: Unresolved texture '%s' for obj model '%s'", objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getPath(), modelLocation);
 					builder.put(s, missing);
 				}
 				else {
@@ -92,13 +92,13 @@ public class MekanismOBJLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(ResourceLocation modelLocation)
 	{
-		return modelLocation.getResourcePath().endsWith(".obj.mek");
+		return modelLocation.getPath().endsWith(".obj.mek");
 	}
 	
 	@Override
 	public IModel loadModel(ResourceLocation loc) throws Exception
 	{
-		ResourceLocation file = new ResourceLocation(loc.getResourceDomain(), loc.getResourcePath());
+		ResourceLocation file = new ResourceLocation(loc.getNamespace(), loc.getPath());
 		
 		if(!modelCache.containsKey(file))
 		{
@@ -106,12 +106,12 @@ public class MekanismOBJLoader implements ICustomModelLoader
 			
 			if(model instanceof OBJModel)
 			{
-				if(file.getResourcePath().contains("glow_panel"))
+				if(file.getPath().contains("glow_panel"))
 				{
 					MekanismOBJModel mekModel = new MekanismOBJModel(OBJModelType.GLOW_PANEL, ((OBJModel)model).getMatLib(), file);
 					modelCache.put(file, mekModel);
 				}
-				else if(file.getResourcePath().contains("transmitter"))
+				else if(file.getPath().contains("transmitter"))
 				{
 					MekanismOBJModel mekModel = new MekanismOBJModel(OBJModelType.TRANSMITTER, ((OBJModel)model).getMatLib(), file);
 					modelCache.put(file, mekModel);

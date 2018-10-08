@@ -59,7 +59,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)tile;
 
-			int power = world.isBlockIndirectlyGettingPowered(getPos());
+			int power = world.getRedstonePowerFromNeighbors(getPos());
 
 			if(prevPower != power)
 			{

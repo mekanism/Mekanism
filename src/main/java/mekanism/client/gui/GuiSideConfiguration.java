@@ -135,7 +135,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
+			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
 
 			if(data != TileComponentConfig.EMPTY)
 			{
@@ -184,7 +184,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.getFront(i));
+			SideData data = configurable.getConfig().getOutput(currentType, EnumFacing.byIndex(i));
 
 			if(data != TileComponentConfig.EMPTY)
 			{

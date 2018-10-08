@@ -83,7 +83,7 @@ public class GasStack
 	 */
 	public static GasStack readFromNBT(NBTTagCompound nbtTags)
 	{
-		if(nbtTags == null || nbtTags.hasNoTags())
+		if(nbtTags == null || nbtTags.isEmpty())
 		{
 			return null;
 		}

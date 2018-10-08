@@ -37,7 +37,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	@Override
 	public void handlePacketData(ByteBuf dataStream) throws Exception 
 	{
-		side = EnumFacing.getFront(dataStream.readInt());
+		side = EnumFacing.byIndex(dataStream.readInt());
 		colour = EnumColor.DYES[dataStream.readInt()];
 		
 		MekanismUtils.updateBlock(world, pos);
@@ -90,7 +90,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	{
 		super.readFromNBT(nbt);
 		
-		side = EnumFacing.getFront(nbt.getInteger("side"));
+		side = EnumFacing.byIndex(nbt.getInteger("side"));
 		colour = EnumColor.DYES[nbt.getInteger("colour")];
 	}
 	

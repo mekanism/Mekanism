@@ -86,7 +86,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 				{
                     ItemArrow itemarrow = (ItemArrow)(ammo.getItem() instanceof ItemArrow ? ammo.getItem() : Items.ARROW);
                     EntityArrow entityarrow = itemarrow.createArrow(world, itemstack, player);
-                    entityarrow.setAim(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
+                    entityarrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
 				
     				if(f == 1.0F)
     				{

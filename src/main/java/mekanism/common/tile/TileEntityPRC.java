@@ -310,7 +310,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public String getName()
 	{
-		return LangUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".short.name");
+		return LangUtils.localize(getBlockType().getTranslationKey() + "." + fullName + ".short.name");
 	}
 
 	@Override

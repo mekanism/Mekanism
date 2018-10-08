@@ -32,9 +32,9 @@ public class ItemBlockPlastic extends ItemBlock
 		EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];
 		String colourName;
 
-        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
+        if(I18n.canTranslate(getTranslationKey(stack) + "." + colour.dyeName))
         {
-            return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
+            return LangUtils.localize(getTranslationKey(stack) + "." + colour.dyeName);
         }
 
 		if(colour == EnumColor.BLACK)

@@ -35,6 +35,6 @@ public class GeneratorsBlocks
 	
 	public static Block init(Block block, String name)
 	{
-		return block.setUnlocalizedName(name).setRegistryName("mekanismgenerators:" + name);
+		return block.setTranslationKey(name).setRegistryName("mekanismgenerators:" + name);
 	}
 }

@@ -76,7 +76,7 @@ public class RenderTickHandler
 							}
 						}
 	
-						font.drawStringWithShadow("Block: " + block.getUnlocalizedName(), 1, 1, 0x404040);
+						font.drawStringWithShadow("Block: " + block.getTranslationKey(), 1, 1, 0x404040);
 						font.drawStringWithShadow("Metadata: " + obj.getBlockState(world), 1, 10, 0x404040);
 						font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
 						font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);

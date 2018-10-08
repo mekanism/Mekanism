@@ -38,7 +38,7 @@ public class BlockStateTransmitter extends ExtendedBlockState
 		DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, true, false),
 		THERMODYNAMIC_CONDUCTOR("ThermodynamicConductor", Size.SMALL, TransmissionType.HEAT, false, true);
 
-		private String unlocalizedName;
+		private String translationKey;
 		private Size size;
 		private TransmissionType transmissionType;
 		private boolean transparencyRender;
@@ -46,7 +46,7 @@ public class BlockStateTransmitter extends ExtendedBlockState
 
 		TransmitterType(String name, Size s, TransmissionType type, boolean transparency, boolean b)
 		{
-			unlocalizedName = name;
+			translationKey = name;
 			size = s;
 			transmissionType = type;
 			transparencyRender = transparency;
@@ -59,9 +59,9 @@ public class BlockStateTransmitter extends ExtendedBlockState
 			return name().toLowerCase(Locale.ROOT);
 		}
 		
-		public String getUnlocalizedName()
+		public String getTranslationKey()
 		{
-			return unlocalizedName;
+			return translationKey;
 		}
 
 		public Size getSize()

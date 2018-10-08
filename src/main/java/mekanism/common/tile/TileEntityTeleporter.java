@@ -382,9 +382,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		if(player.dimension != coord.dimensionId)
 		{
 			int id = player.dimension;
-			WorldServer oldWorld = player.mcServer.getWorld(player.dimension);
+			WorldServer oldWorld = player.server.getWorld(player.dimension);
 			player.dimension = coord.dimensionId;
-			WorldServer newWorld = player.mcServer.getWorld(player.dimension);
+			WorldServer newWorld = player.server.getWorld(player.dimension);
 			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.world.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
 			oldWorld.removeEntityDangerously(player);
 			player.isDead = false;
@@ -397,11 +397,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 				player.setWorld(newWorld);
 			}
 
-			player.mcServer.getPlayerList().preparePlayer(player, oldWorld);
+			player.server.getPlayerList().preparePlayer(player, oldWorld);
 			player.connection.setPlayerLocation(coord.x +0.5, coord.y +1, coord.z +0.5, player.rotationYaw, player.rotationPitch);
 			player.interactionManager.setWorld(newWorld);
-			player.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
-			player.mcServer.getPlayerList().syncPlayerInventory(player);
+			player.server.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
+			player.server.getPlayerList().syncPlayerInventory(player);
 
 			for(PotionEffect potioneffect : player.getActivePotionEffects())
 			{

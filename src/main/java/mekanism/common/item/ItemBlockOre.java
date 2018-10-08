@@ -44,7 +44,7 @@ public class ItemBlockOre extends ItemBlock
 			list.add("Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
 		}
 		else {
-			list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip." + getUnlocalizedName(itemstack).replace("tile.OreBlock.", "")), itemstack));
+			list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")), itemstack));
 		}
 	}
 
@@ -55,7 +55,7 @@ public class ItemBlockOre extends ItemBlock
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getTranslationKey(ItemStack itemstack)
 	{
 		String name;
 
@@ -75,6 +75,6 @@ public class ItemBlockOre extends ItemBlock
 				break;
 		}
 
-		return getUnlocalizedName() + "." + name;
+		return getTranslationKey() + "." + name;
 	}
 }

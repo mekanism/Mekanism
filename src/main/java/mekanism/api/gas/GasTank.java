@@ -239,7 +239,7 @@ public class GasTank implements GasTankInfo
 	 */
 	public static GasTank readFromNBT(NBTTagCompound nbtTags)
 	{
-		if(nbtTags == null || nbtTags.hasNoTags())
+		if(nbtTags == null || nbtTags.isEmpty())
 		{
 			return null;
 		}

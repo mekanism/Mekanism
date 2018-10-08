@@ -82,7 +82,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                 }
                 else if(message.packetType == ConfigurationPacket.INPUT_COLOR)
                 {
-                    EnumFacing side = EnumFacing.getFront(message.inputSide);
+                    EnumFacing side = EnumFacing.byIndex(message.inputSide);
 
                     if(message.clickType == 0)
                     {
@@ -147,7 +147,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
 				clickType = click;
-				configIndex = EnumFacing.getFront(extra);
+				configIndex = EnumFacing.byIndex(extra);
 				transmission = trans;
 			}
 	
@@ -201,7 +201,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			else if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
 				clickType = dataStream.readInt();
-				configIndex = EnumFacing.getFront(dataStream.readInt());
+				configIndex = EnumFacing.byIndex(dataStream.readInt());
 				transmission = TransmissionType.values()[dataStream.readInt()];
 			}
 			else if(packetType == ConfigurationPacket.EJECT_COLOR)

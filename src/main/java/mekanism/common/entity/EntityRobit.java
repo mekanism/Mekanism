@@ -153,7 +153,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		if(!world.isRemote)
 		{
-			if(getFollowing() && getOwner() != null && getDistanceSqToEntity(getOwner()) > 4 && !getNavigator().noPath() && getEnergy() > 0)
+			if(getFollowing() && getOwner() != null && getDistanceSq(getOwner()) > 4 && !getNavigator().noPath() && getEnergy() > 0)
 			{
 				setEnergy(getEnergy() - getRoundedTravelEnergy());
 			}

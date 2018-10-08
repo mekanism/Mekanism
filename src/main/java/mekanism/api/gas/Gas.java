@@ -210,7 +210,7 @@ public class Gas
 	 */
 	public static Gas readFromNBT(NBTTagCompound nbtTags)
 	{
-		if(nbtTags == null || nbtTags.hasNoTags())
+		if(nbtTags == null || nbtTags.isEmpty())
 		{
 			return null;
 		}

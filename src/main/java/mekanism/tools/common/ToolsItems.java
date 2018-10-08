@@ -294,6 +294,6 @@ public class ToolsItems
 	
 	public static Item init(Item item, String name)
 	{
-		return item.setUnlocalizedName(name).setRegistryName("mekanismtools:" + name);
+		return item.setTranslationKey(name).setRegistryName("mekanismtools:" + name);
 	}
 }

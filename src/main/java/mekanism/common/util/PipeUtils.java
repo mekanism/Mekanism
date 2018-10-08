@@ -125,7 +125,7 @@ public final class PipeUtils
 					remaining--;
 				}
 				
-				EnumFacing dir = EnumFacing.getFront(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
+				EnumFacing dir = EnumFacing.byIndex(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
 				toSend -= acceptor.fill(copy(stack, currentSending), true);
 			}
 		}

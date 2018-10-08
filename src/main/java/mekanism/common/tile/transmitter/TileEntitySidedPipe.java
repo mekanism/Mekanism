@@ -612,7 +612,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 					connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
 					sendDesc = true;
 
-					onModeChange(EnumFacing.getFront(hitSide.ordinal()));
+					onModeChange(EnumFacing.byIndex(hitSide.ordinal()));
 					player.sendMessage(new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ").translation(connectionTypes[hitSide.ordinal()].translationKey()));
 
 					return EnumActionResult.SUCCESS;

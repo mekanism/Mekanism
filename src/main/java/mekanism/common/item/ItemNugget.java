@@ -38,7 +38,7 @@ public class ItemNugget extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack item)
+	public String getTranslationKey(ItemStack item)
 	{
 		return "item." + ItemIngot.en_USNames[item.getItemDamage()].toLowerCase(Locale.ROOT) + "Nugget";
 	}

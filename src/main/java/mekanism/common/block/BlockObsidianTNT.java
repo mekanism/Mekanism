@@ -38,7 +38,7 @@ public class BlockObsidianTNT extends Block
 	{
 		super.onBlockAdded(world, pos, state);
 
-		if(world.isBlockIndirectlyGettingPowered(pos) > 0)
+		if(world.getRedstonePowerFromNeighbors(pos) > 0)
 		{
 			explode(world, pos);
 			world.setBlockToAir(pos);
@@ -48,7 +48,7 @@ public class BlockObsidianTNT extends Block
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
-		if(world.isBlockIndirectlyGettingPowered(pos) > 0)
+		if(world.getRedstonePowerFromNeighbors(pos) > 0)
 		{
 			explode(world, pos);
 			world.setBlockToAir(pos);
@@ -56,7 +56,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion(World world, BlockPos pos, Explosion explosion)
+	public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion)
 	{
 		if(!world.isRemote)
 		{
@@ -106,7 +106,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
+	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity)
 	{
 		if(entity instanceof EntityArrow && !world.isRemote)
 		{

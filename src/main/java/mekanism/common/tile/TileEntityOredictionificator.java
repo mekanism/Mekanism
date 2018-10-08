@@ -370,7 +370,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	@Override
 	public String getDataType()
 	{
-		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
+		return getBlockType().getTranslationKey() + "." + fullName + ".name";
 	}
 
 	@Override

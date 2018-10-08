@@ -1077,7 +1077,7 @@ public final class MekanismUtils
 
 		Vec3d headVec = getHeadVec(player);
 		Vec3d lookVec = player.getLook(1);
-		Vec3d endVec = headVec.addVector(lookVec.x*reach, lookVec.y*reach, lookVec.z*reach);
+		Vec3d endVec = headVec.add(lookVec.x*reach, lookVec.y*reach, lookVec.z*reach);
 
 		return world.rayTraceBlocks(headVec, endVec, true);
 	}
@@ -1430,7 +1430,7 @@ public final class MekanismUtils
 		
 		EntityPlayerMP player = (EntityPlayerMP)p;
 		
-		return general.opsBypassRestrictions && player.mcServer.getPlayerList().canSendCommands(player.getGameProfile());
+		return general.opsBypassRestrictions && player.server.getPlayerList().canSendCommands(player.getGameProfile());
 	}
 	
 	/**

@@ -55,7 +55,7 @@ public class GasStackHelper implements IIngredientHelper<GasStack>
 	@Override
 	public String getModId(GasStack ingredient)
 	{
-		return ingredient.getGas().getIcon().getResourceDomain();
+		return ingredient.getGas().getIcon().getNamespace();
 	}
 
 	@Override

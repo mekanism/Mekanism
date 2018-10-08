@@ -136,7 +136,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 
 		if(!stack.isEmpty())
 		{
-			if(MekanismUtils.isBCWrench(stack.getItem()) && !stack.getUnlocalizedName().contains("omniwrench"))
+			if(MekanismUtils.isBCWrench(stack.getItem()) && !stack.getTranslationKey().contains("omniwrench"))
 			{
 				if(entityplayer.isSneaking())
 				{
@@ -197,7 +197,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 	}
 	
 	@Override
-	public BlockRenderLayer getBlockLayer()
+	public BlockRenderLayer getRenderLayer()
 	{
 		return this == GeneratorsBlocks.Reactor ? BlockRenderLayer.CUTOUT : BlockRenderLayer.TRANSLUCENT;
 	}

@@ -1471,7 +1471,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public String getDataType()
 	{
-		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
+		return getBlockType().getTranslationKey() + "." + fullName + ".name";
 	}
 	
 	public void writeSustainedData(ItemStack itemStack) 

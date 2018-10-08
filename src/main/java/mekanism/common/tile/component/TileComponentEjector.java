@@ -85,7 +85,7 @@ public class TileComponentEjector implements ITileComponent
 		{
 			for(EnumFacing side : dirs)
 			{
-				if(EnumFacing.getFront(i%6) == side)
+				if(EnumFacing.byIndex(i%6) == side)
 				{
 					sides.add(side);
 				}

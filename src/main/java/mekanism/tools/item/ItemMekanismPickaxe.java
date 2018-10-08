@@ -68,14 +68,14 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack itemstack, IBlockState blockState)
+	public float getDestroySpeed(ItemStack itemstack, IBlockState blockState)
 	{
 		if(blockState != null && blockState.getBlock() != null && (blockState.getMaterial() == Material.IRON || blockState.getMaterial() == Material.ANVIL || blockState.getMaterial() == Material.ROCK))
 		{
-			return efficiencyOnProperMaterial;
+			return efficiency;
 		}
 		else {
-			return super.getStrVsBlock(itemstack, blockState);
+			return super.getDestroySpeed(itemstack, blockState);
 		}
 	}
 }

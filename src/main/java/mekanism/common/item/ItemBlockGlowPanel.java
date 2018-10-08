@@ -96,9 +96,9 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble
 		EnumColor colour = EnumColor.DYES[itemDamage];
 		String colourName;
 
-        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName))
+        if(I18n.canTranslate(getTranslationKey(stack) + "." + colour.dyeName))
         {
-            return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
+            return LangUtils.localize(getTranslationKey(stack) + "." + colour.dyeName);
         }
 		
 		if(colour == EnumColor.BLACK)

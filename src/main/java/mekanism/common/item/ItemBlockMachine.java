@@ -161,11 +161,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getTranslationKey(ItemStack itemstack)
 	{
 		if(MachineType.get(itemstack) != null)
 		{
-			return getUnlocalizedName() + "." + MachineType.get(itemstack).blockName;
+			return getTranslationKey() + "." + MachineType.get(itemstack).blockName;
 		}
 
 		return "null";

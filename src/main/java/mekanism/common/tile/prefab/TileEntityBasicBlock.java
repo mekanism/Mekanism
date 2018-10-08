@@ -123,7 +123,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			facing = EnumFacing.getFront(dataStream.readInt());
+			facing = EnumFacing.byIndex(dataStream.readInt());
 			redstone = dataStream.readBoolean();
 	
 			if(clientFacing != facing)
@@ -188,7 +188,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 		if(nbtTags.hasKey("facing"))
 		{
-			facing = EnumFacing.getFront(nbtTags.getInteger("facing"));
+			facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
 		}
 		
 		redstone = nbtTags.getBoolean("redstone");
@@ -237,7 +237,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	{
 		if(canSetFacing(direction))
 		{
-			facing = EnumFacing.getFront(direction);
+			facing = EnumFacing.byIndex(direction);
 		}
 
 		if(!(facing == clientFacing || world.isRemote))
@@ -280,7 +280,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	
 	private void updatePower()
 	{
-		boolean power = world.isBlockIndirectlyGettingPowered(getPos()) > 0;
+		boolean power = world.getRedstonePowerFromNeighbors(getPos()) > 0;
 
 		if(redstone != power)
 		{
