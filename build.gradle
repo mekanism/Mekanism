@@ -130,7 +130,7 @@ dependencies {
     runtime "mezz.jei:jei_1.12:${config.jei_version}"
     compileOnly "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
-    compileOnly "li.cil.oc:OpenComputers:MC1.12.1-${config.opencomputers_version}:api" // Not updated yet
+    compileOnly "li.cil.oc:OpenComputers:MC1.12.1-${config.opencomputers_version}:api"
     deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
     deobfCompile "cofh:RedstoneFlux:1.12-${config.redstoneflux_version}:universal"
     compileOnly "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
