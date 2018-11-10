@@ -15,6 +15,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
+import javax.annotation.Nullable;
+
 public enum Upgrade
 {
 	SPEED("speed", 8, EnumColor.RED),
@@ -127,7 +129,7 @@ public enum Upgrade
 		return ret;
 	}
 	
-	public static Map<Upgrade, Integer> buildMap(NBTTagCompound nbtTags)
+	public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags)
 	{
 		Map<Upgrade, Integer> upgrades = new HashMap<>();
 		
