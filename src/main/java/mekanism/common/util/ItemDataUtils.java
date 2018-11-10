@@ -18,56 +18,72 @@ public final class ItemDataUtils
 	
 	public static boolean hasData(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return false;
+		}
 		
 		return getDataMap(stack).hasKey(key);
 	}
 	
 	public static void removeData(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return;
+		}
 		
 		getDataMap(stack).removeTag(key);
 	}
 	
 	public static int getInt(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return 0;
+		}
 		
 		return getDataMap(stack).getInteger(key);
 	}
 	
 	public static boolean getBoolean(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return false;
+		}
 		
 		return getDataMap(stack).getBoolean(key);
 	}
 	
 	public static double getDouble(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return 0;
+		}
 		
 		return getDataMap(stack).getDouble(key);
 	}
 	
 	public static String getString(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return "";
+		}
 		
 		return getDataMap(stack).getString(key);
 	}
 	
 	public static NBTTagCompound getCompound(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return new NBTTagCompound();
+		}
 		
 		return getDataMap(stack).getCompoundTag(key);
 	}
 	
 	public static NBTTagList getList(ItemStack stack, String key)
 	{
-		initStack(stack);
+		if (!hasDataTag(stack)){
+			return new NBTTagList();
+		}
 		
 		return getDataMap(stack).getTagList(key, NBT.TAG_COMPOUND);
 	}
@@ -112,6 +128,11 @@ public final class ItemDataUtils
 		initStack(stack);
 		
 		getDataMap(stack).setTag(key, tag);
+	}
+
+	private static boolean hasDataTag(ItemStack stack)
+	{
+		return stack.getTagCompound() != null && stack.getTagCompound().hasKey(DATA_ID);
 	}
 	
 	private static void initStack(ItemStack stack)
