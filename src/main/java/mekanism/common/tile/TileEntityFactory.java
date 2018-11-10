@@ -289,7 +289,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 						
 						upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
 						upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-						upgradeComponent.read(ItemDataUtils.getDataMap(inventory.get(2)));
+						upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(inventory.get(2)));
 
 						inventory.set(2, ItemStack.EMPTY);
 						inventory.set(3, returnStack);

@@ -92,7 +92,9 @@ public class RecipeUtils
 				}
 			}
 
-			((IEnergizedItem)toReturn.getItem()).setEnergy(toReturn, Math.min(((IEnergizedItem)toReturn.getItem()).getMaxEnergy(toReturn), energyFound));
+			double energyToSet = Math.min(((IEnergizedItem) toReturn.getItem()).getMaxEnergy(toReturn), energyFound);
+			if (energyToSet > 0)
+				((IEnergizedItem)toReturn.getItem()).setEnergy(toReturn, energyToSet);
 		}
 		
 		if(toReturn.getItem() instanceof IGasItem)
@@ -230,7 +232,7 @@ public class RecipeUtils
 
 				if(!itemstack.isEmpty() && BlockStateMachine.MachineType.get(itemstack) != null && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades)
 				{
-					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
+					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
 					
 					for(Map.Entry<Upgrade, Integer> entry : stackMap.entrySet())
 					{
