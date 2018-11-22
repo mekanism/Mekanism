@@ -162,6 +162,7 @@ import com.mojang.authlib.GameProfile;
 						"after:cofhcore;" +
 						"after:computercraft;" +
 						"after:galacticraft api;" +
+						"after:cyclicmagic;" +
 						"after:metallurgycore;"+
 						"after:crafttweaker"
 )
