@@ -25,15 +25,20 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.oredict.OreDictionary;
 import dan200.computercraft.api.ComputerCraftAPI;
 
 /**
@@ -59,6 +64,7 @@ public final class MekanismHooks
 	public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
 	public static final String WAILA_MOD_ID = "Waila";
 	public static final String BUILDCRAFT_MOD_ID = "BuildCraft";
+	public static final String CYCLIC_MOD_ID = "cyclicmagic";
 
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
@@ -69,6 +75,7 @@ public final class MekanismHooks
 	public boolean TeslaLoaded = false;
 	public boolean MCMPLoaded = false;
 	public boolean RFLoaded = false;
+	public boolean CyclicLoaded = false;
 
 	public boolean MetallurgyCoreLoaded = false;
 	public boolean MetallurgyBaseLoaded = false;
@@ -84,6 +91,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded(TESLA_MOD_ID)) TeslaLoaded = true;
 		if(Loader.isModLoaded(MCMULTIPART_MOD_ID)) MCMPLoaded = true;
 		if(Loader.isModLoaded(REDSTONEFLUX_MOD_ID)) RFLoaded = true;
+		if(Loader.isModLoaded(CYCLIC_MOD_ID)) CyclicLoaded = true;
 		
 		if(Loader.isModLoaded(METALLURGY_3_CORE_MOD_ID))
 		{
@@ -105,6 +113,11 @@ public final class MekanismHooks
 		
 		if (AE2Loaded){
 			registerAE2Recipes();
+		}
+
+		if (CyclicLoaded)
+		{
+			registerCyclicRecipes();
 		}
 
 		if(Loader.isModLoaded("crafttweaker"))
@@ -171,6 +184,49 @@ public final class MekanismHooks
 		try {
 			Driver.add(new OCDriver());
 		} catch(Exception e) {}
+	}
+
+	@Method(modid = CYCLIC_MOD_ID)
+	public void registerCyclicCombinerOreRecipe(String ore, int quantity, Item input2, String outputName)
+	{
+		Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
+		if(outputItem == Items.AIR) {
+			return;
+		}
+		for(ItemStack stack : OreDictionary.getOres(ore)) {
+			 RecipeHandler.addCombinerRecipe(StackUtils.size(stack, quantity), new ItemStack(input2), new ItemStack(outputItem));
+		}
+	}
+
+	@Method(modid = CYCLIC_MOD_ID)
+	public void registerCyclicCombinerRecipe(ItemStack input1, Item input2, String outputName)
+	{
+		Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
+		if(outputItem != Items.AIR) {
+			RecipeHandler.addCombinerRecipe(input1, new ItemStack(input2), new ItemStack(outputItem));
+		}
+	}
+
+	@Method(modid = CYCLIC_MOD_ID)
+	public void registerCyclicRecipes()
+	{
+		Item netherrack = Item.getItemFromBlock(Blocks.NETHERRACK);
+		registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), netherrack, "nether_redstone_ore");
+		registerCyclicCombinerOreRecipe("dustIron", 8, netherrack, "nether_iron_ore");
+		registerCyclicCombinerOreRecipe("dustGold", 8, netherrack, "nether_gold_ore");
+		registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), netherrack, "nether_coal_ore");
+		registerCyclicCombinerRecipe(new ItemStack(Items.DYE, 5, 4), netherrack, "nether_lapis_ore");
+		registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), netherrack, "nether_emerald_ore");
+		registerCyclicCombinerOreRecipe("dustDiamond", 3, netherrack, "nether_diamond_ore");
+
+		Item end_stone = Item.getItemFromBlock(Blocks.END_STONE);
+		registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), end_stone, "end_redstone_ore");
+		registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), end_stone, "end_coal_ore");
+		registerCyclicCombinerRecipe(new ItemStack(Items.DYE, 5, 4), end_stone, "end_lapis_ore");
+		registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), end_stone, "end_emerald_ore");
+		registerCyclicCombinerOreRecipe("dustDiamond", 3, end_stone, "end_diamond_ore");
+		registerCyclicCombinerOreRecipe("dustGold", 8, end_stone, "end_gold_ore");
+		registerCyclicCombinerOreRecipe("dustIron", 8, end_stone, "end_iron_ore");
 	}
 
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)
