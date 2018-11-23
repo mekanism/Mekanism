@@ -58,16 +58,25 @@ public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergySto
 		return 0;
 	}
 
+	private static int clampToInt(double d) {
+		// Not using Math.min because it makes you cast things wrong
+		if(d < Integer.MAX_VALUE) {
+			return (int)d;
+		} else {
+			return Integer.MAX_VALUE;
+		}
+	}
+
 	@Override
 	public int getEnergyStored() 
 	{
-		return (int)Math.round(getItem().getEnergy(getStack())*general.TO_FORGE);
+		return clampToInt(Math.round(getItem().getEnergy(getStack())*general.TO_FORGE));
 	}
 
 	@Override
 	public int getMaxEnergyStored()
 	{
-		return (int)Math.round(getItem().getMaxEnergy(getStack())*general.TO_FORGE);
+		return clampToInt(Math.round(getItem().getMaxEnergy(getStack())*general.TO_FORGE));
 	}
 
 	@Override

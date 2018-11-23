@@ -73,17 +73,26 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
 		return 0;
 	}
 
+	private static long clampToLong(double d) {
+		// Not using Math.min because it makes you cast things wrong
+		if(d < Long.MAX_VALUE) {
+			return (long)d;
+		} else {
+			return Long.MAX_VALUE;
+		}
+	}
+
 	@Override
 	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long getStoredPower() 
 	{
-		return (long)Math.round(getItem().getEnergy(getStack())*general.TO_TESLA);
+		return clampToLong(Math.round(getItem().getEnergy(getStack())*general.TO_TESLA));
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long getCapacity() 
 	{
-		return (long)Math.round(getItem().getEnergy(getStack())*general.TO_TESLA);
+		return clampToLong(Math.round(getItem().getEnergy(getStack())*general.TO_TESLA));
 	}
 }
