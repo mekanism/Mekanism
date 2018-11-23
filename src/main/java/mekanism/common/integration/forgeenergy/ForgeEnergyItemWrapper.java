@@ -3,6 +3,7 @@ package mekanism.common.integration.forgeenergy;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -61,13 +62,13 @@ public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergySto
 	@Override
 	public int getEnergyStored() 
 	{
-		return (int)Math.round(getItem().getEnergy(getStack())*general.TO_FORGE);
+		return MekanismUtils.clampToInt(Math.round(getItem().getEnergy(getStack())*general.TO_FORGE));
 	}
 
 	@Override
 	public int getMaxEnergyStored()
 	{
-		return (int)Math.round(getItem().getMaxEnergy(getStack())*general.TO_FORGE);
+		return MekanismUtils.clampToInt(Math.round(getItem().getMaxEnergy(getStack())*general.TO_FORGE));
 	}
 
 	@Override
