@@ -88,8 +88,8 @@ public final class BoxBlacklistParser
 				MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length-1]));
 				entries++;
 
-				Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
 			}
+			Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
 		}
 	}
 
