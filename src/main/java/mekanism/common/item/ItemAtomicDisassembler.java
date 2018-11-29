@@ -160,7 +160,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			if(getMode(itemstack) == 3 && isOre && !player.capabilities.isCreativeMode)
 			{
-				Set<Coord4D> found = new Finder(player.world, stack, new Coord4D(pos, player.world), raytrace).calc();
+				Set<Coord4D> found = new Finder(player, stack, new Coord4D(pos, player.world), raytrace).calc();
 
 				for(Coord4D coord : found)
 				{
@@ -377,6 +377,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		public World world;
 
+		private final EntityPlayer player;
+
 		public ItemStack stack;
 
 		public Coord4D location;
@@ -389,12 +391,13 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		
 		RayTraceResult rayTraceResult;
 
-		public Finder(World w, ItemStack s, Coord4D loc, RayTraceResult traceResult)
+		public Finder(EntityPlayer p, ItemStack s, Coord4D loc, RayTraceResult traceResult)
 		{
-			world = w;
+			player = p;
+			world = p.world;
 			stack = s;
 			location = loc;
-			startBlock = loc.getBlock(w);
+			startBlock = loc.getBlock(world);
 			rayTraceResult = traceResult;
 		}
 
@@ -411,7 +414,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			{
 				Coord4D coord = pointer.offset(side);
 
-				ItemStack blockStack = coord.getBlock(world).getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), null);
+				ItemStack blockStack = coord.getBlock(world).getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
 
 				if(coord.exists(world) && checkID(coord.getBlock(world)) && (stack.isItemEqual(blockStack) || (coord.getBlock(world) == startBlock && MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4)))
 				{
