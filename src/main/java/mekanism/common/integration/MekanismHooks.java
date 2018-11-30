@@ -189,7 +189,7 @@ public final class MekanismHooks
 	public void registerCyclicCombinerOreRecipe(String ore, int quantity, Item input2, String outputName)
 	{
 		Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
-		if(outputItem == Items.AIR) {
+		if(outputItem == null) {
 			return;
 		}
 		for(ItemStack stack : OreDictionary.getOres(ore)) {
