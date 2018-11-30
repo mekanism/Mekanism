@@ -186,7 +186,6 @@ public final class MekanismHooks
 		} catch(Exception e) {}
 	}
 
-	@Method(modid = CYCLIC_MOD_ID)
 	public void registerCyclicCombinerOreRecipe(String ore, int quantity, Item input2, String outputName)
 	{
 		Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
@@ -198,7 +197,6 @@ public final class MekanismHooks
 		}
 	}
 
-	@Method(modid = CYCLIC_MOD_ID)
 	public void registerCyclicCombinerRecipe(ItemStack input1, Item input2, String outputName)
 	{
 		Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
@@ -207,7 +205,6 @@ public final class MekanismHooks
 		}
 	}
 
-	@Method(modid = CYCLIC_MOD_ID)
 	public void registerCyclicRecipes()
 	{
 		Item netherrack = Item.getItemFromBlock(Blocks.NETHERRACK);
