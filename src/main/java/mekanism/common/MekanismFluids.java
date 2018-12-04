@@ -11,27 +11,27 @@ import java.util.Locale;
 
 public class MekanismFluids
 {
-	public static final Gas Hydrogen = new Gas("hydrogen", "mekanism:blocks/liquid/LiquidHydrogen");
-	public static final Gas Oxygen = new Gas("oxygen", "mekanism:blocks/liquid/LiquidOxygen");
+	public static final Gas Hydrogen = new Gas("hydrogen", 0xFFFFFF);
+	public static final Gas Oxygen = new Gas("oxygen", 0x6CE2FF);
 	public static final Gas Water = new Gas("water", "mekanism:blocks/liquid/LiquidSteam");
-	public static final Gas Chlorine = new Gas("chlorine", "mekanism:blocks/liquid/LiquidChlorine");
-	public static final Gas SulfurDioxide = new Gas("sulfurdioxide", "mekanism:blocks/liquid/LiquidSulfurDioxide");
-	public static final Gas SulfurTrioxide = new Gas("sulfurtrioxide", "mekanism:blocks/liquid/LiquidSulfurTrioxide");
-	public static final Gas SulfuricAcid = new Gas("sulfuricacid", "mekanism:blocks/liquid/LiquidSulfuricAcid");
-	public static final Gas HydrogenChloride = new Gas("hydrogenchloride", "mekanism:blocks/liquid/LiquidHydrogenChloride");
+	public static final Gas Chlorine = new Gas("chlorine", 0xCFE800);
+	public static final Gas SulfurDioxide = new Gas("sulfurdioxide", 0xA99D90);
+	public static final Gas SulfurTrioxide = new Gas("sulfurtrioxide", 0xCE6C6C);
+	public static final Gas SulfuricAcid = new Gas("sulfuricacid", 0x82802B);
+	public static final Gas HydrogenChloride = new Gas("hydrogenchloride", 0xA8F1E9);
 	
 	public static final Fluid HeavyWater = new Fluid("heavywater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"), new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
 	public static final Fluid Steam = new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"), new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true);
 	
 	//Internal gases
-	public static final Gas LiquidOsmium = new Gas("liquidosmium", "mekanism:blocks/liquid/LiquidOsmium");
-	public static final Gas Ethene = new Gas("ethene", "mekanism:blocks/liquid/LiquidEthene");
-	public static final Gas Sodium = new Gas("sodium", "mekanism:blocks/liquid/LiquidSodium");
-	public static final Gas Brine = new Gas("brine", "mekanism:blocks/liquid/LiquidBrine");
-	public static final Gas Deuterium = new Gas("deuterium", "mekanism:blocks/liquid/LiquidDeuterium");
-	public static final Gas Tritium = new Gas("tritium", "mekanism:blocks/liquid/LiquidTritium");
-	public static final Gas FusionFuel = new Gas("fusionfuel", "mekanism:blocks/liquid/LiquidDT");
-	public static final Gas Lithium = new Gas("lithium", "mekanism:blocks/liquid/LiquidLithium");
+	public static final Gas LiquidOsmium = new Gas("liquidosmium", 0x9090A3);
+	public static final Gas Ethene = new Gas("ethene", 0xEACCF9);
+	public static final Gas Sodium = new Gas("sodium", 0xE9FEF4);
+	public static final Gas Brine = new Gas("brine", 0xFEEF9C);
+	public static final Gas Deuterium = new Gas("deuterium", 0xFF3232);
+	public static final Gas Tritium = new Gas("tritium", 0x64FF70);
+	public static final Gas FusionFuel = new Gas("fusionfuel", 0x7E007D);
+	public static final Gas Lithium = new Gas("lithium", 0xEBA400);
 	
 	public static void register()
 	{
