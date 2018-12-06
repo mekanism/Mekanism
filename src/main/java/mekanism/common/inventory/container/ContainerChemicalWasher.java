@@ -68,27 +68,38 @@ public class ContainerChemicalWasher extends Container
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
+			
+			int inputSlot = 0;
+			int outputSlot = 1;
+			int tankSlot = 2;
+			int dischargeSlot = 3;
+			int firstGenericInvSlot = 4;
+			int firstHotbarSlot = 31;
+			int lastHotbarSlot = inventorySlots.size();
+
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(slotID == 1)
+			System.out.println(inventorySlots.size());
+
+			if(slotID == outputSlot)
 			{
-				if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, firstGenericInvSlot, lastHotbarSlot, true))
 				{
 					return null;
 				}
 			}
 			else if(FluidContainerRegistry.isFilledContainer(slotStack) && FluidContainerRegistry.getFluidForFilledItem(slotStack).getFluid() == FluidRegistry.WATER)
 			{
-				if(slotID != 0)
+				if(slotID != inputSlot)
 				{
-					if(!mergeItemStack(slotStack, 0, 1, false))
+					if(!mergeItemStack(slotStack, inputSlot, outputSlot, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, firstGenericInvSlot, lastHotbarSlot, true))
 					{
 						return null;
 					}
@@ -96,15 +107,15 @@ public class ContainerChemicalWasher extends Container
 			}
 			else if(slotStack.getItem() instanceof IGasItem)
 			{
-				if(slotID != 2)
+				if(slotID != tankSlot)
 				{
-					if(!mergeItemStack(slotStack, 2, 3, false))
+					if(!mergeItemStack(slotStack, tankSlot, dischargeSlot, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, firstGenericInvSlot, lastHotbarSlot, true))
 					{
 						return null;
 					}
@@ -112,38 +123,38 @@ public class ContainerChemicalWasher extends Container
 			}
 			else if(ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotID != 3)
+				if(slotID != dischargeSlot)
 				{
-					if(!mergeItemStack(slotStack, 3, 4, false))
+					if(!mergeItemStack(slotStack, dischargeSlot, firstGenericInvSlot, false))
 					{
 						return null;
 					}
 				}
-				else if(slotID == 3)
+				else
 				{
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, firstGenericInvSlot, lastHotbarSlot, true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				if(slotID >= 4 && slotID <= 30)
+				if(slotID >= firstGenericInvSlot && slotID < firstHotbarSlot)
 				{
-					if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
+					if(!mergeItemStack(slotStack, firstHotbarSlot, lastHotbarSlot, false))
 					{
 						return null;
 					}
 				}
-				else if(slotID > 31)
+				else if(slotID >= firstHotbarSlot && slotID <= lastHotbarSlot)
 				{
-					if(!mergeItemStack(slotStack, 4, 30, false))
+					if(!mergeItemStack(slotStack, firstGenericInvSlot, firstHotbarSlot, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, firstGenericInvSlot, lastHotbarSlot, true))
 					{
 						return null;
 					}
