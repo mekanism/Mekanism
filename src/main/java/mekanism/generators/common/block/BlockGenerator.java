@@ -61,7 +61,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import buildcraft.api.tools.IToolWrench;
 
 /**
  * Block class for handling multiple generator block IDs.

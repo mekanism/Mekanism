@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 

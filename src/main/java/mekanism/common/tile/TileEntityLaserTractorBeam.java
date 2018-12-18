@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;

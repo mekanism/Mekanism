@@ -5,7 +5,6 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 

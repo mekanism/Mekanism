@@ -2,8 +2,6 @@ package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;

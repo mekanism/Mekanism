@@ -1,7 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
-
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -17,8 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;

@@ -4,7 +4,6 @@ import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

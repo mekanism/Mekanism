@@ -2,7 +2,6 @@ package mekanism.common.content.entangloporter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import mekanism.api.gas.GasStack;

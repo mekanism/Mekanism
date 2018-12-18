@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;

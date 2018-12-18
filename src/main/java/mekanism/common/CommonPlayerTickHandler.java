@@ -8,13 +8,12 @@ import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.util.ReflectionUtils;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;

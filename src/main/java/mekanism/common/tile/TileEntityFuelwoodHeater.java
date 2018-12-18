@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;

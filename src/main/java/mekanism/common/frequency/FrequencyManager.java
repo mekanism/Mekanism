@@ -3,7 +3,6 @@ package mekanism.common.frequency;
 import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;

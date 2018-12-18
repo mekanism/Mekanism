@@ -1,12 +1,10 @@
 package mekanism.common.tile.prefab;
 
-import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 
 import mekanism.common.base.IEnergyWrapper;

@@ -4,7 +4,6 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

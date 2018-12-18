@@ -18,7 +18,6 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -42,7 +41,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

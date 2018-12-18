@@ -9,8 +9,6 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;

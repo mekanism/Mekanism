@@ -3,7 +3,6 @@ package mekanism.common.item;
 import cofh.api.item.IToolHammer;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;

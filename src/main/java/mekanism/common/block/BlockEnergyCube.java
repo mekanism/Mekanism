@@ -44,7 +44,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import buildcraft.api.tools.IToolWrench;
 
 /**
  * Block class for handling multiple energy cube block IDs.

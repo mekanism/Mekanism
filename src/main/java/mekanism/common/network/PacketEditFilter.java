@@ -2,8 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;

@@ -2,8 +2,6 @@ package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
