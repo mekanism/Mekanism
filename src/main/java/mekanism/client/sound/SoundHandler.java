@@ -103,9 +103,8 @@ public class SoundHandler
 
 	public static Map<String, IResettableSound> getMap(String name)
 	{
-		Map<String, IResettableSound> map = soundMaps.computeIfAbsent(name, k -> new HashMap<>());
 
-		return map;
+		return soundMaps.computeIfAbsent(name, k -> new HashMap<>());
 	}
 
 	public static SoundManager getSoundManager()

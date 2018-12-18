@@ -18,7 +18,6 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.TileNetworkList;
@@ -30,7 +29,6 @@ import mekanism.common.integration.ic2.IC2ItemManager;
 import mekanism.common.integration.tesla.TeslaItemWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ItemDataUtils;
@@ -132,32 +130,23 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 			{
 				tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
 			}
-			
-			if(tileEntity instanceof ISecurityTile)
-			{
-				ISecurityTile security = tileEntity;
-				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-				
-				if(hasSecurity(stack))
-				{
-					security.getSecurity().setMode(getSecurity(stack));
-				}
-				
-				if(getOwnerUUID(stack) == null)
-				{
-					security.getSecurity().setOwnerUUID(player.getUniqueID());
-				}
-			}
-			
-			if(tileEntity instanceof ISideConfiguration)
-			{
-				ISideConfiguration config = tileEntity;
 
-				if(ItemDataUtils.hasData(stack, "sideDataStored"))
-				{
-					config.getConfig().read(ItemDataUtils.getDataMap(stack));
-					config.getEjector().read(ItemDataUtils.getDataMap(stack));
-				}
+			tileEntity.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+
+			if(hasSecurity(stack))
+			{
+				tileEntity.getSecurity().setMode(getSecurity(stack));
+			}
+
+			if(getOwnerUUID(stack) == null)
+			{
+				tileEntity.getSecurity().setOwnerUUID(player.getUniqueID());
+			}
+
+			if(ItemDataUtils.hasData(stack, "sideDataStored"))
+			{
+				tileEntity.getConfig().read(ItemDataUtils.getDataMap(stack));
+				tileEntity.getEjector().read(ItemDataUtils.getDataMap(stack));
 			}
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));

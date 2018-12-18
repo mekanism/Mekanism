@@ -16,14 +16,12 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.GasTankTier;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.ItemDataUtils;
@@ -90,32 +88,23 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
 			tileEntity.gasTank.setMaxGas(tileEntity.tier.storage);
 			tileEntity.gasTank.setGas(getGas(stack));
-			
-			if(tileEntity instanceof ISecurityTile)
-			{
-				ISecurityTile security = tileEntity;
-				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-				
-				if(hasSecurity(stack))
-				{
-					security.getSecurity().setMode(getSecurity(stack));
-				}
-				
-				if(getOwnerUUID(stack) == null)
-				{
-					security.getSecurity().setOwnerUUID(player.getUniqueID());
-				}
-			}
-			
-			if(tileEntity instanceof ISideConfiguration)
-			{
-				ISideConfiguration config = tileEntity;
 
-				if(ItemDataUtils.hasData(stack, "sideDataStored"))
-				{
-					config.getConfig().read(ItemDataUtils.getDataMap(stack));
-					config.getEjector().read(ItemDataUtils.getDataMap(stack));
-				}
+			tileEntity.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+
+			if(hasSecurity(stack))
+			{
+				tileEntity.getSecurity().setMode(getSecurity(stack));
+			}
+
+			if(getOwnerUUID(stack) == null)
+			{
+				tileEntity.getSecurity().setOwnerUUID(player.getUniqueID());
+			}
+
+			if(ItemDataUtils.hasData(stack, "sideDataStored"))
+			{
+				tileEntity.getConfig().read(ItemDataUtils.getDataMap(stack));
+				tileEntity.getEjector().read(ItemDataUtils.getDataMap(stack));
 			}
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));

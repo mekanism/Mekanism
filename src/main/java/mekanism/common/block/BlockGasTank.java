@@ -6,14 +6,12 @@ import mekanism.api.IMekWrench;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
@@ -282,32 +280,28 @@ public class BlockGasTank extends BlockContainer
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
+		if(tileEntity == null) {
+			return ItemStack.EMPTY;
+		}
+
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
 		
 		if(itemStack.hasTagCompound())
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
-		
-		if(tileEntity instanceof ISecurityTile)
-		{
-			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
-			
-			if(securityItem.hasSecurity(itemStack))
-			{
-				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
-				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
-			}
-		}
-		
-		if(tileEntity instanceof ISideConfiguration)
-		{
-			ISideConfiguration config = tileEntity;
 
-			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+		ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+
+		if(securityItem.hasSecurity(itemStack))
+		{
+			securityItem.setOwnerUUID(itemStack, tileEntity.getSecurity().getOwnerUUID());
+			securityItem.setSecurity(itemStack, tileEntity.getSecurity().getMode());
 		}
-		
+
+		tileEntity.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+		tileEntity.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+
 		ITierItem tierItem = (ITierItem)itemStack.getItem();
 		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
 

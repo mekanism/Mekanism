@@ -95,11 +95,10 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 		{
 			for(String key : objModel.getMatLib().getGroups().keySet()) 
 			{
-				String k = key;
-				
+
 				if(!modelParts.containsKey(key)) 
 				{
-					modelParts.put(k, objModel.bake(new OBJModel.OBJState(ImmutableList.of(k), false), Attributes.DEFAULT_BAKED_FORMAT, textureGetterFlipV));
+					modelParts.put(key, objModel.bake(new OBJModel.OBJState(ImmutableList.of(key), false), Attributes.DEFAULT_BAKED_FORMAT, textureGetterFlipV));
 				}
 			}
 		}

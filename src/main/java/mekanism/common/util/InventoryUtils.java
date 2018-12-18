@@ -532,8 +532,7 @@ public final class InventoryUtils
 	
 	public static ItemStack loadFromNBT(NBTTagCompound nbtTags)
 	{
-		ItemStack ret = new ItemStack(nbtTags);
-		return ret;
+		return new ItemStack(nbtTags);
 	}
 	
 	public static boolean isItemHandler(TileEntity tile, EnumFacing side)
