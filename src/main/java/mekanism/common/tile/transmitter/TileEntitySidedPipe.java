@@ -147,7 +147,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			{
 				TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
-				if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+				if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
 						&& TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
 						&& isValidTransmitter(tileEntity))
 				{

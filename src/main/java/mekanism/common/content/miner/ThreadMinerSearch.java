@@ -118,7 +118,7 @@ public class ThreadMinerSearch extends Thread
 						acceptedItems.put(info, filterFound);
 					}
 					
-					canFilter = tileEntity.inverse ? filterFound == null : filterFound != null;
+					canFilter = tileEntity.inverse == (filterFound == null);
 	
 					if(canFilter)
 					{

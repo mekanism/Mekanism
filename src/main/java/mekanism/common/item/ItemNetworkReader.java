@@ -89,7 +89,7 @@ public class ItemNetworkReader extends ItemEnergized
 
 						TileEntity tile = coord.getTileEntity(world);
 						
-						if(tile != null && CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
+						if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
 						{
 							IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
 							

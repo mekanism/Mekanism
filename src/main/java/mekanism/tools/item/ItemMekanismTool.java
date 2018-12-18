@@ -35,7 +35,7 @@ public class ItemMekanismTool extends ItemTool
 	@Override
     public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
     {
-        return StackUtils.equalsWildcard(getRepairStack(), stack2) ? true : super.getIsRepairable(stack1, stack2);
+        return StackUtils.equalsWildcard(getRepairStack(), stack2) || super.getIsRepairable(stack1, stack2);
     }
     
     private ItemStack getRepairStack()

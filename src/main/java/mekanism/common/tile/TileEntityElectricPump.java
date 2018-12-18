@@ -155,7 +155,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
 
-			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
+			if(CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
 			{
 				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256*(upgradeComponent.getUpgrades(Upgrade.SPEED)+1), fluidTank.getFluidAmount()));

@@ -48,7 +48,7 @@ public class ItemMekanismHoe extends ItemMekanism
 	@Override
     public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
     {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) ? true : super.getIsRepairable(stack1, stack2);
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super.getIsRepairable(stack1, stack2);
     }
 
 	@Override

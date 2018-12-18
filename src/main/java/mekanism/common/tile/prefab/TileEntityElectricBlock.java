@@ -357,7 +357,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{// nb: the facing param contains the side relative to the pushing block
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(pushDirection.getOpposite()));
 		
-		if(general.blacklistIC2 || (tile != null && CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)))
+		if(general.blacklistIC2 || (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)))
 		{
 			return amount;
 		}

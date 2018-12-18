@@ -37,7 +37,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 			{
 				TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
 				
-				if(tile != null && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+				if(CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 				{
 					IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
 					

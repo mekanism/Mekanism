@@ -202,7 +202,7 @@ public class TransmitterModel extends OBJBakedModelBase
 							continue;
 						}
 						
-						if(!s.contains("Center") && !s.contains("Centre") && (client.opaqueTransmitters ? s.contains("Opaque") : !s.contains("Opaque")))
+						if(!s.contains("Center") && !s.contains("Centre") && (client.opaqueTransmitters == s.contains("Opaque")))
 						{
 							return textureMap.get(s);
 						}

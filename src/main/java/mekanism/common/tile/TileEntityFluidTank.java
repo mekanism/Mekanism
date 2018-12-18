@@ -200,7 +200,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		{
 			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(world);
 			
-			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP))
+			if(CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP))
 			{
 				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.output, fluidTank.getFluidAmount()));
