@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -144,7 +145,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 															   ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 			PropertyConnection connectionProp = new PropertyConnection((byte)0, (byte)0, typeArray, true);
 			
-			return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(Arrays.asList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
+			return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
 		}
 	}
 	

@@ -153,8 +153,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	{
 		double sent = 0;
 
-		List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>();
-		availableAcceptors.addAll(getAcceptors(null));
+		List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>(getAcceptors(null));
 
 		Collections.shuffle(availableAcceptors);
 

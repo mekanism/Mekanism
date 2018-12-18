@@ -338,8 +338,7 @@ public final class TransporterPathfinder
 			}
 		}
 
-		List<Destination> dests = new ArrayList<>();
-		dests.addAll(destPaths.values());
+		List<Destination> dests = new ArrayList<>(destPaths.values());
 
 		Collections.sort(dests);
 

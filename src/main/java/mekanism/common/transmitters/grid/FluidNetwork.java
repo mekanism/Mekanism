@@ -140,8 +140,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 	public int tickEmit(FluidStack fluidToSend, boolean doTransfer)
 	{
-		List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>();
-		availableAcceptors.addAll(getAcceptors(fluidToSend));
+		List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>(getAcceptors(fluidToSend));
 
 		Collections.shuffle(availableAcceptors);
 

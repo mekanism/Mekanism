@@ -49,9 +49,8 @@ public class ListUtils
 
 	public static <V> List<V> copy(List<V> list)
 	{
-		List<V> toReturn = new ArrayList<>();
 
-		toReturn.addAll(list);
+		List<V> toReturn = new ArrayList<>(list);
 
 		return toReturn;
 	}

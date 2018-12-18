@@ -1258,7 +1258,8 @@ public final class MekanismUtils
 	{
 		return "[" + obj.x + ", " + obj.y + ", " + obj.z + "]";
 	}
-	
+
+	//TODO - I believe there is a method for this?
 	@SideOnly(Side.CLIENT)
 	public static List<String> splitTooltip(String s, ItemStack stack)
 	{
