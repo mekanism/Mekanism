@@ -30,9 +30,6 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private AdvancedMachineRecipe tempRecipe;
-	
 	public AdvancedMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
 		super(helper, "mekanism:gui/GuiAdvancedMachine.png", name, unlocalized, progress);
@@ -79,9 +76,9 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((AdvancedMachineRecipeWrapper)recipeWrapper).getRecipe();
+		AdvancedMachineRecipe tempRecipe = ((AdvancedMachineRecipeWrapper) recipeWrapper).getRecipe();
 		
-		AdvancedMachineInput input = (AdvancedMachineInput)tempRecipe.recipeInput;
+		AdvancedMachineInput input = (AdvancedMachineInput) tempRecipe.recipeInput;
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		
@@ -90,7 +87,7 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(2, false, 27, 36);
 
 		itemStacks.set(0, input.itemStack);
-		itemStacks.set(1, ((ItemStackOutput)tempRecipe.recipeOutput).output);
+		itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
 		itemStacks.set(2, ((AdvancedMachineRecipeWrapper)recipeWrapper).getFuelStacks(input.gasType));
 		
 		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);

@@ -27,9 +27,6 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private OxidationRecipe tempRecipe;
-	
 	public ChemicalOxidizerRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/GuiChemicalOxidizer.png", "chemical_oxidizer", "tile.MachineBlock2.ChemicalOxidizer.name", ProgressBar.LARGE_RIGHT);
@@ -71,7 +68,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((ChemicalOxidizerRecipeWrapper)recipeWrapper).getRecipe();
+		OxidationRecipe tempRecipe = ((ChemicalOxidizerRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

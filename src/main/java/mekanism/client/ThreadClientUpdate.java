@@ -26,7 +26,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ThreadClientUpdate extends Thread
 {
 	private int bytesDownloaded;
-	private int lastBytesDownloaded;
 	private byte[] buffer = new byte[10240];
 
 	private static File modsDir = new File(Mekanism.proxy.getMinecraftDir(), "mods");
@@ -58,6 +57,7 @@ public class ThreadClientUpdate extends Thread
 			FileOutputStream outputStream = new FileOutputStream(download.getAbsolutePath());
 			InputStream stream = zipUrl.openStream();
 
+			int lastBytesDownloaded;
 			while((lastBytesDownloaded = stream.read(buffer)) > 0)
 			{
 				outputStream.write(buffer, 0, lastBytesDownloaded);

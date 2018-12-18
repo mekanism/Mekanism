@@ -18,9 +18,6 @@ public class SolarNeutronRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private SolarNeutronRecipe tempRecipe;
-	
 	public SolarNeutronRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/nei/GuiSolarNeutronActivator.png", "solar_neutron_activator", "tile.MachineBlock3.SolarNeutronActivator.name", null);
@@ -53,7 +50,7 @@ public class SolarNeutronRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((SolarNeutronRecipeWrapper)recipeWrapper).getRecipe();
+		SolarNeutronRecipe tempRecipe = ((SolarNeutronRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		

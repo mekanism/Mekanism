@@ -30,9 +30,6 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private PressurizedRecipe tempRecipe;
-	
 	public PRCRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/nei/GuiPRC.png", "pressurized_reaction_chamber", "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM);
@@ -85,7 +82,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((PRCRecipeWrapper)recipeWrapper).getRecipe();
+		PressurizedRecipe tempRecipe = ((PRCRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

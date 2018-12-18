@@ -19,9 +19,6 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private CrystallizerRecipe tempRecipe;
-	
 	public ChemicalCrystallizerRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/nei/GuiChemicalCrystallizer.png", "chemical_crystallizer", "tile.MachineBlock2.ChemicalCrystallizer.name", null);
@@ -55,7 +52,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((ChemicalCrystallizerRecipeWrapper)recipeWrapper).getRecipe();
+		CrystallizerRecipe tempRecipe = ((ChemicalCrystallizerRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

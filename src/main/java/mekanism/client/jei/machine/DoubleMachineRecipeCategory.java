@@ -28,9 +28,6 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private DoubleMachineRecipe tempRecipe;
-
 	public DoubleMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
 	{
 		super(helper, "mekanism:gui/guibasicmachine.png", name, unlocalized, progress);
@@ -77,9 +74,9 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((DoubleMachineRecipeWrapper)recipeWrapper).getRecipe();
+		DoubleMachineRecipe tempRecipe = ((DoubleMachineRecipeWrapper) recipeWrapper).getRecipe();
 
-		DoubleMachineInput input = (DoubleMachineInput)tempRecipe.recipeInput;
+		DoubleMachineInput input = (DoubleMachineInput) tempRecipe.recipeInput;
 
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 
@@ -88,7 +85,7 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(2, false, 27, 36);
 
 		itemStacks.set(0, input.itemStack);
-		itemStacks.set(1, ((ItemStackOutput)tempRecipe.recipeOutput).output);
+		itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
 		itemStacks.set(2, input.extraStack);
 	}
 }

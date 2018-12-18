@@ -20,9 +20,6 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private DissolutionRecipe tempRecipe;
-	
 	public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png", "chemical_dissolution_chamber", "gui.chemicalDissolutionChamber.short", null);
@@ -56,7 +53,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper)recipeWrapper).getRecipe();
+		DissolutionRecipe tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		

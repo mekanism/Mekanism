@@ -20,9 +20,6 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private WasherRecipe tempRecipe;
-	
 	public ChemicalWasherRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/nei/GuiChemicalWasher.png", "chemical_washer", "tile.MachineBlock2.ChemicalWasher.name", null);
@@ -55,7 +52,7 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((ChemicalWasherRecipeWrapper)recipeWrapper).getRecipe();
+		WasherRecipe tempRecipe = ((ChemicalWasherRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		

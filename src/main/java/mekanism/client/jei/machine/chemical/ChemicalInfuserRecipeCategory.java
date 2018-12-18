@@ -18,9 +18,6 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private ChemicalInfuserRecipe tempRecipe;
-	
 	public ChemicalInfuserRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/nei/GuiChemicalInfuser.png", "chemical_infuser", "tile.MachineBlock2.ChemicalInfuser.name", null);
@@ -54,7 +51,7 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((ChemicalInfuserRecipeWrapper)recipeWrapper).getRecipe();
+		ChemicalInfuserRecipe tempRecipe = ((ChemicalInfuserRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 		

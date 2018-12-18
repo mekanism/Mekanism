@@ -15,7 +15,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiConfigTypeTab extends GuiElement
 {
-	private TileEntity tileEntity;
 	public TransmissionType transmission;
 	
 	private int yPos;
@@ -27,7 +26,7 @@ public class GuiConfigTypeTab extends GuiElement
 	{
 		super(getResource(type), gui, def);
 
-		tileEntity = tile;
+		TileEntity tileEntity = tile;
 		transmission = type;
 	}
 	

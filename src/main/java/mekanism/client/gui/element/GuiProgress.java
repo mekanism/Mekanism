@@ -14,8 +14,6 @@ public class GuiProgress extends GuiElement
 	private int xLocation;
 	private int yLocation;
 
-	private int innerOffsetX = 2;
-
 	private ProgressBar type;
 	private IProgressInfoHandler handler;
 
@@ -43,7 +41,8 @@ public class GuiProgress extends GuiElement
 		if(handler.isActive())
 		{
 			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
-			int displayInt = (int)(handler.getProgress() * (type.width-2*innerOffsetX));
+			int innerOffsetX = 2;
+			int displayInt = (int)(handler.getProgress() * (type.width-2* innerOffsetX));
 			guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
 		}
 		

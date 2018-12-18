@@ -32,9 +32,6 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
 
-	@Nullable
-	private SeparatorRecipe tempRecipe;
-	
 	public ElectrolyticSeparatorRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, "mekanism:gui/GuiElectrolyticSeparator.png", "electrolytic_separator", "tile.MachineBlock2.ElectrolyticSeparator.name", ProgressBar.BI);
@@ -88,7 +85,7 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((ElectrolyticSeparatorRecipeWrapper)recipeWrapper).getRecipe();
+		SeparatorRecipe tempRecipe = ((ElectrolyticSeparatorRecipeWrapper) recipeWrapper).getRecipe();
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		

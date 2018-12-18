@@ -6,9 +6,8 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class ModelTurbine extends ModelBase 
 {
-	private static float BLADE_ROTATE = 0.418879F;
-	
-    public ModelRenderer rod;
+
+	public ModelRenderer rod;
     public ModelRenderer extension_north;
     public ModelRenderer blade_north;
     public ModelRenderer extension_south;
@@ -25,7 +24,8 @@ public class ModelTurbine extends ModelBase
         extension_south = new ModelRenderer(this, 0, 0);
         extension_south.setRotationPoint(0.0F, 20.0F, 0.0F);
         extension_south.addBox(-1.0F, 0.0F, 1.0F, 2, 1, 3, 0.0F);
-        setRotateAngle(extension_south, 0.0F, 0.0F, -BLADE_ROTATE);
+		float BLADE_ROTATE = 0.418879F;
+		setRotateAngle(extension_south, 0.0F, 0.0F, -BLADE_ROTATE);
         extension_west = new ModelRenderer(this, 0, 4);
         extension_west.setRotationPoint(0.0F, 20.0F, 0.0F);
         extension_west.addBox(-4.0F, 0.0F, -1.0F, 3, 1, 2, 0.0F);

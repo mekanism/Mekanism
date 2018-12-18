@@ -64,10 +64,6 @@ public class GuiLogisticalSorter extends GuiMekanism
 	/** True if the scrollbar is being dragged */
 	public boolean isDragging = false;
 
-	// Scrollbar dimensions
-	private final int scrollX = 154;
-	private final int scrollY = 18;
-
 	private final int scrollW = 12;
 	private final int scrollH = 138;
 
@@ -607,6 +603,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		// Draw scrollbar
+		int scrollY = 18;// Scrollbar dimensions
+		int scrollX = 154;
 		drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
 		// Get mouse position relative to gui
