@@ -83,7 +83,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	
 	public int BASE_MAX_INFUSE = 1000;
 	
-	public int maxInfuse = BASE_MAX_INFUSE;
+	public int maxInfuse;
 
 	/** How many ticks it takes, by default, to run an operation. */
 	public int BASE_TICKS_REQUIRED = 200;

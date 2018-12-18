@@ -16,7 +16,7 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper
 	public Fluid fluidType;
 	public Gas gasType;
 	
-	public boolean condensentrating = true;
+	public boolean condensentrating;
 	
 	public RotaryCondensentratorRecipeWrapper(Fluid fluid, Gas gas, boolean b)
 	{

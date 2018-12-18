@@ -20,7 +20,7 @@ public class TileSound extends MekSound implements IResettableSound
 	
 	int fadeOut = 10;
 	
-	float baseVolume = 1.0F;
+	float baseVolume;
 
 	public TileSound(IHasSound source, ISoundSource values)
 	{

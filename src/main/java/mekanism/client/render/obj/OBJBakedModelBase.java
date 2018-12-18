@@ -49,7 +49,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 	
 	protected ImmutableMap<String, TextureAtlasSprite> textureMap;
 	
-	protected HashMap<TransformType, Matrix4f> transformationMap = new HashMap<>();
+	protected HashMap<TransformType, Matrix4f> transformationMap;
 	
 	public OBJBakedModelBase(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) 
 	{

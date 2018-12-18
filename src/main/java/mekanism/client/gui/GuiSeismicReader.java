@@ -40,7 +40,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	private Rectangle upButton, downButton, tooltip;
 
-	private int currentLayer = 0;
+	private int currentLayer;
 
 	public GuiSeismicReader(World world, Coord4D coord, ItemStack stack)
 	{

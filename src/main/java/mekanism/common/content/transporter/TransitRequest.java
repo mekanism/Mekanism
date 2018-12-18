@@ -131,7 +131,7 @@ public class TransitRequest
 		public static final TransitResponse EMPTY = new TransitResponse(-1, ItemStack.EMPTY);
 		
 		public int slotID;
-		public ItemStack stack = ItemStack.EMPTY;
+		public ItemStack stack;
 		
 		public TransitResponse(int s, ItemStack i)
 		{
