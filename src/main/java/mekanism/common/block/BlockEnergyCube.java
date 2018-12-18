@@ -7,7 +7,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateEnergyCube;
@@ -15,7 +14,6 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
@@ -287,31 +285,27 @@ public class BlockEnergyCube extends BlockContainer
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
+		if(tileEntity == null) {
+			return ItemStack.EMPTY;
+		}
+
 		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
 		
 		if(!itemStack.hasTagCompound())
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
-		
-		if(tileEntity instanceof ISecurityTile)
-		{
-			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
-			
-			if(securityItem.hasSecurity(itemStack))
-			{
-				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
-				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
-			}
-		}
-		
-		if(tileEntity instanceof ISideConfiguration)
-		{
-			ISideConfiguration config = tileEntity;
 
-			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+		ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
+
+		if(securityItem.hasSecurity(itemStack))
+		{
+			securityItem.setOwnerUUID(itemStack, tileEntity.getSecurity().getOwnerUUID());
+			securityItem.setSecurity(itemStack, tileEntity.getSecurity().getMode());
 		}
+
+		tileEntity.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+		tileEntity.getEjector().write(ItemDataUtils.getDataMap(itemStack));
 
 		ITierItem tierItem = (ITierItem)itemStack.getItem();
 		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());

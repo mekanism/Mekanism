@@ -154,6 +154,7 @@ public class MekanismRenderer
 				ModelLoader.setCustomModelResourceLocation(item, i, loc);
 				variants.add(loc);
 				ModelBakery.registerItemVariants(item, new ResourceLocation(domain + ":" + metaItem.getTexture(i)));
+				//TODO - variants unused here? bug?
 			}
 			
 			return;

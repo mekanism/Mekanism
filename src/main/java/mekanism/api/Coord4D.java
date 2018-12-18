@@ -226,7 +226,7 @@ public class Coord4D
 	{
 		IBlockState state = getBlockState(world);
 		
-		if(state == null || state == Blocks.AIR)
+		if(state == null || state == Blocks.AIR)	//TODO - isAirBlock()?
 		{
 			return ItemStack.EMPTY;
 		}
