@@ -50,10 +50,10 @@ public final class MinerUtils
 				try
 				{
 					Object it = getSilkTouchDrop.invoke(block, state);
-					if (it != null && it instanceof ItemStack && !((ItemStack)it).isEmpty())
+					if (it instanceof ItemStack && !((ItemStack) it).isEmpty())
 					{
 						ret.add((ItemStack)it);
-					} else if (it != null && it instanceof ItemStack && ((ItemStack)it).isEmpty()){//silk touch drop is empty, fallback to grabbing an itemblock
+					} else if (it instanceof ItemStack && ((ItemStack) it).isEmpty()){//silk touch drop is empty, fallback to grabbing an itemblock
 						fallbackGetSilkTouch(block, state, ret);
 					}
 				} catch (InvocationTargetException|IllegalAccessException e){

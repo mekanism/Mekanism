@@ -55,7 +55,7 @@ public class ContainerSolarGenerator extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{

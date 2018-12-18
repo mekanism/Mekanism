@@ -117,7 +117,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 						if(invStack == null || invStack.getStack().isEmpty())
 						{
-							break inner;
+							break;
 						}
 
 						if(filter.canFilter(invStack.getStack(), true))

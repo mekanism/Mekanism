@@ -21,7 +21,6 @@ public final class ReflectionUtils
 				f.setAccessible(true);
 				return f.get(obj);
 			} catch(Exception e) {
-				continue;
 			}
 		}
 
@@ -44,7 +43,6 @@ public final class ReflectionUtils
 				f.setAccessible(true);
 				f.set(obj, value);
 			} catch(Exception e) {
-				continue;
 			}
 		}
 	}
@@ -65,7 +63,6 @@ public final class ReflectionUtils
 				m.setAccessible(true);
 				return m;
 			} catch(Exception e) {
-				continue;
 			}
 		}
 

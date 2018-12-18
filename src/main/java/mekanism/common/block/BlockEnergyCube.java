@@ -307,7 +307,7 @@ public class BlockEnergyCube extends BlockContainer
 		
 		if(tileEntity instanceof ISideConfiguration)
 		{
-			ISideConfiguration config = (ISideConfiguration)tileEntity;
+			ISideConfiguration config = tileEntity;
 
 			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
 			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));

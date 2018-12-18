@@ -251,7 +251,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			
 			if(formed)
 			{
-				if(getReactor() == null || !((FusionReactor)getReactor()).formed)
+				if(getReactor() == null || !getReactor().formed)
 				{
 					Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityReactorBlock);
 				}

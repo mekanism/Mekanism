@@ -82,7 +82,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 
 		minField = new GuiTextField(2, fontRenderer, guiWidth + 149, guiHeight + 19, 20, 11);

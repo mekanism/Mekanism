@@ -201,7 +201,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		
 		public long toTesla(double joules)
 		{
-			return (long)Math.round(joules*general.TO_TESLA);
+			return Math.round(joules*general.TO_TESLA);
 		}
 		
 		public double fromTesla(double tesla)

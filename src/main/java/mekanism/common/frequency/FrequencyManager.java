@@ -328,7 +328,7 @@ public class FrequencyManager
 				{
 					NBTTagCompound compound = list.getCompoundTagAt(i);
 					
-					Constructor<?> c = Class.forName(frequencyClass).getConstructor(new Class[] {NBTTagCompound.class});
+					Constructor<?> c = Class.forName(frequencyClass).getConstructor(NBTTagCompound.class);
 					Frequency freq = (Frequency)c.newInstance(compound);
 					
 					loadedFrequencies.add(freq);

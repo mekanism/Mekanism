@@ -27,7 +27,7 @@ public class BlockPlasticFence extends BlockFence
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new BlockStateContainer(this, new IProperty[] {NORTH, EAST, WEST, SOUTH, colorProperty});
+		return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH, colorProperty);
 	}
 
 	@Override

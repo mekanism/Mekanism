@@ -273,20 +273,20 @@ public class RecipeUtils
 		}
 		else if(nbtTags.hasKey("itemname"))
 		{
-			Object obj = Item.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("itemname")));
+			Item obj = Item.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("itemname")));
 			
 			if(obj != null)
 			{
-				return new ItemStack((Item)obj, amount, meta);
+				return new ItemStack(obj, amount, meta);
 			}
 		}
 		else if(nbtTags.hasKey("blockname"))
 		{
-			Object obj = Block.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("blockname")));
+			Block obj = Block.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("blockname")));
 			
 			if(obj != null)
 			{
-				return new ItemStack((Block)obj, amount, meta);
+				return new ItemStack(obj, amount, meta);
 			}
 		}
 		

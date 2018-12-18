@@ -295,7 +295,7 @@ public class ClientTickHandler
 					}
 				}
 
-				for(EntityPlayer player : (List<EntityPlayer>)mc.world.playerEntities)
+				for(EntityPlayer player : mc.world.playerEntities)
 				{
 					if(hasFlamethrower(player))
 					{

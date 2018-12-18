@@ -177,8 +177,7 @@ public class TransporterManager
 					
 					int amountRemaining = ((TileEntityBin)sidedInventory).getMaxStoredCount()-copy.binAmount;
 					copy.binAmount += Math.min(amountRemaining, toInsert.getCount());
-					
-					return;
+
 				}
 				else {
 					for(int get = 0; get <= slots.length - 1; get++)

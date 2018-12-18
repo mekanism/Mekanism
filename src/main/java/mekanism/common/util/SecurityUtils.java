@@ -46,7 +46,7 @@ public final class SecurityUtils
 	
 	public static boolean canAccess(EntityPlayer player, TileEntity tile)
 	{
-		if(tile == null || !(tile instanceof ISecurityTile))
+		if(!(tile instanceof ISecurityTile))
 		{
 			return true;
 		}

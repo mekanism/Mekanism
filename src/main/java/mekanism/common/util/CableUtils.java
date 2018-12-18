@@ -265,7 +265,7 @@ public final class CableUtils
 		else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite()))
 		{
 			ITeslaConsumer consumer = CapabilityUtils.getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite());
-			sent += consumer.givePower((long)Math.round(currentSending*general.TO_TESLA), false)*general.FROM_TESLA;
+			sent += consumer.givePower(Math.round(currentSending*general.TO_TESLA), false)*general.FROM_TESLA;
 		}
 		else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite()))
 		{

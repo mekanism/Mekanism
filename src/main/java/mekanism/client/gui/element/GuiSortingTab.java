@@ -56,7 +56,7 @@ public class GuiSortingTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		getFontRenderer().drawString(LangUtils.transOnOff(((TileEntityFactory)tileEntity).sorting), -21, 86, 0x0404040);
+		getFontRenderer().drawString(LangUtils.transOnOff(tileEntity.sorting), -21, 86, 0x0404040);
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84)
 		{

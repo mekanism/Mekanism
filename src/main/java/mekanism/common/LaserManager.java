@@ -57,7 +57,7 @@ public class LaserManager
 		
 		boolean foundEntity = false;
 
-		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to)))
+		for(Entity e : world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to)))
 		{
 			foundEntity = true;
 			

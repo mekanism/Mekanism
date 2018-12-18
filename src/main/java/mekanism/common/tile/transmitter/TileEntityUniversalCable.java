@@ -107,14 +107,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 						else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite()))
 						{
 							ITeslaProducer producer = CapabilityUtils.getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
-							double toDraw = producer.takePower((long)Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_TESLA)), true)*general.FROM_TESLA;
+							double toDraw = producer.takePower(Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_TESLA)), true)*general.FROM_TESLA;
 							
 							if(toDraw > 0)
 							{
 								toDraw -= takeEnergy(toDraw, true);
 							}
 							
-							producer.takePower((long)Math.round(toDraw*general.TO_TESLA), false);
+							producer.takePower(Math.round(toDraw*general.TO_TESLA), false);
 						}
 						
 						else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite()))

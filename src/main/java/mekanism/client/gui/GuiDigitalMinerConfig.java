@@ -186,17 +186,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			if(filter instanceof MOreDictFilter && !oreDictFilters.contains(filter))
 			{
-				if(oreDictStacks.containsKey(filter))
-				{
-					oreDictStacks.remove(filter);
-				}
+				oreDictStacks.remove(filter);
 			}
 			else if(filter instanceof MModIDFilter && !modIDFilters.contains(filter))
 			{
-				if(modIDStacks.containsKey(filter))
-				{
-					modIDStacks.remove(filter);
-				}
+				modIDStacks.remove(filter);
 			}
 		}
 	}

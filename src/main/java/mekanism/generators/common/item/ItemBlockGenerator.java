@@ -213,7 +213,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				if(!world.isAirBlock(pos.add(0, yPos, 0)) || pos.getY()+yPos > 255)
 				{
 					place = false;
-					break outer;
+					break;
 				}
 			}
 		}

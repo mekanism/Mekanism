@@ -535,7 +535,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			//TODO seriously this needs to happen soon
 			//TODO perhaps drop from pointer?
 
-			cache.apply((T)structureFound);
+			cache.apply(structureFound);
 			structureFound.inventoryID = idToUse;
 			
 			onFormed();

@@ -79,14 +79,10 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	
 	public static boolean isTextboxKey(char c, int i)
 	{
-		if(i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT ||
-				i == Keyboard.KEY_END || i == Keyboard.KEY_HOME || i == Keyboard.KEY_BACK || isKeyComboCtrlA(i) || 
-				isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i))
-		{
-			return true;
-		}
-		
-		return false;
+		return i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT ||
+				i == Keyboard.KEY_END || i == Keyboard.KEY_HOME || i == Keyboard.KEY_BACK || isKeyComboCtrlA(i) ||
+				isKeyComboCtrlC(i) || isKeyComboCtrlV(i) || isKeyComboCtrlX(i);
+
 	}
 
 	@Override
@@ -108,7 +104,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 			for(int i = 0; i < inventorySlots.inventorySlots.size(); i++)
 			{
-				Slot slot = (Slot)inventorySlots.inventorySlots.get(i);
+				Slot slot = inventorySlots.inventorySlots.get(i);
 
 				if(isMouseOverSlot(slot, mouseX, mouseY))
 				{

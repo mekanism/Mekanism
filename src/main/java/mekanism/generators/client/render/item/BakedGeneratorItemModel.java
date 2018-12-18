@@ -115,8 +115,7 @@ public class BakedGeneratorItemModel implements IBakedModel
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));
 				windGenerator.render(0.016F, 0);
 			}
-			
-			return;
+
 		}
 	}
 

@@ -78,7 +78,7 @@ public class ItemMekanismHoe extends ItemMekanism
 
                 if(block == Blocks.DIRT)
                 {
-                    switch((BlockDirt.DirtType)iblockstate.getValue(BlockDirt.VARIANT))
+                    switch(iblockstate.getValue(BlockDirt.VARIANT))
                     {
                         case DIRT:
                             setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());

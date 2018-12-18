@@ -31,7 +31,7 @@ public class InventoryList implements IInventory
      */
     public ItemStack getStackInSlot(int index)
     {
-        return index >= 0 && index < this.inventoryContents.size() ? (ItemStack)this.inventoryContents.get(index) : ItemStack.EMPTY;
+        return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index) : ItemStack.EMPTY;
     }
 
     /**
@@ -54,7 +54,7 @@ public class InventoryList implements IInventory
      */
     public ItemStack removeStackFromSlot(int index)
     {
-        ItemStack itemstack = (ItemStack)this.inventoryContents.get(index);
+        ItemStack itemstack = this.inventoryContents.get(index);
 
         if (itemstack.isEmpty())
         {
@@ -132,7 +132,7 @@ public class InventoryList implements IInventory
      */
     public ITextComponent getDisplayName()
     {
-        return (ITextComponent)(this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]));
+        return (this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]));
     }
 
     /**

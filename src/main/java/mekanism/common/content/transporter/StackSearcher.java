@@ -56,7 +56,7 @@ public class StackSearcher
 					{
 						ItemStack toSend = inventory.getStackInSlot(slotID);
 
-						if(((ISidedInventory)inventory).canExtractItem(slotID, toSend, side.getOpposite()))
+						if(inventory.canExtractItem(slotID, toSend, side.getOpposite()))
 						{
 							return new InvStack(tileEntity, slotID, toSend, side.getOpposite());
 						}

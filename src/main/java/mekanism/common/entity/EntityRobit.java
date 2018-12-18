@@ -76,11 +76,11 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public boolean texTick;
 	
-    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityRobit.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> OWNER_UUID = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<String> OWNER_NAME = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.createKey(EntityRobit.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
 
 	public EntityRobit(World world)
 	{
@@ -206,7 +206,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				{
 					ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
 					
-					long needed = (long)Math.round((MAX_ELECTRICITY-getEnergy())*general.TO_TESLA);
+					long needed = Math.round((MAX_ELECTRICITY-getEnergy())*general.TO_TESLA);
 					setEnergy(getEnergy() + producer.takePower(needed, false)*general.FROM_TESLA);
 				}
 				else if(MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null))
@@ -552,7 +552,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public double getEnergy()
 	{
-		return (float)dataManager.get(ELECTRICITY);
+		return dataManager.get(ELECTRICITY);
 	}
 
 	public void setEnergy(double energy)
@@ -693,7 +693,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
+			NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.size())

@@ -1517,7 +1517,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{
-					filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+					filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 				}
 			}
 		}

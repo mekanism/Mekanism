@@ -64,7 +64,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 			
 			if(tile != null)
 			{
-				((TileEntityThermalEvaporationController)tile).refresh();
+				tile.refresh();
 			}
 		}
 	}
@@ -80,7 +80,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 			
 			if(tile != null)
 			{
-				((TileEntityThermalEvaporationController)tile).refresh();
+				tile.refresh();
 			}
 			else {
 				updateController();

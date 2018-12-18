@@ -542,7 +542,7 @@ public abstract class BlockMachine extends BlockContainer
 					{
 						UUID owner = ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
 						
-						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getUniqueID().equals(owner))
+						if(MekanismUtils.isOp(entityplayer) || owner == null || entityplayer.getUniqueID().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
 						} 

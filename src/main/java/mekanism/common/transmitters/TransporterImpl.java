@@ -136,7 +136,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 					if(!recalculate(stack, prevSet))
 					{
 						remove.add(stack);
-						continue;
 					}
 					else {
 						if(prevSet != null)
@@ -157,7 +156,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 							if(!recalculate(stack, null))
 							{
 								remove.add(stack);
-								continue;
 							}
 						}
 						else if(stack.pathType == Path.HOME && (!checkSideForInsert(stack) || !InventoryUtils.canInsert(stack.getDest().getTileEntity(world()), stack.color, stack.itemStack, stack.getSide(this), true)))
@@ -165,7 +163,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 							if(!recalculate(stack, null))
 							{
 								remove.add(stack);
-								continue;
 							}
 						}
 						else if(stack.pathType == Path.NONE)
@@ -173,7 +170,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 							if(!recalculate(stack, null))
 							{
 								remove.add(stack);
-								continue;
 							}
 						}
 					}
@@ -191,7 +187,6 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 							if(!recalculate(stack, null))
 							{
 								remove.add(stack);
-								continue;
 							}
 						}
 					}

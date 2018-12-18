@@ -75,7 +75,7 @@ public class CCPeripheral implements IPeripheral
         {
             TileEntity te = world.getTileEntity(pos);
 
-            if(te != null && te instanceof IComputerIntegration)
+            if(te instanceof IComputerIntegration)
             {
                 return new CCPeripheral((IComputerIntegration)te);
             }

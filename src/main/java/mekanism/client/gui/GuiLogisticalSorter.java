@@ -205,17 +205,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 		{
 			if(filter instanceof TOreDictFilter && !oreDictFilters.contains(filter))
 			{
-				if(oreDictStacks.containsKey(filter))
-				{
-					oreDictStacks.remove(filter);
-				}
+				oreDictStacks.remove(filter);
 			}
 			else if(filter instanceof TModIDFilter && !modIDFilters.contains(filter))
 			{
-				if(modIDStacks.containsKey(filter))
-				{
-					modIDStacks.remove(filter);
-				}
+				modIDStacks.remove(filter);
 			}
 		}
 	}

@@ -224,7 +224,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
+			NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.size())

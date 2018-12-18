@@ -93,7 +93,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 		if(isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 
 		oreDictText = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);

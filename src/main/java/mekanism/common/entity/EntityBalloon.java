@@ -38,11 +38,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public UUID cachedEntityUUID;
 	
-    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager.<Byte>createKey(EntityBalloon.class, DataSerializers.BYTE);
-    private static final DataParameter<Integer> LATCHED_X = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> LATCHED_X = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
 
 	public EntityBalloon(World world)
 	{
@@ -127,7 +127,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			if(dataManager.get(IS_LATCHED) == 1)
 			{
-				latched = new Coord4D((int)dataManager.get(LATCHED_X), (int)dataManager.get(LATCHED_Y), (int)dataManager.get(LATCHED_Z), world.provider.getDimension());
+				latched = new Coord4D(dataManager.get(LATCHED_X), dataManager.get(LATCHED_Y), dataManager.get(LATCHED_Z), world.provider.getDimension());
 			}
 			else {
 				latched = null;

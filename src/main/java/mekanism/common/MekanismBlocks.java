@@ -46,7 +46,7 @@ public class MekanismBlocks
 	public static Block ObsidianTNT = new BlockObsidianTNT().setCreativeTab(Mekanism.tabMekanism);
 	public static Block EnergyCube = new BlockEnergyCube();
 	public static Block Transmitter = new BlockTransmitter();
-	public static Block BoundingBlock = (BlockBounding)new BlockBounding();
+	public static Block BoundingBlock = new BlockBounding();
 	public static Block GasTank = new BlockGasTank();
 	public static Block CardboardBox = new BlockCardboardBox();
 	public static Block GlowPanel = new BlockGlowPanel();

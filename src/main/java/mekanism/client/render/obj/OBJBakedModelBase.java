@@ -75,7 +75,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
     	
     	List<BakedQuad> bakedQuads = new ArrayList<>();
     	
-        Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
+        Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<>());
         Optional<TRSRTransformation> transform = Optional.empty();
         Map<Face, String> groupNameMap = new HashMap<>();
         

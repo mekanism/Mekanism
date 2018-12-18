@@ -36,7 +36,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	{
 		TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
 		
-		if(tile != null && (tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider))
+		if((tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider))
 		{
 			return true;
 		}

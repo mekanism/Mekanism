@@ -93,7 +93,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			
 			if(tileEntity instanceof ISecurityTile)
 			{
-				ISecurityTile security = (ISecurityTile)tileEntity;
+				ISecurityTile security = tileEntity;
 				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
 				
 				if(hasSecurity(stack))
@@ -109,7 +109,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			
 			if(tileEntity instanceof ISideConfiguration)
 			{
-				ISideConfiguration config = (ISideConfiguration)tileEntity;
+				ISideConfiguration config = tileEntity;
 
 				if(ItemDataUtils.hasData(stack, "sideDataStored"))
 				{
