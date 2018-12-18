@@ -45,7 +45,7 @@ public class PropertyConnection implements IUnlistedProperty<PropertyConnection>
 	@Override
 	public String valueToString(PropertyConnection value) 
 	{
-		return Byte.toString(value.connectionByte) + "_" + Byte.toString(value.transmitterConnections) + "_" 
+		return value.connectionByte + "_" + value.transmitterConnections + "_"
 				+ Arrays.toString(value.connectionTypes) + "_" + value.renderCenter;
 	}
 }

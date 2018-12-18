@@ -378,6 +378,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getFlowInfo()
 	{
-		return Integer.toString(prevTransferAmount) + " mB/t";
+		return prevTransferAmount + " mB/t";
 	}
 }

@@ -9,7 +9,7 @@ public class HeatUtils
 {
 	public static double[] simulate(IHeatTransfer source)
 	{
-		double heatTransferred[] = new double[] {0, 0};
+		double[] heatTransferred = new double[]{0, 0};
 		
 		for(EnumFacing side : EnumFacing.VALUES)
 		{
