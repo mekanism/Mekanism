@@ -447,7 +447,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 			for(int id : inputSlots)
 			{
-				invStacks.add(InvID.get(id, inventory));
+				InvID item = InvID.get(id, inventory);
+				if(item.stack != null && item.stack.hasTagCompound())
+				{
+					return; //Don't sort items with NBT data (dupe fix)
+				}
+				invStacks.add(item);
 			}
 
 			for(InvID invID1 : invStacks)
