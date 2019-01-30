@@ -53,7 +53,7 @@ public class CustomItemModelFactory implements IBakedModel
 	@Override
 	public boolean isBuiltInRenderer() 
 	{
-		throw new UnsupportedOperationException();
+		return false;
 	}
 
 	@Override
@@ -62,11 +62,6 @@ public class CustomItemModelFactory implements IBakedModel
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms() 
-	{
-		throw new UnsupportedOperationException();
-	}
 	
     private class MachineOverride extends ItemOverrideList 
     {
