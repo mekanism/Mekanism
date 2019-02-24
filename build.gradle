@@ -146,7 +146,7 @@ dependencies {
     compileOnly "com.blamejared:MTLib:${config.mtlib_version}"
     compileOnly "dan200.computercraft:ComputerCraft:${config.computercraft_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${config.top_version}:api"
-    compileOnly name: "appliedenergistics2", version: config.ae2_version, classifier: 'api', ext:"jar"
+    compileOnly "appeng:appliedenergistics2:${config.ae2_version}:api"
 }
 
 processResources
