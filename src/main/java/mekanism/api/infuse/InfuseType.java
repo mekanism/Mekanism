@@ -34,7 +34,7 @@ public final class InfuseType
 		sprite = tex;
 	}
 
-	public InfuseType setUnlocalizedName(String name)
+	public InfuseType setTranslationKey(String name)
 	{
 		unlocalizedName = "infuse." + name;
 

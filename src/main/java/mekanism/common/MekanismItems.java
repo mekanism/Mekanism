@@ -158,6 +158,6 @@ public class MekanismItems
 	
 	public static Item init(Item item, String name)
 	{
-		return item.setUnlocalizedName(name).setRegistryName("mekanism:" + name);
+		return item.setTranslationKey(name).setRegistryName("mekanism:" + name);
 	}
 }

@@ -116,6 +116,6 @@ public class MekanismBlocks
 	
 	public static Block init(Block block, String name)
 	{
-		return block.setUnlocalizedName(name).setRegistryName("mekanism:" + name);
+		return block.setTranslationKey(name).setRegistryName("mekanism:" + name);
 	}
 }

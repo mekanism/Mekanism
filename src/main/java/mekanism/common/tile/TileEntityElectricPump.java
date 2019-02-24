@@ -480,7 +480,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.getFront(1))
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.byIndex(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -497,7 +497,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
-		if(from == EnumFacing.getFront(1))
+		if(from == EnumFacing.byIndex(1))
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
@@ -514,7 +514,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return from == EnumFacing.getFront(1);
+		return from == EnumFacing.byIndex(1);
 	}
 
 	@Override

@@ -95,7 +95,7 @@ public class Gas
 	 * Gets the unlocalized name of this Gas.
 	 * @return this Gas's unlocalized name
 	 */
-	public String getUnlocalizedName()
+	public String getTranslationKey()
 	{
 		return "gas." + unlocalizedName;
 	}
@@ -106,7 +106,7 @@ public class Gas
 	 */
 	public String getLocalizedName()
 	{
-		return I18n.translateToLocal(getUnlocalizedName());
+		return I18n.translateToLocal(getTranslationKey());
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class Gas
 	 * @param s - unlocalized name to set
 	 * @return this Gas object
 	 */
-	public Gas setUnlocalizedName(String s)
+	public Gas setTranslationKey(String s)
 	{
 		unlocalizedName = s;
 
@@ -210,7 +210,7 @@ public class Gas
 	 */
 	public static Gas readFromNBT(NBTTagCompound nbtTags)
 	{
-		if(nbtTags == null || nbtTags.hasNoTags())
+		if(nbtTags == null || nbtTags.isEmpty())
 		{
 			return null;
 		}

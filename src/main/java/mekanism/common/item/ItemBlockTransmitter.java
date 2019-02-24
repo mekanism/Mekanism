@@ -170,10 +170,10 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack stack)
+	public String getTranslationKey(ItemStack stack)
 	{
 		TransmitterType type = TransmitterType.get(stack.getItemDamage());
-		String name = type.getUnlocalizedName();
+		String name = type.getTranslationKey();
 		
 		if(type.hasTiers())
 		{
@@ -181,7 +181,7 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
 			name = tier.getSimpleName() + name;
 		}
 		
-		return getUnlocalizedName() + "." + name;
+		return getTranslationKey() + "." + name;
 	}
 	
 	@Override

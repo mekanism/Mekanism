@@ -148,7 +148,7 @@ public class BlockEnergyCube extends BlockContainer
 		}
 
 		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
+		tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
 	}
 
 	@Override

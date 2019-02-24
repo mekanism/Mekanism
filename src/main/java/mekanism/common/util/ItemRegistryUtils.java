@@ -44,7 +44,7 @@ public final class ItemRegistryUtils
 			return "null";
 		}
 		
-		String modId = itemResourceLocation.getResourceDomain();
+		String modId = itemResourceLocation.getNamespace();
 		String lowercaseModId = modId.toLowerCase(Locale.ENGLISH);
 		String modName = modIDMap.computeIfAbsent(lowercaseModId, k -> WordUtils.capitalize(modId));
 

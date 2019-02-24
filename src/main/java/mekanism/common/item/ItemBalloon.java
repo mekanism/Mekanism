@@ -104,9 +104,9 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		EnumColor color = getColor(stack);
         String dyeName = color.getDyedName();
 
-        if(I18n.canTranslate(getUnlocalizedName(stack) + "." + color.dyeName))
+        if(I18n.canTranslate(getTranslationKey(stack) + "." + color.dyeName))
         {
-            return LangUtils.localize(getUnlocalizedName(stack) + "." + color.dyeName);
+            return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
         }
 
 		if(getColor(stack) == EnumColor.BLACK)

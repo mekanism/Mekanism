@@ -255,7 +255,7 @@ public abstract class BlockMachine extends BlockContainer
 		}
 
 		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
+		tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
 
 		if(tileEntity instanceof TileEntityLogisticalSorter)
 		{
@@ -615,7 +615,7 @@ public abstract class BlockMachine extends BlockContainer
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public BlockRenderLayer getBlockLayer()
+	public BlockRenderLayer getRenderLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
 	}

@@ -270,7 +270,7 @@ public interface IFactory
 			return type.getStack();
 		}
 		
-		public String getUnlocalizedName()
+		public String getTranslationKey()
 		{
 			return name;
 		}

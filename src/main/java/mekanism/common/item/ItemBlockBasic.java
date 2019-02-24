@@ -285,13 +285,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	}
 	
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getTranslationKey(ItemStack itemstack)
 	{
 		BasicBlockType type = BasicBlockType.get(itemstack);
 		
 		if(type != null)
 		{
-			String name = getUnlocalizedName() + "." + type.name;
+			String name = getTranslationKey() + "." + type.name;
 			
 			if(type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL || type == BasicBlockType.INDUCTION_PROVIDER)
 			{

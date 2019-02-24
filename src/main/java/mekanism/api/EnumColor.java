@@ -70,7 +70,7 @@ public enum EnumColor implements IStringSerializable
 		return I18n.translateToLocal("color." + unlocalizedName);
 	}
 
-	public String getUnlocalizedName(){
+	public String getTranslationKey(){
 		return "color." + unlocalizedName;
 	}
 
@@ -94,7 +94,7 @@ public enum EnumColor implements IStringSerializable
 	}
 
 	public ITextComponent getTranslatedColouredComponent(){
-		ITextComponent t = new TextComponentTranslation(getUnlocalizedName());
+		ITextComponent t = new TextComponentTranslation(getTranslationKey());
 		t.getStyle().setColor(textFormatting);
 		return t;
 	}

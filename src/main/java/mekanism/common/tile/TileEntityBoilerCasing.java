@@ -345,7 +345,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 					{
 						ValveData data = new ValveData();
 						data.location = Coord4D.read(dataStream);
-						data.side = EnumFacing.getFront(dataStream.readInt());
+						data.side = EnumFacing.byIndex(dataStream.readInt());
 						
 						valveViewing.add(data);
 	

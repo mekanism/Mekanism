@@ -145,7 +145,7 @@ public final class GasUtils
 		{
 			IGasHandler handler = possibleAcceptors[i];
 			
-			if(handler != null && handler.canReceiveGas(EnumFacing.getFront(i).getOpposite(), stack.getGas()))
+			if(handler != null && handler.canReceiveGas(EnumFacing.byIndex(i).getOpposite(), stack.getGas()))
 			{
 				availableAcceptors.add(handler);
 			}
@@ -172,7 +172,7 @@ public final class GasUtils
 					remaining--;
 				}
 				
-				EnumFacing dir = EnumFacing.getFront(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
+				EnumFacing dir = EnumFacing.byIndex(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
 				toSend -= acceptor.receiveGas(dir, new GasStack(stack.getGas(), currentSending), true);
 			}
 		}

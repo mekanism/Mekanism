@@ -505,7 +505,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public String getName()
 	{
-		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".Bin" + tier.getBaseTier().getSimpleName() + ".name");
+		return LangUtils.localize(getBlockType().getTranslationKey() + ".Bin" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 
 	@Override

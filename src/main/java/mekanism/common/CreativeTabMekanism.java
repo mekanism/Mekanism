@@ -11,13 +11,7 @@ public class CreativeTabMekanism extends CreativeTabs
 	}
 
 	@Override
-	public ItemStack getIconItemStack()
-	{
-		return new ItemStack(MekanismItems.AtomicAlloy);
-	}
-
-	@Override
-	public ItemStack getTabIconItem() 
+	public ItemStack createIcon()
 	{
 		return new ItemStack(MekanismItems.AtomicAlloy);
 	}

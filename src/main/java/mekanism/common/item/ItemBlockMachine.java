@@ -161,11 +161,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getTranslationKey(ItemStack itemstack)
 	{
 		if(MachineType.get(itemstack) != null)
 		{
-			return getUnlocalizedName() + "." + MachineType.get(itemstack).blockName;
+			return getTranslationKey() + "." + MachineType.get(itemstack).blockName;
 		}
 
 		return "null";
@@ -180,9 +180,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			BaseTier tier = type == MachineType.BASIC_FACTORY ? BaseTier.BASIC : (type == MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
 
-            if(I18n.canTranslate("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory"))
+            if(I18n.canTranslate("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getTranslationKey() + "Factory"))
             {
-                return LangUtils.localize("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName() + "Factory");
+                return LangUtils.localize("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getTranslationKey() + "Factory");
             }
 
 			return tier.getLocalizedName() + " " + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);

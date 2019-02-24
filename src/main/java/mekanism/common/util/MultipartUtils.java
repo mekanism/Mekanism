@@ -63,7 +63,7 @@ public final class MultipartUtils
             d3 = ((EntityPlayerMP)player).interactionManager.getBlockReachDistance();
         }
         
-        Vec3d end = start.addVector(f5 * d3, f4 * d3, f6 * d3);
+        Vec3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
         return Pair.of(start, end);
     }
     

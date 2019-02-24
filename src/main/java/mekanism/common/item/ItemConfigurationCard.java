@@ -146,7 +146,7 @@ public class ItemConfigurationCard extends ItemMekanism
 		
 		if(tile instanceof TileEntityContainerBlock)
 		{
-			ret = tile.getBlockType().getUnlocalizedName() + "." + ((TileEntityContainerBlock)tile).fullName + ".name";
+			ret = tile.getBlockType().getTranslationKey() + "." + ((TileEntityContainerBlock)tile).fullName + ".name";
 		}
 		
 		if(CapabilityUtils.hasCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side))
@@ -173,7 +173,7 @@ public class ItemConfigurationCard extends ItemMekanism
 	{
 		NBTTagCompound data = ItemDataUtils.getCompound(itemstack, "data");
 		
-		if(data.hasNoTags())
+		if(data.isEmpty())
 		{
 			return null;
 		}

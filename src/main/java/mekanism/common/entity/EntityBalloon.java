@@ -440,7 +440,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			return false;
 		}
 		else {
-			setBeenAttacked();
+			markVelocityChanged();
 
 			if(dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL)
 			{

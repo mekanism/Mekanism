@@ -40,7 +40,7 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack item)
+	public String getTranslationKey(ItemStack item)
 	{
 		return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName() + "ControlCircuit";
 	}

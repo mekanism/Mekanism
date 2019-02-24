@@ -34,9 +34,9 @@ public class ItemBlockReactor extends ItemBlock
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getTranslationKey(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + ReactorBlockType.get(itemstack).name;
+		return getTranslationKey() + "." + ReactorBlockType.get(itemstack).name;
 	}
 
 	@Override

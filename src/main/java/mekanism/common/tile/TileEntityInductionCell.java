@@ -24,7 +24,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	
 	public String getName()
 	{
-		return LangUtils.localize(getBlockType().getUnlocalizedName() + ".InductionCell" + tier.getBaseTier().getSimpleName() + ".name");
+		return LangUtils.localize(getBlockType().getTranslationKey() + ".InductionCell" + tier.getBaseTier().getSimpleName() + ".name");
 	}
 	
 	@Override

@@ -59,7 +59,7 @@ public class BlockStateTransmitter extends ExtendedBlockState
 			return name().toLowerCase(Locale.ROOT);
 		}
 		
-		public String getUnlocalizedName()
+		public String getTranslationKey()
 		{
 			return unlocalizedName;
 		}

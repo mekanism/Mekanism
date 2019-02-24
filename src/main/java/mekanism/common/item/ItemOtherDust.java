@@ -49,7 +49,7 @@ public class ItemOtherDust extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack item)
+	public String getTranslationKey(ItemStack item)
 	{
 		return "item." + subtypes[item.getItemDamage()].toLowerCase(Locale.ROOT) + "Dust";
 	}

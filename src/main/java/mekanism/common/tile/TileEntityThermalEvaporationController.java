@@ -258,7 +258,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		if(!temperatureSet)
 		{
-			biomeTemp = world.getBiomeForCoordsBody(getPos()).getFloatTemperature(getPos());
+			biomeTemp = world.getBiomeForCoordsBody(getPos()).getTemperature(getPos());
 			temperatureSet = true;
 		}
 		

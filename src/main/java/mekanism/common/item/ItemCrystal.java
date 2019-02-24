@@ -39,7 +39,7 @@ public class ItemCrystal extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack item)
+	public String getTranslationKey(ItemStack item)
 	{
 		if(item.getItemDamage() <= Resource.values().length-1)
 		{

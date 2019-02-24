@@ -627,7 +627,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public String getDataType()
 	{
-		return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
+		return getBlockType().getTranslationKey() + "." + fullName + ".name";
 	}
 
 	@Override

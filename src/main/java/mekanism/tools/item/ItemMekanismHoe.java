@@ -42,7 +42,7 @@ public class ItemMekanismHoe extends ItemMekanism
 		setMaxStackSize(1);
 		setMaxDamage(enumtoolmaterial.getMaxUses());
 		setCreativeTab(CreativeTabs.TOOLS);
-		speed = enumtoolmaterial.getDamageVsEntity() + 1.0F;
+		speed = enumtoolmaterial.getAttackDamage() + 1.0F;
 	}
 	
 	@Override

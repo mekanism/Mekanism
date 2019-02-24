@@ -252,7 +252,7 @@ public final class StackUtils
 			return -1;
 		}
 		
-		String name = stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ? stack.getItem().getUnlocalizedName() : stack.getItem().getUnlocalizedName(stack);
+		String name = stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ? stack.getItem().getTranslationKey() : stack.getItem().getTranslationKey(stack);
 		return name.hashCode() << 8 | stack.getItemDamage();
 	}
 }

@@ -917,9 +917,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	@Override
 	public String getName()
 	{
-		if(I18n.canTranslate("tile." + tier.getBaseTier().getName() + recipeType.getUnlocalizedName() + "Factory"))
+		if(I18n.canTranslate("tile." + tier.getBaseTier().getName() + recipeType.getTranslationKey() + "Factory"))
 		{
-			return LangUtils.localize("tile." + tier.getBaseTier().getName() + recipeType.getUnlocalizedName() + "Factory");
+			return LangUtils.localize("tile." + tier.getBaseTier().getName() + recipeType.getTranslationKey() + "Factory");
 		}
 		
 		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getName();

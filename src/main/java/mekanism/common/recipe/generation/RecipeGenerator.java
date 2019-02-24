@@ -111,11 +111,11 @@ public class RecipeGenerator {
         // repeatedly adds _alt if a file already exists
         // janky I know but it works
         String suffix = result.getItem().getHasSubtypes() ? "_" + result.getItemDamage() : "";
-        File f = new File(RECIPE_DIR, result.getItem().getRegistryName().getResourcePath() + suffix + ".json");
+        File f = new File(RECIPE_DIR, result.getItem().getRegistryName().getPath() + suffix + ".json");
 
         while (f.exists()) {
             suffix += "_alt";
-            f = new File(RECIPE_DIR, result.getItem().getRegistryName().getResourcePath() + suffix + ".json");
+            f = new File(RECIPE_DIR, result.getItem().getRegistryName().getPath() + suffix + ".json");
         }
 
         try (FileWriter w = new FileWriter(f)) {
@@ -155,11 +155,11 @@ public class RecipeGenerator {
         // repeatedly adds _alt if a file already exists
         // janky I know but it works
         String suffix = result.getItem().getHasSubtypes() ? "_" + result.getItemDamage() : "";
-        File f = new File(RECIPE_DIR, result.getItem().getRegistryName().getResourcePath() + suffix + ".json");
+        File f = new File(RECIPE_DIR, result.getItem().getRegistryName().getPath() + suffix + ".json");
 
         while (f.exists()) {
             suffix += "_alt";
-            f = new File(RECIPE_DIR, result.getItem().getRegistryName().getResourcePath() + suffix + ".json");
+            f = new File(RECIPE_DIR, result.getItem().getRegistryName().getPath() + suffix + ".json");
         }
 
 

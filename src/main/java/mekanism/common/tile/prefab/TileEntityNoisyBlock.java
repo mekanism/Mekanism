@@ -84,7 +84,7 @@ public abstract class TileEntityNoisyBlock extends TileEntityElectricBlock imple
 	@SideOnly(Side.CLIENT)
 	public Vec3d getSoundPosition()
 	{
-		return new Vec3d(getPos()).addVector(0.5, 0.5, 0.5);
+		return new Vec3d(getPos()).add(0.5, 0.5, 0.5);
 	}
 
 	@Override

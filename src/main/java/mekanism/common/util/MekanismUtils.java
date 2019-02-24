@@ -691,7 +691,7 @@ public final class MekanismUtils
 	}
 	
 	/**
-	 * Better version of the World.isBlockIndirectlyGettingPowered() method that doesn't load chunks.
+	 * Better version of the World.getRedstonePowerFromNeighbors() method that doesn't load chunks.
 	 * @param world - the world to perform the check in
 	 * @param coord - the coordinate of the block performing the check
 	 * @return if the block is indirectly getting powered by LOADED chunks
@@ -1077,7 +1077,7 @@ public final class MekanismUtils
 
 		Vec3d headVec = getHeadVec(player);
 		Vec3d lookVec = player.getLook(1);
-		Vec3d endVec = headVec.addVector(lookVec.x*reach, lookVec.y*reach, lookVec.z*reach);
+		Vec3d endVec = headVec.add(lookVec.x*reach, lookVec.y*reach, lookVec.z*reach);
 
 		return world.rayTraceBlocks(headVec, endVec, true);
 	}
@@ -1430,7 +1430,7 @@ public final class MekanismUtils
 		
 		EntityPlayerMP player = (EntityPlayerMP)p;
 		
-		return general.opsBypassRestrictions && player.mcServer.getPlayerList().canSendCommands(player.getGameProfile());
+		return general.opsBypassRestrictions && player.server.getPlayerList().canSendCommands(player.getGameProfile());
 	}
 	
 	/**
