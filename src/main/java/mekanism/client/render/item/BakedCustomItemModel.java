@@ -424,40 +424,23 @@ public class BakedCustomItemModel implements IBakedModel
 		Tessellator tessellator = Tessellator.getInstance();
 		List<BakedQuad> generalQuads = new LinkedList<>();
 
-		//Test if the current thread has a Context loaded (we don't use it so no need to import its type)
-		Object contextCapabilities;
-		try {
-			contextCapabilities = GLContext.getCapabilities();
-		} catch (RuntimeException e){
-			contextCapabilities = null;
-		}
+		MekanismRenderer.pauseRenderer(tessellator);
 
-		if (contextCapabilities != null && MekanismRenderer.isDrawing(tessellator)) {
-			try {
-				VertexFormat prevFormat = null;
-				int prevMode = -1;
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(0.5F, 0.5F, 0.5F);
+		GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+		doRender(prevTransform);
+		GlStateManager.enableLighting();
+		GlStateManager.enableLight(0);
+		GlStateManager.enableLight(1);
+		GlStateManager.enableColorMaterial();
+		GlStateManager.colorMaterial(1032, 5634);
+		GlStateManager.enableCull();
+		Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		GlStateManager.popMatrix();
 
-				MekanismRenderer.pauseRenderer(tessellator);
+		MekanismRenderer.resumeRenderer(tessellator);
 
-				GlStateManager.pushMatrix();
-				GlStateManager.translate(0.5F, 0.5F, 0.5F);
-				GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-				doRender(prevTransform);
-				GlStateManager.enableLighting();
-				GlStateManager.enableLight(0);
-				GlStateManager.enableLight(1);
-				GlStateManager.enableColorMaterial();
-				GlStateManager.colorMaterial(1032, 5634);
-				GlStateManager.enableCull();
-				Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-				GlStateManager.popMatrix();
-
-				MekanismRenderer.resumeRenderer(tessellator);
-			} catch (Throwable t) {
-				Mekanism.logger.error("Error caught in CustomItemModel", t);
-			}
-		}
-    	
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{
 			MachineType machineType = MachineType.get(stack);
