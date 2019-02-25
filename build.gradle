@@ -106,9 +106,9 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-group = "mekanism"
-version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
-archivesBaseName = "MekanismAll"
+group = "mekanism-dz"
+version = "${config.minecraft_version}-${version}"
+archivesBaseName = "MekanismDzAll"
 libsDirName = "../output"
 distsDirName = "../output"
 sourceCompatibility = '1.8'
@@ -176,7 +176,7 @@ jar {
 }
 
 task coreJar(type: Jar) {
-	archiveName = "Mekanism-${project.version}.jar"
+	archiveName = "MekanismDz-${project.version}.jar"
 	dependsOn 'reobfJar'
 	classifier "core"
 
@@ -195,7 +195,7 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-	archiveName = "MekanismTools-${project.version}.jar"
+	archiveName = "MekanismDzTools-${project.version}.jar"
 	dependsOn 'reobfJar'
 	classifier "tools"
 
@@ -210,7 +210,7 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-	archiveName = "MekanismGenerators-${project.version}.jar"
+	archiveName = "MekanismDzGenerators-${project.version}.jar"
 	dependsOn 'reobfJar'
 	classifier "generators"
 
@@ -226,7 +226,7 @@ task generatorsJar(type: Jar) {
 
 task apiJar(type: Jar) {
     classifier "api"
-    baseName "Mekanism"
+    baseName "MekanismDz"
     dependsOn "sourceMainJava"
     include 'mekanism/api/**'
     from sourceSets.main.java.srcDirs
