@@ -19,10 +19,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'org.ajoberstar.grgit' version '2.2.0'
-}
-
 apply plugin: 'idea'
 
 defaultTasks 'fullBuild'
@@ -109,8 +105,6 @@ configFile.withReader {
 group = "mekanism-dz"
 version = "${config.minecraft_version}-${version}"
 archivesBaseName = "MekanismDzAll"
-libsDirName = "../output"
-distsDirName = "../output"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -286,78 +280,3 @@ uploadArchives {
     }
 }
 
-tasks.curseforge.dependsOn coreJar, toolsJar, generatorsJar, apiJar
-
-if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
-    println "Enabling Curseforge config"
-    curseforge {
-        apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
-
-        def generatedChangelog = "Unable to generate changelog :("
-        def currentCommit = System.getenv("GIT_COMMIT")
-        def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT") ?: System.getenv("GIT_PREVIOUS_COMMIT")
-
-        if (currentCommit != null && prevCommit != null) {
-            generatedChangelog = "<pre>"
-            grgit.log {
-                range(prevCommit, currentCommit)
-            }.reverse().each { commit ->
-                String message = commit.shortMessage
-                if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {//Ignore PRs and Merges
-                    message = message.replaceAll("#(\\d+)", {match->//turn issues/prs into links (github currently supports prs being linked as issues)
-                        return "<a href=\"https://github.com/aidancbrady/Mekanism/issues/${match[1]}\">${match[0]}</a>"
-                    })
-                    generatedChangelog += "<a href=\"https://github.com/aidancbrady/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
-                }
-            }
-            generatedChangelog += "</pre>"
-            println "Changelog generated"
-        }
-
-        //Core
-        project {
-            id = '268560'
-            changelogType = "html"
-            changelog = generatedChangelog
-            // A file can also be set using: changelog = file('changelog.txt')
-            releaseType = 'release'
-            mainArtifact coreJar
-            addArtifact apiJar
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
-            addGameVersion '1.12.2'
-        }
-
-        //Tools
-        project {
-            id = '268567'
-            changelogType = "html"
-            changelog = generatedChangelog
-            releaseType = 'release'
-            mainArtifact(toolsJar){
-                relations {
-                    requiredLibrary "mekanism"
-                }
-            }
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
-            addGameVersion '1.12.2'
-        }
-
-        //Generators
-        project {
-            id = '268566'
-            changelogType = "html"
-            changelog = generatedChangelog
-            releaseType = 'release'
-            mainArtifact(generatorsJar) {
-                relations {
-                    requiredLibrary "mekanism"
-                }
-            }
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
-            addGameVersion '1.12.2'
-        }
-    }
-}

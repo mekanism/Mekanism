@@ -1,0 +1,10 @@
+/build
+/bin
+/out
+/run
+.gradle
+.dockerignore
+Dockerfile
+*.iml
+*.ipr
+*.iws
