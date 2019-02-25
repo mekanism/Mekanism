@@ -1,35 +1,11 @@
 package mekanism.client.render.item;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-
 import com.google.common.collect.ImmutableMap;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.client.model.ModelArmoredJetpack;
-import mekanism.client.model.ModelAtomicDisassembler;
-import mekanism.client.model.ModelChemicalCrystallizer;
-import mekanism.client.model.ModelChemicalDissolutionChamber;
-import mekanism.client.model.ModelDigitalMiner;
-import mekanism.client.model.ModelEnergyCube;
-import mekanism.client.model.ModelFlamethrower;
-import mekanism.client.model.ModelFreeRunners;
-import mekanism.client.model.ModelGasMask;
-import mekanism.client.model.ModelJetpack;
-import mekanism.client.model.ModelQuantumEntangloporter;
-import mekanism.client.model.ModelResistiveHeater;
-import mekanism.client.model.ModelScubaTank;
-import mekanism.client.model.ModelSecurityDesk;
-import mekanism.client.model.ModelSeismicVibrator;
-import mekanism.client.model.ModelSolarNeutronActivator;
+import mekanism.client.model.*;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData.IOState;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -37,15 +13,7 @@ import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.item.ItemAtomicDisassembler;
-import mekanism.common.item.ItemBlockEnergyCube;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemFlamethrower;
-import mekanism.common.item.ItemFreeRunners;
-import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemScubaTank;
-import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.item.*;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -61,16 +29,18 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.Fluid;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class BakedCustomItemModel implements IBakedModel
 {
