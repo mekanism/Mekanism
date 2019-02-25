@@ -74,7 +74,7 @@ import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
-import mekanism.client.render.item.CustomItemModelFactory;
+import mekanism.client.render.item.ItemModelWrapper;
 import mekanism.client.render.obj.MekanismOBJLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
@@ -1047,13 +1047,9 @@ public class ClientProxy extends CommonProxy
     {
 		for(String s : CUSTOM_RENDERS)
 		{
-			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
-	        Object obj = event.getModelRegistry().getObject(model);
-	        
-	        if(obj instanceof IBakedModel)
-	        {
-	        	event.getModelRegistry().putObject(model, new CustomItemModelFactory((IBakedModel)obj));
-	        }
+			ModelResourceLocation modelLoc = new ModelResourceLocation("mekanism:" + s, "inventory");
+			IBakedModel bakedModel = event.getModelRegistry().getObject(modelLoc);
+			event.getModelRegistry().putObject(modelLoc, new ItemModelWrapper(bakedModel));
 		}
     }
 

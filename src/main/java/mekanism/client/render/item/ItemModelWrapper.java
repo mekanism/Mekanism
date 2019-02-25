@@ -15,13 +15,12 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 
-public class CustomItemModelFactory implements IBakedModel
+public class ItemModelWrapper implements IBakedModel
 {
 	private IBakedModel baseModel;
+	private OverrideList override = new OverrideList();
 	
-	private MachineOverride override = new MachineOverride();
-	
-	public CustomItemModelFactory(IBakedModel base)
+	public ItemModelWrapper(IBakedModel base)
 	{
 		baseModel = base;
 	}
@@ -35,13 +34,13 @@ public class CustomItemModelFactory implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing facing, long rand) 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.getQuads(state, facing, rand);
 	}
 
 	@Override
 	public boolean isAmbientOcclusion() 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.isAmbientOcclusion();
 	}
 
 	@Override
@@ -53,24 +52,24 @@ public class CustomItemModelFactory implements IBakedModel
 	@Override
 	public boolean isBuiltInRenderer() 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.isBuiltInRenderer();
 	}
 
 	@Override
 	public TextureAtlasSprite getParticleTexture() 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.getItemCameraTransforms();
 	}
 	
-    private class MachineOverride extends ItemOverrideList 
+    private class OverrideList extends ItemOverrideList
     {
-		public MachineOverride() 
+		public OverrideList()
 		{
 			super(Lists.newArrayList());
 		}
