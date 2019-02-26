@@ -148,8 +148,6 @@ import net.minecraftforge.fml.relauncher.FMLInjectionData;
  */
 public class CommonProxy implements IGuiProvider
 {
-	protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<>(null);
-
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */
@@ -623,52 +621,15 @@ public class CommonProxy implements IGuiProvider
 			Mekanism.logger.info("Received config from server.");
 		}
 	}
-	
-	private WeakReference<EntityPlayer> createNewPlayer(WorldServer world) 
-	{
-		EntityPlayer player = FakePlayerFactory.get(world, Mekanism.gameProfile);
-
-		return new WeakReference<>(player);
-	}
-
-	private WeakReference<EntityPlayer> createNewPlayer(WorldServer world, double x, double y, double z)
-	{
-		EntityPlayer player = FakePlayerFactory.get(world, Mekanism.gameProfile);
-		
-		player.posX = x;
-		player.posY = y;
-		player.posZ = z;
-		
-		return new WeakReference<>(player);
-	}
 
 	public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world) 
 	{
-		if(dummyPlayer.get() == null) 
-		{
-			dummyPlayer = createNewPlayer(world);
-		} 
-		else {
-			dummyPlayer.get().world = world;
-		}
-
-		return dummyPlayer;
+		return MekFakePlayer.getInstance(world);
 	}
 
 	public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, double x, double y, double z) 
 	{
-		if(dummyPlayer.get() == null) 
-		{
-			dummyPlayer = createNewPlayer(world, x, y, z);
-		} 
-		else {
-			dummyPlayer.get().world = world;
-			dummyPlayer.get().posX = x;
-			dummyPlayer.get().posY = y;
-			dummyPlayer.get().posZ = z;
-		}
-
-		return dummyPlayer;
+		return MekFakePlayer.getInstance(world, x, y, z);
 	}
 
 	public EntityPlayer getPlayer(MessageContext context)

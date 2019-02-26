@@ -110,6 +110,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -119,6 +120,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -992,6 +994,15 @@ public class Mekanism
 		{
 			proxy.loadConfiguration();
 			proxy.onConfigSync(false);
+		}
+	}
+
+	@SubscribeEvent
+	public void onWorldUnload(WorldEvent.Unload event) {
+		// Make sure the global fake player drops its reference to the World
+		// when the server shuts down
+		if (event.getWorld() instanceof WorldServer) {
+			MekFakePlayer.releaseInstance(event.getWorld());
 		}
 	}
 }
