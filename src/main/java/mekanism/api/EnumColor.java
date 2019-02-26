@@ -70,6 +70,11 @@ public enum EnumColor implements IStringSerializable
 		return I18n.translateToLocal("color." + unlocalizedName);
 	}
 
+	@Deprecated
+	public String getUnlocalizedName(){
+		return getTranslationKey();
+	}
+
 	public String getTranslationKey(){
 		return "color." + unlocalizedName;
 	}

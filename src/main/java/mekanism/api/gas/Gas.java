@@ -92,6 +92,15 @@ public class Gas
 	}
 
 	/**
+	 * DEPRECATED: Gets the unlocalized name of this Gas. Use getTranslationKey instead.
+	 * @return this Gas's unlocalized name
+	 */
+	@Deprecated
+	public String getUnlocalizedName() {
+		return getTranslationKey();
+	}
+
+	/**
 	 * Gets the unlocalized name of this Gas.
 	 * @return this Gas's unlocalized name
 	 */
@@ -107,6 +116,17 @@ public class Gas
 	public String getLocalizedName()
 	{
 		return I18n.translateToLocal(getTranslationKey());
+	}
+
+	/**
+	 * DEPRECATED: Sets the unlocalized name of this Gas. Use setTranslationKey instead.
+	 * @param s - unlocalized name to set
+	 * @return this Gas object
+	 */
+	@Deprecated
+	public Gas setUnlocalizedName(String s)
+	{
+		return setTranslationKey(s);
 	}
 
 	/**
