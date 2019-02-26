@@ -50,8 +50,7 @@ if apiToken == None or len(apiToken) < 1:
 headers = {'X-Api-Token': apiToken}
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-project", help="Mod project ID", required=True)
-parser.add_argument("-name", help="Mod filename", required=True)
+parser.add_argument("-project", help="Mod project:filename:[deps]", action='append', default=[])
 parser.add_argument("-tag", help="Tag to use for this release", default="")
 parser.add_argument("-mcvsn", help="Game version supported by this release", default="1.12.2")
 parser.add_argument("-rel", help="Release type (alpha|beta|release)", default="alpha")
@@ -101,21 +100,29 @@ if err != None:
     print("Build of %s tag failed" % (args.tag))
     sys.exit(1)
 
-# Setup metadata field of our POST
-metadata = json.dumps({"changelog": changelog, "gameVersions": gameId, "releaseType": args.rel})
-filename = "build/libs/%s-%s-%s.jar" % (args.name, args.mcvsn, args.tag)
+# For each project, extract ID, filename and dependencies and upload
+for project in args.project:
+    (id, name, dep) = project.split(":", 3)
 
-if args.skipupload:
-    print("Skipping upload!")
-    print("Metadata: %s" % metadata)
-    print("Filename: %s" % filename)
-    sys.exit(0)
+    # Setup metadata field of our POST
+    metadata = {"changelog": changelog, "gameVersions": gameId, "releaseType": args.rel}
+    filename = "build/libs/%s-%s-%s.jar" % (name, args.mcvsn, args.tag)
 
-# Setup files list for POST
-files = [('metadata', (None, metadata, "application/json")),
-         ('file', (open(filename, "rb")))]
-resp = requests.post("https://minecraft.curseforge.com/api/projects/%s/upload-file" % args.project, headers=headers, files=files)
-print(resp.text)
-resp.raise_for_status()
+    # Add any specified dependencies
+    if dep != "":
+        metadata["relations"] = {"projects": [{"slug": dep, "type": "requiredDependency"}]}
+
+    if args.skipupload:
+        print("Skipping upload!")
+        print("Metadata: %s" % metadata)
+        print("Filename: %s" % filename)
+        continue
+
+    # Setup files for POST
+    files = [('metadata', (None, json.dumps(metadata), "application/json")),
+            ('file', (open(filename, "rb")))]
+    resp = requests.post("https://minecraft.curseforge.com/api/projects/%s/upload-file" % id, headers=headers, files=files)
+    print(resp.text)
+    resp.raise_for_status()
 
 
