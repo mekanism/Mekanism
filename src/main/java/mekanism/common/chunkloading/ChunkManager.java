@@ -15,9 +15,9 @@ public class ChunkManager implements LoadingCallback
 	{
 		for(Ticket ticket : tickets)
 		{
-			int x = ticket.getModData().getInteger("xCoord");
-			int y = ticket.getModData().getInteger("yCoord");
-			int z = ticket.getModData().getInteger("zCoord");
+			int x = ticket.getModData().getInteger("x");
+			int y = ticket.getModData().getInteger("y");
+			int z = ticket.getModData().getInteger("z");
 			
 			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 			
