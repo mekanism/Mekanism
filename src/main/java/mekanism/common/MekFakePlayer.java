@@ -59,7 +59,7 @@ public class MekFakePlayer extends FakePlayer {
     public static void releaseInstance(World world) {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
-        if (INSTANCE.world == world) {
+        if (INSTANCE != null && INSTANCE.world == world) {
             INSTANCE = null;
         }
     }
