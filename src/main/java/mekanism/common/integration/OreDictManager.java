@@ -180,7 +180,7 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 		{
-			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("TIN"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.Ingot, 1, 2));
+			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("TIN"), 10, StackUtils.size(ore, 3), new ItemStack(MekanismItems.Ingot, 4, 2));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotRefinedObsidian"))
@@ -274,7 +274,7 @@ public final class OreDictManager
 			
 		for(ItemStack ore : OreDictionary.getOres("dustTin"))
 		{
-			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("TIN"), 50));
+			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("TIN"), 10));
 		}
 
 		try {
