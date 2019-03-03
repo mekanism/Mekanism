@@ -355,6 +355,11 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	
 	@Override
 	public int getItemBurnTime(ItemStack itemStack) {
-		return this.metaBlock == MekanismBlocks.BasicBlock && itemStack.getMetadata() == 3 ? 200*8*9 : super.getItemBurnTime(itemStack);
+		// If this is a block of charcoal, set burn time to 16000 ticks (per Minecraft standard)
+		if (this.metaBlock == MekanismBlocks.BasicBlock && itemStack.getMetadata() == 3) {
+			return 16000; // ticks
+		} else {
+			return super.getItemBurnTime(itemStack);
+		}
 	}
 }
