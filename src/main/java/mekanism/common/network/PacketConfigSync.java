@@ -32,7 +32,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.controlCircuitOreDict);
 			dataStream.writeBoolean(general.logPackets);
 			dataStream.writeBoolean(general.dynamicTankEasterEgg);
-			dataStream.writeBoolean(general.voiceServerEnabled);
 			dataStream.writeBoolean(general.cardboardSpawners);
 			dataStream.writeBoolean(general.spawnBabySkeletons);
 			dataStream.writeInt(general.obsidianTNTDelay);
@@ -132,7 +131,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.controlCircuitOreDict = dataStream.readBoolean();
 			general.logPackets = dataStream.readBoolean();
 			general.dynamicTankEasterEgg = dataStream.readBoolean();
-			general.voiceServerEnabled = dataStream.readBoolean();
 			general.cardboardSpawners = dataStream.readBoolean();
 			general.spawnBabySkeletons = dataStream.readBoolean();
 			general.obsidianTNTDelay = dataStream.readInt();

@@ -1032,7 +1032,6 @@ public class ClientProxy extends CommonProxy
             return (int)(dye.getColor(0)*255) << 16 | (int)(dye.getColor(1)*255) << 8 | (int)(dye.getColor(2)*255);
         }, MekanismItems.Balloon);
 		
-		MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
 		MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
 		MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 		MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
@@ -1097,17 +1096,6 @@ public class ClientProxy extends CommonProxy
 	public File getMinecraftDir()
 	{
 		return Minecraft.getMinecraft().gameDir;
-	}
-
-	@Override
-	public void onConfigSync(boolean fromPacket)
-	{
-		super.onConfigSync(fromPacket);
-
-		if(fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null)
-		{
-			MekanismClient.voiceClient.start();
-		}
 	}
 
 	@Override

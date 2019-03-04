@@ -675,22 +675,12 @@ public class Mekanism
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		if(general.voiceServerEnabled)
-		{
-			voiceManager.start();
-		}
-		
 		event.registerServerCommand(new CommandMekanism());
 	}
 	
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
-		if(general.voiceServerEnabled)
-		{
-			voiceManager.stop();
-		}
-		
 		//Clear all cache data
 		jetpackOn.clear();
 		gasmaskOn.clear();
@@ -800,12 +790,6 @@ public class Mekanism
 		//Register this module's GUI handler in the simple packet protocol
 		PacketSimpleGui.handlers.add(0, proxy);
 
-		//Set up VoiceServerManager
-		if(general.voiceServerEnabled)
-		{
-			voiceManager = new VoiceServerManager();
-		}
-		
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();
 		

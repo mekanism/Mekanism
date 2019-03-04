@@ -13,7 +13,6 @@ public class MekanismConfig
 		public static boolean controlCircuitOreDict = true;
 		public static boolean logPackets = false;
 		public static boolean dynamicTankEasterEgg = false;
-		public static boolean voiceServerEnabled = true;
 		public static boolean cardboardSpawners = true;
 		public static boolean enableWorldRegeneration = true;
 		public static boolean spawnBabySkeletons = true;
