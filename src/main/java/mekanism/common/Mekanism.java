@@ -94,7 +94,6 @@ import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
@@ -221,9 +220,6 @@ public class Mekanism
 
 	/** The recent news which is received from the Mekanism server */
 	public static String recentNews;
-
-	/** The VoiceServer manager for walkie talkies */
-	public static VoiceServerManager voiceManager;
 
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<>();
