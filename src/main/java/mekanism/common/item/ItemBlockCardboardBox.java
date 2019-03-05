@@ -104,7 +104,12 @@ public class ItemBlockCardboardBox extends ItemBlock
 					stack.shrink(1);
 				}
 
-				world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1), 3);
+				// First, set the block to air to give the underlying block a chance to process
+				// any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
+				// double updates, but if the block we are wrapping has multiple stacked blocks,
+				// we need to make sure it has a chance to update.
+				world.setBlockToAir(pos);
+				world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1));
 
 				isMonitoring = false;
 
