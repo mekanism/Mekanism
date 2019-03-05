@@ -120,8 +120,8 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart:${config.mcmp_version}"
-    compileOnly "mezz.jei:jei_1.12:${config.jei_version}:api"
-    runtime "mezz.jei:jei_1.12:${config.jei_version}"
+    compileOnly "mezz.jei:jei_1.12.2:${config.jei_version}:api"
+    runtime "mezz.jei:jei_1.12.2:${config.jei_version}"
     compileOnly "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
     compileOnly "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
