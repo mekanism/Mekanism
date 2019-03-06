@@ -1,46 +1,22 @@
 package mekanism.client;
 
-import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
-import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
-import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
-
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import mekanism.api.IClientTicker;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.frequency.Frequency;
-import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.*;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
-import mekanism.common.item.ItemFlamethrower;
-import mekanism.common.item.ItemFreeRunners;
-import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
-import mekanism.common.item.ItemScubaTank;
-import mekanism.common.network.PacketFlamethrowerData;
-import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
-import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
-import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
-import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
-import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -62,7 +38,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -224,91 +201,12 @@ public class ClientTickHandler
 				}
 			}
 			
-			if(Mekanism.flamethrowerActive.contains(mc.player.getName()) != isFlamethrowerOn(mc.player))
-			{
-				if(isFlamethrowerOn(mc.player))
-				{
-					Mekanism.flamethrowerActive.add(mc.player.getName());
-				}
-				else {
-					Mekanism.flamethrowerActive.remove(mc.player.getName());
-				}
-				
-				Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.UPDATE, null, mc.player.getName(), isFlamethrowerOn(mc.player)));
-			}
+			// Update player's state for various items; this also automatically notifies server if something changed and
+			// kicks off sounds as necessary
+			Mekanism.playerState.setJetpackState(mc.player.getName(), isJetpackActive(mc.player));
+			Mekanism.playerState.setGasmaskState(mc.player.getName(), isGasMaskOn(mc.player));
+			Mekanism.playerState.setFlamethrowerState(mc.player.getName(), isFlamethrowerOn(mc.player));
 
-			if(Mekanism.jetpackOn.contains(mc.player.getName()) != isJetpackOn(mc.player))
-			{
-				if(isJetpackOn(mc.player))
-				{
-					Mekanism.jetpackOn.add(mc.player.getName());
-				}
-				else {
-					Mekanism.jetpackOn.remove(mc.player.getName());
-				}
-
-				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.UPDATE, mc.player.getName(), isJetpackOn(mc.player)));
-			}
-
-			if(Mekanism.gasmaskOn.contains(mc.player.getName()) != isGasMaskOn(mc.player))
-			{
-				if(isGasMaskOn(mc.player) && mc.currentScreen == null)
-				{
-					Mekanism.gasmaskOn.add(mc.player.getName());
-				}
-				else {
-					Mekanism.gasmaskOn.remove(mc.player.getName());
-				}
-
-				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.player.getName(), isGasMaskOn(mc.player)));
-			}
-
-			if(client.enablePlayerSounds)
-			{
-				for(String username : Mekanism.jetpackOn)
-				{
-					EntityPlayer player = mc.world.getPlayerEntityByName(username);
-
-					if(player != null)
-					{
-						if(!SoundHandler.soundPlaying(player, JETPACK))
-						{
-							SoundHandler.addSound(player, JETPACK, client.replaceSoundsWhenResuming);
-						}
-
-						SoundHandler.playSound(player, JETPACK);
-					}
-				}
-
-				for(String username : Mekanism.gasmaskOn)
-				{
-					EntityPlayer player = mc.world.getPlayerEntityByName(username);
-
-					if(player != null)
-					{
-						if(!SoundHandler.soundPlaying(player, GASMASK))
-						{
-							SoundHandler.addSound(player, GASMASK, client.replaceSoundsWhenResuming);
-						}
-						
-						SoundHandler.playSound(player, GASMASK);
-					}
-				}
-
-				for(EntityPlayer player : (List<EntityPlayer>)mc.world.playerEntities)
-				{
-					if(hasFlamethrower(player))
-					{
-						if(!SoundHandler.soundPlaying(player, FLAMETHROWER))
-						{
-							SoundHandler.addSound(player, FLAMETHROWER, client.replaceSoundsWhenResuming);
-						}
-						
-						SoundHandler.playSound(player, FLAMETHROWER);
-					}
-				}
-			}
-			
 			for(Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext();)
 			{
 				Entry<EntityPlayer, TeleportData> entry = iter.next();
@@ -347,7 +245,7 @@ public class ClientTickHandler
 				}
 			}
 			
-			if(isJetpackOn(mc.player))
+			if(isJetpackActive(mc.player))
 			{
 				ItemJetpack jetpack = (ItemJetpack)chestStack.getItem();
 
@@ -471,11 +369,11 @@ public class ClientTickHandler
 		tickingSet.removeIf(iClientTicker -> !iClientTicker.needsTicks());
 	}
 
-	public static boolean isJetpackOn(EntityPlayer player)
+	public static boolean isJetpackActive(EntityPlayer player)
 	{
 		if(player != mc.player)
 		{
-			return Mekanism.jetpackOn.contains(player.getName());
+			return Mekanism.playerState.isJetpackOn(player);
 		}
 
 		ItemStack stack = player.inventory.armorInventory.get(2);
@@ -516,7 +414,7 @@ public class ClientTickHandler
 	{
 		if(player != mc.player)
 		{
-			return Mekanism.gasmaskOn.contains(player.getName());
+			return Mekanism.playerState.isGasmaskOn(player);
 		}
 
 		ItemStack tank = player.inventory.armorInventory.get(2);
@@ -567,7 +465,7 @@ public class ClientTickHandler
 	{
 		if(player != mc.player)
 		{
-			return Mekanism.flamethrowerActive.contains(player.getName());
+			return Mekanism.playerState.isFlamethrowerOn(player);
 		}
 		
 		if(hasFlamethrower(player))

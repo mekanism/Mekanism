@@ -34,7 +34,6 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.base.SoundWrapper;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -102,8 +101,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	/** How many recipe ticks have progressed. */
 	public int recipeTicks;
 
-	/** This machine's recipe type. */
-	public RecipeType recipeType = RecipeType.SMELTING;
+    /** This machine's recipe type. */
+	private RecipeType recipeType = RecipeType.SMELTING;
 
 	private final MachineRecipe[] cachedRecipe;
 	
@@ -117,9 +116,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	public boolean upgraded;
 	
 	public double lastUsage;
-
-	@SideOnly(Side.CLIENT)
-	public SoundWrapper[] sounds;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -191,12 +187,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		
 		//Electric
 		factory.electricityStored = electricityStored;
-		
-		//Noisy
-		factory.soundURL = soundURL;
-		
-		//Factory
 
+		//Factory
 		System.arraycopy(progress, 0, factory.progress, 0, tier.processes);
 		
 		factory.recipeTicks = recipeTicks;
@@ -390,9 +382,17 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		{
 			recalculateUpgradables(upgrade);
 		}
+
+		if (world.isRemote) {
+            setSoundEvent(type.getSound());
+        }
 	}
-	
-	@Override
+
+    public RecipeType getRecipeType() {
+        return recipeType;
+    }
+
+    @Override
 	public boolean sideIsConsumer(EnumFacing side)
 	{
 		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
@@ -1007,25 +1007,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	public EnumFacing getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public SoundWrapper getSound()
-	{
-		return sounds[recipeType.ordinal()];
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void initSounds()
-	{
-		sounds = new SoundWrapper[RecipeType.values().length];
-		
-		for(RecipeType type : RecipeType.values())
-		{
-			sounds[type.ordinal()] = new SoundWrapper(this, this, HolidayManager.filterSound(type.getSound()));
-		}
 	}
 
 	@Override

@@ -1,31 +1,32 @@
 package mekanism.client.sound;
 
+import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.client.audio.MovingSound;
+import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class PlayerSound extends MekSound implements IResettableSound
+public abstract class PlayerSound extends PositionedSound implements ITickableSound
 {
-	public EntityPlayer player;
+	protected EntityPlayer player;
 
-	boolean beginFadeOut;
-	
-	boolean donePlaying = true;
-	
-	int ticks = 0;
-	
-	int fadeIn;
-	
-	int fadeOut;
-	
-	float baseVolume = 0.3F;
+	private float fadeUpStep = 0.1f;
+	private float fadeDownStep = 0.1f;
 
-	public PlayerSound(EntityPlayer p, ResourceLocation location)
-	{
-		super(location, 0.3F, 1, true, 0, (float)p.posX, (float)p.posY, (float)p.posZ, AttenuationType.LINEAR);
-		player = p;
+	private boolean donePlaying = false;
+
+	public PlayerSound(EntityPlayer player, ResourceLocation sound) {
+		super(sound, SoundCategory.PLAYERS);
+		this.player = player;
+
+		// N.B. the volume must be > 0 on first time it's processed by sound system or else it will not
+		// get registered for tick events.
+		this.volume = 0.1f;
 	}
 
 	@Override
@@ -46,71 +47,32 @@ public abstract class PlayerSound extends MekSound implements IResettableSound
 		return (float)player.posZ;
 	}
 
-	public PlayerSound setFadeIn(int fade) 
-	{
-		fadeIn = Math.max(0, fade);
-		return this;
-	}
-
-	public PlayerSound setFadeOut(int fade) 
-	{
-		fadeOut = Math.max(0, fade);
-		return this;
-	}
-
-	public float getFadeInMultiplier()
-	{
-		return ticks >= fadeIn ? 1 : (ticks / (float)fadeIn);
-	}
-
-	public float getFadeOutMultiplier() 
-	{
-		return ticks >= fadeOut ? 0 : ((fadeOut - ticks) / (float)fadeOut);
-	}
-
 	@Override
 	public void update()
 	{
-		if(!beginFadeOut)
-		{
-			if(ticks < fadeIn)
-			{
-				ticks++;
-			}
-			
-			if(!shouldPlaySound())
-			{
-				beginFadeOut = true;
-				ticks = 0;
-			}
-		} 
-		else {
-			ticks++;
+		if (player.isDead) {
+			this.donePlaying = true;
+			this.volume = 0.0f;
+			return;
 		}
-		
-		float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
-		volume = baseVolume * multiplier;
 
-		if(multiplier <= 0)
-		{
-			donePlaying = true;
+		if (shouldPlaySound()) {
+			if (volume < 1.0f) {
+				// If we weren't max volume, start fading up
+				volume = Math.max(1.0f, (volume + fadeUpStep));
+			}
+		} else {
+			// Not yet fully muted, fade down
+			if (volume > 0.0f) {
+				volume = Math.max(0.0f, (volume - fadeDownStep));
+			}
 		}
 	}
 
 	@Override
-	public boolean isDonePlaying()
-	{
+	public boolean isDonePlaying() {
 		return donePlaying;
 	}
 
 	public abstract boolean shouldPlaySound();
-
-	@Override
-	public void reset()
-	{
-		donePlaying = false;
-		beginFadeOut = false;
-		volume = baseVolume;
-		ticks = 0;
-	}
 }

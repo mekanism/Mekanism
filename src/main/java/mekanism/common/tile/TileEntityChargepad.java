@@ -244,8 +244,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public float getVolume()
+	protected float getVolume()
 	{
 		return 0.4F*super.getVolume();
 	}

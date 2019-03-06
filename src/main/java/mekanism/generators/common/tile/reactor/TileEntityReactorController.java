@@ -2,29 +2,26 @@ package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IHasSound;
-import mekanism.common.base.SoundWrapper;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
-import net.minecraft.client.audio.ISound.AttenuationType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,7 +30,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound, ISoundSource
+public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState
 {
 	public static final int MAX_WATER = 100 * Fluid.BUCKET_VOLUME;
 	public static final int MAX_STEAM = MAX_WATER * 100;
@@ -49,10 +46,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	public AxisAlignedBB box;
 	
-	public ResourceLocation soundURL = new ResourceLocation("mekanism", "tile.machine.fusionreactor");
-	
+	private SoundEvent soundEvent = new SoundEvent(new ResourceLocation("mekanism", "tile.machine.fusionreactor"));
+
 	@SideOnly(Side.CLIENT)
-	public SoundWrapper sound;
+	private ISound activeSound;
 
 	public double clientTemp = 0;
 	public boolean clientBurning = false;
@@ -104,7 +101,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(world.isRemote)
 		{
 			updateSound();
@@ -124,14 +121,22 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void updateSound()
-	{
-		if(shouldPlaySound() && getSound().canRestart() && client.enableMachineSounds)
-		{
-			getSound().reset();
-			getSound().play();
-		}
-	}
+	private void updateSound() {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (isBurning() && !isInvalid()) {
+            // Machine is active; if we don't have a sound already playing, schedule another
+            if (activeSound == null || !mc.getSoundHandler().isSoundPlaying(activeSound)) {
+                activeSound = new PositionedSoundRecord(soundEvent, SoundCategory.BLOCKS, 2.0f, 1.0f, getPos());
+                mc.getSoundHandler().playSound(activeSound);
+            }
+        } else {
+            // Not active; stop any active playing sounds
+            if (activeSound != null && mc.getSoundHandler().isSoundPlaying(activeSound)) {
+                mc.getSoundHandler().stopSound(activeSound);
+                activeSound = null;
+            }
+        }
+    }
 
 	@Override
 	public void onChunkUnload()
@@ -332,85 +337,5 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		}
 		
 		return box;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public SoundWrapper getSound()
-	{
-		return sound;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean shouldPlaySound()
-	{
-		return isBurning() && !isInvalid();
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public ResourceLocation getSoundLocation()
-	{
-		return soundURL;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getVolume()
-	{
-		return 2F;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getFrequency()
-	{
-		return 1F;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Vec3d getSoundPosition()
-	{
-		return new Vec3d(getPos()).add(0.5, 0.5, 0.5);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean shouldRepeat()
-	{
-		return true;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRepeatDelay()
-	{
-		return 0;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AttenuationType getAttenuation()
-	{
-		return AttenuationType.LINEAR;
-	}
-
-	@Override
-	public void validate()
-	{
-		super.validate();
-
-		if(world.isRemote)
-		{
-			initSounds();
-		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	public void initSounds()
-	{
-		sound = new SoundWrapper(this, this);
 	}
 }

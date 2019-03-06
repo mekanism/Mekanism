@@ -4,7 +4,6 @@ import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
-import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
@@ -30,8 +29,9 @@ public class CommonPlayerTracker
 		{
 			Mekanism.packetHandler.sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			// TODO: Coalesce all these sync events into a single message
+			Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP)event.player);
 
@@ -42,24 +42,20 @@ public class CommonPlayerTracker
 	@SubscribeEvent
 	public void onPlayerLogoutEvent(PlayerLoggedOutEvent event)
 	{
-		Mekanism.jetpackOn.remove(event.player.getName());
-		Mekanism.gasmaskOn.remove(event.player.getName());
-		Mekanism.flamethrowerActive.remove(event.player.getName());
+		Mekanism.playerState.clearPlayer(event.player);
 		Mekanism.freeRunnerOn.remove(event.player.getName());
 	}
 
 	@SubscribeEvent
 	public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event)
 	{
-		Mekanism.jetpackOn.remove(event.player.getName());
-		Mekanism.gasmaskOn.remove(event.player.getName());
-		Mekanism.flamethrowerActive.remove(event.player.getName());
+		Mekanism.playerState.clearPlayer(event.player);
 		Mekanism.freeRunnerOn.remove(event.player.getName());
 
 		if(!event.player.world.isRemote)
 		{
-			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP)event.player);
 		}
 	}

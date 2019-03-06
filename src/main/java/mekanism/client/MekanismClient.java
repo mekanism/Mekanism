@@ -1,13 +1,8 @@
 package mekanism.client;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.render.obj.TransmitterModel;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -16,6 +11,10 @@ import mekanism.common.security.SecurityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class MekanismClient extends Mekanism
 {
@@ -48,9 +47,7 @@ public class MekanismClient extends Mekanism
 		MekanismAPI.getBoxIgnore().clear();
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 
-		Mekanism.jetpackOn.clear();
-		Mekanism.gasmaskOn.clear();
-		Mekanism.flamethrowerActive.clear();
+		Mekanism.playerState.clear();
 		Mekanism.activeVibrators.clear();
 		Mekanism.freeRunnerOn.clear();
 		
@@ -60,8 +57,6 @@ public class MekanismClient extends Mekanism
 		{
 			module.resetClient();
 		}
-
-		SoundHandler.soundMaps.clear();
 
 		Mekanism.proxy.loadConfiguration();
 

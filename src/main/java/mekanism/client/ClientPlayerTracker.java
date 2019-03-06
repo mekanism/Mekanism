@@ -12,9 +12,7 @@ public class ClientPlayerTracker
 	@SubscribeEvent
 	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event)
 	{
-		Mekanism.jetpackOn.remove(event.player.getName());
-		Mekanism.gasmaskOn.remove(event.player.getName());
-		Mekanism.flamethrowerActive.remove(event.player.getName());
+		Mekanism.playerState.clearPlayer(event.player);
 		Mekanism.freeRunnerOn.remove(event.player.getName());
 	}
 }

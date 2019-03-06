@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 
 /**
  * Internal interface for managing various Factory types.
@@ -66,7 +67,7 @@ public interface IFactory
 		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER);
 
 		private String name;
-		private ResourceLocation sound;
+		private SoundEvent sound;
 		private MachineType type;
 		private MachineFuelType fuelType;
 		private boolean fuelSpeed;
@@ -280,7 +281,7 @@ public interface IFactory
 			return LangUtils.localize("gui.factory." + name);
 		}
 
-		public ResourceLocation getSound()
+		public SoundEvent getSound()
 		{
 			return sound;
 		}
@@ -316,7 +317,7 @@ public interface IFactory
 		RecipeType(String s, String s1, MachineType t, MachineFuelType ft, boolean b1, Recipe r)
 		{
 			name = s;
-			sound = new ResourceLocation("mekanism", "tile.machine." + s1);
+			sound = new SoundEvent(new ResourceLocation("mekanism", "tile.machine." + s1));
 			type = t;
 			fuelType = ft;
 			fuelSpeed = b1;

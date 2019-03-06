@@ -1,15 +1,10 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.general;
@@ -29,7 +24,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityNoisyBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl, ISecurityTile
+public abstract class TileEntityGenerator extends TileEntityNoisyBlock implements IComputerIntegration, IActiveState, IRedstoneControl, ISecurityTile
 {
 	/** Output per tick this generator can transfer. */
 	public double output;

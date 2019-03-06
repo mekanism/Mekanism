@@ -102,8 +102,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public float getVolume()
+	protected float getVolume()
 	{
 		return 1.5F*super.getVolume();
 	}

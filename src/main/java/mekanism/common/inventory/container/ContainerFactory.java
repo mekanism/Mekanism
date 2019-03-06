@@ -144,7 +144,7 @@ public class ContainerFactory extends Container
 					return ItemStack.EMPTY;
 				}
 			}
-			else if(tileEntity.recipeType.getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null)
+			else if(tileEntity.getRecipeType().getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(), tileEntity.infuseStored) != null)
 			{
 				if(!isInputSlot(slotID))
 				{
@@ -177,7 +177,7 @@ public class ContainerFactory extends Container
 					}
 				}
 			}
-			else if(tileEntity.recipeType.getItemGas(slotStack) != null)
+			else if(tileEntity.getRecipeType().getItemGas(slotStack) != null)
 			{
 				if(slotID >= tileEntity.inventory.size()-1)
 				{
@@ -193,7 +193,7 @@ public class ContainerFactory extends Container
 					}
 				}
 			}
-			else if(tileEntity.recipeType == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
+			else if(tileEntity.getRecipeType() == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type))
 			{
 				if(slotID >= tileEntity.inventory.size()-1)
 				{

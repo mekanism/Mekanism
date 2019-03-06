@@ -82,9 +82,6 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 		//Electric
 		factory.electricityStored = electricityStored;
 
-		//Noisy
-		factory.soundURL = soundURL;
-
 		//Machine
 		factory.progress[0] = operatingTicks;
 		factory.updateDelay = updateDelay;
@@ -96,7 +93,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 		factory.upgradeComponent.setUpgradeSlot(0);
 		factory.ejectorComponent.readFrom(ejectorComponent);
 		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-		factory.recipeType = type;
+		factory.setRecipeType(type);
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
 		factory.securityComponent.readFrom(securityComponent);
 

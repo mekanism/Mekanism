@@ -222,7 +222,7 @@ public class CommonPlayerTickHandler
 	
 	public static boolean isFlamethrowerOn(EntityPlayer player)
 	{
-		if(Mekanism.flamethrowerActive.contains(player.getName()))
+		if(Mekanism.playerState.isFlamethrowerOn(player))
 		{
 			if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 			{

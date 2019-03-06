@@ -204,7 +204,7 @@ public abstract class BlockMachine extends BlockContainer
 		
 		if(tile instanceof TileEntityFactory)
 		{
-			state = state.withProperty(BlockStateMachine.recipeProperty, ((TileEntityFactory)tile).recipeType);
+			state = state.withProperty(BlockStateMachine.recipeProperty, ((TileEntityFactory)tile).getRecipeType());
 		}
 		
 		return state;
@@ -917,7 +917,7 @@ public abstract class BlockMachine extends BlockContainer
 		if(tileEntity instanceof TileEntityFactory)
 		{
 			IFactory factoryItem = (IFactory)itemStack.getItem();
-			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType.ordinal(), itemStack);
+			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).getRecipeType().ordinal(), itemStack);
 		}
 
 		//this MUST be done after the factory info is saved, as it caps the energy to max, which is based on the recipe type

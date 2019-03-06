@@ -1,136 +1,55 @@
 package mekanism.client.sound;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.SoundManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-/**
- * SoundHandler - a class that handles all Sounds used by Mekanism.
- * Runs off of PaulsCode's SoundSystem through Minecraft.
- * @author AidanBrady rewritten by unpairedbracket
- *
- */
+import java.util.IdentityHashMap;
+
+// SoundHandler is the central point for sounds on Mek client side. Some sounds, such as hand-held items
+// are instantiated the first time user uses one and stays in memory (though muted) until the player
+// leaves the server. Block/tile-based sounds are periodically restarted while machine is active; this ensures
+// that thousands of idle machines aren't filling up memory with sounds that are rarely running.
+//
+// As of 1.12.2, this design closely mirrors that of Minecraft sounds and should be generally compatible with any
+// other mod that interacts with the sound system (such as mufflers)
+
 @SideOnly(Side.CLIENT)
-public class SoundHandler
-{
-	public static Map<String, Map<String, IResettableSound>> soundMaps = new HashMap<>();
+public class SoundHandler {
+    private static IdentityHashMap<EntityPlayer, Boolean> jetpackSounds = new IdentityHashMap();
+    private static IdentityHashMap<EntityPlayer, Boolean> gasmaskSounds = new IdentityHashMap<>();
 
-	public static Map<ISound, String> invPlayingSounds;
+    public static void startSound(EntityPlayer player, String soundName) {
+        ISound soundToPlay = null;
 
-	public static Minecraft mc = Minecraft.getMinecraft();
+        if (soundName.equals("jetpack") && !jetpackSounds.containsKey(player)) {
+            jetpackSounds.put(player, true);
+            soundToPlay = new JetpackSound(player);
+        }
+        if (soundName.equals("gasmask") && !gasmaskSounds.containsKey(player)) {
+            gasmaskSounds.put(player, true);
+            soundToPlay = new GasMaskSound(player);
+        }
 
-	public enum Channel
-	{
-		JETPACK("jetpack", JetpackSound.class),
-		GASMASK("gasMask", GasMaskSound.class),
-		FLAMETHROWER("flamethrower", FlamethrowerSound.class);
+        if (soundToPlay != null) {
+            Mekanism.logger.info("Starting sound object for {}: {}", player.getName(), soundName);
+            Minecraft.getMinecraft().getSoundHandler().playSound(soundToPlay);
+        }
+    }
 
-		String channelName;
-		Class<? extends PlayerSound> soundClass;
+    public static void playSound(SoundEvent sound)
+    {
+        playSound(PositionedSoundRecord.getMasterRecord(sound, MekanismConfig.client.baseSoundVolume));
+    }
 
-		Channel(String name, Class<? extends PlayerSound> clazz)
-		{
-			channelName = name;
-			soundClass = clazz;
-		}
-
-		public String getName()
-		{
-			return channelName;
-		}
-
-		public PlayerSound getNewSound(EntityPlayer player)
-		{
-			try {
-				return soundClass.getDeclaredConstructor(EntityPlayer.class).newInstance(player);
-			} catch(Exception e) {
-				return null;
-			}
-		}
-	}
-
-	public static boolean soundPlaying(EntityPlayer player, Channel channel)
-	{
-		String name = player.getName();
-		Map<String, IResettableSound> map = getMap(name);
-		IResettableSound sound = map.get(channel.getName());
-
-		return !(sound == null || sound.isDonePlaying());
-	}
-
-	public static void addSound(EntityPlayer player, Channel channel, boolean replace)
-	{
-		String name = player.getName();
-		Map<String, IResettableSound> map = getMap(name);
-		IResettableSound sound = map.get(channel.getName());
-		
-		if(sound == null || replace)
-		{
-			PlayerSound newSound = channel.getNewSound(player);
-			map.put(channel.getName(), newSound);
-		}
-	}
-
-	public static boolean playSound(EntityPlayer player, Channel channel)
-	{
-		String name = player.getName();
-		Map<String, IResettableSound> map = getMap(name);
-		IResettableSound sound = map.get(channel.getName());
-		
-		if(sound != null)
-		{
-			if(canRestartSound(sound))
-			{
-				sound.reset();
-				playSound(sound);
-			}
-			
-			return true;
-		}
-		
-		return false;
-	}
-
-	public static Map<String, IResettableSound> getMap(String name)
-	{
-		Map<String, IResettableSound> map = soundMaps.computeIfAbsent(name, k -> new HashMap<>());
-
-		return map;
-	}
-
-	public static SoundManager getSoundManager()
-	{
-		return mc.getSoundHandler().sndManager;
-	}
-
-	//Fudge required because sound thread gets behind and the biMap crashes when rapidly toggling sounds.
-	public static Map<ISound, String> getSoundMap()
-	{
-		return mc.getSoundHandler().sndManager.invPlayingSounds;
-	}
-
-	public static boolean canRestartSound(ITickableSound sound)
-	{
-		return sound.isDonePlaying() && !getSoundMap().containsKey(sound);
-	}
-	
-	public static void playSound(SoundEvent sound)
-	{
-        playSound(PositionedSoundRecord.getMasterRecord(sound, client.baseSoundVolume));
-	}
-
-	public static void playSound(ISound sound)
-	{
-		mc.getSoundHandler().playSound(sound);
-	}
+    public static void playSound(ISound sound)
+    {
+        Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+    }
 }

@@ -1,15 +1,6 @@
 package mekanism.common;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
+import com.mojang.authlib.GameProfile;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
@@ -41,11 +32,7 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.entity.EntityBabySkeleton;
-import mekanism.common.entity.EntityBalloon;
-import mekanism.common.entity.EntityFlame;
-import mekanism.common.entity.EntityObsidianTNT;
-import mekanism.common.entity.EntityRobit;
+import mekanism.common.entity.*;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
@@ -64,32 +51,7 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
-import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tile.TileEntityAmbientAccumulator;
-import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.tile.TileEntityChemicalInfuser;
-import mekanism.common.tile.TileEntityChemicalOxidizer;
-import mekanism.common.tile.TileEntityChemicalWasher;
-import mekanism.common.tile.TileEntityElectricPump;
-import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityFluidicPlenisher;
-import mekanism.common.tile.TileEntityFuelwoodHeater;
-import mekanism.common.tile.TileEntityGlowPanel;
-import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.tile.TileEntityInductionCell;
-import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.TileEntityInductionProvider;
-import mekanism.common.tile.TileEntityLaser;
-import mekanism.common.tile.TileEntityLaserAmplifier;
-import mekanism.common.tile.TileEntityLaserTractorBeam;
-import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.tile.TileEntityPressureDisperser;
-import mekanism.common.tile.TileEntityRotaryCondensentrator;
-import mekanism.common.tile.TileEntityStructuralGlass;
-import mekanism.common.tile.TileEntitySuperheatingElement;
-import mekanism.common.tile.TileEntityThermalEvaporationBlock;
-import mekanism.common.tile.TileEntityThermalEvaporationValve;
+import mekanism.common.tile.*;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
@@ -129,23 +91,18 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mojang.authlib.GameProfile;
+import java.io.File;
+import java.util.*;
 
 /**
  * Mekanism - a Minecraft mod
@@ -237,12 +194,11 @@ public class Mekanism
 	public static GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes()), "[Mekanism]");
 	
 	public static KeySync keyMap = new KeySync();
-	
-	public static final Set<String> jetpackOn = new HashSet<>();
-	public static final Set<String> gasmaskOn = new HashSet<>();
+
+	public static final PlayerState playerState = new PlayerState();
+
 	public static final Set<String> freeRunnerOn = new HashSet<>();
-	public static final Set<String> flamethrowerActive = new HashSet<>();
-	
+
 	public static Set<Coord4D> activeVibrators = new HashSet<>();
 	
 	static {		
@@ -678,8 +634,7 @@ public class Mekanism
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
 		//Clear all cache data
-		jetpackOn.clear();
-		gasmaskOn.clear();
+		playerState.clear();
 		activeVibrators.clear();
 		worldTickHandler.resetRegenChunks();
 		privateTeleporters.clear();
@@ -1004,6 +959,11 @@ public class Mekanism
 			proxy.onConfigSync(false);
 		}
 	}
+
+	@SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event) {
+	    playerState.init(event.getWorld());
+    }
 
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event) {

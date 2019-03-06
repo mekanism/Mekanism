@@ -130,81 +130,79 @@ public class RenderTickHandler
 					}
 				}
 
-				synchronized(Mekanism.jetpackOn)
-				{
-					for(String s : Mekanism.jetpackOn)
-					{
-						EntityPlayer p = mc.world.getPlayerEntityByName(s);
+				// Traverse a copy of jetpack state and do animations
+				// TODO: This means we're making a full copy of the state per render....might need to revisit
+				for (String s : Mekanism.playerState.getActiveJetpacks()) {
+					EntityPlayer p = mc.world.getPlayerEntityByName(s);
 
-						if(p == null)
-						{
-							continue;
-						}
-
-						Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-						
-						float random = (rand.nextFloat() - 0.5F) * 0.1F;
-
-						Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
-						Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
-						Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
-
-						Pos3D rLeft = vLeft.scale(random);
-						Pos3D rRight = vRight.scale(random);
-
-						Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-
-						mLeft = mLeft.translate(rLeft);
-						mRight = mRight.translate(rRight);
-
-						Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-
-						v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-
-						v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-						spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-						spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+					if (p == null) {
+						continue;
 					}
+
+					Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+
+					float random = (rand.nextFloat() - 0.5F) * 0.1F;
+
+					Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
+					Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
+					Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
+
+					Pos3D rLeft = vLeft.scale(random);
+					Pos3D rRight = vRight.scale(random);
+
+					Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+					Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+					Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+
+					mLeft = mLeft.translate(rLeft);
+					mRight = mRight.translate(rRight);
+
+					Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+					spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+					spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+
+					v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+					spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+					spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+
+					v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+					spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+					spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
 				}
-				
-				synchronized(Mekanism.gasmaskOn)
-				{
-					if(world.getWorldTime() % 4 == 0)
-					{
-						for(String s : Mekanism.gasmaskOn)
-						{
-							EntityPlayer p = mc.world.getPlayerEntityByName(s);
-	
-							if(p == null || !p.isInWater())
-							{
-								continue;
-							}
-							
-							Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-							
-							float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
-							float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
-							
-							Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
-							Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-							
-							Pos3D v = playerPos.translate(vec);
-							spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
-						}
-					}
-				}
-				
-				if(world.getWorldTime() % 4 == 0)
+
+                // Traverse a copy of gasmask state and do animations
+                // TODO: This means we're making a full copy of the state per render....might need to revisit
+                if(world.getWorldTime() % 4 == 0)
+                {
+                    for(String s : Mekanism.playerState.getActiveGasmasks())
+                    {
+                        EntityPlayer p = mc.world.getPlayerEntityByName(s);
+
+                        if(p == null || !p.isInWater())
+                        {
+                            continue;
+                        }
+
+                        Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+
+                        float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
+                        float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
+
+                        Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
+                        Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+
+                        Pos3D v = playerPos.translate(vec);
+                        spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                    }
+                }
+
+                // Traverse a copy of flamethrower state and do animations
+                // TODO: This means we're making a full copy of the state per render....might need to revisit
+                if(world.getWorldTime() % 4 == 0)
 				{
 					for(EntityPlayer p : world.playerEntities)
 					{
-						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && !p.inventory.getCurrentItem().isEmpty() && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress && !p.inventory.getCurrentItem().isEmpty() && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 						{
 							if(((ItemFlamethrower)p.inventory.getCurrentItem().getItem()).getGas(p.inventory.getCurrentItem()) != null)
 							{

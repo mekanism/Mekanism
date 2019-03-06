@@ -77,11 +77,11 @@ public class GuiFactory extends GuiMekanism
 
 		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
 		{
-			if(tileEntity.recipeType.getFuelType() == MachineFuelType.ADVANCED)
+			if(tileEntity.getRecipeType().getFuelType() == MachineFuelType.ADVANCED)
 			{
 				drawHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : LangUtils.localize("gui.none"), xAxis, yAxis);
 			}
-			else if(tileEntity.recipeType == RecipeType.INFUSING)
+			else if(tileEntity.getRecipeType() == RecipeType.INFUSING)
 			{
 				drawHoveringText(tileEntity.infuseStored.type != null ? tileEntity.infuseStored.type.getLocalizedName() + ": " + tileEntity.infuseStored.amount : LangUtils.localize("gui.empty"), xAxis, yAxis);
 			}
@@ -120,14 +120,14 @@ public class GuiFactory extends GuiMekanism
 			drawTexturedModalRect(guiWidth + xPos, guiHeight + 33, 176, 52, 8, displayInt);
 		}
 
-		if(tileEntity.recipeType.getFuelType() == MachineFuelType.ADVANCED)
+		if(tileEntity.getRecipeType().getFuelType() == MachineFuelType.ADVANCED)
 		{
 			if(tileEntity.getScaledGasLevel(160) > 0)
 			{
 				displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas().getGas().getSprite());
 			}
 		}
-		else if(tileEntity.recipeType == RecipeType.INFUSING)
+		else if(tileEntity.getRecipeType() == RecipeType.INFUSING)
 		{
 			if(tileEntity.getScaledInfuseLevel(160) > 0)
 			{

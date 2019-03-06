@@ -19,7 +19,6 @@ import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
-import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.util.LangUtils;
@@ -119,7 +118,6 @@ public class MekanismKeyHandler extends MekKeyHandler
 					int newChan = wt.getChannel(toolStack) < 9 ? wt.getChannel(toolStack) + 1 : 1;
 					wt.setChannel(toolStack, newChan);
 					Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(newChan)));
-					SoundHandler.playSound(MekanismSounds.DING);
 				}
 			}
             else if(player.isSneaking() && item instanceof ItemFlamethrower)
@@ -149,7 +147,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 					jetpack.incrementMode(chestStack);
 				}
 
-				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.MODE, null, player.isSneaking()));
+				Mekanism.packetHandler.sendToServer(JetpackDataMessage.MODE_CHANGE(player.isSneaking()));
 				SoundHandler.playSound(MekanismSounds.HYDRAULIC);
 			}
 			else if(chestItem instanceof ItemScubaTank)
@@ -157,7 +155,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 				ItemScubaTank scubaTank = (ItemScubaTank)chestItem;
 
 				scubaTank.toggleFlowing(chestStack);
-				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.MODE, null, false));
+				Mekanism.packetHandler.sendToServer(ScubaTankDataMessage.MODE_CHANGE(false));
 				SoundHandler.playSound(MekanismSounds.HYDRAULIC);
 			}
 		}
