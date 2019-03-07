@@ -101,6 +101,7 @@ import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -1035,6 +1036,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
 		MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
 		MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
+		MinecraftForge.EVENT_BUS.register(SoundHandler.class);
 		
 		new MekanismKeyHandler();
 

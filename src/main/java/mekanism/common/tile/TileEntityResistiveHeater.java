@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
@@ -137,9 +135,9 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 	}
 	
 	@Override
-	public float getVolume()
+	public float getInitialVolume()
 	{
-		return super.getVolume()*Math.max(0.001F, soundScale);
+		return super.getInitialVolume()*Math.max(0.001F, soundScale);
 	}
 	
 	@Override

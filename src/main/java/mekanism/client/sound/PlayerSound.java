@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import mekanism.common.Mekanism;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.client.audio.PositionedSound;
@@ -23,6 +24,8 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
 	public PlayerSound(EntityPlayer player, ResourceLocation sound) {
 		super(sound, SoundCategory.PLAYERS);
 		this.player = player;
+		this.repeat = true;
+		this.repeatDelay = 0;
 
 		// N.B. the volume must be > 0 on first time it's processed by sound system or else it will not
 		// get registered for tick events.

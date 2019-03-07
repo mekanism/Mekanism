@@ -43,9 +43,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public float getVolume()
+	public float getInitialVolume()
 	{
-		return 0.05F*super.getVolume();
+		return 0.05F*super.getInitialVolume();
 	}
 
 	@Override

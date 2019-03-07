@@ -5,7 +5,6 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -36,8 +35,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityChargepad extends TileEntityNoisyBlock
 {
@@ -244,9 +241,9 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 	}
 
 	@Override
-	protected float getVolume()
+	protected float getInitialVolume()
 	{
-		return 0.4F*super.getVolume();
+		return 0.4F*super.getInitialVolume();
 	}
 
 	@Override

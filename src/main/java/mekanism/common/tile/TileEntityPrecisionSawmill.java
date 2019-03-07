@@ -27,8 +27,8 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public float getVolume()
+	public float getInitialVolume()
 	{
-		return 0.7F*super.getVolume();
+		return 0.7F*super.getInitialVolume();
 	}
 }

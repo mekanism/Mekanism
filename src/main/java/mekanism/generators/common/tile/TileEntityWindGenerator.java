@@ -11,8 +11,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
 {
@@ -102,9 +100,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	}
 
 	@Override
-	protected float getVolume()
+	protected float getInitialVolume()
 	{
-		return 1.5F*super.getVolume();
+		return 1.5F*super.getInitialVolume();
 	}
 
     private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};

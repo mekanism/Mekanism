@@ -26,8 +26,8 @@ public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe>
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public float getVolume()
+	public float getInitialVolume()
 	{
-		return 0.5F*super.getVolume();
+		return 0.5F*super.getInitialVolume();
 	}
 }

@@ -203,9 +203,9 @@ public class ClientTickHandler
 			
 			// Update player's state for various items; this also automatically notifies server if something changed and
 			// kicks off sounds as necessary
-			Mekanism.playerState.setJetpackState(mc.player.getName(), isJetpackActive(mc.player));
-			Mekanism.playerState.setGasmaskState(mc.player.getName(), isGasMaskOn(mc.player));
-			Mekanism.playerState.setFlamethrowerState(mc.player.getName(), isFlamethrowerOn(mc.player));
+			Mekanism.playerState.setJetpackState(mc.player.getName(), isJetpackActive(mc.player), true);
+			Mekanism.playerState.setGasmaskState(mc.player.getName(), isGasMaskOn(mc.player), true);
+			Mekanism.playerState.setFlamethrowerState(mc.player.getName(), isFlamethrowerOn(mc.player), true);
 
 			for(Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext();)
 			{

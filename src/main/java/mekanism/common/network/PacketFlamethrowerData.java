@@ -20,7 +20,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 		EntityPlayer player = PacketHandler.getPlayer(context);
 
         if (message.packetType == FlamethrowerPacket.UPDATE) {
-            Mekanism.playerState.setFlamethrowerState(message.username, message.value);
+            Mekanism.playerState.setFlamethrowerState(message.username, message.value, false);
 
             // If we got this packet on the server, resend out to all clients in same dimension
             // TODO: Why is this a dimensional thing?!

@@ -24,7 +24,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
         EntityPlayer player = PacketHandler.getPlayer(context);
 
         if (message.packetType == JetpackPacket.UPDATE) {
-            Mekanism.playerState.setJetpackState(message.username, message.value);
+            Mekanism.playerState.setJetpackState(message.username, message.value, false);
 
             // If we got this packet on the server, propagate it out to all players in the same dimension
             // TODO: Why is this a dimensional thing?!

@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
@@ -50,6 +51,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	@SideOnly(Side.CLIENT)
 	private ISound activeSound;
+	private int playSoundCooldown = 0;
 
 	public double clientTemp = 0;
 	public boolean clientBurning = false;
@@ -122,21 +124,35 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	@SideOnly(Side.CLIENT)
 	private void updateSound() {
-        Minecraft mc = Minecraft.getMinecraft();
-        if (isBurning() && !isInvalid()) {
-            // Machine is active; if we don't have a sound already playing, schedule another
-            if (activeSound == null || !mc.getSoundHandler().isSoundPlaying(activeSound)) {
-                activeSound = new PositionedSoundRecord(soundEvent, SoundCategory.BLOCKS, 2.0f, 1.0f, getPos());
-                mc.getSoundHandler().playSound(activeSound);
-            }
-        } else {
-            // Not active; stop any active playing sounds
-            if (activeSound != null && mc.getSoundHandler().isSoundPlaying(activeSound)) {
-                mc.getSoundHandler().stopSound(activeSound);
-                activeSound = null;
-            }
-        }
+		if (getActive() && !isInvalid()) {
+			// If sounds are being muted, we can attempt to start them on every tick, only to have them
+			// denied by the event bus, so use a cooldown period that ensures we're only trying once every
+			// second or so to start a sound.
+			if (--playSoundCooldown > 0) {
+				return;
+			}
+
+			if (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound)) {
+				activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), 1.0f, getPos());
+				playSoundCooldown = 20;
+			}
+		} else {
+			if (activeSound != null) {
+				SoundHandler.stopTileSound(getPos());
+				activeSound = null;
+				playSoundCooldown = 0;
+			}
+		}
     }
+
+	@Override
+	public void invalidate() {
+		super.invalidate();
+
+		if (world.isRemote) {
+			updateSound();
+		}
+	}
 
 	@Override
 	public void onChunkUnload()

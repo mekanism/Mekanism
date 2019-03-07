@@ -40,33 +40,30 @@ public class PlayerState {
     }
 
 
-    @SideOnly(Side.CLIENT)
-    private boolean isLocalPlayer(String playerId) {
-        return Minecraft.getMinecraft().player.getName().equals(playerId);
-    }
-
     // ----------------------
     //
     // Jetpack state tracking
     //
     // ----------------------
 
-    public void setJetpackState(String playerId, boolean isActive) {
+    public void setJetpackState(String playerId, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeJetpacks.contains(playerId);
         boolean changed = (alreadyActive != isActive);
 
         if (alreadyActive && !isActive) {
             // On -> off
+            Mekanism.logger.info("{} jetpack is now off", playerId);
             activeJetpacks.remove(playerId);
         } else if (!alreadyActive && isActive) {
             // Off -> on
+            Mekanism.logger.info("{} jetpack is now on", playerId);
             activeJetpacks.add(playerId);
         }
 
         // If something changed and we're in a remote world, take appropriate action
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
-            if (isLocalPlayer(playerId)) {
+            if (isLocal) {
                 Mekanism.packetHandler.sendToServer(PacketJetpackData.JetpackDataMessage.UPDATE(playerId, isActive));
             }
 
@@ -79,7 +76,7 @@ public class PlayerState {
 
     public void setActiveJetpacks(Set<String> newActiveJetpacks) {
         for (String activeUser: newActiveJetpacks) {
-            setJetpackState(activeUser, true);
+            setJetpackState(activeUser, true, false);
         }
     }
 
@@ -97,7 +94,7 @@ public class PlayerState {
     //
     // ----------------------
 
-    public void setGasmaskState(String playerId, boolean isActive) {
+    public void setGasmaskState(String playerId, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeGasmasks.contains(playerId);
         boolean changed = (alreadyActive != isActive);
 
@@ -110,7 +107,7 @@ public class PlayerState {
         // If something changed and we're in a remote world, take appropriate action
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
-            if (isLocalPlayer(playerId)) {
+            if (isLocal) {
                 Mekanism.packetHandler.sendToServer(PacketScubaTankData.ScubaTankDataMessage.UPDATE(playerId, isActive));
             }
 
@@ -123,7 +120,7 @@ public class PlayerState {
 
     public void setActiveGasmasks(Set<String> newActiveGasmasks) {
         for (String activeUser: newActiveGasmasks) {
-            setGasmaskState(activeUser, true);
+            setGasmaskState(activeUser, true, false);
         }
     }
 
@@ -141,7 +138,7 @@ public class PlayerState {
     //
     // ----------------------
 
-    public void setFlamethrowerState(String playerId, boolean isActive) {
+    public void setFlamethrowerState(String playerId, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeFlamethrowers.contains(playerId);
         boolean changed = (alreadyActive != isActive);
 
@@ -154,7 +151,7 @@ public class PlayerState {
         // If something changed and we're in a remote world, take appropriate action
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
-            if (isLocalPlayer(playerId)) {
+            if (isLocal) {
                 Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, null,
                         playerId, isActive));
             }

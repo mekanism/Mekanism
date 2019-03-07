@@ -23,7 +23,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		
 		if(message.packetType == ScubaTankPacket.UPDATE) {
-			Mekanism.playerState.setGasmaskState(message.username, message.value);
+			Mekanism.playerState.setGasmaskState(message.username, message.value, false);
 
 			// If we got this on the server, relay out to all players in the same dimension
 			// TODO: Why is this a dimensional thing?!

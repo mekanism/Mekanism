@@ -26,8 +26,8 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<Enric
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public float getVolume()
+	public float getInitialVolume()
 	{
-		return 0.3F*super.getVolume();
+		return 0.3F*super.getInitialVolume();
 	}
 }
