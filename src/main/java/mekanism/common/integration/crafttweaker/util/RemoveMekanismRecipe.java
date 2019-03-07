@@ -2,65 +2,48 @@ package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.mtlib.helpers.LogHelper;
 import com.blamejared.mtlib.utils.BaseMapRemoval;
+import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
+import mekanism.common.integration.crafttweaker.helpers.RecipeInfoHelper;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.ChanceOutput;
-import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import mekanism.common.recipe.outputs.FluidOutput;
-import mekanism.common.recipe.outputs.GasOutput;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.recipe.outputs.MachineOutput;
-import mekanism.common.recipe.outputs.PressurizedOutput;
 
 import java.util.Map;
 
-public abstract class RemoveMekanismRecipe extends BaseMapRemoval<MachineInput, MachineRecipe>
-{
-    public RemoveMekanismRecipe(String name, Map<MachineInput, MachineRecipe> map)
-    {
-        super(name, map);
+public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends BaseMapRemoval<INPUT, RECIPE> {
+    public RemoveMekanismRecipe(String name, Recipe recipeType, IngredientWrapper output, IngredientWrapper input) {
+        super(name, recipeType.get());
+        map.forEach((key, value) -> {
+            if (IngredientHelper.matches(key, input) && IngredientHelper.matches(value.getOutput(), output)) {
+                recipes.put(key, value);
+            }
+        });
+        if (recipes.isEmpty()) {
+            String warning = "";
+            if (input.isEmpty()) {
+                if (!output.isEmpty()) { //It should never be the case they both are empty but just in case they are ignore it
+                    warning = String.format("output: '%s'", output.toString());
+                }
+            } else if (output.isEmpty()) {
+                warning = String.format("input: '%s'", input.toString());
+            } else {
+                warning = String.format("input: '%s' and output: '%s'", input.toString(), output.toString());
+            }
+            if (!warning.isEmpty()) {
+                LogHelper.logWarning(String.format("No %s recipe found for %s. Command ignored!", name, warning));
+            }
+        }
     }
 
-    public abstract void addRecipes();
-
     @Override
-    public void apply()
-    {
-        addRecipes();
-
-        super.apply();
+    protected String getRecipeInfo(Map.Entry<INPUT, RECIPE> recipe) {
+        return RecipeInfoHelper.getRecipeInfo(recipe);
     }
 
     @Override
-    protected String getRecipeInfo(Map.Entry<MachineInput, MachineRecipe> recipe)
-    {
-        MachineOutput output = recipe.getValue().recipeOutput;
-
-        if (output instanceof ItemStackOutput)
-        {
-            return LogHelper.getStackDescription(((ItemStackOutput) output).output);
-        }
-        else if (output instanceof GasOutput)
-        {
-            return LogHelper.getStackDescription(((GasOutput) output).output);
-        }
-        else if (output instanceof FluidOutput)
-        {
-            return LogHelper.getStackDescription(((FluidOutput) output).output);
-        }
-        else if (output instanceof ChemicalPairOutput)
-        {
-            return "[" + LogHelper.getStackDescription(((ChemicalPairOutput) output).leftGas) + ", " + LogHelper.getStackDescription(((ChemicalPairOutput) output).rightGas) + "]";
-        }
-        else if (output instanceof ChanceOutput)
-        {
-            return LogHelper.getStackDescription(((ChanceOutput) output).primaryOutput);
-        }
-        else if (output instanceof PressurizedOutput)
-        {
-            return "[" + LogHelper.getStackDescription(((PressurizedOutput) output).getItemOutput()) + ", " + LogHelper.getStackDescription(((PressurizedOutput) output).getGasOutput()) + "]";
-        }
-
-        return null;
+    public String describe() {
+        //Only describe it if it didn't already throw a warning about no recipes found
+        return recipes.isEmpty() ? "" : super.describe();
     }
 }

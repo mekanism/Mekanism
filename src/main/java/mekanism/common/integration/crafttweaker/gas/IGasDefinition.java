@@ -13,7 +13,7 @@ import stanhebben.zenscript.annotations.ZenOperator;
 public interface IGasDefinition
 {
     @ZenOperator(OperatorType.MUL)
-    IGasStack asStack(int millibuckets);
+    IGasStack asStack(int mb);
 
     @ZenGetter("NAME")
     String getName();
