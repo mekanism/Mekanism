@@ -99,7 +99,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 
 		TextureAtlasSprite gasStillSprite = getStillGasSprite(minecraft, gas);
 
-		int gasColor = 0xFFFFFFFF;
+		int gasColor = gas.getTint();
 
 		int scaledAmount = (gasStack.amount * height) / capacityMb;
 		
