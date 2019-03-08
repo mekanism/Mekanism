@@ -48,7 +48,7 @@ public class MultiOredictIngredient extends CompoundIngredient
 			}
 			ArrayList<String> ores = new ArrayList<>(oreJsonArray.size());
 			oreJsonArray.forEach(el->ores.add(el.getAsString()));
-			return new MultiOredictIngredient(ores.toArray(new String[ores.size()]));
+			return new MultiOredictIngredient(ores.toArray(new String[0]));
 		}
 	}
 }

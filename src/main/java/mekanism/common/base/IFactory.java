@@ -49,13 +49,13 @@ public interface IFactory
 	 */
     void setRecipeType(int type, ItemStack itemStack);
 
-	public static enum MachineFuelType {
+	enum MachineFuelType {
 		BASIC,
 		ADVANCED,
 		DOUBLE
 	}
 
-	public static enum RecipeType implements IStringSerializable
+	enum RecipeType implements IStringSerializable
 	{
 		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER, MachineFuelType.BASIC, false, Recipe.ENERGIZED_SMELTER),
 		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false, Recipe.ENRICHMENT_CHAMBER),

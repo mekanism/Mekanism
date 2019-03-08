@@ -22,6 +22,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 {
 	public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
@@ -51,8 +53,9 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 		return CHANNEL_MODELS.get(channel);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack itemStack = player.getHeldItem(hand);
 		
@@ -67,7 +70,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
 	}
 	
 	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
 	{
 		return !ItemStack.areItemsEqual(oldStack, newStack);
 	}

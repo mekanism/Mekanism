@@ -71,21 +71,18 @@ public class TransitRequest
 			ISidedInventory sidedInventory = (ISidedInventory)tile;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
-			if(slots != null)
+			for(int get = slots.length - 1; get >= 0; get--)
 			{
-				for(int get = slots.length - 1; get >= 0; get--)
+				int slotID = slots[get];
+
+				if(!sidedInventory.getStackInSlot(slotID).isEmpty() && sidedInventory.getStackInSlot(slotID).getCount() > 0)
 				{
-					int slotID = slots[get];
+					ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
+					toSend.setCount(Math.min(amount, toSend.getCount()));
 
-					if(!sidedInventory.getStackInSlot(slotID).isEmpty() && sidedInventory.getStackInSlot(slotID).getCount() > 0)
+					if(!ret.hasType(toSend) && sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()) && finder.modifies(toSend))
 					{
-						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
-						toSend.setCount(Math.min(amount, toSend.getCount()));
-
-						if(!ret.hasType(toSend) && sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()) && finder.modifies(toSend))
-						{
-							ret.setItem(toSend, slotID);
-						}
+						ret.setItem(toSend, slotID);
 					}
 				}
 			}
@@ -131,7 +128,7 @@ public class TransitRequest
 		public static final TransitResponse EMPTY = new TransitResponse(-1, ItemStack.EMPTY);
 		
 		public int slotID;
-		public ItemStack stack = ItemStack.EMPTY;
+		public ItemStack stack;
 		
 		public TransitResponse(int s, ItemStack i)
 		{

@@ -2,8 +2,6 @@ package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;

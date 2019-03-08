@@ -20,6 +20,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityTurbineRotor extends TileEntityBasicBlock
 {
 	public List<Coord4D> rotors = new ArrayList<>();
@@ -251,6 +253,7 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		blades = nbtTags.getInteger("blades");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -260,7 +263,8 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock
 		
 		return nbtTags;
 	}
-	
+
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()

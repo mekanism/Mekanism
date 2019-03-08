@@ -51,7 +51,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		tileEntity = tentity;
 		
 		origFilter = tileEntity.filters.get(index);
-		filter = ((OredictionificatorFilter)tentity.filters.get(index)).clone();
+		filter = tentity.filters.get(index).clone();
 		
 		updateRenderStack();
 	}
@@ -94,18 +94,18 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	{
 		if(filter.filter != null && !filter.filter.isEmpty())
 		{
-			((GuiButton)buttonList.get(0)).enabled = true;
+			buttonList.get(0).enabled = true;
 		}
 		else {
-			((GuiButton)buttonList.get(0)).enabled = false;
+			buttonList.get(0).enabled = false;
 		}
 		
 		if(!isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = true;
+			buttonList.get(1).enabled = true;
 		}
 		else {
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 	}
 	
@@ -157,7 +157,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 45, 19);
 				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)

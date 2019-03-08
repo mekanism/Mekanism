@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidUtil;
 
+import javax.annotation.Nonnull;
+
 public class ContainerBioGenerator extends Container
 {
 	private TileEntityBioGenerator tileEntity;
@@ -49,16 +51,17 @@ public class ContainerBioGenerator extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -74,7 +77,7 @@ public class ContainerBioGenerator extends Container
 						return ItemStack.EMPTY;
 					}
 				}
-				else if(slotID == 1)
+				else
 				{
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
 					{

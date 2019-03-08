@@ -10,6 +10,7 @@ import net.minecraftforge.common.model.IModelState;
 
 import com.google.common.collect.ImmutableMap;
 
+import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 public class MekanismOBJModel extends OBJModel
@@ -24,9 +25,10 @@ public class MekanismOBJModel extends OBJModel
 		modelType = type;
 		location = modelLocation;
 	}
-	
+
+	@Nonnull
 	@Override
-	public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+	public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 	{
 		IBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
 		
@@ -39,18 +41,20 @@ public class MekanismOBJModel extends OBJModel
 			return new TransmitterModel(preBaked, this, state, format, TransmitterModel.getTexturesForOBJModel(preBaked), null);
 		}
 		
-		return null;
+		return preBaked;
 	}
-	
+
+	@Nonnull
 	@Override
-    public IModel process(ImmutableMap<String, String> customData)
+    public IModel process(@Nonnull ImmutableMap<String, String> customData)
     {
     	MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib(), location);
         return ret;
     }
 
+	@Nonnull
     @Override
-    public IModel retexture(ImmutableMap<String, String> textures)
+    public IModel retexture(@Nonnull ImmutableMap<String, String> textures)
     {
     	MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
         return ret;

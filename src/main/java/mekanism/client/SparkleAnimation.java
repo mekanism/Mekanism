@@ -41,7 +41,7 @@ public class SparkleAnimation
 			}
 
 			loop(pointer);
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 		
 		try {
 			new Thread(() ->
@@ -61,7 +61,7 @@ public class SparkleAnimation
                     }
                 }
             }).start();
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 
 	public void loop(TileEntity tileEntity)

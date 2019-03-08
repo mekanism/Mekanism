@@ -6,11 +6,8 @@ import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerPacket;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +24,7 @@ public class PlayerState {
         activeJetpacks.clear();
         activeGasmasks.clear();
         activeFlamethrowers.clear();
-    };
+    }
 
     public void clearPlayer(EntityPlayer p) {
         activeJetpacks.remove(p.getName());

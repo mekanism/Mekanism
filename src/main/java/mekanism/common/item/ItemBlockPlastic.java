@@ -8,6 +8,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
 
+import javax.annotation.Nonnull;
+
 public class ItemBlockPlastic extends ItemBlock
 {
 	public Block metaBlock;
@@ -25,8 +27,9 @@ public class ItemBlockPlastic extends ItemBlock
 		return i;
 	}
 
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(@Nonnull ItemStack stack)
 	{
 		EnumDyeColor dyeColour = EnumDyeColor.byDyeDamage(stack.getItemDamage()&15);
 		EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];

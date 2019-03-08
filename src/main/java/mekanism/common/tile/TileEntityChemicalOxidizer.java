@@ -31,6 +31,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ITubeConnection, ISustainedData, ITankManager
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
@@ -98,7 +100,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -113,7 +115,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -123,8 +125,9 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
@@ -214,6 +217,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -237,13 +241,13 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.TUBE_CONNECTION_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
 		{

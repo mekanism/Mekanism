@@ -36,6 +36,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer
 {
 	/** The FluidTank for this generator. */
@@ -124,7 +126,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -155,6 +157,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -169,7 +172,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -216,8 +219,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		return TileEntityFurnace.getItemBurnTime(itemstack)/2;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return side == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
@@ -445,14 +449,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || 
 				(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
 		{

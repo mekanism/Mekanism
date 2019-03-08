@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -28,6 +27,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor, ISecurityTile
 {
@@ -197,13 +198,14 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemStack, EnumFacing side)
+	public boolean canInsertItem(int i, @Nonnull ItemStack itemStack, @Nonnull EnumFacing side)
 	{
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return availableSlotIDs;
 	}
@@ -240,13 +242,13 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.LASER_RECEPTOR_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.LASER_RECEPTOR_CAPABILITY)
 		{

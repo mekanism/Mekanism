@@ -18,6 +18,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ItemDictionary extends ItemMekanism
 {
 	public ItemDictionary()
@@ -26,6 +28,7 @@ public class ItemDictionary extends ItemMekanism
 		setMaxStackSize(1);
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
@@ -36,36 +39,34 @@ public class ItemDictionary extends ItemMekanism
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if(block != null)
+			if(world.isRemote)
 			{
-				if(world.isRemote)
+				ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
+				List<String> names = MekanismUtils.getOreDictName(testStack);
+
+				if(!names.isEmpty())
 				{
-					ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
-					List<String> names = MekanismUtils.getOreDictName(testStack);
+					player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
 
-					if(!names.isEmpty())
+					for(String name : names)
 					{
-						player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
-
-						for(String name : names)
-						{
-							player.sendMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
-						}
-					}
-					else {
-						player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
+						player.sendMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
 					}
 				}
-
-				return EnumActionResult.SUCCESS;
+				else {
+					player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
+				}
 			}
+
+			return EnumActionResult.SUCCESS;
 		}
 
 		return EnumActionResult.PASS;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand)
 	{
 		ItemStack itemstack = entityplayer.getHeldItem(hand);
 		

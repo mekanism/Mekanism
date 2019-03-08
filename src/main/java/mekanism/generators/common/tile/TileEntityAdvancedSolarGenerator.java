@@ -9,6 +9,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar
 {
 	public TileEntityAdvancedSolarGenerator()
@@ -62,13 +64,13 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY)
 		{

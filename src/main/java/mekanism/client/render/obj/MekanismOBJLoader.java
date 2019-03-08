@@ -28,6 +28,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import javax.annotation.Nonnull;
+
 public class MekanismOBJLoader implements ICustomModelLoader
 {
 	public static final MekanismOBJLoader INSTANCE = new MekanismOBJLoader();
@@ -46,12 +48,8 @@ public class MekanismOBJLoader implements ICustomModelLoader
 		for(String s : OBJ_RENDERS)
 		{
 			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
-	        Object obj = event.getModelRegistry().getObject(model);
-	        
-	        if(obj instanceof IBakedModel)
-	        {
-	        	event.getModelRegistry().putObject(model, createBakedObjItemModel((IBakedModel)obj, "mekanism:models/block/" + s + ".obj.mek", new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM));
-	        }
+	        IBakedModel bakedModel = event.getModelRegistry().getObject(model);
+	        event.getModelRegistry().putObject(model, createBakedObjItemModel(bakedModel, "mekanism:models/block/" + s + ".obj.mek", new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM));
 		}
     }
 	
@@ -90,13 +88,14 @@ public class MekanismOBJLoader implements ICustomModelLoader
 	}
 	
 	@Override
-	public boolean accepts(ResourceLocation modelLocation)
+	public boolean accepts(@Nonnull ResourceLocation modelLocation)
 	{
 		return modelLocation.getPath().endsWith(".obj.mek");
 	}
-	
+
+	@Nonnull
 	@Override
-	public IModel loadModel(ResourceLocation loc) throws Exception
+	public IModel loadModel(@Nonnull ResourceLocation loc) throws Exception
 	{
 		ResourceLocation file = new ResourceLocation(loc.getNamespace(), loc.getPath());
 		
@@ -130,7 +129,7 @@ public class MekanismOBJLoader implements ICustomModelLoader
 	}
 	
 	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
 		modelCache.clear();
     }

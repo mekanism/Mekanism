@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -37,6 +35,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable, IConfigCardAccess
 {
@@ -123,6 +123,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -141,7 +142,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -179,14 +180,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		return tier.maxEnergy;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -265,6 +267,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -344,13 +347,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIG_CARD_CAPABILITY)
 		{

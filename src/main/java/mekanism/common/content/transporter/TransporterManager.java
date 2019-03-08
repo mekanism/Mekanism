@@ -104,7 +104,7 @@ public class TransporterManager
 			ISidedInventory sidedInventory = (ISidedInventory)inv;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
-			if(slots == null || slots.length == 0)
+			if(slots.length == 0)
 			{
 				return null;
 			}
@@ -159,7 +159,7 @@ public class TransporterManager
 			ISidedInventory sidedInventory = (ISidedInventory)tile;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
-			if(slots != null && slots.length != 0)
+			if(slots.length != 0)
 			{
 				if(stack.pathType != Path.HOME && sidedInventory instanceof TileEntityBin && side.getOpposite() == EnumFacing.DOWN)
 				{
@@ -449,7 +449,7 @@ public class TransporterManager
 				ISidedInventory sidedInventory = (ISidedInventory)tileEntity;
 				int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 	
-				if(slots != null && slots.length != 0)
+				if(slots.length != 0)
 				{
 					if(tileEntity instanceof TileEntityBin)
 					{

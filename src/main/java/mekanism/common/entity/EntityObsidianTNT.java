@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class EntityObsidianTNT extends Entity
 {
 	/** How long the fuse is */
@@ -114,13 +116,13 @@ public class EntityObsidianTNT extends Entity
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbtTags)
+	protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags)
 	{
 		nbtTags.setByte("Fuse", (byte)fuse);
 	}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTags)
+	protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags)
 	{
 		fuse = nbtTags.getByte("Fuse");
 	}

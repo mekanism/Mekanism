@@ -61,6 +61,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 
+import javax.annotation.Nonnull;
+
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = MekanismHooks.GALACTICRAFT_MOD_ID)
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {
@@ -76,11 +78,11 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public boolean texTick;
 	
-    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.<Float>createKey(EntityRobit.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> OWNER_UUID = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<String> OWNER_NAME = EntityDataManager.<String>createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.<Boolean>createKey(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Float> ELECTRICITY = EntityDataManager.createKey(EntityRobit.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
 
 	public EntityRobit(World world)
 	{
@@ -110,6 +112,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		prevPosZ = z;
 	}
 
+	@Nonnull
 	@Override
 	public PathNavigateGround getNavigator()
 	{
@@ -206,7 +209,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				{
 					ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
 					
-					long needed = (long)Math.round((MAX_ELECTRICITY-getEnergy())*general.TO_TESLA);
+					long needed = Math.round((MAX_ELECTRICITY-getEnergy())*general.TO_TESLA);
 					setEnergy(getEnergy() + producer.takePower(needed, false)*general.FROM_TESLA);
 				}
 				else if(MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null))
@@ -289,7 +292,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().grow(1.5, 1.5, 1.5));
 
-		if(items != null && !items.isEmpty())
+		if(!items.isEmpty())
 		{
 			for(EntityItem item : items)
 			{
@@ -399,6 +402,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult applyPlayerInteraction(EntityPlayer entityplayer, Vec3d vec, EnumHand hand)
 	{
@@ -519,7 +523,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	protected void damageEntity(DamageSource damageSource, float amount)
+	protected void damageEntity(@Nonnull DamageSource damageSource, float amount)
 	{
 		amount = ForgeHooks.onLivingHurt(this, damageSource, amount);
 
@@ -552,7 +556,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public double getEnergy()
 	{
-		return (float)dataManager.get(ELECTRICITY);
+		return dataManager.get(ELECTRICITY);
 	}
 
 	public void setEnergy(double energy)
@@ -607,18 +611,21 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return inventory.size();
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
 		return inventory.get(slotID);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
 		return ItemStackHelper.getAndSplit(inventory, slotID, amount);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
@@ -626,7 +633,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack)
 	{
 		inventory.set(slotID, itemstack);
 
@@ -646,19 +653,19 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	public void markDirty() {}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer)
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack)
 	{
 		return true;
 	}
@@ -693,7 +700,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
+			NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.size())

@@ -1,6 +1,5 @@
 package mekanism.client.sound;
 
-import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
@@ -19,6 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -200,7 +200,7 @@ public class SoundHandler {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
             TileEntity te = mc.world.getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
-            if (te != null && te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
+            if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
                 return Math.max(0.001f, 1.0f - (mufflerCount / (float)Upgrade.MUFFLING.getMax()));
             }
@@ -217,6 +217,7 @@ public class SoundHandler {
             return volume;
         }
 
+        @Nonnull
         @Override
         public ResourceLocation getSoundLocation() {
             return original.getSoundLocation();
@@ -224,15 +225,17 @@ public class SoundHandler {
 
         @Nullable
         @Override
-        public SoundEventAccessor createAccessor(net.minecraft.client.audio.SoundHandler handler) {
+        public SoundEventAccessor createAccessor(@Nonnull net.minecraft.client.audio.SoundHandler handler) {
             return original.createAccessor(handler);
         }
 
+        @Nonnull
         @Override
         public Sound getSound() {
             return original.getSound();
         }
 
+        @Nonnull
         @Override
         public SoundCategory getCategory() {
             return original.getCategory();
@@ -268,6 +271,7 @@ public class SoundHandler {
             return original.getZPosF();
         }
 
+        @Nonnull
         @Override
         public AttenuationType getAttenuationType() {
             return original.getAttenuationType();

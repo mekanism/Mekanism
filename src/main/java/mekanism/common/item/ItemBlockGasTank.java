@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +48,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory, ITierItem, ISecurityItem
 {
 	public Block metaBlock;
@@ -74,14 +75,15 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		return i;
 	}
 
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack itemstack)
+	public String getItemStackDisplayName(@Nonnull ItemStack itemstack)
 	{
 		return LangUtils.localize("tile.GasTank" + getBaseTier(itemstack).getSimpleName() + ".name");
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
 	{
 		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
@@ -91,32 +93,26 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
 			tileEntity.gasTank.setMaxGas(tileEntity.tier.storage);
 			tileEntity.gasTank.setGas(getGas(stack));
-			
-			if(tileEntity instanceof ISecurityTile)
-			{
-				ISecurityTile security = (ISecurityTile)tileEntity;
-				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-				
-				if(hasSecurity(stack))
-				{
-					security.getSecurity().setMode(getSecurity(stack));
-				}
-				
-				if(getOwnerUUID(stack) == null)
-				{
-					security.getSecurity().setOwnerUUID(player.getUniqueID());
-				}
-			}
-			
-			if(tileEntity instanceof ISideConfiguration)
-			{
-				ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-				if(ItemDataUtils.hasData(stack, "sideDataStored"))
-				{
-					config.getConfig().read(ItemDataUtils.getDataMap(stack));
-					config.getEjector().read(ItemDataUtils.getDataMap(stack));
-				}
+			ISecurityTile security = tileEntity;
+			security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+
+			if(hasSecurity(stack))
+			{
+				security.getSecurity().setMode(getSecurity(stack));
+			}
+
+			if(getOwnerUUID(stack) == null)
+			{
+				security.getSecurity().setOwnerUUID(player.getUniqueID());
+			}
+
+			ISideConfiguration config = tileEntity;
+
+			if(ItemDataUtils.hasData(stack, "sideDataStored"))
+			{
+				config.getConfig().read(ItemDataUtils.getDataMap(stack));
+				config.getEjector().read(ItemDataUtils.getDataMap(stack));
 			}
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -132,7 +128,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
 	{
 		GasStack gasStack = getGas(itemstack);
 
@@ -199,7 +195,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		for(GasTankTier tier : GasTankTier.values())
@@ -348,7 +344,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 	
 	@Override
-	public int getRGBDurabilityForDisplay(ItemStack stack)
+	public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack)
     {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }

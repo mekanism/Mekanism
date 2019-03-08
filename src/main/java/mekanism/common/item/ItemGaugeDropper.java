@@ -27,6 +27,8 @@ import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 {
 	public static int CAPACITY = Fluid.BUCKET_VOLUME;
@@ -48,7 +50,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 	}
 	
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		list.add(getEmptyItem());
@@ -68,9 +70,10 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 		
 		return 1D-Math.max(gasRatio, fluidRatio);
 	}
-	
+
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		
@@ -102,8 +105,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem
 		{
 			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
-		else if(fluidStack != null)
-		{
+		else {
 			list.add(LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": " + fluidStack.amount);
 		}
 	}

@@ -41,7 +41,7 @@ public interface IGasHandler
 	 */
     boolean canDrawGas(EnumFacing side, Gas type);
 
-	static GasTankInfo[] NONE = new GasTankInfo[0];
+	GasTankInfo[] NONE = new GasTankInfo[0];
 
 	/**
 	 * Gets the tanks present on this handler. READ ONLY. DO NOT MODIFY.

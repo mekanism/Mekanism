@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 
+import javax.annotation.Nonnull;
+
 public class ContainerRobitSmelting extends Container
 {
 	public EntityRobit robit;
@@ -45,7 +47,7 @@ public class ContainerRobitSmelting extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return !robit.isDead;
 	}
@@ -108,11 +110,12 @@ public class ContainerRobitSmelting extends Container
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -142,14 +145,14 @@ public class ContainerRobitSmelting extends Container
 						return ItemStack.EMPTY;
 					}
 				}
-				else if(slotID >= 3 && slotID < 30)
+				else if(slotID < 30)
 				{
 					if(!mergeItemStack(slotStack, 30, 39, false))
 					{
 						return ItemStack.EMPTY;
 					}
 				}
-				else if(slotID >= 30 && slotID < 39 && !mergeItemStack(slotStack, 3, 30, false))
+				else if(slotID < 39 && !mergeItemStack(slotStack, 3, 30, false))
 				{
 					return ItemStack.EMPTY;
 				}

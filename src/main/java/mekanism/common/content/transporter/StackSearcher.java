@@ -24,12 +24,9 @@ public class StackSearcher
 		if(tile instanceof ISidedInventory)
 		{
 			slots = ((ISidedInventory)tile).getSlotsForFace(side.getOpposite());
-			
-			if(slots != null)
-			{
-				i = slots.length;
-			}
-		} 
+
+			i = slots.length;
+		}
 		else if(tile instanceof IInventory)
 		{
 			i = ((IInventory)tile).getSizeInventory();
@@ -56,7 +53,7 @@ public class StackSearcher
 					{
 						ItemStack toSend = inventory.getStackInSlot(slotID);
 
-						if(((ISidedInventory)inventory).canExtractItem(slotID, toSend, side.getOpposite()))
+						if(inventory.canExtractItem(slotID, toSend, side.getOpposite()))
 						{
 							return new InvStack(tileEntity, slotID, toSend, side.getOpposite());
 						}
@@ -104,7 +101,7 @@ public class StackSearcher
 			ISidedInventory sidedInventory = (ISidedInventory)tileEntity;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
-			if(slots != null && slots.length != 0)
+			if(slots.length != 0)
 			{
 				for(i = i - 1; i >= 0; i--)
 				{
@@ -200,7 +197,7 @@ public class StackSearcher
 			}
 		}
 
-		if(ret != null && !ret.getStack().isEmpty() && ret.getStack().getCount() >= min)
+		if(!ret.getStack().isEmpty() && ret.getStack().getCount() >= min)
 		{
 			return ret;
 		}

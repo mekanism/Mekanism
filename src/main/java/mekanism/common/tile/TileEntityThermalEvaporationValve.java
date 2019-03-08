@@ -14,6 +14,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandlerWrapper, IHeatTransfer
 {
 	public boolean prevMaster = false;
@@ -162,7 +164,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || 
 				(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) || 
@@ -170,7 +172,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
 		{

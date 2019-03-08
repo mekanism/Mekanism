@@ -25,6 +25,8 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
 
+import javax.annotation.Nonnull;
+
 @InterfaceList({
 	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
 	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
@@ -56,6 +58,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		return inv.getSizeInventory();
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int i)
 	{
@@ -68,6 +71,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		return inv.getStackInSlot(i);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int i, int j)
 	{
@@ -80,6 +84,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		return inv.decrStackSize(i, j);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack removeStackFromSlot(int i)
 	{
@@ -93,7 +98,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents(int i, @Nonnull ItemStack itemstack)
 	{
 		IAdvancedBoundingBlock inv = getInv();
 		if(inv == null)
@@ -104,6 +109,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		inv.setInventorySlotContents(i, itemstack);
 	}
 
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -128,6 +134,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		return inv.hasCustomName();
 	}
 
+	@Nonnull
 	@Override
 	public ITextComponent getDisplayName()
 	{
@@ -147,7 +154,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer)
 	{
 		IAdvancedBoundingBlock inv = getInv();
 		if(inv == null)
@@ -159,7 +166,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player)
+	public void openInventory(@Nonnull EntityPlayer player)
 	{
 		IAdvancedBoundingBlock inv = getInv();
 		if(inv == null)
@@ -171,7 +178,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player)
+	public void closeInventory(@Nonnull EntityPlayer player)
 	{
 		IAdvancedBoundingBlock inv = getInv();
 		if(inv == null)
@@ -183,7 +190,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack)
 	{
 		IAdvancedBoundingBlock inv = getInv();
 		if(inv == null)
@@ -215,8 +222,9 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	@Override
 	public void clear() {}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		IAdvancedBoundingBlock inv = getInv();
 		if(inv == null)
@@ -228,13 +236,13 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing side)
+	public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return isItemValidForSlot(i, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		IAdvancedBoundingBlock inv = getInv();
 		if(inv == null)
@@ -478,7 +486,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		if (capability == Capabilities.TILE_NETWORK_CAPABILITY)
 		{
@@ -495,7 +503,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if (capability == Capabilities.TILE_NETWORK_CAPABILITY)
 		{

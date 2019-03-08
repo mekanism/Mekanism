@@ -30,6 +30,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
+import javax.annotation.Nonnull;
+
 public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 {
 	public static final int LIFESPAN = 80;
@@ -246,7 +248,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			return false;
 		}
 		
-		if(!result.isEmpty() && result.getItem() != null)
+		if(!result.isEmpty())
 		{
 			if(!world.isRemote)
 			{
@@ -254,25 +256,25 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 				Block b = state.getBlock();
 				Block newBlock = Block.getBlockFromItem(result.getItem());
 
-				if(newBlock != null && newBlock != Blocks.AIR)
+				if(newBlock != Blocks.AIR)
 				{
 					world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
 				}
 				else {
 					world.setBlockToAir(block.getPos());
-					
+
 					EntityItem item = new EntityItem(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());
 					item.motionX = 0;
 					item.motionY = 0;
 					item.motionZ = 0;
 					world.spawnEntity(item);
 				}
-				
+
 				world.playEvent(null, 2001, block.getPos(), Block.getStateId(state));
 			}
-			
+
 			spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));
-			
+
 			return true;
 		}
 		
@@ -308,13 +310,13 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTags)
+	protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags)
     {
         mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInteger("mode")];
     }
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbtTags)
+	protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags)
     {
         nbtTags.setInteger("mode", mode.ordinal());
     }

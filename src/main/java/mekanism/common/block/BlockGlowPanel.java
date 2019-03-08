@@ -34,6 +34,8 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class BlockGlowPanel extends Block implements ITileEntityProvider
 {
 	private static Random rand = new Random();
@@ -63,23 +65,26 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     {
 		return 0;
     }
-	
+
+	@Nonnull
 	@Override
 	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateGlowPanel(this);
 	}
-	
+
+	@Nonnull
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
+	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 		return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
 	}
 
 	@SideOnly(Side.CLIENT)
+	@Nonnull
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) 
+    public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 		
@@ -135,7 +140,8 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 			tileEntity.getWorld().setBlockToAir(pos);
 		}
 	}
-	
+
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -150,7 +156,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	}
 	
 	@Override
-	public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
+	public boolean canPlaceBlockOnSide(@Nonnull World world, @Nonnull BlockPos pos, EnumFacing side)
     {
 		return world.isSideSolid(pos.offset(side.getOpposite()), side);
     }
@@ -189,16 +195,17 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
     {
 		return 0;
     }
-	
+
+	@Nonnull
 	@Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{
 		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
 		return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -216,7 +223,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
+	public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta)
 	{
 		return new TileEntityGlowPanel();
 	}
@@ -226,7 +233,8 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 	{
 		return true;
 	}
-	
+
+	@Nonnull
 	@Override
     public EnumBlockRenderType getRenderType(IBlockState state) 
 	{

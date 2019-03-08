@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class BlockBounding extends Block
 {
 	public BlockBounding()
@@ -29,12 +32,14 @@ public class BlockBounding extends Block
 		setResistance(8F);
 	}
 
+	@Nonnull
 	@Override
 	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateBounding(this);
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -61,15 +66,16 @@ public class BlockBounding extends Block
 	}
 	
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		super.breakBlock(world, pos, state);
 		
 		world.removeTileEntity(pos);
 	}
 
+	@Nonnull
 	@Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
@@ -81,7 +87,7 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
@@ -100,11 +106,11 @@ public class BlockBounding extends Block
 			tileEntity.onNeighborChange(state.getBlock());
 			IBlockState state1 = world.getBlockState(tileEntity.mainPos);
 			state1.getBlock().neighborChanged(state1, world, tileEntity.mainPos, neighborBlock, neighborPos);
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 	
 	@Override
-	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
+	public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
@@ -121,12 +127,14 @@ public class BlockBounding extends Block
 		return 0;
 	}
 
+	@Nonnull
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
-		return null;
+		return Items.AIR;
 	}
 
+	@Nonnull
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
@@ -152,7 +160,7 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
 	{
 		if(state.getValue(BlockStateBounding.advancedProperty))
 		{

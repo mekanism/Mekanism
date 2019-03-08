@@ -4,6 +4,8 @@ import mekanism.common.block.BlockCardboardBox.BlockData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityCardboardBox extends TileEntity
 {
 	public BlockData storedData;
@@ -19,6 +21,7 @@ public class TileEntityCardboardBox extends TileEntity
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{

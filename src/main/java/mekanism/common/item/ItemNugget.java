@@ -5,6 +5,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 public class ItemNugget extends ItemMekanism implements IMetaItem
@@ -28,7 +29,7 @@ public class ItemNugget extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		for(int counter = 0; counter < ItemIngot.en_USNames.length; counter++)
@@ -37,6 +38,7 @@ public class ItemNugget extends ItemMekanism implements IMetaItem
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack item)
 	{

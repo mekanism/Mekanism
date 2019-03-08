@@ -17,6 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class BlockObsidianTNT extends Block
 {
 	public BlockObsidianTNT()
@@ -26,7 +28,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		super.breakBlock(world, pos, state);
 		
@@ -56,7 +58,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void onBlockExploded(World world, BlockPos pos, Explosion explosion)
+	public void onBlockExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
 		if(!world.isRemote)
 		{

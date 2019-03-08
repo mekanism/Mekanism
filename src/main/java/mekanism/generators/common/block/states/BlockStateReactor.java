@@ -27,6 +27,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 import com.google.common.base.Predicate;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 public class BlockStateReactor extends ExtendedBlockState
@@ -174,8 +175,9 @@ public class BlockStateReactor extends ExtendedBlockState
 	
 	public static class ReactorBlockStateMapper extends StateMapperBase
 	{
+		@Nonnull
 		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
 		{
 			BlockReactor block = (BlockReactor)state.getBlock();
 			ReactorBlockType type = state.getValue(block.getTypeProperty());

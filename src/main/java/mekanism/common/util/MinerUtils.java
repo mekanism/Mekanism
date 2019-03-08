@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -38,7 +37,7 @@ public final class MinerUtils
 		IBlockState state = obj.getBlockState(world);
 		Block block = state.getBlock();
 
-		if(block == null || block.isAir(state, world, obj.getPos()))
+		if(block.isAir(state, world, obj.getPos()))
 		{
 			return Collections.EMPTY_LIST;
 		}
@@ -51,10 +50,10 @@ public final class MinerUtils
 				try
 				{
 					Object it = getSilkTouchDrop.invoke(block, state);
-					if (it != null && it instanceof ItemStack && !((ItemStack)it).isEmpty())
+					if (it instanceof ItemStack && !((ItemStack) it).isEmpty())
 					{
 						ret.add((ItemStack)it);
-					} else if (it != null && it instanceof ItemStack && ((ItemStack)it).isEmpty()){//silk touch drop is empty, fallback to grabbing an itemblock
+					} else if (it instanceof ItemStack && ((ItemStack) it).isEmpty()){//silk touch drop is empty, fallback to grabbing an itemblock
 						fallbackGetSilkTouch(block, state, ret);
 					}
 				} catch (InvocationTargetException|IllegalAccessException e){
@@ -89,7 +88,7 @@ public final class MinerUtils
 
 	private static void fallbackGetSilkTouch(Block block, IBlockState state, List<ItemStack> ret){
 		Item item = Item.getItemFromBlock(block);
-		if (item != null && item != Items.AIR)
+		if (item != Items.AIR)
 		{
 			int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
 			ret.add(new ItemStack(item, 1, meta));

@@ -1,17 +1,11 @@
 package mekanism.common.tile.prefab;
 
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.Mekanism;
-import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IUpgradeTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

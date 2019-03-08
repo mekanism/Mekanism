@@ -372,6 +372,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	@Override
 	public String getFlowInfo()
 	{
-		return Integer.toString(prevTransferAmount) + "/t";
+		return prevTransferAmount + "/t";
 	}
 }

@@ -47,7 +47,7 @@ public final class HolidayManager
 					}
 				}
 			}
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 
 	public static ResourceLocation filterSound(ResourceLocation sound)
@@ -67,7 +67,7 @@ public final class HolidayManager
 					return holiday.filterSound(sound);
 				}
 			}
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 
 		return sound;
 	}

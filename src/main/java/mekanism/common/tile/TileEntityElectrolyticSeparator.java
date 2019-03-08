@@ -251,7 +251,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 3)
 		{
@@ -271,7 +271,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -293,8 +293,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(side == MekanismUtils.getRight(facing))
 		{
@@ -426,6 +427,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 		dumpRight = GasMode.values()[nbtTags.getInteger("dumpRight")];
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -613,14 +615,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
 				|| capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
 		{
@@ -652,15 +654,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	{
 		super.recalculateUpgradables(upgrade);
 
-		switch(upgrade)
-		{
-			case ENERGY:
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				energyPerTick = BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
-				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-				break;
-			default:
-				break;
+		if (upgrade == Upgrade.ENERGY) {
+			maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			energyPerTick = BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
+			setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 		}
 	}
 }

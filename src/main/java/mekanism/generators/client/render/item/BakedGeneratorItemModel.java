@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
@@ -31,6 +32,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
@@ -120,6 +122,7 @@ public class BakedGeneratorItemModel implements IBakedModel
 		}
 	}
 
+	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
 	{
@@ -148,8 +151,8 @@ public class BakedGeneratorItemModel implements IBakedModel
     	GlStateManager.popMatrix();
     	
     	MekanismRenderer.resumeRenderer(tessellator);
-		
-		if(Block.getBlockFromItem(stack.getItem()) != null)
+
+		if(Block.getBlockFromItem(stack.getItem()) != Blocks.AIR)
 		{
 			generalQuads.addAll(baseModel.getQuads(state, side, rand));
 		}
@@ -175,20 +178,23 @@ public class BakedGeneratorItemModel implements IBakedModel
 		return baseModel.isBuiltInRenderer();
 	}
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
 		return baseModel.getParticleTexture();
 	}
 
+	@Nonnull
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
 		return baseModel.getItemCameraTransforms();
 	}
-	
+
+	@Nonnull
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull ItemCameraTransforms.TransformType cameraTransformType)
     {
     	prevTransform = cameraTransformType;
     	
@@ -216,6 +222,7 @@ public class BakedGeneratorItemModel implements IBakedModel
 				null);
 	}
 
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides() 
 	{

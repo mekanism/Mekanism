@@ -69,7 +69,7 @@ public final class PipeUtils
 		{
 			TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
-			if(acceptor != null && CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite()))
+			if(CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite()))
 			{
 				IFluidHandler handler = CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite());
 				acceptors[orientation.ordinal()] = handler;

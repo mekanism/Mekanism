@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ItemProxy extends Item
 {
 	public ItemProxy()
@@ -17,8 +19,9 @@ public class ItemProxy extends Item
 		setMaxDamage(1);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
+	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		return getSavedItem(stack);
 	}

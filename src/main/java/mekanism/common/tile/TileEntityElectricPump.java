@@ -56,6 +56,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile
 {
 	/** This pump's tank */
@@ -155,7 +157,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
 
-			if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
+			if(CapabilityUtils.hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN))
 			{
 				IFluidHandler handler = CapabilityUtils.getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
 				FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256*(upgradeComponent.getUpgrades(Upgrade.SPEED)+1), fluidTank.getFluidAmount()));
@@ -171,7 +173,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 	public boolean suck(boolean take)
 	{
-		List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[recurringNodes.size()]));
+		List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[0]));
 		Collections.shuffle(tempPumpList);
 
 		//First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
@@ -309,6 +311,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		return data;
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -381,7 +384,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 1)
 		{
@@ -400,7 +403,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -426,8 +429,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		return side != 0 && side != 1;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(side == EnumFacing.UP)
 		{
@@ -534,14 +538,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
 				|| super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
 		{
@@ -598,14 +602,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		switch(method)
-		{
-			case 0:
-				reset();
-				return new Object[] {"Pump calculation reset."};
-			default:
-				throw new NoSuchMethodException();
+		if (method == 0) {
+			reset();
+			return new Object[]{"Pump calculation reset."};
 		}
+		throw new NoSuchMethodException();
 	}
 	
 	@Override

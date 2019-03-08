@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class BlockStateCardboardBox extends BlockStateContainer
 {
 	public static PropertyBool storageProperty = PropertyBool.create("storage");
@@ -19,8 +21,9 @@ public class BlockStateCardboardBox extends BlockStateContainer
 
 	public static class CardboardBoxStateMapper extends StateMapperBase
 	{
+		@Nonnull
 		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
 		{
 			String property = "storage=" + state.getValue(storageProperty);
 			

@@ -303,7 +303,7 @@ public class TransporterStack
 				return getNext(transporter).sideDifference(transporter.coord());
 			}
 		}
-		else if(progress > 50)
+		else
 		{
 			if(getNext(transporter) != null)
 			{

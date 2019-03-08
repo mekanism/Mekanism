@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import mekanism.api.Coord4D;
@@ -52,6 +51,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration
 {
@@ -118,7 +119,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 						if(invStack == null || invStack.getStack().isEmpty())
 						{
-							break inner;
+							break;
 						}
 
 						if(filter.canFilter(invStack.getStack(), true))
@@ -194,6 +195,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -461,13 +463,13 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		return false;
 	}
@@ -478,8 +480,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		return 1;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(side == facing || side == facing.getOpposite())
 		{
@@ -490,7 +493,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player)
+	public void openInventory(@Nonnull EntityPlayer player)
 	{
 		if(!world.isRemote)
 		{
@@ -692,8 +695,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public Object[] invoke(int method, Object[] arguments) throws Exception
-	{
+	public Object[] invoke(int method, Object[] arguments) {
 		if(arguments.length > 0)
 		{
 			if(method == 0)
@@ -746,11 +748,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				
 				TItemStackFilter filter = new TItemStackFilter();
 				filter.itemType = new ItemStack(Item.getByNameOrId((String)arguments[0]), 1, ((Double)arguments[1]).intValue());
-				
-				if(filter.itemType.getItem() == null)
-				{
-					return new Object[] {"Invalid item type."};
-				}
 
 				filter.color = EnumColor.getFromDyeName((String)arguments[2]);
 				filter.sizeMode = (Boolean)arguments[3];
@@ -837,14 +834,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY 
 				|| super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY)
 		{

@@ -133,7 +133,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 1)
 		{
@@ -148,7 +148,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -158,8 +158,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(side == MekanismUtils.getLeft(facing) || side == EnumFacing.UP)
 		{
@@ -283,6 +284,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 		outputTank.read(nbtTags.getCompoundTag("gasTank"));
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -344,14 +346,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
 				|| super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
 		{

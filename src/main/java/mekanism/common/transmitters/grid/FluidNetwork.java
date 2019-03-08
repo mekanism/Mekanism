@@ -140,8 +140,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 	public int tickEmit(FluidStack fluidToSend, boolean doTransfer)
 	{
-		List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>();
-		availableAcceptors.addAll(getAcceptors(fluidToSend));
+		List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>(getAcceptors(fluidToSend));
 
 		Collections.shuffle(availableAcceptors);
 
@@ -169,7 +168,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				{
 					int prev = fluidSent;
 
-					if(acceptor != null && fluidToSend != null)
+					if(acceptor != null)
 					{
 						fluidSent += acceptor.fill(PipeUtils.copy(fluidToSend, currentSending), doTransfer);
 					}
@@ -379,6 +378,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getFlowInfo()
 	{
-		return Integer.toString(prevTransferAmount) + " mB/t";
+		return prevTransferAmount + " mB/t";
 	}
 }

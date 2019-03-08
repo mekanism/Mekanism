@@ -28,6 +28,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock
 {
 	public UUID ownerUUID;
@@ -233,6 +235,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -321,7 +324,8 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 		
 		return null;
 	}
-	
+
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()

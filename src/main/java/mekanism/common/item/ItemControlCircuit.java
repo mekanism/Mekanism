@@ -6,6 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nonnull;
+
 public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 {
 	public ItemControlCircuit()
@@ -27,7 +29,7 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 	}
 	
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		for(BaseTier tier : BaseTier.values())
@@ -39,6 +41,7 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack item)
 	{

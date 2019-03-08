@@ -29,6 +29,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemBlockCardboardBox extends ItemBlock
 {
 	private static boolean isMonitoring;
@@ -46,7 +48,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
 	{
 		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
 		BlockData data = getBlockData(itemstack);
@@ -61,7 +63,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 				{
 					list.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
 				}
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 	}
 
@@ -71,6 +73,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 		return i;
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
@@ -128,7 +131,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
 	{
 		if(world.isRemote)
 		{

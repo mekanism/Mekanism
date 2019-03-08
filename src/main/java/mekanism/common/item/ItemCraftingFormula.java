@@ -22,6 +22,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemCraftingFormula extends ItemMekanism
 {
 	public static ModelResourceLocation MODEL = new ModelResourceLocation("mekanism:CraftingFormula", "inventory");
@@ -78,9 +80,10 @@ public class ItemCraftingFormula extends ItemMekanism
 			list.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.getCount() + ")");
 		}
 	}
-	
+
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
 	{
 		ItemStack stack = player.getHeldItem(hand);
 		
@@ -105,9 +108,10 @@ public class ItemCraftingFormula extends ItemMekanism
 	{
 		return getInventory(stack) != null ? 1 : 64;
 	}
-	
+
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(@Nonnull ItemStack stack)
 	{
 		if(getInventory(stack) == null)
 		{

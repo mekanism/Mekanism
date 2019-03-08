@@ -1,7 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
-
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -17,8 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -26,6 +22,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
+
+import javax.annotation.Nonnull;
 
 public class ItemBlockGlowPanel extends ItemBlockMultipartAble
 {
@@ -46,7 +44,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble
 	}
 	
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
 	{
 		if (stack.getItemDamage() >= EnumColor.DYES.length){
 			return false;
@@ -77,7 +75,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> listToAddTo)
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> listToAddTo)
 	{
 		if(!isInCreativeTab(tab)) return;
 		for(EnumColor color : EnumColor.DYES)
@@ -86,8 +84,9 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble
 		}
 	}
 
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(@Nonnull ItemStack stack)
 	{
 		int itemDamage = stack.getItemDamage();
 		if (itemDamage >= EnumColor.DYES.length){

@@ -12,6 +12,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper
 {
 	public DynamicFluidTank fluidTank;
@@ -76,7 +78,8 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	{
 		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
 	}
-	
+
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -84,7 +87,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
@@ -98,7 +101,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{

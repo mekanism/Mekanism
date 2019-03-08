@@ -18,9 +18,11 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Sets;
 
+import javax.annotation.Nonnull;
+
 public class ItemMekanismShovel extends ItemMekanismTool
 {
-	private static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(new Block[] {Blocks.CLAY, Blocks.DIRT, Blocks.FARMLAND, Blocks.GRASS, Blocks.GRAVEL, Blocks.MYCELIUM, Blocks.SAND, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.SOUL_SAND, Blocks.GRASS_PATH});
+	private static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(Blocks.CLAY, Blocks.DIRT, Blocks.FARMLAND, Blocks.GRASS, Blocks.GRAVEL, Blocks.MYCELIUM, Blocks.SAND, Blocks.SNOW, Blocks.SNOW_LAYER, Blocks.SOUL_SAND, Blocks.GRASS_PATH);
 
 	public ItemMekanismShovel(ToolMaterial enumtoolmaterial)
 	{
@@ -28,12 +30,13 @@ public class ItemMekanismShovel extends ItemMekanismTool
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
         Block block = state.getBlock();
         return block == Blocks.SNOW_LAYER || block == Blocks.SNOW;
 	}
-	
+
+    @Nonnull
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {

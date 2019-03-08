@@ -36,6 +36,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 
+import javax.annotation.Nonnull;
+
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = MekanismHooks.IC2_MOD_ID)
 public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IChunkLoadHandler, IFrequencyHandler, ITickable
 {
@@ -199,6 +201,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -220,13 +223,13 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
 			return (T)this;
@@ -309,7 +312,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 		
 		return null;
 	}
-	
+
+	@Nonnull
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
@@ -319,7 +323,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	}
 
 	@Override
-	public void handleUpdateTag(NBTTagCompound tag) 
+	public void handleUpdateTag(@Nonnull NBTTagCompound tag)
 	{
 		// The super implementation of handleUpdateTag is to call this readFromNBT. But, the given TagCompound
 		// only has x/y/z/id data, so our readFromNBT will set a bunch of default values which are wrong.

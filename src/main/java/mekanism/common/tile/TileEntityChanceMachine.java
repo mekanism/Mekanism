@@ -21,6 +21,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
 {
 	public TileEntityChanceMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage, int ticksRequired, ResourceLocation location)
@@ -87,7 +89,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 3)
 		{
@@ -127,7 +129,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 1)
 		{

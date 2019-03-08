@@ -4,7 +4,6 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemGasMask;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

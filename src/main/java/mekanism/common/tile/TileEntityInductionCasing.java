@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -25,6 +23,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration
 {
@@ -149,7 +149,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		return Mekanism.matrixManager;
 	}
-	
+
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -223,13 +224,13 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	}
 
 	@Override
-	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, net.minecraft.util.EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, net.minecraft.util.EnumFacing facing)
 	{
 		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
 			return (T) this;

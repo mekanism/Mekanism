@@ -111,7 +111,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 							{
 								TileEntity tile = next.getTileEntity(world());
 								
-								if(next != null && tile != null)
+								if(tile != null)
 								{
 									needsSync.add(stack);
 									TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this), stack.pathType == Path.HOME);

@@ -39,6 +39,8 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional;
 
+import javax.annotation.Nonnull;
+
 @Optional.InterfaceList(
 	@Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 )
@@ -107,14 +109,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 						else if(MekanismUtils.useTesla() && CapabilityUtils.hasCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite()))
 						{
 							ITeslaProducer producer = CapabilityUtils.getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
-							double toDraw = producer.takePower((long)Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_TESLA)), true)*general.FROM_TESLA;
+							double toDraw = producer.takePower(Math.round(Math.min(Integer.MAX_VALUE, canDraw*general.TO_TESLA)), true)*general.FROM_TESLA;
 							
 							if(toDraw > 0)
 							{
 								toDraw -= takeEnergy(toDraw, true);
 							}
 							
-							producer.takePower((long)Math.round(toDraw*general.TO_TESLA), false);
+							producer.takePower(Math.round(toDraw*general.TO_TESLA), false);
 						}
 						
 						else if(MekanismUtils.useForge() && CapabilityUtils.hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite()))
@@ -208,6 +210,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 		if(nbtTags.hasKey("tier")) tier = Tier.CableTier.values()[nbtTags.getInteger("tier")];
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -417,7 +420,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
@@ -430,7 +433,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 	private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(getClass(), ForgeEnergyCableIntegration.class);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY)
 		{

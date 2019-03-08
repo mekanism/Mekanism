@@ -53,6 +53,8 @@ import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 /**
  * Item class for handling multiple generator block IDs.
  * 0: Heat Generator
@@ -107,6 +109,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		return i;
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack itemstack)
 	{
@@ -121,7 +124,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
 	{
 		GeneratorType type = GeneratorType.get(itemstack);
 		if (type==null)
@@ -175,7 +178,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
 	{
 		boolean place = true;
 		Block block = world.getBlockState(pos).getBlock();
@@ -207,13 +210,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				return false;
 			}
 
-			outer:
 			for(int yPos = 1; yPos <= 4; yPos++)
 			{
 				if(!world.isAirBlock(pos.add(0, yPos, 0)) || pos.getY()+yPos > 255)
 				{
 					place = false;
-					break outer;
+					break;
 				}
 			}
 		}

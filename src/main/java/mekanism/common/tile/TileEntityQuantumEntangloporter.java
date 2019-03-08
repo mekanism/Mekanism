@@ -282,6 +282,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -656,13 +657,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean canInsertItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.INPUT;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState != IOState.OFF)
 		{
@@ -673,7 +675,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.OUTPUT;
 	}
@@ -720,7 +722,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
 				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
@@ -728,7 +730,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
 				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
@@ -755,23 +757,19 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public Object[] invoke(int method, Object[] arguments) throws Exception
 	{
-		switch(method)
-		{
-			case 0:
-				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean))
-				{
-					return new Object[] {"Invalid parameters."};
-				}
-				
-				String freq = ((String)arguments[0]).trim();
-				boolean isPublic = (Boolean)arguments[1];
-				
-				setFrequency(freq, isPublic);
-				
-				return new Object[] {"Frequency set."};
-			default:
-				throw new NoSuchMethodException();
+		if (method == 0) {
+			if (!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean)) {
+				return new Object[]{"Invalid parameters."};
+			}
+
+			String freq = ((String) arguments[0]).trim();
+			boolean isPublic = (Boolean) arguments[1];
+
+			setFrequency(freq, isPublic);
+
+			return new Object[]{"Frequency set."};
 		}
+		throw new NoSuchMethodException();
 	}
 
 	@Override

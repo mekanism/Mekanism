@@ -15,6 +15,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IFluidHandlerWrapper
 {
 	public FluidTankInfo fakeInfo = new FluidTankInfo(null, 1000);
@@ -37,7 +39,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 			{
 				TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
 				
-				if(tile != null && CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
+				if(CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()))
 				{
 					IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
 					
@@ -93,7 +95,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
@@ -107,7 +109,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{

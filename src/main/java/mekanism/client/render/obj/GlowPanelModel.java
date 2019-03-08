@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
@@ -82,8 +83,9 @@ public class GlowPanelModel extends OBJBakedModelBase
 			super(Lists.newArrayList());
 		}
 
+		@Nonnull
 	    @Override
-	    public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) 
+	    public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 	    {
 			if(glowPanelItemCache.containsKey(stack.getItemDamage()))
 			{
@@ -96,17 +98,7 @@ public class GlowPanelModel extends OBJBakedModelBase
 
 			for(String s : getModel().getMatLib().getMaterialNames())
 			{
-				TextureAtlasSprite sprite = null;
-				
-				if(sprite == null)
-				{
-					sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-				}
-				
-				if(sprite == null)
-				{
-					sprite = missing;
-				}
+				TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
 				
 				builder.put(s, sprite);
 			}
@@ -119,13 +111,15 @@ public class GlowPanelModel extends OBJBakedModelBase
 			return bakedModel;
 	    }
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return override;
 	}
-	
+
+	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
 	{
@@ -162,7 +156,8 @@ public class GlowPanelModel extends OBJBakedModelBase
 		
 		return null;
 	}
-    
+
+	@Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType)
     {

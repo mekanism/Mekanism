@@ -41,7 +41,7 @@ public final class ChargeUtils
 			{
 				ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
 				
-				long needed = (long)Math.round((storer.getMaxEnergy()-storer.getEnergy())*general.TO_TESLA);
+				long needed = Math.round((storer.getMaxEnergy()-storer.getEnergy())*general.TO_TESLA);
 				storer.setEnergy(storer.getEnergy() + producer.takePower(needed, false)*general.FROM_TESLA);
 			}
 			else if(MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null))
@@ -99,7 +99,7 @@ public final class ChargeUtils
 			{
 				ITeslaConsumer consumer = stack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
 				
-				long stored = (long)Math.round(storer.getEnergy()*general.TO_TESLA);
+				long stored = Math.round(storer.getEnergy()*general.TO_TESLA);
 				storer.setEnergy(storer.getEnergy() - consumer.givePower(stored, false)*general.FROM_TESLA);
 			}
 			else if(MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null))

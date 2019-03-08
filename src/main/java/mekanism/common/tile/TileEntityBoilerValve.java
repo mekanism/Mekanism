@@ -18,6 +18,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration
 {
 	public BoilerTank waterTank;
@@ -190,7 +192,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
@@ -204,7 +206,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{

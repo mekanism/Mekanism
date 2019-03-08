@@ -177,7 +177,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
 				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 
 		if(filter.color != null)
@@ -362,7 +362,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 	{
 		String oreName = oreDictText.getText();
 
-		if(oreName == null || oreName.isEmpty())
+		if(oreName.isEmpty())
 		{
 			status = EnumColor.DARK_RED + LangUtils.localize("gui.oredictFilter.noKey");
 			return;

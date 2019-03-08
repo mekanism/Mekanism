@@ -121,7 +121,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 131, 14);
 				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

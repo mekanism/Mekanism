@@ -140,21 +140,21 @@ public final class MekanismHooks
 
 		try {
 			Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("oreOsmium"), null, false, new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 
 		try {
 			Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotOsmium"), null, false, new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
 			Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotRefinedObsidian"), null, false, new ItemStack(MekanismItems.OtherDust, 1, 5));
 			Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotRefinedGlowstone"), null, false, new ItemStack(Items.GLOWSTONE_DUST));
 			Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotSteel"), null, false, new ItemStack(MekanismItems.OtherDust, 1, 1));
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 
 		try {
 			for(Resource resource : Resource.values())
 			{
 				Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clump" + resource.getName()), null, false, new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
 			}
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 
 	@Method(modid = COMPUTERCRAFT_MOD_ID)
@@ -162,7 +162,7 @@ public final class MekanismHooks
 	{
 		try {
 			ComputerCraftAPI.registerPeripheralProvider(new CCPeripheral.CCPeripheralProvider());
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 
 	@Method(modid = OPENCOMPUTERS_MOD_ID)
@@ -170,7 +170,7 @@ public final class MekanismHooks
 	{
 		try {
 			Driver.add(new OCDriver());
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)

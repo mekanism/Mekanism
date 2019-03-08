@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,6 +72,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock
 {
@@ -227,7 +228,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							Block block = state.getBlock();
 							int meta = block.getMetaFromState(state);
 	
-							if(block == null || coord.isAirBlock(world))
+							if(coord.isAirBlock(world))
 							{
 								set.clear(index);
 								
@@ -495,18 +496,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			stack = stack.copy();
 			
-			if(stack.isEmpty() || stack.getItem() == null)
+			if(stack.isEmpty())
 			{
 				continue;
 			}
 			
 			for(int i = 0; i < 27; i++)
 			{
-				if(!testInv.get(i).isEmpty() && testInv.get(i).getItem() == null)
-				{
-					testInv.set(i, ItemStack.EMPTY);
-				}
-				
 				if(testInv.get(i).isEmpty())
 				{
 					testInv.set(i, stack);
@@ -639,7 +635,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player)
+	public void openInventory(@Nonnull EntityPlayer player)
 	{
 		super.openInventory(player);
 
@@ -679,6 +675,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -1117,6 +1114,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
@@ -1167,8 +1165,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return InventoryUtils.EMPTY;
 	}
@@ -1274,8 +1273,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public Object[] invoke(int method, Object[] arguments) throws Exception
-	{
+	public Object[] invoke(int method, Object[] arguments) {
 		if(method == 0)
 		{
 			if(arguments.length != 1 || !(arguments[0] instanceof Double))
@@ -1518,7 +1516,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{
-					filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+					filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
 				}
 			}
 		}
@@ -1573,7 +1571,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY 
 				|| super.hasCapability(capability, side);
@@ -1581,7 +1579,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY)
 		{

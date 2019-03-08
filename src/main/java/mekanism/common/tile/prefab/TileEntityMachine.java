@@ -2,8 +2,6 @@ package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
@@ -19,6 +17,8 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public abstract class TileEntityMachine extends TileEntityNoisyBlock implements IUpgradeTile, IRedstoneControl, ISecurityTile
 {
@@ -161,6 +161,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -208,15 +209,10 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 	{
 		super.recalculateUpgradables(upgrade);
 
-		switch(upgrade)
-		{
-			case ENERGY:
-				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_PER_TICK);
-				setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-				break;
-			default:
-				break;
+		if (upgrade == Upgrade.ENERGY) {
+			maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+			setEnergy(Math.min(getMaxEnergy(), getEnergy()));
 		}
 	}
 }

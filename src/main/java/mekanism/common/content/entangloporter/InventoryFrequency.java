@@ -2,7 +2,6 @@ package mekanism.common.content.entangloporter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import mekanism.api.gas.GasStack;
@@ -112,7 +111,7 @@ public class InventoryFrequency extends Frequency
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
+			NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < 1)

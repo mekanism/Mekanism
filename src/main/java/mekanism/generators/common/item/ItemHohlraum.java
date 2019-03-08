@@ -20,6 +20,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemHohlraum extends ItemMekanism implements IGasItem
 {
 	public static final int MAX_GAS = 10;
@@ -122,7 +124,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	}
 	
 	@Override
-	public int getRGBDurabilityForDisplay(ItemStack stack)
+	public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack)
     {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }
@@ -157,7 +159,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		ItemStack empty = new ItemStack(this);

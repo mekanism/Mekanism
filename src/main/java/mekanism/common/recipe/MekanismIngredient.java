@@ -28,6 +28,7 @@ public class MekanismIngredient extends Ingredient
         return RecipeUtils.areItemsEqualForCrafting(this.stack, input);
     }
 
+    @Nonnull
     public static Ingredient fromStacks(ItemStack... stacks)
     {
         if (stacks.length > 0)

@@ -5,6 +5,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by Thiakil on 8/11/2017.
  */
@@ -21,12 +23,14 @@ public class TextComponentGroup extends TextComponentString
 		getStyle().setColor(color);
 	}
 
+	@Nonnull
 	@Override
 	public String getUnformattedComponentText()
 	{
 		return "";
 	}
 
+	@Nonnull
 	@Override
 	public TextComponentGroup createCopy()
 	{

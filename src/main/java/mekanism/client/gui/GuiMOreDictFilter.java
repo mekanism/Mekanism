@@ -93,7 +93,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 		if(isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 
 		oreDictText = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
@@ -175,7 +175,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
 				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		if(!filter.replaceStack.isEmpty())
@@ -368,7 +368,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 	{
 		String oreName = oreDictText.getText();
 
-		if(oreName == null || oreName.isEmpty())
+		if(oreName.isEmpty())
 		{
 			status = EnumColor.DARK_RED + LangUtils.localize("gui.oredictFilter.noKey");
 			return;

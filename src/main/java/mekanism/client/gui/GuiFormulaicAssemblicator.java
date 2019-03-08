@@ -182,7 +182,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 			
 			if(xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91)
 			{
-				drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 176 + 62, 48 + 0, 16, 16);
+				drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 176 + 62, 48, 16, 16);
 			}
 			else {
 				drawTexturedModalRect(guiWidth + 26, guiHeight + 75, 176 + 62, 48 + 16, 16, 16);
@@ -210,7 +210,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanism
 				
 				if(!stack.isEmpty())
 				{
-					Slot slot = (Slot)inventorySlots.inventorySlots.get(i+20);
+					Slot slot = inventorySlots.inventorySlots.get(i+20);
 					GlStateManager.pushMatrix();
 					
 					if(slot.getStack().isEmpty() || !slot.getStack().isItemEqual(stack))

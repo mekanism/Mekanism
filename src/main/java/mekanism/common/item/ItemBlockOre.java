@@ -16,6 +16,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 /**
  * Item class for handling multiple ore block IDs.
  * 0: Osmium Ore
@@ -37,7 +39,7 @@ public class ItemBlockOre extends ItemBlock
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
 	{
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
@@ -54,6 +56,7 @@ public class ItemBlockOre extends ItemBlock
 		return i;
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack itemstack)
 	{

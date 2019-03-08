@@ -30,6 +30,8 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemScubaTank extends ItemArmor implements IGasItem
 {
 	public int TRANSFER_RATE = 16;
@@ -70,7 +72,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 	
 	@Override
-	public int getRGBDurabilityForDisplay(ItemStack stack)
+	public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack)
     {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }
@@ -222,7 +224,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		ItemStack empty = new ItemStack(this);

@@ -247,7 +247,7 @@ public final class StackUtils
 
 	public static int hashItemStack(ItemStack stack)
 	{
-		if(stack.isEmpty() || stack.getItem() == null)
+		if(stack.isEmpty())
 		{
 			return -1;
 		}

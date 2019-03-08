@@ -37,6 +37,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock implements ISideConfiguration, IUpgradeTile, IRedstoneControl, IConfigCardAccess, ISecurityTile
 {
 	public InventoryCrafting dummyInv = MekanismUtils.getDummyCraftingInv();
@@ -546,15 +548,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	{
 		return side != 0 && side != 1;
 	}
-	
+
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -569,7 +572,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID >= 3 && slotID <= 20)
 		{
@@ -625,6 +628,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 		stockControl = nbtTags.getBoolean("stockControl");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -828,13 +832,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIG_CARD_CAPABILITY)
 		{

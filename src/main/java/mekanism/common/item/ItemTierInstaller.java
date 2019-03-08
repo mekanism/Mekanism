@@ -15,6 +15,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 public class ItemTierInstaller extends ItemMekanism implements IMetaItem
@@ -25,7 +26,8 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 		setMaxStackSize(1);
 		setHasSubtypes(true);
 	}
-	
+
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
@@ -74,7 +76,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		for(BaseTier tier : BaseTier.values())
@@ -86,6 +88,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack item)
 	{

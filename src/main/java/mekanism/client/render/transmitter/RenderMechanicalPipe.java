@@ -98,7 +98,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 					{
 						if(!gas)
 						{
-							displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
+							displayLists[Math.max(3, (int)(scale *(stages-1)))].render();
 						}
 						else {
 							GL11.glColor4f(1F, 1F, 1F, scale);
@@ -127,7 +127,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 			{
 				if(!gas)
 				{
-					displayLists[Math.max(3, (int)((float)scale*(stages-1)))].render();
+					displayLists[Math.max(3, (int)(scale *(stages-1)))].render();
 				}
 				else {
 					GL11.glColor4f(1F, 1F, 1F, scale);

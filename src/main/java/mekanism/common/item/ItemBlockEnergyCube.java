@@ -4,7 +4,6 @@ import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,6 +58,8 @@ import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @InterfaceList({
 	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
 	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
@@ -79,7 +80,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
 	{
 		list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(EnergyCubeTier.values()[getBaseTier(itemstack).ordinal()].maxEnergy));
@@ -111,15 +112,16 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 		
 		return stack;
 	}
-	
+
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack itemstack)
+	public String getItemStackDisplayName(@Nonnull ItemStack itemstack)
 	{
 		return LangUtils.localize("tile.EnergyCube" + getBaseTier(itemstack).getSimpleName() + ".name");
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
 	{
 		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
@@ -133,32 +135,26 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 			{
 				tileEntity.configComponent.fillConfig(TransmissionType.ENERGY, tileEntity.getEnergy() > 0 ? 2 : 1);
 			}
-			
-			if(tileEntity instanceof ISecurityTile)
-			{
-				ISecurityTile security = (ISecurityTile)tileEntity;
-				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-				
-				if(hasSecurity(stack))
-				{
-					security.getSecurity().setMode(getSecurity(stack));
-				}
-				
-				if(getOwnerUUID(stack) == null)
-				{
-					security.getSecurity().setOwnerUUID(player.getUniqueID());
-				}
-			}
-			
-			if(tileEntity instanceof ISideConfiguration)
-			{
-				ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-				if(ItemDataUtils.hasData(stack, "sideDataStored"))
-				{
-					config.getConfig().read(ItemDataUtils.getDataMap(stack));
-					config.getEjector().read(ItemDataUtils.getDataMap(stack));
-				}
+			ISecurityTile security = tileEntity;
+			security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+
+			if(hasSecurity(stack))
+			{
+				security.getSecurity().setMode(getSecurity(stack));
+			}
+
+			if(getOwnerUUID(stack) == null)
+			{
+				security.getSecurity().setOwnerUUID(player.getUniqueID());
+			}
+
+			ISideConfiguration config = tileEntity;
+
+			if(ItemDataUtils.hasData(stack, "sideDataStored"))
+			{
+				config.getConfig().read(ItemDataUtils.getDataMap(stack));
+				config.getEjector().read(ItemDataUtils.getDataMap(stack));
 			}
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -327,7 +323,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 	}
 	
 	@Override
-	public int getRGBDurabilityForDisplay(ItemStack stack)
+	public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack)
     {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }

@@ -122,12 +122,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		for(String s : CUSTOM_RENDERS)
 		{
 			ModelResourceLocation model = new ModelResourceLocation("mekanismgenerators:" + s, "inventory");
-	        Object obj = event.getModelRegistry().getObject(model);
-	        
-	        if(obj instanceof IBakedModel)
-	        {
-	        	event.getModelRegistry().putObject(model, new GeneratorItemModelFactory((IBakedModel)obj));
-	        }
+	        IBakedModel bakedModel = event.getModelRegistry().getObject(model);
+	        event.getModelRegistry().putObject(model, new GeneratorItemModelFactory(bakedModel));
 		}
     }
 	

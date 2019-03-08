@@ -9,8 +9,6 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -43,6 +41,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
+
+import javax.annotation.Nonnull;
 
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
@@ -108,12 +108,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 			
 			if(registered != this)
 			{
-				if(registered instanceof IEnergyTile)
+				if(registered != null)
 				{
 					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 				}
-				else if(registered == null)
-				{
+				else {
 					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 					ic2Registered = true;
 				}
@@ -128,7 +127,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		{
 			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
-			if(registered instanceof IEnergyTile)
+			if(registered != null)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 			}
@@ -214,6 +213,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		mode = nbtTags.getBoolean("mode");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -500,7 +500,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
@@ -517,7 +517,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
 				capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)

@@ -129,7 +129,7 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin>
 
 		int requiredWidth = Math.max(fontRenderer.getStringWidth(text), 1);
 		int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-		int requiredHeight = lineHeight * 1;
+		int requiredHeight = lineHeight;
 		float scaler = 0.4F;
 		float scaleX = (displayWidth / requiredWidth);
 		float scale = scaleX * scaler;

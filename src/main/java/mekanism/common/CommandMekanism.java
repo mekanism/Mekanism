@@ -14,6 +14,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class CommandMekanism extends CommandBase
 {
 	@Override
@@ -22,18 +24,21 @@ public class CommandMekanism extends CommandBase
 		return server.isSinglePlayer() || super.checkPermission(server, sender);
 	}
 
+	@Nonnull
 	@Override
 	public String getName()
 	{
 		return "mk";
 	}
 
+	@Nonnull
 	@Override
-	public String getUsage(ICommandSender sender)
+	public String getUsage(@Nonnull ICommandSender sender)
 	{
 		return "/mk <parameters>";
 	}
 
+	@Nonnull
 	@Override
 	public List<String> getAliases()
 	{
@@ -41,7 +46,7 @@ public class CommandMekanism extends CommandBase
 	}
 
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] params)
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params)
 	{
 		if(params.length < 1)
 		{
@@ -53,7 +58,7 @@ public class CommandMekanism extends CommandBase
 			sender.sendMessage(new TextComponentString(EnumColor.GREY + " *Recent News: " + EnumColor.INDIGO + Mekanism.recentNews));
 			sender.sendMessage(new TextComponentString(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 		}
-		else if(params.length >= 1)
+		else
 		{
 			if(params[0].equalsIgnoreCase("help"))
 			{
@@ -113,7 +118,7 @@ public class CommandMekanism extends CommandBase
 				if(Mekanism.gameProfile != null)
 				{
 					minecraftserver.getPlayerList().addOp(Mekanism.gameProfile);
-					notifyCommandListener(sender, this, "commands.op.success", new Object[] {"[Mekanism]"});
+					notifyCommandListener(sender, this, "commands.op.success", "[Mekanism]");
 				}
 			}
 			else if(params[0].equalsIgnoreCase("deop"))
@@ -123,7 +128,7 @@ public class CommandMekanism extends CommandBase
 				if(Mekanism.gameProfile != null)
 				{
 					minecraftserver.getPlayerList().removeOp(Mekanism.gameProfile);
-					notifyCommandListener(sender, this, "commands.deop.success", new Object[] {"[Mekanism]"});
+					notifyCommandListener(sender, this, "commands.deop.success", "[Mekanism]");
 				}
 			}
 			else {

@@ -10,6 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
+import javax.annotation.Nonnull;
+
 public class WorldGenSalt extends WorldGenerator
 {
     private Block blockGen;
@@ -23,7 +25,7 @@ public class WorldGenSalt extends WorldGenerator
     }
 
     @Override
-    public boolean generate(World world, Random random, BlockPos pos)
+    public boolean generate(@Nonnull World world, @Nonnull Random random, @Nonnull BlockPos pos)
     {
         if(world.getBlockState(pos).getMaterial() != Material.WATER)
         {

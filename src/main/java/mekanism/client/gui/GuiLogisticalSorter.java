@@ -205,17 +205,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 		{
 			if(filter instanceof TOreDictFilter && !oreDictFilters.contains(filter))
 			{
-				if(oreDictStacks.containsKey(filter))
-				{
-					oreDictStacks.remove(filter);
-				}
+				oreDictStacks.remove(filter);
 			}
 			else if(filter instanceof TModIDFilter && !modIDFilters.contains(filter))
 			{
-				if(modIDStacks.containsKey(filter))
-				{
-					modIDStacks.remove(filter);
-				}
+				modIDStacks.remove(filter);
 			}
 		}
 	}
@@ -494,7 +488,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
 							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
-						} catch(final Exception e) {}
+						} catch(final Exception ignored) {}
 					}
 
 					fontRenderer.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
@@ -535,7 +529,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 							itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
 							RenderHelper.disableStandardItemLighting();
 							GlStateManager.popMatrix();
-						} catch(final Exception e) {}
+						} catch(final Exception ignored) {}
 					}
 
 					fontRenderer.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);

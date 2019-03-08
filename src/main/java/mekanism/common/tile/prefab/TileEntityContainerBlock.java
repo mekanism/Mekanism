@@ -79,6 +79,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -117,12 +118,14 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		return getInventory() != null ? getInventory().size() : 0;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
 		return getInventory() != null ? getInventory().get(slotID) : ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
@@ -134,6 +137,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		return ItemStackHelper.getAndSplit(getInventory(), slotID, amount);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
@@ -146,7 +150,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack)
 	{
 		getInventory().set(slotID, itemstack);
 
@@ -159,11 +163,12 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer)
 	{
 		return !isInvalid() && this.world.isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
 	}
 
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -177,10 +182,10 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
 	public boolean hasCustomName()
@@ -189,25 +194,26 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canInsertItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return isItemValidForSlot(slotID, itemstack);
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return InventoryUtils.EMPTY;
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return true;
 	}
@@ -224,7 +230,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 		
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
+			NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.size())
@@ -281,6 +287,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public void clear() {}
 
+	@Nonnull
 	@Override
 	public ITextComponent getDisplayName()
 	{
@@ -288,7 +295,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
 	}
@@ -321,7 +328,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	};
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{

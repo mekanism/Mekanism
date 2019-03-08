@@ -31,6 +31,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 {
@@ -254,13 +256,13 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 	}
 
 	@Override
-	public void sendAllContents(Container container, NonNullList<ItemStack> list)
+	public void sendAllContents(@Nonnull Container container, @Nonnull NonNullList<ItemStack> list)
 	{
 		sendSlotContents(container, 0, container.getSlot(0).getStack());
 	}
 
 	@Override
-	public void sendSlotContents(Container container, int slotID, ItemStack itemstack)
+	public void sendSlotContents(@Nonnull Container container, int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -276,8 +278,8 @@ public class GuiRobitRepair extends GuiMekanism implements IContainerListener
 	}
 
 	@Override
-	public void sendWindowProperty(Container par1Container, int par2, int par3) {}
+	public void sendWindowProperty(@Nonnull Container par1Container, int par2, int par3) {}
 
 	@Override
-	public void sendAllWindowProperties(Container p_175173_1_, IInventory p_175173_2_) {}
+	public void sendAllWindowProperties(@Nonnull Container p_175173_1_, @Nonnull IInventory p_175173_2_) {}
 }

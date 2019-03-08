@@ -2,8 +2,6 @@ package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -68,6 +66,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		fluidEject = nbtTags.getBoolean("fluidEject");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -236,7 +235,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
 				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
@@ -244,7 +243,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
 				|| capability == Capabilities.HEAT_TRANSFER_CAPABILITY || capability == Capabilities.CONFIGURABLE_CAPABILITY)
@@ -390,7 +389,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		
 		return null;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
@@ -404,7 +404,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(getReactor() != null && getReactor().isFormed())
 		{
@@ -416,15 +416,16 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 			}
 		}
 	}
-	
+
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return getReactor() != null && getReactor().isFormed() ? new int[] {0} : InventoryUtils.EMPTY;
 	}
 	
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum)
 		{
@@ -437,7 +438,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum)
 		{

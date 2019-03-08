@@ -19,7 +19,6 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.HolidayManager;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -67,8 +66,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
@@ -82,7 +79,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	
 	public int BASE_MAX_INFUSE = 1000;
 	
-	public int maxInfuse = BASE_MAX_INFUSE;
+	public int maxInfuse;
 
 	/** How many ticks it takes, by default, to run an operation. */
 	public int BASE_TICKS_REQUIRED = 200;
@@ -536,7 +533,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -559,7 +556,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(tier == FactoryTier.BASIC)
 		{
@@ -834,6 +831,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -913,7 +911,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	{
 		return 5+tier.processes+operation;
 	}
-	
+
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -985,8 +984,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		}
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
@@ -1068,7 +1068,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY 
 				|| capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY 
@@ -1076,7 +1076,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
 				|| capability == Capabilities.CONFIG_CARD_CAPABILITY || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY)

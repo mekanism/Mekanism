@@ -157,7 +157,7 @@ public class MekanismJEI implements IModPlugin
 			ret += ":" + (((ItemBlockEnergyCube)itemStack.getItem()).getEnergy(itemStack) > 0 ? "filled" : "empty");
 		}
 
-        return ret.isEmpty() ? null : ret.toLowerCase(Locale.ROOT);
+        return ret.toLowerCase(Locale.ROOT);
     };
 	
 	@Override

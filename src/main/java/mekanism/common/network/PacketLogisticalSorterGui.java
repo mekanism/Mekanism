@@ -41,7 +41,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
             {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
 
-                if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+                if(message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
                 {
                     LogisticalSorterGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
                 }

@@ -42,7 +42,7 @@ public final class TransporterUtils
 	
 				int[] slots = ((ISidedInventory)inventory).getSlotsForFace(side.getOpposite());
 	
-				return (slots != null && slots.length > 0);
+				return slots.length > 0;
 			}
 		}
 		else if(InventoryUtils.isItemHandler(tile, side.getOpposite()))

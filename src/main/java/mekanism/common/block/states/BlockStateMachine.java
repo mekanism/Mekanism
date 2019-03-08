@@ -72,6 +72,8 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
+import javax.annotation.Nonnull;
+
 public class BlockStateMachine extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
@@ -410,8 +412,9 @@ public class BlockStateMachine extends ExtendedBlockState
 
 	public static class MachineBlockStateMapper extends StateMapperBase
 	{
+		@Nonnull
 		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
 		{
 			BlockMachine block = (BlockMachine)state.getBlock();
 			MachineType type = state.getValue(block.getTypeProperty());

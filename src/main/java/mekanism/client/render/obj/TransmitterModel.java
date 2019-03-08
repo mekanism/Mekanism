@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
@@ -79,8 +80,9 @@ public class TransmitterModel extends OBJBakedModelBase
 			super(Lists.newArrayList());
 		}
 
+		@Nonnull
 	    @Override
-	    public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) 
+	    public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 	    {
 			if(itemCache == null)
 			{
@@ -98,13 +100,15 @@ public class TransmitterModel extends OBJBakedModelBase
 			return itemCache;
 	    }
     }
-	
+
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return override;
 	}
-	
+
+	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
 	{
@@ -148,7 +152,7 @@ public class TransmitterModel extends OBJBakedModelBase
 				}
 				
 				return modelCache.get(hash);
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
     	}
     	
     	return super.getQuads(state, side, rand);
@@ -202,7 +206,7 @@ public class TransmitterModel extends OBJBakedModelBase
 							continue;
 						}
 						
-						if(!s.contains("Center") && !s.contains("Centre") && (client.opaqueTransmitters ? s.contains("Opaque") : !s.contains("Opaque")))
+						if(!s.contains("Center") && !s.contains("Centre") && (client.opaqueTransmitters == s.contains("Opaque")))
 						{
 							return textureMap.get(s);
 						}
@@ -267,7 +271,8 @@ public class TransmitterModel extends OBJBakedModelBase
 		
 		return (byte)0;
 	}
-	
+
+	@Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {

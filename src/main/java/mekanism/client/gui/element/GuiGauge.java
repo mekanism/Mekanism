@@ -116,7 +116,7 @@ public abstract class GuiGauge<T> extends GuiElement
 
 			start+=16;
 
-			if(renderRemaining == 0 || scale == 0)
+			if(scale == 0)
 			{
 				break;
 			}

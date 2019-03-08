@@ -82,7 +82,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(isNew)
 		{
-			((GuiButton)buttonList.get(1)).enabled = false;
+			buttonList.get(1).enabled = false;
 		}
 
 		minField = new GuiTextField(2, fontRenderer, guiWidth + 149, guiHeight + 19, 20, 11);
@@ -106,7 +106,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 				int min = Integer.parseInt(minField.getText());
 				int max = Integer.parseInt(maxField.getText());
 
-				if(max >= min && max <= 64 && min <= 64)
+				if(max >= min && max <= 64)
 				{
 					filter.min = Integer.parseInt(minField.getText());
 					filter.max = Integer.parseInt(maxField.getText());
@@ -126,7 +126,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 					status = EnumColor.DARK_RED + "Max<min";
 					ticker = 20;
 				}
-				else if(max > 64 || min > 64)
+				else //if(max > 64 || min > 64)
 				{
 					status = EnumColor.DARK_RED + "Max>64";
 					ticker = 20;

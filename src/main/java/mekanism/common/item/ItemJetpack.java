@@ -34,6 +34,8 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 {
 	public int TRANSFER_RATE = 16;
@@ -57,7 +59,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	}
 	
 	@Override
-	public int getRGBDurabilityForDisplay(ItemStack stack)
+	public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack)
     {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }
@@ -212,7 +214,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		ItemStack empty = new ItemStack(this);
@@ -251,7 +253,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	}
 
 	@Override
-	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
+	public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, int slot)
 	{
 		if(this == MekanismItems.Jetpack)
 		{
@@ -266,7 +268,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	}
 
 	@Override
-	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
+	public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot)
 	{
 		if(armor.getItem() == MekanismItems.Jetpack)
 		{
@@ -281,5 +283,5 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	}
 
 	@Override
-	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {}
+	public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {}
 }

@@ -47,7 +47,7 @@ public class GuiRobitMain extends GuiMekanism
 
 	private void changeName()
 	{
-		if(nameChangeField.getText() != null && !nameChangeField.getText().isEmpty())
+		if(!nameChangeField.getText().isEmpty())
 		{
 			Mekanism.packetHandler.sendToServer(new RobitMessage(RobitPacketType.NAME, robit.getEntityId(), 0, nameChangeField.getText()));
 			toggleNameChange();

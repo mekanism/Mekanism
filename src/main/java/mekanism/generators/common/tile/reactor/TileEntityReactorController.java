@@ -15,12 +15,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
@@ -31,11 +29,13 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState
 {
 	public static final int MAX_WATER = 100 * Fluid.BUCKET_VOLUME;
 	public static final int MAX_STEAM = MAX_WATER * 100;
-	public static final int MAX_FUEL = 1 * Fluid.BUCKET_VOLUME;
+	public static final int MAX_FUEL = Fluid.BUCKET_VOLUME;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
 	public FluidTank steamTank = new FluidTank(MAX_STEAM);
@@ -170,6 +170,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		formMultiblock(false);
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag)
 	{
@@ -256,11 +257,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			int type = dataStream.readInt();
 
-			switch(type)
-			{
-				case 0:
-					if(getReactor() != null) getReactor().setInjectionRate(dataStream.readInt());
-					break;
+			if (type == 0) {
+				if (getReactor() != null) getReactor().setInjectionRate(dataStream.readInt());
 			}
 
 			return;
@@ -274,7 +272,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			
 			if(formed)
 			{
-				if(getReactor() == null || !((FusionReactor)getReactor()).formed)
+				if(getReactor() == null || !getReactor().formed)
 				{
 					Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityReactorBlock);
 				}
@@ -343,6 +341,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()

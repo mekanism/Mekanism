@@ -2,8 +2,6 @@ package mekanism.generators.common.tile.turbine;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -30,6 +28,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage
 {	
@@ -122,7 +122,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			}
 		}
 	}
-	
+
+	@Nonnull
 	@Override
 	public String getName()
 	{

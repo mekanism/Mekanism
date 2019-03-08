@@ -27,7 +27,7 @@ public final class ItemRegistryUtils
 	/* Mod ID lookup thanks to JEI */
 	public static String getMod(ItemStack stack)
 	{
-		if(stack.isEmpty() || stack.getItem() == null)
+		if(stack.isEmpty())
 		{
 			return "null";
 		}

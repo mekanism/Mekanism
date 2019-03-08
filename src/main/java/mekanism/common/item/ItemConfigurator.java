@@ -3,7 +3,6 @@ package mekanism.common.item;
 import cofh.api.item.IToolHammer;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +38,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -56,6 +54,8 @@ import net.minecraftforge.fml.common.Optional.Method;
 import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 @InterfaceList({
 	@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = MekanismHooks.BUILDCRAFT_MOD_ID),
@@ -81,6 +81,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		list.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
@@ -177,7 +178,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 								if(slotStack.hasTagCompound())
 								{
-									item.getItem().setTagCompound((NBTTagCompound)slotStack.getTagCompound().copy());
+									item.getItem().setTagCompound(slotStack.getTagCompound().copy());
 								}
 
 								float k = 0.05F;

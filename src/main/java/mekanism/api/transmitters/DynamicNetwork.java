@@ -360,7 +360,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						i.remove();
 					}
 				}
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 
 			if(updateDelay > 0)
 			{

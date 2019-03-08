@@ -6,6 +6,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper
@@ -20,7 +21,7 @@ public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper
 	@Override
 	public void getIngredients(IIngredients ingredients)
 	{
-		List<ItemStack> inputStacks = Arrays.asList(recipe.recipeInput.inputStack);
+		List<ItemStack> inputStacks = Collections.singletonList(recipe.recipeInput.inputStack);
 		List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.type);
 		
 		ingredients.setInput(ItemStack.class, recipe.recipeInput.inputStack);

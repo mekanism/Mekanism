@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,6 +39,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager
 {
@@ -655,6 +656,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         partialOutput = nbtTags.getDouble("partialBrine");
     }
 
+	@Nonnull
 	@Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
     {
@@ -698,7 +700,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		tankParts.clear();
 		solars = new IEvaporationSolar[] {null, null, null, null};
 	}
-	
+
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()

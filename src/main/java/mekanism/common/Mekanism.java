@@ -816,7 +816,7 @@ public class Mekanism
 	{
 		try {
 			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.ENERGY, event.energyNetwork.transmitters.iterator().next().coord(), event.power), event.energyNetwork.getPacketRange());
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 	
 	@SubscribeEvent
@@ -824,7 +824,7 @@ public class Mekanism
 	{
 		try {
 			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.GAS, event.gasNetwork.transmitters.iterator().next().coord(), event.transferType, event.didTransfer), event.gasNetwork.getPacketRange());
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 	
 	@SubscribeEvent
@@ -832,7 +832,7 @@ public class Mekanism
 	{
 		try {
 			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next().coord(), event.fluidType, event.didTransfer), event.fluidNetwork.getPacketRange());
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 
 	@SubscribeEvent
@@ -840,7 +840,7 @@ public class Mekanism
 	{
 		try {
 			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, event.network.transmitters.iterator().next().coord(), event.newNetwork, event.newTransmitters), event.network.getPacketRange());
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 	
 	@SubscribeEvent
@@ -848,7 +848,7 @@ public class Mekanism
 	{
 		try {
 			packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(event.tileEntity)));
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 	
 	@SubscribeEvent
@@ -862,7 +862,7 @@ public class Mekanism
 			else {
 				ClientTickHandler.tickingSet.add(event.network);
 			}
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 	
 	@SubscribeEvent

@@ -2,8 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
@@ -48,7 +46,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
             {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
 
-                if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+                if(message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
                 {
                     DigitalMinerGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
                 }

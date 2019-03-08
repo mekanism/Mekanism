@@ -33,6 +33,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import javax.annotation.Nonnull;
+
 public class BlockCardboardBox extends BlockContainer
 {
 	private static boolean testingPlace = false;
@@ -45,13 +47,15 @@ public class BlockCardboardBox extends BlockContainer
 		setResistance(1F);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
+
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
 		return new BlockStateCardboardBox(this);
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -65,7 +69,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean isReplaceable(IBlockAccess world, BlockPos pos)
+	public boolean isReplaceable(IBlockAccess world, @Nonnull BlockPos pos)
 	{
 		return testingPlace;
 	}
@@ -124,7 +128,8 @@ public class BlockCardboardBox extends BlockContainer
 
 		return entityplayer.isSneaking();
 	}
-	
+
+	@Nonnull
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
@@ -132,7 +137,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createNewTileEntity(@Nonnull World world, int meta)
 	{
 		return new TileEntityCardboardBox();
 	}
@@ -158,8 +163,9 @@ public class BlockCardboardBox extends BlockContainer
 		return itemStack;
 	}
 
+	@Nonnull
 	@Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{
 		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
@@ -177,7 +183,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -200,6 +206,7 @@ public class BlockCardboardBox extends BlockContainer
 		return 0;
 	}
 
+	@Nonnull
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{

@@ -49,9 +49,8 @@ public class ListUtils
 
 	public static <V> List<V> copy(List<V> list)
 	{
-		List<V> toReturn = new ArrayList<>();
 
-		toReturn.addAll(list);
+		List<V> toReturn = new ArrayList<>(list);
 
 		return toReturn;
 	}
@@ -150,7 +149,7 @@ public class ListUtils
 
 	public static <V> List<V> asList(V... values)
 	{
-		return (List<V>)Arrays.asList(values);
+		return Arrays.asList(values);
 	}
 	
 	public static <V> ArrayList<V> asArrayList(V... values)

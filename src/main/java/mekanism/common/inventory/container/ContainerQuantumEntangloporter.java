@@ -7,6 +7,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerQuantumEntangloporter extends Container
 {
 	private TileEntityQuantumEntangloporter tileEntity;
@@ -44,38 +46,33 @@ public class ContainerQuantumEntangloporter extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(slotID >= 0 && slotID <= 26)
+			if(slotID <= 26)
 			{
 				if(!mergeItemStack(slotStack, 27, inventorySlots.size(), false))
 				{
 					return ItemStack.EMPTY;
 				}
 			}
-			else if(slotID > 26)
+			else
 			{
 				if(!mergeItemStack(slotStack, 0, 26, false))
-				{
-					return ItemStack.EMPTY;
-				}
-			}
-			else {
-				if(!mergeItemStack(slotStack, 0, inventorySlots.size(), true))
 				{
 					return ItemStack.EMPTY;
 				}

@@ -18,7 +18,7 @@ public class RecipeFormula
 	
 	public NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
 	
-	public IRecipe recipe = null;
+	public IRecipe recipe;
 	
 	public RecipeFormula(World world, NonNullList<ItemStack> inv)
 	{

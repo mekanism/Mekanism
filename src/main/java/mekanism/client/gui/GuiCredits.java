@@ -22,7 +22,7 @@ public class GuiCredits extends GuiScreen
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, width / 2 - 100, height / 4 + 72 + 12, "Update"));
 		buttonList.add(new GuiButton(1, width / 2 - 100, height / 4 + 96 + 12, "Cancel"));
-		((GuiButton)buttonList.get(0)).enabled = !MekanismUtils.noUpdates() && !ThreadClientUpdate.hasUpdated;
+		buttonList.get(0).enabled = !MekanismUtils.noUpdates() && !ThreadClientUpdate.hasUpdated;
 	}
 
 	public static void updateInfo(String info)

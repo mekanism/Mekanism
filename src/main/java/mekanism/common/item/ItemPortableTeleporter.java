@@ -28,6 +28,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 {
 	public ItemPortableTeleporter()
@@ -50,8 +52,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem
 		super.addInformation(itemstack, world, list, flag);
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand)
 	{
 		ItemStack itemstack = entityplayer.getHeldItem(hand);
 		

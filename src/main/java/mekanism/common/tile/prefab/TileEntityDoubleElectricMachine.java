@@ -24,6 +24,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nonnull;
+
 public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends TileEntityBasicMachine<DoubleMachineInput, ItemStackOutput, RECIPE> implements ITierUpgradeable
 {
 	/**
@@ -163,7 +165,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 2)
 		{
@@ -236,7 +238,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 3)
 		{

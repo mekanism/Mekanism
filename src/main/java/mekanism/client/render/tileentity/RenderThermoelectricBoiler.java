@@ -46,7 +46,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
-				if(data.location != null && data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null)
+				if(data.height >= 1 && tileEntity.structure.waterStored.getFluid() != null)
 				{
 					FluidRenderer.push();
 
@@ -99,7 +99,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				
-				if(data.location != null && data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null)
+				if(data.height >= 1 && tileEntity.structure.steamStored.getFluid() != null)
 				{
 					FluidRenderer.push();
 					

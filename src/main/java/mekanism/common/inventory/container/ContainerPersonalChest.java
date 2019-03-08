@@ -12,6 +12,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 @ChestContainer(isLargeChest=true)
 public class ContainerPersonalChest extends Container
 {
@@ -85,7 +87,7 @@ public class ContainerPersonalChest extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		if(isBlock)
 		{
@@ -95,6 +97,7 @@ public class ContainerPersonalChest extends Container
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
@@ -137,6 +140,7 @@ public class ContainerPersonalChest extends Container
 		return stack;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player)
 	{

@@ -25,6 +25,6 @@ public class TeslaCableIntegration implements ITeslaConsumer
 	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long givePower(long power, boolean simulated) 
 	{
-		return (long)Math.round(tileEntity.acceptEnergy(side, power*general.FROM_TESLA, simulated)*general.TO_TESLA);
+		return Math.round(tileEntity.acceptEnergy(side, power*general.FROM_TESLA, simulated)*general.TO_TESLA);
 	}
 }

@@ -8,6 +8,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ItemMekanismPaxel extends ItemMekanismTool
 {
 	public ItemMekanismPaxel(ToolMaterial toolMaterial)
@@ -16,13 +18,13 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack stack, IBlockState blockState)
+	public float getDestroySpeed(@Nonnull ItemStack stack, IBlockState blockState)
 	{
 		return blockState.getBlock() != Blocks.BEDROCK ? efficiency : 1.0F;
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
 		Block block = state.getBlock();
 		

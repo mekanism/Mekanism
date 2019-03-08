@@ -26,6 +26,8 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
 	public EnumColor color = EnumColor.DARK_BLUE;
@@ -38,11 +40,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public UUID cachedEntityUUID;
 	
-    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager.<Byte>createKey(EntityBalloon.class, DataSerializers.BYTE);
-    private static final DataParameter<Integer> LATCHED_X = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.<Integer>createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> LATCHED_X = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
 
 	public EntityBalloon(World world)
 	{
@@ -127,7 +129,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			if(dataManager.get(IS_LATCHED) == 1)
 			{
-				latched = new Coord4D((int)dataManager.get(LATCHED_X), (int)dataManager.get(LATCHED_Y), (int)dataManager.get(LATCHED_Z), world.provider.getDimension());
+				latched = new Coord4D(dataManager.get(LATCHED_X), dataManager.get(LATCHED_Y), dataManager.get(LATCHED_Z), world.provider.getDimension());
 			}
 			else {
 				latched = null;
@@ -282,7 +284,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			{
 				try {
 					doParticle();
-				} catch(Throwable t) {}
+				} catch(Throwable ignored) {}
 			}
 		}
 
@@ -322,7 +324,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTags)
+	protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags)
 	{
 		color = EnumColor.values()[nbtTags.getInteger("color")];
 
@@ -339,7 +341,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbtTags)
+	protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("color", color.ordinal());
 
@@ -433,7 +435,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource dmgSource, float damage)
+	public boolean attackEntityFrom(@Nonnull DamageSource dmgSource, float damage)
 	{
 		if(isEntityInvulnerable(dmgSource))
 		{

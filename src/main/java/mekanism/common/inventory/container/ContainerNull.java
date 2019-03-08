@@ -4,6 +4,8 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
+import javax.annotation.Nonnull;
+
 public class ContainerNull extends Container
 {
 	private TileEntityContainerBlock tileEntity;
@@ -39,7 +41,7 @@ public class ContainerNull extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		if(tileEntity != null)
 		{

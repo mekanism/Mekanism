@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
@@ -42,6 +40,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable
 {
@@ -288,6 +288,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -373,6 +374,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
@@ -385,6 +387,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack decrStackSize(int slotID, int amount)
 	{
@@ -410,6 +413,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack removeStackFromSlot(int slotID)
 	{
@@ -423,7 +427,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack)
+	public void setInventorySlotContents(int i, @Nonnull ItemStack itemstack)
 	{
 		if(i == 0)
 		{
@@ -502,6 +506,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		markDirty();
 	}
 
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -514,6 +519,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public ITextComponent getDisplayName()
 	{
@@ -527,19 +533,19 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer entityplayer)
+	public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer)
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(@Nonnull EntityPlayer player) {}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack)
 	{
 		return i == 1 && isValid(itemstack);
 	}
@@ -571,8 +577,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public void clear() {}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(side == EnumFacing.UP)
 		{
@@ -587,13 +594,13 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing side)
+	public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return isItemValidForSlot(i, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		return i == 0 && isValid(itemstack);
 	}
@@ -691,13 +698,13 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
 		{
@@ -737,6 +744,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return 1;
 		}
 
+		@Nonnull
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
@@ -748,8 +756,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return MekanismUtils.size(tileEntityBin.itemType, tileEntityBin.getItemCount());
 		}
 
+		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
 			if(slot != 0)
 			{
@@ -759,6 +768,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return tileEntityBin.add(stack, simulate);
 		}
 
+		@Nonnull
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
 			if(slot != 0)

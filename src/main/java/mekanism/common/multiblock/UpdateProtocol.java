@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
@@ -64,8 +63,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		{
 			if(isViableNode(origX+1, origY, origZ))
 			{
-				xmin = 0;
-
 				while(isViableNode(origX+x+1, origY, origZ))
 				{
 					x++;
@@ -74,8 +71,6 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				xmax = x;
 			}
 			else {
-				xmax = 0;
-
 				while(isViableNode(origX+x-1, origY, origZ))
 				{
 					x--;
@@ -536,7 +531,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			//TODO seriously this needs to happen soon
 			//TODO perhaps drop from pointer?
 
-			cache.apply((T)structureFound);
+			cache.apply(structureFound);
 			structureFound.inventoryID = idToUse;
 			
 			onFormed();

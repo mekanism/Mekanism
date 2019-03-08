@@ -104,7 +104,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
-			else if(filter.materialItem.isEmpty())
+			else
 			{
 				status = EnumColor.DARK_RED + LangUtils.localize("gui.itemFilter.noItem");
 				ticker = 20;

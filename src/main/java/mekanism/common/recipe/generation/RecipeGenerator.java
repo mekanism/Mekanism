@@ -215,10 +215,7 @@ public class RecipeGenerator {
             Map<String, Object> ret = new HashMap<>();
 
             //Filter circuits as they could be disabled -> Redirect the actual value to _constants.json with #OREDICTNAME
-            if(oredict != null && (oredict.equals("circuitBasic") ||
-                    oredict.equals("circuitAdvanced") ||
-                    oredict.equals("circuitElite") ||
-                    oredict.equals("circuitUltimate")))
+            if(oredict.equals("circuitBasic") || oredict.equals("circuitAdvanced") || oredict.equals("circuitElite") || oredict.equals("circuitUltimate"))
             {
                 ret.put("item", "#" + oredict.toUpperCase());
             }

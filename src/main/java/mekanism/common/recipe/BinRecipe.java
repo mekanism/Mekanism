@@ -18,6 +18,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import javax.annotation.Nonnull;
+
 public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
 {
 	private static boolean registered;
@@ -34,7 +36,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 	}
 
 	@Override
-	public boolean matches(InventoryCrafting inv, World world)
+	public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world)
 	{
 		return !getCraftingResult(inv).isEmpty();
 	}
@@ -49,8 +51,9 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 		return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv)
 	{
 		return getResult(inv);
 	}
@@ -117,12 +120,14 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 		}
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput()
 	{
 		return ItemStack.EMPTY;
 	}
 
+	@Nonnull
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
 	{

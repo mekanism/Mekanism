@@ -17,6 +17,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemSeismicReader extends ItemEnergized
@@ -52,8 +53,9 @@ public class ItemSeismicReader extends ItemEnergized
 		}
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand)
 	{
 		Chunk3D chunk = new Chunk3D(entityplayer);
 		ItemStack itemstack = entityplayer.getHeldItem(hand);

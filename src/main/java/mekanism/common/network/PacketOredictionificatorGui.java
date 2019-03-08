@@ -2,8 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.GuiOredictionificatorFilter;
@@ -42,7 +40,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
             {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
 
-                if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
+                if(message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
                 {
                     OredictionificatorGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP)player, message.coord4D, message.index);
                 }

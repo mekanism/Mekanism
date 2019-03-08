@@ -3,7 +3,6 @@ package mekanism.common.frequency;
 import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,6 +18,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import javax.annotation.Nonnull;
 
 public class FrequencyManager
 {
@@ -311,7 +312,7 @@ public class FrequencyManager
 		}
 		
 		@Override
-		public void readFromNBT(NBTTagCompound nbtTags) 
+		public void readFromNBT(@Nonnull NBTTagCompound nbtTags)
 		{
 			try {
 				String frequencyClass = nbtTags.getString("frequencyClass");
@@ -329,7 +330,7 @@ public class FrequencyManager
 				{
 					NBTTagCompound compound = list.getCompoundTagAt(i);
 					
-					Constructor<?> c = Class.forName(frequencyClass).getConstructor(new Class[] {NBTTagCompound.class});
+					Constructor<?> c = Class.forName(frequencyClass).getConstructor(NBTTagCompound.class);
 					Frequency freq = (Frequency)c.newInstance(compound);
 					
 					loadedFrequencies.add(freq);
@@ -339,8 +340,9 @@ public class FrequencyManager
 			}
 		}
 
+		@Nonnull
 		@Override
-		public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) 
+		public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound nbtTags)
 		{
 			nbtTags.setString("frequencyClass", manager.frequencyClass.getName());
 			

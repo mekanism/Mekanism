@@ -97,7 +97,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 		
 		if(!tileEntity.getComponent().getSupportedTypes().isEmpty())
 		{
-			Upgrade[] supported = tileEntity.getComponent().getSupportedTypes().toArray(new Upgrade[tileEntity.getComponent().getSupportedTypes().size()]);
+			Upgrade[] supported = tileEntity.getComponent().getSupportedTypes().toArray(new Upgrade[0]);
 			
 			if(supported.length > supportedIndex)
 			{
@@ -106,7 +106,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			}
 		}
 		
-		Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[getCurrentUpgrades().size()]);
+		Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -195,7 +195,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			selectedType = null;
 		}
 		
-		Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[getCurrentUpgrades().size()]);
+		Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
 		
 		for(int i = 0; i < 4; i++)
 		{

@@ -10,6 +10,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 public class BlockStatePlastic extends BlockStateContainer
@@ -38,8 +39,9 @@ public class BlockStatePlastic extends BlockStateContainer
 
 	public static class PlasticBlockStateMapper extends StateMapperBase
 	{
+		@Nonnull
 		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
 		{
 			PlasticBlockType type = ((BlockPlastic)state.getBlock()).type;
 			String property = "type=" + type.getName();

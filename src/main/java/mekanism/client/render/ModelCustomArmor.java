@@ -18,6 +18,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class ModelCustomArmor extends ModelBiped
 {
@@ -171,7 +173,7 @@ public class ModelCustomArmor extends ModelBiped
 	}
 
 	@Override
-	public void render(Entity entity, float par2, float par3, float par4, float par5, float par6, float par7)
+	public void render(@Nonnull Entity entity, float par2, float par3, float par4, float par5, float par6, float par7)
 	{
 		init(entity, par2, par3, par4, par5, par6, par7);
 		super.render(entity, par2, par3, par4, par5, par6, par7);
@@ -242,7 +244,7 @@ public class ModelCustomArmor extends ModelBiped
 		}
 
 		@Override
-		public void render(Entity entity, float par2, float par3, float par4, float par5, float par6, float par7)
+		public void render(@Nonnull Entity entity, float par2, float par3, float par4, float par5, float par6, float par7)
 		{
 			isSneak = entity.isSneaking();
 			isRiding = entity.isRiding();

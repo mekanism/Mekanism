@@ -27,6 +27,8 @@ import net.minecraft.world.World;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+
 public final class TransporterPathfinder
 {
 	public static class IdlePath
@@ -214,7 +216,7 @@ public final class TransporterPathfinder
 		}
 
 		@Override
-		public int compareTo(Destination dest)
+		public int compareTo(@Nonnull Destination dest)
 		{
 			if(score < dest.score)
 			{
@@ -338,8 +340,7 @@ public final class TransporterPathfinder
 			}
 		}
 
-		List<Destination> dests = new ArrayList<>();
-		dests.addAll(destPaths.values());
+		List<Destination> dests = new ArrayList<>(destPaths.values());
 
 		Collections.sort(dests);
 

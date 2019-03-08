@@ -29,6 +29,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
+
 public final class OreDictManager
 {
 	private static final List<String> minorCompat = Arrays.asList("Nickel", "Aluminum", "Uranium", "Draconium", "Platinum", "Iridium");
@@ -125,7 +127,7 @@ public final class OreDictManager
 				{
 					RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), new ItemStack(Blocks.COBBLESTONE), StackUtils.size(OreDictionary.getOres("ore" + resource.getName()).get(0), 1));
 				}
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		for(String s : minorCompat)
@@ -134,21 +136,21 @@ public final class OreDictManager
 			{
 				try {
 					RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dust" + s).get(0), 2));
-				} catch(Exception e) {}
+				} catch(Exception ignored) {}
 			}
 			
 			for(ItemStack ore : OreDictionary.getOres("ingot" + s))
 			{
 				try {
 					RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dust" + s).get(0), 1));
-				} catch(Exception e) {}
+				} catch(Exception ignored) {}
 			}
 			
 			for(ItemStack ore : OreDictionary.getOres("dust" + s))
 			{
 				try {
 					RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), new ItemStack(Blocks.COBBLESTONE), StackUtils.size(OreDictionary.getOres("ore" + s).get(0), 1));
-				} catch(Exception e) {}
+				} catch(Exception ignored) {}
 			}
 		}
 		
@@ -156,21 +158,21 @@ public final class OreDictManager
 		{
 			try {
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustYellorium").get(0), 2));
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("gemQuartz"))
 		{
 			try {
 				RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustNetherQuartz").get(0), 1));
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustNetherQuartz"))
 		{
 			try {
 				RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("gemQuartz").get(0), 1));
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreQuartz"))
@@ -210,33 +212,33 @@ public final class OreDictManager
 			{
 				addIC2BronzeRecipe();
 			}
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 		
 		try {
 			FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.SILVER.ordinal()), StackUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 		
 		try {
 			FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.LEAD.ordinal()), StackUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 		
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Items.COAL), StackUtils.size(OreDictionary.getOres("dustCoal").get(0), 1));
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 		
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Items.COAL, 1, 1), StackUtils.size(OreDictionary.getOres("dustCharcoal").get(0), 1));
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 		
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Items.GUNPOWDER), StackUtils.size(OreDictionary.getOres("dustSaltpeter").get(0), 1));
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 		
 		for(ItemStack ore : OreDictionary.getOres("sand"))
 		{
 			try {
 				RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("itemSilicon").get(0), 1));
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustSaltpeter"))
@@ -285,7 +287,7 @@ public final class OreDictManager
 					RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE), new ItemStack(MekanismItems.BioFuel, 2));
 				}
 			}
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 	
 	@Method(modid = MekanismHooks.IC2_MOD_ID)
@@ -293,7 +295,7 @@ public final class OreDictManager
 	{
 		try {
 			Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotBronze"), null, false, StackUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 	}
 
 
@@ -304,7 +306,7 @@ public final class OreDictManager
 	{
 		Container tempContainer = new Container() {
 			@Override
-			public boolean canInteractWith(EntityPlayer player)
+			public boolean canInteractWith(@Nonnull EntityPlayer player)
 			{
 				return false;
 			}

@@ -82,7 +82,7 @@ public class GasStackHelper implements IIngredientHelper<GasStack>
 	}
 
 	@Override
-	public String getErrorInfo(GasStack ingredient)
+	public String getErrorInfo(@Nullable GasStack ingredient)
 	{
 		MoreObjects.ToStringHelper toStringHelper = MoreObjects.toStringHelper(GasStack.class);
 

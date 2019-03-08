@@ -175,7 +175,7 @@ public class GuiMModIDFilter extends GuiMekanism
 				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
 				RenderHelper.disableStandardItemLighting();
 				GlStateManager.popMatrix();
-			} catch(Exception e) {}
+			} catch(Exception ignored) {}
 		}
 		
 		if(!filter.replaceStack.isEmpty())
@@ -368,7 +368,7 @@ public class GuiMModIDFilter extends GuiMekanism
 	{
 		String modName = modIDText.getText();
 
-		if(modName == null || modName.isEmpty())
+		if(modName.isEmpty())
 		{
 			status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.noID");
 			return;

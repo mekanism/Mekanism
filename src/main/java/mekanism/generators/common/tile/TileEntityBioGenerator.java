@@ -27,6 +27,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData
 {
 	/** The FluidSlot biofuel instance for this generator. */
@@ -104,7 +106,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 0)
 		{
@@ -149,6 +151,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		bioFuelSlot.fluidStored = nbtTags.getInteger("bioFuelStored");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -174,8 +177,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		return bioFuelSlot.fluidStored*i / bioFuelSlot.MAX_FLUID;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		return side == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
@@ -309,13 +313,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 		{

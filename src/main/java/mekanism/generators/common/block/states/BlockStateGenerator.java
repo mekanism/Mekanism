@@ -44,6 +44,8 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
+import javax.annotation.Nonnull;
+
 public class BlockStateGenerator extends ExtendedBlockState
 {
 	public static final PropertyBool activeProperty = PropertyBool.create("active");
@@ -71,13 +73,10 @@ public class BlockStateGenerator extends ExtendedBlockState
 
 		public Block getBlock()
 		{
-			switch(this)
-			{
-				case GENERATOR_BLOCK_1:
-					return GeneratorsBlocks.Generator;
-				default:
-					return null;
+			if (this == GeneratorBlock.GENERATOR_BLOCK_1) {
+				return GeneratorsBlocks.Generator;
 			}
+			return null;
 		}
 	}
 	
@@ -251,8 +250,9 @@ public class BlockStateGenerator extends ExtendedBlockState
 	
 	public static class GeneratorBlockStateMapper extends StateMapperBase
 	{
+		@Nonnull
 		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
 		{
 			BlockGenerator block = (BlockGenerator)state.getBlock();
 			GeneratorType type = state.getValue(block.getTypeProperty());

@@ -29,6 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.google.common.collect.Multimap;
 
+import javax.annotation.Nonnull;
+
 public class ItemMekanismHoe extends ItemMekanism
 {
 	protected ToolMaterial toolMaterial;
@@ -48,9 +50,10 @@ public class ItemMekanismHoe extends ItemMekanism
 	@Override
     public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
     {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) ? true : super.getIsRepairable(stack1, stack2);
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super.getIsRepairable(stack1, stack2);
     }
 
+    @Nonnull
 	@Override
 	@SuppressWarnings("incomplete-switch")
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
@@ -78,7 +81,7 @@ public class ItemMekanismHoe extends ItemMekanism
 
                 if(block == Blocks.DIRT)
                 {
-                    switch((BlockDirt.DirtType)iblockstate.getValue(BlockDirt.VARIANT))
+                    switch(iblockstate.getValue(BlockDirt.VARIANT))
                     {
                         case DIRT:
                             setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
@@ -104,9 +107,10 @@ public class ItemMekanismHoe extends ItemMekanism
             stack.damageItem(1, player);
         }
     }
-	
+
+    @Nonnull
 	@Override
-	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot equipmentSlot, ItemStack stack)
+	public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot equipmentSlot, ItemStack stack)
     {
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
 

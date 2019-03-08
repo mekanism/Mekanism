@@ -11,6 +11,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+import javax.annotation.Nonnull;
+
 public class ContainerFluidicPlenisher extends Container
 {
 	private TileEntityFluidicPlenisher tileEntity;
@@ -51,16 +53,17 @@ public class ContainerFluidicPlenisher extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -92,7 +95,7 @@ public class ContainerFluidicPlenisher extends Container
 						return ItemStack.EMPTY;
 					}
 				}
-				else if(slotID == 0)
+				else
 				{
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{

@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -42,6 +41,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 /**
  * Item class for handling multiple metal block IDs.
@@ -142,7 +143,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
 	{
 		BasicBlockType type = BasicBlockType.get(itemstack);
 		
@@ -199,8 +200,9 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 		return BasicBlockType.get(stack) == BasicBlockType.BIN && ItemDataUtils.hasData(stack, "newCount");
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
+	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		if(BasicBlockType.get(stack) == BasicBlockType.BIN)
 		{
@@ -222,7 +224,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
 	{
 		boolean place = true;
 		
@@ -283,7 +285,8 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 
 		return place;
 	}
-	
+
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack itemstack)
 	{

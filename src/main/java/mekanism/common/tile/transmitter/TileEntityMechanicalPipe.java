@@ -27,6 +27,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
 	public Tier.PipeTier tier = Tier.PipeTier.BASIC;
@@ -150,6 +152,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         }
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -336,7 +339,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
 	}
@@ -344,7 +347,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 		{

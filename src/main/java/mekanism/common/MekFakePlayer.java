@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 
 // Global, shared FakePlayer for Mekanism-specific uses
@@ -30,7 +31,7 @@ public class MekFakePlayer extends FakePlayer {
     }
 
     @Override
-    public boolean isPotionApplicable(PotionEffect effect) {
+    public boolean isPotionApplicable(@Nonnull PotionEffect effect) {
         return false;
     }
 

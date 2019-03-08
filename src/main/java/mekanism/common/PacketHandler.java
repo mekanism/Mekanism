@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import mekanism.api.Range4D;
 import mekanism.common.config.MekanismConfig.general;
@@ -337,7 +336,7 @@ public class PacketHandler
 
 		if(server != null && cuboid != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayers())
+			for(EntityPlayerMP player : server.getPlayerList().getPlayers())
 			{
 				if(player.dimension == dimId && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ)))
 				{
@@ -353,7 +352,7 @@ public class PacketHandler
 
 		if(server != null)
 		{
-			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getPlayerList().getPlayers())
+			for(EntityPlayerMP player : server.getPlayerList().getPlayers())
 			{
 				if(player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range))
 				{

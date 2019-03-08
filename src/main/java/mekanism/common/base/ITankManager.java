@@ -50,7 +50,7 @@ public interface ITankManager
 						
 						if(drawn != null)
 						{
-							dropper.setGas(stack, new GasStack(drawn.getGas(), dropperStored+(drawn != null ? drawn.amount : 0)));
+							dropper.setGas(stack, new GasStack(drawn.getGas(), dropperStored + drawn.amount));
 						}
 						
 						((EntityPlayerMP)player).sendContainerToPlayer(player.openContainer);

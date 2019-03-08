@@ -52,6 +52,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IUpgradeTile, IRedstoneControl, ISecurityTile
 {
 	public Set<Coord4D> activeNodes = new LinkedHashSet<>();
@@ -266,6 +268,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		return data;
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -345,7 +348,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
 	{
 		if(slotID == 1)
 		{
@@ -364,7 +367,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
+	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
 	{
 		if(slotID == 2)
 		{
@@ -390,8 +393,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		return side != 0 && side != 1;
 	}
 
+	@Nonnull
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
+	public int[] getSlotsForFace(@Nonnull EnumFacing side)
 	{
 		if(side == EnumFacing.UP)
 		{
@@ -500,14 +504,14 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY 
 				|| super.hasCapability(capability, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if(capability == Capabilities.CONFIGURABLE_CAPABILITY)
 		{
@@ -533,18 +537,15 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public Object[] invoke(int method, Object[] arguments) throws Exception
     {
-        switch(method)
-        {
-            case 0:
-                activeNodes.clear();
-                usedNodes.clear();
-                finishedCalc = false;
+		if (method == 0) {
+			activeNodes.clear();
+			usedNodes.clear();
+			finishedCalc = false;
 
-                return new Object[]{"Plenisher calculation reset."};
-            default:
-                throw new NoSuchMethodException();
-        }
-    }
+			return new Object[]{"Plenisher calculation reset."};
+		}
+		throw new NoSuchMethodException();
+	}
 	
 	@Override
 	public TileComponentUpgrade getComponent() 

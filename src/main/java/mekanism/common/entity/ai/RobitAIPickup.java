@@ -166,6 +166,6 @@ public class RobitAIPickup extends EntityAIBase
         IBlockState iblockstate = world.getBlockState(pos);
         Block block = iblockstate.getBlock();
         
-        return block == Blocks.AIR ? true : !iblockstate.isFullCube();
+        return block == Blocks.AIR || !iblockstate.isFullCube();
     }
 }

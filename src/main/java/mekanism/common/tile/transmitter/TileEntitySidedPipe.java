@@ -53,6 +53,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
+
 public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable
 {
 	public int delayTicks;
@@ -147,7 +149,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 			{
 				TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
 
-				if(tileEntity != null && CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+				if(CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
 						&& TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()), getTransmitterType().getTransmission())
 						&& isValidTransmitter(tileEntity))
 				{
@@ -406,6 +408,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -420,7 +423,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 		
 		return nbtTags;
 	}
-	
+
+	@Nonnull
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
@@ -712,14 +716,14 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY || 
 				capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY 
 				|| capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY)

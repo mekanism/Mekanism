@@ -41,6 +41,8 @@ import com.google.common.collect.Multimap;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemAtomicDisassembler extends ItemEnergized
 {
 	public double HOE_USAGE = 10 * general.DISASSEMBLER_USAGE;
@@ -51,7 +53,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
+	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
 		return state.getBlock() != Blocks.BEDROCK;
 	}
@@ -191,8 +193,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return true;
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand)
 	{
 		ItemStack itemstack = entityplayer.getHeldItem(hand);
 		
@@ -210,6 +213,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return new ActionResult<>(EnumActionResult.PASS, itemstack);
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -277,7 +281,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
                 if(block == Blocks.DIRT)
                 {
-                    switch((BlockDirt.DirtType)iblockstate.getValue(BlockDirt.VARIANT))
+                    switch(iblockstate.getValue(BlockDirt.VARIANT))
                     {
                         case DIRT:
                             setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
@@ -359,7 +363,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		return false;
 	}
-	
+
+	@Nonnull
 	@Override
 	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
     {

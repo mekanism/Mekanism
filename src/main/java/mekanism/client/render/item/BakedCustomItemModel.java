@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -36,6 +37,7 @@ import net.minecraftforge.fluids.Fluid;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import java.util.LinkedList;
@@ -348,7 +350,7 @@ public class BakedCustomItemModel implements IBakedModel
 					GlStateManager.translate(0.0F, 0.7F, 0.0F);
 					GlStateManager.rotate(75, 0.0F, 1.0F, 0.0F);
 				}
-				else if(type == TransformType.THIRD_PERSON_LEFT_HAND)
+				else //if(type == TransformType.THIRD_PERSON_LEFT_HAND)
 				{
 					GlStateManager.translate(0.0F, 0.7F, 0.0F);
 					GlStateManager.rotate(-75, 0.0F, 1.0F, 0.0F);
@@ -368,6 +370,7 @@ public class BakedCustomItemModel implements IBakedModel
 		}
 	}
 
+	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
 	{
@@ -375,7 +378,7 @@ public class BakedCustomItemModel implements IBakedModel
 		{
 			List<BakedQuad> faceQuads = new LinkedList<>();
 			
-			if(Block.getBlockFromItem(stack.getItem()) != null)
+			if(Block.getBlockFromItem(stack.getItem()) != Blocks.AIR)
 			{
 				MachineType machineType = MachineType.get(stack);
 				
@@ -411,7 +414,7 @@ public class BakedCustomItemModel implements IBakedModel
 
 		MekanismRenderer.resumeRenderer(tessellator);
 
-		if(Block.getBlockFromItem(stack.getItem()) != null)
+		if(Block.getBlockFromItem(stack.getItem()) != Blocks.AIR)
 		{
 			MachineType machineType = MachineType.get(stack);
 			
@@ -445,20 +448,23 @@ public class BakedCustomItemModel implements IBakedModel
 		return baseModel.isBuiltInRenderer();
 	}
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
 		return baseModel.getParticleTexture();
 	}
 
+	@Nonnull
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
 		return baseModel.getItemCameraTransforms();
 	}
 
+	@Nonnull
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull ItemCameraTransforms.TransformType cameraTransformType)
     {
     	prevTransform = cameraTransformType;
 
@@ -487,6 +493,7 @@ public class BakedCustomItemModel implements IBakedModel
 				null);
 	}
 
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides() 
 	{

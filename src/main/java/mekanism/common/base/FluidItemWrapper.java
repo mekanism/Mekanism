@@ -8,6 +8,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import javax.annotation.Nonnull;
+
 public class FluidItemWrapper extends ItemCapability implements IFluidHandlerItem
 {
 	@Override
@@ -58,7 +60,8 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandlerIte
         
         return getItem().drain(getStack(), maxDrain, doDrain);
     }
-    
+
+    @Nonnull
     @Override
     public ItemStack getContainer()
     {

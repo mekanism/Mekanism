@@ -3,6 +3,8 @@ package mekanism.common;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class CreativeTabMekanism extends CreativeTabs
 {
 	public CreativeTabMekanism()
@@ -10,6 +12,7 @@ public class CreativeTabMekanism extends CreativeTabs
 		super("tabMekanism");
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack createIcon()
 	{

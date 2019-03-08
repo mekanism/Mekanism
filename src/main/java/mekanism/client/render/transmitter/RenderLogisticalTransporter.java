@@ -36,7 +36,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 	
 	private EntityItem entityItem = new EntityItem(null);
 	
-	private Render<Entity> renderer = (Render<Entity>)Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
+	private Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
 	
 	private static HashMap<EnumFacing, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<>();
 	

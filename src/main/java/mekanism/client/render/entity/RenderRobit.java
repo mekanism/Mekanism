@@ -10,6 +10,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class RenderRobit extends RenderLiving<EntityRobit>
 {
@@ -19,7 +21,7 @@ public class RenderRobit extends RenderLiving<EntityRobit>
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityRobit robit)
+	protected ResourceLocation getEntityTexture(@Nonnull EntityRobit robit)
 	{
 		if((Math.abs(robit.posX-robit.prevPosX) + Math.abs(robit.posX-robit.prevPosX)) > 0.001)
 		{

@@ -13,6 +13,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemMekanismAxe extends ItemAxe
 {
 	public ItemMekanismAxe(ToolMaterial tool)
@@ -29,7 +31,7 @@ public class ItemMekanismAxe extends ItemAxe
 	}
 
 	@Override
-	public boolean getIsRepairable(ItemStack toRepair, ItemStack repair)
+	public boolean getIsRepairable(ItemStack toRepair, @Nonnull ItemStack repair)
 	{
 		return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), repair) || super.getIsRepairable(toRepair, repair);
 	}

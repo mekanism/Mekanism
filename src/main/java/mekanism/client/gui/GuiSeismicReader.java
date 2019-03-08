@@ -12,7 +12,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -40,7 +39,7 @@ public class GuiSeismicReader extends GuiScreen
 
 	private Rectangle upButton, downButton, tooltip;
 
-	private int currentLayer = 0;
+	private int currentLayer;
 
 	public GuiSeismicReader(World world, Coord4D coord, ItemStack stack)
 	{
@@ -113,12 +112,7 @@ public class GuiSeismicReader extends GuiScreen
 			if(0 <= layer && layer < blockList.size())
 			{
 				ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
-				
-				if(stack.getItem() == null)
-				{
-					continue;
-				}
-				
+
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(centralX - 2, centralY - i * 16 + (22 * 2), 0);
 				
@@ -144,17 +138,8 @@ public class GuiSeismicReader extends GuiScreen
 		if(currentLayer - 1 >= 0)
 		{
 			ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 1, blockList.get(currentLayer - 1).getLeft());
-			String renderString = "unknown";
-			
-			if(nameStack.getItem() != null)
-			{
-				renderString = nameStack.getDisplayName();
-			}
-			else if(blockList.get(currentLayer - 1).getRight() == Blocks.AIR)
-			{
-				renderString = "Air";
-			}
-			
+			String renderString = nameStack.getDisplayName();
+
 			String capitalised = renderString.substring(0, 1).toUpperCase() + renderString.substring(1);
 			int lengthX = fontRenderer.getStringWidth(capitalised);
 			float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;

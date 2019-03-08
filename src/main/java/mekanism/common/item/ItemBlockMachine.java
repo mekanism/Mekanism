@@ -4,7 +4,6 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -93,6 +92,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 
+import javax.annotation.Nonnull;
+
 /**
  * Item class for handling multiple machine block IDs.
  * 0:0: Enrichment Chamber
@@ -160,6 +161,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		return i;
 	}
 
+	@Nonnull
 	@Override
 	public String getTranslationKey(ItemStack itemstack)
 	{
@@ -170,9 +172,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		return "null";
 	}
-	
+
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack itemstack)
+	public String getItemStackDisplayName(@Nonnull ItemStack itemstack)
 	{
 		MachineType type = MachineType.get(itemstack);
 		
@@ -197,7 +200,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
+	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
 	{
 		MachineType type = MachineType.get(itemstack);
 
@@ -292,9 +295,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
 		}
 	}
-	
+
+	@Nonnull
 	@Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(EntityPlayer player, World world, @Nonnull BlockPos pos, @Nonnull EnumHand hand, @Nonnull EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		ItemStack stack = player.getHeldItem(hand);
 		MachineType type = MachineType.get(stack);
@@ -308,7 +312,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state)
+	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
 	{
 		boolean place = true;
 		
@@ -487,8 +491,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         }
     }
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand)
 	{
 		ItemStack itemstack = entityplayer.getHeldItem(hand);
 		MachineType type = MachineType.get(itemstack);
@@ -517,80 +522,74 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(SecurityUtils.canAccess(entityplayer, itemstack))
 			{
 		        RayTraceResult pos = rayTrace(world, entityplayer, !entityplayer.isSneaking());
-		        
-		        if(pos == null)
-		        {
-		            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-		        }
-				else {
-				    if(pos.typeOfHit == RayTraceResult.Type.BLOCK)
-				    {
-				    	Coord4D coord = new Coord4D(pos.getBlockPos(), world);
-		
-				        if(!world.provider.canMineBlock(entityplayer, coord.getPos()))
-				        {
-				            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-				        }
-		
-				        if(!entityplayer.isSneaking())
-				        {
-				            if(!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack))
-				            {
-				                return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-				            }
-				            
-				            FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
-				            
-				            if(fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid)))
-				            {
-				        		int needed = getCapacity(itemstack)-(getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0);
-				        		
-				        		if(fluid.amount > needed)
-				        		{
-				        			return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-				        		}
-				        		
-				        		if(getFluidStack(itemstack) == null)
-				        		{
-				        			setFluidStack(fluid, itemstack);
-				        		}
-				        		else {
-				        			FluidStack newStack = getFluidStack(itemstack);
-				        			newStack.amount += fluid.amount;
-				        			setFluidStack(newStack, itemstack);
-				        		}
-				        		
-				        		world.setBlockToAir(coord.getPos());
-				            }
-				        }
-				        else {
-				    		FluidStack stored = getFluidStack(itemstack);
-							
-							if(stored == null || stored.amount < Fluid.BUCKET_VOLUME)
+
+				if(pos.typeOfHit == RayTraceResult.Type.BLOCK)
+				{
+					Coord4D coord = new Coord4D(pos.getBlockPos(), world);
+
+					if(!world.provider.canMineBlock(entityplayer, coord.getPos()))
+					{
+						return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+					}
+
+					if(!entityplayer.isSneaking())
+					{
+						if(!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack))
+						{
+							return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+						}
+
+						FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
+
+						if(fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid)))
+						{
+							int needed = getCapacity(itemstack)-(getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0);
+
+							if(fluid.amount > needed)
 							{
 								return new ActionResult<>(EnumActionResult.FAIL, itemstack);
 							}
-							
-							Coord4D trans = coord.offset(pos.sideHit);
-	
-				            if(!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack))
-				            {
-				            	return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-				            }
-	
-				            if(tryPlaceContainedLiquid(world, itemstack, trans.getPos()) && !entityplayer.capabilities.isCreativeMode)
-				            {
-				            	FluidStack newStack = stored.copy();
-				            	newStack.amount -= Fluid.BUCKET_VOLUME;
-				            	
-				            	setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
-				            }
-				        }
-				    }
-		
-			        return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
-		        }
-	    	}
+
+							if(getFluidStack(itemstack) == null)
+							{
+								setFluidStack(fluid, itemstack);
+							}
+							else {
+								FluidStack newStack = getFluidStack(itemstack);
+								newStack.amount += fluid.amount;
+								setFluidStack(newStack, itemstack);
+							}
+
+							world.setBlockToAir(coord.getPos());
+						}
+					}
+					else {
+						FluidStack stored = getFluidStack(itemstack);
+
+						if(stored == null || stored.amount < Fluid.BUCKET_VOLUME)
+						{
+							return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+						}
+
+						Coord4D trans = coord.offset(pos.sideHit);
+
+						if(!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack))
+						{
+							return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+						}
+
+						if(tryPlaceContainedLiquid(world, itemstack, trans.getPos()) && !entityplayer.capabilities.isCreativeMode)
+						{
+							FluidStack newStack = stored.copy();
+							newStack.amount -= Fluid.BUCKET_VOLUME;
+
+							setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
+						}
+					}
+				}
+
+				return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+			}
 			else {
 				SecurityUtils.displayNoAccess(entityplayer);
 			}
@@ -979,7 +978,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     {
         return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper(), new FluidItemWrapper()) {
         	@Override
-        	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 
+        	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
         	{
         		if(capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
         		{

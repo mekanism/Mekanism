@@ -11,6 +11,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerChemicalInfuser extends Container
 {
 	private TileEntityChemicalInfuser tileEntity;
@@ -52,16 +54,17 @@ public class ContainerChemicalInfuser extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -77,7 +80,7 @@ public class ContainerChemicalInfuser extends Container
 						return ItemStack.EMPTY;
 					}
 				}
-				else if(slotID == 3)
+				else
 				{
 					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{

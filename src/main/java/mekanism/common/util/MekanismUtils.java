@@ -160,7 +160,7 @@ public final class MekanismUtils
 					Mekanism.logger.info("Minecraft is in offline mode, could not check for updates.");
 				}
 			}
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 
 		return false;
 	}
@@ -873,11 +873,6 @@ public final class MekanismUtils
 		IBlockState state = pos.getBlockState(world);
 		Block block = state.getBlock();
 
-		if(block == null)
-		{
-			return null;
-		}
-
 		if((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.getValue(BlockLiquid.LEVEL) == 0)
 		{
 			if(!filter)
@@ -916,7 +911,7 @@ public final class MekanismUtils
 		IBlockState state = pos.getBlockState(world);
 		Block block = state.getBlock();
 
-		if(block == null || block.getMetaFromState(state) == 0)
+		if(block.getMetaFromState(state) == 0)
 		{
 			return false;
 		}
@@ -1344,7 +1339,7 @@ public final class MekanismUtils
 	{
 		Container tempContainer = new Container() {
 			@Override
-			public boolean canInteractWith(EntityPlayer player)
+			public boolean canInteractWith(@Nonnull EntityPlayer player)
 			{
 				return false;
 			}
@@ -1378,7 +1373,7 @@ public final class MekanismUtils
 			}
 		}
 
-		if((dmgItems.get(0).isEmpty()) || (dmgItems.get(0).getItem() == null))
+		if(dmgItems.get(0).isEmpty())
 		{
 			return ItemStack.EMPTY;
 		}
@@ -1535,7 +1530,7 @@ public final class MekanismUtils
 			{
 				return true;
 			}
-		} catch(Throwable t) {}
+		} catch(Throwable ignored) {}
 		
 		return false;
 	}

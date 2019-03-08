@@ -49,6 +49,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -73,7 +74,8 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import buildcraft.api.tools.IToolWrench;
+
+import javax.annotation.Nonnull;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -129,12 +131,14 @@ public abstract class BlockBasic extends Block
 
 	public abstract BasicBlock getBasicBlock();
 
+	@Nonnull
 	@Override
 	public BlockStateContainer createBlockState()
 	{
 		return new BlockStateBasic(this, getTypeProperty());
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -150,8 +154,9 @@ public abstract class BlockBasic extends Block
 		return type.meta;
 	}
 
+	@Nonnull
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
 		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
@@ -276,7 +281,7 @@ public abstract class BlockBasic extends Block
 	}
 
 	@Override
-	public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, SpawnPlacementType type)
+	public boolean canCreatureSpawn(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, SpawnPlacementType type)
 	{
 		int meta = state.getBlock().getMetaFromState(state);
 
@@ -525,12 +530,13 @@ public abstract class BlockBasic extends Block
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
 	{
 		return BasicBlockType.get(state) != BasicBlockType.STRUCTURAL_GLASS;
 	}
 
 	@SideOnly(Side.CLIENT)
+	@Nonnull
 	@Override
 	public BlockRenderLayer getRenderLayer()
 	{
@@ -668,6 +674,7 @@ public abstract class BlockBasic extends Block
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
@@ -727,7 +734,7 @@ public abstract class BlockBasic extends Block
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
+	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
 	{
 		if(BasicBlockType.get(state) == null)
 		{
@@ -805,7 +812,7 @@ public abstract class BlockBasic extends Block
 	}
 	
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state)
 	{
 		TileEntity tileEntity = world.getTileEntity(pos);
 
@@ -817,8 +824,9 @@ public abstract class BlockBasic extends Block
 		super.breakBlock(world, pos, state);
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{
 		BasicBlockType type = BasicBlockType.get(state);
 		ItemStack ret = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
@@ -858,14 +866,15 @@ public abstract class BlockBasic extends Block
 		return ret;
 	}
 
+	@Nonnull
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
-		return null;
+		return Items.AIR;
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -905,7 +914,7 @@ public abstract class BlockBasic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
 	{
 		if(BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS && BasicBlockType.get(world.getBlockState(pos.offset(side))) == BasicBlockType.STRUCTURAL_GLASS)
 		{
@@ -916,7 +925,7 @@ public abstract class BlockBasic extends Block
 	}
 
 	@Override
-	public EnumFacing[] getValidRotations(World world, BlockPos pos)
+	public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
@@ -938,7 +947,7 @@ public abstract class BlockBasic extends Block
 	}
 
 	@Override
-	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
+	public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		

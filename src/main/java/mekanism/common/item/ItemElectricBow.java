@@ -30,6 +30,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 {
 	public ItemElectricBow()
@@ -131,6 +133,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 		return 72000;
 	}
 
+	@Nonnull
 	@Override
 	public EnumAction getItemUseAction(ItemStack itemstack)
 	{
@@ -167,8 +170,9 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
         return !stack.isEmpty() && stack.getItem() instanceof ItemArrow;
     }
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, @Nonnull EnumHand hand)
 	{
 		ItemStack itemStackIn = playerIn.getHeldItem(hand);
 		boolean flag = !findAmmo(playerIn).isEmpty();
@@ -178,7 +182,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork
 
 		if(!playerIn.capabilities.isCreativeMode && !flag)
 		{
-			return !flag ? new ActionResult<>(EnumActionResult.FAIL, itemStackIn) : new ActionResult<>(EnumActionResult.PASS, itemStackIn);
+			return new ActionResult<>(EnumActionResult.FAIL, itemStackIn);
 		}
 		else {
 			playerIn.setActiveHand(hand);

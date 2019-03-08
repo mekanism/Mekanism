@@ -27,6 +27,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemBalloon extends ItemMekanism implements IMetaItem
 {
 	public ItemBalloon()
@@ -62,7 +64,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
+	public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list)
 	{
 		if(!isInCreativeTab(tabs)) return;
 		for(int i = 0; i < EnumColor.DYES.length; i++)
@@ -78,8 +80,9 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		}
 	}
 
+	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand)
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand)
 	{
 		ItemStack itemstack = entityplayer.getHeldItem(hand);
 		
@@ -98,8 +101,9 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 	}
 
+	@Nonnull
 	@Override
-	public String getItemStackDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(@Nonnull ItemStack stack)
 	{
 		EnumColor color = getColor(stack);
         String dyeName = color.getDyedName();
@@ -117,6 +121,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 		return dyeName + " " + LangUtils.localize("tooltip.balloon");
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
@@ -199,11 +204,12 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem
 	
 	public class DispenserBehavior extends BehaviorDefaultDispenseItem
 	{
+		@Nonnull
 		@Override
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
 			Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(), source.getWorld().provider.getDimension());
-			EnumFacing side = (EnumFacing)source.getBlockState().getValue(BlockDispenser.FACING);
+			EnumFacing side = source.getBlockState().getValue(BlockDispenser.FACING);
 
 			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
 			boolean latched = false;

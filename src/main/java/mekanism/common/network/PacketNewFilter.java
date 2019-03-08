@@ -2,8 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -33,43 +31,40 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 		
 		worldServer.addScheduledTask(() ->
         {
-            if(worldServer != null)
-            {
-                if(message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
-                {
-                    TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)message.coord4D.getTileEntity(worldServer);
+			if(message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+			{
+				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)message.coord4D.getTileEntity(worldServer);
 
-                    sorter.filters.add(message.tFilter);
+				sorter.filters.add(message.tFilter);
 
-                    for(EntityPlayer iterPlayer : sorter.playersUsing)
-                    {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
-                    }
-                }
-                else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
-                {
-                    TileEntityDigitalMiner miner = (TileEntityDigitalMiner)message.coord4D.getTileEntity(worldServer);
+				for(EntityPlayer iterPlayer : sorter.playersUsing)
+				{
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
+				}
+			}
+			else if(message.type == 1 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+			{
+				TileEntityDigitalMiner miner = (TileEntityDigitalMiner)message.coord4D.getTileEntity(worldServer);
 
-                    miner.filters.add(message.mFilter);
+				miner.filters.add(message.mFilter);
 
-                    for(EntityPlayer iterPlayer : miner.playersUsing)
-                    {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
-                    }
-                }
-                else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
-                {
-                    TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
+				for(EntityPlayer iterPlayer : miner.playersUsing)
+				{
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
+				}
+			}
+			else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
+			{
+				TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
 
-                    oredictionificator.filters.add(message.oFilter);
+				oredictionificator.filters.add(message.oFilter);
 
-                    for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
-                    {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
-                    }
-                }
-            }
-        });
+				for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
+				{
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new TileNetworkList())), (EntityPlayerMP)iterPlayer);
+				}
+			}
+		});
 		
 		return null;
 	}

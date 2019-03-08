@@ -19,6 +19,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 {
 	public EnumColor colour = EnumColor.WHITE;
@@ -35,8 +37,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	}
 	
 	@Override
-	public void handlePacketData(ByteBuf dataStream) throws Exception 
-	{
+	public void handlePacketData(ByteBuf dataStream) {
 		side = EnumFacing.byIndex(dataStream.readInt());
 		colour = EnumColor.DYES[dataStream.readInt()];
 		
@@ -68,6 +69,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 		}
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
@@ -78,7 +80,8 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 		
 		return nbt;
 	}
-	
+
+	@Nonnull
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
@@ -95,13 +98,13 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
 			return (T)this;

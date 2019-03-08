@@ -22,6 +22,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ItemNetworkReader extends ItemEnergized
 {
 	public static double ENERGY_PER_USE = 400;
@@ -31,6 +33,7 @@ public class ItemNetworkReader extends ItemEnergized
 		super(60000);
 	}
 
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
@@ -89,7 +92,7 @@ public class ItemNetworkReader extends ItemEnergized
 
 						TileEntity tile = coord.getTileEntity(world);
 						
-						if(tile != null && CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
+						if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite()))
 						{
 							IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite());
 							

@@ -36,6 +36,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration
 {
 	public boolean ic2Registered = false;
@@ -96,12 +98,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 			
 			if(registered != this)
 			{
-				if(registered instanceof IEnergyTile)
+				if(registered != null)
 				{
 					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 				}
-				else if(registered == null)
-				{
+				else {
 					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 					ic2Registered = true;
 				}
@@ -116,7 +117,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 		{
 			IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 			
-			if(registered instanceof IEnergyTile)
+			if(registered != null)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
 			}
@@ -369,7 +370,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(resource == null || !canFill(from, resource != null ? resource.getFluid() : null))
+		if(resource == null || !canFill(from, resource.getFluid()))
 		{
 			return 0;
 		}
@@ -417,7 +418,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	{
 		return false;
 	}
-	
+
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -464,7 +466,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 	
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
@@ -486,7 +488,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{

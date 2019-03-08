@@ -1,9 +1,10 @@
 package mekanism.common.block;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import mekanism.api.IMekWrench;
@@ -96,9 +97,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
         setHardness(1F);
         setResistance(10F);
     }
-	
+
+	@Nonnull
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
 		TileEntitySidedPipe tile = getTileEntitySidedPipe(worldIn, pos);
 		if(tile != null)
@@ -108,7 +110,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		
 		return state;
 	}
-	
+
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -122,7 +125,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		TransmitterType type = state.getValue(BlockStateTransmitter.typeProperty);
 		return type.ordinal();
 	}
-	
+
+	@Nonnull
 	@Override
 	public BlockStateContainer createBlockState()
 	{
@@ -130,8 +134,9 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	}
 	
 	@SideOnly(Side.CLIENT)
+	@Nonnull
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess w, BlockPos pos) 
+    public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess w, BlockPos pos)
 	{
 		TileEntitySidedPipe tile = getTileEntitySidedPipe(w, pos);
 		
@@ -144,10 +149,11 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 															   ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
 			PropertyConnection connectionProp = new PropertyConnection((byte)0, (byte)0, typeArray, true);
 			
-			return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(Arrays.asList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
+			return ((IExtendedBlockState)state).withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
 		}
 	}
-	
+
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -162,7 +168,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	}
 
 	@Override
-	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) 
+	public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB entityBox, @Nonnull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b)
 	{
 		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 		
@@ -176,15 +182,16 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 			}
 		}
 	}
-	
+
+	@Nonnull
 	@Override
-	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
+	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos)
 	{
 		return getDefaultForTile(getTileEntitySidedPipe(world, pos)).offset(pos);
 	}
 	
 	@Override
-	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) 
+	public RayTraceResult collisionRayTrace(IBlockState blockState, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Vec3d start, @Nonnull Vec3d end)
 	{
 		TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 		
@@ -231,9 +238,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 
 		return false;
 	}
-	
+
+	@Nonnull
 	@Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{
 		ItemStack itemStack = ItemStack.EMPTY;
 		TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
@@ -339,7 +347,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		
 		return layer == BlockRenderLayer.CUTOUT;
 	}
-	
+
+	@Nonnull
 	@Override
     public EnumBlockRenderType getRenderType(IBlockState state) 
 	{
@@ -377,7 +386,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 	}
     
     @Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -425,7 +434,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
     }
 
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) 
+	public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta)
 	{
 		TransmitterType type = TransmitterType.get(meta);
 		

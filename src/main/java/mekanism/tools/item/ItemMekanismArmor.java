@@ -22,6 +22,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public class ItemMekanismArmor extends ItemArmor
 {
 	public ItemMekanismArmor(ArmorMaterial enumarmormaterial, int renderIndex, EntityEquipmentSlot slot)
@@ -45,9 +47,9 @@ public class ItemMekanismArmor extends ItemArmor
 	}
 	
 	@Override
-    public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
+    public boolean getIsRepairable(ItemStack stack1, @Nonnull ItemStack stack2)
     {
-        return StackUtils.equalsWildcard(getRepairStack(), stack2) ? true : super.getIsRepairable(stack1, stack2);
+        return StackUtils.equalsWildcard(getRepairStack(), stack2) || super.getIsRepairable(stack1, stack2);
     }
 	
     private ItemStack getRepairStack()

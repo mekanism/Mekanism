@@ -10,6 +10,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 
+import javax.annotation.Nonnull;
+
 public class BlockSalt extends Block
 {
     public BlockSalt()
@@ -20,6 +22,7 @@ public class BlockSalt extends Block
         setSoundType(SoundType.SAND);
     }
 
+    @Nonnull
     @Override
     public Item getItemDropped(IBlockState state, Random random, int fortune)
     {

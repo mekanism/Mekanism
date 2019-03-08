@@ -124,7 +124,6 @@ import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig.client;
-import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -659,7 +658,7 @@ public class ClientProxy extends CommonProxy
 
             return new ModelResourceLocation(baseLocation, "facing=north,tier="+tier);
         });
-		
+
 		ItemMeshDefinition machineMesher = stack ->
 		{
             MachineType type = MachineType.get(stack);
@@ -1119,7 +1118,7 @@ public class ClientProxy extends CommonProxy
 		{
 			Minecraft.getMinecraft().addScheduledTask(runnable);
 		}
-		else if(player != null && !player.world.isRemote)
+		else
 		{
 			((WorldServer)player.world).addScheduledTask(runnable); //singleplayer
 		}

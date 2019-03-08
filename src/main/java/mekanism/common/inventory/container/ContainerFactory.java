@@ -14,6 +14,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class ContainerFactory extends Container
@@ -107,16 +108,17 @@ public class ContainerFactory extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 		
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -169,7 +171,7 @@ public class ContainerFactory extends Container
 						return ItemStack.EMPTY;
 					}
 				}
-				else if(slotID == 0)
+				else
 				{
 					if(!mergeItemStack(slotStack, tileEntity.inventory.size()-1, inventorySlots.size(), true))
 					{

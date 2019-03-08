@@ -24,6 +24,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public abstract class TileEntityGenerator extends TileEntityNoisyBlock implements IComputerIntegration, IActiveState, IRedstoneControl, ISecurityTile
 {
 	/** Output per tick this generator can transfer. */
@@ -193,6 +195,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -204,6 +207,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 		return nbtTags;
 	}
 
+	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()

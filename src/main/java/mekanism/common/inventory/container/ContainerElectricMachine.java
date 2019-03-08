@@ -12,6 +12,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerElectricMachine extends Container
 {
 	private TileEntityElectricMachine tileEntity;
@@ -52,16 +54,17 @@ public class ContainerElectricMachine extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return tileEntity.isUsableByPlayer(entityplayer);
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -77,7 +80,7 @@ public class ContainerElectricMachine extends Container
 			}
 			else if(RecipeHandler.getRecipe(new ItemStackInput(slotStack), tileEntity.getRecipes()) != null)
 			{
-				if(slotID != 0 && slotID != 1 && slotID != 2)
+				if(slotID != 0 && slotID != 1)
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
@@ -100,7 +103,7 @@ public class ContainerElectricMachine extends Container
 						return ItemStack.EMPTY;
 					}
 				}
-				else if(slotID == 1)
+				else
 				{
 					if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
 					{

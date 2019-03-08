@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration
 {
 	public ReactorLogic logicType = ReactorLogic.DISABLED;
@@ -84,6 +86,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		activeCooled = nbtTags.getBoolean("activeCooled");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{

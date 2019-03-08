@@ -15,6 +15,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class RenderBalloon extends Render<EntityBalloon>
 {
@@ -28,13 +30,13 @@ public class RenderBalloon extends Render<EntityBalloon>
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EntityBalloon entity)
+	protected ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity)
 	{
 		return MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png");
 	}
 
 	@Override
-	public void doRender(EntityBalloon balloon, double x, double y, double z, float f, float partialTick)
+	public void doRender(@Nonnull EntityBalloon balloon, double x, double y, double z, float f, float partialTick)
 	{
 		double renderPosX = x - (balloon.lastTickPosX + (balloon.posX - balloon.lastTickPosX)*partialTick);
 		double renderPosY = y - (balloon.lastTickPosY + (balloon.posY - balloon.lastTickPosY)*partialTick);

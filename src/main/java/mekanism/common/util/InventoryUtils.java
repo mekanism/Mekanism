@@ -87,7 +87,7 @@ public final class InventoryUtils
 				ISidedInventory sidedInventory = (ISidedInventory)tile;
 				int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 	
-				if(slots != null && slots.length != 0)
+				if(slots.length != 0)
 				{
 					if(force && sidedInventory instanceof TileEntityBin && side == EnumFacing.UP)
 					{
@@ -307,7 +307,7 @@ public final class InventoryUtils
 			ISidedInventory sidedInventory = (ISidedInventory)tile;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
-			if(slots != null && slots.length != 0)
+			if(slots.length != 0)
 			{
 				for(int get = slots.length - 1; get >= 0; get--)
 				{
@@ -374,7 +374,7 @@ public final class InventoryUtils
 			}
 		}
 
-		if(ret != null && !ret.getStack().isEmpty() && ret.getStack().getCount() >= min)
+		if(!ret.getStack().isEmpty() && ret.getStack().getCount() >= min)
 		{
 			return ret;
 		}
@@ -420,7 +420,7 @@ public final class InventoryUtils
 			ISidedInventory sidedInventory = (ISidedInventory)tileEntity;
 			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
-			if(slots != null && slots.length != 0)
+			if(slots.length != 0)
 			{
 				if(force && sidedInventory instanceof TileEntityBin && side == EnumFacing.UP)
 				{

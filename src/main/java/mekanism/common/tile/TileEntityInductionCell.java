@@ -13,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityInductionCell extends TileEntityBasicBlock implements IStrictEnergyStorage
 {
 	public InductionCellTier tier = InductionCellTier.BASIC;
@@ -68,6 +70,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 		electricityStored = nbtTags.getDouble("electricityStored");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -98,13 +101,13 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	}
 
 	@Override
-	public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
+	public boolean hasCapability(@Nonnull net.minecraftforge.common.capabilities.Capability<?> capability, net.minecraft.util.EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, net.minecraft.util.EnumFacing facing)
 	{
 		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
 			return (T) this;

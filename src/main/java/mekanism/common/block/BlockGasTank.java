@@ -27,6 +27,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,7 +42,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import buildcraft.api.tools.IToolWrench;
+
+import javax.annotation.Nonnull;
 
 public class BlockGasTank extends BlockContainer
 {
@@ -55,12 +57,14 @@ public class BlockGasTank extends BlockContainer
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+	@Nonnull
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
 		return new BlockStateGasTank(this);
 	}
 
+	@Nonnull
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -73,8 +77,9 @@ public class BlockGasTank extends BlockContainer
 		return 0;
 	}
 
+	@Nonnull
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
 		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 		
@@ -131,7 +136,7 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
-	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
+	public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		
@@ -205,7 +210,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
 		{
@@ -249,10 +254,11 @@ public class BlockGasTank extends BlockContainer
 		return 0;
 	}
 
+	@Nonnull
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
-		return null;
+		return Items.AIR;
 	}
 
 	@Override
@@ -261,12 +267,14 @@ public class BlockGasTank extends BlockContainer
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
 		return EnumBlockRenderType.MODEL;
 	}
-	
+
+	@Nonnull
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -274,13 +282,14 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta)
+	public TileEntity createNewTileEntity(@Nonnull World world, int meta)
 	{
 		return new TileEntityGasTank();
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
@@ -290,7 +299,7 @@ public class BlockGasTank extends BlockContainer
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 		
-		if(tileEntity instanceof ISecurityTile)
+		if(tileEntity != null)
 		{
 			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
 			
@@ -299,11 +308,8 @@ public class BlockGasTank extends BlockContainer
 				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
 				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
 			}
-		}
-		
-		if(tileEntity instanceof ISideConfiguration)
-		{
-			ISideConfiguration config = (ISideConfiguration)tileEntity;
+
+			ISideConfiguration config = tileEntity;
 
 			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
 			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
@@ -335,7 +341,7 @@ public class BlockGasTank extends BlockContainer
 	}
 	
 	@Override
-	public EnumFacing[] getValidRotations(World world, BlockPos pos)
+	public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
@@ -357,7 +363,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
+	public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		

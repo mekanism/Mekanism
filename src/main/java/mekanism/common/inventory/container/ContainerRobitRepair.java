@@ -6,6 +6,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
+
 public class ContainerRobitRepair extends ContainerRepair
 {
 	public EntityRobit robit;
@@ -18,7 +20,7 @@ public class ContainerRobitRepair extends ContainerRepair
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
+	public boolean canInteractWith(@Nonnull EntityPlayer entityplayer)
 	{
 		return !robit.isDead;
 	}

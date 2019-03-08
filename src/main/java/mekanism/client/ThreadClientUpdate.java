@@ -172,7 +172,7 @@ public class ThreadClientUpdate extends Thread
 
 	private void prepareForDownload()
 	{
-		File[] modsList = new File(String.valueOf(Mekanism.proxy.getMinecraftDir()) + File.separator + "mods").listFiles();
+		File[] modsList = new File(Mekanism.proxy.getMinecraftDir() + File.separator + "mods").listFiles();
 
 		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
 		{
@@ -203,7 +203,7 @@ public class ThreadClientUpdate extends Thread
 	{
 		try {
 			return new URL("http://ci.aidancbrady.com/job/Mekanism/Recommended/artifact/*zip*/archive.zip");
-		} catch(Exception e) {}
+		} catch(Exception ignored) {}
 
 		return null;
 	}

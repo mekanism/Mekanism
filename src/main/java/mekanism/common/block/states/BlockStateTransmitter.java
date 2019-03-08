@@ -16,6 +16,7 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 public class BlockStateTransmitter extends ExtendedBlockState
@@ -105,8 +106,9 @@ public class BlockStateTransmitter extends ExtendedBlockState
 	
 	public static class TransmitterStateMapper extends StateMapperBase
 	{
+		@Nonnull
 		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
 		{
 			BlockTransmitter block = (BlockTransmitter)state.getBlock();
 			TransmitterType type = state.getValue(typeProperty);

@@ -8,7 +8,6 @@ import mekanism.common.base.TileNetworkList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -226,7 +225,7 @@ public class Coord4D
 	{
 		IBlockState state = getBlockState(world);
 		
-		if(state == null || state == Blocks.AIR)
+		if(state == null || state.getBlock().isAir(state, world, null))
 		{
 			return ItemStack.EMPTY;
 		}

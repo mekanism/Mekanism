@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 
+import javax.annotation.Nonnull;
+
 public class GeneratorItemModelFactory implements IBakedModel
 {
 	private IBakedModel baseModel;
@@ -25,13 +27,15 @@ public class GeneratorItemModelFactory implements IBakedModel
 	{
 		baseModel = base;
 	}
-	
+
+	@Nonnull
 	@Override
 	public ItemOverrideList getOverrides()
 	{
 		return override;
 	}
-	
+
+	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing facing, long rand) 
 	{
@@ -56,12 +60,14 @@ public class GeneratorItemModelFactory implements IBakedModel
 		throw new UnsupportedOperationException();
 	}
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleTexture() 
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	@Nonnull
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() 
 	{
@@ -75,8 +81,9 @@ public class GeneratorItemModelFactory implements IBakedModel
 			super(Lists.newArrayList());
 		}
 
+		@Nonnull
 	    @Override
-	    public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) 
+	    public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 	    {
 	    	return new BakedGeneratorItemModel(baseModel, stack);
 	    }

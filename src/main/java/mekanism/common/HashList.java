@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -129,6 +130,7 @@ public class HashList<T> implements Iterable<T>
 		return list.equals(obj);
 	}
 
+	@Nonnull
 	@Override
 	public Iterator<T> iterator()
 	{

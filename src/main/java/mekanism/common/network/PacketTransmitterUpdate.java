@@ -71,7 +71,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                 }
             }
 
-            if(client.opaqueTransmitters || message.coord4D == null || player == null)
+            if(client.opaqueTransmitters || message.coord4D == null)
             {
                 return;
             }

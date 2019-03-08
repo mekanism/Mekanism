@@ -23,6 +23,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 
+import javax.annotation.Nonnull;
+
 public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 {
 	private Upgrade upgrade;
@@ -52,7 +54,8 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 	{
 		return upgrade;
 	}
-	
+
+	@Nonnull
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{

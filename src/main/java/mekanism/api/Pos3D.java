@@ -11,6 +11,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
+import javax.annotation.Nonnull;
+
 /**
  * Pos3D - a way of performing operations on objects in a three dimensional environment.
  * @author aidancbrady
@@ -189,6 +191,8 @@ public class Pos3D extends Vec3d
 	 * @param yaw - yaw to rotate by
 	 * @return rotated Pos3D
 	 */
+	@Nonnull
+	@Override
 	public Pos3D rotateYaw(float yaw)
 	{
 		double yawRadians = Math.toRadians(yaw);
@@ -204,7 +208,8 @@ public class Pos3D extends Vec3d
 
 		return new Pos3D(xPos, y, zPos);
 	}
-	
+
+	@Nonnull
 	@Override
 	public Pos3D rotatePitch(float pitch)
 	{
@@ -257,6 +262,7 @@ public class Pos3D extends Vec3d
 		return new Pos3D(this.x * x, this.y * y, this.z * z);
 	}
 
+	@Nonnull
 	@Override
 	public Pos3D scale(double scale)
 	{
@@ -321,6 +327,7 @@ public class Pos3D extends Vec3d
 		return Math.acos(pos1.clone().dotProduct(pos2));
 	}
 
+	@Nonnull
 	@Override
 	public Pos3D normalize() 
 	{
@@ -370,6 +377,7 @@ public class Pos3D extends Vec3d
 		return new Pos3D(x, y, z);
 	}
 
+	@Nonnull
 	@Override
 	public String toString()
 	{

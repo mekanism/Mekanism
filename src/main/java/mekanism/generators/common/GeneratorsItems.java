@@ -16,7 +16,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class GeneratorsItems
 {
 	public static final Item SolarPanel = new ItemMekanism();
-	public static final ItemHohlraum Hohlraum = (ItemHohlraum)new ItemHohlraum();
+	public static final ItemHohlraum Hohlraum = new ItemHohlraum();
 	public static final Item TurbineBlade = new ItemMekanism() {
 		@Override
 		public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)

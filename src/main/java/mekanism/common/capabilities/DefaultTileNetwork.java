@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultTileNetwork implements ITileNetwork
 {
 	@Override
-	public void handlePacketData(ByteBuf dataStream) throws Exception {}
+	public void handlePacketData(ByteBuf dataStream) {}
 
 	@Override
 	public TileNetworkList getNetworkedData(TileNetworkList data)

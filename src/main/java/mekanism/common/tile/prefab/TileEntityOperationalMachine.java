@@ -8,6 +8,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nonnull;
+
 public class TileEntityOperationalMachine extends TileEntityMachine
 {
 	public int operatingTicks;
@@ -59,6 +61,7 @@ public class TileEntityOperationalMachine extends TileEntityMachine
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{

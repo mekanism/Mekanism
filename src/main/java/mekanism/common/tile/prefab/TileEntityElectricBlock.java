@@ -1,12 +1,10 @@
 package mekanism.common.tile.prefab;
 
-import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 
 import mekanism.common.base.IEnergyWrapper;
@@ -27,6 +25,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
+
+import javax.annotation.Nonnull;
 
 public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IEnergyWrapper
 {
@@ -189,6 +189,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		electricityStored = nbtTags.getDouble("electricityStored");
 	}
 
+	@Nonnull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
 	{
@@ -359,7 +360,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{// nb: the facing param contains the side relative to the pushing block
 		TileEntity tile = getWorld().getTileEntity(getPos().offset(pushDirection.getOpposite()));
 		
-		if(general.blacklistIC2 || (tile != null && CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)))
+		if(general.blacklistIC2 || (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection)))
 		{
 			return amount;
 		}
@@ -411,7 +412,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
 	{
 		return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
 				|| capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
@@ -427,7 +428,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
 	{
 		if(capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
 				capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY)

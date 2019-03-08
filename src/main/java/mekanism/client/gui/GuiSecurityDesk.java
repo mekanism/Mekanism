@@ -232,13 +232,10 @@ public class GuiSecurityDesk extends GuiMekanism
 			
 			if(tileEntity.frequency != null && selection != -1)
 			{
-				if(tileEntity != null)
-				{
-					TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
-					
-					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				}
-				
+				TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
+
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+
 				scrollList.selected = -1;
 			}
 		}
@@ -252,7 +249,7 @@ public class GuiSecurityDesk extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		String ownerText = EnumColor.RED + tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : LangUtils.localize("gui.noOwner");
+		String ownerText = tileEntity.clientOwner != null ? (LangUtils.localize("gui.owner") + ": " + tileEntity.clientOwner) : EnumColor.RED + LangUtils.localize("gui.noOwner");
 		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 4, 0x404040);
 		fontRenderer.drawString(ownerText, (xSize - 7) - fontRenderer.getStringWidth(ownerText), (ySize - 96) + 2, 0x404040);
 		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
