@@ -73,7 +73,7 @@ if args.tag == "":
         print("Failed to find most recent tag!")
         sys.exit(1)
 
-print(args.tag)
+print(args.tag, args.rel)
 
 # Checkout the appropriate release from git
 _, err = run(["git", "checkout", "-qf", args.tag])
