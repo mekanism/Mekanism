@@ -380,7 +380,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			recalculateUpgradables(upgrade);
 		}
 
-		if (world.isRemote) {
+		if (hasWorld() && world.isRemote) {
             setSoundEvent(type.getSound());
         }
 	}
