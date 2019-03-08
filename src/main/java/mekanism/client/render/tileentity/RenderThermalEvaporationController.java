@@ -41,6 +41,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 
 				FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
 				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
+				MekanismRenderer.colorFluid(tileEntity.inputTank.getFluid().getFluid());
 				DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid().getFluid());
 
 				float levels = Math.min(((float)tileEntity.inputTank.getFluidAmount()/tileEntity.inputTank.getCapacity()), 1);
@@ -78,6 +79,7 @@ public class RenderThermalEvaporationController extends TileEntitySpecialRendere
 				}
 				displayList[partialLevels].render();
 
+				MekanismRenderer.resetColor();
 				MekanismRenderer.glowOff();
 
 				pop();
