@@ -12,8 +12,17 @@ import mekanism.common.recipe.outputs.MachineOutput;
 import java.util.Map;
 
 public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends BaseMapRemoval<INPUT, RECIPE> {
+    private final IngredientWrapper input;
+    private final IngredientWrapper output;
+
     public RemoveMekanismRecipe(String name, Recipe recipeType, IngredientWrapper output, IngredientWrapper input) {
         super(name, recipeType.get());
+        this.input = input;
+        this.output = output;
+    }
+
+    @Override
+    public void apply() {
         map.forEach((key, value) -> {
             if (IngredientHelper.matches(key, input) && IngredientHelper.matches(value.getOutput(), output)) {
                 recipes.put(key, value);
@@ -33,6 +42,10 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
             if (!warning.isEmpty()) {
                 LogHelper.logWarning(String.format("No %s recipe found for %s. Command ignored!", name, warning));
             }
+        } else {
+            super.apply();
+            //Describe it, as we don't describe it when describe is normally used as we don't have the information yet
+            LogHelper.logInfo(super.describe());
         }
     }
 
@@ -43,7 +56,7 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
 
     @Override
     public String describe() {
-        //Only describe it if it didn't already throw a warning about no recipes found
-        return recipes.isEmpty() ? "" : super.describe();
+        //Don't describe anything. It is too early for us to have a full description
+        return "";
     }
 }
