@@ -12,7 +12,6 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -22,11 +21,9 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +31,6 @@ import java.util.Map;
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 {
 	private final IDrawable background;
-
-	@Nullable
-	private MetallurgicInfuserRecipe tempRecipe;
 	
 	public MetallurgicInfuserRecipeCategory(IGuiHelper helper)
 	{
@@ -88,21 +82,6 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft)
-	{
-		super.drawExtras(minecraft);
-
-		if(tempRecipe == null)
-		{
-			return;
-		}
-		
-		InfuseType type = tempRecipe.getInput().infuse.type;
-		changeTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedRectFromIcon(2, 2, type.sprite, 4, 52);
-	}
-	
-	@Override
 	public IDrawable getBackground()
 	{
 		return background;
@@ -116,7 +95,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 			return;
 		}
 
-		tempRecipe = ((MetallurgicInfuserRecipeWrapper)recipeWrapper).getRecipe();
+		MetallurgicInfuserRecipe tempRecipe = ((MetallurgicInfuserRecipeWrapper)recipeWrapper).getRecipe();
 		
 		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 		
