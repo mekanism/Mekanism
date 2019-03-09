@@ -168,7 +168,7 @@ public class SoundHandler {
 
         TileSound(ISound original, float volume) {
             this.original = original;
-            this.volume = volume;
+            this.volume = volume * getMufflingFactor();
         }
 
         @Override
