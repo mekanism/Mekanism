@@ -17,23 +17,24 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 	@Override
 	public IMessage onMessage(FlamethrowerDataMessage message, MessageContext context)
 	{
-		EntityPlayer player = PacketHandler.getPlayer(context);
+    // Queue up the processing on the central thread
+    EntityPlayer player = PacketHandler.getPlayer(context);
+    PacketHandler.handlePacket(() -> {
+      if (message.packetType == FlamethrowerPacket.UPDATE) {
+        Mekanism.playerState.setFlamethrowerState(message.username, message.value, false);
 
-        if (message.packetType == FlamethrowerPacket.UPDATE) {
-            Mekanism.playerState.setFlamethrowerState(message.username, message.value, false);
-
-            // If we got this packet on the server, resend out to all clients in same dimension
-            // TODO: Why is this a dimensional thing?!
-            if (!player.world.isRemote) {
-                Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
-            }
-        } else if (message.packetType == FlamethrowerPacket.MODE) {
-            ItemStack stack = player.getHeldItem(message.currentHand);
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower) {
-                ((ItemFlamethrower) stack.getItem()).incrementMode(stack);
-            }
+        // If we got this packet on the server, resend out to all clients in same dimension
+        // TODO: Why is this a dimensional thing?!
+        if (!player.world.isRemote) {
+          Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
         }
-
+      } else if (message.packetType == FlamethrowerPacket.MODE) {
+        ItemStack stack = player.getHeldItem(message.currentHand);
+        if (!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower) {
+          ((ItemFlamethrower) stack.getItem()).incrementMode(stack);
+        }
+      }
+    }, player);
 		return null;
 	}
 	

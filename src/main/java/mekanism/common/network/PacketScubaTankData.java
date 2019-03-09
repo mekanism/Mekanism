@@ -20,29 +20,30 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 	@Override
 	public IMessage onMessage(ScubaTankDataMessage message, MessageContext context) 
 	{
+		// Queue up processing on the central thread
 		EntityPlayer player = PacketHandler.getPlayer(context);
-		
-		if(message.packetType == ScubaTankPacket.UPDATE) {
-			Mekanism.playerState.setGasmaskState(message.username, message.value, false);
+		PacketHandler.handlePacket(() ->{
+			if(message.packetType == ScubaTankPacket.UPDATE) {
+				Mekanism.playerState.setGasmaskState(message.username, message.value, false);
 
-			// If we got this on the server, relay out to all players in the same dimension
-			// TODO: Why is this a dimensional thing?!
-			if(!player.world.isRemote) {
-				Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+				// If we got this on the server, relay out to all players in the same dimension
+				// TODO: Why is this a dimensional thing?!
+				if(!player.world.isRemote) {
+					Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+				}
 			}
-		}
-		else if(message.packetType == ScubaTankPacket.MODE) {
-			// Use has changed the mode of their gasmask; update it
-			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-			if(!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
-				((ItemScubaTank)stack.getItem()).toggleFlowing(stack);
+			else if(message.packetType == ScubaTankPacket.MODE) {
+				// Use has changed the mode of their gasmask; update it
+				ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+				if(!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
+					((ItemScubaTank)stack.getItem()).toggleFlowing(stack);
+				}
 			}
-		}
-		else if (message.packetType == ScubaTankPacket.FULL) {
-			// This is a full sync; merge into our player state
-			Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
-		}
-		
+			else if (message.packetType == ScubaTankPacket.FULL) {
+				// This is a full sync; merge into our player state
+				Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
+			}
+		}, player);
 		return null;
 	}
 	
