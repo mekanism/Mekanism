@@ -1,6 +1,8 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import java.util.HashSet;
+import java.util.Set;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
@@ -13,15 +15,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IMessage>
-{
-	@Override
-	public IMessage onMessage(JetpackDataMessage message, MessageContext context) 
-	{
-		// Queue up the processing on the central thread
+public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IMessage> {
+  @Override
+  public IMessage onMessage(JetpackDataMessage message, MessageContext context) {
+    // Queue up the processing on the central thread
     EntityPlayer player = PacketHandler.getPlayer(context);
     PacketHandler.handlePacket(
         () -> {
@@ -50,89 +47,82 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
           }
         },
         player);
-		return null;
-	}
-	
-	public static class JetpackDataMessage implements IMessage
-	{
-		protected JetpackPacket packetType;
+    return null;
+  }
 
-		protected Set<String> activeJetpacks;
+  public enum JetpackPacket {
+    UPDATE,
+    FULL,
+    MODE
+  }
 
-		protected String  username;
-		protected boolean value;
-		
-		public JetpackDataMessage() {}
+  public static class JetpackDataMessage implements IMessage {
+    protected JetpackPacket packetType;
 
-		public JetpackDataMessage(JetpackPacket type) {
-			packetType = type;
-		}
+    protected Set<String> activeJetpacks;
 
-		public static JetpackDataMessage MODE_CHANGE(boolean change) {
-			JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.MODE);
-			m.value = change;
-			return m;
-		}
+    protected String username;
+    protected boolean value;
 
-		public static JetpackDataMessage UPDATE(String name, boolean state) {
-			JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.UPDATE);
-			m.username = name;
-			m.value = state;
-			return m;
-		}
+    public JetpackDataMessage() {}
 
-		public static JetpackDataMessage FULL(Set<String> activeNames) {
-			JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.FULL);
-			m.activeJetpacks = activeNames;
-			return m;
-		}
-
-		@Override
-		public void toBytes(ByteBuf dataStream) {
-			dataStream.writeInt(packetType.ordinal());
-	
-			if(packetType == JetpackPacket.MODE) {
-				dataStream.writeBoolean(value);
-			}
-			else if(packetType == JetpackPacket.UPDATE) {
-				PacketHandler.writeString(dataStream, username);
-				dataStream.writeBoolean(value);
-			}
-			else if(packetType == JetpackPacket.FULL) {
-				dataStream.writeInt(activeJetpacks.size());
-				for(String username : activeJetpacks) {
-					PacketHandler.writeString(dataStream, username);
-				}
-			}
-		}
-	
-		@Override
-		public void fromBytes(ByteBuf dataStream)
-		{
-			packetType = JetpackPacket.values()[dataStream.readInt()];
-	
-			if(packetType == JetpackPacket.MODE) {
-				value = dataStream.readBoolean();
-			}
-			else if(packetType == JetpackPacket.UPDATE) {
-				username = PacketHandler.readString(dataStream);
-				value = dataStream.readBoolean();
-			}
-			else if(packetType == JetpackPacket.FULL) {
-				activeJetpacks = new HashSet<>();
-	
-				int amount = dataStream.readInt();
-				for(int i = 0; i < amount; i++) {
-					activeJetpacks.add(PacketHandler.readString(dataStream));
-				}
-			}
-		}
-	}
-	
-	public enum JetpackPacket
-	{
-		UPDATE,
-		FULL,
-		MODE
+    public JetpackDataMessage(JetpackPacket type) {
+      packetType = type;
     }
+
+    public static JetpackDataMessage MODE_CHANGE(boolean change) {
+      JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.MODE);
+      m.value = change;
+      return m;
+    }
+
+    public static JetpackDataMessage UPDATE(String name, boolean state) {
+      JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.UPDATE);
+      m.username = name;
+      m.value = state;
+      return m;
+    }
+
+    public static JetpackDataMessage FULL(Set<String> activeNames) {
+      JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.FULL);
+      m.activeJetpacks = activeNames;
+      return m;
+    }
+
+    @Override
+    public void toBytes(ByteBuf dataStream) {
+      dataStream.writeInt(packetType.ordinal());
+
+      if (packetType == JetpackPacket.MODE) {
+        dataStream.writeBoolean(value);
+      } else if (packetType == JetpackPacket.UPDATE) {
+        PacketHandler.writeString(dataStream, username);
+        dataStream.writeBoolean(value);
+      } else if (packetType == JetpackPacket.FULL) {
+        dataStream.writeInt(activeJetpacks.size());
+        for (String username : activeJetpacks) {
+          PacketHandler.writeString(dataStream, username);
+        }
+      }
+    }
+
+    @Override
+    public void fromBytes(ByteBuf dataStream) {
+      packetType = JetpackPacket.values()[dataStream.readInt()];
+
+      if (packetType == JetpackPacket.MODE) {
+        value = dataStream.readBoolean();
+      } else if (packetType == JetpackPacket.UPDATE) {
+        username = PacketHandler.readString(dataStream);
+        value = dataStream.readBoolean();
+      } else if (packetType == JetpackPacket.FULL) {
+        activeJetpacks = new HashSet<>();
+
+        int amount = dataStream.readInt();
+        for (int i = 0; i < amount; i++) {
+          activeJetpacks.add(PacketHandler.readString(dataStream));
+        }
+      }
+    }
+  }
 }
