@@ -58,7 +58,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void onBlockExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
+	public void onExplosionDestroy(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion)
 	{
 		if(!world.isRemote)
 		{
