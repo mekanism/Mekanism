@@ -63,4 +63,10 @@ public class EntityBabySkeleton extends EntitySkeleton {
     protected final void updateSize(float size) {
         super.setSize(size, size + 0.4F);
     }
+
+    //copied from base entity, as abstractskeleton overrides it
+    public float getEyeHeight()
+    {
+        return this.height * 0.85F;
+    }
 }
