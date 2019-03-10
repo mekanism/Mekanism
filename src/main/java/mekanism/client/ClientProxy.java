@@ -1048,11 +1048,11 @@ public class ClientProxy extends CommonProxy
 		for(String s : CUSTOM_RENDERS)
 		{
 			ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
-	        Object obj = event.getModelRegistry().getObject(model);
+			IBakedModel obj = event.getModelRegistry().getObject(model);
 	        
-	        if(obj instanceof IBakedModel)
+	        if(obj != null)
 	        {
-	        	event.getModelRegistry().putObject(model, new CustomItemModelFactory((IBakedModel)obj));
+	        	event.getModelRegistry().putObject(model, new CustomItemModelFactory(obj));
 	        }
 		}
     }
