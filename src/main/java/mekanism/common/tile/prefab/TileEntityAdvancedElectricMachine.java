@@ -10,14 +10,10 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
@@ -33,6 +29,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -42,7 +39,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
 
-public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection, ITierUpgradeable, ISustainedData
+public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection, ISustainedData
 {
 	/** How much secondary energy (fuel) this machine uses per tick, not including upgrades. */
 	public int BASE_SECONDARY_ENERGY_PER_TICK;
@@ -101,51 +98,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	}
 	
 	@Override
-	public boolean upgrade(BaseTier upgradeTier)
+	protected void upgradeInventory(TileEntityFactory factory)
 	{
-		if(upgradeTier != BaseTier.BASIC)
-		{
-			return false;
-		}
-		
-		world.setBlockToAir(getPos());
-		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
-		
-		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
-		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-		
-		//Basic
-		factory.facing = facing;
-		factory.clientFacing = clientFacing;
-		factory.ticker = ticker;
-		factory.redstone = redstone;
-		factory.redstoneLastTick = redstoneLastTick;
-		factory.doAutoSync = doAutoSync;
-		
-		//Electric
-		factory.electricityStored = electricityStored;
-
-		//Machine
-		factory.progress[0] = operatingTicks;
-		factory.updateDelay = updateDelay;
-		factory.isActive = isActive;
-		factory.clientActive = clientActive;
-		factory.controlType = controlType;
-		factory.prevEnergy = prevEnergy;
-		factory.upgradeComponent.readFrom(upgradeComponent);
-		factory.upgradeComponent.setUpgradeSlot(0);
-		factory.ejectorComponent.readFrom(ejectorComponent);
-		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-		factory.setRecipeType(type);
-		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
-		factory.securityComponent.readFrom(securityComponent);
-		
-		for(TransmissionType transmission : configComponent.transmissions)
-		{
-			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
-			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
-		}
-		
 		//Advanced Machine
 		factory.gasTank.setGas(gasTank.getGas());
 		
@@ -154,16 +108,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.inventory.set(5+3, inventory.get(2));
 		factory.inventory.set(1, inventory.get(3));
 		factory.inventory.set(0, inventory.get(4));
-		
-		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
-		{
-			factory.recalculateUpgradables(upgrade);
-		}
-		
-		factory.upgraded = true;
-		factory.markDirty();
-		
-		return true;
 	}
 
 	/**
@@ -327,13 +271,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(dataStream.readBoolean())
-			{
-				gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-			}
-			else {
-				gasTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, gasTank);
 		}
 	}
 
@@ -341,17 +279,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
-		if(gasTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(gasTank.getGas().getGas().getID());
-			data.add(gasTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, gasTank);
 		return data;
 	}
 

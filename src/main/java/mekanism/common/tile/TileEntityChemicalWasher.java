@@ -5,14 +5,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -28,13 +26,12 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
@@ -87,11 +84,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 		{
 			ChargeUtils.discharge(3, this);
 			manageBuckets();
-
-			if(!inventory.get(2).isEmpty() && outputTank.getGas() != null)
-			{
-				outputTank.draw(GasUtils.addGas(inventory.get(2), outputTank.getGas()), true);
-			}
+			TileUtils.drawGas(inventory.get(2), outputTank);
 			
 			WasherRecipe recipe = getRecipe();
 
@@ -112,11 +105,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 				}
 			}
 
-			if(outputTank.getGas() != null)
-			{
-				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-				outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
-			}
+			TileUtils.emitGas(this, outputTank, gasOutput);
 
 			prevEnergy = getEnergy();
 		}
@@ -178,30 +167,9 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			clientEnergyUsed = dataStream.readDouble();
-	
-			if(dataStream.readBoolean())
-			{
-				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
-			}
-			else {
-				fluidTank.setFluid(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				inputTank.setGas(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				outputTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, fluidTank);
+			TileUtils.readTankData(dataStream, inputTank);
+			TileUtils.readTankData(dataStream, outputTank);
 	
 			if(updateDelay == 0 && clientActive != isActive)
 			{
@@ -218,37 +186,9 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 		super.getNetworkedData(data);
 
 		data.add(clientEnergyUsed);
-
-		if(fluidTank.getFluid() != null)
-		{
-			data.add(true);
-			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-			data.add(fluidTank.getFluidAmount());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(inputTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(inputTank.getGas().getGas().getID());
-			data.add(inputTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(outputTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(outputTank.getGas().getGas().getID());
-			data.add(outputTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, fluidTank);
+		TileUtils.addTankData(data, inputTank);
+		TileUtils.addTankData(data, outputTank);
 		return data;
 	}
 

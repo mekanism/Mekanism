@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
@@ -27,11 +26,10 @@ import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -72,21 +70,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(3, this);
-
-			if(!inventory.get(0).isEmpty() && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
-			{
-				leftTank.receive(GasUtils.removeGas(inventory.get(0), leftTank.getGasType(), leftTank.getNeeded()), true);
-			}
-
-			if(!inventory.get(1).isEmpty() && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
-			{
-				rightTank.receive(GasUtils.removeGas(inventory.get(1), rightTank.getGasType(), rightTank.getNeeded()), true);
-			}
-
-			if(!inventory.get(2).isEmpty() && centerTank.getGas() != null)
-			{
-				centerTank.draw(GasUtils.addGas(inventory.get(2), centerTank.getGas()), true);
-			}
+			TileUtils.receiveGas(inventory.get(0), leftTank);
+			TileUtils.receiveGas(inventory.get(1), rightTank);
+			TileUtils.drawGas(inventory.get(2), centerTank);
 			
 			ChemicalInfuserRecipe recipe = getRecipe();
 
@@ -106,13 +92,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 					setActive(false);
 				}
 			}
-
-			if(centerTank.getGas() != null)
-			{
-				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
-				centerTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
-			}
-
+			TileUtils.emitGas(this, centerTank, gasOutput, facing);
 			prevEnergy = getEnergy();
 		}
 	}
@@ -177,30 +157,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			clientEnergyUsed = dataStream.readDouble();
-	
-			if(dataStream.readBoolean())
-			{
-				leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				leftTank.setGas(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				rightTank.setGas(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				centerTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, leftTank);
+			TileUtils.readTankData(dataStream, rightTank);
+			TileUtils.readTankData(dataStream, centerTank);
 		}
 	}
 
@@ -208,39 +167,10 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
 		data.add(clientEnergyUsed);
-
-		if(leftTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(leftTank.getGas().getGas().getID());
-			data.add(leftTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(rightTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(rightTank.getGas().getGas().getID());
-			data.add(rightTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(centerTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(centerTank.getGas().getGas().getID());
-			data.add(centerTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, leftTank);
+		TileUtils.addTankData(data, rightTank);
+		TileUtils.addTankData(data, centerTank);
 		return data;
 	}
 

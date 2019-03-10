@@ -9,7 +9,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.TileNetworkList;
@@ -21,6 +20,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -33,7 +33,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -561,21 +560,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(dataStream.readBoolean())
-			{
-				inputTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
-			}
-			else {
-				inputTank.setFluid(null);
-			}
-			
-			if(dataStream.readBoolean())
-			{
-				outputTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
-			}
-			else {
-				outputTank.setFluid(null);
-			}
+			TileUtils.readTankData(dataStream, inputTank);
+			TileUtils.readTankData(dataStream, outputTank);
 			
 			structured = dataStream.readBoolean();
 			controllerConflict = dataStream.readBoolean();
@@ -607,27 +593,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-		
-		if(inputTank.getFluid() != null)
-		{
-			data.add(true);
-			data.add(FluidRegistry.getFluidName(inputTank.getFluid()));
-			data.add(inputTank.getFluid().amount);
-		}
-		else {
-			data.add(false);
-		}
-		
-		if(outputTank.getFluid() != null)
-		{
-			data.add(true);
-			data.add(FluidRegistry.getFluidName(outputTank.getFluid()));
-			data.add(outputTank.getFluid().amount);
-		}
-		else {
-			data.add(false);
-		}
-		
+		TileUtils.addTankData(data, inputTank);
+		TileUtils.addTankData(data, outputTank);
 		data.add(structured);
 		data.add(controllerConflict);
 		data.add(getActiveSolars());

@@ -177,7 +177,7 @@ public class GuiMModIDFilter extends GuiMekanism
 				GlStateManager.popMatrix();
 			} catch(Exception ignored) {}
 		}
-		
+
 		if(!filter.replaceStack.isEmpty())
 		{
 			GlStateManager.pushMatrix();
@@ -186,7 +186,7 @@ public class GuiMModIDFilter extends GuiMekanism
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
-		
+
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 		{
 			drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
@@ -222,7 +222,7 @@ public class GuiMModIDFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
 		}
-		
+
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 		{
 			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 0, 14, 14);
@@ -230,9 +230,9 @@ public class GuiMModIDFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 14, 14, 14);
 		}
-		
+
 		modIDText.drawTextBox();
-		
+
 		if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 		{
 			GlStateManager.pushMatrix();
@@ -249,7 +249,7 @@ public class GuiMModIDFilter extends GuiMekanism
 			GlStateManager.enableDepth();
 			GlStateManager.popMatrix();
 		}
-		
+
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
@@ -308,22 +308,22 @@ public class GuiMModIDFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
 			}
 
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setModID();
 			}
-			
+
 			if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.requireStack = !filter.requireStack;
 			}
-			
+
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 			{
 				boolean doNull = false;
@@ -351,7 +351,7 @@ public class GuiMModIDFilter extends GuiMekanism
 					filter.replaceStack = toUse;
 				}
 
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}

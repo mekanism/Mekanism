@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
@@ -31,6 +30,7 @@ import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
@@ -44,14 +44,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 
@@ -154,42 +152,24 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 			}
 			
 			int dumpAmount = 8*(int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-
-			if(leftTank.getGas() != null)
-			{
-				if(dumpLeft != GasMode.DUMPING)
-				{
-					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
-					leftTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
-				}
-				else {
-					leftTank.draw(dumpAmount, true);
-				}
-				
-				if(dumpLeft == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
-				{
-					leftTank.draw(output-leftTank.getNeeded(), true);
-				}
-			}
-
-			if(rightTank.getGas() != null)
-			{
-				if(dumpRight != GasMode.DUMPING)
-				{
-					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
-					rightTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
-				}
-				else {
-					rightTank.draw(dumpAmount, true);
-				}
-				
-				if(dumpRight == GasMode.DUMPING_EXCESS && rightTank.getNeeded() < output)
-				{
-					rightTank.draw(output-rightTank.getNeeded(), true);
-				}
-			}
-
+			handleTank(leftTank, dumpLeft, MekanismUtils.getLeft(facing), dumpAmount);
+			handleTank(rightTank, dumpRight, MekanismUtils.getRight(facing), dumpAmount);
             prevEnergy = getEnergy();
+		}
+	}
+
+	private void handleTank(GasTank tank, GasMode mode, EnumFacing side, int dumpAmount) {
+		if(tank.getGas() != null) {
+			if (mode != GasMode.DUMPING) {
+				GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), output));
+				tank.draw(GasUtils.emit(toSend, this, ListUtils.asList(side)), true);
+			} else {
+				tank.draw(dumpAmount, true);
+			}
+
+			if (mode == GasMode.DUMPING_EXCESS && tank.getNeeded() < output) {
+				tank.draw(output - tank.getNeeded(), true);
+			}
 		}
 	}
 	
@@ -332,30 +312,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(dataStream.readBoolean())
-			{
-				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
-			}
-			else {
-				fluidTank.setFluid(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				leftTank.setGas(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				rightTank.setGas(null);
-			}
-	
+			TileUtils.readTankData(dataStream, fluidTank);
+			TileUtils.readTankData(dataStream, leftTank);
+			TileUtils.readTankData(dataStream, rightTank);
 			dumpLeft = GasMode.values()[dataStream.readInt()];
 			dumpRight = GasMode.values()[dataStream.readInt()];
 			clientEnergyUsed = dataStream.readDouble();
@@ -366,36 +325,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
-		if(fluidTank.getFluid() != null)
-		{
-			data.add(true);
-			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-			data.add(fluidTank.getFluidAmount());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(leftTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(leftTank.getGas().getGas().getID());
-			data.add(leftTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(rightTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(rightTank.getGas().getGas().getID());
-			data.add(rightTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
+		TileUtils.addTankData(data, fluidTank);
+		TileUtils.addTankData(data, leftTank);
+		TileUtils.addTankData(data, rightTank);
 
 		data.add(dumpLeft.ordinal());
 		data.add(dumpRight.ordinal());

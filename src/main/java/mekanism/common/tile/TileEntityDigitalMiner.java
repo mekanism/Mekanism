@@ -650,29 +650,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		super.readFromNBT(nbtTags);
 
-		radius = nbtTags.getInteger("radius");
-		minY = nbtTags.getInteger("minY");
-		maxY = nbtTags.getInteger("maxY");
-		doEject = nbtTags.getBoolean("doEject");
-		doPull = nbtTags.getBoolean("doPull");
 		isActive = nbtTags.getBoolean("isActive");
 		running = nbtTags.getBoolean("running");
 		delay = nbtTags.getInteger("delay");
-		silkTouch = nbtTags.getBoolean("silkTouch");
 		numPowering = nbtTags.getInteger("numPowering");
 		searcher.state = State.values()[nbtTags.getInteger("state")];
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-		inverse = nbtTags.getBoolean("inverse");
-
-		if(nbtTags.hasKey("filters"))
-		{
-			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
-
-			for(int i = 0; i < tagList.tagCount(); i++)
-			{
-				filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
-			}
-		}
+		setConfigurationData(nbtTags);
 	}
 
 	@Nonnull
@@ -686,33 +670,37 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			reset();
 		}
 
-		nbtTags.setInteger("radius", radius);
-		nbtTags.setInteger("minY", minY);
-		nbtTags.setInteger("maxY", maxY);
-		nbtTags.setBoolean("doEject", doEject);
-		nbtTags.setBoolean("doPull", doPull);
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setBoolean("running", running);
 		nbtTags.setInteger("delay", delay);
-		nbtTags.setBoolean("silkTouch", silkTouch);
 		nbtTags.setInteger("numPowering", numPowering);
 		nbtTags.setInteger("state", searcher.state.ordinal());
 		nbtTags.setInteger("controlType", controlType.ordinal());
-		nbtTags.setBoolean("inverse", inverse);
+		return getConfigurationData(nbtTags);
+	}
 
-		NBTTagList filterTags = new NBTTagList();
+	private void readBasicData(ByteBuf dataStream) {
+		radius = dataStream.readInt();
+		minY = dataStream.readInt();
+		maxY = dataStream.readInt();
+		doEject = dataStream.readBoolean();
+		doPull = dataStream.readBoolean();
+		clientActive = dataStream.readBoolean();
+		running = dataStream.readBoolean();
+		silkTouch = dataStream.readBoolean();
+		numPowering = dataStream.readInt();
+		searcher.state = State.values()[dataStream.readInt()];
+		clientToMine = dataStream.readInt();
+		controlType = RedstoneControl.values()[dataStream.readInt()];
+		inverse = dataStream.readBoolean();
 
-		for(MinerFilter filter : filters)
+		if(dataStream.readBoolean())
 		{
-			filterTags.appendTag(filter.write(new NBTTagCompound()));
+			missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
 		}
-
-		if(filterTags.tagCount() != 0)
-		{
-			nbtTags.setTag("filters", filterTags);
+		else {
+			missingStack = ItemStack.EMPTY;
 		}
-		
-		return nbtTags;
 	}
 
 	@Override
@@ -800,27 +788,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 			if(type == 0)
 			{
-				radius = dataStream.readInt();
-				minY = dataStream.readInt();
-				maxY = dataStream.readInt();
-				doEject = dataStream.readBoolean();
-				doPull = dataStream.readBoolean();
-				clientActive = dataStream.readBoolean();
-				running = dataStream.readBoolean();
-				silkTouch = dataStream.readBoolean();
-				numPowering = dataStream.readInt();
-				searcher.state = State.values()[dataStream.readInt()];
-				clientToMine = dataStream.readInt();
-				controlType = RedstoneControl.values()[dataStream.readInt()];
-				inverse = dataStream.readBoolean();
-				
-				if(dataStream.readBoolean())
-				{
-					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-				}
-				else {
-					missingStack = ItemStack.EMPTY;
-				}
+				readBasicData(dataStream);
 	
 				filters.clear();
 	
@@ -833,27 +801,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 			else if(type == 1)
 			{
-				radius = dataStream.readInt();
-				minY = dataStream.readInt();
-				maxY = dataStream.readInt();
-				doEject = dataStream.readBoolean();
-				doPull = dataStream.readBoolean();
-				clientActive = dataStream.readBoolean();
-				running = dataStream.readBoolean();
-				silkTouch = dataStream.readBoolean();
-				numPowering = dataStream.readInt();
-				searcher.state = State.values()[dataStream.readInt()];
-				clientToMine = dataStream.readInt();
-				controlType = RedstoneControl.values()[dataStream.readInt()];
-				inverse = dataStream.readBoolean();
-				
-				if(dataStream.readBoolean())
-				{
-					missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-				}
-				else {
-					missingStack = ItemStack.EMPTY;
-				}
+				readBasicData(dataStream);
 			}
 			else if(type == 2)
 			{
@@ -889,13 +837,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 	}
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		super.getNetworkedData(data);
-
-		data.add(0);
-
+	private void addBasicData(TileNetworkList data) {
 		data.add(radius);
 		data.add(minY);
 		data.add(maxY);
@@ -906,7 +848,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(silkTouch);
 		data.add(numPowering);
 		data.add(searcher.state.ordinal());
-		
+
 		if(searcher.state == State.SEARCHING)
 		{
 			data.add(searcher.found);
@@ -917,7 +859,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		data.add(controlType.ordinal());
 		data.add(inverse);
-		
+
 		if(!missingStack.isEmpty())
 		{
 			data.add(true);
@@ -927,7 +869,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		else {
 			data.add(false);
 		}
+	}
 
+	@Override
+	public TileNetworkList getNetworkedData(TileNetworkList data)
+	{
+		super.getNetworkedData(data);
+		data.add(0);
+		addBasicData(data);
 		data.add(filters.size());
 
 		for(MinerFilter filter : filters)
@@ -971,41 +920,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public TileNetworkList getGenericPacket(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
 		data.add(1);
-
-		data.add(radius);
-		data.add(minY);
-		data.add(maxY);
-		data.add(doEject);
-		data.add(doPull);
-		data.add(isActive);
-		data.add(running);
-		data.add(silkTouch);
-		data.add(numPowering);
-		data.add(searcher.state.ordinal());
-
-		if(searcher.state == State.SEARCHING)
-		{
-			data.add(searcher.found);
-		}
-		else {
-			data.add(getSize());
-		}
-
-		data.add(controlType.ordinal());
-		data.add(inverse);
-		
-		if(!missingStack.isEmpty())
-		{
-			data.add(true);
-			data.add(MekanismUtils.getID(missingStack));
-			data.add(missingStack.getItemDamage());
-		}
-		else {
-			data.add(false);
-		}
-
+		addBasicData(data);
 		return data;
 	}
 

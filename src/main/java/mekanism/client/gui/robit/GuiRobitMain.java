@@ -1,7 +1,8 @@
-package mekanism.client.gui;
+package mekanism.client.gui.robit;
 
 import java.io.IOException;
 
+import mekanism.client.gui.GuiMekanism;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;

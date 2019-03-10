@@ -137,7 +137,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
-		
+
 		if(filter.color != null)
 		{
 			GlStateManager.pushMatrix();
@@ -156,7 +156,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 		{
 			drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
 		}
-		
+
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
 			if(filter.color != null)
@@ -204,7 +204,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
-		
+
 		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 		{
 			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 0, 11, 11);
@@ -229,7 +229,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 			GlStateManager.enableDepth();
 			GlStateManager.popMatrix();
 		}
-		
+
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
@@ -237,7 +237,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
-		
+
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
@@ -245,7 +245,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
@@ -269,16 +269,16 @@ public class GuiTMaterialFilter extends GuiMekanism
 					filter.materialItem = ItemStack.EMPTY;
 				}
 
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
-			
+
 			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.allowDefault = !filter.allowDefault;
 			}
 		}
-		
+
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
 		{
 			button = 2;

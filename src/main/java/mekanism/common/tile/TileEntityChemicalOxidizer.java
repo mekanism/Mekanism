@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
@@ -17,11 +16,10 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -58,11 +56,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(1, this);
-
-			if(!inventory.get(2).isEmpty() && gasTank.getGas() != null)
-			{
-				gasTank.draw(GasUtils.addGas(inventory.get(2), gasTank.getGas()), true);
-			}
+			TileUtils.drawGas(inventory.get(2), gasTank);
 			
 			OxidationRecipe recipe = getRecipe();
 
@@ -91,11 +85,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 
 			prevEnergy = getEnergy();
 
-			if(gasTank.getGas() != null)
-			{
-				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
-				gasTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
-			}
+			TileUtils.emitGas(this, gasTank, gasOutput);
 		}
 	}
 
@@ -181,13 +171,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(dataStream.readBoolean())
-			{
-				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				gasTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, gasTank);
 		}
 	}
 
@@ -195,17 +179,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
-		if(gasTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(gasTank.getGas().getGas().getID());
-			data.add(gasTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, gasTank);
 		return data;
 	}
 

@@ -7,7 +7,6 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
@@ -33,9 +32,8 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -105,16 +103,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 				}
 			}
-			
-			if(!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
-			{
-				inputTank.receive(GasUtils.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
-			}
-			
-			if(!inventory.get(1).isEmpty() && outputTank.getGas() != null)
-			{
-				outputTank.draw(GasUtils.addGas(inventory.get(1), outputTank.getGas()), true);
-			}
+
+			TileUtils.receiveGas(inventory.get(0), inputTank);
+			TileUtils.drawGas(inventory.get(1), outputTank);
 			
 			SolarNeutronRecipe recipe = getRecipe();
 
@@ -130,11 +121,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 				setActive(false);
 			}
 
-			if(outputTank.getGas() != null)
-			{
-				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-				outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
-			}
+			TileUtils.emitGas(this, outputTank, gasOutput);
 		}
 	}
 	
@@ -191,23 +178,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		{
 			isActive = dataStream.readBoolean();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
-	
-			if(dataStream.readBoolean())
-			{
-				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				inputTank.setGas(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				outputTank.setGas(null);
-			}
-	
+			TileUtils.readTankData(dataStream, inputTank);
+			TileUtils.readTankData(dataStream, outputTank);
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				updateDelay = general.UPDATE_DELAY;
@@ -224,27 +196,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
 		data.add(isActive);
 		data.add(controlType.ordinal());
-
-		if(inputTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(inputTank.getGas().getGas().getID());
-			data.add(inputTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-		
-		if(outputTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(outputTank.getGas().getGas().getID());
-			data.add(outputTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, inputTank);
+		TileUtils.addTankData(data, outputTank);
 		return data;
 	}
 

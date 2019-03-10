@@ -6,14 +6,12 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -32,6 +30,7 @@ import mekanism.common.recipe.outputs.PressurizedOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -44,7 +43,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -218,37 +216,9 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
-		if(inputFluidTank.getFluid() != null)
-		{
-			data.add(true);
-			data.add(FluidRegistry.getFluidName(inputFluidTank.getFluid()));
-			data.add(inputFluidTank.getFluidAmount());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(inputGasTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(inputGasTank.getGas().getGas().getID());
-			data.add(inputGasTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(outputGasTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(outputGasTank.getGas().getGas().getID());
-			data.add(outputGasTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, inputFluidTank);
+		TileUtils.addTankData(data, inputGasTank);
+		TileUtils.addTankData(data, outputGasTank);
 		return data;
 	}
 
@@ -259,29 +229,9 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(dataStream.readBoolean())
-			{
-				inputFluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
-			}
-			else {
-				inputFluidTank.setFluid(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				inputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				inputGasTank.setGas(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				outputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				outputGasTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, inputFluidTank);
+			TileUtils.readTankData(dataStream, inputGasTank);
+			TileUtils.readTankData(dataStream, outputGasTank);
 		}
 	}
 

@@ -26,7 +26,7 @@ import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 
-public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ItemStackOutput, RECIPE> implements ITierUpgradeable
+public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<ItemStackInput, ItemStackOutput, RECIPE>
 {
 	/**
 	 * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1),
@@ -59,65 +59,12 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	}
 	
 	@Override
-	public boolean upgrade(BaseTier upgradeTier)
+	protected void upgradeInventory(TileEntityFactory factory)
 	{
-		if(upgradeTier != BaseTier.BASIC)
-		{
-			return false;
-		}
-		
-		world.setBlockToAir(getPos());
-		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
-		
-		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
-		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-		
-		//Basic
-		factory.facing = facing;
-		factory.clientFacing = clientFacing;
-		factory.ticker = ticker;
-		factory.redstone = redstone;
-		factory.redstoneLastTick = redstoneLastTick;
-		factory.doAutoSync = doAutoSync;
-		
-		//Electric
-		factory.electricityStored = electricityStored;
-		
-		//Machine
-		factory.progress[0] = operatingTicks;
-		factory.clientActive = clientActive;
-		factory.isActive = isActive;
-		factory.updateDelay = updateDelay;
-		factory.controlType = controlType;
-		factory.prevEnergy = prevEnergy;
-		factory.upgradeComponent.readFrom(upgradeComponent);
-		factory.upgradeComponent.setUpgradeSlot(0);
-		factory.ejectorComponent.readFrom(ejectorComponent);
-		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-		factory.setRecipeType(type);
-		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
-		factory.securityComponent.readFrom(securityComponent);
-		
-		for(TransmissionType transmission : configComponent.transmissions)
-		{
-			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
-			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
-		}
-
 		factory.inventory.set(5, inventory.get(0));
 		factory.inventory.set(1, inventory.get(1));
 		factory.inventory.set(5+3, inventory.get(2));
 		factory.inventory.set(0, inventory.get(3));
-		
-		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
-		{
-			factory.recalculateUpgradables(upgrade);
-		}
-		
-		factory.upgraded = true;
-		factory.markDirty();
-		
-		return true;
 	}
 
 	@Override

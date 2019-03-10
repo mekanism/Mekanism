@@ -25,11 +25,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,13 +39,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 
@@ -82,10 +79,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
 			if(mode == 0)
 			{
-				if(!inventory.get(1).isEmpty() && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
-				{
-					gasTank.receive(GasUtils.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded()), true);
-				}
+				TileUtils.receiveGas(inventory.get(1), gasTank);
 
 				if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 				{
@@ -112,16 +106,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 			}
 			else if(mode == 1)
 			{
-				if(!inventory.get(0).isEmpty() && gasTank.getGas() != null)
-				{
-					gasTank.draw(GasUtils.addGas(inventory.get(0), gasTank.getGas()), true);
-				}
-
-				if(gasTank.getGas() != null)
-				{
-					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getGas().amount, gasOutput));
-					gasTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getLeft(facing))), true);
-				}
+				TileUtils.drawGas(inventory.get(0), gasTank);
+				TileUtils.emitGas(this, gasTank, gasOutput);
 
 				if(FluidContainerUtils.isFluidContainer(inventory.get(2)))
 				{
@@ -212,22 +198,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 		{
 			mode = dataStream.readInt();
 			clientEnergyUsed = dataStream.readDouble();
-	
-			if(dataStream.readBoolean())
-			{
-				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
-			}
-			else {
-				fluidTank.setFluid(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				gasTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, fluidTank);
+			TileUtils.readTankData(dataStream, gasTank);
 		}
 	}
 
@@ -238,27 +210,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
 		data.add(mode);
 		data.add(clientEnergyUsed);
-
-		if(fluidTank.getFluid() != null)
-		{
-			data.add(true);
-			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-			data.add(fluidTank.getFluid().amount);
-		}
-		else {
-			data.add(false);
-		}
-
-		if(gasTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(gasTank.getGas().getGas().getID());
-			data.add(gasTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, fluidTank);
+		TileUtils.addTankData(data, gasTank);
 		return data;
 	}
 

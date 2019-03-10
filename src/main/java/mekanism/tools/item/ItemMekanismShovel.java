@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import java.util.Set;
 
+import mekanism.tools.common.ToolUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -32,8 +33,7 @@ public class ItemMekanismShovel extends ItemMekanismTool
 	@Override
 	public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack)
 	{
-        Block block = state.getBlock();
-        return block == Blocks.SNOW_LAYER || block == Blocks.SNOW;
+        return ToolUtils.canShovelHarvest(state.getBlock());
 	}
 
     @Nonnull

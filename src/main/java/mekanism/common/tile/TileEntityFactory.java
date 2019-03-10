@@ -50,6 +50,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -793,15 +794,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 			{
 				progress[i] = dataStream.readInt();
 			}
-	
-			if(dataStream.readBoolean())
-			{
-				gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-			}
-			else {
-				gasTank.setGas(null);
-			}
-			
+
+			TileUtils.readTankData(dataStream, gasTank);
 			if(upgraded)
 			{
 				markDirty();
@@ -881,16 +875,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 		}
 		
 		data.add(progress);
-
-		if(gasTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(gasTank.getGas().getGas().getID());
-			data.add(gasTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
+		TileUtils.addTankData(data, gasTank);
 		
 		upgraded = false;
 

@@ -2,13 +2,8 @@ package mekanism.common.tile.prefab;
 
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Upgrade;
-import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
@@ -26,7 +21,7 @@ import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 
-public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends TileEntityBasicMachine<DoubleMachineInput, ItemStackOutput, RECIPE> implements ITierUpgradeable
+public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<DoubleMachineInput, ItemStackOutput, RECIPE>
 {
 	/**
 	 * Double Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), secondary slot (1), output slot (2),
@@ -60,67 +55,14 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
 	}
 
 	@Override
-	public boolean upgrade(BaseTier upgradeTier)
+	protected void upgradeInventory(TileEntityFactory factory)
 	{
-		if(upgradeTier != BaseTier.BASIC)
-		{
-			return false;
-		}
-
-		world.setBlockToAir(getPos());
-		world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
-
-		TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
-		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-
-		//Basic
-		factory.facing = facing;
-		factory.clientFacing = clientFacing;
-		factory.ticker = ticker;
-		factory.redstone = redstone;
-		factory.redstoneLastTick = redstoneLastTick;
-		factory.doAutoSync = doAutoSync;
-
-		//Electric
-		factory.electricityStored = electricityStored;
-
-		//Machine
-		factory.progress[0] = operatingTicks;
-		factory.updateDelay = updateDelay;
-		factory.isActive = isActive;
-		factory.clientActive = clientActive;
-		factory.controlType = controlType;
-		factory.prevEnergy = prevEnergy;
-		factory.upgradeComponent.readFrom(upgradeComponent);
-		factory.upgradeComponent.setUpgradeSlot(0);
-		factory.ejectorComponent.readFrom(ejectorComponent);
-		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-		factory.setRecipeType(type);
-		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
-		factory.securityComponent.readFrom(securityComponent);
-
-		for(TransmissionType transmission : configComponent.transmissions)
-		{
-			factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
-			factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
-		}
-
 		//Double Machine
 		factory.inventory.set(5, inventory.get(0));
 		factory.inventory.set(4, inventory.get(1));
 		factory.inventory.set(5+3, inventory.get(2));
 		factory.inventory.set(1, inventory.get(3));
 		factory.inventory.set(0, inventory.get(4));
-
-		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
-		{
-			factory.recalculateUpgradables(upgrade);
-		}
-
-		factory.upgraded = true;
-		factory.markDirty();
-
-		return true;
 	}
 
 	@Override

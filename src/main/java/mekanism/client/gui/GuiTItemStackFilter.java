@@ -203,12 +203,12 @@ public class GuiTItemStackFilter extends GuiMekanism
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();
 		}
-		
+
 		if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
 		{
 			drawHoveringText(LangUtils.localize("gui.sizeMode"), xAxis, yAxis);
 		}
-		
+
 		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 		{
 			drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
@@ -272,7 +272,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 128, guiHeight + 44, 187, 11, 11, 11);
 		}
-		
+
 		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 		{
 			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 198, 0, 11, 11);
@@ -300,7 +300,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 			GlStateManager.enableDepth();
 			GlStateManager.popMatrix();
 		}
-		
+
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
@@ -319,7 +319,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
@@ -337,15 +337,15 @@ public class GuiTItemStackFilter extends GuiMekanism
 					filter.itemType = ItemStack.EMPTY;
 				}
 
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 
 			if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				filter.sizeMode = !filter.sizeMode;
 			}
-			
+
 			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

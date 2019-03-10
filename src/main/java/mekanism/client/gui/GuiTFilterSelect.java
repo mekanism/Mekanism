@@ -24,14 +24,14 @@ import org.lwjgl.opengl.GL11;
 public class GuiTFilterSelect extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;
-	
+
 	public GuiTFilterSelect(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
 		super(tentity, new ContainerNull(player, tentity));
-		
+
 		tileEntity = tentity;
 	}
-	
+
 	@Override
 	public void initGui()
 	{
@@ -39,14 +39,14 @@ public class GuiTFilterSelect extends GuiMekanism
 
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
-		
+
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, LangUtils.localize("gui.itemstack")));
 		buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, LangUtils.localize("gui.oredict")));
 		buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, LangUtils.localize("gui.material")));
 		buttonList.add(new GuiButton(3, guiWidth + 24, guiHeight + 92, 128, 20, LangUtils.localize("gui.modID")));
 	}
-	
+
 	@Override
 	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
@@ -69,7 +69,7 @@ public class GuiTFilterSelect extends GuiMekanism
 			Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 5, 0, 0));
 		}
 	}
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
@@ -77,10 +77,10 @@ public class GuiTFilterSelect extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRenderer.drawString(LangUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
-		
+
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
-	
+
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
@@ -103,20 +103,20 @@ public class GuiTFilterSelect extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
 	}
-	
+
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
-		
+
 		if(button == 0)
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
-			
+
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
 		}

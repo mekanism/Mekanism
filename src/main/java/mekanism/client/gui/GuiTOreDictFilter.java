@@ -193,7 +193,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GlStateManager.popMatrix();
 		}
-		
+
 		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 		{
 			drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
@@ -240,7 +240,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
 		}
-		
+
 		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 		{
 			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 0, 11, 11);
@@ -250,7 +250,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 		}
 
 		oreDictText.drawTextBox();
-		
+
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
@@ -309,16 +309,16 @@ public class GuiTOreDictFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setOreDictKey();
 			}
-			
+
 			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

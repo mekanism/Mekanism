@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
@@ -27,8 +26,8 @@ import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -85,12 +84,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 		if(!world.isRemote)
 		{
 			ChargeUtils.discharge(2, this);
-
-			if(!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
-			{
-				inputTank.receive(GasUtils.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()), true);
-			}
-			
+			TileUtils.receiveGas(inventory.get(0), inputTank);
 			CrystallizerRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
@@ -161,13 +155,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(dataStream.readBoolean())
-			{
-				inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				inputTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, inputTank);
 		}
 	}
 
@@ -175,17 +163,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
-		if(inputTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(inputTank.getGas().getGas().getID());
-			data.add(inputTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, inputTank);
 		return data;
 	}
 

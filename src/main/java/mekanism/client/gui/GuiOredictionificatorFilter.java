@@ -34,41 +34,41 @@ import org.lwjgl.opengl.GL11;
 public class GuiOredictionificatorFilter extends GuiMekanism
 {
 	public TileEntityOredictionificator tileEntity;
-	
+
 	public OredictionificatorFilter origFilter;
 
 	public OredictionificatorFilter filter = new OredictionificatorFilter();
-	
+
 	public GuiTextField filterText;
-	
+
 	public boolean isNew;
-	
+
 	public ItemStack renderStack = ItemStack.EMPTY;
-	
+
 	public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tentity, int index)
 	{
 		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
-		
+
 		origFilter = tileEntity.filters.get(index);
 		filter = tentity.filters.get(index).clone();
-		
+
 		updateRenderStack();
 	}
-	
+
 	public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tentity)
 	{
 		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
-		
+
 		isNew = true;
 	}
-	
+
 	public void setFilter()
 	{
 		String newFilter = filterText.getText();
 		boolean has = false;
-		
+
 		for(String s : TileEntityOredictionificator.possibleFilters)
 		{
 			if(newFilter.startsWith(s))
@@ -77,19 +77,19 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 				break;
 			}
 		}
-		
+
 		if(has)
 		{
 			filter.filter = newFilter;
 			filter.index = 0;
 			filterText.setText("");
-			
+
 			updateRenderStack();
 		}
-		
+
 		updateButtons();
 	}
-	
+
 	public void updateButtons()
 	{
 		if(filter.filter != null && !filter.filter.isEmpty())
@@ -99,7 +99,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		else {
 			buttonList.get(0).enabled = false;
 		}
-		
+
 		if(!isNew)
 		{
 			buttonList.get(1).enabled = true;
@@ -108,7 +108,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			buttonList.get(1).enabled = false;
 		}
 	}
-	
+
 	@Override
 	public void initGui()
 	{
@@ -129,10 +129,10 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		filterText = new GuiTextField(2, fontRenderer, guiWidth + 33, guiHeight + 48, 96, 12);
 		filterText.setMaxStringLength(TileEntityOredictionificator.MAX_LENGTH);
 		filterText.setFocused(true);
-		
+
 		updateButtons();
 	}
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
@@ -141,9 +141,9 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 		String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.filter");
 		fontRenderer.drawString(text, (xSize/2)-(fontRenderer.getStringWidth(text)/2), 6, 0x404040);
-		
+
 		fontRenderer.drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
-		
+
 		if(filter.filter != null)
 		{
 			renderScaledText(filter.filter, 32, 38, 0x404040, 111);
@@ -159,29 +159,29 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 				GlStateManager.popMatrix();
 			} catch(Exception ignored) {}
 		}
-		
+
 		if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
 		{
 			drawHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
 		}
-		
+
 		if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 		{
 			drawHoveringText(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
 		}
-		
+
 		if(xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60)
 		{
 			drawHoveringText(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
 		}
-		
+
 		if(xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35)
 		{
 			if(!renderStack.isEmpty())
 			{
 				String name = ItemRegistryUtils.getMod(renderStack);
 				String extra = name.equals("null") ? "" : " (" + name + ")";
-				
+
 				drawHoveringText(renderStack.getDisplayName() + extra, xAxis, yAxis);
 			}
 		}
@@ -218,7 +218,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 31, guiHeight + 21, 176 + 24, 12, 12, 12);
 		}
-		
+
 		if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 		{
 			drawTexturedModalRect(guiWidth + 63, guiHeight + 21, 176 + 12, 0, 12, 12);
@@ -226,7 +226,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 63, guiHeight + 21, 176 + 12, 12, 12, 12);
 		}
-		
+
 		if(xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60)
 		{
 			drawTexturedModalRect(guiWidth + 130, guiHeight + 48, 176, 0, 12, 12);
@@ -237,7 +237,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 		filterText.drawTextBox();
 	}
-	
+
 	@Override
 	public void keyTyped(char c, int i) throws IOException
 	{
@@ -257,12 +257,12 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			filterText.textboxKeyTyped(c, i);
 		}
 	}
-	
+
 	@Override
 	protected void actionPerformed(GuiButton guibutton) throws IOException
 	{
 		super.actionPerformed(guibutton);
-		
+
 		if(guibutton.id == 0)
 		{
 			if(!filterText.getText().isEmpty())
@@ -289,7 +289,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 		}
 	}
-	
+
 	@Override
 	public void updateScreen()
 	{
@@ -297,14 +297,14 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 		filterText.updateCursorCounter();
 	}
-	
+
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
 		filterText.mouseClicked(mouseX, mouseY, button);
-		
+
 		if(button == 0)
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
@@ -312,24 +312,24 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 52));
 			}
-			
+
 			if(xAxis >= 130 && xAxis <= 142 && yAxis >= 48 && yAxis <= 60)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				setFilter();
 			}
 
 			if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				
+
 				if(filter.filter != null)
 				{
 					List<ItemStack> ores = OreDictionary.getOres(filter.filter);
-					
+
 					if(filter.index > 0)
 					{
 						filter.index--;
@@ -337,19 +337,19 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 					else {
 						filter.index = ores.size()-1;
 					}
-					
+
 					updateRenderStack();
 				}
 			}
-			
+
 			if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				
+
 				if(filter.filter != null)
 				{
 					List<ItemStack> ores = OreDictionary.getOres(filter.filter);
-					
+
 					if(filter.index < ores.size()-1)
 					{
 						filter.index++;
@@ -357,13 +357,13 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 					else {
 						filter.index = 0;
 					}
-					
+
 					updateRenderStack();
 				}
 			}
 		}
 	}
-	
+
 	public void updateRenderStack()
 	{
 		if(filter.filter == null || filter.filter.isEmpty())
@@ -371,15 +371,15 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 			renderStack = ItemStack.EMPTY;
 			return;
 		}
-		
+
 		List<ItemStack> stacks = OreDictionary.getOres(filter.filter);
-		
+
 		if(stacks.isEmpty())
 		{
 			renderStack = ItemStack.EMPTY;
 			return;
 		}
-		
+
 		if(stacks.size()-1 >= filter.index)
 		{
 			renderStack = stacks.get(filter.index).copy();

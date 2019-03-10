@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
@@ -23,11 +22,11 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityMachine;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
@@ -83,10 +82,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 				injectTank.receive(GasUtils.removeGas(inventory.get(0), MekanismFluids.SulfuricAcid, injectTank.getNeeded()), true);
 			}
 
-			if(!inventory.get(2).isEmpty() && outputTank.getGas() != null)
-			{
-				outputTank.draw(GasUtils.addGas(inventory.get(2), outputTank.getGas()), true);
-			}
+			TileUtils.drawGas(inventory.get(2), outputTank);
 
 			boolean changed = false;
 			
@@ -124,11 +120,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
 			prevEnergy = getEnergy();
 
-			if(outputTank.getGas() != null)
-			{
-				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
-				outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(MekanismUtils.getRight(facing))), true);
-			}
+			TileUtils.emitGas(this, outputTank, gasOutput);
 		}
 	}
 
@@ -225,22 +217,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
 			operatingTicks = dataStream.readInt();
-	
-			if(dataStream.readBoolean())
-			{
-				injectTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				injectTank.setGas(null);
-			}
-	
-			if(dataStream.readBoolean())
-			{
-				outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				outputTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, injectTank);
+			TileUtils.readTankData(dataStream, outputTank);
 		}
 	}
 
@@ -248,29 +226,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 	public TileNetworkList getNetworkedData(TileNetworkList data)
 	{
 		super.getNetworkedData(data);
-
 		data.add(operatingTicks);
-
-		if(injectTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(injectTank.getGas().getGas().getID());
-			data.add(injectTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
-		if(outputTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(outputTank.getGas().getGas().getID());
-			data.add(outputTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-
+		TileUtils.addTankData(data, injectTank);
+		TileUtils.addTankData(data, outputTank);
 		return data;
 	}
 

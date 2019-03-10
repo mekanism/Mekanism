@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
@@ -30,6 +29,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.TileUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -104,19 +104,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		if(!world.isRemote)
 		{
-			if(!inventory.get(0).isEmpty() && gasTank.getGas() != null)
-			{
-				gasTank.draw(GasUtils.addGas(inventory.get(0), gasTank.getGas()), tier != GasTankTier.CREATIVE);
-			}
+			TileUtils.drawGas(inventory.get(0), gasTank, tier != GasTankTier.CREATIVE);
 
-			if(!inventory.get(1).isEmpty() && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
-			{
-				gasTank.receive(GasUtils.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded()), true);
-				
-				if(tier == GasTankTier.CREATIVE && gasTank.getGas() != null)
-				{
-					gasTank.getGas().amount = Integer.MAX_VALUE;
-				}
+			if (TileUtils.receiveGas(inventory.get(1), gasTank) && tier == GasTankTier.CREATIVE && gasTank.getGas() != null) {
+				gasTank.getGas().amount = Integer.MAX_VALUE;
 			}
 
 			if(gasTank.getGas() != null && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING))
@@ -319,14 +310,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			
 			tier = GasTankTier.values()[dataStream.readInt()];
 			gasTank.setMaxGas(tier.storage);
-	
-			if(dataStream.readBoolean())
-			{
-				gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				gasTank.setGas(null);
-			}
+			TileUtils.readTankData(dataStream, gasTank);
 	
 			dumping = GasMode.values()[dataStream.readInt()];
 			controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -370,16 +354,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		super.getNetworkedData(data);
 		
 		data.add(tier.ordinal());
-
-		if(gasTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(gasTank.getGas().getGas().getID());
-			data.add(gasTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
+		TileUtils.addTankData(data, gasTank);
 
 		data.add(dumping.ordinal());
 		data.add(controlType.ordinal());

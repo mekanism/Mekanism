@@ -131,7 +131,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
-		
+
 		if(!filter.replaceStack.isEmpty())
 		{
 			GlStateManager.pushMatrix();
@@ -140,7 +140,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 			RenderHelper.disableStandardItemLighting();
 			GlStateManager.popMatrix();
 		}
-		
+
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 		{
 			drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
@@ -182,7 +182,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
-		
+
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 		{
 			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 0, 14, 14);
@@ -207,7 +207,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 			GlStateManager.enableDepth();
 			GlStateManager.popMatrix();
 		}
-		
+
 		if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 		{
 			GlStateManager.pushMatrix();
@@ -224,7 +224,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 			GlStateManager.enableDepth();
 			GlStateManager.popMatrix();
 		}
-		
+
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
@@ -240,10 +240,10 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
 			}
-			
+
 			if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 			{
 				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -270,9 +270,9 @@ public class GuiMMaterialFilter extends GuiMekanism
 					filter.materialItem = ItemStack.EMPTY;
 				}
 
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
-			
+
 			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
 			{
 				boolean doNull = false;
@@ -300,7 +300,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 					filter.replaceStack = toUse;
 				}
 
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 			}
 		}
 	}
