@@ -1,5 +1,6 @@
 package mekanism.client.render.item;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
@@ -35,13 +36,13 @@ public class CustomItemModelFactory implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing facing, long rand) 
 	{
-		throw new UnsupportedOperationException();
+		return Collections.emptyList();
 	}
 
 	@Override
 	public boolean isAmbientOcclusion() 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.isAmbientOcclusion();
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class CustomItemModelFactory implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture() 
 	{
-		throw new UnsupportedOperationException();
+		return baseModel.getParticleTexture();
 	}
 
 	
