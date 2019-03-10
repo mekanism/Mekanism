@@ -354,7 +354,11 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			if(dataStream.readInt() == 1)
 			{
-				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
+				FluidStack fluidStack = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
+				if (dataStream.readBoolean()){
+					fluidStack.tag = PacketHandler.readNBT(dataStream);
+				}
+				fluidTank.setFluid(fluidStack);
 			}
 			else {
 				fluidTank.setFluid(null);
@@ -425,6 +429,12 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			data.add(1);
 			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
 			data.add(fluidTank.getFluid().amount);
+			if (fluidTank.getFluid().tag != null && !fluidTank.getFluid().tag.hasNoTags()){
+				data.add(true);
+				data.add(fluidTank.getFluid().tag);
+			} else {
+				data.add(false);
+			}
 		}
 		else {
 			data.add(0);
