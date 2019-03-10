@@ -43,54 +43,33 @@ import dan200.computercraft.api.ComputerCraftAPI;
  */
 public final class MekanismHooks
 {
-	public static final String COFH_CORE_MOD_ID = "cofhcore";
 	public static final String COFH_API_MOD_ID = "cofhapi";
 	public static final String IC2_MOD_ID = "ic2";
-	public static final String RAILCRAFT_MOD_ID = "railcraft";
-	public static final String THERMALEXPANSION_MOD_ID = "thermalexpansion";
 	public static final String COMPUTERCRAFT_MOD_ID = "computercraft";
 	public static final String APPLIED_ENERGISTICS_2_MOD_ID = "appliedenergistics2";
 	public static final String TESLA_MOD_ID = "tesla";
 	public static final String MCMULTIPART_MOD_ID = "mcmultipart";
 	public static final String REDSTONEFLUX_MOD_ID = "redstoneflux";
-	public static final String METALLURGY_3_CORE_MOD_ID = "Metallurgy3Core";
-	public static final String METALLURGY_3_BASE_MOD_ID = "Metallurgy3Base";
 	public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
 	public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
 	public static final String WAILA_MOD_ID = "Waila";
 	public static final String BUILDCRAFT_MOD_ID = "BuildCraft";
 
 	public boolean IC2Loaded = false;
-	public boolean RailcraftLoaded = false;
-	public boolean CoFHCoreLoaded = false;
-	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
 	public boolean AE2Loaded = false;
 	public boolean TeslaLoaded = false;
 	public boolean MCMPLoaded = false;
 	public boolean RFLoaded = false;
 
-	public boolean MetallurgyCoreLoaded = false;
-	public boolean MetallurgyBaseLoaded = false;
-
 	public void hook()
 	{
-		if(Loader.isModLoaded(COFH_CORE_MOD_ID)) CoFHCoreLoaded = true;
 		if(Loader.isModLoaded(IC2_MOD_ID)) IC2Loaded = true;
-		if(Loader.isModLoaded(RAILCRAFT_MOD_ID)) RailcraftLoaded = true;
-		if(Loader.isModLoaded(THERMALEXPANSION_MOD_ID)) TELoaded = true;
 		if(Loader.isModLoaded(COMPUTERCRAFT_MOD_ID)) CCLoaded = true;
 		if(Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID)) AE2Loaded = true;
 		if(Loader.isModLoaded(TESLA_MOD_ID)) TeslaLoaded = true;
 		if(Loader.isModLoaded(MCMULTIPART_MOD_ID)) MCMPLoaded = true;
 		if(Loader.isModLoaded(REDSTONEFLUX_MOD_ID)) RFLoaded = true;
-		
-		if(Loader.isModLoaded(METALLURGY_3_CORE_MOD_ID))
-		{
-			MetallurgyCoreLoaded = true;
-
-			if(Loader.isModLoaded(METALLURGY_3_BASE_MOD_ID)) MetallurgyBaseLoaded = true;
-		}
 
 		if(IC2Loaded)
 		{

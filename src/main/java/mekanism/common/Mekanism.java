@@ -118,10 +118,9 @@ import java.util.*;
 						"after:buildcraft;" +
 						"after:buildcraftapi;" +
 						"after:ic2;" +
-						"after:cofhcore;" +
 						"after:computercraft;" +
 						"after:galacticraft api;" +
-						"after:metallurgycore;"+
+						"after:metallurgy;"+
 						"after:crafttweaker"
 )
 @Mod.EventBusSubscriber()
