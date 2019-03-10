@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.input.Keyboard;
@@ -48,8 +49,9 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 		{
 			return dummyType.getColor();
 		}
-		
-		return infoHandler.getTank().getFluid().getFluid().getColor();
+
+		FluidStack fluidStack = infoHandler.getTank().getFluid();
+		return fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : 0;
 	}
 	
 	@Override
