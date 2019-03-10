@@ -2,6 +2,7 @@ package mekanism.api.gas;
 
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -47,6 +48,18 @@ public class Gas
 	public Gas(String s, ResourceLocation icon){
 		unlocalizedName = name = s;
 		iconLocation = icon;
+	}
+
+	/**
+	 * Creates a new Gas object with a defined name or key value and a specified color tint.
+	 * @param s - name or key to associate this Gas with
+	 * @param t - tint of this Gas
+	 */
+	public Gas(String s, int t)
+	{
+		unlocalizedName = name = s;
+		iconLocation = new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid");
+		tint = t;
 	}
 
 	/**
@@ -246,7 +259,7 @@ public class Gas
 		{
 			if(FluidRegistry.getFluid(name) == null)
 			{
-				fluid = new Fluid(name, getIcon(), getIcon());
+				fluid = new Fluid(name, getIcon(), getIcon(), getTint());
 				FluidRegistry.registerFluid(fluid);
 			}
 			else {
