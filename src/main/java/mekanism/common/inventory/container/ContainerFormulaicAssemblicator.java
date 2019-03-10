@@ -46,7 +46,7 @@ public class ContainerFormulaicAssemblicator extends Container {
                     }
 
                     @SideOnly(Side.CLIENT)
-                    public boolean func_111238_b() {
+                    public boolean isEnabled() {
                         return !tileEntity.autoMode;
                     }
                 });
