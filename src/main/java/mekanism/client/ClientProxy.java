@@ -22,7 +22,6 @@ import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiChemicalOxidizer;
 import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
-import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDictionary;
 import mekanism.client.gui.GuiDigitalMiner;
@@ -772,7 +771,7 @@ public class ClientProxy extends CommonProxy {
             case 0:
                 return new GuiDictionary(player.inventory);
             case 1:
-                return new GuiCredits();
+                break; // Used to be credits UI
             case 2:
                 return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner) tileEntity);
             case 3:

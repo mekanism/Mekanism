@@ -43,46 +43,20 @@ public class CommandMekanism extends CommandBase {
     public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] params) {
         if (params.length < 1) {
             sender.sendMessage(new TextComponentString(
-                  EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
-                        + " -------------"));
-            sender.sendMessage(new TextComponentString(
-                  EnumColor.GREY + " *Version: " + EnumColor.DARK_GREY + Mekanism.versionNumber));
-            sender.sendMessage(new TextComponentString(
-                  EnumColor.GREY + " *Latest Version: " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
-            sender.sendMessage(new TextComponentString(EnumColor.GREY + " *Developed on Mac OS X 10.8 Mountain Lion"));
-            sender.sendMessage(new TextComponentString(EnumColor.GREY + " *Code, textures, and ideas by aidancbrady"));
-            sender.sendMessage(
-                  new TextComponentString(EnumColor.GREY + " *Recent News: " + EnumColor.INDIGO + Mekanism.recentNews));
-            sender.sendMessage(new TextComponentString(
-                  EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                        + " -------------"));
+                  EnumColor.GREY + " * Version: " + EnumColor.DARK_GREY + Mekanism.versionNumber));
+            sender.sendMessage(new TextComponentString(EnumColor.GREY + " * Code, textures, and ideas by aidancbrady"));
         } else {
             if (params[0].equalsIgnoreCase("help")) {
                 if (params.length == 1) {
-                    sender.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
-                                + " -------------"));
                     sender.sendMessage(new TextComponentString(
                           EnumColor.INDIGO + " /mk" + EnumColor.GREY + " -- displays the main page."));
                     sender.sendMessage(new TextComponentString(
                           EnumColor.INDIGO + " /mk help" + EnumColor.GREY + " -- displays this guide."));
                     sender.sendMessage(new TextComponentString(
-                          EnumColor.INDIGO + " /mk version" + EnumColor.GREY + " -- displays the version number."));
-                    sender.sendMessage(new TextComponentString(EnumColor.INDIGO + " /mk latest" + EnumColor.GREY
-                          + " -- displays the latest version number."));
-                    sender.sendMessage(new TextComponentString(
-                          EnumColor.INDIGO + " /mk news" + EnumColor.GREY + " -- displays most recent recent news."));
-                    sender.sendMessage(new TextComponentString(
                           EnumColor.INDIGO + " /mk debug" + EnumColor.GREY + " -- toggles Mekanism's debug mode."));
                     sender.sendMessage(new TextComponentString(EnumColor.INDIGO + " /mk teleporter" + EnumColor.GREY
                           + " -- provides information on teleporters."));
-                    sender.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                                + " -------------"));
                 } else if (params[1].equalsIgnoreCase("teleporter")) {
-                    sender.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
-                                + " -------------"));
                     sender.sendMessage(new TextComponentString(
                           EnumColor.INDIGO + " /mk teleporter freq list" + EnumColor.GREY
                                 + " -- displays a list of the public frequencies."));
@@ -98,29 +72,7 @@ public class CommandMekanism extends CommandBase {
                     sender.sendMessage(new TextComponentString(
                           EnumColor.INDIGO + " /mk teleporter freq deleteAll [user]" + EnumColor.GREY
                                 + " -- removes all frequencies owned by a certain user."));
-                    sender.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                                + " -------------"));
                 }
-            } else if (params[0].equalsIgnoreCase("version")) {
-                if (!MekanismUtils.checkForUpdates((EntityPlayer) sender)) {
-                    if (general.updateNotifications || Mekanism.latestVersionNumber == null
-                          || Mekanism.recentNews == null || Mekanism.latestVersionNumber.equals("null")) {
-                        sender.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
-                              + " Minecraft is in offline mode, could not check for updates."));
-                    } else {
-                        sender.sendMessage(new TextComponentString(
-                              EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Your client is up to date."));
-                    }
-                }
-            } else if (params[0].equalsIgnoreCase("news")) {
-                sender.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Most recent news: " + EnumColor.INDIGO
-                            + Mekanism.recentNews));
-            } else if (params[0].equalsIgnoreCase("latest")) {
-                sender.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " The latest version for this mod is "
-                            + EnumColor.DARK_GREY + Mekanism.latestVersionNumber + EnumColor.GREY + "."));
             } else if (params[0].equalsIgnoreCase("debug")) {
                 MekanismAPI.debug = !MekanismAPI.debug;
                 sender.sendMessage(new TextComponentString(

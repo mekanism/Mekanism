@@ -65,10 +65,7 @@ public class ClientTickHandler {
     public static Set<IClientTicker> tickingSet = new HashSet<>();
     public static Map<EntityPlayer, TeleportData> portableTeleports = new HashMap<>();
     public static int wheelStatus = 0;
-    public boolean hasNotified = false;
     public boolean initHoliday = false;
-    public boolean preloadedSounds = false;
-    public boolean lastTickUpdate;
     public boolean shouldReset = false;
     private Map<String, CapeBufferDownload> donateDownload = new HashMap<>();
     private Map<String, CapeBufferDownload> aidanDownload = new HashMap<>();
@@ -199,11 +196,6 @@ public class ClientTickHandler {
 
     public void tickStart() {
         MekanismClient.ticksPassed++;
-
-        if (!hasNotified && mc.world != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null) {
-            MekanismUtils.checkForUpdates(mc.player);
-            hasNotified = true;
-        }
 
         if (!Mekanism.proxy.isPaused()) {
             for (Iterator<IClientTicker> iter = tickingSet.iterator(); iter.hasNext(); ) {

@@ -149,8 +149,8 @@ import org.apache.logging.log4j.Logger;
  *
  * @author AidanBrady
  */
-@Mod(modid = Mekanism.MODID, name = "Mekanism", version = "${version}", guiFactory = "mekanism.client.gui.ConfigGuiFactory", useMetadata = true,
-      acceptedMinecraftVersions = "[1.12,1.13)",
+@Mod(modid = Mekanism.MODID, name = "Mekanism", version = "${version}", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+      useMetadata = true, acceptedMinecraftVersions = "[1.12,1.13)",
       dependencies = "required-after:forge@[14.21.0.2373,);" +
             "after:redstoneflux;" +
             "after:mcmultipart;" +
@@ -224,14 +224,6 @@ public class Mekanism {
      * List of Mekanism modules loaded
      */
     public static List<IModule> modulesLoaded = new ArrayList<>();
-    /**
-     * The latest version number which is received from the Mekanism server
-     */
-    public static String latestVersionNumber;
-    /**
-     * The recent news which is received from the Mekanism server
-     */
-    public static String recentNews;
     /**
      * A list of the usernames of players who have donated to Mekanism.
      */
@@ -896,9 +888,6 @@ public class Mekanism {
 
         //Initialization notification
         logger.info("Version " + versionNumber + " initializing...");
-
-        //Get data from server
-        new ThreadGetData();
 
         //Register with ForgeChunkManager
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());

@@ -128,70 +128,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Checks for a new version of Mekanism.
-     */
-    public static boolean checkForUpdates(EntityPlayer entityplayer) {
-        try {
-            if (general.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null) {
-                if (!Mekanism.latestVersionNumber.equals("null")) {
-                    ArrayList<IModule> list = new ArrayList<>();
-
-                    for (IModule module : Mekanism.modulesLoaded) {
-                        if (Version.get(Mekanism.latestVersionNumber).comparedState(module.getVersion()) == 1) {
-                            list.add(module);
-                        }
-                    }
-
-                    if (Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list
-                          .isEmpty()) {
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
-                                    + " -------------"));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
-
-                        if (Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1) {
-                            entityplayer.sendMessage(new TextComponentString(
-                                  EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
-                        }
-
-                        for (IModule module : list) {
-                            entityplayer.sendMessage(new TextComponentString(
-                                  EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module
-                                        .getVersion()));
-                        }
-
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY
-                                    + Mekanism.latestVersionNumber));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO
-                                    + Mekanism.recentNews));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY
-                                    + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils
-                                    .localize("update.toDownload") + "."));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                                    + " -------------"));
-                        return true;
-                    } else if (Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1) {
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
-                                    .localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
-                        return true;
-                    }
-                } else {
-                    Mekanism.logger.info("Minecraft is in offline mode, could not check for updates.");
-                }
-            }
-        } catch (Exception ignored) {
-        }
-
-        return false;
-    }
-
-    /**
      * Updates the donator list by retrieving the most recent information from a foreign document.
      */
     public static void updateDonators() {
@@ -238,43 +174,6 @@ public final class MekanismUtils {
         }
 
         return builder.toString();
-    }
-
-    /**
-     * Checks if the mod doesn't need an update.
-     *
-     * @return if mod doesn't need an update
-     */
-    public static boolean noUpdates() {
-        if (Mekanism.latestVersionNumber.contains("null")) {
-            return true;
-        }
-
-        if (Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1) {
-            return false;
-        }
-
-        for (IModule module : Mekanism.modulesLoaded) {
-            if (module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if Minecraft is running in offline mode.
-     *
-     * @return if mod is running in offline mode.
-     */
-    public static boolean isOffline() {
-        try {
-            new URL("http://www.apple.com").openConnection().connect();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
     }
 
     /**
