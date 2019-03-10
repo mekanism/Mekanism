@@ -514,7 +514,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			return resource != null ? resource.amount : 0;
 		}
 		
-		if(resource != null && canFill(from, resource.getFluid()))
+		if(resource != null && canFill(from, resource))
 		{
 			int filled = fluidTank.fill(resource, doFill);
 			
@@ -543,7 +543,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		if(resource != null && canDrain(from, resource.getFluid()))
+		if(resource != null && canDrain(from, resource))
 		{
 			return fluidTank.drain(resource.amount, tier != FluidTankTier.CREATIVE && doDrain);
 		}
@@ -563,7 +563,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
 		TileEntity tile = world.getTileEntity(getPos().offset(EnumFacing.DOWN));
 		if(from == EnumFacing.DOWN && world != null)
@@ -582,18 +582,18 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		if(isActive && tile instanceof TileEntityFluidTank) // Only fill if tanks underneath have same fluid.
 		{
 			return (fluidTank.getFluid() == null && ((TileEntityFluidTank)tile).canFill(EnumFacing.UP, fluid)) ||
-					(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid);
+					(fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid));
 		}
 
-		return fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid;
+		return fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid);
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
 		if(fluidTank != null)
 		{
-			if(fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid)
+			if(fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid))
 			{
 				return !(isActive && from == EnumFacing.DOWN);
 

@@ -523,13 +523,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
-		return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid);
+		return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
 		return false;
 	}

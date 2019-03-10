@@ -331,13 +331,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
-		return fluid == FluidRegistry.LAVA && from != facing;
+		return fluid.getFluid() == FluidRegistry.LAVA && from != facing;
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
 		return false;
 	}

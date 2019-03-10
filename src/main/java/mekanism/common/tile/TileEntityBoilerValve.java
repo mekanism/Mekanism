@@ -129,7 +129,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{
@@ -140,7 +140,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{

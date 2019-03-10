@@ -422,7 +422,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(canFill(from, resource.getFluid()))
+		if(canFill(from, resource))
 		{
 			return fluidTank.fill(resource, doFill);
 		}
@@ -443,13 +443,13 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
-		return from == EnumFacing.UP && fluid == FluidRegistry.WATER;
+		return from == EnumFacing.UP && fluid.getFluid() == FluidRegistry.WATER;
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
 		return false;
 	}

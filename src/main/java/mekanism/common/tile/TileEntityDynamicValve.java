@@ -45,7 +45,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	{
 		if(structure != null && structure.fluidStored != null)
 		{
-			if(resource.getFluid() == structure.fluidStored.getFluid())
+			if(resource.isFluidEqual(structure.fluidStored))
 			{
 				return fluidTank.drain(resource.amount, doDrain);
 			}
@@ -66,15 +66,15 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
-		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && fluid != null && fluid.isFluidEqual(structure.fluidStored);
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
-		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && fluid != null && fluid.isFluidEqual(structure.fluidStored);
 	}
 	
 	@Override

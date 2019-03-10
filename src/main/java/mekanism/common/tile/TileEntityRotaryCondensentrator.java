@@ -377,7 +377,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(canFill(from, resource.getFluid()))
+		if(canFill(from, resource))
 		{
 			return fluidTank.fill(resource, doFill);
 		}
@@ -397,15 +397,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
-		return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().getFluid() == fluid);
+		return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(fluid) : fluidTank.getFluid().isFluidEqual(fluid));
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
-		return mode == 0 && from == MekanismUtils.getRight(facing);
+		return mode == 0 && from == MekanismUtils.getRight(facing) && fluid != null && fluid.isFluidEqual(fluidTank.getFluid());
 	}
 
 	@Override

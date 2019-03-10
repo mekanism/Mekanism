@@ -34,10 +34,10 @@ public class FluidHandlerWrapper implements IFluidHandler
 	@Override
 	public int fill(FluidStack resource, boolean doFill) 
 	{
-		if (side == null){
+		if (side == null || resource == null){
 			return 0;
 		}
-		if(wrapper.canFill(side, resource != null ? resource.getFluid() : null))
+		if(wrapper.canFill(side, resource))
 		{
 			return wrapper.fill(side, resource, doFill);
 		}
@@ -48,11 +48,11 @@ public class FluidHandlerWrapper implements IFluidHandler
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) 
 	{
-		if(side == null)
+		if(side == null || resource == null)
 		{
 			return null;
 		}
-		if(wrapper.canDrain(side, resource != null ? resource.getFluid() : null))
+		if(wrapper.canDrain(side, resource))
 		{
 			return wrapper.drain(side, resource, doDrain);
 		}

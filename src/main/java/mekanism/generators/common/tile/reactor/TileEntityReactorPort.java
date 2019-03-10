@@ -154,15 +154,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
-		return (getReactor() != null && fluid == FluidRegistry.WATER && !fluidEject);
+		return (getReactor() != null && fluid.getFluid() == FluidRegistry.WATER && !fluidEject);
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
-		return (getReactor() != null && fluid == FluidRegistry.getFluid("steam"));
+		return (getReactor() != null && fluid.getFluid() == FluidRegistry.getFluid("steam"));
 	}
 
 	@Override

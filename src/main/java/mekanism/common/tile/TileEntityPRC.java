@@ -358,7 +358,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(canFill(from, resource.getFluid()))
+		if(canFill(from, resource))
 		{
 			return inputFluidTank.fill(resource, doFill);
 		}
@@ -379,20 +379,20 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
 		SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
 		
 		if(data.hasSlot(0))
 		{
-			return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
+			return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().isFluidEqual(fluid);
 		}
 		
 		return false;
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
 		return false;
 	}

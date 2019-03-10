@@ -81,15 +81,15 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 	}
 
 	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	public boolean canFill(EnumFacing from, FluidStack fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, FluidStack fluid)
 	{
-		return fluid == FluidRegistry.WATER;
+		return fluid.getFluid() == FluidRegistry.WATER;
 	}
 	
 	@Override
