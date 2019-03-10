@@ -15,7 +15,7 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
     }
 }
 
@@ -323,7 +323,11 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelog = generatedChangelog
             // A file can also be set using: changelog = file('changelog.txt')
             releaseType = 'release'
-            mainArtifact coreJar
+            mainArtifact (coreJar){
+                relations {
+                    optionalDependency "mtlib"
+                }
+            }
             addArtifact apiJar
             addGameVersion '1.12'
             addGameVersion '1.12.1'
@@ -338,7 +342,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             releaseType = 'release'
             mainArtifact(toolsJar){
                 relations {
-                    requiredLibrary "mekanism"
+                    requiredDependency "mekanism"
                 }
             }
             addGameVersion '1.12'
@@ -354,7 +358,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             releaseType = 'release'
             mainArtifact(generatorsJar) {
                 relations {
-                    requiredLibrary "mekanism"
+                    requiredDependency "mekanism"
                 }
             }
             addGameVersion '1.12'
