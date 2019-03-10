@@ -1,10 +1,20 @@
 package mekanism.client.sound;
 
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.*;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.Sound;
+import net.minecraft.client.audio.SoundEventAccessor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -17,13 +27,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 // SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal
 // with:
@@ -44,10 +47,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @SideOnly(Side.CLIENT)
 public class SoundHandler {
+
     private static IdentityHashMap<EntityPlayer, Boolean> jetpackSounds = new IdentityHashMap();
     private static IdentityHashMap<EntityPlayer, Boolean> gasmaskSounds = new IdentityHashMap<>();
 
     private static Map<Long, ISound> soundMap = new HashMap<>();
+    private static boolean IN_MUFFLED_CHECK = false;
 
     public static void startSound(EntityPlayer player, String soundName) {
         ISound soundToPlay = null;
@@ -80,8 +85,8 @@ public class SoundHandler {
         if (s == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             s = new PositionedSoundRecord(soundLoc, SoundCategory.BLOCKS, volume, 1.0f,
-                    true, 0, ISound.AttenuationType.LINEAR,
-                    pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+                  true, 0, ISound.AttenuationType.LINEAR,
+                  pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
 
             // Force the underlying sound to get initialized
             // TODO: Understand what this is doing exactly
@@ -108,8 +113,6 @@ public class SoundHandler {
             soundMap.remove(posKey);
         }
     }
-
-    private static boolean IN_MUFFLED_CHECK = false;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTilePlaySound(PlaySoundEvent event) {
@@ -145,11 +148,11 @@ public class SoundHandler {
         resultSound = new TileSound(event.getSound(), resultSound.getVolume());
         event.setResultSound(resultSound);
 
-
         // Finally, update our soundMap so that we can actually have a shot at stopping this sound; note that we also
         // need to "unoffset" the sound position so that we build the correct key for the sound map
         // Aside: I really, really, wish Forge returned the final result sound as part of playSound :/
-        BlockPos pos = new BlockPos(resultSound.getXPosF() - 0.5f, resultSound.getYPosF() - 0.5f, resultSound.getZPosF() -0.5);
+        BlockPos pos = new BlockPos(resultSound.getXPosF() - 0.5f, resultSound.getYPosF() - 0.5f,
+              resultSound.getZPosF() - 0.5);
         soundMap.put(pos.toLong(), resultSound);
     }
 
@@ -186,7 +189,7 @@ public class SoundHandler {
                 if (s == this) {
                     // No filtering done, use the original sound's volume
                     volume = original.getVolume() * getMufflingFactor();
-                } else if (s == null){
+                } else if (s == null) {
                     // Full on mute; go ahead and shutdown
                     donePlaying = true;
                 } else {
@@ -199,10 +202,11 @@ public class SoundHandler {
         private float getMufflingFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity te = mc.world.getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
+            TileEntity te = mc.world
+                  .getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
             if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
-                return Math.max(0.001f, 1.0f - (mufflerCount / (float)Upgrade.MUFFLING.getMax()));
+                return Math.max(0.001f, 1.0f - (mufflerCount / (float) Upgrade.MUFFLING.getMax()));
             }
             return 0;
         }

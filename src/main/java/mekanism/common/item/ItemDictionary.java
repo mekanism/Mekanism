@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
-
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
@@ -18,64 +18,58 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
+public class ItemDictionary extends ItemMekanism {
 
-public class ItemDictionary extends ItemMekanism
-{
-	public ItemDictionary()
-	{
-		super();
-		setMaxStackSize(1);
-	}
+    public ItemDictionary() {
+        super();
+        setMaxStackSize(1);
+    }
 
-	@Nonnull
-	@Override
-	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
-	{
-		ItemStack stack = player.getHeldItem(hand);
-		
-		if(!player.isSneaking())
-		{
-			IBlockState state = world.getBlockState(pos);
-			Block block = state.getBlock();
+    @Nonnull
+    @Override
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
+          float hitY, float hitZ, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
 
-			if(world.isRemote)
-			{
-				ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
-				List<String> names = MekanismUtils.getOreDictName(testStack);
+        if (!player.isSneaking()) {
+            IBlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
 
-				if(!names.isEmpty())
-				{
-					player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.keysFound") + ":"));
+            if (world.isRemote) {
+                ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
+                List<String> names = MekanismUtils.getOreDictName(testStack);
 
-					for(String name : names)
-					{
-						player.sendMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
-					}
-				}
-				else {
-					player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.noKey") + "."));
-				}
-			}
+                if (!names.isEmpty()) {
+                    player.sendMessage(new TextComponentString(
+                          EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils
+                                .localize("tooltip.keysFound") + ":"));
 
-			return EnumActionResult.SUCCESS;
-		}
+                    for (String name : names) {
+                        player.sendMessage(new TextComponentString(EnumColor.DARK_GREEN + " - " + name));
+                    }
+                } else {
+                    player.sendMessage(new TextComponentString(
+                          EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils
+                                .localize("tooltip.noKey") + "."));
+                }
+            }
 
-		return EnumActionResult.PASS;
-	}
+            return EnumActionResult.SUCCESS;
+        }
 
-	@Nonnull
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand)
-	{
-		ItemStack itemstack = entityplayer.getHeldItem(hand);
-		
-		if(entityplayer.isSneaking())
-		{
-			entityplayer.openGui(Mekanism.instance, 0, world, 0, 0, 0);
-			return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
-		}
+        return EnumActionResult.PASS;
+    }
 
-		return new ActionResult<>(EnumActionResult.PASS, itemstack);
-	}
+    @Nonnull
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
+        ItemStack itemstack = entityplayer.getHeldItem(hand);
+
+        if (entityplayer.isSneaking()) {
+            entityplayer.openGui(Mekanism.instance, 0, world, 0, 0, 0);
+            return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
+        }
+
+        return new ActionResult<>(EnumActionResult.PASS, itemstack);
+    }
 }

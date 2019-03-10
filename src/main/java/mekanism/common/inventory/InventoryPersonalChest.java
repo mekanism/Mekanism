@@ -9,106 +9,90 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 
-public class InventoryPersonalChest extends InventoryBasic
-{
-	public EntityPlayer entityPlayer;
-	public ItemStack itemStack = ItemStack.EMPTY;
+public class InventoryPersonalChest extends InventoryBasic {
 
-	public boolean reading;
-	
-	public EnumHand currentHand = EnumHand.MAIN_HAND;
+    public EntityPlayer entityPlayer;
+    public ItemStack itemStack = ItemStack.EMPTY;
 
-	public InventoryPersonalChest(EntityPlayer player, EnumHand hand)
-	{
-		super("PersonalChest", false, 55);
-		entityPlayer = player;
-		currentHand = hand;
+    public boolean reading;
 
-		read();
-	}
+    public EnumHand currentHand = EnumHand.MAIN_HAND;
 
-	public InventoryPersonalChest(ItemStack stack)
-	{
-		super("PersonalChest", false, 55);
-		itemStack = stack;
+    public InventoryPersonalChest(EntityPlayer player, EnumHand hand) {
+        super("PersonalChest", false, 55);
+        entityPlayer = player;
+        currentHand = hand;
 
-		read();
-	}
+        read();
+    }
 
-	@Override
-	public void markDirty()
-	{
-		super.markDirty();
+    public InventoryPersonalChest(ItemStack stack) {
+        super("PersonalChest", false, 55);
+        itemStack = stack;
 
-		if(!reading)
-		{
-			write();
-		}
-	}
+        read();
+    }
 
-	@Override
-	public void openInventory(EntityPlayer player)
-	{
-		read();
-	}
+    @Override
+    public void markDirty() {
+        super.markDirty();
 
-	@Override
-	public void closeInventory(EntityPlayer player)
-	{
-		write();
-	}
+        if (!reading) {
+            write();
+        }
+    }
 
-	public void write()
-	{
-		NBTTagList tagList = new NBTTagList();
+    @Override
+    public void openInventory(EntityPlayer player) {
+        read();
+    }
 
-		for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
-		{
-			if(!getStackInSlot(slotCount).isEmpty())
-			{
-				NBTTagCompound tagCompound = new NBTTagCompound();
-				tagCompound.setByte("Slot", (byte)slotCount);
-				getStackInSlot(slotCount).writeToNBT(tagCompound);
-				tagList.appendTag(tagCompound);
-			}
-		}
+    @Override
+    public void closeInventory(EntityPlayer player) {
+        write();
+    }
 
-		if(!getStack().isEmpty())
-		{
-			((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
-		}
-	}
+    public void write() {
+        NBTTagList tagList = new NBTTagList();
 
-	public void read()
-	{
-		if(reading)
-		{
-			return;
-		}
+        for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
+            if (!getStackInSlot(slotCount).isEmpty()) {
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte("Slot", (byte) slotCount);
+                getStackInSlot(slotCount).writeToNBT(tagCompound);
+                tagList.appendTag(tagCompound);
+            }
+        }
 
-		reading = true;
+        if (!getStack().isEmpty()) {
+            ((ISustainedInventory) getStack().getItem()).setInventory(tagList, getStack());
+        }
+    }
 
-		NBTTagList tagList = ((ISustainedInventory)getStack().getItem()).getInventory(getStack());
+    public void read() {
+        if (reading) {
+            return;
+        }
 
-		if(tagList != null)
-		{
-			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
-			{
-				NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
-				byte slotID = tagCompound.getByte("Slot");
+        reading = true;
 
-				if(slotID >= 0 && slotID < getSizeInventory())
-				{
-					setInventorySlotContents(slotID, InventoryUtils.loadFromNBT(tagCompound));
-				}
-			}
-		}
+        NBTTagList tagList = ((ISustainedInventory) getStack().getItem()).getInventory(getStack());
 
-		reading = false;
-	}
+        if (tagList != null) {
+            for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
+                NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
+                byte slotID = tagCompound.getByte("Slot");
 
-	public ItemStack getStack()
-	{
-		return !itemStack.isEmpty() ? itemStack : entityPlayer.getHeldItem(currentHand);
-	}
+                if (slotID >= 0 && slotID < getSizeInventory()) {
+                    setInventorySlotContents(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                }
+            }
+        }
+
+        reading = false;
+    }
+
+    public ItemStack getStack() {
+        return !itemStack.isEmpty() ? itemStack : entityPlayer.getHeldItem(currentHand);
+    }
 }

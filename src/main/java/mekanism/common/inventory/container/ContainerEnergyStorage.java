@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import ic2.api.item.IElectricItem;
+import javax.annotation.Nonnull;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -11,9 +12,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
-
 public abstract class ContainerEnergyStorage extends Container {
+
     protected TileEntityContainerBlock tileEntity;
 
     protected ContainerEnergyStorage(InventoryPlayer inventory, TileEntityContainerBlock tileEntity) {

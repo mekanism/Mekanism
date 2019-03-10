@@ -7,16 +7,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine
-{
-	public GuiChemicalInjectionChamber(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity)
-	{
-		super(inventory, tentity);
-	}
-	
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.YELLOW;
-	}
+public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine {
+
+    public GuiChemicalInjectionChamber(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity) {
+        super(inventory, tentity);
+    }
+
+    @Override
+    public ProgressBar getProgressType() {
+        return ProgressBar.YELLOW;
+    }
 }

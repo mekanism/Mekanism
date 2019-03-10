@@ -1,5 +1,6 @@
 package mekanism.client.gui.robit;
 
+import java.io.IOException;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -12,10 +13,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
-
 @SideOnly(Side.CLIENT)
 public abstract class GuiRobit extends GuiMekanism {
+
     public EntityRobit robit;
 
     protected GuiRobit(EntityRobit robit, Container container) {
@@ -52,7 +52,8 @@ public abstract class GuiRobit extends GuiMekanism {
     protected void buttonClicked(int id) {
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         if (openGui(id)) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit.RobitMessage(PacketRobit.RobitPacketType.GUI, id, robit.getEntityId(), null));
+            Mekanism.packetHandler.sendToServer(
+                  new PacketRobit.RobitMessage(PacketRobit.RobitPacketType.GUI, id, robit.getEntityId(), null));
             mc.player.openGui(Mekanism.instance, 21 + id, mc.world, robit.getEntityId(), 0, 0);
         }
     }

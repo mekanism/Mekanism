@@ -1,11 +1,10 @@
 package mekanism.common.item;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.util.ItemDataUtils;
@@ -22,94 +21,82 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
+public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
 
-public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork
-{
-	public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
-	
-	public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
-	
-	public ItemWalkieTalkie()
-	{
-		super();
-		setMaxStackSize(1);
-	}
+    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation("mekanism:WalkieTalkie", "inventory");
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
-	{
-		super.addInformation(itemstack, world, list, flag);
+    public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
-		list.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.localize("gui." + (getOn(itemstack) ? "on" : "off")));
-		list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
-	}
-	
-	public static ModelResourceLocation getModel(int channel)
-	{
-		CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation("mekanism:WalkieTalkie_ch" + c, "inventory"));
-		
-		return CHANNEL_MODELS.get(channel);
-	}
+    public ItemWalkieTalkie() {
+        super();
+        setMaxStackSize(1);
+    }
 
-	@Nonnull
-	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand)
-	{
-		ItemStack itemStack = player.getHeldItem(hand);
-		
-		if(player.isSneaking())
-		{
-			setOn(itemStack, !getOn(itemStack));
-			
-			return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
-		}
+    public static ModelResourceLocation getModel(int channel) {
+        CHANNEL_MODELS
+              .computeIfAbsent(channel, c -> new ModelResourceLocation("mekanism:WalkieTalkie_ch" + c, "inventory"));
 
-		return new ActionResult<>(EnumActionResult.PASS, itemStack);
-	}
-	
-	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
-	{
-		return !ItemStack.areItemsEqual(oldStack, newStack);
-	}
+        return CHANNEL_MODELS.get(channel);
+    }
 
-	public void setOn(ItemStack itemStack, boolean on)
-	{
-		ItemDataUtils.setBoolean(itemStack, "on", on);
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+        super.addInformation(itemstack, world, list, flag);
 
-	public boolean getOn(ItemStack itemStack)
-	{
-		return ItemDataUtils.getBoolean(itemStack, "on");
-	}
+        list.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils
+              .localize("gui." + (getOn(itemstack) ? "on" : "off")));
+        list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(
+              itemstack));
+    }
 
-	public void setChannel(ItemStack itemStack, int channel)
-	{
-		ItemDataUtils.setInt(itemStack, "channel", channel);
-	}
+    @Nonnull
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
+        ItemStack itemStack = player.getHeldItem(hand);
 
-	public int getChannel(ItemStack itemStack)
-	{
-		int channel = ItemDataUtils.getInt(itemStack, "channel");
+        if (player.isSneaking()) {
+            setOn(itemStack, !getOn(itemStack));
 
-		if(channel == 0)
-		{
-			setChannel(itemStack, 1);
-			channel = 1;
-		}
+            return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
+        }
 
-		return channel;
-	}
+        return new ActionResult<>(EnumActionResult.PASS, itemStack);
+    }
 
-	@Override
-	public void handlePacketData(ItemStack stack, ByteBuf dataStream)
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			int channel = dataStream.readInt();
-			setChannel(stack, channel);
-		}
-	}
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged) {
+        return !ItemStack.areItemsEqual(oldStack, newStack);
+    }
+
+    public void setOn(ItemStack itemStack, boolean on) {
+        ItemDataUtils.setBoolean(itemStack, "on", on);
+    }
+
+    public boolean getOn(ItemStack itemStack) {
+        return ItemDataUtils.getBoolean(itemStack, "on");
+    }
+
+    public void setChannel(ItemStack itemStack, int channel) {
+        ItemDataUtils.setInt(itemStack, "channel", channel);
+    }
+
+    public int getChannel(ItemStack itemStack) {
+        int channel = ItemDataUtils.getInt(itemStack, "channel");
+
+        if (channel == 0) {
+            setChannel(itemStack, 1);
+            channel = 1;
+        }
+
+        return channel;
+    }
+
+    @Override
+    public void handlePacketData(ItemStack stack, ByteBuf dataStream) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            int channel = dataStream.readInt();
+            setChannel(stack, channel);
+        }
+    }
 }

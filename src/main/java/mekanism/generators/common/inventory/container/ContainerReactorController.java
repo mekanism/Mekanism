@@ -1,5 +1,6 @@
 package mekanism.generators.common.inventory.container;
 
+import javax.annotation.Nonnull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -11,9 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-
 public class ContainerReactorController extends ContainerGenerator {
+
     public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController generator) {
         super(inventory, generator);
 
@@ -71,6 +71,7 @@ public class ContainerReactorController extends ContainerGenerator {
     }
 
     public class SlotReactor extends Slot {
+
         public SlotReactor(IInventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
         }

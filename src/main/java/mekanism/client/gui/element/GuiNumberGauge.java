@@ -1,55 +1,51 @@
 package mekanism.client.gui.element;
 
 import static java.lang.Math.min;
+
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiNumberGauge extends GuiGauge
-{
-	INumberInfoHandler infoHandler;
+public class GuiNumberGauge extends GuiGauge {
 
-	public GuiNumberGauge(INumberInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
-	{
-		super(type, gui, def, x, y);
+    INumberInfoHandler infoHandler;
 
-		infoHandler = handler;
-	}
-	
-	@Override
-	public TransmissionType getTransmission()
-	{
-		return null;
-	}
+    public GuiNumberGauge(INumberInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
+        super(type, gui, def, x, y);
 
-	@Override
-	public int getScaledLevel()
-	{
-		return (int)((height-2) * min(infoHandler.getLevel() / infoHandler.getMaxLevel(), 1));
-	}
+        infoHandler = handler;
+    }
 
-	@Override
-	public TextureAtlasSprite getIcon()
-	{
-		return infoHandler.getIcon();
-	}
+    @Override
+    public TransmissionType getTransmission() {
+        return null;
+    }
 
-	@Override
-	public String getTooltipText()
-	{
-		return infoHandler.getText(infoHandler.getLevel());
-	}
+    @Override
+    public int getScaledLevel() {
+        return (int) ((height - 2) * min(infoHandler.getLevel() / infoHandler.getMaxLevel(), 1));
+    }
+
+    @Override
+    public TextureAtlasSprite getIcon() {
+        return infoHandler.getIcon();
+    }
+
+    @Override
+    public String getTooltipText() {
+        return infoHandler.getText(infoHandler.getLevel());
+    }
 
 
-	public interface INumberInfoHandler
-	{
-		TextureAtlasSprite getIcon();
+    public interface INumberInfoHandler {
 
-		double getLevel();
+        TextureAtlasSprite getIcon();
 
-		double getMaxLevel();
+        double getLevel();
 
-		String getText(double level);
-	}
+        double getMaxLevel();
+
+        String getText(double level);
+    }
 }

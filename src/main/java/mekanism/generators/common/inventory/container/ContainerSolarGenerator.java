@@ -5,6 +5,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerSolarGenerator extends ContainerGenerator {
+
     public ContainerSolarGenerator(InventoryPlayer inventory, TileEntitySolarGenerator generator) {
         super(inventory, generator);
     }

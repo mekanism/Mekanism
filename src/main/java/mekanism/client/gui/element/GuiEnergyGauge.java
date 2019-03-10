@@ -9,54 +9,50 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiEnergyGauge extends GuiGauge
-{
-	IEnergyInfoHandler infoHandler;
+public class GuiEnergyGauge extends GuiGauge {
 
-	public GuiEnergyGauge(IEnergyInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
-	{
-		super(type, gui, def, x, y);
+    IEnergyInfoHandler infoHandler;
 
-		infoHandler = handler;
-	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
-	}
-	
-	@Override
-	public TransmissionType getTransmission()
-	{
-		return TransmissionType.ENERGY;
-	}
+    public GuiEnergyGauge(IEnergyInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
+        super(type, gui, def, x, y);
 
-	@Override
-	public int getScaledLevel()
-	{
-		if(infoHandler.getEnergyStorage().getEnergy() == Double.MAX_VALUE)
-		{
-			return height-2;
-		}
-		
-		return (int)(infoHandler.getEnergyStorage().getEnergy()*(height-2) / infoHandler.getEnergyStorage().getMaxEnergy());
-	}
+        infoHandler = handler;
+    }
 
-	@Override
-	public TextureAtlasSprite getIcon()
-	{
-		return MekanismRenderer.energyIcon;
-	}
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
+    }
 
-	@Override
-	public String getTooltipText()
-	{
-		return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils.getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()) : LangUtils.localize("gui.empty");
-	}
+    @Override
+    public TransmissionType getTransmission() {
+        return TransmissionType.ENERGY;
+    }
 
-	public interface IEnergyInfoHandler
-	{
-		IStrictEnergyStorage getEnergyStorage();
-	}
+    @Override
+    public int getScaledLevel() {
+        if (infoHandler.getEnergyStorage().getEnergy() == Double.MAX_VALUE) {
+            return height - 2;
+        }
+
+        return (int) (infoHandler.getEnergyStorage().getEnergy() * (height - 2) / infoHandler.getEnergyStorage()
+              .getMaxEnergy());
+    }
+
+    @Override
+    public TextureAtlasSprite getIcon() {
+        return MekanismRenderer.energyIcon;
+    }
+
+    @Override
+    public String getTooltipText() {
+        return infoHandler.getEnergyStorage().getEnergy() > 0 ? MekanismUtils
+              .getEnergyDisplay(infoHandler.getEnergyStorage().getEnergy(),
+                    infoHandler.getEnergyStorage().getMaxEnergy()) : LangUtils.localize("gui.empty");
+    }
+
+    public interface IEnergyInfoHandler {
+
+        IStrictEnergyStorage getEnergyStorage();
+    }
 }

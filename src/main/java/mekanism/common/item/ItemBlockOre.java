@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
-
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -16,68 +16,61 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-
 /**
- * Item class for handling multiple ore block IDs.
- * 0: Osmium Ore
- * 1: Copper Ore
- * 2: Tin Ore
- * @author AidanBrady
+ * Item class for handling multiple ore block IDs. 0: Osmium Ore 1: Copper Ore 2: Tin Ore
  *
+ * @author AidanBrady
  */
-public class ItemBlockOre extends ItemBlock
-{
-	public Block metaBlock;
+public class ItemBlockOre extends ItemBlock {
 
-	public ItemBlockOre(Block block)
-	{
-		super(block);
-		metaBlock = block;
-		setHasSubtypes(true);
-	}
+    public Block metaBlock;
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
-	{
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
-		{
-			list.add("Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-		}
-		else {
-			list.addAll(MekanismUtils.splitTooltip(LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")), itemstack));
-		}
-	}
+    public ItemBlockOre(Block block) {
+        super(block);
+        metaBlock = block;
+        setHasSubtypes(true);
+    }
 
-	@Override
-	public int getMetadata(int i)
-	{
-		return i;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
+        if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
+            list.add(
+                  "Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode())
+                        + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
+        } else {
+            list.addAll(MekanismUtils.splitTooltip(
+                  LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")),
+                  itemstack));
+        }
+    }
 
-	@Nonnull
-	@Override
-	public String getTranslationKey(ItemStack itemstack)
-	{
-		String name;
+    @Override
+    public int getMetadata(int i) {
+        return i;
+    }
 
-		switch(itemstack.getItemDamage())
-		{
-			case 0:
-				name = "OsmiumOre";
-				break;
-			case 1:
-				name = "CopperOre";
-				break;
-			case 2:
-				name = "TinOre";
-				break;
-			default:
-				name = "Unknown";
-				break;
-		}
+    @Nonnull
+    @Override
+    public String getTranslationKey(ItemStack itemstack) {
+        String name;
 
-		return getTranslationKey() + "." + name;
-	}
+        switch (itemstack.getItemDamage()) {
+            case 0:
+                name = "OsmiumOre";
+                break;
+            case 1:
+                name = "CopperOre";
+                break;
+            case 2:
+                name = "TinOre";
+                break;
+            default:
+                name = "Unknown";
+                break;
+        }
+
+        return getTranslationKey() + "." + name;
+    }
 }

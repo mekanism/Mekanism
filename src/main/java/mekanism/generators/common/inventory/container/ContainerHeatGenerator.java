@@ -7,6 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerHeatGenerator extends ContainerFuelGenerator {
+
     public ContainerHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator generator) {
         super(inventory, generator);
     }

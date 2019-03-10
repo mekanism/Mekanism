@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-public interface IChunkLoadHandler 
-{
-	void onChunkLoad();
+public interface IChunkLoadHandler {
+
+    void onChunkLoad();
 }

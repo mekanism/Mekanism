@@ -10,67 +10,59 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
 
-public class GuiVisualsTab extends GuiElement
-{
-	private TileEntityDigitalMiner tileEntity;
+public class GuiVisualsTab extends GuiElement {
 
-	public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiVisualsTab.png"), gui, def);
+    private TileEntityDigitalMiner tileEntity;
 
-		tileEntity = tile;
-	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
-	}
+    public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiVisualsTab.png"), gui, def);
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        tileEntity = tile;
+    }
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
-		
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
-		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 18, 18, 18);
-		}
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
-		{
-			displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
-		}
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28) {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
+        } else {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 18, 18, 18);
+        }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(button == 0)
-		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
-			{
-				tileEntity.clientRendering = !tileEntity.clientRendering;
-	            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-			}
-		}
-	}
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28) {
+            displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
+                  xAxis, yAxis);
+        }
+
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
+
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (button == 0) {
+            if (xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28) {
+                tileEntity.clientRendering = !tileEntity.clientRendering;
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            }
+        }
+    }
 }

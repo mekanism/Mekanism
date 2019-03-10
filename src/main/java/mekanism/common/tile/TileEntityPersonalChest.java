@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import javax.annotation.Nonnull;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -12,112 +13,95 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 
-import javax.annotation.Nonnull;
+public class TileEntityPersonalChest extends TileEntityContainerBlock implements ISecurityTile {
 
-public class TileEntityPersonalChest extends TileEntityContainerBlock implements ISecurityTile
-{
-	public static int[] INV;
+    public static int[] INV;
 
-	public float lidAngle;
+    public float lidAngle;
 
-	public float prevLidAngle;
-	
-	public TileComponentSecurity securityComponent;
+    public float prevLidAngle;
 
-	public TileEntityPersonalChest()
-	{
-		super("PersonalChest");
-		inventory = NonNullList.withSize(54, ItemStack.EMPTY);
-		
-		securityComponent = new TileComponentSecurity(this);
-	}
+    public TileComponentSecurity securityComponent;
 
-	@Override
-	public void onUpdate()
-	{
-		prevLidAngle = lidAngle;
-		float increment = 0.1F;
+    public TileEntityPersonalChest() {
+        super("PersonalChest");
+        inventory = NonNullList.withSize(54, ItemStack.EMPTY);
 
-		if((playersUsing.size() > 0) && (lidAngle == 0.0F))
-		{
-			world.playSound(null, getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat()*0.1F) + 0.9F);
-		}
+        securityComponent = new TileComponentSecurity(this);
+    }
 
-		if((playersUsing.size() == 0 && lidAngle > 0.0F) || (playersUsing.size() > 0 && lidAngle < 1.0F))
-		{
-			float angle = lidAngle;
+    @Override
+    public void onUpdate() {
+        prevLidAngle = lidAngle;
+        float increment = 0.1F;
 
-			if(playersUsing.size() > 0)
-			{
-				lidAngle += increment;
-			}
-			else {
-				lidAngle -= increment;
-			}
+        if ((playersUsing.size() > 0) && (lidAngle == 0.0F)) {
+            world.playSound(null, getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F,
+                  SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat() * 0.1F) + 0.9F);
+        }
 
-			if(lidAngle > 1.0F)
-			{
-				lidAngle = 1.0F;
-			}
+        if ((playersUsing.size() == 0 && lidAngle > 0.0F) || (playersUsing.size() > 0 && lidAngle < 1.0F)) {
+            float angle = lidAngle;
 
-			float split = 0.5F;
+            if (playersUsing.size() > 0) {
+                lidAngle += increment;
+            } else {
+                lidAngle -= increment;
+            }
 
-			if(lidAngle < split && angle >= split)
-			{
-				world.playSound(null, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat()*0.1F) + 0.9F);
-			}
+            if (lidAngle > 1.0F) {
+                lidAngle = 1.0F;
+            }
 
-			if(lidAngle < 0.0F)
-			{
-				lidAngle = 0.0F;
-			}
-		}
-	}
+            float split = 0.5F;
 
-	@Override
-	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
-	{
-		return true;
-	}
+            if (lidAngle < split && angle >= split) {
+                world.playSound(null, getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D,
+                      SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F,
+                      (world.rand.nextFloat() * 0.1F) + 0.9F);
+            }
 
-	@Nonnull
-	@Override
-	public int[] getSlotsForFace(@Nonnull EnumFacing side)
-	{
-		if(side == EnumFacing.DOWN || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC)
-		{
-			return InventoryUtils.EMPTY;
-		}
-		else {
-			if(INV == null)
-			{
-				INV = new int[54];
+            if (lidAngle < 0.0F) {
+                lidAngle = 0.0F;
+            }
+        }
+    }
 
-				for(int i = 0; i < INV.length; i++)
-				{
-					INV[i] = i;
-				}
-			}
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
+        return true;
+    }
 
-			return INV;
-		}
-	}
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        if (side == EnumFacing.DOWN || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC) {
+            return InventoryUtils.EMPTY;
+        } else {
+            if (INV == null) {
+                INV = new int[54];
 
-	@Override
-	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
-	{
-		return true;
-	}
+                for (int i = 0; i < INV.length; i++) {
+                    INV[i] = i;
+                }
+            }
 
-	@Override
-	public boolean canSetFacing(int side)
-	{
-		return side != 0 && side != 1;
-	}
+            return INV;
+        }
+    }
 
-	@Override
-	public TileComponentSecurity getSecurity() 
-	{
-		return securityComponent;
-	}
+    @Override
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        return true;
+    }
+
+    @Override
+    public boolean canSetFacing(int side) {
+        return side != 0 && side != 1;
+    }
+
+    @Override
+    public TileComponentSecurity getSecurity() {
+        return securityComponent;
+    }
 }

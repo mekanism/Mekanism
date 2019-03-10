@@ -3,7 +3,6 @@ package mekanism.common.content.miner;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
-
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.util.BlockInfo;
@@ -17,152 +16,135 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.IFluidBlock;
 
-public class ThreadMinerSearch extends Thread
-{
-	public TileEntityDigitalMiner tileEntity;
+public class ThreadMinerSearch extends Thread {
 
-	public State state = State.IDLE;
+    public TileEntityDigitalMiner tileEntity;
 
-	public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
-	public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
+    public State state = State.IDLE;
 
-	public Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<>();
+    public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
+    public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
 
-	public int found = 0;
+    public Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<>();
 
-	public ThreadMinerSearch(TileEntityDigitalMiner tile)
-	{
-		tileEntity = tile;
-	}
+    public int found = 0;
 
-	@Override
-	public void run()
-	{
-		state = State.SEARCHING;
+    public ThreadMinerSearch(TileEntityDigitalMiner tile) {
+        tileEntity = tile;
+    }
 
-		if(!tileEntity.inverse && tileEntity.filters.isEmpty())
-		{
-			state = State.FINISHED;
-			return;
-		}
+    @Override
+    public void run() {
+        state = State.SEARCHING;
 
-		Coord4D coord = tileEntity.getStartingCoord();
-		int diameter = tileEntity.getDiameter();
-		int size = tileEntity.getTotalSize();
-		BlockInfo info = new BlockInfo(null, 0);
+        if (!tileEntity.inverse && tileEntity.filters.isEmpty()) {
+            state = State.FINISHED;
+            return;
+        }
 
-		for(int i = 0; i < size; i++)
-		{
-			int x = coord.x +i%diameter;
-			int z = coord.z +(i/diameter)%diameter;
-			int y = coord.y +(i/diameter/diameter);
+        Coord4D coord = tileEntity.getStartingCoord();
+        int diameter = tileEntity.getDiameter();
+        int size = tileEntity.getTotalSize();
+        BlockInfo info = new BlockInfo(null, 0);
 
-			if(tileEntity.isInvalid())
-			{
-				return;
-			}
+        for (int i = 0; i < size; i++) {
+            int x = coord.x + i % diameter;
+            int z = coord.z + (i / diameter) % diameter;
+            int y = coord.y + (i / diameter / diameter);
 
-			try {
-				if(tileEntity.getPos().getX() == x && tileEntity.getPos().getY() == y && tileEntity.getPos().getZ() == z)
-				{
-					continue;
-				}
-	
-				if(tileEntity.getWorld().getChunkProvider().getLoadedChunk(x >> 4, z >> 4) == null)
-				{
-					continue;
-				}
-	
-				TileEntity tile = tileEntity.getWorld().getTileEntity(new BlockPos(x, y, z));
-				
-				if(tile instanceof TileEntityBoundingBlock)
-				{
-					continue;
-				}
+            if (tileEntity.isInvalid()) {
+                return;
+            }
 
-				IBlockState state = tileEntity.getWorld().getBlockState(new BlockPos(x, y, z));
-				info.block = state.getBlock();
-				info.meta = state.getBlock().getMetaFromState(state);
-	
-				if(info.block instanceof BlockLiquid || info.block instanceof IFluidBlock)
-				{
-					continue;
-				}
-	
-				if(info.block != null && !tileEntity.getWorld().isAirBlock(new BlockPos(x, y, z)) && state.getBlockHardness(tileEntity.getWorld(), new BlockPos(x, y, z)) >= 0)
-				{
-					MinerFilter filterFound = null;
-					boolean canFilter;
-	
-					if(acceptedItems.containsKey(info))
-					{
-						filterFound = acceptedItems.get(info);
-					}
-					else {
-						ItemStack stack = new ItemStack(info.block, 1, info.meta);
-	
-						if(tileEntity.isReplaceStack(stack))
-						{
-							continue;
-						}
-	
-						for(MinerFilter filter : tileEntity.filters)
-						{
-							if(filter.canFilter(stack))
-							{
-								filterFound = filter;
-								break;
-							}
-						}
-	
-						acceptedItems.put(info, filterFound);
-					}
-					
-					canFilter = tileEntity.inverse == (filterFound == null);
-	
-					if(canFilter)
-					{
-						set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.getDimension()));
-						replaceMap.put(i, filterFound);
-						
-						found++;
-					}
-				}
-			} catch(Exception ignored) {}
-		}
+            try {
+                if (tileEntity.getPos().getX() == x && tileEntity.getPos().getY() == y
+                      && tileEntity.getPos().getZ() == z) {
+                    continue;
+                }
 
-		state = State.FINISHED;
-		tileEntity.oresToMine = oresToMine;
-		tileEntity.replaceMap = replaceMap;
-		MekanismUtils.saveChunk(tileEntity);
-	}
-	
-	public void set(int i, Coord4D location)
-	{
-		Chunk3D chunk = new Chunk3D(location);
+                if (tileEntity.getWorld().getChunkProvider().getLoadedChunk(x >> 4, z >> 4) == null) {
+                    continue;
+                }
 
-		oresToMine.computeIfAbsent(chunk, k -> new BitSet());
-		
-		oresToMine.get(chunk).set(i);
-	}
+                TileEntity tile = tileEntity.getWorld().getTileEntity(new BlockPos(x, y, z));
 
-	public void reset()
-	{
-		state = State.IDLE;
-	}
+                if (tile instanceof TileEntityBoundingBlock) {
+                    continue;
+                }
 
-	public enum State
-	{
-		IDLE("Not ready"),
-		SEARCHING("Searching"),
-		PAUSED("Paused"),
-		FINISHED("Ready");
+                IBlockState state = tileEntity.getWorld().getBlockState(new BlockPos(x, y, z));
+                info.block = state.getBlock();
+                info.meta = state.getBlock().getMetaFromState(state);
 
-		public String desc;
+                if (info.block instanceof BlockLiquid || info.block instanceof IFluidBlock) {
+                    continue;
+                }
 
-		State(String s)
-		{
-			desc = s;
-		}
-	}
+                if (info.block != null && !tileEntity.getWorld().isAirBlock(new BlockPos(x, y, z))
+                      && state.getBlockHardness(tileEntity.getWorld(), new BlockPos(x, y, z)) >= 0) {
+                    MinerFilter filterFound = null;
+                    boolean canFilter;
+
+                    if (acceptedItems.containsKey(info)) {
+                        filterFound = acceptedItems.get(info);
+                    } else {
+                        ItemStack stack = new ItemStack(info.block, 1, info.meta);
+
+                        if (tileEntity.isReplaceStack(stack)) {
+                            continue;
+                        }
+
+                        for (MinerFilter filter : tileEntity.filters) {
+                            if (filter.canFilter(stack)) {
+                                filterFound = filter;
+                                break;
+                            }
+                        }
+
+                        acceptedItems.put(info, filterFound);
+                    }
+
+                    canFilter = tileEntity.inverse == (filterFound == null);
+
+                    if (canFilter) {
+                        set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.getDimension()));
+                        replaceMap.put(i, filterFound);
+
+                        found++;
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        state = State.FINISHED;
+        tileEntity.oresToMine = oresToMine;
+        tileEntity.replaceMap = replaceMap;
+        MekanismUtils.saveChunk(tileEntity);
+    }
+
+    public void set(int i, Coord4D location) {
+        Chunk3D chunk = new Chunk3D(location);
+
+        oresToMine.computeIfAbsent(chunk, k -> new BitSet());
+
+        oresToMine.get(chunk).set(i);
+    }
+
+    public void reset() {
+        state = State.IDLE;
+    }
+
+    public enum State {
+        IDLE("Not ready"),
+        SEARCHING("Searching"),
+        PAUSED("Paused"),
+        FINISHED("Ready");
+
+        public String desc;
+
+        State(String s) {
+            desc = s;
+        }
+    }
 }

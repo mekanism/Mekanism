@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import java.io.File;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -11,80 +10,73 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CapeBufferDownload extends Thread
-{
-	public String username;
+public class CapeBufferDownload extends Thread {
 
-	public String staticCapeUrl;
+    public String username;
 
-	public ResourceLocation resourceLocation;
+    public String staticCapeUrl;
 
-	public ThreadDownloadImageData capeImage;
+    public ResourceLocation resourceLocation;
 
-	boolean downloaded = false;
+    public ThreadDownloadImageData capeImage;
 
-	public CapeBufferDownload(String name, String url)
-	{
-		username = name;
-		staticCapeUrl = url;
+    boolean downloaded = false;
 
-		setDaemon(true);
-		setName("Cape Download Thread");
-	}
+    public CapeBufferDownload(String name, String url) {
+        username = name;
+        staticCapeUrl = url;
 
-	@Override
-	public void run()
-	{
-		try {
-			download();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
+        setDaemon(true);
+        setName("Cape Download Thread");
+    }
 
-	private void download()
-	{
-		try {
-			resourceLocation = new ResourceLocation("mekanism/" + StringUtils.stripControlCodes(username));
+    @Override
+    public void run() {
+        try {
+            download();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-			capeImage = downloadCape();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+    private void download() {
+        try {
+            resourceLocation = new ResourceLocation("mekanism/" + StringUtils.stripControlCodes(username));
 
-		downloaded = true;
-	}
+            capeImage = downloadCape();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	public ThreadDownloadImageData getImage()
-	{
-		return capeImage;
-	}
+        downloaded = true;
+    }
 
-	public ResourceLocation getResourceLocation()
-	{
-		return resourceLocation;
-	}
-	
-	public ThreadDownloadImageData downloadCape() 
-	{
-		try {
-			File capeFile = new File(resourceLocation.getPath() + ".png");
-			
-			if(capeFile.exists())
-			{
-				capeFile.delete();
-			}
-			
-			TextureManager manager = Minecraft.getMinecraft().getTextureManager();
-			ThreadDownloadImageData data = new ThreadDownloadImageData(capeFile, staticCapeUrl, null, null);
+    public ThreadDownloadImageData getImage() {
+        return capeImage;
+    }
 
-			manager.loadTexture(resourceLocation, data);
-			
-			return data;
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
+    public ResourceLocation getResourceLocation() {
+        return resourceLocation;
+    }
+
+    public ThreadDownloadImageData downloadCape() {
+        try {
+            File capeFile = new File(resourceLocation.getPath() + ".png");
+
+            if (capeFile.exists()) {
+                capeFile.delete();
+            }
+
+            TextureManager manager = Minecraft.getMinecraft().getTextureManager();
+            ThreadDownloadImageData data = new ThreadDownloadImageData(capeFile, staticCapeUrl, null, null);
+
+            manager.loadTexture(resourceLocation, data);
+
+            return data;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

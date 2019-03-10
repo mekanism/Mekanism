@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.Map;
-
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -19,80 +18,74 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe>
-{
-	public TileEntityPurificationChamber()
-	{
-		super("purification", "PurificationChamber", BlockStateMachine.MachineType.PURIFICATION_CHAMBER.baseEnergy, usage.purificationChamberUsage, 200, 1);
-	}
+public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
 
-	@Override
-	public Map<AdvancedMachineInput, PurificationRecipe> getRecipes()
-	{
-		return Recipe.PURIFICATION_CHAMBER.get();
-	}
+    public TileEntityPurificationChamber() {
+        super("purification", "PurificationChamber", BlockStateMachine.MachineType.PURIFICATION_CHAMBER.baseEnergy,
+              usage.purificationChamberUsage, 200, 1);
+    }
 
-	@Override
-	public GasStack getItemGas(ItemStack itemstack)
-	{
-		if(itemstack.isItemEqual(new ItemStack(Items.FLINT))) return new GasStack(MekanismFluids.Oxygen, 10);
-		if(Block.getBlockFromItem(itemstack.getItem()) == MekanismBlocks.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Oxygen) return new GasStack(MekanismFluids.Oxygen, 1);
+    @Override
+    public Map<AdvancedMachineInput, PurificationRecipe> getRecipes() {
+        return Recipe.PURIFICATION_CHAMBER.get();
+    }
 
-		return null;
-	}
+    @Override
+    public GasStack getItemGas(ItemStack itemstack) {
+        if (itemstack.isItemEqual(new ItemStack(Items.FLINT))) {
+            return new GasStack(MekanismFluids.Oxygen, 10);
+        }
+        if (Block.getBlockFromItem(itemstack.getItem()) == MekanismBlocks.GasTank
+              && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
+              ((IGasItem) itemstack.getItem()).getGas(itemstack).getGas() == MekanismFluids.Oxygen) {
+            return new GasStack(MekanismFluids.Oxygen, 1);
+        }
 
-	@Override
-	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
-	{
-		if(stack.getGas() == MekanismFluids.Oxygen)
-		{
-			return gasTank.receive(stack, doTransfer);
-		}
+        return null;
+    }
 
-		return 0;
-	}
+    @Override
+    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+        if (stack.getGas() == MekanismFluids.Oxygen) {
+            return gasTank.receive(stack, doTransfer);
+        }
 
-	@Override
-	public boolean canReceiveGas(EnumFacing side, Gas type)
-	{
-		return type == MekanismFluids.Oxygen;
-	}
+        return 0;
+    }
 
-	@Override
-	public void handleSecondaryFuel()
-	{
-		if(!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0 && inventory.get(1).getItem() instanceof IGasItem)
-		{
-			GasStack removed = GasUtils.removeGas(inventory.get(1), MekanismFluids.Oxygen, gasTank.getNeeded());
-			gasTank.receive(removed, true);
-			return;
-		}
+    @Override
+    public boolean canReceiveGas(EnumFacing side, Gas type) {
+        return type == MekanismFluids.Oxygen;
+    }
 
-		super.handleSecondaryFuel();
-	}
+    @Override
+    public void handleSecondaryFuel() {
+        if (!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0 && inventory.get(1).getItem() instanceof IGasItem) {
+            GasStack removed = GasUtils.removeGas(inventory.get(1), MekanismFluids.Oxygen, gasTank.getNeeded());
+            gasTank.receive(removed, true);
+            return;
+        }
 
-	@Override
-	public boolean canTubeConnect(EnumFacing side)
-	{
-		return true;
-	}
+        super.handleSecondaryFuel();
+    }
 
-	@Override
-	public boolean isValidGas(Gas gas)
-	{
-		return gas == MekanismFluids.Oxygen;
-	}
+    @Override
+    public boolean canTubeConnect(EnumFacing side) {
+        return true;
+    }
 
-	@Override
-	public boolean upgradeableSecondaryEfficiency()
-	{
-		return true;
-	}
+    @Override
+    public boolean isValidGas(Gas gas) {
+        return gas == MekanismFluids.Oxygen;
+    }
 
-	@Override
-	public boolean useStatisticalMechanics()
-	{
-		return true;
-	}
+    @Override
+    public boolean upgradeableSecondaryEfficiency() {
+        return true;
+    }
+
+    @Override
+    public boolean useStatisticalMechanics() {
+        return true;
+    }
 }

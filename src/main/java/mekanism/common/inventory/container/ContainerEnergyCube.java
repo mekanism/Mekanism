@@ -6,6 +6,7 @@ import mekanism.common.tile.TileEntityEnergyCube;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerEnergyCube extends ContainerEnergyStorage {
+
     public ContainerEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube energyCube) {
         super(inventory, energyCube);
     }

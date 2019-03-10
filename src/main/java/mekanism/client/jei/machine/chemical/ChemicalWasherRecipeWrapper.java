@@ -7,25 +7,22 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ChemicalWasherRecipeWrapper implements IRecipeWrapper
-{
-	private final WasherRecipe recipe;
-	
-	public ChemicalWasherRecipeWrapper(WasherRecipe r)
-	{
-		recipe = r;
-	}
-	
-	@Override
-	public void getIngredients(IIngredients ingredients) 
-	{
-		ingredients.setInput(FluidStack.class, new FluidStack(FluidRegistry.WATER, 1000));
-		ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
-		ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
-	}
+public class ChemicalWasherRecipeWrapper implements IRecipeWrapper {
 
-	public WasherRecipe getRecipe()
-	{
-		return recipe;
-	}
+    private final WasherRecipe recipe;
+
+    public ChemicalWasherRecipeWrapper(WasherRecipe r) {
+        recipe = r;
+    }
+
+    @Override
+    public void getIngredients(IIngredients ingredients) {
+        ingredients.setInput(FluidStack.class, new FluidStack(FluidRegistry.WATER, 1000));
+        ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
+        ingredients.setOutput(GasStack.class, recipe.recipeOutput.output);
+    }
+
+    public WasherRecipe getRecipe() {
+        return recipe;
+    }
 }

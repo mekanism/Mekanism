@@ -7,38 +7,37 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class FlamethrowerSound extends PlayerSound
-{
-	private static ResourceLocation IDLE_SOUND = new ResourceLocation("mekanism", "item.flamethrower.idle");
-	private static ResourceLocation ON_SOUND = new ResourceLocation("mekanism", "item.flamethrower.active");
-	private static ResourceLocation OFF_SOUND = new ResourceLocation("mekanism", "item.flamethrower.active");
+public class FlamethrowerSound extends PlayerSound {
 
-	private boolean inUse;
+    private static ResourceLocation IDLE_SOUND = new ResourceLocation("mekanism", "item.flamethrower.idle");
+    private static ResourceLocation ON_SOUND = new ResourceLocation("mekanism", "item.flamethrower.active");
+    private static ResourceLocation OFF_SOUND = new ResourceLocation("mekanism", "item.flamethrower.active");
 
-	public FlamethrowerSound(EntityPlayer player)
-	{
-		super(player, IDLE_SOUND);
-		
-		inUse = ClientTickHandler.isFlamethrowerOn(player);
+    private boolean inUse;
 
-		this.positionedSoundLocation = inUse ? ON_SOUND : OFF_SOUND;
-	}
+    public FlamethrowerSound(EntityPlayer player) {
+        super(player, IDLE_SOUND);
 
-	@Override
-	public boolean shouldPlaySound() {
-		boolean hasFlamethrower = ClientTickHandler.hasFlamethrower(player);
-		boolean isFlamethrowerOn = ClientTickHandler.isFlamethrowerOn(player);
+        inUse = ClientTickHandler.isFlamethrowerOn(player);
 
-		if (!hasFlamethrower) {
-			return false;
-		}
+        this.positionedSoundLocation = inUse ? ON_SOUND : OFF_SOUND;
+    }
 
-		if (inUse != isFlamethrowerOn) {
-			inUse = isFlamethrowerOn;
-			this.positionedSoundLocation = inUse ? ON_SOUND : OFF_SOUND;
-		}
-		return true;
-	}
+    @Override
+    public boolean shouldPlaySound() {
+        boolean hasFlamethrower = ClientTickHandler.hasFlamethrower(player);
+        boolean isFlamethrowerOn = ClientTickHandler.isFlamethrowerOn(player);
+
+        if (!hasFlamethrower) {
+            return false;
+        }
+
+        if (inUse != isFlamethrowerOn) {
+            inUse = isFlamethrowerOn;
+            this.positionedSoundLocation = inUse ? ON_SOUND : OFF_SOUND;
+        }
+        return true;
+    }
 
 //	@Override
 //	public float getVolume()

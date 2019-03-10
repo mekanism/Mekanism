@@ -9,67 +9,64 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank>
-{
-	@Override
-	public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
-	{
-		if(tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0)
-		{
-			RenderData data = new RenderData();
+public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynamicTank> {
 
-			data.location = tileEntity.structure.renderLocation;
-			data.height = tileEntity.structure.volHeight-2;
-			data.length = tileEntity.structure.volLength;
-			data.width = tileEntity.structure.volWidth;
-			data.fluidType = tileEntity.structure.fluidStored.getFluid();
+    @Override
+    public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick,
+          int destroyStage, float alpha) {
+        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null
+              && tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0) {
+            RenderData data = new RenderData();
 
-			bindTexture(MekanismRenderer.getBlocksTexture());
+            data.location = tileEntity.structure.renderLocation;
+            data.height = tileEntity.structure.volHeight - 2;
+            data.length = tileEntity.structure.volLength;
+            data.width = tileEntity.structure.volWidth;
+            data.fluidType = tileEntity.structure.fluidStored.getFluid();
 
-			if(data.location != null && data.height >= 1)
-			{
-				FluidRenderer.push();
+            bindTexture(MekanismRenderer.getBlocksTexture());
 
-				FluidRenderer.translateToOrigin(data.location);
+            if (data.location != null && data.height >= 1) {
+                FluidRenderer.push();
 
-				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+                FluidRenderer.translateToOrigin(data.location);
 
-				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
-				{
-					GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.structure.fluidStored.amount / (float)tileEntity.clientCapacity)+MekanismRenderer.GAS_RENDER_BASE));
-					FluidRenderer.getTankDisplay(data).render();
-				}
-				else {
-					FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();
-				}
+                MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+                MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 
-				MekanismRenderer.glowOff();
-				MekanismRenderer.resetColor();
+                if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
+                    GL11.glColor4f(1F, 1F, 1F, Math.min(1,
+                          ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.clientCapacity)
+                                + MekanismRenderer.GAS_RENDER_BASE));
+                    FluidRenderer.getTankDisplay(data).render();
+                } else {
+                    FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();
+                }
 
-				FluidRenderer.pop();
+                MekanismRenderer.glowOff();
+                MekanismRenderer.resetColor();
 
-				for(ValveData valveData : tileEntity.valveViewing)
-				{
-					FluidRenderer.push();
+                FluidRenderer.pop();
 
-					FluidRenderer.translateToOrigin(valveData.location);
+                for (ValveData valveData : tileEntity.valveViewing) {
+                    FluidRenderer.push();
 
-					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-					MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+                    FluidRenderer.translateToOrigin(valveData.location);
 
-					FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
+                    MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 
-					MekanismRenderer.glowOff();
-					MekanismRenderer.resetColor();
+                    FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
 
-					FluidRenderer.pop();
-				}
-			}
-		}
-	}
+                    MekanismRenderer.glowOff();
+                    MekanismRenderer.resetColor();
+
+                    FluidRenderer.pop();
+                }
+            }
+        }
+    }
 }

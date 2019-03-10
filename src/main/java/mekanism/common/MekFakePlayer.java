@@ -1,14 +1,13 @@
 package mekanism.common;
 
 import com.mojang.authlib.GameProfile;
+import java.lang.ref.WeakReference;
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
-
-import javax.annotation.Nonnull;
-import java.lang.ref.WeakReference;
 
 // Global, shared FakePlayer for Mekanism-specific uses
 //
@@ -26,16 +25,12 @@ import java.lang.ref.WeakReference;
 // conditions here if the player is used in two threads at once, but given the nature of the calls and
 // the history, I believe this singleton approach is not unreasonable.
 public class MekFakePlayer extends FakePlayer {
+
+    private static MekFakePlayer INSTANCE;
+
     public MekFakePlayer(WorldServer world, GameProfile name) {
         super(world, name);
     }
-
-    @Override
-    public boolean isPotionApplicable(@Nonnull PotionEffect effect) {
-        return false;
-    }
-
-    private static MekFakePlayer INSTANCE;
 
     public static WeakReference<EntityPlayer> getInstance(WorldServer world) {
         if (INSTANCE == null) {
@@ -63,5 +58,10 @@ public class MekFakePlayer extends FakePlayer {
         if (INSTANCE != null && INSTANCE.world == world) {
             INSTANCE = null;
         }
+    }
+
+    @Override
+    public boolean isPotionApplicable(@Nonnull PotionEffect effect) {
+        return false;
     }
 }

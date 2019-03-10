@@ -9,6 +9,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerGasGenerator extends ContainerFuelGenerator {
+
     public ContainerGasGenerator(InventoryPlayer inventory, TileEntityGasGenerator generator) {
         super(inventory, generator);
     }
@@ -27,7 +28,8 @@ public class ContainerGasGenerator extends ContainerFuelGenerator {
     @Override
     protected ItemStack handleFuel(ItemStack slotStack, int slotID) {
         if (slotID != 0 && slotID != 1) {
-            if (((IGasItem) slotStack.getItem()).getGas(slotStack) != null && ((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.Hydrogen) {
+            if (((IGasItem) slotStack.getItem()).getGas(slotStack) != null
+                  && ((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.Hydrogen) {
                 if (!mergeItemStack(slotStack, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }

@@ -10,8 +10,8 @@ import stanhebben.zenscript.annotations.ZenOperator;
 @ZenClass("mod.mekanism.gas.IGasDefinition")
 @ModOnly("mtlib")
 @ZenRegister
-public interface IGasDefinition
-{
+public interface IGasDefinition {
+
     @ZenOperator(OperatorType.MUL)
     IGasStack asStack(int mb);
 

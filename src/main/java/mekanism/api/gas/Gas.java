@@ -14,313 +14,304 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * Gas - a class used to set specific properties of gasses when used or seen in-game.
- * @author aidancbrady
  *
+ * @author aidancbrady
  */
-public class Gas
-{
-	private String name;
+public class Gas {
 
-	private String unlocalizedName;
+    private String name;
 
-	private Fluid fluid;
+    private String unlocalizedName;
 
-	private ResourceLocation iconLocation;
+    private Fluid fluid;
 
-	private TextureAtlasSprite sprite;
+    private ResourceLocation iconLocation;
 
-	private boolean visible = true;
+    private TextureAtlasSprite sprite;
 
-	private boolean from_fluid = false;
+    private boolean visible = true;
 
-	private int tint = 0xFFFFFF;
+    private boolean from_fluid = false;
 
-	/**
-	 * Creates a new Gas object with a defined name or key value.
-	 * @param s - name or key to associate this Gas with
-	 */
-	public Gas(String s, String icon)
-	{
-		unlocalizedName = name = s;
-		iconLocation = new ResourceLocation(icon);
-	}
+    private int tint = 0xFFFFFF;
 
-	public Gas(String s, ResourceLocation icon){
-		unlocalizedName = name = s;
-		iconLocation = icon;
-	}
+    /**
+     * Creates a new Gas object with a defined name or key value.
+     *
+     * @param s - name or key to associate this Gas with
+     */
+    public Gas(String s, String icon) {
+        unlocalizedName = name = s;
+        iconLocation = new ResourceLocation(icon);
+    }
 
-	/**
-	 * Creates a new Gas object with a defined name or key value and a specified color tint.
-	 * @param s - name or key to associate this Gas with
-	 * @param t - tint of this Gas
-	 */
-	public Gas(String s, int t)
-	{
-		unlocalizedName = name = s;
-		iconLocation = new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid");
-		tint = t;
-	}
+    public Gas(String s, ResourceLocation icon) {
+        unlocalizedName = name = s;
+        iconLocation = icon;
+    }
 
-	/**
-	 * Creates a new Gas object that corresponds to the given Fluid
-	 */
-	public Gas(Fluid f)
-	{
-		unlocalizedName = name = f.getName();
-		iconLocation = f.getStill();
-		fluid = f;
-		from_fluid = true;
-		tint = f.getColor() & 0xFFFFFF;
-	}
+    /**
+     * Creates a new Gas object with a defined name or key value and a specified color tint.
+     *
+     * @param s - name or key to associate this Gas with
+     * @param t - tint of this Gas
+     */
+    public Gas(String s, int t) {
+        unlocalizedName = name = s;
+        iconLocation = new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid");
+        tint = t;
+    }
 
-	/**
-	 * Gets the name (key) of this Gas. This is NOT a translated or localized display name.
-	 * @return this Gas's name or key
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    /**
+     * Creates a new Gas object that corresponds to the given Fluid
+     */
+    public Gas(Fluid f) {
+        unlocalizedName = name = f.getName();
+        iconLocation = f.getStill();
+        fluid = f;
+        from_fluid = true;
+        tint = f.getColor() & 0xFFFFFF;
+    }
 
-	/**
-	 * Whether or not this is a visible gas.
-	 * @return if this gas is visible
-	 */
-	public boolean isVisible()
-	{
-		return visible;
-	}
+    /**
+     * Returns the Gas stored in the defined tag compound.
+     *
+     * @param nbtTags - tag compound to get the Gas from
+     * @return Gas stored in the tag compound
+     */
+    public static Gas readFromNBT(NBTTagCompound nbtTags) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
+            return null;
+        }
 
-	/**
-	 * Sets this gas's "visible" state to a new value. Setting it to 'false' will treat this gas as an internal gas, and it will not be displayed or accessed by other mods.
-	 * @param v - new visible state
-	 * @return this Gas object
-	 */
-	public Gas setVisible(boolean v)
-	{
-		visible = v;
+        return GasRegistry.getGas(nbtTags.getString("gasName"));
+    }
 
-		return this;
-	}
+    /**
+     * Gets the name (key) of this Gas. This is NOT a translated or localized display name.
+     *
+     * @return this Gas's name or key
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * DEPRECATED: Gets the unlocalized name of this Gas. Use getTranslationKey instead.
-	 * @return this Gas's unlocalized name
-	 */
-	@Deprecated
-	public String getUnlocalizedName() {
-		return getTranslationKey();
-	}
+    /**
+     * Whether or not this is a visible gas.
+     *
+     * @return if this gas is visible
+     */
+    public boolean isVisible() {
+        return visible;
+    }
 
-	/**
-	 * Gets the unlocalized name of this Gas.
-	 * @return this Gas's unlocalized name
-	 */
-	public String getTranslationKey()
-	{
-		return "gas." + unlocalizedName;
-	}
+    /**
+     * Sets this gas's "visible" state to a new value. Setting it to 'false' will treat this gas as an internal gas, and
+     * it will not be displayed or accessed by other mods.
+     *
+     * @param v - new visible state
+     * @return this Gas object
+     */
+    public Gas setVisible(boolean v) {
+        visible = v;
 
-	/**
-	 * Translates this Gas's unlocalized name and returns it as localized.
-	 * @return this Gas's localized name
-	 */
-	public String getLocalizedName()
-	{
-		return I18n.translateToLocal(getTranslationKey());
-	}
+        return this;
+    }
 
-	/**
-	 * DEPRECATED: Sets the unlocalized name of this Gas. Use setTranslationKey instead.
-	 * @param s - unlocalized name to set
-	 * @return this Gas object
-	 */
-	@Deprecated
-	public Gas setUnlocalizedName(String s)
-	{
-		return setTranslationKey(s);
-	}
+    /**
+     * DEPRECATED: Gets the unlocalized name of this Gas. Use getTranslationKey instead.
+     *
+     * @return this Gas's unlocalized name
+     */
+    @Deprecated
+    public String getUnlocalizedName() {
+        return getTranslationKey();
+    }
 
-	/**
-	 * Sets the unlocalized name of this Gas.
-	 * @param s - unlocalized name to set
-	 * @return this Gas object
-	 */
-	public Gas setTranslationKey(String s)
-	{
-		unlocalizedName = s;
+    /**
+     * DEPRECATED: Sets the unlocalized name of this Gas. Use setTranslationKey instead.
+     *
+     * @param s - unlocalized name to set
+     * @return this Gas object
+     */
+    @Deprecated
+    public Gas setUnlocalizedName(String s) {
+        return setTranslationKey(s);
+    }
 
-		return this;
-	}
+    /**
+     * Gets the unlocalized name of this Gas.
+     *
+     * @return this Gas's unlocalized name
+     */
+    public String getTranslationKey() {
+        return "gas." + unlocalizedName;
+    }
 
-	/**
-	 * Gets the IIcon associated with this Gas.
-	 * @return associated IIcon
-	 */
-	public ResourceLocation getIcon()
-	{
-		if(from_fluid)
-		{
-			return this.getFluid().getStill();
-		}
+    /**
+     * Sets the unlocalized name of this Gas.
+     *
+     * @param s - unlocalized name to set
+     * @return this Gas object
+     */
+    public Gas setTranslationKey(String s) {
+        unlocalizedName = s;
 
-		return iconLocation;
-	}
+        return this;
+    }
 
-	/**
-	 * Gets the Sprite associated with this Gas.
-	 * @return associated IIcon
-	 */
-	public TextureAtlasSprite getSprite()
-	{
-		if(from_fluid)
-		{
-			return MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
-		}
+    /**
+     * Translates this Gas's unlocalized name and returns it as localized.
+     *
+     * @return this Gas's localized name
+     */
+    public String getLocalizedName() {
+        return I18n.translateToLocal(getTranslationKey());
+    }
 
-		if (sprite == null){
-			sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getIcon().toString());
-		}
-		
-		return sprite;
-	}
+    /**
+     * Gets the IIcon associated with this Gas.
+     *
+     * @return associated IIcon
+     */
+    public ResourceLocation getIcon() {
+        if (from_fluid) {
+            return this.getFluid().getStill();
+        }
 
-	TextureAtlasSprite getSpriteRaw(){
-		return sprite;
-	}
+        return iconLocation;
+    }
 
-	/**
-	 * Sets this gas's icon.
-	 * @param map - IIcon to associate with this Gas
-	 * @return this Gas object
-	 */
-	public Gas registerIcon(TextureMap map)
-	{
-		map.registerSprite(iconLocation);
-		from_fluid = false;
-		
-		return this;
-	}
-	
-	public Gas updateIcon(TextureMap map)
-	{
-		TextureAtlasSprite tex = map.getTextureExtry(iconLocation.toString());
-		
-		if(tex != null)
-		{
-			sprite = tex;
-		}
-		
-		return this;
-	}
+    /**
+     * Gets the Sprite associated with this Gas.
+     *
+     * @return associated IIcon
+     */
+    public TextureAtlasSprite getSprite() {
+        if (from_fluid) {
+            return MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+        }
 
-	/**
-	 * Gets the ID associated with this gas.
-	 * @return the associated gas ID
-	 */
-	public int getID()
-	{
-		return GasRegistry.getGasID(this);
-	}
+        if (sprite == null) {
+            sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getIcon().toString());
+        }
 
-	/**
-	 * Writes this Gas to a defined tag compound.
-	 * @param nbtTags - tag compound to write this Gas to
-	 * @return the tag compound this gas was written to
-	 */
-	public NBTTagCompound write(NBTTagCompound nbtTags)
-	{
-		nbtTags.setString("gasName", getName());
+        return sprite;
+    }
 
-		return nbtTags;
-	}
+    TextureAtlasSprite getSpriteRaw() {
+        return sprite;
+    }
 
-	/**
-	 * Returns the Gas stored in the defined tag compound.
-	 * @param nbtTags - tag compound to get the Gas from
-	 * @return Gas stored in the tag compound
-	 */
-	public static Gas readFromNBT(NBTTagCompound nbtTags)
-	{
-		if(nbtTags == null || nbtTags.isEmpty())
-		{
-			return null;
-		}
+    /**
+     * Sets this gas's icon.
+     *
+     * @param map - IIcon to associate with this Gas
+     * @return this Gas object
+     */
+    public Gas registerIcon(TextureMap map) {
+        map.registerSprite(iconLocation);
+        from_fluid = false;
 
-		return GasRegistry.getGas(nbtTags.getString("gasName"));
-	}
+        return this;
+    }
 
-	/**
-	 * Whether or not this Gas has an associated fluid.
-	 * @return if this gas has a fluid
-	 */
-	public boolean hasFluid()
-	{
-		return fluid != null;
-	}
+    public Gas updateIcon(TextureMap map) {
+        TextureAtlasSprite tex = map.getTextureExtry(iconLocation.toString());
 
-	/**
-	 * Gets the fluid associated with this Gas.
-	 * @return fluid associated with this gas
-	 */
-	public Fluid getFluid()
-	{
-		return fluid;
-	}
+        if (tex != null) {
+            sprite = tex;
+        }
 
-	/**
-	 * Registers a new fluid out of this Gas or gets one from the FluidRegistry.
-	 * @return this Gas object
-	 */
-	public Gas registerFluid(String name)
-	{
-		if(fluid == null)
-		{
-			if(FluidRegistry.getFluid(name) == null)
-			{
-				fluid = new Fluid(name, getIcon(), getIcon(), getTint());
-				FluidRegistry.registerFluid(fluid);
-			}
-			else {
-				fluid = FluidRegistry.getFluid(name);
-			}
-		}
+        return this;
+    }
 
-		return this;
-	}
-	
-	/**
-	 * Registers a new fluid out of this Gas or gets one from the FluidRegistry.
-	 * Uses default gas name.
-	 * @return this Gas object
-	 */
-	public Gas registerFluid()
-	{
-		return registerFluid(getName());
-	}
+    /**
+     * Gets the ID associated with this gas.
+     *
+     * @return the associated gas ID
+     */
+    public int getID() {
+        return GasRegistry.getGasID(this);
+    }
 
-	@Override
-	public String toString()
-	{
-		return name;
-	}
+    /**
+     * Writes this Gas to a defined tag compound.
+     *
+     * @param nbtTags - tag compound to write this Gas to
+     * @return the tag compound this gas was written to
+     */
+    public NBTTagCompound write(NBTTagCompound nbtTags) {
+        nbtTags.setString("gasName", getName());
 
-	/**
-	 * Get the tint for rendering the gas
-	 * @return int representation of color in 0xRRGGBB format
-	 */
-	public int getTint()
-	{
-		return tint;
-	}
+        return nbtTags;
+    }
 
-	/**
-	 * Sets the tint for the gas
-	 * @param tint int representation of color in 0xRRGGBB format
-	 */
-	public void setTint(int tint)
-	{
-		this.tint = tint;
-	}
+    /**
+     * Whether or not this Gas has an associated fluid.
+     *
+     * @return if this gas has a fluid
+     */
+    public boolean hasFluid() {
+        return fluid != null;
+    }
+
+    /**
+     * Gets the fluid associated with this Gas.
+     *
+     * @return fluid associated with this gas
+     */
+    public Fluid getFluid() {
+        return fluid;
+    }
+
+    /**
+     * Registers a new fluid out of this Gas or gets one from the FluidRegistry.
+     *
+     * @return this Gas object
+     */
+    public Gas registerFluid(String name) {
+        if (fluid == null) {
+            if (FluidRegistry.getFluid(name) == null) {
+                fluid = new Fluid(name, getIcon(), getIcon(), getTint());
+                FluidRegistry.registerFluid(fluid);
+            } else {
+                fluid = FluidRegistry.getFluid(name);
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Registers a new fluid out of this Gas or gets one from the FluidRegistry. Uses default gas name.
+     *
+     * @return this Gas object
+     */
+    public Gas registerFluid() {
+        return registerFluid(getName());
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    /**
+     * Get the tint for rendering the gas
+     *
+     * @return int representation of color in 0xRRGGBB format
+     */
+    public int getTint() {
+        return tint;
+    }
+
+    /**
+     * Sets the tint for the gas
+     *
+     * @param tint int representation of color in 0xRRGGBB format
+     */
+    public void setTint(int tint) {
+        this.tint = tint;
+    }
 }

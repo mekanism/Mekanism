@@ -8,22 +8,20 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 30/04/16.
  */
-public class DefaultCableOutputter implements IStrictEnergyOutputter
-{
-	@Override
-    public double pullEnergy(EnumFacing side, double amount, boolean simulate)
-    {
-    	return 0;
+public class DefaultCableOutputter implements IStrictEnergyOutputter {
+
+    public static void register() {
+        CapabilityManager.INSTANCE
+              .register(IStrictEnergyOutputter.class, new NullStorage<>(), DefaultCableOutputter.class);
     }
-	
+
     @Override
-    public boolean canOutputEnergy(EnumFacing side)
-    {
-        return true;
+    public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
+        return 0;
     }
-    
-    public static void register()
-    {
-        CapabilityManager.INSTANCE.register(IStrictEnergyOutputter.class, new NullStorage<>(), DefaultCableOutputter.class);
+
+    @Override
+    public boolean canOutputEnergy(EnumFacing side) {
+        return true;
     }
 }

@@ -1,14 +1,14 @@
 package mekanism.generators.common.inventory.container;
 
+import javax.annotation.Nonnull;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
-import javax.annotation.Nonnull;
-
 public abstract class ContainerGenerator extends Container {
+
     protected TileEntityElectricBlock tileEntity;
 
     protected ContainerGenerator(InventoryPlayer inventory, TileEntityElectricBlock generator) {

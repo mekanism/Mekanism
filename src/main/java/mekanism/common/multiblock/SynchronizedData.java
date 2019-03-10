@@ -2,80 +2,68 @@ package mekanism.common.multiblock;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public abstract class SynchronizedData<T extends SynchronizedData<T>>
-{
-	public Set<Coord4D> locations = new HashSet<>();
+public abstract class SynchronizedData<T extends SynchronizedData<T>> {
 
-	public int volLength;
+    public Set<Coord4D> locations = new HashSet<>();
 
-	public int volWidth;
+    public int volLength;
 
-	public int volHeight;
+    public int volWidth;
 
-	public int volume;
-	
-	public String inventoryID;
-	
-	public boolean didTick;
+    public int volHeight;
 
-	public boolean hasRenderer;
+    public int volume;
 
-	public Coord4D renderLocation;
+    public String inventoryID;
 
-	public Coord4D minLocation;
-	public Coord4D maxLocation;
-	
-	public boolean destroyed;
-	
-	public Set<Coord4D> internalLocations = new HashSet<>();
-	
-	public NonNullList<ItemStack> getInventory()
-	{
-		return null;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		int code = 1;
-		code = 31 * code + locations.hashCode();
-		code = 31 * code + volLength;
-		code = 31 * code + volWidth;
-		code = 31 * code + volHeight;
-		code = 31 * code + volume;
-		return code;
-	}
+    public boolean didTick;
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj == null || obj.getClass() != getClass())
-		{
-			return false;
-		}
+    public boolean hasRenderer;
 
-		SynchronizedData<T> data = (SynchronizedData<T>)obj;
+    public Coord4D renderLocation;
 
-		if(!data.locations.equals(locations))
-		{
-			return false;
-		}
+    public Coord4D minLocation;
+    public Coord4D maxLocation;
 
-		if(data.volLength != volLength || data.volWidth != volWidth || data.volHeight != volHeight)
-		{
-			return false;
-		}
+    public boolean destroyed;
 
-		if(data.volume != volume)
-		{
-			return false;
-		}
+    public Set<Coord4D> internalLocations = new HashSet<>();
 
-		return true;
-	}
+    public NonNullList<ItemStack> getInventory() {
+        return null;
+    }
+
+    @Override
+    public int hashCode() {
+        int code = 1;
+        code = 31 * code + locations.hashCode();
+        code = 31 * code + volLength;
+        code = 31 * code + volWidth;
+        code = 31 * code + volHeight;
+        code = 31 * code + volume;
+        return code;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != getClass()) {
+            return false;
+        }
+
+        SynchronizedData<T> data = (SynchronizedData<T>) obj;
+
+        if (!data.locations.equals(locations)) {
+            return false;
+        }
+
+        if (data.volLength != volLength || data.volWidth != volWidth || data.volHeight != volHeight) {
+            return false;
+        }
+
+        return data.volume == volume;
+    }
 }

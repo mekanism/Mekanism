@@ -1,15 +1,14 @@
 package mekanism.tools.item;
 
+import java.util.HashSet;
+import javax.annotation.Nonnull;
 import mekanism.tools.common.ToolUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
-import java.util.HashSet;
-
 public class ItemMekanismPaxel extends ItemMekanismTool {
+
     public ItemMekanismPaxel(ToolMaterial toolMaterial) {
         super(4, -2.4F, toolMaterial, new HashSet<>());
     }

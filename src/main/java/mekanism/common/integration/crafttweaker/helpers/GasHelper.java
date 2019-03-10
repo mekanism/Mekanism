@@ -7,6 +7,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 
 public class GasHelper {
+
     private GasHelper() {
     }
 
@@ -29,8 +30,9 @@ public class GasHelper {
 
     public static GasStack[] toGases(IGasStack[] iStack) {
         GasStack[] stack = new GasStack[iStack.length];
-        for (int i = 0; i < stack.length; i++)
+        for (int i = 0; i < stack.length; i++) {
             stack[i] = toGas(iStack[i]);
+        }
         return stack;
     }
 }

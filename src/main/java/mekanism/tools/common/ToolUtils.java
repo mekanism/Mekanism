@@ -1,14 +1,14 @@
 package mekanism.tools.common;
 
+import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item.ToolMaterial;
 
-import javax.annotation.Nonnull;
-
 public class ToolUtils {
+
     public static boolean canPickaxeHarvest(@Nonnull IBlockState state, ToolMaterial toolMaterial) {
         Block block = state.getBlock();
 

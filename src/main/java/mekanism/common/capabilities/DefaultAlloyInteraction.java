@@ -7,13 +7,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class DefaultAlloyInteraction implements IAlloyInteraction
-{
-	@Override
-	public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal) {}
+public class DefaultAlloyInteraction implements IAlloyInteraction {
 
-	public static void register()
-	{
-        CapabilityManager.INSTANCE.register(IAlloyInteraction.class, new NullStorage<>(), DefaultAlloyInteraction.class);
-	}
+    public static void register() {
+        CapabilityManager.INSTANCE
+              .register(IAlloyInteraction.class, new NullStorage<>(), DefaultAlloyInteraction.class);
+    }
+
+    @Override
+    public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal) {
+    }
 }

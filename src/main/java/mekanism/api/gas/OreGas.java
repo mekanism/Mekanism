@@ -3,39 +3,34 @@ package mekanism.api.gas;
 import net.minecraft.util.text.translation.I18n;
 
 
-public class OreGas extends Gas
-{
-	private String oreName;
-	private OreGas cleanGas;
+public class OreGas extends Gas {
 
-	public OreGas(String s, String name)
-	{
-		super(s, "mekanism:blocks/liquid/Liquid" + (s.contains("clean") ? "Clean" : "") + "Ore");
+    private String oreName;
+    private OreGas cleanGas;
 
-		oreName = name;
+    public OreGas(String s, String name) {
+        super(s, "mekanism:blocks/liquid/Liquid" + (s.contains("clean") ? "Clean" : "") + "Ore");
 
-		setTint(0xf2cd67);//default old tint
-	}
+        oreName = name;
 
-	public boolean isClean()
-	{
-		return getCleanGas() == null;
-	}
+        setTint(0xf2cd67);//default old tint
+    }
 
-	public OreGas getCleanGas()
-	{
-		return cleanGas;
-	}
+    public boolean isClean() {
+        return getCleanGas() == null;
+    }
 
-	public OreGas setCleanGas(OreGas gas)
-	{
-		cleanGas = gas;
+    public OreGas getCleanGas() {
+        return cleanGas;
+    }
 
-		return this;
-	}
+    public OreGas setCleanGas(OreGas gas) {
+        cleanGas = gas;
 
-	public String getOreName()
-	{
-		return I18n.translateToLocal(oreName);
-	}
+        return this;
+    }
+
+    public String getOreName() {
+        return I18n.translateToLocal(oreName);
+    }
 }

@@ -7,16 +7,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class JetpackSound extends PlayerSound
-{
-	private static final ResourceLocation SOUND = new ResourceLocation("mekanism", "item.jetpack");
+public class JetpackSound extends PlayerSound {
 
-	public JetpackSound(EntityPlayer player) {
-		super(player, SOUND);
-	}
+    private static final ResourceLocation SOUND = new ResourceLocation("mekanism", "item.jetpack");
 
-	@Override
-	public boolean shouldPlaySound() {
-		return ClientTickHandler.isJetpackActive(player);
-	}
+    public JetpackSound(EntityPlayer player) {
+        super(player, SOUND);
+    }
+
+    @Override
+    public boolean shouldPlaySound() {
+        return ClientTickHandler.isJetpackActive(player);
+    }
 }

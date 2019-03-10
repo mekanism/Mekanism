@@ -3,10 +3,9 @@ package mekanism.generators.common.item;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
-
 import java.util.List;
 import java.util.UUID;
-
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
@@ -53,442 +52,369 @@ import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
-
 /**
- * Item class for handling multiple generator block IDs.
- * 0: Heat Generator
- * 1: Solar Generator
- * 3: Hydrogen Generator
- * 4: Bio-Generator
- * 5: Advanced Solar Generator
- * 6: Wind Generator
- * 7: Turbine Rotor
- * 8: Rotational Complex
- * 9: Electromagnetic Coil
- * 10: Turbine Casing
- * 11: Turbine Valve
- * 12: Turbine Vent
- * 13: Saturating Condenser
- * @author AidanBrady
+ * Item class for handling multiple generator block IDs. 0: Heat Generator 1: Solar Generator 3: Hydrogen Generator 4:
+ * Bio-Generator 5: Advanced Solar Generator 6: Wind Generator 7: Turbine Rotor 8: Rotational Complex 9: Electromagnetic
+ * Coil 10: Turbine Casing 11: Turbine Valve 12: Turbine Vent 13: Saturating Condenser
  *
+ * @author AidanBrady
  */
 
 @InterfaceList({
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
-	@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
+      @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+      @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem, ISecurityItem
-{
-	public Block metaBlock;
+public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory,
+      ISustainedTank, IEnergyContainerItem, ISecurityItem {
 
-	public ItemBlockGenerator(Block block)
-	{
-		super(block);
-		metaBlock = block;
-		setHasSubtypes(true);
-	}
-	
-	@Override
-	public int getItemStackLimit(ItemStack stack)
-	{
-		GeneratorType type = GeneratorType.get(stack);
-		
-		if(type!=null && type.maxEnergy == -1)
-		{
-			return 64;
-		}
-		else {
-			return 1;
-		}
-	}
+    public Block metaBlock;
 
-	@Override
-	public int getMetadata(int i)
-	{
-		return i;
-	}
+    public ItemBlockGenerator(Block block) {
+        super(block);
+        metaBlock = block;
+        setHasSubtypes(true);
+    }
 
-	@Nonnull
-	@Override
-	public String getTranslationKey(ItemStack itemstack)
-	{
-		GeneratorType generatorType = GeneratorType.get(itemstack);
-		if(generatorType == null)
-		{
-			return "KillMe!";
-		}
+    @Override
+    public int getItemStackLimit(ItemStack stack) {
+        GeneratorType type = GeneratorType.get(stack);
 
-		return getTranslationKey() + "." + generatorType.blockName;
-	}
+        if (type != null && type.maxEnergy == -1) {
+            return 64;
+        } else {
+            return 1;
+        }
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag)
-	{
-		GeneratorType type = GeneratorType.get(itemstack);
-		if (type==null)
-			return;
-		
-		if(type.maxEnergy > -1)
-		{
-			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
-			{
-				list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-				list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDesc") + ".");
-			}
-			else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
-			{
-				if(hasSecurity(itemstack))
-				{
-					list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-					list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
-					
-					if(SecurityUtils.isOverridden(itemstack, Side.CLIENT))
-					{
-						list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
-					}
-				}
-				
-				list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
-				
-				if(hasTank(itemstack))
-				{
-					if(getFluidStack(itemstack) != null)
-					{
-						list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
-					}
-				}
-	
-				list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
-			}
-			else {
-				list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
-			}
-		}
-		else {
-			if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
-			{
-				list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
-			}
-			else {
-				list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
-			}
-		}
-	}
+    @Override
+    public int getMetadata(int i) {
+        return i;
+    }
 
-	@Override
-	public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state)
-	{
-		boolean place = true;
-		Block block = world.getBlockState(pos).getBlock();
+    @Nonnull
+    @Override
+    public String getTranslationKey(ItemStack itemstack) {
+        GeneratorType generatorType = GeneratorType.get(itemstack);
+        if (generatorType == null) {
+            return "KillMe!";
+        }
 
-		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
-		{
-			if(!(block.isReplaceable(world, pos) && world.isAirBlock(pos.add(0, 1, 0))))
-			{
-				return false;
-			}
+        return getTranslationKey() + "." + generatorType.blockName;
+    }
 
-			outer:
-			for(int xPos = -1; xPos <= 1; xPos++)
-			{
-				for(int zPos =- 1; zPos <= 1; zPos++)
-				{
-					if(!world.isAirBlock(pos.add(xPos, 2, zPos)) || pos.getY()+2 > 255)
-					{
-						place = false;
-						break outer;
-					}
-				}
-			}
-		}
-		else if(stack.getItemDamage() == GeneratorType.WIND_GENERATOR.meta)
-		{
-			if(!block.isReplaceable(world, pos))
-			{
-				return false;
-			}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
+        GeneratorType type = GeneratorType.get(itemstack);
+        if (type == null) {
+            return;
+        }
 
-			for(int yPos = 1; yPos <= 4; yPos++)
-			{
-				if(!world.isAirBlock(pos.add(0, yPos, 0)) || pos.getY()+yPos > 255)
-				{
-					place = false;
-					break;
-				}
-			}
-		}
+        if (type.maxEnergy > -1) {
+            if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
+                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings
+                      .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
+                      .localize("tooltip.forDetails") + ".");
+                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
+                      .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
+                      .localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings
+                      .getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " "
+                      + LangUtils.localize("tooltip.forDesc") + ".");
+            } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
+                if (hasSecurity(itemstack)) {
+                    list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player,
+                          MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+                    list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils
+                          .getSecurityDisplay(itemstack, Side.CLIENT));
 
-		if(place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state))
-		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-			
-			if(tileEntity instanceof ISecurityTile)
-			{
-				ISecurityTile security = (ISecurityTile)tileEntity;
-				security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-				
-				if(hasSecurity(stack))
-				{
-					security.getSecurity().setMode(getSecurity(stack));
-				}
-				
-				if(getOwnerUUID(stack) == null)
-				{
-					security.getSecurity().setOwnerUUID(player.getUniqueID());
-				}
-			}
-			
-			if(tileEntity instanceof TileEntityElectricBlock)
-			{
-				((TileEntityElectricBlock)tileEntity).electricityStored = getEnergy(stack);
-			}
+                    if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
+                        list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
+                    }
+                }
 
-			if(tileEntity instanceof ISustainedInventory)
-			{
-				((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
-			}
-			
-			if(tileEntity instanceof ISustainedData)
-			{
-				if(stack.getTagCompound() != null)
-				{
-					((ISustainedData)tileEntity).readSustainedData(stack);
-				}
-			}
+                list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
+                      + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
 
-			if(tileEntity instanceof ISustainedTank)
-			{
-				if(hasTank(stack) && getFluidStack(stack) != null)
-				{
-					((ISustainedTank)tileEntity).setFluidStack(getFluidStack(stack), stack);
-				}
-			}
+                if (hasTank(itemstack)) {
+                    if (getFluidStack(itemstack) != null) {
+                        list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": "
+                              + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
+                    }
+                }
 
-			return true;
-		}
+                list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils
+                      .transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+            } else {
+                list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
+            }
+        } else {
+            if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
+                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings
+                      .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
+                      .localize("tooltip.forDetails") + ".");
+            } else {
+                list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
+            }
+        }
+    }
 
-		return false;
-	}
+    @Override
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
+        boolean place = true;
+        Block block = world.getBlockState(pos).getBlock();
 
-	@Override
-	public void setInventory(NBTTagList nbtTags, Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemDataUtils.setList((ItemStack)data[0], "Items", nbtTags);
-		}
-	}
+        if (stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta) {
+            if (!(block.isReplaceable(world, pos) && world.isAirBlock(pos.add(0, 1, 0)))) {
+                return false;
+            }
 
-	@Override
-	public NBTTagList getInventory(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			return ItemDataUtils.getList((ItemStack)data[0], "Items");
-		}
+            outer:
+            for (int xPos = -1; xPos <= 1; xPos++) {
+                for (int zPos = -1; zPos <= 1; zPos++) {
+                    if (!world.isAirBlock(pos.add(xPos, 2, zPos)) || pos.getY() + 2 > 255) {
+                        place = false;
+                        break outer;
+                    }
+                }
+            }
+        } else if (stack.getItemDamage() == GeneratorType.WIND_GENERATOR.meta) {
+            if (!block.isReplaceable(world, pos)) {
+                return false;
+            }
 
-		return null;
-	}
+            for (int yPos = 1; yPos <= 4; yPos++) {
+                if (!world.isAirBlock(pos.add(0, yPos, 0)) || pos.getY() + yPos > 255) {
+                    place = false;
+                    break;
+                }
+            }
+        }
 
-	@Override
-	public void setFluidStack(FluidStack fluidStack, Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack)data[0];
-			
-			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null)
-			{
-				ItemDataUtils.removeData(itemStack, "fluidTank");
-			}
-			else {
-				ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
-			}
-		}
-	}
+        if (place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
+            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
 
-	@Override
-	public FluidStack getFluidStack(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack)data[0];
+            if (tileEntity instanceof ISecurityTile) {
+                ISecurityTile security = (ISecurityTile) tileEntity;
+                security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
 
-			if(!ItemDataUtils.hasData(itemStack, "fluidTank"))
-			{
-				return null;
-			}
+                if (hasSecurity(stack)) {
+                    security.getSecurity().setMode(getSecurity(stack));
+                }
 
-			return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
-		}
+                if (getOwnerUUID(stack) == null) {
+                    security.getSecurity().setOwnerUUID(player.getUniqueID());
+                }
+            }
 
-		return null;
-	}
+            if (tileEntity instanceof TileEntityElectricBlock) {
+                ((TileEntityElectricBlock) tileEntity).electricityStored = getEnergy(stack);
+            }
 
-	@Override
-	public boolean hasTank(Object... data)
-	{
-		return data[0] instanceof ItemStack && ((ItemStack)data[0]).getItem() instanceof ISustainedTank && (((ItemStack)data[0]).getItemDamage() == 2);
-	}
+            if (tileEntity instanceof ISustainedInventory) {
+                ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
+            }
 
-	@Override
-	public double getEnergy(ItemStack itemStack)
-	{
-		return ItemDataUtils.getDouble(itemStack, "energyStored");
-	}
+            if (tileEntity instanceof ISustainedData) {
+                if (stack.getTagCompound() != null) {
+                    ((ISustainedData) tileEntity).readSustainedData(stack);
+                }
+            }
 
-	@Override
-	public void setEnergy(ItemStack itemStack, double amount)
-	{
-		ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
-	}
+            if (tileEntity instanceof ISustainedTank) {
+                if (hasTank(stack) && getFluidStack(stack) != null) {
+                    ((ISustainedTank) tileEntity).setFluidStack(getFluidStack(stack), stack);
+                }
+            }
 
-	@Override
-	public double getMaxEnergy(ItemStack itemStack)
-	{
-		GeneratorType generatorType = GeneratorType.get(itemStack);
-		return generatorType != null ? generatorType.maxEnergy : 0;
-	}
+            return true;
+        }
 
-	@Override
-	public double getMaxTransfer(ItemStack itemStack)
-	{
-		return getMaxEnergy(itemStack)*0.005;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean canReceive(ItemStack itemStack)
-	{
-		return false;
-	}
+    @Override
+    public void setInventory(NBTTagList nbtTags, Object... data) {
+        if (data[0] instanceof ItemStack) {
+            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
+        }
+    }
 
-	@Override
-	public boolean canSend(ItemStack itemStack)
-	{
-		GeneratorType generatorType = GeneratorType.get(itemStack);
-		return generatorType != null && generatorType.maxEnergy != -1;
-	}
+    @Override
+    public NBTTagList getInventory(Object... data) {
+        if (data[0] instanceof ItemStack) {
+            return ItemDataUtils.getList((ItemStack) data[0], "Items");
+        }
 
-	@Override
-	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
-	{
-		if(canReceive(theItem))
-		{
-			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*general.FROM_RF, energyNeeded);
+        return null;
+    }
 
-			if(!simulate)
-			{
-				setEnergy(theItem, getEnergy(theItem) + toReceive);
-			}
+    @Override
+    public void setFluidStack(FluidStack fluidStack, Object... data) {
+        if (data[0] instanceof ItemStack) {
+            ItemStack itemStack = (ItemStack) data[0];
 
-			return (int)Math.round(toReceive*general.TO_RF);
-		}
+            if (fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null) {
+                ItemDataUtils.removeData(itemStack, "fluidTank");
+            } else {
+                ItemDataUtils.setCompound(itemStack, "fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+            }
+        }
+    }
 
-		return 0;
-	}
+    @Override
+    public FluidStack getFluidStack(Object... data) {
+        if (data[0] instanceof ItemStack) {
+            ItemStack itemStack = (ItemStack) data[0];
 
-	@Override
-	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
-	{
-		if(canSend(theItem))
-		{
-			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*general.FROM_RF), energyRemaining);
+            if (!ItemDataUtils.hasData(itemStack, "fluidTank")) {
+                return null;
+            }
 
-			if(!simulate)
-			{
-				setEnergy(theItem, getEnergy(theItem) - toSend);
-			}
+            return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
+        }
 
-			return (int)Math.round(toSend*general.TO_RF);
-		}
+        return null;
+    }
 
-		return 0;
-	}
+    @Override
+    public boolean hasTank(Object... data) {
+        return data[0] instanceof ItemStack && ((ItemStack) data[0]).getItem() instanceof ISustainedTank && (
+              ((ItemStack) data[0]).getItemDamage() == 2);
+    }
 
-	@Override
-	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-	public int getEnergyStored(ItemStack theItem)
-	{
-		return (int)(getEnergy(theItem)*general.TO_RF);
-	}
+    @Override
+    public double getEnergy(ItemStack itemStack) {
+        return ItemDataUtils.getDouble(itemStack, "energyStored");
+    }
 
-	@Override
-	@Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
-	public int getMaxEnergyStored(ItemStack theItem)
-	{
-		return (int)(getMaxEnergy(theItem)*general.TO_RF);
-	}
+    @Override
+    public void setEnergy(ItemStack itemStack, double amount) {
+        ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+    }
 
-	@Override
-	@Method(modid = MekanismHooks.IC2_MOD_ID)
-	public IElectricItemManager getManager(ItemStack itemStack)
-	{
-		return IC2ItemManager.getManager(this);
-	}
-	
-	@Override
-	public UUID getOwnerUUID(ItemStack stack) 
-	{
-		if(ItemDataUtils.hasData(stack, "ownerUUID"))
-		{
-			return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
-		}
-		
-		return null;
-	}
+    @Override
+    public double getMaxEnergy(ItemStack itemStack) {
+        GeneratorType generatorType = GeneratorType.get(itemStack);
+        return generatorType != null ? generatorType.maxEnergy : 0;
+    }
 
-	@Override
-	public void setOwnerUUID(ItemStack stack, UUID owner) 
-	{
-		if(owner == null)
-		{
-			ItemDataUtils.removeData(stack, "ownerUUID");
-			return;
-		}
-		
-		ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
-	}
+    @Override
+    public double getMaxTransfer(ItemStack itemStack) {
+        return getMaxEnergy(itemStack) * 0.005;
+    }
 
-	@Override
-	public SecurityMode getSecurity(ItemStack stack) 
-	{
-		if(!general.allowProtection)
-		{
-			return SecurityMode.PUBLIC;
-		}
-		
-		return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
-	}
+    @Override
+    public boolean canReceive(ItemStack itemStack) {
+        return false;
+    }
 
-	@Override
-	public void setSecurity(ItemStack stack, SecurityMode mode) 
-	{
-		ItemDataUtils.setInt(stack, "security", mode.ordinal());
-	}
+    @Override
+    public boolean canSend(ItemStack itemStack) {
+        GeneratorType generatorType = GeneratorType.get(itemStack);
+        return generatorType != null && generatorType.maxEnergy != -1;
+    }
 
-	@Override
-	public boolean hasSecurity(ItemStack stack) 
-	{
-		GeneratorType type = GeneratorType.get(stack);
-		
-		return type!=null && type.hasModel;
-	}
-	
-	@Override
-	public boolean hasOwner(ItemStack stack)
-	{
-		return hasSecurity(stack);
-	}
-	
-	@Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
-    {
+    @Override
+    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+    public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
+        if (canReceive(theItem)) {
+            double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
+            double toReceive = Math.min(energy * general.FROM_RF, energyNeeded);
+
+            if (!simulate) {
+                setEnergy(theItem, getEnergy(theItem) + toReceive);
+            }
+
+            return (int) Math.round(toReceive * general.TO_RF);
+        }
+
+        return 0;
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+    public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
+        if (canSend(theItem)) {
+            double energyRemaining = getEnergy(theItem);
+            double toSend = Math.min((energy * general.FROM_RF), energyRemaining);
+
+            if (!simulate) {
+                setEnergy(theItem, getEnergy(theItem) - toSend);
+            }
+
+            return (int) Math.round(toSend * general.TO_RF);
+        }
+
+        return 0;
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+    public int getEnergyStored(ItemStack theItem) {
+        return (int) (getEnergy(theItem) * general.TO_RF);
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
+    public int getMaxEnergyStored(ItemStack theItem) {
+        return (int) (getMaxEnergy(theItem) * general.TO_RF);
+    }
+
+    @Override
+    @Method(modid = MekanismHooks.IC2_MOD_ID)
+    public IElectricItemManager getManager(ItemStack itemStack) {
+        return IC2ItemManager.getManager(this);
+    }
+
+    @Override
+    public UUID getOwnerUUID(ItemStack stack) {
+        if (ItemDataUtils.hasData(stack, "ownerUUID")) {
+            return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setOwnerUUID(ItemStack stack, UUID owner) {
+        if (owner == null) {
+            ItemDataUtils.removeData(stack, "ownerUUID");
+            return;
+        }
+
+        ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
+    }
+
+    @Override
+    public SecurityMode getSecurity(ItemStack stack) {
+        if (!general.allowProtection) {
+            return SecurityMode.PUBLIC;
+        }
+
+        return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
+    }
+
+    @Override
+    public void setSecurity(ItemStack stack, SecurityMode mode) {
+        ItemDataUtils.setInt(stack, "security", mode.ordinal());
+    }
+
+    @Override
+    public boolean hasSecurity(ItemStack stack) {
+        GeneratorType type = GeneratorType.get(stack);
+
+        return type != null && type.hasModel;
+    }
+
+    @Override
+    public boolean hasOwner(ItemStack stack) {
+        return hasSecurity(stack);
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
         return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper());
     }
 }

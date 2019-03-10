@@ -14,48 +14,51 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensio
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
-public class CommonPlayerTracker
-{
-	public CommonPlayerTracker()
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-	
-	@SubscribeEvent
-	public void onPlayerLoginEvent(PlayerLoggedInEvent event)
-	{
-		if(!event.player.world.isRemote)
-		{
-			Mekanism.packetHandler.sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP)event.player);
-			// TODO: Coalesce all these sync events into a single message
-			Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP)event.player);
+public class CommonPlayerTracker {
 
-			Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
-		}
-	}
+    public CommonPlayerTracker() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	@SubscribeEvent
-	public void onPlayerLogoutEvent(PlayerLoggedOutEvent event)
-	{
-		Mekanism.playerState.clearPlayer(event.player);
-		Mekanism.freeRunnerOn.remove(event.player.getName());
-	}
+    @SubscribeEvent
+    public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
+        if (!event.player.world.isRemote) {
+            Mekanism.packetHandler.sendTo(new ConfigSyncMessage(), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP) event.player);
+            // TODO: Coalesce all these sync events into a single message
+            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()),
+                  (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()),
+                  (EntityPlayerMP) event.player);
+            Mekanism.packetHandler
+                  .sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(
+                  new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null,
+                        false), (EntityPlayerMP) event.player);
 
-	@SubscribeEvent
-	public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event)
-	{
-		Mekanism.playerState.clearPlayer(event.player);
-		Mekanism.freeRunnerOn.remove(event.player.getName());
+            Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
+        }
+    }
 
-		if(!event.player.world.isRemote)
-		{
-			Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP)event.player);
-			Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP)event.player);
-		}
-	}
+    @SubscribeEvent
+    public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
+        Mekanism.playerState.clearPlayer(event.player);
+        Mekanism.freeRunnerOn.remove(event.player.getName());
+    }
+
+    @SubscribeEvent
+    public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
+        Mekanism.playerState.clearPlayer(event.player);
+        Mekanism.freeRunnerOn.remove(event.player.getName());
+
+        if (!event.player.world.isRemote) {
+            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()),
+                  (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()),
+                  (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(
+                  new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null,
+                        false), (EntityPlayerMP) event.player);
+        }
+    }
 }

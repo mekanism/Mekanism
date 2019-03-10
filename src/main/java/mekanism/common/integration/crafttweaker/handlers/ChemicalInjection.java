@@ -10,8 +10,8 @@ import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
-import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.InjectionRecipe;
@@ -24,22 +24,28 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ModOnly("mtlib")
 @ZenRegister
 public class ChemicalInjection {
+
     public static final String NAME = "Mekanism Chemical Injection Chamber";
 
     @ZenMethod
     public static void addRecipe(IItemStack itemInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER,
-                    new InjectionRecipe(new AdvancedMachineInput(InputHelper.toStack(itemInput), GasHelper.toGas(gasInput).getGas()),
-                            new ItemStackOutput(InputHelper.toStack(itemOutput)))));
+            CrafttweakerIntegration.LATE_ADDITIONS
+                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER,
+                        new InjectionRecipe(new AdvancedMachineInput(InputHelper.toStack(itemInput),
+                              GasHelper.toGas(gasInput).getGas()),
+                              new ItemStackOutput(InputHelper.toStack(itemOutput)))));
         }
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput, @Optional IIngredient gasInput) {
+    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
+          @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<AdvancedMachineInput, ItemStackOutput, InjectionRecipe>(NAME,
-                    RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER, new IngredientWrapper(itemOutput), new IngredientWrapper(itemInput, gasInput)));
+            CrafttweakerIntegration.LATE_REMOVALS
+                  .add(new RemoveMekanismRecipe<AdvancedMachineInput, ItemStackOutput, InjectionRecipe>(NAME,
+                        RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER, new IngredientWrapper(itemOutput),
+                        new IngredientWrapper(itemInput, gasInput)));
         }
     }
 }

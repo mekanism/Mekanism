@@ -12,19 +12,20 @@ import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tile.TileEntityFactory;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityBasicMachine<INPUT, OUTPUT, RECIPE> implements ITierUpgradeable {
+public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
+      TileEntityBasicMachine<INPUT, OUTPUT, RECIPE> implements ITierUpgradeable {
+
     /**
-     * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
+     * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound
+     * effect, and animated texture.
      *
-     * @param soundPath         - location of the sound effect
-     * @param name              - full name of this machine
-     * @param maxEnergy         - how much energy this machine can store
-     * @param baseEnergyUsage
-     * @param upgradeSlot
+     * @param soundPath - location of the sound effect
+     * @param name - full name of this machine
+     * @param maxEnergy - how much energy this machine can store
      * @param baseTicksRequired - how many ticks it takes to run a cycle
-     * @param location
      */
-    public TileEntityUpgradeableMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+    public TileEntityUpgradeableMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage,
+          int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
         super(soundPath, name, maxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired, location);
     }
 
@@ -61,7 +62,8 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         factory.upgradeComponent.readFrom(upgradeComponent);
         factory.upgradeComponent.setUpgradeSlot(0);
         factory.ejectorComponent.readFrom(ejectorComponent);
-        factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
+        factory.ejectorComponent
+              .setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
         factory.setRecipeType(type);
         factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
         factory.securityComponent.readFrom(securityComponent);

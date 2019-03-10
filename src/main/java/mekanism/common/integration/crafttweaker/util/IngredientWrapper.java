@@ -6,6 +6,7 @@ import crafttweaker.api.item.IngredientAny;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 
 public class IngredientWrapper {
+
     private final IIngredient left;
     private final IIngredient middle;
     private final IIngredient right;
@@ -77,6 +78,7 @@ public class IngredientWrapper {
     }
 
     public boolean isEmpty() {
-        return left.equals(IngredientAny.INSTANCE) && middle.equals(IngredientAny.INSTANCE) && right.equals(IngredientAny.INSTANCE) && infuseType.isEmpty();
+        return left.equals(IngredientAny.INSTANCE) && middle.equals(IngredientAny.INSTANCE) && right
+              .equals(IngredientAny.INSTANCE) && infuseType.isEmpty();
     }
 }

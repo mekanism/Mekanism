@@ -1,5 +1,7 @@
 package mekanism.generators.common.block;
 
+import buildcraft.api.tools.IToolWrench;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -36,290 +38,248 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import buildcraft.api.tools.IToolWrench;
 
-import javax.annotation.Nonnull;
+public abstract class BlockReactor extends Block implements ITileEntityProvider {
 
-public abstract class BlockReactor extends Block implements ITileEntityProvider
-{
+    public BlockReactor() {
+        super(Material.IRON);
+        setHardness(3.5F);
+        setResistance(8F);
+        setCreativeTab(Mekanism.tabMekanism);
+    }
 
-	public BlockReactor()
-	{
-		super(Material.IRON);
-		setHardness(3.5F);
-		setResistance(8F);
-		setCreativeTab(Mekanism.tabMekanism);
-	}
-	
-	public static BlockReactor getReactorBlock(ReactorBlock block)
-	{
-		return new BlockReactor()
-		{
-			@Override
-			public ReactorBlock getReactorBlock()
-			{
-				return block;
-			}
-		};
-	}
+    public static BlockReactor getReactorBlock(ReactorBlock block) {
+        return new BlockReactor() {
+            @Override
+            public ReactorBlock getReactorBlock() {
+                return block;
+            }
+        };
+    }
 
-	public abstract ReactorBlock getReactorBlock();
+    public abstract ReactorBlock getReactorBlock();
 
-	@Nonnull
-	@Override
-	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos)
-	{
-		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-		
-		if(tile instanceof TileEntityReactorController)
-		{
-			state = state.withProperty(BlockStateReactor.activeProperty, ((IActiveState)tile).getActive());
-		}
-		
-		if(tile instanceof TileEntityReactorPort)
-		{
-			state = state.withProperty(BlockStateReactor.activeProperty, ((TileEntityReactorPort)tile).fluidEject);
-		}
-		
-		return state;
-	}
+    @Nonnull
+    @Override
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
-	@Nonnull
-	@Override
-	public BlockStateContainer createBlockState()
-	{
-		return new BlockStateReactor(this, getTypeProperty());
-	}
+        if (tile instanceof TileEntityReactorController) {
+            state = state.withProperty(BlockStateReactor.activeProperty, ((IActiveState) tile).getActive());
+        }
 
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta & 0xF);
+        if (tile instanceof TileEntityReactorPort) {
+            state = state.withProperty(BlockStateReactor.activeProperty, ((TileEntityReactorPort) tile).fluidEject);
+        }
 
-		return getDefaultState().withProperty(getTypeProperty(), type);
-	}
+        return state;
+    }
 
-	@Override
-	public int getMetaFromState(IBlockState state)
-	{
-		ReactorBlockType type = state.getValue(getTypeProperty());
-		return type.meta;
-	}
+    @Nonnull
+    @Override
+    public BlockStateContainer createBlockState() {
+        return new BlockStateReactor(this, getTypeProperty());
+    }
 
-	@Override
-	public int damageDropped(IBlockState state)
-	{
-		return state.getBlock().getMetaFromState(state);
-	}
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta & 0xF);
 
-	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
-	{
-		if(!world.isRemote)
-		{
-			TileEntity tileEntity = world.getTileEntity(pos);
+        return getDefaultState().withProperty(getTypeProperty(), type);
+    }
 
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
-			}
-		}
-	}
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        ReactorBlockType type = state.getValue(getTypeProperty());
+        return type.meta;
+    }
 
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		if(world.isRemote)
-		{
-			return true;
-		}
+    @Override
+    public int damageDropped(IBlockState state) {
+        return state.getBlock().getMetaFromState(state);
+    }
 
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(pos);
-		int metadata = state.getBlock().getMetaFromState(state);
-		ItemStack stack = entityplayer.getHeldItem(hand);
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
+          BlockPos neighborPos) {
+        if (!world.isRemote) {
+            TileEntity tileEntity = world.getTileEntity(pos);
 
-		if(!stack.isEmpty())
-		{
-			if(MekanismUtils.isBCWrench(stack.getItem()) && !stack.getTranslationKey().contains("omniwrench"))
-			{
-				if(entityplayer.isSneaking())
-				{
-					dismantleBlock(world, pos, false);
-					return true;
-				}
+            if (tileEntity instanceof TileEntityBasicBlock) {
+                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            }
+        }
+    }
 
-				((IToolWrench)stack.getItem()).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer,
+          EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
+            return true;
+        }
 
-				return true;
-			}
-		}
+        TileEntityElectricBlock tileEntity = (TileEntityElectricBlock) world.getTileEntity(pos);
+        int metadata = state.getBlock().getMetaFromState(state);
+        ItemStack stack = entityplayer.getHeldItem(hand);
 
-		if(tileEntity instanceof TileEntityReactorController)
-		{
-			if(!entityplayer.isSneaking())
-			{
-				entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(), pos.getZ());
-				return true;
-			}
-		}
-		
-		if(tileEntity instanceof TileEntityReactorLogicAdapter)
-		{
-			if(!entityplayer.isSneaking())
-			{
-				entityplayer.openGui(MekanismGenerators.instance, BlockStateReactor.ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(), pos.getZ());
-				return true;
-			}
-		}
+        if (!stack.isEmpty()) {
+            if (MekanismUtils.isBCWrench(stack.getItem()) && !stack.getTranslationKey().contains("omniwrench")) {
+                if (entityplayer.isSneaking()) {
+                    dismantleBlock(world, pos, false);
+                    return true;
+                }
 
-		return false;
-	}
+                ((IToolWrench) stack.getItem()).wrenchUsed(entityplayer, hand, stack,
+                      new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
 
-	@Override
-	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
-	{
-		for(BlockStateReactor.ReactorBlockType type : BlockStateReactor.ReactorBlockType.values())
-		{
-			if(type.blockType == getReactorBlock())
-			{
-				list.add(new ItemStack(this, 1, type.meta));
-			}
-		}
-	}
+                return true;
+            }
+        }
 
-	@Override
-	public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state)
-	{
-		int metadata = state.getBlock().getMetaFromState(state);
-		
-		if(ReactorBlockType.get(getReactorBlock(), metadata) == null)
-		{
-			return null;
-		}
+        if (tileEntity instanceof TileEntityReactorController) {
+            if (!entityplayer.isSneaking()) {
+                entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world,
+                      pos.getX(), pos.getY(), pos.getZ());
+                return true;
+            }
+        }
 
-		return ReactorBlockType.get(getReactorBlock(), metadata).create();
-	}
+        if (tileEntity instanceof TileEntityReactorLogicAdapter) {
+            if (!entityplayer.isSneaking()) {
+                entityplayer.openGui(MekanismGenerators.instance,
+                      BlockStateReactor.ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(),
+                      pos.getZ());
+                return true;
+            }
+        }
 
-	@Nonnull
-	@Override
-	public BlockRenderLayer getRenderLayer()
-	{
-		return this == GeneratorsBlocks.Reactor ? BlockRenderLayer.CUTOUT : BlockRenderLayer.TRANSLUCENT;
-	}
+        return false;
+    }
 
-	@Nonnull
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state)
-	{
-		return EnumBlockRenderType.MODEL;
-	}
+    @Override
+    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
+        for (BlockStateReactor.ReactorBlockType type : BlockStateReactor.ReactorBlockType.values()) {
+            if (type.blockType == getReactorBlock()) {
+                list.add(new ItemStack(this, 1, type.meta));
+            }
+        }
+    }
 
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
+    @Override
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
+        int metadata = state.getBlock().getMetaFromState(state);
 
-	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
-	@Override
-	public TileEntity createNewTileEntity(@Nonnull World world, int meta)
-	{
-		return null;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
-	{
-		int meta = state.getBlock().getMetaFromState(state);
-		ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta);
-		
-		if(type == ReactorBlockType.REACTOR_GLASS || type == ReactorBlockType.LASER_FOCUS_MATRIX)
-		{
-			IBlockState stateOffset = world.getBlockState(pos.offset(side));
-			if(this == stateOffset.getBlock()) {
-				int metaOffset = stateOffset.getBlock().getMetaFromState(stateOffset);
-				ReactorBlockType typeOffset = ReactorBlockType.get(getReactorBlock(), metaOffset);
-				if (typeOffset == ReactorBlockType.REACTOR_GLASS || typeOffset == ReactorBlockType.LASER_FOCUS_MATRIX) {
-					return false;
-				}
-			}
-		}
-			
-		return super.shouldSideBeRendered(state, world, pos, side);
-	}
-	
-	@Override
-	public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
-    {
-		TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-		
-		if(tile instanceof TileEntityReactorLogicAdapter)
-		{
-			return ((TileEntityReactorLogicAdapter)tile).checkMode() ? 15 : 0;
-		}
-		
+        if (ReactorBlockType.get(getReactorBlock(), metadata) == null) {
+            return null;
+        }
+
+        return ReactorBlockType.get(getReactorBlock(), metadata).create();
+    }
+
+    @Nonnull
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return this == GeneratorsBlocks.Reactor ? BlockRenderLayer.CUTOUT : BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Nonnull
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
+
+    /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
+    @Override
+    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
+        return null;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
+          EnumFacing side) {
+        int meta = state.getBlock().getMetaFromState(state);
+        ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta);
+
+        if (type == ReactorBlockType.REACTOR_GLASS || type == ReactorBlockType.LASER_FOCUS_MATRIX) {
+            IBlockState stateOffset = world.getBlockState(pos.offset(side));
+            if (this == stateOffset.getBlock()) {
+                int metaOffset = stateOffset.getBlock().getMetaFromState(stateOffset);
+                ReactorBlockType typeOffset = ReactorBlockType.get(getReactorBlock(), metaOffset);
+                if (typeOffset == ReactorBlockType.REACTOR_GLASS || typeOffset == ReactorBlockType.LASER_FOCUS_MATRIX) {
+                    return false;
+                }
+            }
+        }
+
+        return super.shouldSideBeRendered(state, world, pos, side);
+    }
+
+    @Override
+    public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
+
+        if (tile instanceof TileEntityReactorLogicAdapter) {
+            return ((TileEntityReactorLogicAdapter) tile).checkMode() ? 15 : 0;
+        }
+
         return 0;
     }
-	
-	@Override
-	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
-	{
-		ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), state.getBlock().getMetaFromState(state));
 
-		switch(type)
-		{
-			case REACTOR_FRAME:
-			case REACTOR_PORT:
-			case REACTOR_LOGIC_ADAPTER:
-				return true;
-			default:
-				return false;
-		}
-	}
+    @Override
+    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
+        ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), state.getBlock().getMetaFromState(state));
 
-	@Override
-	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
-	{
-		ReactorBlockType type = BlockStateReactor.ReactorBlockType.get(this, state.getBlock().getMetaFromState(state));
+        switch (type) {
+            case REACTOR_FRAME:
+            case REACTOR_PORT:
+            case REACTOR_LOGIC_ADAPTER:
+                return true;
+            default:
+                return false;
+        }
+    }
 
-		if (type == ReactorBlockType.REACTOR_LOGIC_ADAPTER) {
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        ReactorBlockType type = BlockStateReactor.ReactorBlockType.get(this, state.getBlock().getMetaFromState(state));
 
-	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
-	{
-		IBlockState state = world.getBlockState(pos);
-		ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
+        return type == ReactorBlockType.REACTOR_LOGIC_ADAPTER;
+    }
 
-		world.setBlockToAir(pos);
+    public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock) {
+        IBlockState state = world.getBlockState(pos);
+        ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
-		if(!returnBlock)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+        world.setBlockToAir(pos);
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
+        if (!returnBlock) {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			world.spawnEntity(entityItem);
-		}
+            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, itemStack);
 
-		return itemStack;
-	}
+            world.spawnEntity(entityItem);
+        }
 
-	public PropertyEnum<ReactorBlockType> getTypeProperty()
-	{
-		return getReactorBlock().getProperty();
-	}
+        return itemStack;
+    }
+
+    public PropertyEnum<ReactorBlockType> getTypeProperty() {
+        return getReactorBlock().getProperty();
+    }
 }

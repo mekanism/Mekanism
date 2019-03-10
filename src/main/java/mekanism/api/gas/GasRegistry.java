@@ -3,7 +3,6 @@ package mekanism.api.gas;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -13,124 +12,117 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class GasRegistry
-{
-	private static ArrayList<Gas> registeredGasses = new ArrayList<>();
+public class GasRegistry {
 
-	private static Logger LOG = LogManager.getLogger("Mekanism GasRegistry");
+    private static ArrayList<Gas> registeredGasses = new ArrayList<>();
 
-	/**
-	 * Register a new gas into GasRegistry. Call this BEFORE post-init.
-	 * @param gas - Gas to register
-	 * @return the gas that has been registered, pulled right out of GasRegistry
-	 */
-	public static Gas register(Gas gas)
-	{
-		if(gas == null)
-		{
-			return null;
-		}
+    private static Logger LOG = LogManager.getLogger("Mekanism GasRegistry");
 
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
-			if (hasAlreadyStitched()){
-				gas.updateIcon(Minecraft.getMinecraft().getTextureMapBlocks());
-				if (gas.getSpriteRaw() == null){
-					LOG.error("Gas {} registered post texture stitch without valid sprite!", gas.getName());
-				}
-			}
-		}
+    /**
+     * Register a new gas into GasRegistry. Call this BEFORE post-init.
+     *
+     * @param gas - Gas to register
+     * @return the gas that has been registered, pulled right out of GasRegistry
+     */
+    public static Gas register(Gas gas) {
+        if (gas == null) {
+            return null;
+        }
 
-		registeredGasses.add(gas);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+            if (hasAlreadyStitched()) {
+                gas.updateIcon(Minecraft.getMinecraft().getTextureMapBlocks());
+                if (gas.getSpriteRaw() == null) {
+                    LOG.error("Gas {} registered post texture stitch without valid sprite!", gas.getName());
+                }
+            }
+        }
 
-		return getGas(gas.getName());
-	}
+        registeredGasses.add(gas);
 
-	/**
-	 * Gets the gas associated with the defined ID.
-	 * @param id - ID to check
-	 * @return gas associated with defined ID
-	 */
-	public static Gas getGas(int id)
-	{
-		if(id == -1)
-		{
-			return null;
-		}
+        return getGas(gas.getName());
+    }
 
-		return registeredGasses.get(id);
-	}
+    /**
+     * Gets the gas associated with the defined ID.
+     *
+     * @param id - ID to check
+     * @return gas associated with defined ID
+     */
+    public static Gas getGas(int id) {
+        if (id == -1) {
+            return null;
+        }
 
-	/**
-	 * Gets the gas associated with the defined fluid.
-	 * @param f - fluid to check
-	 * @return the gas associated with the fluid
-	 */
-	public static Gas getGas(Fluid f)
-	{
-		for(Gas gas : getRegisteredGasses())
-		{
-			if(gas.hasFluid() && gas.getFluid() == f)
-			{
-				return gas;
-			}
-		}
+        return registeredGasses.get(id);
+    }
 
-		return null;
-	}
+    /**
+     * Gets the gas associated with the defined fluid.
+     *
+     * @param f - fluid to check
+     * @return the gas associated with the fluid
+     */
+    public static Gas getGas(Fluid f) {
+        for (Gas gas : getRegisteredGasses()) {
+            if (gas.hasFluid() && gas.getFluid() == f) {
+                return gas;
+            }
+        }
 
-	/**
-	 * Whether or not GasRegistry contains a gas with the specified name
-	 * @param name - name to check
-	 * @return if GasRegistry contains a gas with the defined name
-	 */
-	public static boolean containsGas(String name)
-	{
-		return getGas(name) != null;
-	}
+        return null;
+    }
 
-	/**
-	 * Gets the list of all gasses registered in GasRegistry.
-	 * @return a cloned list of all registered gasses
-	 */
-	public static List<Gas> getRegisteredGasses()
-	{
-		return new ArrayList<>(registeredGasses);
-	}
+    /**
+     * Whether or not GasRegistry contains a gas with the specified name
+     *
+     * @param name - name to check
+     * @return if GasRegistry contains a gas with the defined name
+     */
+    public static boolean containsGas(String name) {
+        return getGas(name) != null;
+    }
 
-	/**
-	 * Gets the gas associated with the specified name.
-	 * @param name - name of the gas to get
-	 * @return gas associated with the name
-	 */
-	public static Gas getGas(String name)
-	{
-		for(Gas gas : registeredGasses)
-		{
-			if(gas.getName().toLowerCase(Locale.ROOT).equals(name.toLowerCase(Locale.ROOT)))
-			{
-				return gas;
-			}
-		}
+    /**
+     * Gets the list of all gasses registered in GasRegistry.
+     *
+     * @return a cloned list of all registered gasses
+     */
+    public static List<Gas> getRegisteredGasses() {
+        return new ArrayList<>(registeredGasses);
+    }
 
-		return null;
-	}
+    /**
+     * Gets the gas associated with the specified name.
+     *
+     * @param name - name of the gas to get
+     * @return gas associated with the name
+     */
+    public static Gas getGas(String name) {
+        for (Gas gas : registeredGasses) {
+            if (gas.getName().toLowerCase(Locale.ROOT).equals(name.toLowerCase(Locale.ROOT))) {
+                return gas;
+            }
+        }
 
-	/**
-	 * Gets the gas ID of a specified gas.
-	 * @param gas - gas to get the ID from
-	 * @return gas ID
-	 */
-	public static int getGasID(Gas gas)
-	{
-		if(gas == null || !containsGas(gas.getName()))
-		{
-			return -1;
-		}
+        return null;
+    }
 
-		return registeredGasses.indexOf(gas);
-	}
+    /**
+     * Gets the gas ID of a specified gas.
+     *
+     * @param gas - gas to get the ID from
+     * @return gas ID
+     */
+    public static int getGasID(Gas gas) {
+        if (gas == null || !containsGas(gas.getName())) {
+            return -1;
+        }
 
-	private static boolean hasAlreadyStitched(){
-		return Loader.instance().getLoaderState().ordinal() > LoaderState.PREINITIALIZATION.ordinal();
-	}
+        return registeredGasses.indexOf(gas);
+    }
+
+    private static boolean hasAlreadyStitched() {
+        return Loader.instance().getLoaderState().ordinal() > LoaderState.PREINITIALIZATION.ordinal();
+    }
 }

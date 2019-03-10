@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import javax.annotation.Nonnull;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
@@ -12,105 +13,86 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-import javax.annotation.Nonnull;
+public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper {
 
-public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper
-{
-	public DynamicFluidTank fluidTank;
+    public DynamicFluidTank fluidTank;
 
-	public TileEntityDynamicValve()
-	{
-		super("Dynamic Valve");
-		fluidTank = new DynamicFluidTank(this);
-	}
+    public TileEntityDynamicValve() {
+        super("Dynamic Valve");
+        fluidTank = new DynamicFluidTank(this);
+    }
 
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
-	}
+    @Override
+    public FluidTankInfo[] getTankInfo(EnumFacing from) {
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{
+              fluidTank.getInfo()} : PipeUtils.EMPTY;
+    }
 
-	@Override
-	public FluidTankInfo[] getAllTanks()
-	{
-		return getTankInfo(null);
-	}
+    @Override
+    public FluidTankInfo[] getAllTanks() {
+        return getTankInfo(null);
+    }
 
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		return fluidTank.fill(resource, doFill);
-	}
+    @Override
+    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+        return fluidTank.fill(resource, doFill);
+    }
 
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-	{
-		if(structure != null && structure.fluidStored != null)
-		{
-			if(resource.getFluid() == structure.fluidStored.getFluid())
-			{
-				return fluidTank.drain(resource.amount, doDrain);
-			}
-		}
+    @Override
+    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+        if (structure != null && structure.fluidStored != null) {
+            if (resource.getFluid() == structure.fluidStored.getFluid()) {
+                return fluidTank.drain(resource.amount, doDrain);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		if(structure != null)
-		{
-			return fluidTank.drain(maxDrain, doDrain);
-		}
+    @Override
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+        if (structure != null) {
+            return fluidTank.drain(maxDrain, doDrain);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
-	}
+    @Override
+    public boolean canFill(EnumFacing from, Fluid fluid) {
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
+    }
 
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
-	}
+    @Override
+    public boolean canDrain(EnumFacing from, Fluid fluid) {
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
+    }
 
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return LangUtils.localize("gui.dynamicTank");
-	}
-	
-	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
-	{
-		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
-		{
-			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			{
-				return true;
-			}
-		}
-		
-		return super.hasCapability(capability, side);
-	}
+    @Nonnull
+    @Override
+    public String getName() {
+        return LangUtils.localize("gui.dynamicTank");
+    }
 
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
-	{
-		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
-		{
-			if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-			{
-				return (T)new FluidHandlerWrapper(this, side);
-			}
-		}
-		
-		return super.getCapability(capability, side);
-	}
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
+            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+                return true;
+            }
+        }
+
+        return super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
+            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+                return (T) new FluidHandlerWrapper(this, side);
+            }
+        }
+
+        return super.getCapability(capability, side);
+    }
 }

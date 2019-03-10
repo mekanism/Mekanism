@@ -1,7 +1,7 @@
 package mekanism.common.integration;
 
 import java.util.List;
-
+import javax.annotation.Nonnull;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -27,105 +27,85 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
-import javax.annotation.Nonnull;
-
 @Interface(iface = "mcp.mobius.waila.api.IWailaDataProvider", modid = MekanismHooks.WAILA_MOD_ID)
-public class WailaDataProvider implements IWailaDataProvider
-{
-	@Method(modid = MekanismHooks.WAILA_MOD_ID)
-	public static void register(IWailaRegistrar registrar)
-	{
-		WailaDataProvider provider = new WailaDataProvider();
-		
-		registrar.registerHeadProvider(provider, TileEntityInductionCell.class);
-		registrar.registerHeadProvider(provider, TileEntityInductionProvider.class);
-		registrar.registerHeadProvider(provider, TileEntityFactory.class);
-		registrar.registerHeadProvider(provider, TileEntityBoundingBlock.class);
-		registrar.registerHeadProvider(provider, TileEntityAdvancedBoundingBlock.class);
-		registrar.registerHeadProvider(provider, TileEntityFluidTank.class);
-		registrar.registerHeadProvider(provider, TileEntityGasTank.class);
-		registrar.registerHeadProvider(provider, TileEntityBin.class);
-		registrar.registerHeadProvider(provider, TileEntityEnergyCube.class);
-	}
+public class WailaDataProvider implements IWailaDataProvider {
 
-	@Nonnull
-	@Override
-	@Method(modid = MekanismHooks.WAILA_MOD_ID)
-	public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config)
-	{
-		return ItemStack.EMPTY;
-	}
+    @Method(modid = MekanismHooks.WAILA_MOD_ID)
+    public static void register(IWailaRegistrar registrar) {
+        WailaDataProvider provider = new WailaDataProvider();
 
-	@Nonnull
-	@Override
-	@Method(modid = MekanismHooks.WAILA_MOD_ID)
-	public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
-	{
-		TileEntity tile = accessor.getTileEntity();
-		
-		if(tile instanceof TileEntityInductionCell)
-		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionCell)tile).getName());
-		}
-		else if(tile instanceof TileEntityInductionProvider)
-		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionProvider)tile).getName());
-		}
-		else if(tile instanceof TileEntityFactory)
-		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityFactory)tile).getName());
-		}
-		else if(tile instanceof TileEntityFluidTank)
-		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityFluidTank)tile).getName());
-		}
-		else if(tile instanceof TileEntityGasTank)
-		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityGasTank)tile).getName());
-		}
-		else if(tile instanceof TileEntityBin)
-		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityBin)tile).getName());
-		}
-		else if(tile instanceof TileEntityEnergyCube)
-		{
-			currenttip.set(0, EnumColor.WHITE + ((TileEntityEnergyCube)tile).getName());
-		}
-		else if(tile instanceof TileEntityBoundingBlock)
-		{
-			TileEntityBoundingBlock bound = (TileEntityBoundingBlock)tile;
-			Coord4D coord = new Coord4D(bound.getPos(), tile.getWorld());
-			
-			if(bound.receivedCoords && coord.getTileEntity(tile.getWorld()) instanceof IInventory)
-			{
-				currenttip.set(0, EnumColor.WHITE + ((IInventory)coord.getTileEntity(tile.getWorld())).getName());
-			}
-		}
-		
-		return currenttip;
-	}
+        registrar.registerHeadProvider(provider, TileEntityInductionCell.class);
+        registrar.registerHeadProvider(provider, TileEntityInductionProvider.class);
+        registrar.registerHeadProvider(provider, TileEntityFactory.class);
+        registrar.registerHeadProvider(provider, TileEntityBoundingBlock.class);
+        registrar.registerHeadProvider(provider, TileEntityAdvancedBoundingBlock.class);
+        registrar.registerHeadProvider(provider, TileEntityFluidTank.class);
+        registrar.registerHeadProvider(provider, TileEntityGasTank.class);
+        registrar.registerHeadProvider(provider, TileEntityBin.class);
+        registrar.registerHeadProvider(provider, TileEntityEnergyCube.class);
+    }
 
-	@Nonnull
-	@Override
-	@Method(modid = MekanismHooks.WAILA_MOD_ID)
-	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
-	{
-		return currenttip;
-	}
+    @Nonnull
+    @Override
+    @Method(modid = MekanismHooks.WAILA_MOD_ID)
+    public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        return ItemStack.EMPTY;
+    }
 
-	@Nonnull
-	@Override
-	@Method(modid = MekanismHooks.WAILA_MOD_ID)
-	public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
-	{
-		return currenttip;
-	}
+    @Nonnull
+    @Override
+    @Method(modid = MekanismHooks.WAILA_MOD_ID)
+    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+          IWailaConfigHandler config) {
+        TileEntity tile = accessor.getTileEntity();
 
-	@Nonnull
-	@Override
-	@Method(modid = MekanismHooks.WAILA_MOD_ID)
-	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos)
-	{
-		return tag;
-	}
+        if (tile instanceof TileEntityInductionCell) {
+            currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionCell) tile).getName());
+        } else if (tile instanceof TileEntityInductionProvider) {
+            currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionProvider) tile).getName());
+        } else if (tile instanceof TileEntityFactory) {
+            currenttip.set(0, EnumColor.WHITE + ((TileEntityFactory) tile).getName());
+        } else if (tile instanceof TileEntityFluidTank) {
+            currenttip.set(0, EnumColor.WHITE + ((TileEntityFluidTank) tile).getName());
+        } else if (tile instanceof TileEntityGasTank) {
+            currenttip.set(0, EnumColor.WHITE + ((TileEntityGasTank) tile).getName());
+        } else if (tile instanceof TileEntityBin) {
+            currenttip.set(0, EnumColor.WHITE + ((TileEntityBin) tile).getName());
+        } else if (tile instanceof TileEntityEnergyCube) {
+            currenttip.set(0, EnumColor.WHITE + ((TileEntityEnergyCube) tile).getName());
+        } else if (tile instanceof TileEntityBoundingBlock) {
+            TileEntityBoundingBlock bound = (TileEntityBoundingBlock) tile;
+            Coord4D coord = new Coord4D(bound.getPos(), tile.getWorld());
+
+            if (bound.receivedCoords && coord.getTileEntity(tile.getWorld()) instanceof IInventory) {
+                currenttip.set(0, EnumColor.WHITE + ((IInventory) coord.getTileEntity(tile.getWorld())).getName());
+            }
+        }
+
+        return currenttip;
+    }
+
+    @Nonnull
+    @Override
+    @Method(modid = MekanismHooks.WAILA_MOD_ID)
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+          IWailaConfigHandler config) {
+        return currenttip;
+    }
+
+    @Nonnull
+    @Override
+    @Method(modid = MekanismHooks.WAILA_MOD_ID)
+    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+          IWailaConfigHandler config) {
+        return currenttip;
+    }
+
+    @Nonnull
+    @Override
+    @Method(modid = MekanismHooks.WAILA_MOD_ID)
+    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world,
+          BlockPos pos) {
+        return tag;
+    }
 }

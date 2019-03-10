@@ -2,21 +2,21 @@ package mekanism.common.integration.crafttweaker;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
-import mekanism.common.Mekanism;
-
 import java.util.LinkedList;
 import java.util.List;
+import mekanism.common.Mekanism;
 
 public class CrafttweakerIntegration {
+
     public static final List<IAction> LATE_REMOVALS = new LinkedList<>();
     public static final List<IAction> LATE_ADDITIONS = new LinkedList<>();
 
     /**
-     * Apply after (machine)recipes have been applied, but before the FMLLoadCompleteEvent is fired.
-     * Preferably in (post)init.
+     * Apply after (machine)recipes have been applied, but before the FMLLoadCompleteEvent is fired. Preferably in
+     * (post)init.
      * <p>
-     * Applying to early causes remove to malfunction as no recipes have been registered.
-     * Applying to late causes JEI to not pickup the changes.
+     * Applying to early causes remove to malfunction as no recipes have been registered. Applying to late causes JEI to
+     * not pickup the changes.
      */
     public static void applyRecipeChanges() {
         //Remove before addition, so recipes can be overwritten

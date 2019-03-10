@@ -5,34 +5,28 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.outputs.GasOutput;
 
-public class SolarNeutronRecipe extends MachineRecipe<GasInput, GasOutput, SolarNeutronRecipe>
-{
-	public SolarNeutronRecipe(GasStack input, GasStack output)
-	{
-		super(new GasInput(input), new GasOutput(output));
-	}
+public class SolarNeutronRecipe extends MachineRecipe<GasInput, GasOutput, SolarNeutronRecipe> {
 
-	public SolarNeutronRecipe(GasInput input, GasOutput output)
-	{
-		super(input, output);
-	}
+    public SolarNeutronRecipe(GasStack input, GasStack output) {
+        super(new GasInput(input), new GasOutput(output));
+    }
 
-	@Override
-	public SolarNeutronRecipe copy()
-	{
-		return new SolarNeutronRecipe(getInput(), getOutput());
-	}
+    public SolarNeutronRecipe(GasInput input, GasOutput output) {
+        super(input, output);
+    }
 
-	public boolean canOperate(GasTank inputTank, GasTank outputTank)
-	{
-		return getInput().useGas(inputTank, false, 1) && getOutput().applyOutputs(outputTank, false, 1);
-	}
+    @Override
+    public SolarNeutronRecipe copy() {
+        return new SolarNeutronRecipe(getInput(), getOutput());
+    }
 
-	public void operate(GasTank inputTank, GasTank outputTank, int scale)
-	{
-		if(getInput().useGas(inputTank, true, scale))
-		{
-			getOutput().applyOutputs(outputTank, true, scale);
-		}
-	}
+    public boolean canOperate(GasTank inputTank, GasTank outputTank) {
+        return getInput().useGas(inputTank, false, 1) && getOutput().applyOutputs(outputTank, false, 1);
+    }
+
+    public void operate(GasTank inputTank, GasTank outputTank, int scale) {
+        if (getInput().useGas(inputTank, true, scale)) {
+            getOutput().applyOutputs(outputTank, true, scale);
+        }
+    }
 }

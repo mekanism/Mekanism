@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
+import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasItem;
@@ -16,11 +16,11 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.TileUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -29,226 +29,186 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import javax.annotation.Nonnull;
+public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ITubeConnection, ISustainedData,
+      ITankManager {
 
-public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ITubeConnection, ISustainedData, ITankManager
-{
-	public GasTank gasTank = new GasTank(MAX_GAS);
+    public static final int MAX_GAS = 10000;
+    public GasTank gasTank = new GasTank(MAX_GAS);
+    public int gasOutput = 256;
 
-	public static final int MAX_GAS = 10000;
+    public OxidationRecipe cachedRecipe;
 
-	public int gasOutput = 256;
+    public TileEntityChemicalOxidizer() {
+        super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy,
+              usage.rotaryCondensentratorUsage, 3, 100);
 
-	public OxidationRecipe cachedRecipe;
+        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+    }
 
-	public TileEntityChemicalOxidizer()
-	{
-		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy, usage.rotaryCondensentratorUsage, 3, 100);
-		
-		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
-	}
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
 
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
-		
-		if(!world.isRemote)
-		{
-			ChargeUtils.discharge(1, this);
-			TileUtils.drawGas(inventory.get(2), gasTank);
-			
-			OxidationRecipe recipe = getRecipe();
+        if (!world.isRemote) {
+            ChargeUtils.discharge(1, this);
+            TileUtils.drawGas(inventory.get(2), gasTank);
 
-			if(canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this))
-			{
-				setActive(true);
-				setEnergy(getEnergy() - energyPerTick);
+            OxidationRecipe recipe = getRecipe();
 
-				if(operatingTicks < ticksRequired)
-				{
-					operatingTicks++;
-				}
-				else {
-					operate(recipe);
+            if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
+                setActive(true);
+                setEnergy(getEnergy() - energyPerTick);
 
-					operatingTicks = 0;
-					markDirty();
-				}
-			}
-			else {
-				if(prevEnergy >= getEnergy())
-				{
-					setActive(false);
-				}
-			}
+                if (operatingTicks < ticksRequired) {
+                    operatingTicks++;
+                } else {
+                    operate(recipe);
 
-			prevEnergy = getEnergy();
+                    operatingTicks = 0;
+                    markDirty();
+                }
+            } else {
+                if (prevEnergy >= getEnergy()) {
+                    setActive(false);
+                }
+            }
 
-			TileUtils.emitGas(this, gasTank, gasOutput);
-		}
-	}
+            prevEnergy = getEnergy();
 
-	@Override
-	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
-	{
-		if(slotID == 0)
-		{
-			return RecipeHandler.getOxidizerRecipe(new ItemStackInput(itemstack)) != null;
-		}
-		else if(slotID == 1)
-		{
-			return ChargeUtils.canBeDischarged(itemstack);
-		}
+            TileUtils.emitGas(this, gasTank, gasOutput);
+        }
+    }
 
-		return false;
-	}
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
+        if (slotID == 0) {
+            return RecipeHandler.getOxidizerRecipe(new ItemStackInput(itemstack)) != null;
+        } else if (slotID == 1) {
+            return ChargeUtils.canBeDischarged(itemstack);
+        }
 
-	@Override
-	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
-	{
-		if(slotID == 2)
-		{
-			return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
-		}
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (slotID == 2) {
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem())
+                  .canProvideGas(itemstack, null);
+        }
 
-	@Nonnull
-	@Override
-	public int[] getSlotsForFace(@Nonnull EnumFacing side)
-	{
-		if(side == MekanismUtils.getLeft(facing))
-		{
-			return new int[] {0};
-		}
-		else if(side.getAxis() == Axis.Y)
-		{
-			return new int[] {1};
-		}
-		else if(side == MekanismUtils.getRight(facing))
-		{
-			return new int[] {2};
-		}
+        return false;
+    }
 
-		return InventoryUtils.EMPTY;
-	}
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        if (side == MekanismUtils.getLeft(facing)) {
+            return new int[]{0};
+        } else if (side.getAxis() == Axis.Y) {
+            return new int[]{1};
+        } else if (side == MekanismUtils.getRight(facing)) {
+            return new int[]{2};
+        }
 
-	public OxidationRecipe getRecipe()
-	{
-		ItemStackInput input = getInput();
-		
-		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
-		{
-			cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
-		}
-		
-		return cachedRecipe;
-	}
+        return InventoryUtils.EMPTY;
+    }
 
-	public ItemStackInput getInput()
-	{
-		return new ItemStackInput(inventory.get(0));
-	}
+    public OxidationRecipe getRecipe() {
+        ItemStackInput input = getInput();
 
-	public boolean canOperate(OxidationRecipe recipe)
-	{
-		return recipe != null && recipe.canOperate(inventory, gasTank);
-	}
+        if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
+            cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
+        }
 
-	public void operate(OxidationRecipe recipe)
-	{
-		recipe.operate(inventory, gasTank);
+        return cachedRecipe;
+    }
 
-		markDirty();
-	}
+    public ItemStackInput getInput() {
+        return new ItemStackInput(inventory.get(0));
+    }
 
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		super.handlePacketData(dataStream);
+    public boolean canOperate(OxidationRecipe recipe) {
+        return recipe != null && recipe.canOperate(inventory, gasTank);
+    }
 
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			TileUtils.readTankData(dataStream, gasTank);
-		}
-	}
+    public void operate(OxidationRecipe recipe) {
+        recipe.operate(inventory, gasTank);
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		super.getNetworkedData(data);
-		TileUtils.addTankData(data, gasTank);
-		return data;
-	}
+        markDirty();
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        super.handlePacketData(dataStream);
 
-		gasTank.read(nbtTags.getCompoundTag("gasTank"));
-	}
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            TileUtils.readTankData(dataStream, gasTank);
+        }
+    }
 
-	@Nonnull
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
+        TileUtils.addTankData(data, gasTank);
+        return data;
+    }
 
-		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
-		
-		return nbtTags;
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags) {
+        super.readFromNBT(nbtTags);
 
-	@Override
-	public boolean canSetFacing(int i)
-	{
-		return i != 0 && i != 1;
-	}
+        gasTank.read(nbtTags.getCompoundTag("gasTank"));
+    }
 
-	@Override
-	public boolean canTubeConnect(EnumFacing side)
-	{
-		return side == MekanismUtils.getRight(facing);
-	}
-	
-	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
-	{
-		return capability == Capabilities.TUBE_CONNECTION_CAPABILITY || super.hasCapability(capability, side);
-	}
+    @Nonnull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        super.writeToNBT(nbtTags);
 
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
-	{
-		if(capability == Capabilities.TUBE_CONNECTION_CAPABILITY)
-		{
-			return (T)this;
-		}
-		
-		return super.getCapability(capability, side);
-	}
+        nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 
-	@Override
-	public void writeSustainedData(ItemStack itemStack) 
-	{
-		if(gasTank.getGas() != null)
-		{
-			ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new NBTTagCompound()));
-		}
-	}
+        return nbtTags;
+    }
 
-	@Override
-	public void readSustainedData(ItemStack itemStack) 
-	{
-		gasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
-	}
-	
-	@Override
-	public Object[] getTanks() 
-	{
-		return new Object[] {gasTank};
-	}
+    @Override
+    public boolean canSetFacing(int i) {
+        return i != 0 && i != 1;
+    }
+
+    @Override
+    public boolean canTubeConnect(EnumFacing side) {
+        return side == MekanismUtils.getRight(facing);
+    }
+
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        return capability == Capabilities.TUBE_CONNECTION_CAPABILITY || super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+            return (T) this;
+        }
+
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        if (gasTank.getGas() != null) {
+            ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new NBTTagCompound()));
+        }
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        gasTank.setGas(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
+    }
+
+    @Override
+    public Object[] getTanks() {
+        return new Object[]{gasTank};
+    }
 }

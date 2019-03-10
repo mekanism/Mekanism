@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.OreGas;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -35,230 +34,206 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiChemicalCrystallizer extends GuiMekanism
-{
-	public TileEntityChemicalCrystallizer tileEntity;
+public class GuiChemicalCrystallizer extends GuiMekanism {
 
-	public Gas prevGas;
+    public TileEntityChemicalCrystallizer tileEntity;
 
-	public ItemStack renderStack = ItemStack.EMPTY;
+    public Gas prevGas;
 
-	public int stackSwitch = 0;
+    public ItemStack renderStack = ItemStack.EMPTY;
 
-	public int stackIndex = 0;
+    public int stackSwitch = 0;
 
-	public List<ItemStack> iterStacks = new ArrayList<>();
+    public int stackIndex = 0;
 
-	public GuiChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tentity)
-	{
-		super(tentity, new ContainerChemicalCrystallizer(inventory, tentity));
-		tileEntity = tentity;
+    public List<ItemStack> iterStacks = new ArrayList<>();
 
-		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 160, 23));
-		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiEnergyInfo(() ->
+    public GuiChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tentity) {
+        super(tentity, new ContainerChemicalCrystallizer(inventory, tentity));
+        tileEntity = tentity;
+
+        guiElements.add(new GuiSecurityTab(this, tileEntity,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+        guiElements.add(new GuiRedstoneControl(this, tileEntity,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+        guiElements.add(new GuiUpgradeTab(this, tileEntity,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+        guiElements.add(new GuiPowerBar(this, tileEntity,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 160, 23));
+        guiElements.add(new GuiSideConfigurationTab(this, tileEntity,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+        guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+        guiElements.add(new GuiEnergyInfo(() ->
         {
             String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
-            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
+                  LangUtils.localize("gui.needed") + ": " + MekanismUtils
+                        .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
         }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-		guiElements.add(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 4));
-		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 64).with(SlotOverlay.PLUS));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 154, 4).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 130, 56));
+        guiElements.add(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 4));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 64)
+              .with(SlotOverlay.PLUS));
+        guiElements.add(new GuiSlot(SlotType.POWER, this,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 154, 4)
+              .with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 130, 56));
 
-		guiElements.add(new GuiProgress(new IProgressInfoHandler()
-		{
-			@Override
-			public double getProgress()
-			{
-				return tileEntity.getScaledProgress();
-			}
-		}, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 51, 60));
-	}
+        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return tileEntity.getScaledProgress();
+            }
+        }, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"),
+              51, 60));
+    }
 
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        int xAxis = (mouseX - (width - xSize) / 2);
+        int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getName(), 37, 4, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), 37, 4, 0x404040);
 
-		if(tileEntity.inputTank.getGas() != null)
-		{
-			fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
+        if (tileEntity.inputTank.getGas() != null) {
+            fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
 
-			if(tileEntity.inputTank.getGas().getGas() instanceof OreGas)
-			{
-				fontRenderer.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
-			}
-			else {
-				CrystallizerRecipe recipe = tileEntity.getRecipe();
-				
-				if(recipe == null)
-				{
-					fontRenderer.drawString("(" + LangUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
-				}
-				else {
-					fontRenderer.drawString("(" + recipe.recipeOutput.output.getDisplayName() + ")", 29, 24, 0x00CD00);
-				}
-			}
-		}
+            if (tileEntity.inputTank.getGas().getGas() instanceof OreGas) {
+                fontRenderer
+                      .drawString("(" + ((OreGas) tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24,
+                            0x00CD00);
+            } else {
+                CrystallizerRecipe recipe = tileEntity.getRecipe();
 
-		if(!renderStack.isEmpty())
-		{
-			try {
-				GlStateManager.pushMatrix();
-				RenderHelper.enableGUIStandardItemLighting();
-				itemRender.renderItemAndEffectIntoGUI(renderStack, 131, 14);
-				RenderHelper.disableStandardItemLighting();
-				GlStateManager.popMatrix();
-			} catch(Exception ignored) {}
-		}
+                if (recipe == null) {
+                    fontRenderer.drawString("(" + LangUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
+                } else {
+                    fontRenderer.drawString("(" + recipe.recipeOutput.output.getDisplayName() + ")", 29, 24, 0x00CD00);
+                }
+            }
+        }
 
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
+        if (!renderStack.isEmpty()) {
+            try {
+                GlStateManager.pushMatrix();
+                RenderHelper.enableGUIStandardItemLighting();
+                itemRender.renderItemAndEffectIntoGUI(renderStack, 131, 14);
+                RenderHelper.disableStandardItemLighting();
+                GlStateManager.popMatrix();
+            } catch (Exception ignored) {
+            }
+        }
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"));
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
 
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-	}
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"));
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-	private Gas getInputGas()
-	{
-		return tileEntity.inputTank.getGas() != null ? tileEntity.inputTank.getGas().getGas() : null;
-	}
+        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    }
 
-	private void resetStacks()
-	{
-		iterStacks.clear();
-		renderStack = ItemStack.EMPTY;
-		stackSwitch = 0;
-		stackIndex = -1;
-	}
+    private Gas getInputGas() {
+        return tileEntity.inputTank.getGas() != null ? tileEntity.inputTank.getGas().getGas() : null;
+    }
 
-	@Override
-	public void updateScreen()
-	{
-		super.updateScreen();
+    private void resetStacks() {
+        iterStacks.clear();
+        renderStack = ItemStack.EMPTY;
+        stackSwitch = 0;
+        stackIndex = -1;
+    }
 
-		if(prevGas != getInputGas())
-		{
-			prevGas = getInputGas();
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
 
-			boolean reset = false;
+        if (prevGas != getInputGas()) {
+            prevGas = getInputGas();
 
-			if(prevGas == null || !(prevGas instanceof OreGas) || !((OreGas)prevGas).isClean())
-			{
-				reset = true;
-				resetStacks();
-			}
+            boolean reset = false;
 
-			if(!reset)
-			{
-				OreGas gas = (OreGas)prevGas;
-				String oreDictName = "ore" + gas.getName().substring(5);
+            if (prevGas == null || !(prevGas instanceof OreGas) || !((OreGas) prevGas).isClean()) {
+                reset = true;
+                resetStacks();
+            }
 
-				updateStackList(oreDictName);
-			}
-		}
+            if (!reset) {
+                OreGas gas = (OreGas) prevGas;
+                String oreDictName = "ore" + gas.getName().substring(5);
 
-		if(stackSwitch > 0)
-		{
-			stackSwitch--;
-		}
+                updateStackList(oreDictName);
+            }
+        }
 
-		if(stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0)
-		{
-			stackSwitch = 20;
+        if (stackSwitch > 0) {
+            stackSwitch--;
+        }
 
-			if(stackIndex == -1 || stackIndex == iterStacks.size()-1)
-			{
-				stackIndex = 0;
-			}
-			else if(stackIndex < iterStacks.size()-1)
-			{
-				stackIndex++;
-			}
+        if (stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0) {
+            stackSwitch = 20;
 
-			renderStack = iterStacks.get(stackIndex);
-		}
-		else if(iterStacks != null && iterStacks.size() == 0)
-		{
-			renderStack = ItemStack.EMPTY;
-		}
-	}
+            if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
+                stackIndex = 0;
+            } else if (stackIndex < iterStacks.size() - 1) {
+                stackIndex++;
+            }
 
-	private void updateStackList(String oreName)
-	{
-		if(iterStacks == null)
-		{
-			iterStacks = new ArrayList<>();
-		}
-		else {
-			iterStacks.clear();
-		}
+            renderStack = iterStacks.get(stackIndex);
+        } else if (iterStacks != null && iterStacks.size() == 0) {
+            renderStack = ItemStack.EMPTY;
+        }
+    }
 
-		List<String> keys = new ArrayList<>();
+    private void updateStackList(String oreName) {
+        if (iterStacks == null) {
+            iterStacks = new ArrayList<>();
+        } else {
+            iterStacks.clear();
+        }
 
-		for(String s : OreDictionary.getOreNames())
-		{
-			if(oreName.equals(s) || oreName.equals("*"))
-			{
-				keys.add(s);
-			}
-			else if(oreName.endsWith("*") && !oreName.startsWith("*"))
-			{
-				if(s.startsWith(oreName.substring(0, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && !oreName.endsWith("*"))
-			{
-				if(s.endsWith(oreName.substring(1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && oreName.endsWith("*"))
-			{
-				if(s.contains(oreName.substring(1, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-		}
+        List<String> keys = new ArrayList<>();
 
-		for(String key : keys)
-		{
-			for(ItemStack stack : OreDictionary.getOres(key))
-			{
-				ItemStack toAdd = stack.copy();
+        for (String s : OreDictionary.getOreNames()) {
+            if (oreName.equals(s) || oreName.equals("*")) {
+                keys.add(s);
+            } else if (oreName.endsWith("*") && !oreName.startsWith("*")) {
+                if (s.startsWith(oreName.substring(0, oreName.length() - 1))) {
+                    keys.add(s);
+                }
+            } else if (oreName.startsWith("*") && !oreName.endsWith("*")) {
+                if (s.endsWith(oreName.substring(1))) {
+                    keys.add(s);
+                }
+            } else if (oreName.startsWith("*") && oreName.endsWith("*")) {
+                if (s.contains(oreName.substring(1, oreName.length() - 1))) {
+                    keys.add(s);
+                }
+            }
+        }
 
-				if(!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock)
-				{
-					iterStacks.add(stack.copy());
-				}
-			}
-		}
+        for (String key : keys) {
+            for (ItemStack stack : OreDictionary.getOres(key)) {
+                ItemStack toAdd = stack.copy();
 
-		stackSwitch = 0;
-		stackIndex = -1;
-	}
+                if (!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock) {
+                    iterStacks.add(stack.copy());
+                }
+            }
+        }
+
+        stackSwitch = 0;
+        stackIndex = -1;
+    }
 }

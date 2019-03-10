@@ -1,7 +1,7 @@
 package mekanism.tools.item;
 
 import java.util.List;
-
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
@@ -12,29 +12,25 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
+public class ItemMekanismSword extends ItemSword {
 
-public class ItemMekanismSword extends ItemSword
-{
-	private ToolMaterial toolMaterial;
-	
-	public ItemMekanismSword(ToolMaterial enumtoolmaterial)
-	{
-		super(enumtoolmaterial);
-		toolMaterial = enumtoolmaterial;
-		setCreativeTab(Mekanism.tabMekanism);
-	}
+    private ToolMaterial toolMaterial;
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
-	{
-		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
-	}
-	
-	@Override
-    public boolean getIsRepairable(ItemStack stack1, @Nonnull ItemStack stack2)
-    {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super.getIsRepairable(stack1, stack2);
+    public ItemMekanismSword(ToolMaterial enumtoolmaterial) {
+        super(enumtoolmaterial);
+        toolMaterial = enumtoolmaterial;
+        setCreativeTab(Mekanism.tabMekanism);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+        list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+    }
+
+    @Override
+    public boolean getIsRepairable(ItemStack stack1, @Nonnull ItemStack stack2) {
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super
+              .getIsRepairable(stack1, stack2);
     }
 }

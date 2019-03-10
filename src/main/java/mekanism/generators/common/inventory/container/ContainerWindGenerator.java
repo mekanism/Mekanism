@@ -5,6 +5,7 @@ import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerWindGenerator extends ContainerGenerator {
+
     public ContainerWindGenerator(InventoryPlayer inventory, TileEntityWindGenerator generator) {
         super(inventory, generator);
     }

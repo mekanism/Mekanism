@@ -1,6 +1,8 @@
 package mekanism.client.gui.robit;
 
 import io.netty.buffer.Unpooled;
+import java.io.IOException;
+import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
@@ -20,11 +22,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nonnull;
-import java.io.IOException;
-
 @SideOnly(Side.CLIENT)
 public class GuiRobitRepair extends GuiRobit implements IContainerListener {
+
     private ContainerRepair repairContainer;
     private GuiTextField itemNameField;
     private InventoryPlayer playerInventory;
@@ -103,7 +103,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     protected void keyTyped(char c, int i) throws IOException {
         if (itemNameField.textboxKeyTyped(c, i)) {
             repairContainer.updateItemName(itemNameField.getText());
-            mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
+            mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName",
+                  (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
         } else {
             super.keyTyped(c, i);
         }
@@ -136,8 +137,10 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth + 59, guiHeight + 20, 0, ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
-        if ((repairContainer.getSlot(0).getHasStack() || repairContainer.getSlot(1).getHasStack()) && !repairContainer.getSlot(2).getHasStack()) {
+        drawTexturedModalRect(guiWidth + 59, guiHeight + 20, 0,
+              ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+        if ((repairContainer.getSlot(0).getHasStack() || repairContainer.getSlot(1).getHasStack()) && !repairContainer
+              .getSlot(2).getHasStack()) {
             drawTexturedModalRect(guiWidth + 99, guiHeight + 45, xSize + 18, 36, 28, 21);
         }
     }
@@ -154,7 +157,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
             itemNameField.setEnabled(!itemstack.isEmpty());
             if (!itemstack.isEmpty()) {
                 repairContainer.updateItemName(itemNameField.getText());
-                mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+                mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName",
+                      new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
             }
         }
     }

@@ -10,8 +10,8 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
-import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
@@ -24,6 +24,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ModOnly("mtlib")
 @ZenRegister
 public class Infuser {
+
     public static final String NAME = "Mekanism Metallurgic Infuser";
 
     @ZenMethod
@@ -33,17 +34,22 @@ public class Infuser {
             return;
         }
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER,
-                    new MetallurgicInfuserRecipe(new InfusionInput(InfuseRegistry.get(infuseType), infuseAmount, InputHelper.toStack(itemInput)),
-                            new ItemStackOutput(InputHelper.toStack(itemOutput)))));
+            CrafttweakerIntegration.LATE_ADDITIONS
+                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER,
+                        new MetallurgicInfuserRecipe(new InfusionInput(InfuseRegistry.get(infuseType), infuseAmount,
+                              InputHelper.toStack(itemInput)),
+                              new ItemStackOutput(InputHelper.toStack(itemOutput)))));
         }
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput, @Optional String infuseType) {
+    public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
+          @Optional String infuseType) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe>(NAME,
-                    RecipeHandler.Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput), new IngredientWrapper(itemInput, infuseType)));
+            CrafttweakerIntegration.LATE_REMOVALS
+                  .add(new RemoveMekanismRecipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe>(NAME,
+                        RecipeHandler.Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
+                        new IngredientWrapper(itemInput, infuseType)));
         }
     }
 }

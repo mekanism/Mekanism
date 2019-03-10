@@ -4,6 +4,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 
 public class CraftTweakerGasDefinition implements IGasDefinition {
+
     private final Gas gas;
 
     public CraftTweakerGasDefinition(Gas gas) {

@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRobitCrafting extends GuiRobit {
+
     public GuiRobitCrafting(InventoryPlayer inventory, EntityRobit entity) {
         super(entity, new ContainerRobitCrafting(inventory, entity));
     }

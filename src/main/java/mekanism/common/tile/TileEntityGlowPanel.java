@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
@@ -19,106 +19,93 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-import javax.annotation.Nonnull;
+public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
 
-public class TileEntityGlowPanel extends TileEntity implements ITileNetwork
-{
-	public EnumColor colour = EnumColor.WHITE;
-	public EnumFacing side = EnumFacing.DOWN;
+    public EnumColor colour = EnumColor.WHITE;
+    public EnumFacing side = EnumFacing.DOWN;
 
-	public void setColour(EnumColor newColour)
-	{
-		colour = newColour;
-	}
+    public static int hash(IExtendedBlockState state) {
+        int hash = 1;
+        PropertyColor propColor = state.getValue(PropertyColor.INSTANCE);
+        EnumColor color = propColor != null ? propColor.color : EnumColor.WHITE;
+        hash = 31 * hash + color.ordinal();
+        hash = 31 * hash + state.getValue(BlockStateFacing.facingProperty).ordinal();
 
-	public void setOrientation(EnumFacing newSide)
-	{
-		side = newSide;
-	}
-	
-	@Override
-	public void handlePacketData(ByteBuf dataStream) {
-		side = EnumFacing.byIndex(dataStream.readInt());
-		colour = EnumColor.DYES[dataStream.readInt()];
-		
-		MekanismUtils.updateBlock(world, pos);
-	}
-	
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			MultipartTileNetworkJoiner.addMultipartHeader(this, data, side);
-		}
-		
-		data.add(side.ordinal());
-		data.add(colour.getMetaValue());
-		
-		return data;
-	}
-	
-	@Override
-	public void validate()
-	{
-		super.validate();
+        return hash;
+    }
 
-		if(world.isRemote)
-		{
-			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
-		}
-	}
+    public void setColour(EnumColor newColour) {
+        colour = newColour;
+    }
 
-	@Nonnull
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
-	{
-		super.writeToNBT(nbt);
-		
-		nbt.setInteger("side", side.ordinal());
-		nbt.setInteger("colour", colour.getMetaValue());
-		
-		return nbt;
-	}
+    public void setOrientation(EnumFacing newSide) {
+        side = newSide;
+    }
 
-	@Nonnull
-	@Override
-	public NBTTagCompound getUpdateTag()
-	{
-		return writeToNBT(new NBTTagCompound());
-	}
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        side = EnumFacing.byIndex(dataStream.readInt());
+        colour = EnumColor.DYES[dataStream.readInt()];
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		super.readFromNBT(nbt);
-		
-		side = EnumFacing.byIndex(nbt.getInteger("side"));
-		colour = EnumColor.DYES[nbt.getInteger("colour")];
-	}
-	
-	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing)
-	{
-		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
-	}
+        MekanismUtils.updateBlock(world, pos);
+    }
 
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing)
-	{
-		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
-			return (T)this;
-		return super.getCapability(capability, facing);
-	}
-	
-	public static int hash(IExtendedBlockState state)
-	{
-		int hash = 1;
-		PropertyColor propColor = state.getValue(PropertyColor.INSTANCE);
-		EnumColor color = propColor != null ? propColor.color : EnumColor.WHITE;
-		hash = 31 * hash + color.ordinal();
-		hash = 31 * hash + state.getValue(BlockStateFacing.facingProperty).ordinal();
-		
-		return hash;
-	}
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        if (Mekanism.hooks.MCMPLoaded) {
+            MultipartTileNetworkJoiner.addMultipartHeader(this, data, side);
+        }
+
+        data.add(side.ordinal());
+        data.add(colour.getMetaValue());
+
+        return data;
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+
+        if (world.isRemote) {
+            Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+        }
+    }
+
+    @Nonnull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+
+        nbt.setInteger("side", side.ordinal());
+        nbt.setInteger("colour", colour.getMetaValue());
+
+        return nbt;
+    }
+
+    @Nonnull
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+
+        side = EnumFacing.byIndex(nbt.getInteger("side"));
+        colour = EnumColor.DYES[nbt.getInteger("colour")];
+    }
+
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+        return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
+            return (T) this;
+        }
+        return super.getCapability(capability, facing);
+    }
 }

@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 //TODO: Move this and factor out the parts into proper classes. This is mainly just temp to make organization not as needed
 public class TileUtils {
+
     public static void addTankData(TileNetworkList data, GasTank tank) {
         if (tank.getGas() != null) {
             data.add(true);
@@ -45,7 +46,8 @@ public class TileUtils {
 
     public static void readTankData(ByteBuf dataStream, FluidTank tank) {
         if (dataStream.readBoolean()) {
-            tank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)), dataStream.readInt()));
+            tank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)),
+                  dataStream.readInt()));
         } else {
             tank.setFluid(null);
         }

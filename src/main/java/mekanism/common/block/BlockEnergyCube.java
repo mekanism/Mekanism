@@ -1,7 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Random;
-
+import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
@@ -46,369 +46,328 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
-
 /**
- * Block class for handling multiple energy cube block IDs.
- * 0: Basic Energy Cube
- * 1: Advanced Energy Cube
- * 2: Elite Energy Cube
- * 3: Ultimate Energy Cube
- * 4: Creative Energy Cube
- * @author AidanBrady
+ * Block class for handling multiple energy cube block IDs. 0: Basic Energy Cube 1: Advanced Energy Cube 2: Elite Energy
+ * Cube 3: Ultimate Energy Cube 4: Creative Energy Cube
  *
+ * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockContainer
-{
-	public BlockEnergyCube()
-	{
-		super(Material.IRON);
-		setHardness(2F);
-		setResistance(4F);
-		setCreativeTab(Mekanism.tabMekanism);
-	}
+public class BlockEnergyCube extends BlockContainer {
 
-	@Nonnull
-	@Override
-	public BlockStateContainer createBlockState()
-	{
-		return new BlockStateEnergyCube(this);
-	}
+    public BlockEnergyCube() {
+        super(Material.IRON);
+        setHardness(2F);
+        setResistance(4F);
+        setCreativeTab(Mekanism.tabMekanism);
+    }
 
-	@Override
-	public int getMetaFromState(IBlockState state)
-	{
-		return 0;
-	}
+    @Nonnull
+    @Override
+    public BlockStateContainer createBlockState() {
+        return new BlockStateEnergyCube(this);
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		return getDefaultState();
-	}
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos)
-	{
-		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-		
-		if(tile instanceof TileEntityEnergyCube)
-		{
-			TileEntityEnergyCube cube = (TileEntityEnergyCube)tile;
-			
-			if(cube.facing != null)
-			{
-				state = state.withProperty(BlockStateFacing.facingProperty, cube.facing);
-			}
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState();
+    }
 
-			if(cube.tier != null)
-			{
-				state = state.withProperty(BlockStateEnergyCube.typeProperty, cube.tier);
-			}
-		}
+    @Nonnull
+    @Override
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
-		return state;
-	}
+        if (tile instanceof TileEntityEnergyCube) {
+            TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
 
-	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
-	{
-		if(!world.isRemote)
-		{
-			TileEntity tileEntity = world.getTileEntity(pos);
+            if (cube.facing != null) {
+                state = state.withProperty(BlockStateFacing.facingProperty, cube.facing);
+            }
 
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
-			}
-		}
-	}
+            if (cube.tier != null) {
+                state = state.withProperty(BlockStateEnergyCube.typeProperty, cube.tier);
+            }
+        }
 
-	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
-		int side = MathHelper.floor((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		int height = Math.round(placer.rotationPitch);
-		int change = 3;
+        return state;
+    }
 
-		if(height >= 65)
-		{
-			change = 1;
-		}
-		else if(height <= -65)
-		{
-			change = 0;
-		}
-		else {
-			switch(side)
-			{
-				case 0: change = 2; break;
-				case 1: change = 5; break;
-				case 2: change = 3; break;
-				case 3: change = 4; break;
-			}
-		}
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
+          BlockPos neighborPos) {
+        if (!world.isRemote) {
+            TileEntity tileEntity = world.getTileEntity(pos);
 
-		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-	}
+            if (tileEntity instanceof TileEntityBasicBlock) {
+                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            }
+        }
+    }
 
-	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer,
+          ItemStack stack) {
+        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        int side = MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        int height = Math.round(placer.rotationPitch);
+        int change = 3;
 
-	@Nonnull
-	@Override
-	public Item getItemDropped(IBlockState state, Random random, int fortune)
-	{
-		return Items.AIR;
-	}
+        if (height >= 65) {
+            change = 1;
+        } else if (height <= -65) {
+            change = 0;
+        } else {
+            switch (side) {
+                case 0:
+                    change = 2;
+                    break;
+                case 1:
+                    change = 5;
+                    break;
+                case 2:
+                    change = 3;
+                    break;
+                case 3:
+                    change = 4;
+                    break;
+            }
+        }
 
-	@Override
-	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
-	{
-		for(EnergyCubeTier tier : EnergyCubeTier.values())
-		{
-			ItemStack discharged = new ItemStack(this);
-			((ItemBlockEnergyCube)discharged.getItem()).setBaseTier(discharged, tier.getBaseTier());
-			list.add(discharged);
-			ItemStack charged = new ItemStack(this);
-			((ItemBlockEnergyCube)charged.getItem()).setBaseTier(charged, tier.getBaseTier());
-			((ItemBlockEnergyCube)charged.getItem()).setEnergy(charged, tier.maxEnergy);
-			list.add(charged);
-		}
-	}
-	
-	@Override
-	public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		
-		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
-	}
+        tileEntity.setFacing((short) change);
+        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
+    }
 
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		if(world.isRemote)
-		{
-			return true;
-		}
+    @Override
+    public int quantityDropped(Random random) {
+        return 0;
+    }
 
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
-		ItemStack stack = entityplayer.getHeldItem(hand);
+    @Nonnull
+    @Override
+    public Item getItemDropped(IBlockState state, Random random, int fortune) {
+        return Items.AIR;
+    }
 
-		if(!stack.isEmpty())
-		{
-			IMekWrench wrenchHandler = Wrenches.getHandler(stack);
-			if (wrenchHandler != null) {
-				RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-				if(wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
-					if(SecurityUtils.canAccess(entityplayer, tileEntity)) {
+    @Override
+    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
+        for (EnergyCubeTier tier : EnergyCubeTier.values()) {
+            ItemStack discharged = new ItemStack(this);
+            ((ItemBlockEnergyCube) discharged.getItem()).setBaseTier(discharged, tier.getBaseTier());
+            list.add(discharged);
+            ItemStack charged = new ItemStack(this);
+            ((ItemBlockEnergyCube) charged.getItem()).setBaseTier(charged, tier.getBaseTier());
+            ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.maxEnergy);
+            list.add(charged);
+        }
+    }
 
-						wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
+    @Override
+    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
+          @Nonnull BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
 
-						if(entityplayer.isSneaking())
-						{
-							dismantleBlock(state, world, pos, false);
+        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos)
+              : 0.0F;
+    }
 
-							return true;
-						}
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer,
+          EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
+            return true;
+        }
 
-						if(tileEntity != null)
-						{
-							int change = tileEntity.facing.rotateAround(side.getAxis()).ordinal();
+        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
+        ItemStack stack = entityplayer.getHeldItem(hand);
 
-							tileEntity.setFacing((short)change);
-							world.notifyNeighborsOfStateChange(pos, this, true);
-						}
-					} else {
-						SecurityUtils.displayNoAccess(entityplayer);
-					}
+        if (!stack.isEmpty()) {
+            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+            if (wrenchHandler != null) {
+                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
+                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
+                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
 
-					return true;
-				}
-			}
-		}
+                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
 
-		if(tileEntity != null)
-		{
-			if(!entityplayer.isSneaking())
-			{
-				if(SecurityUtils.canAccess(entityplayer, tileEntity))
-				{
-					entityplayer.openGui(Mekanism.instance, 8, world, pos.getX(), pos.getY(), pos.getZ());
-				}
-				else {
-					SecurityUtils.displayNoAccess(entityplayer);
-				}
-				
-				return true;
-			}
-		}
+                        if (entityplayer.isSneaking()) {
+                            dismantleBlock(state, world, pos, false);
 
-		return false;
-	}
+                            return true;
+                        }
 
-	@Override
-	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
-	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+                        if (tileEntity != null) {
+                            int change = tileEntity.facing.rotateAround(side.getAxis()).ordinal();
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-			world.spawnEntity(entityItem);
-		}
+                            tileEntity.setFacing((short) change);
+                            world.notifyNeighborsOfStateChange(pos, this, true);
+                        }
+                    } else {
+                        SecurityUtils.displayNoAccess(entityplayer);
+                    }
 
-		return world.setBlockToAir(pos);
-	}
+                    return true;
+                }
+            }
+        }
 
-	@Override
-	public TileEntity createNewTileEntity(@Nonnull World world, int meta)
-	{
-		return new TileEntityEnergyCube();
-	}
+        if (tileEntity != null) {
+            if (!entityplayer.isSneaking()) {
+                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                    entityplayer.openGui(Mekanism.instance, 8, world, pos.getX(), pos.getY(), pos.getZ());
+                } else {
+                    SecurityUtils.displayNoAccess(entityplayer);
+                }
 
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
-	}
+                return true;
+            }
+        }
 
-	@Nonnull
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state)
-	{
-		return EnumBlockRenderType.MODEL;
-	}
+        return false;
+    }
 
-	@Nonnull
-	@Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
-	{
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
-		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
-		
-		if(!itemStack.hasTagCompound())
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-		
-		if(tileEntity != null)
-		{
-			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
-			
-			if(securityItem.hasSecurity(itemStack))
-			{
-				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
-				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
-			}
+    @Override
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
+        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			ISideConfiguration config = tileEntity;
+            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+            world.spawnEntity(entityItem);
+        }
 
-			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
-		}
+        return world.setBlockToAir(pos);
+    }
 
-		ITierItem tierItem = (ITierItem)itemStack.getItem();
-		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
+    @Override
+    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
+        return new TileEntityEnergyCube();
+    }
 
-		IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
-		energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
 
-		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-		inventory.setInventory(tileEntity.getInventory(), itemStack);
+    @Nonnull
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
+    }
 
-		return itemStack;
-	}
+    @Nonnull
+    @Override
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
+        ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
 
-	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
-	{
-		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
+        if (!itemStack.hasTagCompound()) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
 
-		world.setBlockToAir(pos);
+        if (tileEntity != null) {
+            ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
 
-		if(!returnBlock)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            if (securityItem.hasSecurity(itemStack)) {
+                securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
+                securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
+            }
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
+            ISideConfiguration config = tileEntity;
 
-			world.spawnEntity(entityItem);
-		}
+            config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+            config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+        }
 
-		return itemStack;
-	}
+        ITierItem tierItem = (ITierItem) itemStack.getItem();
+        tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
 
-	@Override
-	public boolean hasComparatorInputOverride(IBlockState state)
-	{
-		return true;
-	}
+        IEnergizedItem energizedItem = (IEnergizedItem) itemStack.getItem();
+        energizedItem.setEnergy(itemStack, tileEntity.electricityStored);
 
-	@Override
-	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
-	{
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
-		return tileEntity.getRedstoneLevel();
-	}
+        ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
+        inventory.setInventory(tileEntity.getInventory(), itemStack);
 
-	@Override
-	public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side)
-	{
-		return true;
-	}
+        return itemStack;
+    }
 
-	@Override
-	public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		EnumFacing[] valid = new EnumFacing[6];
-		
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
-			for(EnumFacing dir : EnumFacing.VALUES)
-			{
-				if(basicTile.canSetFacing(dir.ordinal()))
-				{
-					valid[dir.ordinal()] = dir;
-				}
-			}
-		}
-		
-		return valid;
-	}
+    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
+        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
-	@Override
-	public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
-			if(basicTile.canSetFacing(axis.ordinal()))
-			{
-				basicTile.setFacing((short)axis.ordinal());
-				return true;
-			}
-		}
-		
-		return false;
-	}
+        world.setBlockToAir(pos);
+
+        if (!returnBlock) {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, itemStack);
+
+            world.spawnEntity(entityItem);
+        }
+
+        return itemStack;
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
+        TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
+        return tileEntity.getRedstoneLevel();
+    }
+
+    @Override
+    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
+        return true;
+    }
+
+    @Override
+    public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        EnumFacing[] valid = new EnumFacing[6];
+
+        if (tile instanceof TileEntityBasicBlock) {
+            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
+
+            for (EnumFacing dir : EnumFacing.VALUES) {
+                if (basicTile.canSetFacing(dir.ordinal())) {
+                    valid[dir.ordinal()] = dir;
+                }
+            }
+        }
+
+        return valid;
+    }
+
+    @Override
+    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
+        TileEntity tile = world.getTileEntity(pos);
+
+        if (tile instanceof TileEntityBasicBlock) {
+            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
+
+            if (basicTile.canSetFacing(axis.ordinal())) {
+                basicTile.setFacing((short) axis.ordinal());
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

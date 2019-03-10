@@ -5,8 +5,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 
-public interface IFluidHandlerWrapper 
-{
+public interface IFluidHandlerWrapper {
+
     int fill(EnumFacing from, FluidStack resource, boolean doFill);
 
     FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain);
@@ -16,7 +16,7 @@ public interface IFluidHandlerWrapper
     boolean canFill(EnumFacing from, Fluid fluid);
 
     boolean canDrain(EnumFacing from, Fluid fluid);
-    
+
     FluidTankInfo[] getTankInfo(EnumFacing from);
 
     FluidTankInfo[] getAllTanks();

@@ -6,6 +6,7 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.zenscript.IBracketHandler;
+import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -18,18 +19,22 @@ import stanhebben.zenscript.symbols.IZenSymbol;
 import stanhebben.zenscript.type.natives.IJavaMethod;
 import stanhebben.zenscript.util.ZenPosition;
 
-import java.util.List;
-
 @BracketHandler(priority = 100)
 @ModOnly("mtlib")
 @ZenRegister
 public class GasBracketHandler implements IBracketHandler {
+
     private final IZenSymbol symbolAny;
     private final IJavaMethod method;
 
     public GasBracketHandler() {
         this.symbolAny = CraftTweakerAPI.getJavaStaticFieldSymbol(IngredientAny.class, "INSTANCE");
         this.method = CraftTweakerAPI.getJavaMethod(GasBracketHandler.class, "getGas", String.class);
+    }
+
+    public static IGasStack getGas(String name) {
+        Gas gas = GasRegistry.getGas(name);
+        return gas == null ? null : new CraftTweakerGasStack(new GasStack(gas, 1));
     }
 
     @Override
@@ -55,6 +60,7 @@ public class GasBracketHandler implements IBracketHandler {
     }
 
     private class GasReferenceSymbol implements IZenSymbol {
+
         private final IEnvironmentGlobal environment;
         private final String name;
 
@@ -67,10 +73,5 @@ public class GasBracketHandler implements IBracketHandler {
         public IPartialExpression instance(ZenPosition zenPosition) {
             return new ExpressionCallStatic(zenPosition, environment, method, new ExpressionString(zenPosition, name));
         }
-    }
-
-    public static IGasStack getGas(String name) {
-        Gas gas = GasRegistry.getGas(name);
-        return gas == null ? null : new CraftTweakerGasStack(new GasStack(gas, 1));
     }
 }

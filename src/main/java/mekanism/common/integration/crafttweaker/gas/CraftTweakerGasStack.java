@@ -1,13 +1,17 @@
 package mekanism.common.integration.crafttweaker.gas;
 
-import crafttweaker.api.item.*;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemCondition;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.item.IItemTransformer;
+import crafttweaker.api.item.IItemTransformerNew;
 import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.player.IPlayer;
+import java.util.List;
 import mekanism.api.gas.GasStack;
 
-import java.util.List;
-
 public class CraftTweakerGasStack implements IGasStack {
+
     private final GasStack stack;
 
     public CraftTweakerGasStack(GasStack stack) {

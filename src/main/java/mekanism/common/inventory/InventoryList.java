@@ -1,5 +1,6 @@
 package mekanism.common.inventory;
 
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -10,18 +11,15 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-import javax.annotation.Nonnull;
-
 /*Copied & modified from net.minecraft.inventory.InventoryBasic */
-public class InventoryList implements IInventory
-{
-    private String inventoryTitle;
+public class InventoryList implements IInventory {
+
     private final int slotsCount;
     private final NonNullList<ItemStack> inventoryContents;
     private final TileEntity te;
+    private String inventoryTitle;
 
-    public InventoryList(NonNullList<ItemStack> list, TileEntity parent)
-    {
+    public InventoryList(NonNullList<ItemStack> list, TileEntity parent) {
         this.inventoryTitle = "Proxy";
         this.slotsCount = list.size();
         this.inventoryContents = list;
@@ -33,9 +31,9 @@ public class InventoryList implements IInventory
      */
     @Nonnull
     @Override
-    public ItemStack getStackInSlot(int index)
-    {
-        return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index) : ItemStack.EMPTY;
+    public ItemStack getStackInSlot(int index) {
+        return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index)
+              : ItemStack.EMPTY;
     }
 
     /**
@@ -43,12 +41,10 @@ public class InventoryList implements IInventory
      */
     @Nonnull
     @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
+    public ItemStack decrStackSize(int index, int count) {
         ItemStack itemstack = ItemStackHelper.getAndSplit(this.inventoryContents, index, count);
 
-        if (!itemstack.isEmpty())
-        {
+        if (!itemstack.isEmpty()) {
             this.markDirty();
         }
 
@@ -60,16 +56,12 @@ public class InventoryList implements IInventory
      */
     @Nonnull
     @Override
-    public ItemStack removeStackFromSlot(int index)
-    {
+    public ItemStack removeStackFromSlot(int index) {
         ItemStack itemstack = this.inventoryContents.get(index);
 
-        if (itemstack.isEmpty())
-        {
+        if (itemstack.isEmpty()) {
             return ItemStack.EMPTY;
-        }
-        else
-        {
+        } else {
             this.inventoryContents.set(index, ItemStack.EMPTY);
             return itemstack;
         }
@@ -78,12 +70,10 @@ public class InventoryList implements IInventory
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
-    public void setInventorySlotContents(int index, @Nonnull ItemStack stack)
-    {
+    public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
         this.inventoryContents.set(index, stack);
 
-        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
-        {
+        if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
             stack.setCount(this.getInventoryStackLimit());
         }
 
@@ -93,17 +83,13 @@ public class InventoryList implements IInventory
     /**
      * Returns the number of slots in the inventory.
      */
-    public int getSizeInventory()
-    {
+    public int getSizeInventory() {
         return this.slotsCount;
     }
 
-    public boolean isEmpty()
-    {
-        for (ItemStack itemstack : this.inventoryContents)
-        {
-            if (!itemstack.isEmpty())
-            {
+    public boolean isEmpty() {
+        for (ItemStack itemstack : this.inventoryContents) {
+            if (!itemstack.isEmpty()) {
                 return false;
             }
         }
@@ -116,24 +102,21 @@ public class InventoryList implements IInventory
      */
     @Nonnull
     @Override
-    public String getName()
-    {
+    public String getName() {
         return this.inventoryTitle;
     }
 
     /**
      * Returns true if this thing is named
      */
-    public boolean hasCustomName()
-    {
+    public boolean hasCustomName() {
         return false;
     }
 
     /**
      * Sets the name of this inventory. This is displayed to the client on opening.
      */
-    public void setCustomName(String inventoryTitleIn)
-    {
+    public void setCustomName(String inventoryTitleIn) {
 
     }
 
@@ -142,16 +125,15 @@ public class InventoryList implements IInventory
      */
     @Nonnull
     @Override
-    public ITextComponent getDisplayName()
-    {
-        return (this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]));
+    public ITextComponent getDisplayName() {
+        return (this.hasCustomName() ? new TextComponentString(this.getName())
+              : new TextComponentTranslation(this.getName()));
     }
 
     /**
      * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended.
      */
-    public int getInventoryStackLimit()
-    {
+    public int getInventoryStackLimit() {
         return 64;
     }
 
@@ -159,52 +141,43 @@ public class InventoryList implements IInventory
      * For tile entities, ensures the chunk containing the tile entity is saved to disk later - the game won't think it
      * hasn't changed and skip it.
      */
-    public void markDirty()
-    {
+    public void markDirty() {
         this.te.markDirty();
     }
 
     /**
      * Don't rename this method to canInteractWith due to conflicts with Container
      */
-    public boolean isUsableByPlayer(@Nonnull EntityPlayer player)
-    {
+    public boolean isUsableByPlayer(@Nonnull EntityPlayer player) {
         return true;
     }
 
-    public void openInventory(@Nonnull EntityPlayer player)
-    {
+    public void openInventory(@Nonnull EntityPlayer player) {
     }
 
-    public void closeInventory(@Nonnull EntityPlayer player)
-    {
+    public void closeInventory(@Nonnull EntityPlayer player) {
     }
 
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For
      * guis use Slot.isItemValid
      */
-    public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack)
-    {
+    public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
         return true;
     }
 
-    public int getField(int id)
-    {
+    public int getField(int id) {
         return 0;
     }
 
-    public void setField(int id, int value)
-    {
+    public void setField(int id, int value) {
     }
 
-    public int getFieldCount()
-    {
+    public int getFieldCount() {
         return 0;
     }
 
-    public void clear()
-    {
+    public void clear() {
         this.inventoryContents.clear();
     }
 }

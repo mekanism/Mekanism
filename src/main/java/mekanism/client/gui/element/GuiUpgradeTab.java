@@ -13,67 +13,58 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 
-public class GuiUpgradeTab extends GuiElement
-{
-	TileEntity tileEntity;
+public class GuiUpgradeTab extends GuiElement {
 
-	public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeTab.png"), gui, def);
+    TileEntity tileEntity;
 
-		tileEntity = tile;
-	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth + 176, guiHeight + 6, 26, 26);
-	}
+    public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeTab.png"), gui, def);
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        tileEntity = tile;
+    }
 
-		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 26);
-		
-		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
-		{
-			guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 18, 18, 18);
-		}
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth + 176, guiHeight + 6, 26, 26);
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 26);
 
-		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
-		{
-			displayTooltip(LangUtils.localize("gui.upgrades"), xAxis, yAxis);
-		}
+        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
+            guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 0, 18, 18);
+        } else {
+            guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 18, 18, 18);
+        }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(button == 0)
-		{
-			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
-			{
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 43));
-	            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-			}
-		}
-	}
+        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
+            displayTooltip(LangUtils.localize("gui.upgrades"), xAxis, yAxis);
+        }
+
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
+
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (button == 0) {
+            if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
+                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 43));
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            }
+        }
+    }
 }

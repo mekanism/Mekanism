@@ -1,7 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Random;
-
+import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
@@ -43,355 +43,318 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import javax.annotation.Nonnull;
+public class BlockGasTank extends BlockContainer {
 
-public class BlockGasTank extends BlockContainer
-{
-	private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
+    private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
-	public BlockGasTank()
-	{
-		super(Material.IRON);
-		setHardness(3.5F);
-		setResistance(8F);
-		setCreativeTab(Mekanism.tabMekanism);
-	}
+    public BlockGasTank() {
+        super(Material.IRON);
+        setHardness(3.5F);
+        setResistance(8F);
+        setCreativeTab(Mekanism.tabMekanism);
+    }
 
-	@Nonnull
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new BlockStateGasTank(this);
-	}
+    @Nonnull
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateGasTank(this);
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		return getDefaultState();
-	}
+    @Nonnull
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState();
+    }
 
-	@Override
-	public int getMetaFromState(IBlockState state)
-	{
-		return 0;
-	}
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return 0;
+    }
 
-	@Nonnull
-	@Override
-	public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos)
-	{
-		TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-		
-		if(tile instanceof TileEntityGasTank)
-		{
-			TileEntityGasTank tank = (TileEntityGasTank)tile;
-			
-			if(tank.facing != null)
-			{
-				state = state.withProperty(BlockStateFacing.facingProperty, tank.facing);
-			}
+    @Nonnull
+    @Override
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
-			if(tank.tier != null)
-			{
-				state = state.withProperty(BlockStateGasTank.typeProperty, tank.tier);
-			}
-		}
-		
-		return state;
-	}
+        if (tile instanceof TileEntityGasTank) {
+            TileEntityGasTank tank = (TileEntityGasTank) tile;
 
-	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
-	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+            if (tank.facing != null) {
+                state = state.withProperty(BlockStateFacing.facingProperty, tank.facing);
+            }
 
-		int side = MathHelper.floor((double)(placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		int change = 3;
+            if (tank.tier != null) {
+                state = state.withProperty(BlockStateGasTank.typeProperty, tank.tier);
+            }
+        }
 
-		switch(side)
-		{
-			case 0: change = 2; break;
-			case 1: change = 5; break;
-			case 2: change = 3; break;
-			case 3: change = 4; break;
-		}
+        return state;
+    }
 
-		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-	}
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer,
+          ItemStack stack) {
+        TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
 
-	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
-	{
-		if(!world.isRemote)
-		{
-			TileEntity tileEntity = world.getTileEntity(pos);
+        int side = MathHelper.floor((double) (placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        int change = 3;
 
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(neighborBlock);
-			}
-		}
-	}
-	
-	@Override
-	public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		
-		return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
-	}
+        switch (side) {
+            case 0:
+                change = 2;
+                break;
+            case 1:
+                change = 5;
+                break;
+            case 2:
+                change = 3;
+                break;
+            case 3:
+                change = 4;
+                break;
+        }
 
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		if(world.isRemote)
-		{
-			return true;
-		}
+        tileEntity.setFacing((short) change);
+        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
+    }
 
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
-		ItemStack stack = entityplayer.getHeldItem(hand);
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
+          BlockPos neighborPos) {
+        if (!world.isRemote) {
+            TileEntity tileEntity = world.getTileEntity(pos);
 
-		if(!stack.isEmpty())
-		{
-			IMekWrench wrenchHandler = Wrenches.getHandler(stack);
-			if (wrenchHandler != null)
-			{
-				RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
-				if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace))
-				{
-					if (SecurityUtils.canAccess(entityplayer, tileEntity))
-					{
-						wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
+            if (tileEntity instanceof TileEntityBasicBlock) {
+                ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
+            }
+        }
+    }
 
-						if(entityplayer.isSneaking())
-						{
-							dismantleBlock(state, world, pos, false);
+    @Override
+    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
+          @Nonnull BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
 
-							return true;
-						}
+        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos)
+              : 0.0F;
+    }
 
-						if(tileEntity != null)
-						{
-							int change = tileEntity.facing.rotateY().ordinal();
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer,
+          EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
+            return true;
+        }
 
-							tileEntity.setFacing((short)change);
-							world.notifyNeighborsOfStateChange(pos, this, true);
-						}
-					}
-					else {
-						SecurityUtils.displayNoAccess(entityplayer);
-					}
+        TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
+        ItemStack stack = entityplayer.getHeldItem(hand);
 
-					return true;
-				}
-			}
-		}
+        if (!stack.isEmpty()) {
+            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+            if (wrenchHandler != null) {
+                RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos);
+                if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
+                    if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                        wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
 
-		if(tileEntity != null)
-		{
-			if(!entityplayer.isSneaking())
-			{
-				if(SecurityUtils.canAccess(entityplayer, tileEntity))
-				{
-					entityplayer.openGui(Mekanism.instance, 10, world, pos.getX(), pos.getY(), pos.getZ());
-				}
-				else {
-					SecurityUtils.displayNoAccess(entityplayer);
-				}
-				
-				return true;
-			}
-		}
-		
-		return false;
-	}
+                        if (entityplayer.isSneaking()) {
+                            dismantleBlock(state, world, pos, false);
 
-	@Override
-	public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest)
-	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+                            return true;
+                        }
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+                        if (tileEntity != null) {
+                            int change = tileEntity.facing.rotateY().ordinal();
 
-			world.spawnEntity(entityItem);
-		}
+                            tileEntity.setFacing((short) change);
+                            world.notifyNeighborsOfStateChange(pos, this, true);
+                        }
+                    } else {
+                        SecurityUtils.displayNoAccess(entityplayer);
+                    }
 
-		return world.setBlockToAir(pos);
-	}
+                    return true;
+                }
+            }
+        }
 
-	public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock)
-	{
-		ItemStack itemStack = getPickBlock(state, null, world, pos, null);
+        if (tileEntity != null) {
+            if (!entityplayer.isSneaking()) {
+                if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
+                    entityplayer.openGui(Mekanism.instance, 10, world, pos.getX(), pos.getY(), pos.getZ());
+                } else {
+                    SecurityUtils.displayNoAccess(entityplayer);
+                }
 
-		world.setBlockToAir(pos);
+                return true;
+            }
+        }
 
-		if(!returnBlock)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+        return false;
+    }
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
+    @Override
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
+        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			world.spawnEntity(entityItem);
-		}
+            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
 
-		return itemStack;
-	}
+            world.spawnEntity(entityItem);
+        }
 
-	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
+        return world.setBlockToAir(pos);
+    }
 
-	@Nonnull
-	@Override
-	public Item getItemDropped(IBlockState state, Random random, int fortune)
-	{
-		return Items.AIR;
-	}
+    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
+        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
 
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
-	}
+        world.setBlockToAir(pos);
 
-	@Nonnull
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state)
-	{
-		return EnumBlockRenderType.MODEL;
-	}
+        if (!returnBlock) {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-	@Nonnull
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		return TANK_BOUNDS;
-	}
+            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, itemStack);
 
-	@Override
-	public TileEntity createNewTileEntity(@Nonnull World world, int meta)
-	{
-		return new TileEntityGasTank();
-	}
+            world.spawnEntity(entityItem);
+        }
 
-	@Nonnull
-	@Override
-	public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player)
-	{
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
-		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
-		
-		if(itemStack.hasTagCompound())
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-		
-		if(tileEntity != null)
-		{
-			ISecurityItem securityItem = (ISecurityItem)itemStack.getItem();
-			
-			if(securityItem.hasSecurity(itemStack))
-			{
-				securityItem.setOwnerUUID(itemStack, ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID());
-				securityItem.setSecurity(itemStack, ((ISecurityTile)tileEntity).getSecurity().getMode());
-			}
+        return itemStack;
+    }
 
-			ISideConfiguration config = tileEntity;
+    @Override
+    public int quantityDropped(Random random) {
+        return 0;
+    }
 
-			config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
-			config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
-		}
-		
-		ITierItem tierItem = (ITierItem)itemStack.getItem();
-		tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
+    @Nonnull
+    @Override
+    public Item getItemDropped(IBlockState state, Random random, int fortune) {
+        return Items.AIR;
+    }
 
-		IGasItem storageTank = (IGasItem)itemStack.getItem();
-		storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
 
-		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-		inventory.setInventory(tileEntity.getInventory(), itemStack);
+    @Nonnull
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
+    }
 
-		return itemStack;
-	}
+    @Nonnull
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return TANK_BOUNDS;
+    }
 
-	@Override
-	public boolean hasComparatorInputOverride(IBlockState state)
-	{
-		return true;
-	}
+    @Override
+    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
+        return new TileEntityGasTank();
+    }
 
-	@Override
-	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
-	{
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
-		return tileEntity.getRedstoneLevel();
-	}
-	
-	@Override
-	public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		EnumFacing[] valid = new EnumFacing[6];
-		
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
-			for(EnumFacing dir : EnumFacing.VALUES)
-			{
-				if(basicTile.canSetFacing(dir.ordinal()))
-				{
-					valid[dir.ordinal()] = dir;
-				}
-			}
-		}
-		
-		return valid;
-	}
+    @Nonnull
+    @Override
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
+        ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
 
-	@Override
-	public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis)
-	{
-		TileEntity tile = world.getTileEntity(pos);
-		
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
-			if(basicTile.canSetFacing(axis.ordinal()))
-			{
-				basicTile.setFacing((short)axis.ordinal());
-				return true;
-			}
-		}
-		
-		return false;
-	}
+        if (itemStack.hasTagCompound()) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
 
-	@Override
-	public boolean isFullBlock(IBlockState state) 
-	{
-		return false;
-	}
+        if (tileEntity != null) {
+            ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
 
-	@Override
-	public boolean isFullCube(IBlockState state) 
-	{
-		return false;
-	}
+            if (securityItem.hasSecurity(itemStack)) {
+                securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
+                securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
+            }
+
+            ISideConfiguration config = tileEntity;
+
+            config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
+            config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
+        }
+
+        ITierItem tierItem = (ITierItem) itemStack.getItem();
+        tierItem.setBaseTier(itemStack, tileEntity.tier.getBaseTier());
+
+        IGasItem storageTank = (IGasItem) itemStack.getItem();
+        storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
+
+        ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
+        inventory.setInventory(tileEntity.getInventory(), itemStack);
+
+        return itemStack;
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
+        TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
+        return tileEntity.getRedstoneLevel();
+    }
+
+    @Override
+    public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        EnumFacing[] valid = new EnumFacing[6];
+
+        if (tile instanceof TileEntityBasicBlock) {
+            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
+
+            for (EnumFacing dir : EnumFacing.VALUES) {
+                if (basicTile.canSetFacing(dir.ordinal())) {
+                    valid[dir.ordinal()] = dir;
+                }
+            }
+        }
+
+        return valid;
+    }
+
+    @Override
+    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
+        TileEntity tile = world.getTileEntity(pos);
+
+        if (tile instanceof TileEntityBasicBlock) {
+            TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
+
+            if (basicTile.canSetFacing(axis.ordinal())) {
+                basicTile.setFacing((short) axis.ordinal());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isFullBlock(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
 
 	/*
 	@Override

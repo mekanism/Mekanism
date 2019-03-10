@@ -6,6 +6,7 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import net.minecraft.entity.player.InventoryPlayer;
 
 public class ContainerInductionMatrix extends ContainerEnergyStorage {
+
     public ContainerInductionMatrix(InventoryPlayer inventory, TileEntityInductionCasing inductionCasing) {
         super(inventory, inductionCasing);
     }

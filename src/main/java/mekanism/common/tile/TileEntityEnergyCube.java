@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -36,330 +36,288 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import javax.annotation.Nonnull;
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl,
+      ISideConfiguration, ISecurityTile, ITierUpgradeable, IConfigCardAccess {
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable, IConfigCardAccess
-{
-	/** This Energy Cube's tier. */
-	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
+    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+    /**
+     * This Energy Cube's tier.
+     */
+    public EnergyCubeTier tier = EnergyCubeTier.BASIC;
+    /**
+     * The redstone level this Energy Cube is outputting at.
+     */
+    public int currentRedstoneLevel;
+    /**
+     * This machine's current RedstoneControl type.
+     */
+    public RedstoneControl controlType;
+    public int prevScale;
+    public TileComponentEjector ejectorComponent;
+    public TileComponentConfig configComponent;
+    public TileComponentSecurity securityComponent;
 
-	/** The redstone level this Energy Cube is outputting at. */
-	public int currentRedstoneLevel;
+    /**
+     * A block used to store and transfer electricity.
+     */
+    public TileEntityEnergyCube() {
+        super("EnergyCube", 0);
 
-	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType;
+        configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 
-	public int prevScale;
-	
-	public TileComponentEjector ejectorComponent;
-	public TileComponentConfig configComponent;
-	public TileComponentSecurity securityComponent;
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Charge", EnumColor.DARK_BLUE, new int[]{0}));
+        configComponent.addOutput(TransmissionType.ITEM, new SideData("Discharge", EnumColor.DARK_RED, new int[]{1}));
 
-	/**
-	 * A block used to store and transfer electricity.
-	 */
-	public TileEntityEnergyCube()
-	{
-		super("EnergyCube", 0);
-		
-		configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
-		
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Charge", EnumColor.DARK_BLUE, new int[] {0}));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData("Discharge", EnumColor.DARK_RED, new int[] {1}));
-		
-		configComponent.setConfig(TransmissionType.ITEM, new byte[] {0, 0, 0, 0, 2, 1});
-		configComponent.setCanEject(TransmissionType.ITEM, false);
-		configComponent.setIOConfig(TransmissionType.ENERGY);
-		configComponent.setEjecting(TransmissionType.ENERGY, true);
+        configComponent.setConfig(TransmissionType.ITEM, new byte[]{0, 0, 0, 0, 2, 1});
+        configComponent.setCanEject(TransmissionType.ITEM, false);
+        configComponent.setIOConfig(TransmissionType.ENERGY);
+        configComponent.setEjecting(TransmissionType.ENERGY, true);
 
-		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-		controlType = RedstoneControl.DISABLED;
-		
-		ejectorComponent = new TileComponentEjector(this);
-		
-		securityComponent = new TileComponentSecurity(this);
-	}
+        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        controlType = RedstoneControl.DISABLED;
 
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
+        ejectorComponent = new TileComponentEjector(this);
 
-		if(!world.isRemote)
-		{
-			ChargeUtils.charge(0, this);
-			ChargeUtils.discharge(1, this);
-	
-			if(MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY))
-			{
-				CableUtils.emit(this);
-			}
-			
-			int newScale = getScaledEnergyLevel(20);
-	
-			if(newScale != prevScale)
-			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
-			}
-	
-			prevScale = newScale;
-		}
-	}
-	
-	@Override
-	public boolean upgrade(BaseTier upgradeTier)
-	{
-		if(upgradeTier.ordinal() != tier.ordinal()+1)
-		{
-			return false;
-		}
-		
-		tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
-		
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
-		markDirty();
-		
-		return true;
-	}
+        securityComponent = new TileComponentSecurity(this);
+    }
 
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getSimpleName() + ".name");
-	}
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
 
-	@Override
-	public double getMaxOutput()
-	{
-		if(tier == EnergyCubeTier.CREATIVE)
-		{
-			return Integer.MAX_VALUE;
-		}
-		
-		return tier.output;
-	}
+        if (!world.isRemote) {
+            ChargeUtils.charge(0, this);
+            ChargeUtils.discharge(1, this);
 
-	@Override
-	public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack)
-	{
-		if(slotID == 0)
-		{
-			return ChargeUtils.canBeCharged(itemstack);
-		}
-		else if(slotID == 1)
-		{
-			return ChargeUtils.canBeDischarged(itemstack);
-		}
+            if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
+                CableUtils.emit(this);
+            }
 
-		return true;
-	}
+            int newScale = getScaledEnergyLevel(20);
 
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) 
-	{
-		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
-	}
+            if (newScale != prevScale) {
+                Mekanism.packetHandler.sendToReceivers(
+                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                      new Range4D(Coord4D.get(this)));
+            }
 
-	@Override
-	public boolean sideIsOutput(EnumFacing side)
-	{
-		return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
-	}
+            prevScale = newScale;
+        }
+    }
 
-	@Override
-	public boolean canSetFacing(int side)
-	{
-		return true;
-	}
+    @Override
+    public boolean upgrade(BaseTier upgradeTier) {
+        if (upgradeTier.ordinal() != tier.ordinal() + 1) {
+            return false;
+        }
 
-	@Override
-	public double getMaxEnergy()
-	{
-		return tier.maxEnergy;
-	}
+        tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
 
-	@Nonnull
-	@Override
-	public int[] getSlotsForFace(@Nonnull EnumFacing side)
-	{
-		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
-	}
+        Mekanism.packetHandler
+              .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                    new Range4D(Coord4D.get(this)));
+        markDirty();
 
-	@Override
-	public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side)
-	{
-		if(slotID == 1)
-		{
-			return ChargeUtils.canBeOutputted(itemstack, false);
-		}
-		else if(slotID == 0)
-		{
-			return ChargeUtils.canBeOutputted(itemstack, true);
-		}
+        return true;
+    }
 
-		return false;
-	}
+    @Nonnull
+    @Override
+    public String getName() {
+        return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getSimpleName() + ".name");
+    }
 
-    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
+    @Override
+    public double getMaxOutput() {
+        if (tier == EnergyCubeTier.CREATIVE) {
+            return Integer.MAX_VALUE;
+        }
 
-	@Override
-	public String[] getMethods()
-	{
-		return methods;
-	}
+        return tier.output;
+    }
 
-	@Override
-	public Object[] invoke(int method, Object[] arguments) throws Exception
-	{
-		switch(method)
-		{
-			case 0:
-				return new Object[] {getEnergy()};
-			case 1:
-				return new Object[] {tier.output};
-			case 2:
-				return new Object[] {getMaxEnergy()};
-			case 3:
-				return new Object[] {(getMaxEnergy()-getEnergy())};
-			default:
-				throw new NoSuchMethodException();
-		}
-	}
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
+        if (slotID == 0) {
+            return ChargeUtils.canBeCharged(itemstack);
+        } else if (slotID == 1) {
+            return ChargeUtils.canBeDischarged(itemstack);
+        }
 
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		super.handlePacketData(dataStream);
-		
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{	
-			EnergyCubeTier prevTier = tier;
-			
-			tier = EnergyCubeTier.values()[dataStream.readInt()];
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-	
-			if(prevTier != tier)
-			{
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-	}
+        return true;
+    }
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		super.getNetworkedData(data);
+    @Override
+    public boolean sideIsConsumer(EnumFacing side) {
+        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
+    }
 
-		data.add(tier.ordinal());
-		data.add(controlType.ordinal());
+    @Override
+    public boolean sideIsOutput(EnumFacing side) {
+        return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 2, side);
+    }
 
-		return data;
-	}
+    @Override
+    public boolean canSetFacing(int side) {
+        return true;
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
+    @Override
+    public double getMaxEnergy() {
+        return tier.maxEnergy;
+    }
 
-		tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-	}
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
+    }
 
-	@Nonnull
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
+    @Override
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (slotID == 1) {
+            return ChargeUtils.canBeOutputted(itemstack, false);
+        } else if (slotID == 0) {
+            return ChargeUtils.canBeOutputted(itemstack, true);
+        }
 
-		nbtTags.setInteger("tier", tier.ordinal());
-		nbtTags.setInteger("controlType", controlType.ordinal());
-		
-		return nbtTags;
-	}
+        return false;
+    }
 
-	@Override
-	public void setEnergy(double energy)
-	{
-		if(tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE)
-		{
-			return;
-		}
-		
-		super.setEnergy(energy);
+    @Override
+    public String[] getMethods() {
+        return methods;
+    }
 
-		int newRedstoneLevel = getRedstoneLevel();
+    @Override
+    public Object[] invoke(int method, Object[] arguments) throws Exception {
+        switch (method) {
+            case 0:
+                return new Object[]{getEnergy()};
+            case 1:
+                return new Object[]{tier.output};
+            case 2:
+                return new Object[]{getMaxEnergy()};
+            case 3:
+                return new Object[]{(getMaxEnergy() - getEnergy())};
+            default:
+                throw new NoSuchMethodException();
+        }
+    }
 
-		if(newRedstoneLevel != currentRedstoneLevel)
-		{
-			markDirty();
-			currentRedstoneLevel = newRedstoneLevel;
-		}
-	}
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        super.handlePacketData(dataStream);
 
-	public int getRedstoneLevel()
-	{
-		double fractionFull = getEnergy()/getMaxEnergy();
-		return MathHelper.floor((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
-	}
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            EnergyCubeTier prevTier = tier;
 
-	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
+            tier = EnergyCubeTier.values()[dataStream.readInt()];
+            controlType = RedstoneControl.values()[dataStream.readInt()];
 
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-	}
+            if (prevTier != tier) {
+                MekanismUtils.updateBlock(world, getPos());
+            }
+        }
+    }
 
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
 
-	@Override
-	public TileComponentEjector getEjector()
-	{
-		return ejectorComponent;
-	}
-	
-	@Override
-	public TileComponentConfig getConfig()
-	{
-		return configComponent;
-	}
-	
-	@Override
-	public EnumFacing getOrientation()
-	{
-		return facing;
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
-	}
-	
-	@Override
-	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side)
-	{
-		return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
-	}
+        data.add(tier.ordinal());
+        data.add(controlType.ordinal());
 
-	@Override
-	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side)
-	{
-		if(capability == Capabilities.CONFIG_CARD_CAPABILITY)
-		{
-			return (T)this;
-		}
-		
-		return super.getCapability(capability, side);
-	}
+        return data;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags) {
+        super.readFromNBT(nbtTags);
+
+        tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+    }
+
+    @Nonnull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        super.writeToNBT(nbtTags);
+
+        nbtTags.setInteger("tier", tier.ordinal());
+        nbtTags.setInteger("controlType", controlType.ordinal());
+
+        return nbtTags;
+    }
+
+    @Override
+    public void setEnergy(double energy) {
+        if (tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE) {
+            return;
+        }
+
+        super.setEnergy(energy);
+
+        int newRedstoneLevel = getRedstoneLevel();
+
+        if (newRedstoneLevel != currentRedstoneLevel) {
+            markDirty();
+            currentRedstoneLevel = newRedstoneLevel;
+        }
+    }
+
+    public int getRedstoneLevel() {
+        double fractionFull = getEnergy() / getMaxEnergy();
+        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+    }
+
+    @Override
+    public RedstoneControl getControlType() {
+        return controlType;
+    }
+
+    @Override
+    public void setControlType(RedstoneControl type) {
+        controlType = type;
+    }
+
+    @Override
+    public boolean canPulse() {
+        return false;
+    }
+
+    @Override
+    public TileComponentEjector getEjector() {
+        return ejectorComponent;
+    }
+
+    @Override
+    public TileComponentConfig getConfig() {
+        return configComponent;
+    }
+
+    @Override
+    public EnumFacing getOrientation() {
+        return facing;
+    }
+
+    @Override
+    public TileComponentSecurity getSecurity() {
+        return securityComponent;
+    }
+
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
+            return (T) this;
+        }
+
+        return super.getCapability(capability, side);
+    }
 }

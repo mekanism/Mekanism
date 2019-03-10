@@ -9,146 +9,115 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class InventoryBin
-{
-	public ItemStack bin;
+public class InventoryBin {
 
-	public InventoryBin(ItemStack stack)
-	{
-		bin = stack;
-	}
+    public ItemStack bin;
 
-	public ItemStack getStack()
-	{
-		if(getItemCount() > 0 && !getItemType().isEmpty())
-		{
-			ItemStack ret = getItemType().copy();
-			ret.setCount(Math.min(getItemType().getMaxStackSize(), getItemCount()));
+    public InventoryBin(ItemStack stack) {
+        bin = stack;
+    }
 
-			return ret;
-		}
+    public ItemStack getStack() {
+        if (getItemCount() > 0 && !getItemType().isEmpty()) {
+            ItemStack ret = getItemType().copy();
+            ret.setCount(Math.min(getItemType().getMaxStackSize(), getItemCount()));
 
-		return ItemStack.EMPTY;
-	}
+            return ret;
+        }
 
-	public ItemStack removeStack()
-	{
-		ItemStack stack = getStack();
+        return ItemStack.EMPTY;
+    }
 
-		if(stack.isEmpty())
-		{
-			return ItemStack.EMPTY;
-		}
+    public ItemStack removeStack() {
+        ItemStack stack = getStack();
 
-		if(getTier() != BinTier.CREATIVE)
-		{
-			setItemCount(getItemCount() - stack.getCount());
-		}
-		
-		return stack.copy();
-	}
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
 
-	public ItemStack add(ItemStack stack)
-	{
-		if(isValid(stack) && (getTier() == BinTier.CREATIVE || getItemCount() != getMaxStorage()))
-		{
-			if(getItemType().isEmpty())
-			{
-				setItemType(stack);
-			}
+        if (getTier() != BinTier.CREATIVE) {
+            setItemCount(getItemCount() - stack.getCount());
+        }
 
-			if(getTier() != BinTier.CREATIVE)
-			{
-				if(getItemCount() + stack.getCount() <= getMaxStorage())
-				{
-					setItemCount(getItemCount() + stack.getCount());
-					return ItemStack.EMPTY;
-				}
-				else {
-					ItemStack rejects = getItemType().copy();
-					rejects.setCount((getItemCount()+stack.getCount()) - getMaxStorage());
-	
-					setItemCount(getMaxStorage());
-	
-					return rejects;
-				}
-			}
-			else {
-				setItemCount(Integer.MAX_VALUE);
-			}
-		}
+        return stack.copy();
+    }
 
-		return stack;
-	}
+    public ItemStack add(ItemStack stack) {
+        if (isValid(stack) && (getTier() == BinTier.CREATIVE || getItemCount() != getMaxStorage())) {
+            if (getItemType().isEmpty()) {
+                setItemType(stack);
+            }
 
-	public boolean isValid(ItemStack stack)
-	{
-		if(stack.isEmpty() || stack.getCount() <= 0)
-		{
-			return false;
-		}
+            if (getTier() != BinTier.CREATIVE) {
+                if (getItemCount() + stack.getCount() <= getMaxStorage()) {
+                    setItemCount(getItemCount() + stack.getCount());
+                    return ItemStack.EMPTY;
+                } else {
+                    ItemStack rejects = getItemType().copy();
+                    rejects.setCount((getItemCount() + stack.getCount()) - getMaxStorage());
 
-		if(BasicBlockType.get(stack) == BasicBlockType.BIN)
-		{
-			return false;
-		}
+                    setItemCount(getMaxStorage());
 
-		if(getItemType().isEmpty())
-		{
-			return true;
-		}
+                    return rejects;
+                }
+            } else {
+                setItemCount(Integer.MAX_VALUE);
+            }
+        }
 
-		if(!stack.isItemEqual(getItemType()) || !ItemStack.areItemStackTagsEqual(stack, getItemType()))
-		{
-			return false;
-		}
+        return stack;
+    }
 
-		return true;
-	}
-	
-	public int getMaxStorage()
-	{
-		return getTier().storage;
-	}
-	
-	public BinTier getTier()
-	{
-		return BinTier.values()[((ITierItem)bin.getItem()).getBaseTier(bin).ordinal()];
-	}
+    public boolean isValid(ItemStack stack) {
+        if (stack.isEmpty() || stack.getCount() <= 0) {
+            return false;
+        }
 
-	public int getItemCount()
-	{
-		return ItemDataUtils.getInt(bin, "itemCount");
-	}
+        if (BasicBlockType.get(stack) == BasicBlockType.BIN) {
+            return false;
+        }
 
-	public void setItemCount(int count)
-	{
-		ItemDataUtils.setInt(bin, "itemCount", Math.max(0, count));
+        if (getItemType().isEmpty()) {
+            return true;
+        }
 
-		if(getItemCount() == 0)
-		{
-			setItemType(ItemStack.EMPTY);
-		}
-	}
+        return stack.isItemEqual(getItemType()) && ItemStack.areItemStackTagsEqual(stack, getItemType());
+    }
 
-	public ItemStack getItemType()
-	{
-		if(getItemCount() == 0)
-		{
-			return ItemStack.EMPTY;
-		}
+    public int getMaxStorage() {
+        return getTier().storage;
+    }
 
-		return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
-	}
+    public BinTier getTier() {
+        return BinTier.values()[((ITierItem) bin.getItem()).getBaseTier(bin).ordinal()];
+    }
 
-	public void setItemType(ItemStack stack)
-	{
-		if(stack.isEmpty())
-		{
-			ItemDataUtils.removeData(bin, "storedItem");
-			return;
-		}
+    public int getItemCount() {
+        return ItemDataUtils.getInt(bin, "itemCount");
+    }
 
-		ItemDataUtils.setCompound(bin, "storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
-	}
+    public void setItemCount(int count) {
+        ItemDataUtils.setInt(bin, "itemCount", Math.max(0, count));
+
+        if (getItemCount() == 0) {
+            setItemType(ItemStack.EMPTY);
+        }
+    }
+
+    public ItemStack getItemType() {
+        if (getItemCount() == 0) {
+            return ItemStack.EMPTY;
+        }
+
+        return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
+    }
+
+    public void setItemType(ItemStack stack) {
+        if (stack.isEmpty()) {
+            ItemDataUtils.removeData(bin, "storedItem");
+            return;
+        }
+
+        ItemDataUtils.setCompound(bin, "storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
+    }
 }

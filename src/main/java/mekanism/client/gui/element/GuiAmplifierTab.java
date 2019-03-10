@@ -17,71 +17,62 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiAmplifierTab extends GuiElement
-{
-	public TileEntity tileEntity;
+public class GuiAmplifierTab extends GuiElement {
 
-	public GuiAmplifierTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiAmplifierTab.png"), gui, def);
+    public TileEntity tileEntity;
 
-		tileEntity = tile;
-	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
-	}
+    public GuiAmplifierTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiAmplifierTab.png"), gui, def);
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        tileEntity = tile;
+    }
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
-		int outputOrdinal = ((TileEntityLaserAmplifier)tileEntity).outputMode.ordinal();
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
+    }
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
-		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18*outputOrdinal, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18*outputOrdinal, 18, 18, 18);
-		}
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+        guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
+        int outputOrdinal = ((TileEntityLaserAmplifier) tileEntity).outputMode.ordinal();
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160) {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18 * outputOrdinal, 0, 18, 18);
+        } else {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 142, 26 + 18 * outputOrdinal, 18, 18, 18);
+        }
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
-		{
-			String text = LangUtils.localize("gui.redstoneOutput") + ": ";
-			displayTooltip(text + ((TileEntityLaserAmplifier)tileEntity).outputMode.getName(), xAxis, yAxis);
-		}
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160) {
+            String text = LangUtils.localize("gui.redstoneOutput") + ": ";
+            displayTooltip(text + ((TileEntityLaserAmplifier) tileEntity).outputMode.getName(), xAxis, yAxis);
+        }
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(button == 0)
-		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
-			{
-				TileNetworkList data = TileNetworkList.withContents(3);
-				
-				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
+
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (button == 0) {
+            if (xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160) {
+                TileNetworkList data = TileNetworkList.withContents(3);
+
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-			}
-		}
-	}
+            }
+        }
+    }
 }

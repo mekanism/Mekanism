@@ -7,8 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface MekanismRecipeHelper {
+
     /**
      * Add an Enrichment Chamber recipe.
+     *
      * @param input - input ItemStack
      * @param output - output ItemStack
      */
@@ -16,6 +18,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add an Osmium Compressor recipe.
+     *
      * @param input - input ItemStack
      * @param output - output ItemStack
      */
@@ -23,6 +26,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Combiner recipe.
+     *
      * @param input - input ItemStack
      * @param output - output ItemStack
      */
@@ -30,6 +34,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Crusher recipe.
+     *
      * @param input - input ItemStack
      * @param output - output ItemStack
      */
@@ -37,6 +42,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Purification Chamber recipe.
+     *
      * @param input - input ItemStack
      * @param output - output ItemStack
      */
@@ -44,6 +50,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Metallurgic Infuser recipe.
+     *
      * @param infuse - which Infuse to use
      * @param amount - how much of the Infuse to use
      * @param input - input ItemStack
@@ -53,6 +60,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Chemical Infuser recipe.
+     *
      * @param leftInput - left GasStack to input
      * @param rightInput - right GasStack to input
      * @param output - output GasStack
@@ -61,6 +69,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Chemical Oxidizer recipe.
+     *
      * @param input - input ItemStack
      * @param output - output GasStack
      */
@@ -68,6 +77,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Chemical Injection Chamber recipe.
+     *
      * @param input - input ItemStack
      * @param output - output ItemStack
      */
@@ -75,6 +85,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add an Electrolytic Separator recipe.
+     *
      * @param fluid - FluidStack to electrolyze
      * @param leftOutput - left gas to produce when the fluid is electrolyzed
      * @param rightOutput - right gas to produce when the fluid is electrolyzed
@@ -83,6 +94,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Precision Sawmill recipe.
+     *
      * @param input - input ItemStack
      * @param primaryOutput - guaranteed output
      * @param secondaryOutput - possible extra output
@@ -92,6 +104,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Precision Sawmill recipe with no chance output
+     *
      * @param input - input ItemStack
      * @param primaryOutput - guaranteed output
      */
@@ -99,6 +112,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Chemical Dissolution Chamber recipe.
+     *
      * @param input - input ItemStack
      * @param output - output GasStack
      */
@@ -106,6 +120,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Chemical Washer recipe.
+     *
      * @param input - input GasStack
      * @param output - output GasStack
      */
@@ -113,6 +128,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Chemical Crystallizer recipe.
+     *
      * @param input - input GasStack
      * @param output - output ItemStack
      */
@@ -120,6 +136,7 @@ public interface MekanismRecipeHelper {
 
     /**
      * Add a Pressurized Reaction Chamber recipe.
+     *
      * @param inputSolid - input ItemStack
      * @param inputFluid - input FluidStack
      * @param inputGas - input GasStack
@@ -128,7 +145,8 @@ public interface MekanismRecipeHelper {
      * @param extraEnergy - extra energy needed by the recipe
      * @param ticks - amount of ticks it takes for this recipe to complete
      */
-    void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks);
+    void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid,
+          GasStack outputGas, double extraEnergy, int ticks);
 
     void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid);
 

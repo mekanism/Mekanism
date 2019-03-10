@@ -1,92 +1,81 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
-
 import mekanism.common.PacketHandler;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TModIDFilter extends TransporterFilter
-{
-	public String modID;
+public class TModIDFilter extends TransporterFilter {
 
-	@Override
-	public boolean canFilter(ItemStack itemStack, boolean strict)
-	{
-		if(itemStack.isEmpty())
-		{
-			return false;
-		}
+    public String modID;
 
-		return new ModIDFinder(modID).modifies(itemStack);
-	}
+    @Override
+    public boolean canFilter(ItemStack itemStack, boolean strict) {
+        if (itemStack.isEmpty()) {
+            return false;
+        }
 
-	@Override
-	public Finder getFinder()
-	{
-		return new ModIDFinder(modID);
-	}
+        return new ModIDFinder(modID).modifies(itemStack);
+    }
 
-	@Override
-	public void write(NBTTagCompound nbtTags)
-	{
-		super.write(nbtTags);
+    @Override
+    public Finder getFinder() {
+        return new ModIDFinder(modID);
+    }
 
-		nbtTags.setInteger("type", 3);
-		nbtTags.setString("modID", modID);
-	}
+    @Override
+    public void write(NBTTagCompound nbtTags) {
+        super.write(nbtTags);
 
-	@Override
-	protected void read(NBTTagCompound nbtTags)
-	{
-		super.read(nbtTags);
+        nbtTags.setInteger("type", 3);
+        nbtTags.setString("modID", modID);
+    }
 
-		modID = nbtTags.getString("modID");
-	}
+    @Override
+    protected void read(NBTTagCompound nbtTags) {
+        super.read(nbtTags);
 
-	@Override
-	public void write(TileNetworkList data)
-	{
-		data.add(3);
+        modID = nbtTags.getString("modID");
+    }
 
-		super.write(data);
+    @Override
+    public void write(TileNetworkList data) {
+        data.add(3);
 
-		data.add(modID);
-	}
+        super.write(data);
 
-	@Override
-	protected void read(ByteBuf dataStream)
-	{
-		super.read(dataStream);
+        data.add(modID);
+    }
 
-		modID = PacketHandler.readString(dataStream);
-	}
+    @Override
+    protected void read(ByteBuf dataStream) {
+        super.read(dataStream);
 
-	@Override
-	public int hashCode()
-	{
-		int code = 1;
-		code = 31 * code + super.hashCode();
-		code = 31 * code + modID.hashCode();
-		return code;
-	}
+        modID = PacketHandler.readString(dataStream);
+    }
 
-	@Override
-	public boolean equals(Object filter)
-	{
-		return super.equals(filter) && filter instanceof TModIDFilter && ((TModIDFilter)filter).modID.equals(modID);
-	}
+    @Override
+    public int hashCode() {
+        int code = 1;
+        code = 31 * code + super.hashCode();
+        code = 31 * code + modID.hashCode();
+        return code;
+    }
 
-	@Override
-	public TModIDFilter clone()
-	{
-		TModIDFilter filter = new TModIDFilter();
-		filter.allowDefault = allowDefault;
-		filter.color = color;
-		filter.modID = modID;
+    @Override
+    public boolean equals(Object filter) {
+        return super.equals(filter) && filter instanceof TModIDFilter && ((TModIDFilter) filter).modID.equals(modID);
+    }
 
-		return filter;
-	}
+    @Override
+    public TModIDFilter clone() {
+        TModIDFilter filter = new TModIDFilter();
+        filter.allowDefault = allowDefault;
+        filter.color = color;
+        filter.modID = modID;
+
+        return filter;
+    }
 }

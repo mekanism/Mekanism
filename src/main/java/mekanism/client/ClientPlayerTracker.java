@@ -7,12 +7,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ClientPlayerTracker
-{
-	@SubscribeEvent
-	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event)
-	{
-		Mekanism.playerState.clearPlayer(event.player);
-		Mekanism.freeRunnerOn.remove(event.player.getName());
-	}
+public class ClientPlayerTracker {
+
+    @SubscribeEvent
+    public void onPlayerChangedDimension(PlayerChangedDimensionEvent event) {
+        Mekanism.playerState.clearPlayer(event.player);
+        Mekanism.freeRunnerOn.remove(event.player.getName());
+    }
 }

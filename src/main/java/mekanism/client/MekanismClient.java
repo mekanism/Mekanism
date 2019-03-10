@@ -1,5 +1,8 @@
 package mekanism.client;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.render.obj.TransmitterModel;
@@ -12,54 +15,46 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+public class MekanismClient extends Mekanism {
 
-public class MekanismClient extends Mekanism
-{
-	public static Map<UUID, SecurityData> clientSecurityMap = new HashMap<>();
-	public static Map<UUID, String> clientUUIDMap = new HashMap<>();
+    public static Map<UUID, SecurityData> clientSecurityMap = new HashMap<>();
+    public static Map<UUID, String> clientUUIDMap = new HashMap<>();
 
-	public static long ticksPassed = 0;
+    public static long ticksPassed = 0;
 
-	public static void updateKey(KeyBinding key, int type)
-	{
-		boolean down = Minecraft.getMinecraft().currentScreen == null && key.isKeyDown();
+    public static void updateKey(KeyBinding key, int type) {
+        boolean down = Minecraft.getMinecraft().currentScreen == null && key.isKeyDown();
 
-		if(down != keyMap.has(Minecraft.getMinecraft().player, type))
-		{
-			Mekanism.packetHandler.sendToServer(new KeyMessage(type, down));
-			keyMap.update(Minecraft.getMinecraft().player, type, down);
-		}
-	}
+        if (down != keyMap.has(Minecraft.getMinecraft().player, type)) {
+            Mekanism.packetHandler.sendToServer(new KeyMessage(type, down));
+            keyMap.update(Minecraft.getMinecraft().player, type, down);
+        }
+    }
 
-	public static void reset()
-	{
-		clientSecurityMap.clear();
-		clientUUIDMap.clear();
+    public static void reset() {
+        clientSecurityMap.clear();
+        clientUUIDMap.clear();
 
-		ClientTickHandler.tickingSet.clear();
-		ClientTickHandler.portableTeleports.clear();
-		
-		TransmitterModel.clearCache();
+        ClientTickHandler.tickingSet.clear();
+        ClientTickHandler.portableTeleports.clear();
 
-		MekanismAPI.getBoxIgnore().clear();
-		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
+        TransmitterModel.clearCache();
 
-		Mekanism.playerState.clear();
-		Mekanism.activeVibrators.clear();
-		Mekanism.freeRunnerOn.clear();
-		
-		SynchronizedBoilerData.clientHotMap.clear();
-		
-		for(IModule module : Mekanism.modulesLoaded)
-		{
-			module.resetClient();
-		}
+        MekanismAPI.getBoxIgnore().clear();
+        MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 
-		Mekanism.proxy.loadConfiguration();
+        Mekanism.playerState.clear();
+        Mekanism.activeVibrators.clear();
+        Mekanism.freeRunnerOn.clear();
 
-		Mekanism.logger.info("Reloaded config.");
-	}
+        SynchronizedBoilerData.clientHotMap.clear();
+
+        for (IModule module : Mekanism.modulesLoaded) {
+            module.resetClient();
+        }
+
+        Mekanism.proxy.loadConfiguration();
+
+        Mekanism.logger.info("Reloaded config.");
+    }
 }
