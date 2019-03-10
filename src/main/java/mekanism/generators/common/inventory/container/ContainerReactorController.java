@@ -1,6 +1,7 @@
 package mekanism.generators.common.inventory.container;
 
 import javax.annotation.Nonnull;
+import mekanism.common.inventory.container.ContainerMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -12,10 +13,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerReactorController extends ContainerGenerator {
+public class ContainerReactorController extends ContainerMekanism<TileEntityReactorController> {
 
-    public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController generator) {
-        super(inventory, generator);
+    public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController tile) {
+        super(tile, inventory);
 
     }
 

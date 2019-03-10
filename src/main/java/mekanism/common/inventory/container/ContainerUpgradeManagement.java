@@ -33,15 +33,13 @@ public class ContainerUpgradeManagement extends Container {
 
         addSlotToContainer(new SlotMachineUpgrade(upgradeInv, tileEntity.getComponent().getUpgradeSlot(), 154, 7));
 
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
+        for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
             }
         }
 
-        for (slotY = 0; slotY < 9; slotY++) {
+        for (int slotY = 0; slotY < 9; slotY++) {
             addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
         }
 

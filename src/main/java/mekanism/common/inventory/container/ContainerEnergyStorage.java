@@ -8,32 +8,13 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerEnergyStorage extends Container {
+public abstract class ContainerEnergyStorage<TILE extends TileEntityContainerBlock> extends ContainerMekanism<TILE> {
 
-    protected TileEntityContainerBlock tileEntity;
-
-    protected ContainerEnergyStorage(InventoryPlayer inventory, TileEntityContainerBlock tileEntity) {
-        this.tileEntity = tileEntity;
-        addSlots();
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
+    protected ContainerEnergyStorage(TILE tile, InventoryPlayer inventory) {
+        super(tile, inventory);
     }
 
     @Nonnull
@@ -125,19 +106,4 @@ public abstract class ContainerEnergyStorage extends Container {
     private boolean canTransfer(ItemStack slotStack) {
         return MekanismUtils.useIC2() && slotStack.getItem() instanceof IElectricItem;
     }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
-    }
-
-    protected abstract void addSlots();
 }

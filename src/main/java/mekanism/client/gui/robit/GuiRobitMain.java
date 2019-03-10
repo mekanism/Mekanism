@@ -5,7 +5,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.ContainerRobitMain;
+import mekanism.common.inventory.container.robit.ContainerRobitMain;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.LangUtils;

@@ -10,49 +10,14 @@ import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerChemicalDissolutionChamber extends Container {
-
-    private TileEntityChemicalDissolutionChamber tileEntity;
+public class ContainerChemicalDissolutionChamber extends ContainerMekanism<TileEntityChemicalDissolutionChamber> {
 
     public ContainerChemicalDissolutionChamber(InventoryPlayer inventory,
-          TileEntityChemicalDissolutionChamber tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new SlotStorageTank(tentity, 0, 6, 65));
-        addSlotToContainer(new Slot(tentity, 1, 26, 36));
-        addSlotToContainer(new SlotStorageTank(tentity, 2, 155, 25));
-        addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
+          TileEntityChemicalDissolutionChamber tile) {
+        super(tile, inventory);
     }
 
     @Nonnull
@@ -127,5 +92,13 @@ public class ContainerChemicalDissolutionChamber extends Container {
         }
 
         return stack;
+    }
+
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new SlotStorageTank(tileEntity, 0, 6, 65));
+        addSlotToContainer(new Slot(tileEntity, 1, 26, 36));
+        addSlotToContainer(new SlotStorageTank(tileEntity, 2, 155, 25));
+        addSlotToContainer(new SlotDischarge(tileEntity, 3, 155, 5));
     }
 }

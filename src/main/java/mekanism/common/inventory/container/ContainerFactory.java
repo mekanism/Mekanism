@@ -12,87 +12,47 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerFactory extends Container {
+public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
-    private TileEntityFactory tileEntity;
+    public ContainerFactory(InventoryPlayer inventory, TileEntityFactory tile) {
+        super(tile, inventory);
+    }
 
-    public ContainerFactory(InventoryPlayer inventory, TileEntityFactory tentity) {
-        tileEntity = tentity;
-
-        addSlotToContainer(new SlotDischarge(tentity, 1, 7, 13));
-        addSlotToContainer(new Slot(tentity, 2, 180, 75));
-        addSlotToContainer(new Slot(tentity, 3, 180, 112));
-        addSlotToContainer(new Slot(tentity, 4, 7, 57));
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new SlotDischarge(tileEntity, 1, 7, 13));
+        addSlotToContainer(new Slot(tileEntity, 2, 180, 75));
+        addSlotToContainer(new Slot(tileEntity, 3, 180, 112));
+        addSlotToContainer(new Slot(tileEntity, 4, 7, 57));
 
         if (tileEntity.tier == FactoryTier.BASIC) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                int xAxis = 55 + (i * 38);
-
-                addSlotToContainer(new Slot(tentity, 5 + i, xAxis, 13));
+                addSlotToContainer(new Slot(tileEntity, 5 + i, 55 + (i * 38), 13));
             }
 
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                int xAxis = 55 + (i * 38);
-
-                addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes + 5 + i, xAxis, 57));
+                addSlotToContainer(new SlotOutput(tileEntity, tileEntity.tier.processes + 5 + i, 55 + (i * 38), 57));
             }
         } else if (tileEntity.tier == FactoryTier.ADVANCED) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                int xAxis = 35 + (i * 26);
-
-                addSlotToContainer(new Slot(tentity, 5 + i, xAxis, 13));
+                addSlotToContainer(new Slot(tileEntity, 5 + i, 35 + (i * 26), 13));
             }
 
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                int xAxis = 35 + (i * 26);
-
-                addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes + 5 + i, xAxis, 57));
+                addSlotToContainer(new SlotOutput(tileEntity, tileEntity.tier.processes + 5 + i, 35 + (i * 26), 57));
             }
         } else if (tileEntity.tier == FactoryTier.ELITE) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                int xAxis = 29 + (i * 19);
-
-                addSlotToContainer(new Slot(tentity, 5 + i, xAxis, 13));
+                addSlotToContainer(new Slot(tileEntity, 5 + i, 29 + (i * 19), 13));
             }
 
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                int xAxis = 29 + (i * 19);
-
-                addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes + 5 + i, xAxis, 57));
+                addSlotToContainer(new SlotOutput(tileEntity, tileEntity.tier.processes + 5 + i, 29 + (i * 19), 57));
             }
         }
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 95 + slotY * 18));
-            }
-        }
-
-        for (int slotX = 0; slotX < 9; slotX++) {
-            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 153));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
     }
 
     @Nonnull

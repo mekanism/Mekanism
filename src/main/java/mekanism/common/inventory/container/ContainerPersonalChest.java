@@ -8,47 +8,59 @@ import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 @ChestContainer(isLargeChest = true)
-public class ContainerPersonalChest extends Container {
+public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonalChest> {
 
-    private TileEntityPersonalChest tileEntity;
     private IInventory itemInventory;
     private boolean isBlock;
 
-    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity, IInventory inv,
+    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile, IInventory inv,
           boolean b) {
-        tileEntity = tentity;
+        super(tile, inventory);
         itemInventory = inv;
         isBlock = b;
 
-        if (isBlock) {
-            tileEntity.open(inventory.player);
-            tileEntity.openInventory(inventory.player);
-        } else {
-            itemInventory.openInventory(inventory.player);
-        }
+        //Manually handle this stuff so that it gets called at the correct time
+        addSlots();
+        addInventorySlots(inventory);
+        openInventory(inventory);
+    }
 
+    @Override
+    protected boolean shouldAddSlots() {
+        return false;
+    }
+
+    @Override
+    protected void addSlots() {
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 addSlotToContainer(new SlotPersonalChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
             }
         }
+    }
 
-        int slotX;
-
-        for (slotX = 0; slotX < 3; ++slotX) {
-            for (int slotY = 0; slotY < 9; ++slotY) {
-                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
-            }
+    @Override
+    protected void closeInventory(EntityPlayer entityplayer) {
+        if (isBlock) {
+            tileEntity.close(entityplayer);
+            tileEntity.closeInventory(entityplayer);
+        } else {
+            itemInventory.closeInventory(entityplayer);
         }
+    }
 
-        for (slotX = 0; slotX < 9; ++slotX) {
-            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
+    @Override
+    protected void openInventory(InventoryPlayer inventory) {
+        if (isBlock) {
+            tileEntity.open(inventory.player);
+            tileEntity.openInventory(inventory.player);
+        } else {
+            itemInventory.openInventory(inventory.player);
         }
     }
 
@@ -61,23 +73,10 @@ public class ContainerPersonalChest extends Container {
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        if (isBlock) {
-            tileEntity.close(entityplayer);
-            tileEntity.closeInventory(entityplayer);
-        } else {
-            itemInventory.closeInventory(entityplayer);
-        }
-    }
-
-    @Override
     public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
         if (isBlock) {
             return tileEntity.isUsableByPlayer(entityplayer);
         }
-
         return true;
     }
 

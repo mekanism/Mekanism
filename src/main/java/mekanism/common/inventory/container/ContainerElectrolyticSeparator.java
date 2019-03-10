@@ -10,48 +10,13 @@ import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerElectrolyticSeparator extends Container {
+public class ContainerElectrolyticSeparator extends ContainerMekanism<TileEntityElectrolyticSeparator> {
 
-    private TileEntityElectrolyticSeparator tileEntity;
-
-    public ContainerElectrolyticSeparator(InventoryPlayer inventory, TileEntityElectrolyticSeparator tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 26, 35));
-        addSlotToContainer(new SlotStorageTank(tentity, 1, 59, 52));
-        addSlotToContainer(new SlotStorageTank(tentity, 2, 101, 52));
-        addSlotToContainer(new SlotDischarge(tentity, 3, 143, 35));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.openInventory(inventory.player);
-        tileEntity.open(inventory.player);
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.closeInventory(entityplayer);
-        tileEntity.close(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
+    public ContainerElectrolyticSeparator(InventoryPlayer inventory, TileEntityElectrolyticSeparator tile) {
+        super(tile, inventory);
     }
 
     @Nonnull
@@ -127,5 +92,13 @@ public class ContainerElectrolyticSeparator extends Container {
 
     public boolean isCorrectFluid(ItemStack itemStack) {
         return RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(itemStack);
+    }
+
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new Slot(tileEntity, 0, 26, 35));
+        addSlotToContainer(new SlotStorageTank(tileEntity, 1, 59, 52));
+        addSlotToContainer(new SlotStorageTank(tileEntity, 2, 101, 52));
+        addSlotToContainer(new SlotDischarge(tileEntity, 3, 143, 35));
     }
 }

@@ -7,48 +7,21 @@ import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class ContainerFluidicPlenisher extends Container {
+public class ContainerFluidicPlenisher extends ContainerMekanism<TileEntityFluidicPlenisher> {
 
-    private TileEntityFluidicPlenisher tileEntity;
-
-    public ContainerFluidicPlenisher(InventoryPlayer inventory, TileEntityFluidicPlenisher tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 28, 20));
-        addSlotToContainer(new SlotOutput(tentity, 1, 28, 51));
-        addSlotToContainer(new SlotDischarge(tentity, 2, 143, 35));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
+    public ContainerFluidicPlenisher(InventoryPlayer inventory, TileEntityFluidicPlenisher tile) {
+        super(tile, inventory);
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
+    protected void addSlots() {
+        addSlotToContainer(new Slot(tileEntity, 0, 28, 20));
+        addSlotToContainer(new SlotOutput(tileEntity, 1, 28, 51));
+        addSlotToContainer(new SlotDischarge(tileEntity, 2, 143, 35));
     }
 
     @Nonnull

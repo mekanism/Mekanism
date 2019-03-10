@@ -1,39 +1,17 @@
 package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
-import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.FluidContainerUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerFluidStorage extends Container {
+public abstract class ContainerFluidStorage<TILE extends TileEntityContainerBlock> extends ContainerMekanism<TILE> {
 
-    protected TileEntityContainerBlock tileEntity;
-
-    protected ContainerFluidStorage(InventoryPlayer inventory, TileEntityContainerBlock tank, int yPos) {
-        tileEntity = tank;
-
-        addSlotToContainer(new Slot(tank, 0, 146, yPos));
-        addSlotToContainer(new SlotOutput(tileEntity, 1, 146, 51));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
+    protected ContainerFluidStorage(TILE tank, InventoryPlayer inventory) {
+        super(tank, inventory);
     }
 
     @Nonnull
@@ -86,18 +64,5 @@ public abstract class ContainerFluidStorage extends Container {
         }
 
         return stack;
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
     }
 }

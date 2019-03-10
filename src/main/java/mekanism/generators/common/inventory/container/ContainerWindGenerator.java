@@ -4,7 +4,7 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 
-public class ContainerWindGenerator extends ContainerPassiveGenerator {
+public class ContainerWindGenerator extends ContainerPassiveGenerator<TileEntityWindGenerator> {
 
     public ContainerWindGenerator(InventoryPlayer inventory, TileEntityWindGenerator generator) {
         super(inventory, generator);

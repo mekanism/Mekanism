@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.ContainerRobitRepair;
+import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;

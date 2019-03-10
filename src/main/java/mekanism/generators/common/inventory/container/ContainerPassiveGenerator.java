@@ -1,6 +1,7 @@
 package mekanism.generators.common.inventory.container;
 
 import javax.annotation.Nonnull;
+import mekanism.common.inventory.container.ContainerMekanism;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,10 +9,10 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerPassiveGenerator extends ContainerGenerator {
+public abstract class ContainerPassiveGenerator<TILE extends TileEntityElectricBlock> extends ContainerMekanism<TILE> {
 
-    protected ContainerPassiveGenerator(InventoryPlayer inventory, TileEntityElectricBlock generator) {
-        super(inventory, generator);
+    protected ContainerPassiveGenerator(InventoryPlayer inventory, TILE tile) {
+        super(tile, inventory);
     }
 
     @Nonnull

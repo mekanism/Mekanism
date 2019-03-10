@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class ContainerBioGenerator extends ContainerFuelGenerator {
+public class ContainerBioGenerator extends ContainerFuelGenerator<TileEntityBioGenerator> {
 
     public ContainerBioGenerator(InventoryPlayer inventory, TileEntityBioGenerator generator) {
         super(inventory, generator);
@@ -22,7 +22,7 @@ public class ContainerBioGenerator extends ContainerFuelGenerator {
 
     @Override
     protected boolean tryFuel(ItemStack slotStack) {
-        if (((TileEntityBioGenerator) tileEntity).getFuel(slotStack) > 0) {
+        if (tileEntity.getFuel(slotStack) > 0) {
             return true;
         }
         if (FluidRegistry.isFluidRegistered("bioethanol")) {

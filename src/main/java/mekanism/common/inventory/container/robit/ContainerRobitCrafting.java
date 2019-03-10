@@ -1,4 +1,4 @@
-package mekanism.common.inventory.container;
+package mekanism.common.inventory.container.robit;
 
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;

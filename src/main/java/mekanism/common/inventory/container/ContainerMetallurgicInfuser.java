@@ -11,48 +11,13 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerMetallurgicInfuser extends Container {
+public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMetallurgicInfuser> {
 
-    private TileEntityMetallurgicInfuser tileEntity;
-
-    public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 1, 17, 35));
-        addSlotToContainer(new Slot(tentity, 2, 51, 43));
-        addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
-        addSlotToContainer(new SlotEnergy.SlotDischarge(tentity, 4, 143, 35));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
+    public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tile) {
+        super(tile, inventory);
     }
 
     @Nonnull
@@ -126,5 +91,13 @@ public class ContainerMetallurgicInfuser extends Container {
         }
 
         return false;
+    }
+
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new Slot(tileEntity, 1, 17, 35));
+        addSlotToContainer(new Slot(tileEntity, 2, 51, 43));
+        addSlotToContainer(new SlotOutput(tileEntity, 3, 109, 43));
+        addSlotToContainer(new SlotEnergy.SlotDischarge(tileEntity, 4, 143, 35));
     }
 }

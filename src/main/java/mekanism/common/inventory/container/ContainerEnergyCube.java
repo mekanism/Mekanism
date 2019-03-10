@@ -5,10 +5,10 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityEnergyCube;
 import net.minecraft.entity.player.InventoryPlayer;
 
-public class ContainerEnergyCube extends ContainerEnergyStorage {
+public class ContainerEnergyCube extends ContainerEnergyStorage<TileEntityEnergyCube> {
 
-    public ContainerEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube energyCube) {
-        super(inventory, energyCube);
+    public ContainerEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube tile) {
+        super(tile, inventory);
     }
 
     @Override

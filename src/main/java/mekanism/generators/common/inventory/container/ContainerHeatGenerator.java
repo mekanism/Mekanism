@@ -6,7 +6,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerHeatGenerator extends ContainerFuelGenerator {
+public class ContainerHeatGenerator extends ContainerFuelGenerator<TileEntityHeatGenerator> {
 
     public ContainerHeatGenerator(InventoryPlayer inventory, TileEntityHeatGenerator generator) {
         super(inventory, generator);
@@ -20,6 +20,6 @@ public class ContainerHeatGenerator extends ContainerFuelGenerator {
 
     @Override
     protected boolean tryFuel(ItemStack slotStack) {
-        return ((TileEntityHeatGenerator) tileEntity).getFuel(slotStack) > 0;
+        return tileEntity.getFuel(slotStack) > 0;
     }
 }

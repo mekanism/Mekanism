@@ -1,10 +1,9 @@
-package mekanism.common.inventory.container;
+package mekanism.common.inventory.container.robit;
 
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnaceOutput;
@@ -12,38 +11,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 
-public class ContainerRobitSmelting extends Container {
-
-    public EntityRobit robit;
+public class ContainerRobitSmelting extends ContainerRobit {
 
     private int lastCookTime = 0;
     private int lastBurnTime = 0;
     private int lastItemBurnTime = 0;
 
     public ContainerRobitSmelting(InventoryPlayer inventory, EntityRobit entity) {
-        robit = entity;
-        robit.openInventory(inventory.player);
-
-        addSlotToContainer(new Slot(entity, 28, 56, 17));
-        addSlotToContainer(new Slot(entity, 29, 56, 53));
-        addSlotToContainer(new SlotFurnaceOutput(inventory.player, entity, 30, 116, 35));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return !robit.isDead;
+        super(entity, inventory);
     }
 
     @Override
@@ -145,8 +120,14 @@ public class ContainerRobitSmelting extends Container {
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-        robit.closeInventory(entityplayer);
+    protected void addSlots() {
+        addSlotToContainer(new Slot(robit, 28, 56, 17));
+        addSlotToContainer(new Slot(robit, 29, 56, 53));
+    }
+
+    @Override
+    protected void addInventorySlots(InventoryPlayer inventory) {
+        addSlotToContainer(new SlotFurnaceOutput(inventory.player, robit, 30, 116, 35));
+        super.addInventorySlots(inventory);
     }
 }

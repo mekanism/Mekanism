@@ -8,7 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerGasGenerator extends ContainerFuelGenerator {
+public class ContainerGasGenerator extends ContainerFuelGenerator<TileEntityGasGenerator> {
 
     public ContainerGasGenerator(InventoryPlayer inventory, TileEntityGasGenerator generator) {
         super(inventory, generator);

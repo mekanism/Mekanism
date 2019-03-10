@@ -6,45 +6,13 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerTeleporter extends Container {
+public class ContainerTeleporter extends ContainerMekanism<TileEntityTeleporter> {
 
-    private TileEntityTeleporter tileEntity;
-
-    public ContainerTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new SlotDischarge(tentity, 0, 153, 7));
-
-        int slotX;
-
-        for (slotX = 0; slotX < 3; slotX++) {
-            for (int slotY = 0; slotY < 9; slotY++) {
-                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
-            }
-        }
-
-        for (slotX = 0; slotX < 9; slotX++) {
-            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(@Nonnull EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
+    public ContainerTeleporter(InventoryPlayer inventory, TileEntityTeleporter tile) {
+        super(tile, inventory);
     }
 
     @Nonnull
@@ -97,5 +65,10 @@ public class ContainerTeleporter extends Container {
         }
 
         return stack;
+    }
+
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new SlotDischarge(tileEntity, 0, 153, 7));
     }
 }
