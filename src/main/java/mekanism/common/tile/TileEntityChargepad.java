@@ -19,6 +19,7 @@ import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.entity.EntityLivingBase;
@@ -77,7 +78,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
                         double prevEnergy = getEnergy();
 
                         for (ItemStack itemstack : player.inventory.armorInventory) {
-                            chargeItemStack(itemstack);
+                            ChargeUtils.charge(itemstack, this);
 
                             if (prevEnergy != getEnergy()) {
                                 break;
@@ -85,7 +86,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
                         }
 
                         for (ItemStack itemstack : player.inventory.mainInventory) {
-                            chargeItemStack(itemstack);
+                            ChargeUtils.charge(itemstack, this);
 
                             if (prevEnergy != getEnergy()) {
                                 break;
@@ -109,36 +110,6 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
         } else if (isActive) {
             world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(),
                   getPos().getY() + 0.15, getPos().getZ() + random.nextDouble(), 0, 0, 0);
-        }
-    }
-
-    public void chargeItemStack(ItemStack itemstack) {
-        if (!itemstack.isEmpty()) {
-            if (itemstack.getItem() instanceof IEnergizedItem) {
-                setEnergy(getEnergy() - EnergizedItemManager.charge(itemstack, getEnergy()));
-            } else if (MekanismUtils.useTesla() && itemstack
-                  .hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null)) {
-                ITeslaConsumer consumer = itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
-
-                long stored = Math.round(getEnergy() * general.TO_TESLA);
-                setEnergy(getEnergy() - consumer.givePower(stored, false) * general.FROM_TESLA);
-            } else if (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                IEnergyStorage storage = itemstack.getCapability(CapabilityEnergy.ENERGY, null);
-
-                if (storage.canReceive()) {
-                    int stored = (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_FORGE));
-                    setEnergy(getEnergy() - storage.receiveEnergy(stored, false) * general.FROM_FORGE);
-                }
-            } else if (MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem) {
-                IEnergyContainerItem item = (IEnergyContainerItem) itemstack.getItem();
-
-                int toTransfer = (int) Math.round(getEnergy() * general.TO_RF);
-                setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false) * general.FROM_RF));
-            } else if (MekanismUtils.useIC2() && ElectricItem.manager.getTier(itemstack) > 0) {
-                double sent = ElectricItem.manager.charge(itemstack, getEnergy() * general.TO_IC2, 4, true, false)
-                      * general.FROM_IC2;
-                setEnergy(getEnergy() - sent);
-            }
         }
     }
 

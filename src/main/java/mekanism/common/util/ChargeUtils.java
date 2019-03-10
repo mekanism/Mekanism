@@ -79,8 +79,16 @@ public final class ChargeUtils {
      */
     public static void charge(int slotID, IStrictEnergyStorage storer) {
         IInventory inv = (TileEntityContainerBlock) storer;
-        ItemStack stack = inv.getStackInSlot(slotID);
+        ChargeUtils.charge(inv.getStackInSlot(slotID), storer);
+    }
 
+    /**
+     * Universally charges an item, and updates the TileEntity's energy level.
+     *
+     * @param stack - ItemStack to charge
+     * @param storer - TileEntity the item is being discharged in
+     */
+    public static void charge(ItemStack stack, IStrictEnergyStorage storer) {
         if (!stack.isEmpty() && storer.getEnergy() > 0) {
             if (stack.getItem() instanceof IEnergizedItem) {
                 storer.setEnergy(storer.getEnergy() - EnergizedItemManager.charge(stack, storer.getEnergy()));
@@ -101,7 +109,7 @@ public final class ChargeUtils {
 
                 int toTransfer = (int) Math.round(storer.getEnergy() * general.TO_RF);
                 storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(stack, toTransfer, false) * general.FROM_RF));
-            } else if (MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem) {
+            } else if (MekanismUtils.useIC2() && ElectricItem.manager.getTier(stack) > 0) {
                 double sent = ElectricItem.manager.charge(stack, storer.getEnergy() * general.TO_IC2, 4, true, false)
                       * general.FROM_IC2;
                 storer.setEnergy(storer.getEnergy() - sent);
@@ -136,7 +144,7 @@ public final class ChargeUtils {
      * @return if the ItemStack can be discharged
      */
     public static boolean canBeCharged(ItemStack itemstack) {
-        return (MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem) ||
+        return (MekanismUtils.useIC2() && ElectricItem.manager.getTier(itemstack) > 0) ||
               (itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem) itemstack.getItem())
                     .canReceive(itemstack)) ||
               (MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem
