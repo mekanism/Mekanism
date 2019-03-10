@@ -95,7 +95,7 @@ public class SolarNeutronActivator
             }
             else
             {
-                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(), gasOutput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(), gasOutput.toString()));
             }
         }
     }

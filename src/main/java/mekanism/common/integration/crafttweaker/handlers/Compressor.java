@@ -125,7 +125,7 @@ public class Compressor
             }
             else
             {
-                LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, itemInput.toString(), gasInput.toString(), itemOutput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, itemInput.toString(), gasInput.toString(), itemOutput.toString()));
             }
         }
     }

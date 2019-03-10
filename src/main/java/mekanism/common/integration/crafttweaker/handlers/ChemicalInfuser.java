@@ -103,7 +103,7 @@ public class ChemicalInfuser
             }
             else
             {
-                LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, gasOutput.toString(), leftGasInput.toString(), rightGasInput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, gasOutput.toString(), leftGasInput.toString(), rightGasInput.toString()));
             }
         }
     }

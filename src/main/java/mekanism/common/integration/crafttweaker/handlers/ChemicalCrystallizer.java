@@ -98,7 +98,7 @@ public class ChemicalCrystallizer
             }
             else
             {
-                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(), itemOutput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(), itemOutput.toString()));
             }
         }
     }

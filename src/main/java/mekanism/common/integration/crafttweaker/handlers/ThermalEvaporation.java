@@ -84,7 +84,7 @@ public class ThermalEvaporation
             if(!recipesToRemove.isEmpty()) {
                 recipes.putAll(recipesToRemove);
             } else {
-                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, liquidInput.toString(), liquidOutput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, liquidInput.toString(), liquidOutput.toString()));
             }
         }
     }

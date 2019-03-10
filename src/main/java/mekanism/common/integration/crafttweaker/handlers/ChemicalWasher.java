@@ -96,7 +96,7 @@ public class ChemicalWasher
             }
             else
             {
-                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), gasInput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), gasInput.toString()));
             }
         }
     }

@@ -105,7 +105,7 @@ public class Separator
             }
             else
             {
-                LogHelper.logWarning(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, liquidInput.toString(), leftGasInput.toString(), rightGasInput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s, %s and %s. Command ignored!", NAME, liquidInput.toString(), leftGasInput.toString(), rightGasInput.toString()));
             }
         }
     }

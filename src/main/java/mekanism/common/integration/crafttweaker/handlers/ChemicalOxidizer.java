@@ -99,7 +99,7 @@ public class ChemicalOxidizer
             }
             else
             {
-                LogHelper.logWarning(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), itemInput.toString()));
+                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), itemInput.toString()));
             }
         }
     }
