@@ -4,7 +4,7 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
 
-public class ContainerSolarGenerator extends ContainerGenerator {
+public class ContainerSolarGenerator extends ContainerPassiveGenerator {
 
     public ContainerSolarGenerator(InventoryPlayer inventory, TileEntitySolarGenerator generator) {
         super(inventory, generator);
