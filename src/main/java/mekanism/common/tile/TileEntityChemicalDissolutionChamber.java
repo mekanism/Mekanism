@@ -9,6 +9,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -73,8 +74,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
                 //Check to make sure it can provide the gas it contains
                 if (gasStack != null && item.canProvideGas(itemStack, gasStack.getGas())) {
                     Gas gas = gasStack.getGas();
-                    if (gas != null && injectTank.canReceive(gas) && Recipe.CHEMICAL_DISSOLUTION_CHAMBER
-                          .containsRecipe(gas)) {
+                    if (gas != null && injectTank.canReceive(gas) && isValidGas(gas)) {
                         injectTank.receive(GasUtils.removeGas(itemStack, gas, injectTank.getNeeded()), true);
                     }
                 }
@@ -251,8 +251,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return side == MekanismUtils.getLeft(facing) && injectTank.canReceive(type)
-              && Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(type);
+        return side == MekanismUtils.getLeft(facing) && injectTank.canReceive(type) && isValidGas(type);
+    }
+
+    private boolean isValidGas(Gas gas) {
+        //TODO: Replace with commented version once this becomes an AdvancedMachine
+        return gas == MekanismFluids.SulfuricAcid;//Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(gas);
     }
 
     @Override
