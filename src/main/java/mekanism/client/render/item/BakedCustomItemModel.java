@@ -433,7 +433,7 @@ public class BakedCustomItemModel implements IBakedModel
 			contextCapabilities = null;
 		}
 
-		if (contextCapabilities != null && MekanismRenderer.isDrawing(tessellator)) {
+		if (contextCapabilities != null /*&& MekanismRenderer.isDrawing(tessellator)*/) {
 			try {
 				VertexFormat prevFormat = null;
 				int prevMode = -1;
