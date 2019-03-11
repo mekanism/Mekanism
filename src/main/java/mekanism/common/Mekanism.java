@@ -933,7 +933,11 @@ public class Mekanism
 		if (xuMachine != null){
 			MekanismAPI.addBoxBlacklist(xuMachine, OreDictionary.WILDCARD_VALUE);
 		}
-		
+
+		//ImmEng multiblocks
+		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device0")), OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device1")), OreDictionary.WILDCARD_VALUE);
+
 		BoxBlacklistParser.load();
 	}
 	

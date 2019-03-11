@@ -34,6 +34,8 @@ public class MekanismAPI
 
 	public static void addBoxBlacklist(Block block, int meta)
 	{
+		if (block == null)
+			return;//allow lazy adding via registry get
 		cardboardBoxIgnore.add(new BlockInfo(block, meta));
 	}
 
