@@ -13,7 +13,6 @@ import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -119,7 +118,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1;
         }
@@ -128,7 +127,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             return structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1;
         }

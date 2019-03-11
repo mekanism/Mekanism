@@ -18,6 +18,7 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +28,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -215,13 +215,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             lastTransferLoss = dataStream.readDouble();
             lastEnvironmentLoss = dataStream.readDouble();
 
-            int amount = dataStream.readInt();
-
-            if (amount != 0) {
-                lavaTank.setFluid(new FluidStack(FluidRegistry.LAVA, amount));
-            } else {
-                lavaTank.setFluid(null);
-            }
+            TileUtils.readTankData(dataStream, lavaTank);
         }
     }
 
@@ -234,11 +228,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         data.add(lastTransferLoss);
         data.add(lastEnvironmentLoss);
 
-        if (lavaTank.getFluid() != null) {
-            data.add(lavaTank.getFluid().amount);
-        } else {
-            data.add(0);
-        }
+        TileUtils.addTankData(data, lavaTank);
 
         return data;
     }
@@ -289,12 +279,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return fluid == FluidRegistry.LAVA && from != facing;
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
+        return fluid.getFluid().equals(FluidRegistry.LAVA) && from != facing;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 

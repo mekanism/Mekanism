@@ -55,7 +55,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -428,20 +427,20 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         if (hasFrequency()
               && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT) {
-            return frequency.storedFluid.getFluid() == null || fluid == frequency.storedFluid.getFluid().getFluid();
+            return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
         }
 
         return false;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         if (hasFrequency()
               && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT) {
-            return frequency.storedFluid.getFluid() == null || fluid == frequency.storedFluid.getFluid().getFluid();
+            return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
         }
 
         return false;

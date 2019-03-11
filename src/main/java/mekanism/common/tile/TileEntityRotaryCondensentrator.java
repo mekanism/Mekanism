@@ -37,7 +37,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -295,7 +294,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (canFill(from, resource.getFluid())) {
+        if (canFill(from, resource)) {
             return fluidTank.fill(resource, doFill);
         }
 
@@ -312,13 +311,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(
-              new FluidStack(fluid, 1)) : fluidTank.getFluid().getFluid() == fluid);
+              new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return mode == 0 && from == MekanismUtils.getRight(facing);
     }
 

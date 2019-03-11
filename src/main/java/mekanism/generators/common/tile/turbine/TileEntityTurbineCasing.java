@@ -18,6 +18,7 @@ import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
@@ -175,13 +176,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             data.add(structure.lastSteamInput);
             data.add(structure.dumpMode.ordinal());
 
-            if (structure.fluidStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.fluidStored));
-                data.add(structure.fluidStored.amount);
-            } else {
-                data.add(0);
-            }
+            TileUtils.addFluidStack(data, structure.fluidStored);
 
             if (isRendering) {
                 structure.complex.write(data);
@@ -223,12 +218,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.lastSteamInput = dataStream.readInt();
                 structure.dumpMode = GasMode.values()[dataStream.readInt()];
 
-                if (dataStream.readInt() == 1) {
-                    structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.fluidStored = null;
-                }
+                structure.fluidStored = TileUtils.readFluidStack(dataStream);
 
                 if (isRendering) {
                     structure.complex = Coord4D.read(dataStream);

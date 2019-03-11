@@ -42,7 +42,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -410,12 +409,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid);
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
+        return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 

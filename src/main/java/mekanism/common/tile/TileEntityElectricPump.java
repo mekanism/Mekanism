@@ -33,6 +33,7 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -252,12 +253,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (dataStream.readInt() == 1) {
-                fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)),
-                      dataStream.readInt()));
-            } else {
-                fluidTank.setFluid(null);
-            }
+            TileUtils.readTankData(dataStream, fluidTank);
 
             controlType = RedstoneControl.values()[dataStream.readInt()];
         }
@@ -267,13 +263,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        if (fluidTank.getFluid() != null) {
-            data.add(1);
-            data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-            data.add(fluidTank.getFluid().amount);
-        } else {
-            data.add(0);
-        }
+        TileUtils.addTankData(data, fluidTank);
 
         data.add(controlType.ordinal());
 
@@ -439,12 +429,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         return false;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return from == EnumFacing.byIndex(1);
     }
 

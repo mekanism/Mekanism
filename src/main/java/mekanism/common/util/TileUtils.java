@@ -1,12 +1,15 @@
 package mekanism.common.util;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister.Pack;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -16,42 +19,47 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 //TODO: Move this and factor out the parts into proper classes. This is mainly just temp to make organization not as needed
 public class TileUtils {
 
+    // N.B. All the tank I/O functions rely on the fact that an empty NBT Compound is a singular
+    // byte and that the Gas/Fluid Stacks initialize to null if they are de-serialized from an
+    // empty tag.
+    private static final NBTTagCompound EMPTY_TAG_COMPOUND = new NBTTagCompound();
+
     public static void addTankData(TileNetworkList data, GasTank tank) {
         if (tank.getGas() != null) {
-            data.add(true);
-            data.add(tank.getGas().getGas().getID());
-            data.add(tank.getStored());
+            data.add(tank.getGas().write(new NBTTagCompound()));
         } else {
-            data.add(false);
+            data.add(EMPTY_TAG_COMPOUND);
         }
     }
 
     public static void addTankData(TileNetworkList data, FluidTank tank) {
         if (tank.getFluid() != null) {
-            data.add(true);
-            data.add(FluidRegistry.getFluidName(tank.getFluid()));
-            data.add(tank.getFluidAmount());
+            data.add(tank.getFluid().writeToNBT(new NBTTagCompound()));
         } else {
-            data.add(false);
+            data.add(EMPTY_TAG_COMPOUND);
+        }
+    }
+
+    public static void addFluidStack(TileNetworkList data, FluidStack stack) {
+        if (stack != null) {
+            data.add(stack.writeToNBT(new NBTTagCompound()));
+        } else {
+            data.add(EMPTY_TAG_COMPOUND);
         }
     }
 
     public static void readTankData(ByteBuf dataStream, GasTank tank) {
-        if (dataStream.readBoolean()) {
-            tank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-        } else {
-            tank.setGas(null);
-        }
+        tank.setGas(GasStack.readFromNBT(PacketHandler.readNBT(dataStream)));
     }
 
     public static void readTankData(ByteBuf dataStream, FluidTank tank) {
-        if (dataStream.readBoolean()) {
-            tank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)),
-                  dataStream.readInt()));
-        } else {
-            tank.setFluid(null);
-        }
+        tank.setFluid(readFluidStack(dataStream));
     }
+
+    public static FluidStack readFluidStack(ByteBuf dataStream) {
+        return FluidStack.loadFluidStackFromNBT(PacketHandler.readNBT(dataStream));
+    }
+
 
     //Returns true if it entered the if statement, basically for use by TileEntityGasTank
     public static boolean receiveGas(ItemStack stack, GasTank tank) {

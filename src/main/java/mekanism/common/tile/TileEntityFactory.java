@@ -663,7 +663,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             upgraded = dataStream.readBoolean();
             lastUsage = dataStream.readDouble();
             infuseStored.amount = dataStream.readInt();
-            infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+            if (infuseStored.amount > 0) {
+                infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+            }
 
             if (recipeType != oldRecipe) {
                 setRecipeType(recipeType);
@@ -738,12 +740,10 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         data.add(sorting);
         data.add(upgraded);
         data.add(lastUsage);
-        data.add(infuseStored.amount);
 
-        if (infuseStored.type != null) {
+        data.add(infuseStored.amount);
+        if (infuseStored.amount > 0) {
             data.add(infuseStored.type.name);
-        } else {
-            data.add("null");
         }
 
         data.add(progress);

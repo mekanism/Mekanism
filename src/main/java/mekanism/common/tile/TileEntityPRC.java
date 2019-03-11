@@ -41,7 +41,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -276,7 +275,7 @@ public class TileEntityPRC extends
 
     @Override
     public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (canFill(from, resource.getFluid())) {
+        if (canFill(from, resource)) {
             return inputFluidTank.fill(resource, doFill);
         }
 
@@ -294,18 +293,18 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
 
         if (data.hasSlot(0)) {
-            return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
+            return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().isFluidEqual(fluid);
         }
 
         return false;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 

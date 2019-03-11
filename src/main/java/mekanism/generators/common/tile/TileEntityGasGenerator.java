@@ -20,6 +20,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -215,11 +216,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (dataStream.readBoolean()) {
-                fuelTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                fuelTank.setGas(null);
-            }
+            TileUtils.readTankData(dataStream, fuelTank);
 
             generationRate = dataStream.readDouble();
             output = dataStream.readDouble();
@@ -231,13 +228,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        if (fuelTank.getGas() != null) {
-            data.add(true);
-            data.add(fuelTank.getGas().getGas().getID());
-            data.add(fuelTank.getStored());
-        } else {
-            data.add(false);
-        }
+        TileUtils.addTankData(data, fuelTank);
 
         data.add(generationRate);
         data.add(output);

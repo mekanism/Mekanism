@@ -8,7 +8,6 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -59,12 +58,12 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
     }
 

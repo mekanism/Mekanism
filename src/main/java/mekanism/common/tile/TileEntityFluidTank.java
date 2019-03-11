@@ -30,6 +30,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -312,12 +313,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 valveFluid = null;
             }
 
-            if (dataStream.readInt() == 1) {
-                fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                      dataStream.readInt()));
-            } else {
-                fluidTank.setFluid(null);
-            }
+            TileUtils.readTankData(dataStream, fluidTank);
 
             if (prevTier != tier || (updateDelay == 0 && clientActive != isActive)) {
                 updateDelay = general.UPDATE_DELAY;
@@ -370,13 +366,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             data.add(FluidRegistry.getFluidName(valveFluid));
         }
 
-        if (fluidTank.getFluid() != null) {
-            data.add(1);
-            data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-            data.add(fluidTank.getFluid().amount);
-        } else {
-            data.add(0);
-        }
+        TileUtils.addTankData(data, fluidTank);
 
         return data;
     }
@@ -452,7 +442,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             return resource != null ? resource.amount : 0;
         }
 
-        if (resource != null && canFill(from, resource.getFluid())) {
+        if (resource != null && canFill(from, resource)) {
             int filled = fluidTank.fill(resource, doFill);
 
             if (filled < resource.amount && !isActive) {
@@ -476,7 +466,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     @Override
     public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (resource != null && canDrain(from, resource.getFluid())) {
+        if (resource != null && canDrain(from, resource)) {
             return fluidTank.drain(resource.amount, tier != FluidTankTier.CREATIVE && doDrain);
         }
 
@@ -493,7 +483,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         TileEntity tile = world.getTileEntity(getPos().offset(EnumFacing.DOWN));
         if (from == EnumFacing.DOWN && world != null) {
             if (isActive && !(tile instanceof TileEntityFluidTank)) {
@@ -508,16 +498,16 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         if (isActive && tile instanceof TileEntityFluidTank) // Only fill if tanks underneath have same fluid.
         {
             return (fluidTank.getFluid() == null && ((TileEntityFluidTank) tile).canFill(EnumFacing.UP, fluid)) ||
-                  (fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid);
+                  (fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid));
         }
 
-        return fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid;
+        return fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(fluid);
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         if (fluidTank != null) {
-            if (fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == fluid) {
+            if (fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid)) {
                 return !(isActive && from == EnumFacing.DOWN);
 
             }

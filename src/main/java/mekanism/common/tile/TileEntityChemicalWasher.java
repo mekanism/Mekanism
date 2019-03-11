@@ -39,7 +39,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -312,7 +311,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (canFill(from, resource.getFluid())) {
+        if (canFill(from, resource)) {
             return fluidTank.fill(resource, doFill);
         }
 
@@ -330,12 +329,12 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return from == EnumFacing.UP && fluid == FluidRegistry.WATER;
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
+        return from == EnumFacing.UP && fluid.getFluid().equals(FluidRegistry.WATER);
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 

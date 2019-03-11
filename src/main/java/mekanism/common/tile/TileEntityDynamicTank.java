@@ -18,6 +18,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -175,13 +176,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             data.add(structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
             data.add(structure.editMode.ordinal());
 
-            if (structure.fluidStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.fluidStored));
-                data.add(structure.fluidStored.amount);
-            } else {
-                data.add(0);
-            }
+            TileUtils.addFluidStack(data, structure.fluidStored);
 
             if (isRendering) {
                 Set<ValveData> toSend = new HashSet<>();
@@ -213,12 +208,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 clientCapacity = dataStream.readInt();
                 structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
 
-                if (dataStream.readInt() == 1) {
-                    structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.fluidStored = null;
-                }
+                structure.fluidStored = TileUtils.readFluidStack(dataStream);
 
                 if (isRendering) {
                     int size = dataStream.readInt();

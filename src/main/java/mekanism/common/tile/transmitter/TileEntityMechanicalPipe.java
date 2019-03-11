@@ -216,12 +216,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         return getConnectionType(from) == ConnectionType.NORMAL;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 

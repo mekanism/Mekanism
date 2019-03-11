@@ -18,7 +18,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -239,12 +238,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return FluidRegistry.isFluidRegistered("bioethanol") && fluid == FluidRegistry.getFluid("bioethanol");
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
+        return fluid.getFluid().equals(FluidRegistry.getFluid("bioethanol"));
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 

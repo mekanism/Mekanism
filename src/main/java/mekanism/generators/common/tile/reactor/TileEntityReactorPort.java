@@ -36,7 +36,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -137,13 +136,13 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return (getReactor() != null && fluid == FluidRegistry.WATER && !fluidEject);
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
+        return getReactor() != null && fluid.getFluid().equals(FluidRegistry.WATER) && !fluidEject;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
-        return (getReactor() != null && fluid == FluidRegistry.getFluid("steam"));
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+        return getReactor() != null && fluid.getFluid().equals(FluidRegistry.getFluid("steam"));
     }
 
     @Override

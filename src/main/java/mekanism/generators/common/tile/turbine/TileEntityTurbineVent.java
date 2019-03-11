@@ -9,7 +9,6 @@ import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -74,13 +73,13 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
         return false;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
-        return fluid == FluidRegistry.WATER;
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+        return fluid.getFluid().equals(FluidRegistry.WATER);
     }
 
     @Override

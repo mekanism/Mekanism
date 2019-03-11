@@ -288,7 +288,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             infuseStored.amount = dataStream.readInt();
-            infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+            if (infuseStored.amount > 0) {
+                infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+            }
         }
     }
 
@@ -297,11 +299,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         super.getNetworkedData(data);
 
         data.add(infuseStored.amount);
-
-        if (infuseStored.type != null) {
+        if (infuseStored.amount > 0) {
             data.add(infuseStored.type.name);
-        } else {
-            data.add("null");
         }
 
         return data;

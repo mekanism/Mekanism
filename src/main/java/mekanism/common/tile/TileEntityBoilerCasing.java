@@ -19,6 +19,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -207,21 +208,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             data.add(structure.temperature);
             data.add(structure.lastMaxBoil);
 
-            if (structure.waterStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.waterStored));
-                data.add(structure.waterStored.amount);
-            } else {
-                data.add(0);
-            }
-
-            if (structure.steamStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.steamStored));
-                data.add(structure.steamStored.amount);
-            } else {
-                data.add(0);
-            }
+            TileUtils.addFluidStack(data, structure.waterStored);
+            TileUtils.addFluidStack(data, structure.steamStored);
 
             structure.upperRenderLocation.write(data);
 
@@ -278,19 +266,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.temperature = dataStream.readDouble();
                 structure.lastMaxBoil = dataStream.readInt();
 
-                if (dataStream.readInt() == 1) {
-                    structure.waterStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.waterStored = null;
-                }
-
-                if (dataStream.readInt() == 1) {
-                    structure.steamStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.steamStored = null;
-                }
+                structure.waterStored = TileUtils.readFluidStack(dataStream);
+                structure.steamStored = TileUtils.readFluidStack(dataStream);
 
                 structure.upperRenderLocation = Coord4D.read(dataStream);
 

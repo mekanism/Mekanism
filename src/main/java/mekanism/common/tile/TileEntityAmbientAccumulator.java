@@ -14,6 +14,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -80,27 +81,14 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        if (collectedGas.getGasType() != null) {
-            data.add(collectedGas.getGasType().getID());
-            data.add(collectedGas.getStored());
-        } else {
-            data.add(-1);
-            data.add(0);
-        }
-
+        TileUtils.addTankData(data, collectedGas);
         return data;
     }
 
     @Override
     public void handlePacketData(ByteBuf data) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            int gasID = data.readInt();
-
-            if (gasID < 0) {
-                collectedGas.setGas(null);
-            } else {
-                collectedGas.setGas(new GasStack(gasID, data.readInt()));
-            }
+            TileUtils.readTankData(data, collectedGas);
         }
     }
 }

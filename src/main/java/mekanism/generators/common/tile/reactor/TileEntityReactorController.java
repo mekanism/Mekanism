@@ -12,6 +12,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -219,10 +220,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             data.add(fuelTank.getStored());
             data.add(deuteriumTank.getStored());
             data.add(tritiumTank.getStored());
-            data.add(waterTank.getCapacity());
-            data.add(waterTank.getFluidAmount());
-            data.add(steamTank.getCapacity());
-            data.add(steamTank.getFluidAmount());
+            TileUtils.addTankData(data, waterTank);
+            TileUtils.addTankData(data, steamTank);
         }
 
         return data;
@@ -265,10 +264,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 fuelTank.setGas(new GasStack(MekanismFluids.FusionFuel, dataStream.readInt()));
                 deuteriumTank.setGas(new GasStack(MekanismFluids.Deuterium, dataStream.readInt()));
                 tritiumTank.setGas(new GasStack(MekanismFluids.Tritium, dataStream.readInt()));
-                waterTank.setCapacity(dataStream.readInt());
-                waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
-                steamTank.setCapacity(dataStream.readInt());
-                steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
+                TileUtils.readTankData(dataStream, waterTank);
+                TileUtils.readTankData(dataStream, steamTank);
             } else if (getReactor() != null) {
                 setReactor(null);
                 MekanismUtils.updateBlock(world, getPos());

@@ -44,7 +44,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
           "getSteamInput"};
     public boolean ic2Registered = false;
     public TurbineFluidTank fluidTank;
-    public Fluid STEAM = FluidRegistry.getFluid("steam");
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(
           IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(
@@ -320,7 +319,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (resource == null || !canFill(from, resource.getFluid())) {
+        if (resource == null || !canFill(from, resource)) {
             return 0;
         }
 
@@ -348,8 +347,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        if (fluid == STEAM) {
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
+        if (fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
             return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
         }
 
@@ -357,7 +356,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 

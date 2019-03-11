@@ -31,6 +31,7 @@ import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -205,12 +206,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
             finishedCalc = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
 
-            if (dataStream.readInt() == 1) {
-                fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)),
-                      dataStream.readInt()));
-            } else {
-                fluidTank.setFluid(null);
-            }
+            TileUtils.readTankData(dataStream, fluidTank);
         }
     }
 
@@ -221,13 +217,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         data.add(finishedCalc);
         data.add(controlType.ordinal());
 
-        if (fluidTank.getFluid() != null) {
-            data.add(1);
-            data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-            data.add(fluidTank.getFluid().amount);
-        } else {
-            data.add(0);
-        }
+        TileUtils.addTankData(data, fluidTank);
 
         return data;
     }
@@ -398,12 +388,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return from == EnumFacing.UP && fluid.canBePlacedInWorld();
+    public boolean canFill(EnumFacing from, FluidStack fluid) {
+        return from == EnumFacing.UP && fluid.getFluid().canBePlacedInWorld();
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, FluidStack fluid) {
         return false;
     }
 
