@@ -137,6 +137,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -266,6 +267,20 @@ public class Mekanism {
         MekanismBlocks.registerItemBlocks(event.getRegistry());
         //Integrate certain OreDictionary recipes
         registerOreDict();
+    }
+
+    @SubscribeEvent
+    public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
+        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "ObsidianTNT"), EntityObsidianTNT.class,
+              "ObsidianTNT", 0, Mekanism.instance, 64, 5, true);
+        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Robit"), EntityRobit.class, "Robit", 1,
+              Mekanism.instance, 64, 2, true);
+        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Balloon"), EntityBalloon.class, "Balloon", 2,
+              Mekanism.instance, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "BabySkeleton"), EntityBabySkeleton.class,
+              "BabySkeleton", 3, Mekanism.instance, 64, 5, true, 0xFFFFFF, 0x800080);
+        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Flame"), EntityFlame.class, "Flame", 4,
+              Mekanism.instance, 64, 5, true);
     }
 
     @SubscribeEvent
@@ -733,25 +748,9 @@ public class Mekanism {
     }
 
     /**
-     * Adds and registers all entities and tile entities.
+     * Adds and registers all tile entities.
      */
-    public void addEntities() {
-        //Registrations
-        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "ObsidianTNT"), EntityObsidianTNT.class,
-              "ObsidianTNT", 0, this, 64, 5, true);
-        EntityRegistry
-              .registerModEntity(new ResourceLocation("mekanism", "Robit"), EntityRobit.class, "Robit", 1, this, 64, 2,
-                    true);
-        EntityRegistry
-              .registerModEntity(new ResourceLocation("mekanism", "Balloon"), EntityBalloon.class, "Balloon", 2, this,
-                    64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "BabySkeleton"), EntityBabySkeleton.class,
-              "BabySkeleton", 3, this, 64, 5, true,
-              0xFFFFFF, 0x800080);
-        EntityRegistry
-              .registerModEntity(new ResourceLocation("mekanism", "Flame"), EntityFlame.class, "Flame", 4, this, 64, 5,
-                    true);
-
+    private void registerTileEntities() {
         //Tile entities
         GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
         GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
@@ -915,7 +914,7 @@ public class Mekanism {
         //Load this module
         addRecipes();
         OreDictManager.init();
-        addEntities();
+        registerTileEntities();
 
         //Integrate with Waila
         FMLInterModComms.sendMessage(MekanismHooks.WAILA_MOD_ID, "register",
