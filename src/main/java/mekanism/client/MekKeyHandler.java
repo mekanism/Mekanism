@@ -18,7 +18,7 @@ public abstract class MekKeyHandler {
      * @param rep Repeat flags for bindings
      */
     public MekKeyHandler(KeyBinding[] bindings, boolean[] rep) {
-        assert keyBindings.length == repeatings.length : "You need to pass two arrays of identical length";
+        assert bindings.length == rep.length : "You need to pass two arrays of identical length";
         keyBindings = bindings;
         repeatings = rep;
         keyDown = new boolean[keyBindings.length];
