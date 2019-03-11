@@ -5,19 +5,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.MekanismFluids;
+import mekanism.common.Tier.GasTankTier;
 import mekanism.common.capabilities.Capabilities;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * A handy class containing several utilities for efficient gas transfer.
@@ -176,5 +181,84 @@ public final class GasUtils {
         } else {
             gasTank.stored = null;
         }
+    }
+
+    /**
+     * Gets the amount of ticks the declared itemstack can fuel this machine.
+     *
+     * @param itemStack - itemstack to check with
+     * @return fuel ticks
+     */
+    public static GasStack getItemGas(ItemStack itemStack, BiFunction<Gas, Integer, GasStack> getIfValid) {
+        //TODO: Allow them to register other items that get converted to gas
+        GasStack gasStack = null;
+        if (itemStack.isItemEqual(new ItemStack(Items.FLINT))) {
+            gasStack = getIfValid.apply(MekanismFluids.Oxygen, 10);
+            if (gasStack != null) {
+                return gasStack;
+            }
+        }
+        List<String> oreDictNames = MekanismUtils.getOreDictName(itemStack);
+        if (oreDictNames.contains("dustSulfur")) {
+            gasStack = getIfValid.apply(MekanismFluids.SulfuricAcid, 2);
+            if (gasStack != null) {
+                return gasStack;
+            }
+        }
+        if (oreDictNames.contains("dustSalt")) {
+            gasStack = getIfValid.apply(MekanismFluids.HydrogenChloride, 2);
+            if (gasStack != null) {
+                return gasStack;
+            }
+        }
+        if (oreDictNames.contains("ingotOsmium")) {
+            gasStack = getIfValid.apply(MekanismFluids.LiquidOsmium, 200);
+            if (gasStack != null) {
+                return gasStack;
+            }
+        }
+        OreDictionary.getOres("blockOsmium");
+        if (oreDictNames.contains("blockOsmium")) {
+            gasStack = getIfValid.apply(MekanismFluids.LiquidOsmium, 1800);
+            if (gasStack != null) {
+                return gasStack;
+            }
+        }
+        if (itemStack.getItem() instanceof IGasItem) {
+            IGasItem item = (IGasItem) itemStack.getItem();
+            GasStack gas = item.getGas(itemStack);
+            //Check to make sure it can provide the gas it contains
+            if (gas != null && item.canProvideGas(itemStack, gas.getGas())) {
+                gasStack = getIfValid.apply(gas.getGas(), 1);
+                if (gasStack != null) {
+                    return gasStack;
+                }
+            }
+        }
+
+        return gasStack;
+    }
+
+    //TODO: Have item to gas and gas to items be registered in a lookup registry
+    public static List<ItemStack> getStacksForGas(Gas type) {
+        if (type == null) {
+            return Collections.emptyList();
+        }
+        List<ItemStack> stacks = new ArrayList<>();
+        if (type == MekanismFluids.SulfuricAcid) {
+            stacks.addAll(OreDictionary.getOres("dustSulfur"));
+        }
+        if (type == MekanismFluids.HydrogenChloride) {
+            stacks.addAll(OreDictionary.getOres("dustSalt"));
+        }
+        if (type == MekanismFluids.LiquidOsmium) {
+            stacks.addAll(OreDictionary.getOres("ingotOsmium"));
+            stacks.addAll(OreDictionary.getOres("blockOsmium"));
+        }
+        if (type == MekanismFluids.Oxygen) {
+            stacks.add(new ItemStack(Items.FLINT));
+        }
+        stacks.add(MekanismUtils.getFullGasTank(GasTankTier.BASIC, type));
+        return stacks;
     }
 }

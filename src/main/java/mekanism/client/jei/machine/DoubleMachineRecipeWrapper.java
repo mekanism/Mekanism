@@ -8,7 +8,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
-public abstract class DoubleMachineRecipeWrapper implements IRecipeWrapper {
+public class DoubleMachineRecipeWrapper implements IRecipeWrapper {
 
     private final DoubleMachineRecipe recipe;
 

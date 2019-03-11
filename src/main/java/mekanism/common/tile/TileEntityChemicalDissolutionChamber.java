@@ -9,7 +9,6 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
@@ -18,6 +17,7 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -64,10 +64,20 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public void onUpdate() {
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
+            ItemStack itemStack = inventory.get(0);
 
-            if (!inventory.get(0).isEmpty() && injectTank.getNeeded() > 0) {
-                injectTank.receive(
-                      GasUtils.removeGas(inventory.get(0), MekanismFluids.SulfuricAcid, injectTank.getNeeded()), true);
+            if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
+                //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though
+                IGasItem item = (IGasItem) itemStack.getItem();
+                GasStack gasStack = item.getGas(itemStack);
+                //Check to make sure it can provide the gas it contains
+                if (gasStack != null && item.canProvideGas(itemStack, gasStack.getGas())) {
+                    Gas gas = gasStack.getGas();
+                    if (gas != null && injectTank.canReceive(gas) && Recipe.CHEMICAL_DISSOLUTION_CHAMBER
+                          .containsRecipe(gas)) {
+                        injectTank.receive(GasUtils.removeGas(itemStack, gas, injectTank.getNeeded()), true);
+                    }
+                }
             }
 
             TileUtils.drawGas(inventory.get(2), outputTank);
@@ -241,7 +251,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return side == MekanismUtils.getLeft(facing) && type == MekanismFluids.SulfuricAcid;
+        return side == MekanismUtils.getLeft(facing) && injectTank.canReceive(type)
+              && Recipe.CHEMICAL_DISSOLUTION_CHAMBER.containsRecipe(type);
     }
 
     @Override

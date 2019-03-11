@@ -117,7 +117,16 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * @param itemstack - itemstack to check with
      * @return fuel ticks
      */
-    public abstract GasStack getItemGas(ItemStack itemstack);
+    public GasStack getItemGas(ItemStack itemstack) {
+        return GasUtils.getItemGas(itemstack, this::getIfValid);
+    }
+
+    private GasStack getIfValid(Gas gas, int quantity) {
+        if (gas != null && gasTank.canReceive(gas) && isValidGas(gas)) {
+            return new GasStack(gas, quantity);
+        }
+        return null;
+    }
 
     public abstract boolean isValidGas(Gas gas);
 
@@ -288,8 +297,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2;
+        }
 
     }
 

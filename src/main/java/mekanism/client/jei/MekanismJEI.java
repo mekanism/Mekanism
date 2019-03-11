@@ -33,17 +33,13 @@ import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.jei.machine.AdvancedMachineRecipeCategory;
+import mekanism.client.jei.machine.AdvancedMachineRecipeWrapper;
 import mekanism.client.jei.machine.ChanceMachineRecipeCategory;
+import mekanism.client.jei.machine.ChanceMachineRecipeWrapper;
 import mekanism.client.jei.machine.DoubleMachineRecipeCategory;
+import mekanism.client.jei.machine.DoubleMachineRecipeWrapper;
 import mekanism.client.jei.machine.MachineRecipeCategory;
-import mekanism.client.jei.machine.advanced.ChemicalInjectionChamberRecipeWrapper;
-import mekanism.client.jei.machine.advanced.CombinerRecipeWrapper;
-import mekanism.client.jei.machine.advanced.OsmiumCompressorRecipeWrapper;
-import mekanism.client.jei.machine.advanced.PurificationChamberRecipeWrapper;
-import mekanism.client.jei.machine.basic.CrusherRecipeWrapper;
-import mekanism.client.jei.machine.basic.EnrichmentRecipeWrapper;
-import mekanism.client.jei.machine.basic.SmeltingRecipeWrapper;
-import mekanism.client.jei.machine.chance.PrecisionSawmillRecipeWrapper;
+import mekanism.client.jei.machine.MachineRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.chemical.ChemicalCrystallizerRecipeWrapper;
 import mekanism.client.jei.machine.chemical.ChemicalDissolutionChamberRecipeCategory;
@@ -250,34 +246,34 @@ public class MekanismJEI implements IModPlugin {
         registry.getJeiHelpers().getIngredientBlacklist()
               .addIngredientToBlacklist(new ItemStack(MekanismBlocks.BoundingBlock));
 
-        registry.handleRecipes(EnrichmentRecipe.class, EnrichmentRecipeWrapper::new, "mekanism.enrichment_chamber");
-        addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, BasicMachineRecipe.class, EnrichmentRecipeWrapper.class,
+        registry.handleRecipes(EnrichmentRecipe.class, MachineRecipeWrapper::new, "mekanism.enrichment_chamber");
+        addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, BasicMachineRecipe.class, MachineRecipeWrapper.class,
               "mekanism.enrichment_chamber");
 
-        registry.handleRecipes(CrusherRecipe.class, CrusherRecipeWrapper::new, "mekanism.crusher");
-        addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
+        registry.handleRecipes(CrusherRecipe.class, MachineRecipeWrapper::new, "mekanism.crusher");
+        addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, MachineRecipeWrapper.class, "mekanism.crusher");
 
-        registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, "mekanism.combiner");
-        addRecipes(registry, Recipe.COMBINER, DoubleMachineRecipe.class, CombinerRecipeWrapper.class,
+        registry.handleRecipes(CombinerRecipe.class, DoubleMachineRecipeWrapper::new, "mekanism.combiner");
+        addRecipes(registry, Recipe.COMBINER, DoubleMachineRecipe.class, DoubleMachineRecipeWrapper.class,
               "mekanism.combiner");
 
-        registry.handleRecipes(PurificationRecipe.class, PurificationChamberRecipeWrapper::new,
+        registry.handleRecipes(PurificationRecipe.class, AdvancedMachineRecipeWrapper::new,
               "mekanism.purification_chamber");
         addRecipes(registry, Recipe.PURIFICATION_CHAMBER, AdvancedMachineRecipe.class,
-              PurificationChamberRecipeWrapper.class, "mekanism.purification_chamber");
+              AdvancedMachineRecipeWrapper.class, "mekanism.purification_chamber");
 
-        registry.handleRecipes(OsmiumCompressorRecipe.class, OsmiumCompressorRecipeWrapper::new,
+        registry.handleRecipes(OsmiumCompressorRecipe.class, AdvancedMachineRecipeWrapper::new,
               "mekanism.osmium_compressor");
-        addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, AdvancedMachineRecipe.class, OsmiumCompressorRecipeWrapper.class,
+        addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, AdvancedMachineRecipe.class, AdvancedMachineRecipeWrapper.class,
               "mekanism.osmium_compressor");
 
-        registry.handleRecipes(InjectionRecipe.class, ChemicalInjectionChamberRecipeWrapper::new,
+        registry.handleRecipes(InjectionRecipe.class, AdvancedMachineRecipeWrapper::new,
               "mekanism.chemical_injection_chamber");
         addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, AdvancedMachineRecipe.class,
-              ChemicalInjectionChamberRecipeWrapper.class, "mekanism.chemical_injection_chamber");
+              AdvancedMachineRecipeWrapper.class, "mekanism.chemical_injection_chamber");
 
-        registry.handleRecipes(SawmillRecipe.class, PrecisionSawmillRecipeWrapper::new, "mekanism.precision_sawmill");
-        addRecipes(registry, Recipe.PRECISION_SAWMILL, ChanceMachineRecipe.class, PrecisionSawmillRecipeWrapper.class,
+        registry.handleRecipes(SawmillRecipe.class, ChanceMachineRecipeWrapper::new, "mekanism.precision_sawmill");
+        addRecipes(registry, Recipe.PRECISION_SAWMILL, ChanceMachineRecipe.class, ChanceMachineRecipeWrapper.class,
               "mekanism.precision_sawmill");
 
         registry.handleRecipes(MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper::new,
@@ -339,12 +335,12 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipes(condensentratorRecipes, "mekanism.rotary_condensentrator_condensentrating");
         registry.addRecipes(decondensentratorRecipes, "mekanism.rotary_condensentrator_decondensentrating");
 
-        registry.handleRecipes(SmeltingRecipe.class, SmeltingRecipeWrapper::new, "mekanism.energized_smelter");
+        registry.handleRecipes(SmeltingRecipe.class, MachineRecipeWrapper::new, "mekanism.energized_smelter");
 
         if (CRAFTTWEAKER_LOADED && EnergizedSmelter.hasRemovedRecipe()) // Removed / Removed + Added
         {
             // Add all recipes
-            addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, SmeltingRecipeWrapper.class,
+            addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, MachineRecipeWrapper.class,
                   "mekanism.energized_smelter");
         } else if (CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe()) // Added but not removed
         {
@@ -355,7 +351,7 @@ public class MekanismJEI implements IModPlugin {
                         .contains(entry.getKey().ingredient))
                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).values();
 
-            addRecipes(registry, recipes, BasicMachineRecipe.class, SmeltingRecipeWrapper.class,
+            addRecipes(registry, recipes, BasicMachineRecipe.class, MachineRecipeWrapper.class,
                   "mekanism.energized_smelter");
         }
         // else - Only use furnace list, so no extra registration.

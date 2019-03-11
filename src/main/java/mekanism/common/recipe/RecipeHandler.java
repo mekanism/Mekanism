@@ -685,6 +685,7 @@ public final class RecipeHandler {
         }
 
         public boolean containsRecipe(ItemStack input) {
+            //TODO: Support other input types
             for (Object obj : get().entrySet()) {
                 if (obj instanceof Map.Entry) {
                     Map.Entry entry = (Map.Entry) obj;
@@ -713,6 +714,7 @@ public final class RecipeHandler {
         }
 
         public boolean containsRecipe(Fluid input) {
+            //TODO: Support other input types
             for (Object obj : get().entrySet()) {
                 if (obj instanceof Map.Entry) {
                     Map.Entry entry = (Map.Entry) obj;
@@ -729,14 +731,19 @@ public final class RecipeHandler {
         }
 
         public boolean containsRecipe(Gas input) {
+            //TODO: Support other input types
             for (Object obj : get().entrySet()) {
                 if (obj instanceof Map.Entry) {
                     Map.Entry entry = (Map.Entry) obj;
 
+                    Gas toCheck = null;
                     if (entry.getKey() instanceof GasInput) {
-                        if (((GasInput) entry.getKey()).ingredient.getGas() == input) {
-                            return true;
-                        }
+                        toCheck = ((GasInput) entry.getKey()).ingredient.getGas();
+                    } else if (entry.getKey() instanceof AdvancedMachineInput) {
+                        toCheck = ((AdvancedMachineInput) entry.getKey()).gasType;
+                    }
+                    if (toCheck == input) {
+                        return true;
                     }
                 }
             }

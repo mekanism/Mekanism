@@ -6,11 +6,12 @@ import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.util.GasUtils;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 
-public abstract class AdvancedMachineRecipeWrapper implements IRecipeWrapper {
+public class AdvancedMachineRecipeWrapper implements IRecipeWrapper {
 
     private final AdvancedMachineRecipe recipe;
 
@@ -25,7 +26,9 @@ public abstract class AdvancedMachineRecipeWrapper implements IRecipeWrapper {
         ingredients.setOutput(ItemStack.class, ((ItemStackOutput) recipe.getOutput()).output);
     }
 
-    public abstract List<ItemStack> getFuelStacks(Gas gasType);
+    public List<ItemStack> getFuelStacks(Gas gasType) {
+        return GasUtils.getStacksForGas(gasType);
+    }
 
     public AdvancedMachineRecipe getRecipe() {
         return recipe;
