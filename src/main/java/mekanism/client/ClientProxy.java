@@ -212,6 +212,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -1135,7 +1136,17 @@ public class ClientProxy extends CommonProxy
 		}
 		else if(player != null && !player.world.isRemote)
 		{
-			((WorldServer)player.world).addScheduledTask(runnable); //singleplayer
+			if (player.world instanceof WorldServer) {
+				((WorldServer) player.world).addScheduledTask(runnable);
+			} else {
+				MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+				if (server != null){
+					server.addScheduledTask(runnable);
+				} else {
+					Mekanism.logger.error("Packet handler wanted to set a scheduled task, but we couldn't find a way to set one :(");
+					Mekanism.logger.error("Player = {}, World = {}", player, player.world);
+				}
+			}
 		}
 	}
 
