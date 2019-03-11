@@ -16,6 +16,8 @@ import java.util.Map;
 
 public abstract class RemoveMekanismRecipe extends BaseMapRemoval<MachineInput, MachineRecipe>
 {
+    private boolean hasAddedRecipes = false;
+
     public RemoveMekanismRecipe(String name, Map<MachineInput, MachineRecipe> map)
     {
         super(name, map);
@@ -24,9 +26,22 @@ public abstract class RemoveMekanismRecipe extends BaseMapRemoval<MachineInput, 
     public abstract void addRecipes();
 
     @Override
+    public String describe()
+    {
+        if (!hasAddedRecipes){
+            addRecipes();
+            hasAddedRecipes = true;
+        }
+        return super.describe();
+    }
+
+    @Override
     public void apply()
     {
-        addRecipes();
+        if (!hasAddedRecipes){
+            addRecipes();
+            hasAddedRecipes = true;
+        }
 
         super.apply();
     }

@@ -22,19 +22,12 @@ public class AddMekanismRecipe extends BaseMapAddition<MachineInput, MachineReci
     {
         super(name, map);
         this.recipe = recipe;
+        addRecipes();
     }
 
     public void addRecipes()
     {
         this.recipes.put(recipe.getInput(), recipe);
-    }
-
-    @Override
-    public void apply()
-    {
-        addRecipes();
-
-        super.apply();
     }
 
     @Override
