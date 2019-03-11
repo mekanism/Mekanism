@@ -131,7 +131,7 @@ public class BakedGeneratorItemModel implements IBakedModel
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexFormat prevFormat = null;
 		
-		MekanismRenderer.pauseRenderer(tessellator);
+		MekanismRenderer.RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 		
 		List<BakedQuad> generalQuads = new LinkedList<>();
 		
@@ -147,7 +147,7 @@ public class BakedGeneratorItemModel implements IBakedModel
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     	GlStateManager.popMatrix();
     	
-    	MekanismRenderer.resumeRenderer(tessellator);
+    	MekanismRenderer.resumeRenderer(tessellator, renderState);
 		
 		if(Block.getBlockFromItem(stack.getItem()) != null)
 		{

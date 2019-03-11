@@ -18,7 +18,6 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -42,7 +41,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -218,38 +216,35 @@ public class MekanismRenderer
 		
 		return sprite != null ? sprite : missingIcon;
 	}
+
+	public static class RenderState {
+		protected final VertexFormat prevFormat;
+		protected final int prevMode;
+
+		public RenderState(VertexFormat prevFormat, int prevMode)
+		{
+			this.prevFormat = prevFormat;
+			this.prevMode = prevMode;
+		}
+	}
 	
-	private static VertexFormat prevFormat = null;
-	private static int prevMode = -1;
-	
-	public static void pauseRenderer(Tessellator tess)
+	public static RenderState pauseRenderer(Tessellator tess)
 	{
 		if(MekanismRenderer.isDrawing(tess))
 		{
-			prevFormat = tess.getBuffer().getVertexFormat();
-			prevMode = tess.getBuffer().getDrawMode();
+			RenderState renderState = new RenderState(tess.getBuffer().getVertexFormat(), tess.getBuffer().getDrawMode());
 			tess.draw();
+			return renderState;
 		}
+		return null;
 	}
 	
-	public static void saveRenderer(Tessellator tess)
+	public static void resumeRenderer(Tessellator tess, RenderState renderState)
 	{
-		if(MekanismRenderer.isDrawing(tess))
-		{
-			prevFormat = tess.getBuffer().getVertexFormat();
-			prevMode = tess.getBuffer().getDrawMode();
-		}
-	}
-	
-	public static void resumeRenderer(Tessellator tess)
-	{
-    	if(prevFormat != null)
+    	if(renderState != null)
     	{
-	    	tess.getBuffer().begin(prevMode, prevFormat);
+	    	tess.getBuffer().begin(renderState.prevMode, renderState.prevFormat);
     	}
-    	
-    	prevFormat = null;
-    	prevMode = -1;
 	}
 	
 	public static boolean isDrawing(Tessellator tess)

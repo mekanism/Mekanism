@@ -438,7 +438,7 @@ public class BakedCustomItemModel implements IBakedModel
 				VertexFormat prevFormat = null;
 				int prevMode = -1;
 
-				MekanismRenderer.pauseRenderer(tessellator);
+				MekanismRenderer.RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(0.5F, 0.5F, 0.5F);
@@ -453,7 +453,7 @@ public class BakedCustomItemModel implements IBakedModel
 				Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 				GlStateManager.popMatrix();
 
-				MekanismRenderer.resumeRenderer(tessellator);
+				MekanismRenderer.resumeRenderer(tessellator, renderState);
 			} catch (Throwable t) {
 				Mekanism.logger.error("Error caught in CustomItemModel", t);
 			}
