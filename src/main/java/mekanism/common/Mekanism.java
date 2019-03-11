@@ -942,6 +942,10 @@ public class Mekanism
 		//ImmEng multiblocks
 		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device0")), OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device1")), OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "wooden_device0")), OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "wooden_device1")), OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "connector")), OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_multiblock")), OreDictionary.WILDCARD_VALUE);
 
 		BoxBlacklistParser.load();
 	}
