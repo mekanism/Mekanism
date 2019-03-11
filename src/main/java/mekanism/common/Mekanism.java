@@ -298,6 +298,8 @@ public class Mekanism {
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         event.getRegistry().register(new BinRecipe());
+        addRecipes();
+        OreDictManager.init();
     }
 
     /**
@@ -912,8 +914,6 @@ public class Mekanism {
         }
 
         //Load this module
-        addRecipes();
-        OreDictManager.init();
         registerTileEntities();
 
         //Integrate with Waila

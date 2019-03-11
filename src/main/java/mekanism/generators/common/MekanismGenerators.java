@@ -24,6 +24,7 @@ import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -102,13 +103,6 @@ public class MekanismGenerators implements IModule {
         proxy.registerRegularTileEntities();
         proxy.registerSpecialTileEntities();
 
-        addRecipes();
-
-        for (ItemStack ore : OreDictionary.getOres("dustGold")) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4),
-                  GeneratorsItems.Hohlraum.getEmptyItem());
-        }
-
         //Finalization
         Mekanism.logger.info("Loaded MekanismGenerators module.");
     }
@@ -128,10 +122,16 @@ public class MekanismGenerators implements IModule {
         }
     }
 
-    public void addRecipes() {
+    @SubscribeEvent
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         FuelHandler.addGas(MekanismFluids.Ethene, general.ETHENE_BURN_TIME, general.FROM_H2
               + generators.bioGeneration * 2
               * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+
+        for (ItemStack ore : OreDictionary.getOres("dustGold")) {
+            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4),
+                  GeneratorsItems.Hohlraum.getEmptyItem());
+        }
     }
 
     @Override

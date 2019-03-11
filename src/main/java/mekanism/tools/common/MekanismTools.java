@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
@@ -101,9 +102,6 @@ public class MekanismTools implements IModule {
 
         //Load the proxy
         proxy.loadConfiguration();
-
-        //Load this module
-        addRecipes();
 
         //Finalization
         Mekanism.logger.info("Loaded MekanismTools module.");
@@ -328,7 +326,8 @@ public class MekanismTools implements IModule {
         ToolsItems.setHarvestLevels();
     }
 
-    public void addRecipes() {
+    @SubscribeEvent
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         //Furnace Recipes
         GameRegistry.addSmelting(ToolsItems.IronPaxel, new ItemStack(Items.IRON_NUGGET), 0.1F);
         GameRegistry.addSmelting(ToolsItems.GoldPaxel, new ItemStack(Items.GOLD_NUGGET), 0.1F);
