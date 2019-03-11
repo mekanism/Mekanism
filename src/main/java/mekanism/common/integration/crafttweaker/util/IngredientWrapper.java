@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.util;
 import com.blamejared.mtlib.helpers.LogHelper;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
+import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 
 public class IngredientWrapper {
@@ -63,13 +64,13 @@ public class IngredientWrapper {
     public String toString() {
         String output = "";
         if (!left.equals(IngredientAny.INSTANCE)) {
-            output += LogHelper.getStackDescription(left);
+            output += getDescriptor(left);
         }
         if (!middle.equals(IngredientAny.INSTANCE)) {
-            output += ", " + LogHelper.getStackDescription(middle);
+            output += ", " + getDescriptor(middle);
         }
         if (!right.equals(IngredientAny.INSTANCE)) {
-            output += ", " + LogHelper.getStackDescription(right);
+            output += ", " + getDescriptor(right);
         }
         if (!infuseType.isEmpty()) {
             output += ", " + infuseType;
@@ -80,5 +81,9 @@ public class IngredientWrapper {
     public boolean isEmpty() {
         return left.equals(IngredientAny.INSTANCE) && middle.equals(IngredientAny.INSTANCE) && right
               .equals(IngredientAny.INSTANCE) && infuseType.isEmpty();
+    }
+
+    private String getDescriptor(IIngredient ingredient) {
+        return ingredient instanceof IGasStack ? ingredient.toString() : LogHelper.getStackDescription(ingredient);
     }
 }
