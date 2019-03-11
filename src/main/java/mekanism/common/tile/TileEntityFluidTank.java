@@ -69,7 +69,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public int prevAmount;
 	
 	public int valve;
-	public Fluid valveFluid;
+	public FluidStack valveFluid;
 	
 	public float prevScale;
 	
@@ -346,7 +346,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			if(valve > 0)
 			{
-				valveFluid = FluidRegistry.getFluid(PacketHandler.readString(dataStream));
+				valveFluid = FluidStack.loadFluidStackFromNBT(PacketHandler.readNBT(dataStream));
 			}
 			else {
 				valveFluid = null;
@@ -354,10 +354,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			if(dataStream.readInt() == 1)
 			{
-				FluidStack fluidStack = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt());
-				if (dataStream.readBoolean()){
-					fluidStack.tag = PacketHandler.readNBT(dataStream);
-				}
+				FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(PacketHandler.readNBT(dataStream));
 				fluidTank.setFluid(fluidStack);
 			}
 			else {
@@ -421,20 +418,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		if(valve > 0)
 		{
-			data.add(FluidRegistry.getFluidName(valveFluid));
+			data.add(valveFluid.writeToNBT(new NBTTagCompound()));
 		}
 		
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-			data.add(fluidTank.getFluid().amount);
-			if (fluidTank.getFluid().tag != null && !fluidTank.getFluid().tag.hasNoTags()){
-				data.add(true);
-				data.add(fluidTank.getFluid().tag);
-			} else {
-				data.add(false);
-			}
+			data.add(fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 		else {
 			data.add(0);
@@ -541,7 +531,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				}
 				
 				valve = 20;
-				valveFluid = resource.getFluid();
+				valveFluid = new FluidStack(resource, 1);
 			}
 			
 			return filled;

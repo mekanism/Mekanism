@@ -68,6 +68,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.Fluid;
 
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
@@ -154,7 +155,7 @@ public class BakedCustomItemModel implements IBakedModel
 				ItemBlockMachine itemMachine = (ItemBlockMachine)stack.getItem();
 				float targetScale = (float)(itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0)/itemMachine.getCapacity(stack);
 				FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
-				Fluid fluid = itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).getFluid() : null;
+				FluidStack fluid = itemMachine.getFluidStack(stack);
 				RenderFluidTank.INSTANCE.render(tier, fluid, targetScale, false, null, -0.5, -0.5, -0.5);
 				GlStateManager.popMatrix();
 			}

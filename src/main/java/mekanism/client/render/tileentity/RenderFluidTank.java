@@ -3,6 +3,9 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -13,6 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -23,19 +27,19 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 {
 	public static final RenderFluidTank INSTANCE = new RenderFluidTank();
 
-	private static Map<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<>();
-	private static Map<Fluid, DisplayInteger[]> cachedValveFluids = new HashMap<>();
+	private static FluidRenderMap<DisplayInteger[]> cachedCenterFluids = new FluidRenderMap<>();
+	private static FluidRenderMap<DisplayInteger[]> cachedValveFluids = new FluidRenderMap<>();
 	
 	private static int stages = 1400;
 
 	@Override
 	public void render(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
-		Fluid fluid = tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid() : null;
+		FluidStack fluid = tileEntity.fluidTank.getFluid();
 		render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.isActive, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);
 	}
 	
-	public void render(FluidTankTier tier, Fluid fluid, float fluidScale, boolean active, Fluid valveFluid, double x, double y, double z)
+	public void render(FluidTankTier tier, FluidStack fluid, float fluidScale, boolean active, FluidStack valveFluid, double x, double y, double z)
 	{
 		if(fluid != null && fluidScale > 0)
 		{
@@ -44,7 +48,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslated(x, y, z);
 	
-			MekanismRenderer.glowOn(fluid.getLuminosity());
+			MekanismRenderer.glowOn(fluid.getFluid().getLuminosity(fluid));
 			MekanismRenderer.colorFluid(fluid);
 	
 			DisplayInteger[] displayList = getListAndRender(fluid);
@@ -54,7 +58,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 				fluidScale = 1;
 			}
 	
-			if(fluid.isGaseous())
+			if(fluid.getFluid().isGaseous(fluid))
 			{
 				GL11.glColor4f(1F, 1F, 1F, Math.min(1, fluidScale+MekanismRenderer.GAS_RENDER_BASE));
 				displayList[stages-1].render();
@@ -69,14 +73,14 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 			pop();
 		}
 		
-		if(valveFluid != null && !valveFluid.isGaseous())
+		if(valveFluid != null && !valveFluid.getFluid().isGaseous(valveFluid))
 		{
 			push();
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslated(x, y, z);
 			
-			MekanismRenderer.glowOn(valveFluid.getLuminosity());
+			MekanismRenderer.glowOn(valveFluid.getFluid().getLuminosity(valveFluid));
 			MekanismRenderer.colorFluid(valveFluid);
 			
 			DisplayInteger[] valveList = getValveRender(valveFluid);
@@ -106,7 +110,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 		MekanismRenderer.blendOn();
 	}
 	
-	private DisplayInteger[] getValveRender(Fluid fluid)
+	private DisplayInteger[] getValveRender(FluidStack fluid)
 	{
 		if(cachedValveFluids.containsKey(fluid))
 		{
@@ -124,7 +128,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getStill() != null)
+			if(fluid.getFluid().getStill(fluid) != null)
 			{
 				toReturn.minX = 0.3125 + .01;
 				toReturn.minY = 0.0625 + ((float)i/(float)stages)*0.875;
@@ -143,7 +147,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 		return displays;
 	}
 	
-	private DisplayInteger[] getListAndRender(Fluid fluid)
+	private DisplayInteger[] getListAndRender(FluidStack fluid)
 	{
 		if(cachedCenterFluids.containsKey(fluid))
 		{
@@ -161,7 +165,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer<TileEntityFluidTa
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getStill() != null)
+			if(fluid.getFluid().getStill(fluid) != null)
 			{
 				toReturn.minX = 0.125 + .01;
 				toReturn.minY = 0.0625 + .01;

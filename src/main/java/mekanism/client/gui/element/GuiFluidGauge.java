@@ -23,7 +23,7 @@ import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.input.Keyboard;
 
-public class GuiFluidGauge extends GuiGauge<Fluid>
+public class GuiFluidGauge extends GuiGauge<FluidStack>
 {
 	IFluidInfoHandler infoHandler;
 
@@ -47,7 +47,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	{
 		if(dummy)
 		{
-			return dummyType.getColor();
+			return dummyType.getFluid().getColor(dummyType);
 		}
 
 		FluidStack fluidStack = infoHandler.getTank().getFluid();
@@ -118,7 +118,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 			return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
 		}
 		
-		return MekanismRenderer.getFluidTexture(infoHandler.getTank().getFluid().getFluid(), FluidType.STILL);
+		return MekanismRenderer.getFluidTexture(infoHandler.getTank().getFluid(), FluidType.STILL);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	{
 		if(dummy)
 		{
-			return dummyType.getLocalizedName(null);
+			return dummyType.getLocalizedName();
 		}
 		
 		String amountStr = (infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : infoHandler.getTank().getFluidAmount() + " mB");

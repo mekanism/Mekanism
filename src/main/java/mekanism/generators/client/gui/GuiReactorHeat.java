@@ -54,7 +54,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public TextureAtlasSprite getIcon()
 			{
-				return MekanismRenderer.getFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
+				return MekanismRenderer.getBaseFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
 			}
 
 			@Override
@@ -88,7 +88,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public TextureAtlasSprite getIcon()
 			{
-				return MekanismRenderer.getFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
+				return MekanismRenderer.getBaseFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
 			}
 
 			@Override

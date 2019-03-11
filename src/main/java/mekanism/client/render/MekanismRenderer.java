@@ -43,6 +43,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -171,18 +172,46 @@ public class MekanismRenderer
 		texMap = map;
 	}
 
-	public static TextureAtlasSprite getFluidTexture(Fluid fluid, FluidType type) 
+	/**
+	 * Get a fluid texture when a stack does not exist.
+	 *
+	 * @param fluid the fluid to get
+	 * @param type Still or Flowing
+	 * @return the sprite, or missing sprite if not found
+	 */
+	public static TextureAtlasSprite getBaseFluidTexture(Fluid fluid, FluidType type)
 	{
 		if(fluid == null || type == null)
 		{
 			return missingIcon;
 		}
-		
+
 		ResourceLocation spriteLocation;
 		if (type == FluidType.STILL){
 			spriteLocation = fluid.getStill();
 		} else {
 			spriteLocation = fluid.getFlowing();
+		}
+
+		TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
+
+		return sprite != null ? sprite : missingIcon;
+	}
+
+	public static TextureAtlasSprite getFluidTexture(FluidStack fluidStack, FluidType type)
+	{
+		if(fluidStack == null || fluidStack.getFluid() == null || type == null)
+		{
+			return missingIcon;
+		}
+
+		Fluid fluid = fluidStack.getFluid();
+		
+		ResourceLocation spriteLocation;
+		if (type == FluidType.STILL){
+			spriteLocation = fluid.getStill(fluidStack);
+		} else {
+			spriteLocation = fluid.getFlowing(fluidStack);
 		}
 
 		TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
@@ -345,7 +374,7 @@ public class MekanismRenderer
 		return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
     }
 	
-	public static void prepFlowing(Model3D model, Fluid fluid)
+	public static void prepFlowing(Model3D model, FluidStack fluid)
 	{
 		TextureAtlasSprite still = getFluidTexture(fluid, FluidType.STILL);
 		TextureAtlasSprite flowing = getFluidTexture(fluid, FluidType.FLOWING);
@@ -455,9 +484,9 @@ public class MekanismRenderer
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 
-	public static void colorFluid(Fluid fluid)
+	public static void colorFluid(FluidStack fluid)
 	{
-		color(fluid.getColor());
+		color(fluid.getFluid().getColor(fluid));
 	}
 	
 	public static void color(int color)

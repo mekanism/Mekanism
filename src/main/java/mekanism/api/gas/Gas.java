@@ -156,7 +156,7 @@ public class Gas
 	{
 		if(from_fluid)
 		{
-			return MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+			return MekanismRenderer.getBaseFluidTexture(fluid, FluidType.STILL);
 		}
 
 		if (sprite == null){

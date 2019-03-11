@@ -146,7 +146,7 @@ public class GuiThermoelectricBoiler extends GuiMekanism
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-			drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.getFluidTexture(fluid.getFluid(), FluidType.STILL), 16, 16 - (16 - renderRemaining));
+			drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.getFluidTexture(fluid, FluidType.STILL), 16, 16 - (16 - renderRemaining));
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)
