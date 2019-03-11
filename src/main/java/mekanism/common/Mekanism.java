@@ -746,7 +746,8 @@ public class Mekanism {
               .registerModEntity(new ResourceLocation("mekanism", "Balloon"), EntityBalloon.class, "Balloon", 2, this,
                     64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "BabySkeleton"), EntityBabySkeleton.class,
-              "BabySkeleton", 3, this, 64, 5, true);
+              "BabySkeleton", 3, this, 64, 5, true,
+              0xFFFFFF, 0x800080);
         EntityRegistry
               .registerModEntity(new ResourceLocation("mekanism", "Flame"), EntityFlame.class, "Flame", 4, this, 64, 5,
                     true);
