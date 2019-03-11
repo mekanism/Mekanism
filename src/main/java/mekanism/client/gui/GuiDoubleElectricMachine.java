@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
@@ -14,7 +13,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.util.LangUtils;
@@ -67,9 +65,6 @@ public class GuiDoubleElectricMachine extends GuiMekanism {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
-
         fontRenderer
               .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
                     6, 0x404040);
@@ -87,17 +82,5 @@ public class GuiDoubleElectricMachine extends GuiMekanism {
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    }
-
-    public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas) {
-        if (gas == null) {
-            return;
-        }
-
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-
-        mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-        drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, gas.getGas().getSprite(), sizeX, sizeY);
     }
 }
