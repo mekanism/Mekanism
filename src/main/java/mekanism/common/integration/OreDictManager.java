@@ -37,15 +37,9 @@ public final class OreDictManager {
         addLogRecipes();
 
         for (ItemStack ore : OreDictionary.getOres("plankWood")) {
-            if (ore.getHasSubtypes()) {
-                ItemStack wildStack = new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE);
-
-                if (!Recipe.PRECISION_SAWMILL.containsRecipe(wildStack)) {
-                    RecipeHandler.addPrecisionSawmillRecipe(wildStack, new ItemStack(Items.STICK, 6),
-                          new ItemStack(MekanismItems.Sawdust), 0.25);
-                }
-            } else {
-                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Items.STICK, 6),
+            ItemStack plank = StackUtils.size(ore, 1);
+            if (!Recipe.PRECISION_SAWMILL.containsRecipe(plank)) {
+                RecipeHandler.addPrecisionSawmillRecipe(plank, new ItemStack(Items.STICK, 6),
                       new ItemStack(MekanismItems.Sawdust), 0.25);
             }
         }
