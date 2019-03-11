@@ -149,7 +149,11 @@ public class CommonPlayerTickHandler
 		
 		BlockPos pos = new BlockPos(x, y, z);
 		IBlockState s = player.world.getBlockState(pos);
-		AxisAlignedBB box = s.getBoundingBox(player.world, pos).offset(pos);
+		AxisAlignedBB box = s.getBoundingBox(player.world, pos);
+		if (box == null){//shouldnt be this, but #5259 has the above line causing an unexpected NPE
+			return true;//??
+		}
+		box = box.offset(pos);
 		AxisAlignedBB playerBox = player.getEntityBoundingBox();
 		
 		if(!s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(box))
