@@ -96,7 +96,7 @@ public class IngredientHelper {
             return matches(input.ingredient, toMatch.getIngredient());
         } else if (in instanceof AdvancedMachineInput) {
             AdvancedMachineInput input = (AdvancedMachineInput) in;
-            return matches(input.gasType, toMatch.getLeft()) && matches(input.itemStack, toMatch.getRight());
+            return matches(input.itemStack, toMatch.getLeft()) && matches(input.gasType, toMatch.getRight());
         } else if (in instanceof ChemicalPairInput) {
             ChemicalPairInput input = (ChemicalPairInput) in;
             return matches(input.leftGas, toMatch.getLeft()) && matches(input.rightGas, toMatch.getRight());
