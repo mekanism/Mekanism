@@ -34,7 +34,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "mekanismtools", name = "MekanismTools", version = "9.6.0", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = "mekanismtools", name = "MekanismTools", version = "9.6.1", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
 @Mod.EventBusSubscriber()
 public class MekanismTools implements IModule
 {
@@ -45,7 +45,7 @@ public class MekanismTools implements IModule
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(9, 6, 0);
+	public static Version versionNumber = new Version(9, 6, 1);
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;
