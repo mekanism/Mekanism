@@ -11,7 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "*": {
-      "ore": "nuggetObsidian",
+      "ore": "nuggetRefinedObsidian",
       "type": "forge:ore_dict"
     }
   }

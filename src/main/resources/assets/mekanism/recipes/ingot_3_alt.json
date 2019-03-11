@@ -11,7 +11,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "*": {
-      "ore": "nuggetGlowstone",
+      "ore": "nuggetRefinedGlowstone",
       "type": "forge:ore_dict"
     }
   }
