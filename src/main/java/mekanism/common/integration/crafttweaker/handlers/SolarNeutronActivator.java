@@ -9,8 +9,9 @@ import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.outputs.GasOutput;
@@ -29,7 +30,7 @@ public class SolarNeutronActivator {
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR,
+                  .add(new AddMekanismRecipe(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR,
                         new SolarNeutronRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput))));
         }
     }
@@ -39,8 +40,14 @@ public class SolarNeutronActivator {
         if (IngredientHelper.checkNotNull(NAME, gasInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<GasInput, GasOutput, SolarNeutronRecipe>(NAME,
-                        RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR, new IngredientWrapper(gasOutput),
+                        Recipe.SOLAR_NEUTRON_ACTIVATOR, new IngredientWrapper(gasOutput),
                         new IngredientWrapper(gasInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<SolarNeutronRecipe>(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR));
     }
 }

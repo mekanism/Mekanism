@@ -11,8 +11,9 @@ import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.recipe.outputs.GasOutput;
@@ -31,7 +32,7 @@ public class ChemicalOxidizer {
     public static void addRecipe(IItemStack itemInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER,
+                  .add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_OXIDIZER,
                         new OxidationRecipe(InputHelper.toStack(itemInput), GasHelper.toGas(gasOutput))));
         }
     }
@@ -41,8 +42,13 @@ public class ChemicalOxidizer {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<ItemStackInput, GasOutput, OxidationRecipe>(NAME,
-                        RecipeHandler.Recipe.CHEMICAL_OXIDIZER, new IngredientWrapper(gasOutput),
-                        new IngredientWrapper(itemInput)));
+                        Recipe.CHEMICAL_OXIDIZER, new IngredientWrapper(gasOutput), new IngredientWrapper(itemInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<OxidationRecipe>(NAME, Recipe.CHEMICAL_OXIDIZER));
     }
 }

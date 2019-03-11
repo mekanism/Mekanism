@@ -9,8 +9,9 @@ import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.recipe.outputs.GasOutput;
@@ -28,7 +29,7 @@ public class ChemicalWasher {
     @ZenMethod
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER,
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_WASHER,
                   new WasherRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput))));
         }
     }
@@ -37,8 +38,13 @@ public class ChemicalWasher {
     public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<GasInput, GasOutput, WasherRecipe>(NAME,
-                  RecipeHandler.Recipe.CHEMICAL_WASHER, new IngredientWrapper(gasOutput),
-                  new IngredientWrapper(gasInput)));
+                  Recipe.CHEMICAL_WASHER, new IngredientWrapper(gasOutput), new IngredientWrapper(gasInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<WasherRecipe>(NAME, Recipe.CHEMICAL_WASHER));
     }
 }

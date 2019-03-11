@@ -11,8 +11,9 @@ import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -31,7 +32,7 @@ public class ChemicalInjection {
     public static void addRecipe(IItemStack itemInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER,
+                  .add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER,
                         new InjectionRecipe(new AdvancedMachineInput(InputHelper.toStack(itemInput),
                               GasHelper.toGas(gasInput).getGas()),
                               new ItemStackOutput(InputHelper.toStack(itemOutput)))));
@@ -44,8 +45,14 @@ public class ChemicalInjection {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<AdvancedMachineInput, ItemStackOutput, InjectionRecipe>(NAME,
-                        RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER, new IngredientWrapper(itemOutput),
+                        Recipe.CHEMICAL_INJECTION_CHAMBER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, gasInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<InjectionRecipe>(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER));
     }
 }

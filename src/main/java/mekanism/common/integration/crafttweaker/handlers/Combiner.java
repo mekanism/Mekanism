@@ -9,8 +9,9 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -28,10 +29,9 @@ public class Combiner {
     @ZenMethod
     public static void addRecipe(IItemStack itemInput, IItemStack extraInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, extraInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER,
-                  new CombinerRecipe(
-                        new DoubleMachineInput(InputHelper.toStack(itemInput), InputHelper.toStack(extraInput)),
-                        new ItemStackOutput(InputHelper.toStack(itemOutput)))));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.COMBINER, new CombinerRecipe(
+                  new DoubleMachineInput(InputHelper.toStack(itemInput), InputHelper.toStack(extraInput)),
+                  new ItemStackOutput(InputHelper.toStack(itemOutput)))));
         }
     }
 
@@ -43,7 +43,7 @@ public class Combiner {
     @Deprecated
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER,
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.COMBINER,
                   new CombinerRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput))));
         }
     }
@@ -54,8 +54,13 @@ public class Combiner {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<DoubleMachineInput, ItemStackOutput, CombinerRecipe>(NAME,
-                        RecipeHandler.Recipe.COMBINER, new IngredientWrapper(itemOutput),
+                        Recipe.COMBINER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, gasInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<CombinerRecipe>(NAME, Recipe.COMBINER));
     }
 }

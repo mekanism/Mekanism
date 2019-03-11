@@ -11,8 +11,9 @@ import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
@@ -32,7 +33,7 @@ public class Separator {
           IGasStack rightGasOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, leftGasOutput, rightGasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR,
+                  .add(new AddMekanismRecipe(NAME, Recipe.ELECTROLYTIC_SEPARATOR,
                         new SeparatorRecipe(InputHelper.toFluid(liquidInput), energy, GasHelper.toGas(leftGasOutput),
                               GasHelper.toGas(rightGasOutput))));
         }
@@ -44,8 +45,14 @@ public class Separator {
         if (IngredientHelper.checkNotNull(NAME, liquidInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<FluidInput, ChemicalPairOutput, SeparatorRecipe>(NAME,
-                        RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR, new IngredientWrapper(liquidInput),
+                        Recipe.ELECTROLYTIC_SEPARATOR, new IngredientWrapper(liquidInput),
                         new IngredientWrapper(leftGasOutput, rightGasOutput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<SeparatorRecipe>(NAME, Recipe.ELECTROLYTIC_SEPARATOR));
     }
 }

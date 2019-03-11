@@ -24,6 +24,7 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
 
     @Override
     public void apply() {
+        //Don't move this into the constructor so that if an addon registers recipes late, we can still remove them
         map.forEach((key, value) -> {
             if (IngredientHelper.matches(key, input) && IngredientHelper.matches(value.getOutput(), output)) {
                 recipes.put(key, value);
@@ -59,6 +60,6 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
     @Override
     public String describe() {
         //Don't describe anything. It is too early for us to have a full description
-        return "";
+        return null;
     }
 }

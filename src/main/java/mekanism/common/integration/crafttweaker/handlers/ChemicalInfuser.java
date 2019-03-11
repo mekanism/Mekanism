@@ -9,8 +9,9 @@ import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.recipe.outputs.GasOutput;
@@ -29,7 +30,7 @@ public class ChemicalInfuser {
     public static void addRecipe(IGasStack leftGasInput, IGasStack rightGasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, leftGasInput, rightGasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_INFUSER,
+                  .add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_INFUSER,
                         new ChemicalInfuserRecipe(GasHelper.toGas(leftGasInput), GasHelper.toGas(rightGasInput),
                               GasHelper.toGas(gasOutput))));
         }
@@ -41,8 +42,14 @@ public class ChemicalInfuser {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<ChemicalPairInput, GasOutput, ChemicalInfuserRecipe>(NAME,
-                        RecipeHandler.Recipe.CHEMICAL_INFUSER, new IngredientWrapper(gasOutput),
+                        Recipe.CHEMICAL_INFUSER, new IngredientWrapper(gasOutput),
                         new IngredientWrapper(leftGasInput, rightGasInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<ChemicalInfuserRecipe>(NAME, Recipe.CHEMICAL_INFUSER));
     }
 }

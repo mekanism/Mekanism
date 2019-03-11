@@ -9,8 +9,9 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -29,7 +30,7 @@ public class Enrichment {
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER,
+                  .add(new AddMekanismRecipe(NAME, Recipe.ENRICHMENT_CHAMBER,
                         new EnrichmentRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput))));
         }
     }
@@ -39,8 +40,14 @@ public class Enrichment {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<ItemStackInput, ItemStackOutput, EnrichmentRecipe>(NAME,
-                        RecipeHandler.Recipe.ENRICHMENT_CHAMBER, new IngredientWrapper(itemOutput),
+                        Recipe.ENRICHMENT_CHAMBER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<EnrichmentRecipe>(NAME, Recipe.ENRICHMENT_CHAMBER));
     }
 }

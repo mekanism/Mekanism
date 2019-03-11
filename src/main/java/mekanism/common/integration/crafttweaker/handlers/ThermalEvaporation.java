@@ -9,8 +9,9 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.outputs.FluidOutput;
@@ -29,7 +30,7 @@ public class ThermalEvaporation {
     public static void addRecipe(ILiquidStack liquidInput, ILiquidStack liquidOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, liquidOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT,
+                  .add(new AddMekanismRecipe(NAME, Recipe.THERMAL_EVAPORATION_PLANT,
                         new ThermalEvaporationRecipe(InputHelper.toFluid(liquidInput),
                               InputHelper.toFluid(liquidOutput))));
         }
@@ -40,8 +41,14 @@ public class ThermalEvaporation {
         if (IngredientHelper.checkNotNull(NAME, liquidInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<FluidInput, FluidOutput, ThermalEvaporationRecipe>(NAME,
-                        RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT, new IngredientWrapper(liquidOutput),
+                        Recipe.THERMAL_EVAPORATION_PLANT, new IngredientWrapper(liquidOutput),
                         new IngredientWrapper(liquidInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<ThermalEvaporationRecipe>(NAME, Recipe.THERMAL_EVAPORATION_PLANT));
     }
 }

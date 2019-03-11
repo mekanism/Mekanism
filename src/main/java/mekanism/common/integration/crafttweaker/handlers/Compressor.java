@@ -11,8 +11,9 @@ import mekanism.common.integration.crafttweaker.helpers.GasHelper;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -31,7 +32,7 @@ public class Compressor {
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.OSMIUM_COMPRESSOR,
+                  .add(new AddMekanismRecipe(NAME, Recipe.OSMIUM_COMPRESSOR,
                         new OsmiumCompressorRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput))));
         }
     }
@@ -40,7 +41,7 @@ public class Compressor {
     public static void addRecipe(IItemStack itemInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.OSMIUM_COMPRESSOR,
+                  .add(new AddMekanismRecipe(NAME, Recipe.OSMIUM_COMPRESSOR,
                         new OsmiumCompressorRecipe(new AdvancedMachineInput(InputHelper.toStack(itemInput),
                               GasHelper.toGas(gasInput).getGas()),
                               new ItemStackOutput(InputHelper.toStack(itemOutput)))));
@@ -53,8 +54,14 @@ public class Compressor {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<AdvancedMachineInput, ItemStackOutput, OsmiumCompressorRecipe>(NAME,
-                        RecipeHandler.Recipe.OSMIUM_COMPRESSOR, new IngredientWrapper(itemOutput),
+                        Recipe.OSMIUM_COMPRESSOR, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, gasInput)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<OsmiumCompressorRecipe>(NAME, Recipe.OSMIUM_COMPRESSOR));
     }
 }

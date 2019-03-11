@@ -11,8 +11,9 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
+import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -35,7 +36,7 @@ public class Infuser {
         }
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER,
+                  .add(new AddMekanismRecipe(NAME, Recipe.METALLURGIC_INFUSER,
                         new MetallurgicInfuserRecipe(new InfusionInput(InfuseRegistry.get(infuseType), infuseAmount,
                               InputHelper.toStack(itemInput)),
                               new ItemStackOutput(InputHelper.toStack(itemOutput)))));
@@ -48,8 +49,14 @@ public class Infuser {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe>(NAME,
-                        RecipeHandler.Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
+                        Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, infuseType)));
         }
+    }
+
+    @ZenMethod
+    public static void removeAllRecipes() {
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new RemoveAllMekanismRecipe<MetallurgicInfuserRecipe>(NAME, Recipe.CHEMICAL_CRYSTALLIZER));
     }
 }
