@@ -72,4 +72,9 @@ public class ContainerSecurityDesk extends ContainerMekanism<TileEntitySecurityD
         addSlotToContainer(new Slot(tileEntity, 0, 146, 18));
         addSlotToContainer(new Slot(tileEntity, 1, 146, 97));
     }
+
+    @Override
+    protected int getInventoryOffset() {
+        return 148;
+    }
 }

@@ -23,15 +23,21 @@ public abstract class ContainerMekanism<TILE extends TileEntityContainerBlock> e
         }
     }
 
+    protected int getInventoryOffset() {
+        return 84;
+    }
+
     protected void addInventorySlots(InventoryPlayer inventory) {
+        int offset = getInventoryOffset();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
+                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, offset + slotY * 18));
             }
         }
 
+        offset += 58;
         for (int slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
+            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, offset));
         }
     }
 

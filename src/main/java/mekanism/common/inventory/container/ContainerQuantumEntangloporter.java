@@ -53,4 +53,9 @@ public class ContainerQuantumEntangloporter extends ContainerMekanism<TileEntity
     protected void addSlots() {
 
     }
+
+    @Override
+    protected int getInventoryOffset() {
+        return 148;
+    }
 }

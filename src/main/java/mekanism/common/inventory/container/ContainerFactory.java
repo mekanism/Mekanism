@@ -55,6 +55,11 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
         }
     }
 
+    @Override
+    protected int getInventoryOffset() {
+        return 95;
+    }
+
     @Nonnull
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {

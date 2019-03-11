@@ -71,4 +71,9 @@ public class ContainerDigitalMiner extends ContainerMekanism<TileEntityDigitalMi
 
         addSlotToContainer(new SlotDischarge(tileEntity, 27, 152, 6));
     }
+
+    @Override
+    protected int getInventoryOffset() {
+        return 148;
+    }
 }

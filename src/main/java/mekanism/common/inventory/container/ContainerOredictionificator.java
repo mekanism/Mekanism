@@ -75,4 +75,9 @@ public class ContainerOredictionificator extends ContainerMekanism<TileEntityOre
         addSlotToContainer(new Slot(tileEntity, 0, 26, 115));
         addSlotToContainer(new SlotOutput(tileEntity, 1, 134, 115));
     }
+
+    @Override
+    protected int getInventoryOffset() {
+        return 148;
+    }
 }

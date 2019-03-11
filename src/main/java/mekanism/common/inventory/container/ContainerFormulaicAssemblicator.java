@@ -131,4 +131,9 @@ public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntit
             }
         }
     }
+
+    @Override
+    protected int getInventoryOffset() {
+        return 148;
+    }
 }

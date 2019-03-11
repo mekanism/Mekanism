@@ -45,6 +45,11 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     }
 
     @Override
+    protected int getInventoryOffset() {
+        return 148;
+    }
+
+    @Override
     protected void closeInventory(EntityPlayer entityplayer) {
         if (isBlock) {
             tileEntity.close(entityplayer);

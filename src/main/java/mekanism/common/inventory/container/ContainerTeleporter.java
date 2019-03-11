@@ -71,4 +71,9 @@ public class ContainerTeleporter extends ContainerMekanism<TileEntityTeleporter>
     protected void addSlots() {
         addSlotToContainer(new SlotDischarge(tileEntity, 0, 153, 7));
     }
+
+    @Override
+    protected int getInventoryOffset() {
+        return 148;
+    }
 }
