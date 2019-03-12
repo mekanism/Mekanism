@@ -113,6 +113,7 @@ import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
+import mezz.jei.api.recipe.IIngredientType;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
@@ -126,6 +127,7 @@ import net.minecraftforge.fml.common.Loader;
 public class MekanismJEI implements IModPlugin
 {
 	private static final GasStackRenderer GAS_RENDERER = new GasStackRenderer();
+	public static final IIngredientType<GasStack> GAS_INGREDIENT_TYPE = ()->GasStack.class;
 
 	private static final boolean CRAFTTWEAKER_LOADED = Loader.isModLoaded("crafttweaker");
 	
@@ -157,7 +159,7 @@ public class MekanismJEI implements IModPlugin
 			ret += ":" + (((ItemBlockEnergyCube)itemStack.getItem()).getEnergy(itemStack) > 0 ? "filled" : "empty");
 		}
 
-        return ret.isEmpty() ? null : ret.toLowerCase(Locale.ROOT);
+        return ret.isEmpty() ? ISubtypeInterpreter.NONE : ret.toLowerCase(Locale.ROOT);
     };
 	
 	@Override
@@ -178,7 +180,7 @@ public class MekanismJEI implements IModPlugin
 	public void registerIngredients(IModIngredientRegistration registry)
 	{
 		List<GasStack> list = GasRegistry.getRegisteredGasses().stream().filter(Gas::isVisible).map(g -> new GasStack(g, Fluid.BUCKET_VOLUME)).collect(Collectors.toList());
-		registry.register(GasStack.class, list, new GasStackHelper(), GAS_RENDERER);
+		registry.register(GAS_INGREDIENT_TYPE, list, new GasStackHelper(), GAS_RENDERER);
 	}
 
 	@Override
@@ -302,7 +304,7 @@ public class MekanismJEI implements IModPlugin
 		else if (CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe()) // Added but not removed
 		{
 			// Only add added recipes
-			HashMap<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
+			@SuppressWarnings("unchecked") HashMap<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
 			Collection<SmeltingRecipe> recipes = smeltingRecipes.entrySet().stream()
 					.filter(entry -> !FurnaceRecipes.instance().getSmeltingList().keySet().contains(entry.getKey().ingredient))
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).values();

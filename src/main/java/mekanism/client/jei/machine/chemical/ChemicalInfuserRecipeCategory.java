@@ -2,6 +2,7 @@ package mekanism.client.jei.machine.chemical;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -56,7 +57,7 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory
 
 		tempRecipe = ((ChemicalInfuserRecipeWrapper)recipeWrapper).getRecipe();
 		
-		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.GAS_INGREDIENT_TYPE);
 		
 		initGas(gasStacks, 0, true, 26-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().leftGas, true);
 		initGas(gasStacks, 1, true, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().rightGas, true);

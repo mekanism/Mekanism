@@ -160,6 +160,18 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 		GasStackRenderer renderer = new GasStackRenderer(stack.amount, false, width, height, overlay ? fluidOverlay : null);
 		group.init(slot, input, renderer, x, y, width, height, 0, 0);
 		group.set(slot, stack);
-		group.addTooltipCallback((index, isInput, ingredient, tooltip) -> tooltip.remove(1));
+		//group.addTooltipCallback((index, isInput, ingredient, tooltip) -> tooltip.remove(1));
+	}
+
+	protected void initGasPerTick(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nullable GasStack stack, boolean overlay)
+	{
+		if(stack == null) return;
+
+		IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;
+
+		GasStackRenderer renderer = new GasStackRenderer(stack.amount, GasStackRenderer.TooltipMode.AMOUNT_PER_TICK, width, height, overlay ? fluidOverlay : null);
+		group.init(slot, input, renderer, x, y, width, height, 0, 0);
+		group.set(slot, stack);
+		//group.addTooltipCallback((index, isInput, ingredient, tooltip) -> tooltip.remove(1));
 	}
 }

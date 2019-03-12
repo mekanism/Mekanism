@@ -35,11 +35,11 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 	@Nullable
 	private final IDrawable overlay;
 
-	enum TooltipMode 
+	public enum TooltipMode
 	{
 		SHOW_AMOUNT,
 		SHOW_AMOUNT_AND_CAPACITY,
-		ITEM_LIST
+		ITEM_LIST, AMOUNT_PER_TICK
 	}
 
 	public GasStackRenderer()
@@ -217,6 +217,11 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack>
 		else if (tooltipMode == TooltipMode.SHOW_AMOUNT)
 		{
 			String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount", gasStack.amount);
+			tooltip.add(TextFormatting.GRAY + amount);
+		}
+		else if (tooltipMode == TooltipMode.AMOUNT_PER_TICK)
+		{
+			String amount = LangUtils.localizeWithFormat("mekanism.jei.amount.per.tick", LangUtils.localizeWithFormat("jei.tooltip.liquid.amount", gasStack.amount));
 			tooltip.add(TextFormatting.GRAY + amount);
 		}
 

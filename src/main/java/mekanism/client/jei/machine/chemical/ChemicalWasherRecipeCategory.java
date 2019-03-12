@@ -2,13 +2,16 @@ package mekanism.client.jei.machine.chemical;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.util.LangUtils;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -59,11 +62,11 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory
 		
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
-		fluidStacks.init(0, true, 6-xOffset, 5-yOffset, 16, 58, 1000, false, fluidOverlayLarge);
-		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
-		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
+		fluidStacks.init(0, true, 6-xOffset, 5-yOffset, 16, 58, 1, false, fluidOverlayLarge);
+		fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
+		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.set(1, LangUtils.localizeWithFormat("mekanism.jei.amount.per.tick", tooltip.get(1))));
 		
-		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.GAS_INGREDIENT_TYPE);
 		
 		initGas(gasStacks, 0, true, 27-xOffset, 14-yOffset, 16, 58, tempRecipe.getInput().ingredient, true);
 		initGas(gasStacks, 1, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.getOutput().output, true);

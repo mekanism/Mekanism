@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -99,9 +100,9 @@ public class PRCRecipeCategory extends BaseRecipeCategory
 		
 		fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlayLarge);
 		fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
-		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
+		//fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 		
-		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.GAS_INGREDIENT_TYPE);
 		
 		initGas(gasStacks, 0, true, 29-xOffset, 11-yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
 		initGas(gasStacks, 1, false, 141-xOffset, 41-yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);

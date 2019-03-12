@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -22,6 +23,7 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -93,10 +95,10 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 		IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 		
 		fluidStacks.init(0, true, 2, 2, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlayLarge);
-		fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
-		fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
+		fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
+		//fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 		
-		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.GAS_INGREDIENT_TYPE);
 		
 		initGas(gasStacks, 0, false, 59-xOffset, 19-yOffset, 16, 28, tempRecipe.recipeOutput.leftGas, true);
 		initGas(gasStacks, 1, false, 101-xOffset, 19-yOffset, 16, 28, tempRecipe.recipeOutput.rightGas, true);

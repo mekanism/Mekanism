@@ -2,6 +2,7 @@ package mekanism.client.jei.machine.chemical;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -62,7 +63,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(0, false, 130-xOffset, 56-yOffset);
 		itemStacks.set(0, tempRecipe.getOutput().output);
 		
-		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.GAS_INGREDIENT_TYPE);
 		
 		initGas(gasStacks, 0, true, 6-xOffset, 5-yOffset, 16, 58, tempRecipe.getInput().ingredient, true);
 	}

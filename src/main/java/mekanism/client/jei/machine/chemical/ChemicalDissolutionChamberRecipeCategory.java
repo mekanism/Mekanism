@@ -2,6 +2,7 @@ package mekanism.client.jei.machine.chemical;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mezz.jei.api.IGuiHelper;
@@ -63,9 +64,9 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 		itemStacks.init(0, true, 25-xOffset, 35-yOffset);
 		itemStacks.set(0, tempRecipe.getInput().ingredient);
 		
-		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
-		
-		initGas(gasStacks, 0, true, 6-xOffset, 5-yOffset, 16, 58, new GasStack(MekanismFluids.SulfuricAcid, 1), true);
+		IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.GAS_INGREDIENT_TYPE);
+
+		initGasPerTick(gasStacks, 0, true, 6-xOffset, 5-yOffset, 16, 58, new GasStack(MekanismFluids.SulfuricAcid, 1), true);
 		initGas(gasStacks, 1, false, 134-xOffset, 14-yOffset, 16, 58, tempRecipe.getOutput().output, true);
 	}
 }
