@@ -127,44 +127,6 @@ public final class MekanismUtils {
         }
     }
 
-    /**
-     * Updates the donator list by retrieving the most recent information from a foreign document.
-     */
-    public static void updateDonators() {
-        Mekanism.donators.clear();
-        Mekanism.donators.addAll(getHTML("http://aidancbrady.com/data/capes/Mekanism.txt"));
-    }
-
-    /**
-     * Returns one line of HTML from the url.
-     *
-     * @param urlToRead - URL to read from.
-     * @return HTML text from the url.
-     */
-    public static List<String> getHTML(String urlToRead) {
-        String line;
-        List<String> result = new ArrayList<>();
-
-        try {
-            URL url = new URL(urlToRead);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "Mekanism/" + Mekanism.versionNumber.toString());
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            while ((line = rd.readLine()) != null) {
-                result.add(line.trim());
-            }
-
-            rd.close();
-        } catch (Exception e) {
-            result.clear();
-            result.add("null");
-            Mekanism.logger.error("An error occurred while connecting to URL '" + urlToRead + "'", e);
-        }
-
-        return result;
-    }
 
     public static String merge(List<String> text) {
         StringBuilder builder = new StringBuilder();

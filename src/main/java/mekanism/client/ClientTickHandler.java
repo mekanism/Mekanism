@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,18 +29,13 @@ import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.util.ListUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -58,8 +52,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientTickHandler {
 
-    public static final String DONATE_CAPE = "http://aidancbrady.com/data/capes/donate.png";
-    public static final String AIDAN_CAPE = "http://aidancbrady.com/data/capes/aidan.png";
     public static Minecraft mc = FMLClientHandler.instance().getClient();
     public static Random rand = new Random();
     public static Set<IClientTicker> tickingSet = new HashSet<>();
@@ -67,16 +59,6 @@ public class ClientTickHandler {
     public static int wheelStatus = 0;
     public boolean initHoliday = false;
     public boolean shouldReset = false;
-    private Map<String, CapeBufferDownload> donateDownload = new HashMap<>();
-    private Map<String, CapeBufferDownload> aidanDownload = new HashMap<>();
-
-    public static void setCape(AbstractClientPlayer player, ResourceLocation cape) {
-        NetworkPlayerInfo info = player.getPlayerInfo();
-
-        if (info != null) {
-            info.playerTextures.put(MinecraftProfileTexture.Type.CAPE, cape);
-        }
-    }
 
     public static void killDeadNetworks() {
         tickingSet.removeIf(iClientTicker -> !iClientTicker.needsTicks());
@@ -220,44 +202,6 @@ public class ClientTickHandler {
             if ((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.player != null) {
                 HolidayManager.check();
                 initHoliday = true;
-            }
-
-            for (EntityPlayer entityPlayer : mc.world.playerEntities) {
-                if (entityPlayer instanceof AbstractClientPlayer) {
-                    AbstractClientPlayer player = (AbstractClientPlayer) entityPlayer;
-
-                    if (StringUtils.stripControlCodes(player.getName()).equals("aidancbrady")) {
-                        CapeBufferDownload download = aidanDownload.get(player.getName());
-
-                        if (download == null) {
-                            download = new CapeBufferDownload(player.getName(), AIDAN_CAPE);
-                            aidanDownload.put(player.getName(), download);
-
-                            download.start();
-                        } else {
-                            if (!download.downloaded) {
-                                continue;
-                            }
-
-                            setCape(player, download.getResourceLocation());
-                        }
-                    } else if (Mekanism.donators.contains(StringUtils.stripControlCodes(player.getName()))) {
-                        CapeBufferDownload download = donateDownload.get(player.getName());
-
-                        if (download == null) {
-                            download = new CapeBufferDownload(player.getName(), DONATE_CAPE);
-                            donateDownload.put(player.getName(), download);
-
-                            download.start();
-                        } else {
-                            if (!download.downloaded) {
-                                continue;
-                            }
-
-                            setCape(player, download.getResourceLocation());
-                        }
-                    }
-                }
             }
 
             if (Mekanism.freeRunnerOn.contains(mc.player.getName()) != isFreeRunnerOn(mc.player)) {

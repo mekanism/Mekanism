@@ -226,10 +226,6 @@ public class Mekanism {
      */
     public static List<IModule> modulesLoaded = new ArrayList<>();
     /**
-     * A list of the usernames of players who have donated to Mekanism.
-     */
-    public static List<String> donators = new ArrayList<>();
-    /**
      * The server's world tick handler.
      */
     public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
