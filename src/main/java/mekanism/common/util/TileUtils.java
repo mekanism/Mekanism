@@ -1,8 +1,6 @@
 package mekanism.common.util;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister.Pack;
 import io.netty.buffer.ByteBuf;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
@@ -11,10 +9,8 @@ import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 //TODO: Move this and factor out the parts into proper classes. This is mainly just temp to make organization not as needed
 public class TileUtils {
