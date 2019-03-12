@@ -6,9 +6,12 @@ import mekanism.api.util.BlockInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import net.minecraft.block.Block;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.Set;
 
 public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, IMessage>
 {
@@ -25,12 +28,20 @@ public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, 
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(MekanismAPI.getBoxIgnore().size());
+			Set<BlockInfo> boxIgnore = MekanismAPI.getBoxIgnore();
+			dataStream.writeInt(boxIgnore.size());
 	
-			for(BlockInfo info : MekanismAPI.getBoxIgnore())
+			for(BlockInfo info : boxIgnore)
 			{
 				dataStream.writeInt(Block.getIdFromBlock(info.block));
 				dataStream.writeInt(info.meta);
+			}
+
+			Set<String> boxModIgnore = MekanismAPI.getBoxModIgnore();
+			dataStream.writeInt(boxModIgnore.size());
+
+			for (String modid : boxModIgnore){
+				ByteBufUtils.writeUTF8String(dataStream, modid);
 			}
 		}
 	
@@ -45,8 +56,14 @@ public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, 
 			{
 				MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
 			}
+
+			int amountMods = dataStream.readInt();
+
+			for (int i = 0; i<amountMods; i++){
+				MekanismAPI.addBoxBlacklistMod(ByteBufUtils.readUTF8String(dataStream));
+			}
 	
-			Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " total)");
+			Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " explicit blocks, "+amountMods+" mod wildcards)");
 		}
 	}
 }

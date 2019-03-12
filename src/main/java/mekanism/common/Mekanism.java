@@ -947,6 +947,8 @@ public class Mekanism
 		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "connector")), OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_multiblock")), OreDictionary.WILDCARD_VALUE);
 
+		MekanismAPI.addBoxBlacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
+
 		BoxBlacklistParser.load();
 	}
 	
