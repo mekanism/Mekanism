@@ -21,6 +21,14 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public final class ChargeUtils
 {
+	public static boolean isIC2Chargeable(ItemStack itemStack){
+		return ElectricItem.manager.charge(itemStack, Integer.MAX_VALUE, 4, true, true) > 0;
+	}
+
+	public static boolean isIC2Dischargeable(ItemStack itemStack){
+		return ElectricItem.manager.discharge(itemStack, Integer.MAX_VALUE, 4, true, true, true) > 0;
+	}
+
 	/**
 	 * Universally discharges an item, and updates the TileEntity's energy level.
 	 * @param slotID - ID of the slot of which to charge
@@ -61,15 +69,11 @@ public final class ChargeUtils
 				int needed = (int)Math.round(Math.min(Integer.MAX_VALUE, (storer.getMaxEnergy() - storer.getEnergy())*general.TO_RF));
 				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(stack, needed, false)*general.FROM_RF));
 			}
-			else if(MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useIC2() && isIC2Dischargeable(stack))
 			{
-				IElectricItem item = (IElectricItem)stack.getItem();
+				double gain = ElectricItem.manager.discharge(stack, (storer.getMaxEnergy() - storer.getEnergy())*general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
+				storer.setEnergy(storer.getEnergy() + gain);
 
-				if(item.canProvideEnergy(stack))
-				{
-					double gain = ElectricItem.manager.discharge(stack, (storer.getMaxEnergy() - storer.getEnergy())*general.TO_IC2, 4, true, true, false)*general.FROM_IC2;
-					storer.setEnergy(storer.getEnergy() + gain);
-				}
 			}
 			else if(stack.getItem() == Items.REDSTONE && storer.getEnergy()+general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
@@ -119,7 +123,7 @@ public final class ChargeUtils
 				int toTransfer = (int)Math.round(storer.getEnergy()*general.TO_RF);
 				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(stack, toTransfer, false)*general.FROM_RF));
 			}
-			else if(MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useIC2() && isIC2Chargeable(stack))
 			{
 				double sent = ElectricItem.manager.charge(stack, storer.getEnergy()*general.TO_IC2, 4, true, false)*general.FROM_IC2;
 				storer.setEnergy(storer.getEnergy() - sent);
@@ -134,7 +138,7 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeDischarged(ItemStack itemstack)
 	{
-		return (MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) ||
+		return (MekanismUtils.useIC2() && isIC2Chargeable(itemstack)) ||
 				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canSend(itemstack)) ||
 				(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
 				(MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null) && itemstack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null).takePower(1, true) > 0) ||
@@ -149,7 +153,7 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeCharged(ItemStack itemstack)
 	{
-		return (MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem) ||
+		return (MekanismUtils.useIC2() && isIC2Chargeable(itemstack)) ||
 				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canReceive(itemstack)) ||
 				(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).receiveEnergy(itemstack, 1, true) != 0) ||
 				(MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null) && itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null).givePower(1, true) > 0) ||
@@ -214,9 +218,9 @@ public final class ChargeUtils
 				return !storage.canExtract() || storage.extractEnergy(1, true) == 0;
 			}
 		}
-		else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof ISpecialElectricItem)
+		else if(MekanismUtils.useIC2() && (isIC2Chargeable(itemstack) || isIC2Dischargeable(itemstack)))
 		{
-			IElectricItemManager manager = ((ISpecialElectricItem)itemstack.getItem()).getManager(itemstack);
+			IElectricItemManager manager = ElectricItem.manager;
 			
 			if(manager != null)
 			{

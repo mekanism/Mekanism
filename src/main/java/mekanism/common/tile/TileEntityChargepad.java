@@ -21,6 +21,7 @@ import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.entity.EntityLivingBase;
@@ -161,7 +162,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 				int toTransfer = (int)Math.round(getEnergy()*general.TO_RF);
 				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_RF));
 			}
-			else if(MekanismUtils.useIC2() && ElectricItem.manager.charge(itemstack, getEnergy()*general.TO_IC2, 4, true, true) > 0)
+			else if(MekanismUtils.useIC2() && ChargeUtils.isIC2Chargeable(itemstack))
 			{
 				double sent = ElectricItem.manager.charge(itemstack, getEnergy()*general.TO_IC2, 4, true, false)*general.FROM_IC2;
 				setEnergy(getEnergy() - sent);
