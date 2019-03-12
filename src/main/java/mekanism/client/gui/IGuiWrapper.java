@@ -4,7 +4,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public interface IGuiWrapper {
 
     void drawTexturedRect(int x, int y, int u, int v, int w, int h);
