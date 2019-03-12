@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 
 import mekanism.api.Coord4D;
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -124,7 +125,15 @@ public class GuiFactory extends GuiMekanism
 		{
 			if(tileEntity.getScaledGasLevel(160) > 0)
 			{
-				displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas().getGas().getSprite());
+				GasStack gas = tileEntity.gasTank.getGas();
+				if (gas != null) {
+					int tint = gas.getGas().getTint();
+					if (tint != -1) {
+						MekanismRenderer.color(tint);
+					}
+					displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, gas.getGas().getSprite());
+					MekanismRenderer.resetColor();
+				}
 			}
 		}
 		else if(tileEntity.recipeType == RecipeType.INFUSING)
