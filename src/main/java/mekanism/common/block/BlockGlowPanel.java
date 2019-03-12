@@ -70,6 +70,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 		return new BlockStateGlowPanel(this);
 	}
 	
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -96,6 +97,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 		return state;
 	}
 	
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor)
 	{
@@ -136,6 +138,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -227,31 +230,36 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider
 		return true;
 	}
 	
+	@Deprecated
 	@Override
     public EnumBlockRenderType getRenderType(IBlockState state) 
 	{
         return EnumBlockRenderType.MODEL;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isBlockNormalCube(IBlockState state) 
     {
         return false;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isOpaqueCube(IBlockState state) 
     {
         return false;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isFullBlock(IBlockState state)
     {
         return false;

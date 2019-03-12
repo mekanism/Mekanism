@@ -62,6 +62,7 @@ public class GeneratorItemModelFactory implements IBakedModel
 		throw new UnsupportedOperationException();
 	}
 
+	@Deprecated
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() 
 	{

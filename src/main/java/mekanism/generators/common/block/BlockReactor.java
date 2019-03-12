@@ -63,6 +63,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 
 	public abstract ReactorBlock getReactorBlock();
 	
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
@@ -87,6 +88,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 		return new BlockStateReactor(this, getTypeProperty());
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -108,6 +110,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 		return state.getBlock().getMetaFromState(state);
 	}
 
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
@@ -202,18 +205,21 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 		return this == GeneratorsBlocks.Reactor ? BlockRenderLayer.CUTOUT : BlockRenderLayer.TRANSLUCENT;
 	}
 
+	@Deprecated
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
 		return EnumBlockRenderType.MODEL;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
+	@Deprecated
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
@@ -227,6 +233,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 		return null;
 	}
 	
+	@Deprecated
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
@@ -249,6 +256,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
 		return super.shouldSideBeRendered(state, world, pos, side);
 	}
 	
+	@Deprecated
 	@Override
 	public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {
@@ -262,6 +270,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider
         return 0;
     }
 	
+	@Deprecated
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{

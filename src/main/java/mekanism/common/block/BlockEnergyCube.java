@@ -78,12 +78,14 @@ public class BlockEnergyCube extends BlockContainer
 		return 0;
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
 		return getDefaultState();
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
@@ -107,6 +109,7 @@ public class BlockEnergyCube extends BlockContainer
 		return state;
 	}
 
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
@@ -178,6 +181,7 @@ public class BlockEnergyCube extends BlockContainer
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
 	{
@@ -272,6 +276,7 @@ public class BlockEnergyCube extends BlockContainer
 		return new TileEntityEnergyCube();
 	}
 
+	@Deprecated
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
@@ -347,12 +352,14 @@ public class BlockEnergyCube extends BlockContainer
 		return itemStack;
 	}
 
+	@Deprecated
 	@Override
 	public boolean hasComparatorInputOverride(IBlockState state)
 	{
 		return true;
 	}
 
+	@Deprecated
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
@@ -360,6 +367,7 @@ public class BlockEnergyCube extends BlockContainer
 		return tileEntity.getRedstoneLevel();
 	}
 
+	@Deprecated
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{

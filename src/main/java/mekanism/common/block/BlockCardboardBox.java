@@ -52,6 +52,7 @@ public class BlockCardboardBox extends BlockContainer
 		return new BlockStateCardboardBox(this);
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{

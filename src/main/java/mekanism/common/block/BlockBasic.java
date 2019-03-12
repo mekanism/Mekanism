@@ -135,6 +135,7 @@ public abstract class BlockBasic extends Block
 		return new BlockStateBasic(this, getTypeProperty());
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -150,6 +151,7 @@ public abstract class BlockBasic extends Block
 		return type.meta;
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
@@ -201,6 +203,7 @@ public abstract class BlockBasic extends Block
 		return state;
 	}
 
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos)
 	{
@@ -524,6 +527,7 @@ public abstract class BlockBasic extends Block
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
@@ -656,18 +660,21 @@ public abstract class BlockBasic extends Block
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
+	@Deprecated
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state)
 	{
@@ -903,6 +910,7 @@ public abstract class BlockBasic extends Block
 		return itemStack;
 	}
 
+	@Deprecated
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)

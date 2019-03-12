@@ -70,6 +70,7 @@ public class GasStackHelper implements IIngredientHelper<GasStack>
 		return ingredient.getGas().getUnlocalizedName();
 	}
 
+	@Deprecated
 	@Override
 	public ItemStack cheatIngredient(GasStack ingredient, boolean fullStack)
 	{

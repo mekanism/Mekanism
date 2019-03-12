@@ -61,6 +61,7 @@ public class BlockGasTank extends BlockContainer
 		return new BlockStateGasTank(this);
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -73,6 +74,7 @@ public class BlockGasTank extends BlockContainer
 		return 0;
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
@@ -116,6 +118,7 @@ public class BlockGasTank extends BlockContainer
 		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
 	}
 
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
@@ -130,6 +133,7 @@ public class BlockGasTank extends BlockContainer
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
 	{
@@ -255,6 +259,7 @@ public class BlockGasTank extends BlockContainer
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
@@ -267,6 +272,7 @@ public class BlockGasTank extends BlockContainer
 		return EnumBlockRenderType.MODEL;
 	}
 	
+	@Deprecated
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -321,12 +327,14 @@ public class BlockGasTank extends BlockContainer
 		return itemStack;
 	}
 
+	@Deprecated
 	@Override
 	public boolean hasComparatorInputOverride(IBlockState state)
 	{
 		return true;
 	}
 
+	@Deprecated
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
@@ -375,12 +383,14 @@ public class BlockGasTank extends BlockContainer
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isFullBlock(IBlockState state) 
 	{
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isFullCube(IBlockState state) 
 	{

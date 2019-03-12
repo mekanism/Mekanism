@@ -181,6 +181,7 @@ public class BakedGeneratorItemModel implements IBakedModel
 		return baseModel.getParticleTexture();
 	}
 
+	@Deprecated
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{

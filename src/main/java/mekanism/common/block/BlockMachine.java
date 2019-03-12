@@ -167,6 +167,7 @@ public abstract class BlockMachine extends BlockContainer
 		return new BlockStateMachine(this, getTypeProperty());
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -182,6 +183,7 @@ public abstract class BlockMachine extends BlockContainer
 		return type.meta;
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
@@ -595,6 +597,7 @@ public abstract class BlockMachine extends BlockContainer
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
@@ -620,6 +623,7 @@ public abstract class BlockMachine extends BlockContainer
 		return BlockRenderLayer.CUTOUT;
 	}
 
+	@Deprecated
 	@Override
 	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
 	{
@@ -661,12 +665,14 @@ public abstract class BlockMachine extends BlockContainer
 		return world.setBlockToAir(pos);
 	}
 
+	@Deprecated
 	@Override
 	public boolean hasComparatorInputOverride(IBlockState state)
 	{
 		return true;
 	}
 	
+	@Deprecated
 	@Override
 	public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos)
 	{
@@ -810,6 +816,7 @@ public abstract class BlockMachine extends BlockContainer
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
@@ -973,6 +980,7 @@ public abstract class BlockMachine extends BlockContainer
 		return itemStack;
 	}
 
+	@Deprecated
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -1005,12 +1013,14 @@ public abstract class BlockMachine extends BlockContainer
 		}
 	}
 
+	@Deprecated
 	@Override
 	public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
+	@Deprecated
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
@@ -1074,6 +1084,7 @@ public abstract class BlockMachine extends BlockContainer
 		return false;
 	}
 	
+	@Deprecated
 	@Override
 	public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
     {

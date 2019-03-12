@@ -30,6 +30,7 @@ public class BlockPlasticFence extends BlockFence
 		return new BlockStateContainer(this, new IProperty[] {NORTH, EAST, WEST, SOUTH, colorProperty});
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{

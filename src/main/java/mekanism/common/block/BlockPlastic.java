@@ -41,6 +41,7 @@ public class BlockPlastic extends Block
 		return new BlockStatePlastic(this);
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{

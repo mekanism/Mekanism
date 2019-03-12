@@ -499,6 +499,7 @@ public class BakedCustomItemModel implements IBakedModel
 		return baseModel.getParticleTexture();
 	}
 
+	@Deprecated
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{

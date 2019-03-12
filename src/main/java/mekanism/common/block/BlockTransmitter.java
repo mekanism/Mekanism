@@ -97,6 +97,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
         setResistance(10F);
     }
 	
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
@@ -109,6 +110,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		return state;
 	}
 	
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -148,6 +150,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -161,6 +164,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		return largeSides[6];
 	}
 
+	@Deprecated
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) 
 	{
@@ -177,12 +181,14 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
 		return getDefaultForTile(getTileEntitySidedPipe(world, pos)).offset(pos);
 	}
 	
+	@Deprecated
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) 
 	{
@@ -305,6 +311,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		}
 	}
 	
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor)
 	{
@@ -340,31 +347,36 @@ public class BlockTransmitter extends Block implements ITileEntityProvider
 		return layer == BlockRenderLayer.CUTOUT;
 	}
 	
+	@Deprecated
 	@Override
     public EnumBlockRenderType getRenderType(IBlockState state) 
 	{
         return EnumBlockRenderType.MODEL;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isBlockNormalCube(IBlockState state) 
     {
         return false;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isOpaqueCube(IBlockState state) 
     {
         return false;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
-    @Override
+    @Deprecated
+	@Override
     public boolean isFullBlock(IBlockState state)
     {
         return false;

@@ -35,6 +35,7 @@ public class BlockOre extends Block
 		return new BlockStateOre(this);
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{

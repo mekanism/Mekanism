@@ -116,6 +116,7 @@ public abstract class BlockGenerator extends BlockContainer
 		return new BlockStateGenerator(this, getTypeProperty());
 	}
 
+	@Deprecated
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
@@ -131,6 +132,7 @@ public abstract class BlockGenerator extends BlockContainer
 		return type.meta;
 	}
 	
+	@Deprecated
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
 	{
@@ -149,6 +151,7 @@ public abstract class BlockGenerator extends BlockContainer
 		return state;
 	}
 
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
@@ -240,6 +243,7 @@ public abstract class BlockGenerator extends BlockContainer
 		return state.getBlock().getMetaFromState(state);
 	}
 	
+	@Deprecated
 	@Override
 	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos)
 	{
@@ -534,12 +538,14 @@ public abstract class BlockGenerator extends BlockContainer
 		return EnumBlockRenderType.MODEL;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
 	
+	@Deprecated
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
@@ -560,6 +566,7 @@ public abstract class BlockGenerator extends BlockContainer
 		return null;
 	}
 	
+	@Deprecated
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -673,6 +680,7 @@ public abstract class BlockGenerator extends BlockContainer
 		return itemStack;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{

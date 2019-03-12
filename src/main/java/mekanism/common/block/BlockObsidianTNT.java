@@ -45,6 +45,7 @@ public class BlockObsidianTNT extends Block
 		}
 	}
 
+	@Deprecated
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos)
 	{
@@ -99,6 +100,7 @@ public class BlockObsidianTNT extends Block
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{

@@ -360,6 +360,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return false;
 	}
 	
+	@Deprecated
 	@Override
 	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot)
     {
