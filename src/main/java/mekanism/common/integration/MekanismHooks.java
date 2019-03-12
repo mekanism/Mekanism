@@ -58,8 +58,7 @@ public final class MekanismHooks
 	public static final String TESLA_MOD_ID = "tesla";
 	public static final String MCMULTIPART_MOD_ID = "mcmultipart";
 	public static final String REDSTONEFLUX_MOD_ID = "redstoneflux";
-	public static final String METALLURGY_3_CORE_MOD_ID = "Metallurgy3Core";
-	public static final String METALLURGY_3_BASE_MOD_ID = "Metallurgy3Base";
+	public static final String METALLURGY_MOD_ID = "metallurgy";
 	public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
 	public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
 	public static final String WAILA_MOD_ID = "Waila";
@@ -78,7 +77,6 @@ public final class MekanismHooks
 	public boolean CyclicLoaded = false;
 
 	public boolean MetallurgyCoreLoaded = false;
-	public boolean MetallurgyBaseLoaded = false;
 
 	public void hook()
 	{
@@ -93,11 +91,9 @@ public final class MekanismHooks
 		if(Loader.isModLoaded(REDSTONEFLUX_MOD_ID)) RFLoaded = true;
 		if(Loader.isModLoaded(CYCLIC_MOD_ID)) CyclicLoaded = true;
 		
-		if(Loader.isModLoaded(METALLURGY_3_CORE_MOD_ID))
+		if(Loader.isModLoaded(METALLURGY_MOD_ID))
 		{
 			MetallurgyCoreLoaded = true;
-
-			if(Loader.isModLoaded(METALLURGY_3_BASE_MOD_ID)) MetallurgyBaseLoaded = true;
 		}
 
 		if(IC2Loaded)
