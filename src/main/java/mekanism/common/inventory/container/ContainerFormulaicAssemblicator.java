@@ -51,8 +51,9 @@ public class ContainerFormulaicAssemblicator extends Container
 						return !tileEntity.autoMode;
 					}
 					
+					@Override
 					@SideOnly(Side.CLIENT)
-				    public boolean func_111238_b()
+				    public boolean isEnabled()
 				    {
 						return !tileEntity.autoMode;
 				    }
