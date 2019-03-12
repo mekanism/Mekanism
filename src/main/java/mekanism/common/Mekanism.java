@@ -909,45 +909,45 @@ public class Mekanism
 	@SubscribeEvent
 	public void onBlacklistUpdate(BoxBlacklistEvent event)
 	{
-		MekanismAPI.addBoxBlacklist(MekanismBlocks.CardboardBox, OreDictionary.WILDCARD_VALUE);
+		event.blacklist(MekanismBlocks.CardboardBox);
 
 		// Mekanism multiblock structures
-		MekanismAPI.addBoxBlacklist(MekanismBlocks.BoundingBlock, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(MekanismBlocks.BasicBlock2, 9);   // Security Desk
-		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock, 4);  // Digital Miner
-		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock2, 9); // Seismic Vibrator
-		MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock3, 1); // Solar Neutron Activator
+		event.blacklist(MekanismBlocks.BoundingBlock);
+		event.blacklist(MekanismBlocks.BasicBlock2, 9);   // Security Desk
+		event.blacklist(MekanismBlocks.MachineBlock, 4);  // Digital Miner
+		event.blacklist(MekanismBlocks.MachineBlock2, 9); // Seismic Vibrator
+		event.blacklist(MekanismBlocks.MachineBlock3, 1); // Solar Neutron Activator
 
 		// Minecraft unobtainable
-		MekanismAPI.addBoxBlacklist(Blocks.BEDROCK, 0);
-		MekanismAPI.addBoxBlacklist(Blocks.PORTAL, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL_FRAME, OreDictionary.WILDCARD_VALUE);
+		event.blacklist(Blocks.BEDROCK, 0);
+		event.blacklist(Blocks.PORTAL);
+		event.blacklist(Blocks.END_PORTAL);
+		event.blacklist(Blocks.END_PORTAL_FRAME);
 
 		// Minecraft multiblock structures
-		MekanismAPI.addBoxBlacklist(Blocks.BED, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.OAK_DOOR, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.SPRUCE_DOOR, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.BIRCH_DOOR, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.JUNGLE_DOOR, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.ACACIA_DOOR, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.DARK_OAK_DOOR, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.IRON_DOOR, OreDictionary.WILDCARD_VALUE);
+		event.blacklist(Blocks.BED);
+		event.blacklist(Blocks.OAK_DOOR);
+		event.blacklist(Blocks.SPRUCE_DOOR);
+		event.blacklist(Blocks.BIRCH_DOOR);
+		event.blacklist(Blocks.JUNGLE_DOOR);
+		event.blacklist(Blocks.ACACIA_DOOR);
+		event.blacklist(Blocks.DARK_OAK_DOOR);
+		event.blacklist(Blocks.IRON_DOOR);
 
 		Block xuMachine = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("extrautils2", "machine"));
 		if (xuMachine != null){
-			MekanismAPI.addBoxBlacklist(xuMachine, OreDictionary.WILDCARD_VALUE);
+			event.blacklist(xuMachine);
 		}
 
 		//ImmEng multiblocks
-		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device0")), OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device1")), OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "wooden_device0")), OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "wooden_device1")), OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "connector")), OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_multiblock")), OreDictionary.WILDCARD_VALUE);
+		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device0")));
+		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_device1")));
+		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "wooden_device0")));
+		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "wooden_device1")));
+		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "connector")));
+		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("immersiveengineering", "metal_multiblock")));
 
-		MekanismAPI.addBoxBlacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
+		event.blacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
 
 		BoxBlacklistParser.load();
 	}
