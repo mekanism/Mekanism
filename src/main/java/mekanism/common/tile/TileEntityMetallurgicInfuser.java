@@ -198,8 +198,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 4) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 3;
+        }
 
     }
 

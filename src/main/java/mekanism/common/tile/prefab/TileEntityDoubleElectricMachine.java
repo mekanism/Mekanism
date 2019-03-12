@@ -163,8 +163,9 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2;
+        }
 
     }
 

@@ -145,29 +145,14 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Mekanism - a Minecraft mod
- *
- * @author AidanBrady
- */
-@Mod(modid = Mekanism.MODID, name = "Mekanism", version = "${version}", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
-      useMetadata = true, acceptedMinecraftVersions = "[1.12,1.13)",
-      dependencies = "required-after:forge@[14.21.0.2373,);" +
-            "after:redstoneflux;" +
-            "after:mcmultipart;" +
-            "after:jei;" +
-            "after:buildcraft;" +
-            "after:buildcraftapi;" +
-            "after:ic2;" +
-            "after:computercraft;" +
-            "after:galacticraft api;" +
-            "after:metallurgy;" +
-            "after:crafttweaker"
-)
+@Mod(modid = Mekanism.MODID, useMetadata = true, guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+      acceptedMinecraftVersions = "[1.12,1.13)")
 @Mod.EventBusSubscriber()
 public class Mekanism {
 
     public static final String MODID = "mekanism";
+    public static final String MOD_NAME = "Mekanica";
+    public static final String LOG_TAG = '[' + MOD_NAME + ']';
     public static final PlayerState playerState = new PlayerState();
     public static final Set<String> freeRunnerOn = new HashSet<>();
     /**
@@ -177,7 +162,7 @@ public class Mekanism {
     /**
      * Mekanism logger instance
      */
-    public static Logger logger = LogManager.getLogger("Mekanism");
+    public static Logger logger = LogManager.getLogger(MOD_NAME);
     /**
      * Mekanism proxy instance
      */
@@ -186,7 +171,7 @@ public class Mekanism {
     /**
      * Mekanism mod instance
      */
-    @Instance("mekanism")
+    @Instance(MODID)
     public static Mekanism instance;
     /**
      * Mekanism hooks instance
@@ -242,7 +227,7 @@ public class Mekanism {
      * The GameProfile used by the dummy Mekanism player
      */
     public static GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes()),
-          "[Mekanism]");
+          Mekanism.LOG_TAG);
     public static KeySync keyMap = new KeySync();
     public static Set<Coord4D> activeVibrators = new HashSet<>();
 
@@ -267,15 +252,15 @@ public class Mekanism {
 
     @SubscribeEvent
     public static void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "ObsidianTNT"), EntityObsidianTNT.class,
+        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "ObsidianTNT"), EntityObsidianTNT.class,
               "ObsidianTNT", 0, Mekanism.instance, 64, 5, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Robit"), EntityRobit.class, "Robit", 1,
+        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "Robit"), EntityRobit.class, "Robit", 1,
               Mekanism.instance, 64, 2, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Balloon"), EntityBalloon.class, "Balloon", 2,
+        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "Balloon"), EntityBalloon.class, "Balloon", 2,
               Mekanism.instance, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "BabySkeleton"), EntityBabySkeleton.class,
+        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "BabySkeleton"), EntityBabySkeleton.class,
               "BabySkeleton", 3, Mekanism.instance, 64, 5, true, 0xFFFFFF, 0x800080);
-        EntityRegistry.registerModEntity(new ResourceLocation("mekanism", "Flame"), EntityFlame.class, "Flame", 4,
+        EntityRegistry.registerModEntity(new ResourceLocation(MODID, "Flame"), EntityFlame.class, "Flame", 4,
               Mekanism.instance, 64, 5, true);
     }
 

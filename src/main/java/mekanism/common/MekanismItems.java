@@ -35,10 +35,11 @@ import mekanism.common.item.ItemTierInstaller;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("mekanism")
+@ObjectHolder(Mekanism.MODID)
 public class MekanismItems {
 
     public static final Item EnrichedAlloy = new ItemAlloy();
@@ -157,6 +158,6 @@ public class MekanismItems {
     }
 
     public static Item init(Item item, String name) {
-        return item.setTranslationKey(name).setRegistryName("mekanism:" + name);
+        return item.setTranslationKey(name).setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 }

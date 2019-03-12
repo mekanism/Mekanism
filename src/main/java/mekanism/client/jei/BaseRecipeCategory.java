@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -80,7 +81,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
     @Override
     public String getModName() {
-        return "Mekanism";
+        return Mekanism.MOD_NAME;
     }
 
     @Override

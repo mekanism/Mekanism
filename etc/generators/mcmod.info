@@ -1,24 +1,21 @@
 [
-{
-  "modid": "mekanismgenerators",
-  "name": "MekanismGenerators",
-  "description": "Generators module of Mekanism.",
-  "version": "${version}",
-  "mcversion": "${mc_version}",
-  "updateUrl": "",
-  "authors": [
-    "aidancbrady"
-  ],
-  "credits": "Thanks to everyone who has contributed to this ongoing project.",
-  "logoFile": "logo.png",
-  "screenshots": [
-  ],
-  "useDependencyInformation": true,
-  "dependencies":[
-    "mekanism@[${version}]"
-  ],
-  "requiredMods":[
-    "mekanism@[${version}]"
-  ]
-}
+  {
+    "modid": "mekanismgenerators",
+    "name": "Mekanica: Generators",
+    "description": "Generators module for Mekanica",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "authorList": [
+      "pupnewfster",
+      "dizzyd"
+    ],
+    "credits": "aidancbrady, thommy101, thiakil, unpairedbracket, CyanideX and many others",
+    "useDependencyInformation": true,
+    "dependencies": [
+      "mekanism@[${version}]"
+    ],
+    "requiredMods": [
+      "mekanism@[${version}]"
+    ]
+  }
 ]

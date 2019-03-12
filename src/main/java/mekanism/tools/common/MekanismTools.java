@@ -33,16 +33,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "mekanismtools", name = "MekanismTools", version = "${version}", useMetadata = true,
-      dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory",
-      acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MekanismTools.MODID, useMetadata = true, guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 @Mod.EventBusSubscriber()
 public class MekanismTools implements IModule {
+
+    public static final String MODID = "mekanismtools";
 
     @SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
     public static ToolsCommonProxy proxy;
 
-    @Instance("mekanismtools")
+    @Instance(MekanismTools.MODID)
     public static MekanismTools instance;
 
     /**
@@ -104,7 +104,7 @@ public class MekanismTools implements IModule {
         proxy.loadConfiguration();
 
         //Finalization
-        Mekanism.logger.info("Loaded MekanismTools module.");
+        Mekanism.logger.info("Loaded 'Mekanica: Tools' module.");
     }
 
     public void addItems() {

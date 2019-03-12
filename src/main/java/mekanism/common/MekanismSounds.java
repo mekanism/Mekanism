@@ -29,7 +29,7 @@ public final class MekanismSounds {
     }
 
     public static SoundEvent registerSound(IForgeRegistry<SoundEvent> registry, String soundName) {
-        ResourceLocation soundID = new ResourceLocation("mekanism", soundName);
+        ResourceLocation soundID = new ResourceLocation(Mekanism.MODID, soundName);
         SoundEvent event = new SoundEvent(soundID).setRegistryName(soundID);
         registry.register(event);
         return event;

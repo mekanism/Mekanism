@@ -32,10 +32,11 @@ import mekanism.common.item.ItemBlockTransmitter;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("mekanism")
+@ObjectHolder(Mekanism.MODID)
 public class MekanismBlocks {
 
     public static Block BasicBlock = BlockBasic.getBlockBasic(BASIC_BLOCK_1);
@@ -116,6 +117,6 @@ public class MekanismBlocks {
     }
 
     public static Block init(Block block, String name) {
-        return block.setTranslationKey(name).setRegistryName("mekanism:" + name);
+        return block.setTranslationKey(name).setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 }

@@ -30,7 +30,7 @@ public class CrafttweakerIntegration {
                 CraftTweakerAPI.apply(action);
             } catch (Exception e) {
                 Mekanism.logger.error("CT action failed", e);
-                CraftTweakerAPI.logError("Mekanism CT action failed", e);
+                CraftTweakerAPI.logError(Mekanism.MOD_NAME + " CT action failed", e);
             }
         });
     }

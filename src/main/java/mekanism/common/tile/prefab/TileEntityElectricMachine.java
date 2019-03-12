@@ -148,8 +148,9 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2;
+        }
 
     }
 

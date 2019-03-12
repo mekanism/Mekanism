@@ -443,6 +443,7 @@ public class MekanismRenderer {
     }
 
     public static class RenderState {
+
         private final VertexFormat prevFormat;
         private final int prevMode;
 

@@ -100,7 +100,7 @@ public final class SecurityUtils {
 
     public static void displayNoAccess(EntityPlayer player) {
         player.sendMessage(new TextComponentString(
-              EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
+              EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
     }
 
     public static SecurityMode getSecurity(ISecurityTile security, Side side) {

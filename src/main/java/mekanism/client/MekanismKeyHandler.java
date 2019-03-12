@@ -43,7 +43,7 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler {
 
-    public static final String keybindCategory = "Mekanism";
+    public static final String keybindCategory = Mekanism.MOD_NAME;
     public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.mode"),
           Keyboard.KEY_M, keybindCategory);
     public static KeyBinding armorModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.armorMode"),
@@ -89,7 +89,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 Mekanism.packetHandler
                       .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(toSet)));
                 player.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.configureState") + ": " + configurator
                             .getColor(configurator.getState(toolStack)) + configurator
                             .getStateDisplay(configurator.getState(toolStack))));
@@ -100,7 +100,8 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 Mekanism.packetHandler.sendToServer(
                       new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(bow.getFireState(toolStack))));
                 player.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.fireMode")
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                            .localize("tooltip.fireMode")
                             + ": " + (bow.getFireState(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED)
                             + LangUtils.transOnOff(bow.getFireState(toolStack))));
             } else if (player.isSneaking() && item instanceof ItemBlockMachine) {
@@ -111,7 +112,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND,
                           ListUtils.asArrayList(machine.getBucketMode(toolStack))));
                     player.sendMessage(new TextComponentString(
-                          EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
+                          EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                                 .localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack)
                                 ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils
                                 .transOnOff(machine.getBucketMode(toolStack))));
@@ -133,7 +134,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                       new PacketFlamethrowerData.FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.MODE,
                             EnumHand.MAIN_HAND, null, false));
                 player.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.flamethrower.modeBump") + ": " + flamethrower.getMode(toolStack)
                             .getName()));
             }

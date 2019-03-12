@@ -15,7 +15,6 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.9"
     }
 }
 
@@ -31,7 +30,6 @@ idea {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
 
 repositories {
     maven {
@@ -86,10 +84,6 @@ repositories {
         name 'thiakil'
         url 'http://maven.thiakil.com'
     }
-    ivy {
-        name "ae2"
-        artifactPattern "http://ae-mod.info/builds/[module]-[revision](-[classifier])(.[ext])"
-    }
 }
 
 // Define properties file
@@ -102,9 +96,9 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-group = "mekanism-dz"
+group = "mekanica"
 version = "${config.minecraft_version}-${version}"
-archivesBaseName = "MekanismDzAll"
+archivesBaseName = "mekanica-all"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -170,13 +164,13 @@ jar {
 }
 
 task coreJar(type: Jar) {
-	archiveName = "MekanismDz-${project.version}.jar"
+	archiveName = "mekanica-${project.version}.jar"
 	dependsOn 'reobfJar'
 	classifier "core"
 
     from('etc/core') {
         include '*.info'
-        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version, 'mc_version':config.minecraft_version, 'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -189,13 +183,13 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-	archiveName = "MekanismDzTools-${project.version}.jar"
+	archiveName = "mekanica-tools-${project.version}.jar"
 	dependsOn 'reobfJar'
 	classifier "tools"
 
     from('etc/tools') {
         include '*.info'
-        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version, 'mc_version':config.minecraft_version, 'mcmp_version':config.mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -204,7 +198,7 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-	archiveName = "MekanismDzGenerators-${project.version}.jar"
+	archiveName = "mekanica-generators-${project.version}.jar"
 	dependsOn 'reobfJar'
 	classifier "generators"
 
@@ -220,7 +214,7 @@ task generatorsJar(type: Jar) {
 
 task apiJar(type: Jar) {
     classifier "api"
-    baseName "MekanismDz"
+    baseName "mekanica"
     dependsOn "sourceMainJava"
     include 'mekanism/api/**'
     from sourceSets.main.java.srcDirs
@@ -241,42 +235,4 @@ task fullBuild(type: Delete) {
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-
-uploadArchives {
-    if(System.getenv("LOCAL_MAVEN") != null) {
-        repositories {
-            mavenDeployer {
-                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
-                pom {
-                    groupId = project.group
-                    version = project.version
-                    if (System.getenv("MAVEN_ARTIFACT") != null) {
-                        artifactId = System.getenv("MAVEN_ARTIFACT")
-                    } else {
-                        artifactId = "Mekanism"
-                    }
-                    project {
-                        name "Mekanism"
-                        packaging 'jar'
-                        description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
-                        url 'http://aidancbrady.com/mekanism/'
-                        scm {
-                            url 'https://github.com/aidancbrady/Mekanism.git'
-                        }
-                        issueManagement {
-                            system 'github'
-                            url 'https://github.com/aidancbrady/Mekanism/issues'
-                        }
-                        licenses {
-                            license {
-                                name 'MIT'
-                                distribution 'repo'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 

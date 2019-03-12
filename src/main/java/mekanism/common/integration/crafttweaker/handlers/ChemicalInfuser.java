@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -24,7 +25,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class ChemicalInfuser {
 
-    public static final String NAME = "Mekanism Chemical Infuser";
+    public static final String NAME = Mekanism.MOD_NAME + " Chemical Infuser";
 
     @ZenMethod
     public static void addRecipe(IGasStack leftGasInput, IGasStack rightGasInput, IGasStack gasOutput) {

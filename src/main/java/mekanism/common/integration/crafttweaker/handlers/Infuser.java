@@ -7,6 +7,7 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
@@ -26,7 +27,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class Infuser {
 
-    public static final String NAME = "Mekanism Metallurgic Infuser";
+    public static final String NAME = Mekanism.MOD_NAME + " Metallurgic Infuser";
 
     @ZenMethod
     public static void addRecipe(String infuseType, int infuseAmount, IItemStack itemInput, IItemStack itemOutput) {

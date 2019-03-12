@@ -5,6 +5,7 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
@@ -24,7 +25,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class ThermalEvaporation {
 
-    public static final String NAME = "Mekanism Solar Evaporation";
+    public static final String NAME = Mekanism.MOD_NAME + " Solar Evaporation";
 
     @ZenMethod
     public static void addRecipe(ILiquidStack liquidInput, ILiquidStack liquidOutput) {

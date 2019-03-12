@@ -5,11 +5,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -36,7 +33,7 @@ public class CommandMekanism extends CommandBase {
     @Nonnull
     @Override
     public List<String> getAliases() {
-        return Arrays.asList("mekanism", "mek");
+        return Arrays.asList("mekanism", "mek", "mekanica");
     }
 
     @Override
@@ -76,25 +73,25 @@ public class CommandMekanism extends CommandBase {
             } else if (params[0].equalsIgnoreCase("debug")) {
                 MekanismAPI.debug = !MekanismAPI.debug;
                 sender.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Debug mode set to " + EnumColor.DARK_GREY
-                            + MekanismAPI.debug));
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Debug mode set to "
+                            + EnumColor.DARK_GREY + MekanismAPI.debug));
             } else if (params[0].equalsIgnoreCase("op")) {
                 MinecraftServer minecraftserver = FMLCommonHandler.instance().getMinecraftServerInstance();
 
                 if (Mekanism.gameProfile != null) {
                     minecraftserver.getPlayerList().addOp(Mekanism.gameProfile);
-                    notifyCommandListener(sender, this, "commands.op.success", "[Mekanism]");
+                    notifyCommandListener(sender, this, "commands.op.success", Mekanism.LOG_TAG);
                 }
             } else if (params[0].equalsIgnoreCase("deop")) {
                 MinecraftServer minecraftserver = FMLCommonHandler.instance().getMinecraftServerInstance();
 
                 if (Mekanism.gameProfile != null) {
                     minecraftserver.getPlayerList().removeOp(Mekanism.gameProfile);
-                    notifyCommandListener(sender, this, "commands.deop.success", "[Mekanism]");
+                    notifyCommandListener(sender, this, "commands.deop.success", Mekanism.LOG_TAG);
                 }
             } else {
                 sender.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Unknown command. Type '"
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Unknown command. Type '"
                             + EnumColor.INDIGO + "/mk help" + EnumColor.GREY + "' for help."));
             }
         }

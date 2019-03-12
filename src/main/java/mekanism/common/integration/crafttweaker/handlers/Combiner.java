@@ -5,6 +5,7 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
 import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
@@ -24,7 +25,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class Combiner {
 
-    public static final String NAME = "Mekanism Combiner";
+    public static final String NAME = Mekanism.MOD_NAME + " Combiner";
 
     @ZenMethod
     public static void addRecipe(IItemStack itemInput, IItemStack extraInput, IItemStack itemOutput) {

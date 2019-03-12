@@ -10,10 +10,11 @@ import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.item.ItemBlockReactor;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("mekanismgenerators")
+@ObjectHolder(MekanismGenerators.MODID)
 public class GeneratorsBlocks {
 
     public static final Block Generator = BlockGenerator.getGeneratorBlock(GENERATOR_BLOCK_1);
@@ -33,6 +34,6 @@ public class GeneratorsBlocks {
     }
 
     public static Block init(Block block, String name) {
-        return block.setTranslationKey(name).setRegistryName("mekanismgenerators:" + name);
+        return block.setTranslationKey(name).setRegistryName(new ResourceLocation(MekanismGenerators.MODID, name));
     }
 }

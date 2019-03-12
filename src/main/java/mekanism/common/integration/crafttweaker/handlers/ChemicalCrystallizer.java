@@ -5,6 +5,7 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -26,7 +27,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class ChemicalCrystallizer {
 
-    public static final String NAME = "Mekanism Chemical Crystallizer";
+    public static final String NAME = Mekanism.MOD_NAME + " Chemical Crystallizer";
 
     @ZenMethod
     public static void addRecipe(IGasStack gasInput, IItemStack itemOutput) {

@@ -100,8 +100,8 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 
                 if (type != null && !type.isEnabled()) {
                     Mekanism.logger
-                          .info("[Mekanism] Destroying generator of type '" + type.blockName + "' at coords " + Coord4D
-                                .get(this) + " as according to config.");
+                          .info("Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this)
+                                + " as according to config.");
                     world.setBlockToAir(getPos());
                     return;
                 }

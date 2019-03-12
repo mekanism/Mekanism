@@ -41,16 +41,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
-@Mod(modid = "mekanismgenerators", name = "MekanismGenerators", version = "${version}", useMetadata = true,
-      dependencies = "required-after:mekanism",
-      guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MekanismGenerators.MODID, useMetadata = true, guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 @Mod.EventBusSubscriber()
 public class MekanismGenerators implements IModule {
+
+    public static final String MODID = "mekanismgenerators";
 
     @SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
     public static GeneratorsCommonProxy proxy;
 
-    @Instance("mekanismgenerators")
+    @Instance(MekanismGenerators.MODID)
     public static MekanismGenerators instance;
 
     /**

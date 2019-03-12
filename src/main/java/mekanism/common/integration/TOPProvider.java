@@ -10,6 +10,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +28,7 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
 
     @Override
     public String getID() {
-        return "mekanism";
+        return Mekanism.MODID;
     }
 
     @Override

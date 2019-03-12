@@ -5,6 +5,7 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -26,7 +27,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class Separator {
 
-    public static final String NAME = "Mekanism Separator";
+    public static final String NAME = Mekanism.MOD_NAME + " Separator";
 
     @ZenMethod
     public static void addRecipe(ILiquidStack liquidInput, double energy, IGasStack leftGasOutput,

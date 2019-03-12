@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -69,7 +70,7 @@ public class ItemConfigurationCard extends ItemMekanism {
                             data.setString("dataType", getNameFromTile(tileEntity, side));
                             setData(stack, data);
                             player.sendMessage(new TextComponentString(
-                                  EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
+                                  EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                                         .localize("tooltip.configurationCard.got").replaceAll("%s",
                                               EnumColor.INDIGO + LangUtils.localize(data.getString("dataType"))
                                                     + EnumColor.GREY)));
@@ -88,14 +89,14 @@ public class ItemConfigurationCard extends ItemMekanism {
                             }
 
                             player.sendMessage(new TextComponentString(
-                                  EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + LangUtils
+                                  EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.DARK_GREEN + LangUtils
                                         .localize("tooltip.configurationCard.set").replaceAll("%s",
                                               EnumColor.INDIGO + LangUtils.localize(getDataType(stack))
                                                     + EnumColor.DARK_GREEN)));
                             setData(stack, null);
                         } else {
                             player.sendMessage(new TextComponentString(
-                                  EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils
+                                  EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils
                                         .localize("tooltip.configurationCard.unequal") + "."));
                         }
 

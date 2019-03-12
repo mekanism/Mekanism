@@ -476,8 +476,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return true;
         } else if (tier == FactoryTier.ADVANCED && slotID >= 10 && slotID <= 14) {
             return true;
-        } else
+        } else {
             return tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18;
+        }
 
     }
 

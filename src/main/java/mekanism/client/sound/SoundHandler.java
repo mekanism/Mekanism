@@ -206,7 +206,7 @@ public class SoundHandler {
                   .getTileEntity(new BlockPos(original.getXPosF(), original.getYPosF(), original.getZPosF()));
             if (te instanceof IUpgradeTile && ((IUpgradeTile) te).getComponent().supports(Upgrade.MUFFLING)) {
                 int mufflerCount = ((IUpgradeTile) te).getComponent().getUpgrades(Upgrade.MUFFLING);
-                return 1.0f - (mufflerCount / (float)Upgrade.MUFFLING.getMax());
+                return 1.0f - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
             }
             return 1.0f;
         }

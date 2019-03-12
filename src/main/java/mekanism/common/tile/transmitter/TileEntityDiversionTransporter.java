@@ -114,8 +114,9 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
         refreshConnections();
         notifyTileChange();
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils
-              .localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
+        player.sendMessage(
+              new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils
+                    .localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
         Coord4D coord = new Coord4D(getPos(), getWorld());
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())),
               new Range4D(coord));

@@ -10,6 +10,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,7 +52,7 @@ public class ItemNetworkReader extends ItemEnergized {
                           .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 
                     player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
+                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
                                 + " -------------"));
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter
@@ -95,7 +96,7 @@ public class ItemNetworkReader extends ItemEnergized {
                     IHeatTransfer transfer = CapabilityUtils
                           .getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
                     player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
+                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
                                 + " -------------"));
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp()
@@ -150,7 +151,7 @@ public class ItemNetworkReader extends ItemEnergized {
             if (player.isSneaking() && MekanismAPI.debug) {
                 String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
                 player.sendMessage(new TextComponentString(
-                      EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY
+                      EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanica Debug]" + EnumColor.GREY
                             + " ----------"));
 
                 for (String s : strings) {

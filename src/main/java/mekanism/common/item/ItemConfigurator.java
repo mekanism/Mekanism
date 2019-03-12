@@ -99,7 +99,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
                             player.sendMessage(new TextComponentString(
-                                  EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(
+                                  EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
                                         getState(stack).getTransmission()) + ": " + initial.color + initial.localize()
                                         + " (" + initial.color.getColoredName() + ")"));
                         } else {
@@ -111,9 +111,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                     SideData data = config.getConfig()
                                           .getOutput(getState(stack).getTransmission(), side, config.getOrientation());
                                     player.sendMessage(new TextComponentString(
-                                          EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(
-                                                getState(stack).getTransmission()) + ": " + data.color + data.localize()
-                                                + " (" + data.color.getColoredName() + ")"));
+                                          EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
+                                                + getToggleModeText(getState(stack).getTransmission()) + ": "
+                                                + data.color + data.localize() + " (" + data.color.getColoredName()
+                                                + ")"));
 
                                     if (config instanceof TileEntityBasicBlock) {
                                         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) config;

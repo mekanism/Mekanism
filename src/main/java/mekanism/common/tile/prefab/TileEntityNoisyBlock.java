@@ -1,6 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -28,7 +29,7 @@ public abstract class TileEntityNoisyBlock extends TileEntityElectricBlock imple
         super(name, maxEnergy);
 
         // TODO: Have subclasses pass in a static SoundEvent so we avoid per-instance # of SoundEvents for same sound
-        soundEvent = new SoundEvent(new ResourceLocation("mekanism", "tile." + sound));
+        soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile." + sound));
     }
 
 

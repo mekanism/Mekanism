@@ -59,7 +59,7 @@ public class ItemSeismicReader extends ItemEnergized {
         if (getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.capabilities.isCreativeMode) {
             if (!world.isRemote) {
                 entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils
                             .localize("tooltip.seismicReader.needsEnergy")));
             }
 
@@ -67,7 +67,7 @@ public class ItemSeismicReader extends ItemEnergized {
         } else if (!MekanismUtils.isChunkVibrated(chunk)) {
             if (!world.isRemote) {
                 entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils
                             .localize("tooltip.seismicReader.noVibrations")));
             }
 

@@ -41,7 +41,7 @@ public class ItemDictionary extends ItemMekanism {
 
                 if (!names.isEmpty()) {
                     player.sendMessage(new TextComponentString(
-                          EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils
+                          EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils
                                 .localize("tooltip.keysFound") + ":"));
 
                     for (String name : names) {
@@ -49,7 +49,7 @@ public class ItemDictionary extends ItemMekanism {
                     }
                 } else {
                     player.sendMessage(new TextComponentString(
-                          EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils
+                          EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils
                                 .localize("tooltip.noKey") + "."));
                 }
             }

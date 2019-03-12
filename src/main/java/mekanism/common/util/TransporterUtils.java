@@ -40,8 +40,9 @@ public final class TransporterUtils {
 
                 return slots.length > 0;
             }
-        } else
+        } else {
             return InventoryUtils.isItemHandler(tile, side.getOpposite());
+        }
 
         return false;
     }

@@ -45,7 +45,8 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
 
     public static ShapelessMekanismRecipe create(NBTTagCompound nbtTags) {
         if (!nbtTags.hasKey("result") || !nbtTags.hasKey("input")) {
-            Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: missing input or result compound tag.");
+            Mekanism.logger
+                  .error(Mekanism.LOG_TAG + " Shapeless recipe parse error: missing input or result compound tag.");
             return null;
         }
 
@@ -53,7 +54,8 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
         NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
 
         if (result.isEmpty() || list.tagCount() == 0) {
-            Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid result stack or input data list.");
+            Mekanism.logger
+                  .error(Mekanism.LOG_TAG + " Shapeless recipe parse error: invalid result stack or input data list.");
             return null;
         }
 
@@ -67,7 +69,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
             } else if (compound.hasKey("itemstack")) {
                 ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
             } else {
-                Mekanism.logger.error("[Mekanism] Shapeless recipe parse error: invalid input tag data key.");
+                Mekanism.logger.error(Mekanism.LOG_TAG + " Shapeless recipe parse error: invalid input tag data key.");
                 return null;
             }
         }

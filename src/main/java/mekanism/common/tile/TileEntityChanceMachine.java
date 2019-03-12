@@ -118,8 +118,9 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2 || slotID == 4;
+        }
 
     }
 

@@ -469,8 +469,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID >= 21 && slotID <= 26;
+        }
 
     }
 

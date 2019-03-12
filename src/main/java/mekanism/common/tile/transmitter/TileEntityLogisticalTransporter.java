@@ -308,7 +308,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
               new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new TileNetworkList())),
               new Range4D(new Coord4D(getPos(), getWorld())));
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
-              .string("[Mekanism] ", TextFormatting.DARK_BLUE)
+              .string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.toggleColor")
               .string(": ");
 
@@ -327,7 +327,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
         super.onRightClick(player, side);
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
-              .string("[Mekanism] ", TextFormatting.DARK_BLUE)
+              .string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.viewColor")
               .string(": ");
 

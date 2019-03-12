@@ -414,8 +414,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
             fluidEject = !fluidEject;
             String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils
                   .transOutputInput(fluidEject) + ".";
-            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
-                  .localize("tooltip.configurator.reactorPortEject") + modeText));
+            player.sendMessage(
+                  new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                        .localize("tooltip.configurator.reactorPortEject") + modeText));
             Mekanism.packetHandler
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));

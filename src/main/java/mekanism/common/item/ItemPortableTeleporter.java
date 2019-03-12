@@ -79,7 +79,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
                 Mekanism.packetHandler
                       .sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
                 entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                            .localize("gui.nowOwn")));
             } else {
                 if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                     entityplayer.openGui(Mekanism.instance, 14, world, hand.ordinal(), 0, 0);

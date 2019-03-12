@@ -1,17 +1,31 @@
 [
-{
-  "modid": "mekanism",
-  "name": "Mekanism",
-  "description": "Energy, Armor, Tools, Weapons, Machines, Magic.",
-  "version": "${version}",
-  "mcversion": "${mc_version}",
-  "updateUrl": "",
-  "authors": [
-    "aidancbrady"
-  ],
-  "credits": "Thanks to everyone who has contributed to this ongoing project.",
-  "logoFile": "logo.png",
-  "screenshots": [
-  ]
-}
+  {
+    "modid": "mekanism",
+    "name": "Mekanica",
+    "description": "Tools and Machines; an active fork of Mekanism",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "authorList": [
+      "pupnewfster",
+      "dizzyd"
+    ],
+    "credits": "aidancbrady, thommy101, thiakil, unpairedbracket, CyanideX and many others",
+    "useDependencyInformation": true,
+    "dependencies": [
+      "forge",
+      "redstoneflux",
+      "mcmultipart",
+      "jei",
+      "buildcraft",
+      "buildcraftapi",
+      "ic2",
+      "computercraft",
+      "galaticraft api",
+      "metallurgy",
+      "crafttweaker"
+    ],
+    "requiredMods": [
+      "forge@[14.21.0.2373,)"
+    ]
+  }
 ]

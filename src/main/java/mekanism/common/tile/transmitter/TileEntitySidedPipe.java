@@ -595,7 +595,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             notifyTileChange();
 
             player.sendMessage(new TextComponentString(
-                  EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned "
+                  EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Redstone sensitivity turned "
                         + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
         }
 

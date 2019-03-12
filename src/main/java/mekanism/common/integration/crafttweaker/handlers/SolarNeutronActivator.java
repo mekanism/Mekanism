@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
+import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.integration.crafttweaker.helpers.GasHelper;
@@ -24,7 +25,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class SolarNeutronActivator {
 
-    public static final String NAME = "Mekanism Solar Neutron Activator";
+    public static final String NAME = Mekanism.MOD_NAME + " Solar Neutron Activator";
 
     @ZenMethod
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
