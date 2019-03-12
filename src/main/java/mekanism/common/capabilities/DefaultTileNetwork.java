@@ -20,6 +20,6 @@ public class DefaultTileNetwork implements ITileNetwork
 	
 	public static void register()
 	{
-        CapabilityManager.INSTANCE.register(ITileNetwork.class, new NullStorage<>(), DefaultTileNetwork.class);
+        CapabilityManager.INSTANCE.register(ITileNetwork.class, new NullStorage<>(), DefaultTileNetwork::new);
 	}
 }

@@ -165,6 +165,6 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N>> implement
 
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(IGridTransmitter.class, new NullStorage<>(), DefaultGridTransmitter.class);
+        CapabilityManager.INSTANCE.register(IGridTransmitter.class, new NullStorage<>(), DefaultGridTransmitter::new);
     }
 }

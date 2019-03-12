@@ -14,6 +14,6 @@ public class DefaultAlloyInteraction implements IAlloyInteraction
 
 	public static void register()
 	{
-        CapabilityManager.INSTANCE.register(IAlloyInteraction.class, new NullStorage<>(), DefaultAlloyInteraction.class);
+        CapabilityManager.INSTANCE.register(IAlloyInteraction.class, new NullStorage<>(), DefaultAlloyInteraction::new);
 	}
 }

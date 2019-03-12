@@ -231,6 +231,6 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter
 
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(ILogisticalTransporter.class, new NullStorage<>(), DefaultLogisticalTransporter.class);
+        CapabilityManager.INSTANCE.register(ILogisticalTransporter.class, new NullStorage<>(), DefaultLogisticalTransporter::new);
     }
 }

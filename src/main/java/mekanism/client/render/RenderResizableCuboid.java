@@ -498,7 +498,7 @@ public class RenderResizableCuboid {
                 list[i * arr.length + j] = used;
             }
         }
-        return new BakedQuad(list, -1, face, sprite);
+        return new BakedQuad(list, -1, face, sprite, true, DefaultVertexFormats.ITEM);
     }
 
     /** Returns an array containing [uMin, uMax, vMin, vMax]. start* and end* must be doubles between 0 and 1 */
