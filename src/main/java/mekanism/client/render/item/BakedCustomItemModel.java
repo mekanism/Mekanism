@@ -1,5 +1,6 @@
 package mekanism.client.render.item;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,7 @@ import mekanism.client.model.ModelSecurityDesk;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.model.ModelSolarNeutronActivator;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.RenderState;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.common.MekanismItems;
@@ -63,6 +65,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.Fluid;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 public class BakedCustomItemModel implements IBakedModel {
 
@@ -377,9 +380,7 @@ public class BakedCustomItemModel implements IBakedModel {
         }
 
         Tessellator tessellator = Tessellator.getInstance();
-        List<BakedQuad> generalQuads = new LinkedList<>();
-
-        MekanismRenderer.pauseRenderer(tessellator);
+        RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
@@ -394,19 +395,19 @@ public class BakedCustomItemModel implements IBakedModel {
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.popMatrix();
 
-        MekanismRenderer.resumeRenderer(tessellator);
+        MekanismRenderer.resumeRenderer(tessellator, renderState);
 
         if (Block.getBlockFromItem(stack.getItem()) != Blocks.AIR) {
             MachineType machineType = MachineType.get(stack);
 
             if (machineType != MachineType.DIGITAL_MINER) {
                 if (!(stack.getItem() instanceof ItemBlockEnergyCube)) {
-                    generalQuads.addAll(baseModel.getQuads(state, side, rand));
+                    return baseModel.getQuads(state, side, rand);
                 }
             }
         }
 
-        return generalQuads;
+        return ImmutableList.of();
     }
 
     @Override
@@ -421,7 +422,16 @@ public class BakedCustomItemModel implements IBakedModel {
 
     @Override
     public boolean isBuiltInRenderer() {
-        return baseModel.isBuiltInRenderer();
+        if (!baseModel.isBuiltInRenderer()) {
+            try {
+                GLContext.getCapabilities();
+                return false;
+            } catch (RuntimeException ignored) {
+                //If getCapabilities errors act as if this is a built in renderer
+                //Makes it so that tinkers renders it as missing block texture so then they can still see it
+            }
+        }
+        return true;
     }
 
     @Nonnull

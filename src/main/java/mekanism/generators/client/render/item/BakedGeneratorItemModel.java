@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.RenderState;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
@@ -37,6 +38,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 public class BakedGeneratorItemModel implements IBakedModel {
 
@@ -130,11 +132,7 @@ public class BakedGeneratorItemModel implements IBakedModel {
         }
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexFormat prevFormat = null;
-
-        MekanismRenderer.pauseRenderer(tessellator);
-
-        List<BakedQuad> generalQuads = new LinkedList<>();
+        RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
@@ -148,13 +146,13 @@ public class BakedGeneratorItemModel implements IBakedModel {
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.popMatrix();
 
-        MekanismRenderer.resumeRenderer(tessellator);
+        MekanismRenderer.resumeRenderer(tessellator, renderState);
 
         if (Block.getBlockFromItem(stack.getItem()) != Blocks.AIR) {
-            generalQuads.addAll(baseModel.getQuads(state, side, rand));
+            return baseModel.getQuads(state, side, rand);
         }
 
-        return generalQuads;
+        return ImmutableList.of();
     }
 
     @Override
@@ -169,7 +167,16 @@ public class BakedGeneratorItemModel implements IBakedModel {
 
     @Override
     public boolean isBuiltInRenderer() {
-        return baseModel.isBuiltInRenderer();
+        if (!baseModel.isBuiltInRenderer()) {
+            try {
+                GLContext.getCapabilities();
+                return false;
+            } catch (RuntimeException ignored) {
+                //If getCapabilities errors act as if this is a built in renderer
+                //Makes it so that tinkers renders it as missing block texture so then they can still see it
+            }
+        }
+        return true;
     }
 
     @Nonnull

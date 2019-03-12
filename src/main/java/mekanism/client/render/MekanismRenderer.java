@@ -62,8 +62,6 @@ public class MekanismRenderer {
     private static boolean optifineBreak = false;
     private static String[] simpleSides = new String[]{"Bottom", "Top", "Front", "Back", "Left", "Right"};
     private static TextureMap texMap = null;
-    private static VertexFormat prevFormat = null;
-    private static int prevMode = -1;
 
     public static void init() {
         MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
@@ -116,28 +114,19 @@ public class MekanismRenderer {
         return sprite != null ? sprite : missingIcon;
     }
 
-    public static void pauseRenderer(Tessellator tess) {
+    public static RenderState pauseRenderer(Tessellator tess) {
+        RenderState state = null;
         if (MekanismRenderer.isDrawing(tess)) {
-            prevFormat = tess.getBuffer().getVertexFormat();
-            prevMode = tess.getBuffer().getDrawMode();
+            state = new RenderState(tess.getBuffer().getVertexFormat(), tess.getBuffer().getDrawMode());
             tess.draw();
         }
+        return state;
     }
 
-    public static void saveRenderer(Tessellator tess) {
-        if (MekanismRenderer.isDrawing(tess)) {
-            prevFormat = tess.getBuffer().getVertexFormat();
-            prevMode = tess.getBuffer().getDrawMode();
+    public static void resumeRenderer(Tessellator tess, RenderState renderState) {
+        if (renderState != null) {
+            tess.getBuffer().begin(renderState.prevMode, renderState.prevFormat);
         }
-    }
-
-    public static void resumeRenderer(Tessellator tess) {
-        if (prevFormat != null) {
-            tess.getBuffer().begin(prevMode, prevFormat);
-        }
-
-        prevFormat = null;
-        prevMode = -1;
     }
 
     public static boolean isDrawing(Tessellator tess) {
@@ -450,6 +439,16 @@ public class MekanismRenderer {
 
         public void render() {
             GL11.glCallList(display);
+        }
+    }
+
+    public static class RenderState {
+        private final VertexFormat prevFormat;
+        private final int prevMode;
+
+        private RenderState(VertexFormat prevFormat, int prevMode) {
+            this.prevFormat = prevFormat;
+            this.prevMode = prevMode;
         }
     }
 }
