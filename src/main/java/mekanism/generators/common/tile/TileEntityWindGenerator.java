@@ -30,11 +30,16 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    public void onChunkLoad() {
-        super.onChunkLoad();
+    public void onLoad() {
+        super.onLoad();
 
-        // Check the blacklist
+        // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
+        // an initial activity status and the client (in MP) will show the windmills turning while not
+        // generating any power
         isBlacklistDimension = generators.windGenerationDimBlacklist.contains(world.provider.getDimension());
+        if (isBlacklistDimension) {
+            setActive(false);
+        }
     }
 
     @Override
