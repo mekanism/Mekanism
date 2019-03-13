@@ -128,7 +128,7 @@ dependencies {
     compileOnly ("CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    runtime ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}") {
+    deobfCompile ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
     compileOnly "com.blamejared:MTLib:${config.mtlib_version}"

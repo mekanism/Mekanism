@@ -2,9 +2,11 @@ package mekanism.common.integration.crafttweaker;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
+import crafttweaker.mc1120.commands.CTChatCommand;
 import java.util.LinkedList;
 import java.util.List;
 import mekanism.common.Mekanism;
+import mekanism.common.integration.crafttweaker.gas.GasesCommand;
 
 public class CrafttweakerIntegration {
 
@@ -33,5 +35,9 @@ public class CrafttweakerIntegration {
                 CraftTweakerAPI.logError(Mekanism.MOD_NAME + " CT action failed", e);
             }
         });
+    }
+
+    public static void registerCommands() {
+        CTChatCommand.registerCommand(new GasesCommand());
     }
 }

@@ -94,6 +94,7 @@ public final class MekanismHooks {
         }
 
         if (Loader.isModLoaded("crafttweaker")) {
+            CrafttweakerIntegration.registerCommands();
             CrafttweakerIntegration.applyRecipeChanges();
         }
 
