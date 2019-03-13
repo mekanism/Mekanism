@@ -12,9 +12,11 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread
@@ -50,6 +52,7 @@ public class ThreadMinerSearch extends Thread
 		int diameter = tileEntity.getDiameter();
 		int size = tileEntity.getTotalSize();
 		BlockInfo info = new BlockInfo(null, 0);
+		BlockPos minerPos = tileEntity.getPos();
 
 		for(int i = 0; i < size; i++)
 		{
@@ -63,33 +66,37 @@ public class ThreadMinerSearch extends Thread
 			}
 
 			try {
-				if(tileEntity.getPos().getX() == x && tileEntity.getPos().getY() == y && tileEntity.getPos().getZ() == z)
+				if(minerPos.getX() == x && minerPos.getY() == y && minerPos.getZ() == z)
+				{
+					continue;
+				}
+
+				BlockPos testPos = new BlockPos(x, y, z);
+
+				World world = tileEntity.getWorld();
+
+				if(!world.isBlockLoaded(testPos))
 				{
 					continue;
 				}
 	
-				if(tileEntity.getWorld().getChunkProvider().getLoadedChunk(x >> 4, z >> 4) == null)
-				{
-					continue;
-				}
-	
-				TileEntity tile = tileEntity.getWorld().getTileEntity(new BlockPos(x, y, z));
+				TileEntity tile = world.getTileEntity(testPos);
 				
 				if(tile instanceof TileEntityBoundingBlock)
 				{
 					continue;
 				}
 
-				IBlockState state = tileEntity.getWorld().getBlockState(new BlockPos(x, y, z));
+				IBlockState state = world.getBlockState(testPos);
 				info.block = state.getBlock();
 				info.meta = state.getBlock().getMetaFromState(state);
 	
-				if(info.block instanceof BlockLiquid || info.block instanceof IFluidBlock)
+				if(info.block == null || info.block instanceof BlockLiquid || info.block instanceof IFluidBlock || info.block.isAir(state, world, testPos))
 				{
 					continue;
 				}
 	
-				if(info.block != null && !tileEntity.getWorld().isAirBlock(new BlockPos(x, y, z)) && state.getBlockHardness(tileEntity.getWorld(), new BlockPos(x, y, z)) >= 0)
+				if(state.getBlockHardness(world, testPos) >= 0)
 				{
 					MinerFilter filterFound = null;
 					boolean canFilter;
@@ -122,7 +129,7 @@ public class ThreadMinerSearch extends Thread
 	
 					if(canFilter)
 					{
-						set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.getDimension()));
+						set(i, new Coord4D(x, y, z, world.provider.getDimension()));
 						replaceMap.put(i, filterFound);
 						
 						found++;
