@@ -84,6 +84,6 @@ public class IngredientWrapper {
     }
 
     private String getDescriptor(IIngredient ingredient) {
-        return ingredient instanceof IGasStack ? ingredient.toString() : LogHelper.getStackDescription(ingredient);
+        return ingredient instanceof IGasStack ? ingredient.toCommandString() : LogHelper.getStackDescription(ingredient);
     }
 }
