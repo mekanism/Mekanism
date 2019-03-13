@@ -62,7 +62,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.armoredJetpackDamageMax);
 			dataStream.writeBoolean(general.aestheticWorldDamage);
 			dataStream.writeBoolean(general.opsBypassRestrictions);
-			dataStream.writeDouble(general.thermalEvaporationSpeed);
+			//dataStream.writeDouble(general.thermalEvaporationSpeed);
 			dataStream.writeInt(general.maxJetpackGas);
 			dataStream.writeInt(general.maxScubaGas);
 			dataStream.writeInt(general.maxFlamethrowerGas);
@@ -107,7 +107,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.chemicalCrystallizerUsage);
 			dataStream.writeDouble(usage.seismicVibratorUsage);
 			dataStream.writeDouble(usage.fluidicPlenisherUsage);
-			dataStream.writeDouble(usage.gasCentrifugeUsage);
+			//dataStream.writeDouble(usage.gasCentrifugeUsage);
 			dataStream.writeDouble(usage.heavyWaterElectrolysisUsage);
 			dataStream.writeDouble(usage.formulaicAssemblicatorUsage);
 			dataStream.writeInt(usage.teleporterBaseUsage);
@@ -162,7 +162,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.armoredJetpackDamageMax = dataStream.readInt();
 			general.aestheticWorldDamage = dataStream.readBoolean();
 			general.opsBypassRestrictions = dataStream.readBoolean();
-			general.thermalEvaporationSpeed = dataStream.readDouble();
+			//general.thermalEvaporationSpeed = dataStream.readDouble();
 			general.maxJetpackGas = dataStream.readInt();
 			general.maxScubaGas = dataStream.readInt();
 			general.maxFlamethrowerGas = dataStream.readInt();
@@ -207,7 +207,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.chemicalCrystallizerUsage = dataStream.readDouble();
 			usage.seismicVibratorUsage = dataStream.readDouble();
 			usage.fluidicPlenisherUsage = dataStream.readDouble();
-			usage.gasCentrifugeUsage = dataStream.readDouble();
+			//usage.gasCentrifugeUsage = dataStream.readDouble();
 			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
 			usage.formulaicAssemblicatorUsage = dataStream.readDouble();
 			usage.teleporterBaseUsage = dataStream.readInt();

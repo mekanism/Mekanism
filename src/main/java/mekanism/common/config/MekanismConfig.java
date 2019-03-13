@@ -54,7 +54,7 @@ public class MekanismConfig
 		public static int armoredJetpackDamageMax;
 		public static boolean aestheticWorldDamage;
 		public static boolean opsBypassRestrictions;
-		public static double thermalEvaporationSpeed;
+		//public static double thermalEvaporationSpeed;
 		public static int maxJetpackGas;
 		public static int maxScubaGas;
 		public static int maxFlamethrowerGas;
@@ -114,7 +114,7 @@ public class MekanismConfig
 		public static double pressurizedReactionBaseUsage;
 		public static double fluidicPlenisherUsage;
 		public static double laserUsage;
-		public static double gasCentrifugeUsage;
+		//public static double gasCentrifugeUsage;
 		public static double heavyWaterElectrolysisUsage;
 		public static double formulaicAssemblicatorUsage;
 		public static int teleporterBaseUsage;
