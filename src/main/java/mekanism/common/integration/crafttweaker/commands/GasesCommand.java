@@ -1,11 +1,8 @@
-package mekanism.common.integration.crafttweaker.gas;
-
-import static crafttweaker.mc1120.commands.SpecialMessagesChat.getClickableCommandText;
-import static crafttweaker.mc1120.commands.SpecialMessagesChat.getLinkToCraftTweakerLog;
-import static crafttweaker.mc1120.commands.SpecialMessagesChat.getNormalMessage;
+package mekanism.common.integration.crafttweaker.commands;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.mc1120.commands.CraftTweakerCommand;
+import crafttweaker.mc1120.commands.SpecialMessagesChat;
 import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -21,8 +18,8 @@ public class GasesCommand extends CraftTweakerCommand {
 
     @Override
     protected void init() {
-        setDescription(getClickableCommandText(TextFormatting.DARK_GREEN + "/ct " + subCommandName,
-              "/ct " + subCommandName, true), getNormalMessage(TextFormatting.DARK_AQUA +
+        setDescription(SpecialMessagesChat.getClickableCommandText(TextFormatting.DARK_GREEN + "/ct " + subCommandName,
+              "/ct " + subCommandName, true), SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA +
               "Outputs a list of all registered gases to the crafttweaker.log"));
     }
 
@@ -32,6 +29,7 @@ public class GasesCommand extends CraftTweakerCommand {
         List<Gas> gases = GasRegistry.getRegisteredGasses();
         gases.forEach(
               gas -> CraftTweakerAPI.logCommand(String.format("<gas:%s>, %s", gas.getName(), gas.getLocalizedName())));
-        sender.sendMessage(getLinkToCraftTweakerLog("List of " + gases.size() + " gases generated;", sender));
+        sender.sendMessage(SpecialMessagesChat.getLinkToCraftTweakerLog(
+              "List of " + gases.size() + " gases generated;", sender));
     }
 }

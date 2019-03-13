@@ -6,7 +6,8 @@ import crafttweaker.mc1120.commands.CTChatCommand;
 import java.util.LinkedList;
 import java.util.List;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.crafttweaker.gas.GasesCommand;
+import mekanism.common.integration.crafttweaker.commands.GasesCommand;
+import mekanism.common.integration.crafttweaker.commands.InfuseTypesCommand;
 
 public class CrafttweakerIntegration {
 
@@ -39,5 +40,6 @@ public class CrafttweakerIntegration {
 
     public static void registerCommands() {
         CTChatCommand.registerCommand(new GasesCommand());
+        CTChatCommand.registerCommand(new InfuseTypesCommand());
     }
 }
