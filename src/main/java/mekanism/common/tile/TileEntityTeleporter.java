@@ -513,9 +513,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 		{
 			energyCost+=MekanismConfig.usage.teleporterDimensionPenalty;
 		}
-
-		int distance = (int)entity.getDistance(coords.x, coords.y, coords.z);
-		energyCost+=(distance*MekanismConfig.usage.teleporterDistanceUsage);
+		else
+		{
+			int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
+			energyCost += (distance * MekanismConfig.usage.teleporterDistanceUsage);
+		}
 
 		return energyCost;
 	}
