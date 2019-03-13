@@ -510,6 +510,7 @@ gui.producing=Producing
 gui.maxOutput=Max Output
 gui.storing=Storing
 gui.skyBlocked=Sky blocked
+gui.noWind=No wind
 gui.using=Using
 gui.needed=Needed
 mekanism.gui.bufferfree=Free Buffer

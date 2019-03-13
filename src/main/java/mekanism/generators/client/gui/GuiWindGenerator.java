@@ -38,7 +38,7 @@ public class GuiWindGenerator extends GuiMekanism {
               MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
         guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
               LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(
-                    tileEntity.isActive ? generators.windGenerationMin * tileEntity.currentMultiplier : 0) + "/t",
+                    tileEntity.isActive ? generators.windGenerationMin * tileEntity.getCurrentMultiplier() : 0) + "/t",
               LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput())
                     + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
         guiElements
@@ -57,7 +57,7 @@ public class GuiWindGenerator extends GuiMekanism {
               .drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26,
                     0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.power") + ": " + powerFormat
-                    .format(MekanismUtils.convertToDisplay(generators.windGenerationMin * tileEntity.currentMultiplier)), 51,
+                    .format(MekanismUtils.convertToDisplay(generators.windGenerationMin * tileEntity.getCurrentMultiplier())), 51,
               35, 0x00CD00);
         fontRenderer.drawString(
               LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t",
@@ -67,7 +67,11 @@ public class GuiWindGenerator extends GuiMekanism {
 
         if (!tileEntity.getActive()) {
             size += 9;
-            fontRenderer.drawString(EnumColor.DARK_RED + LangUtils.localize("gui.skyBlocked"), 51, size, 0x00CD00);
+            String reason = "gui.skyBlocked";
+            if (tileEntity.isBlacklistDimension()) {
+                reason = "gui.noWind";
+            }
+            fontRenderer.drawString(EnumColor.DARK_RED + LangUtils.localize(reason), 51, size, 0x00CD00);
         }
 
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

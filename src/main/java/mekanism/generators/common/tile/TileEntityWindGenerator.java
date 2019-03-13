@@ -2,8 +2,10 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.TileNetworkList;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -15,17 +17,24 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public static final float SPEED = 32F;
     public static final float SPEED_SCALED = 256F / SPEED;
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
+    static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
           "getMultiplier"};
-    /**
-     * The angle the blades of this Wind Turbine are currently at.
-     */
-    public double angle;
-    public float currentMultiplier;
+
+    private double angle;
+    private float currentMultiplier;
+    private boolean isBlacklistDimension = false;
 
     public TileEntityWindGenerator() {
         super("wind", "WindGenerator", 200000, (generators.windGenerationMax) * 2);
         inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+    }
+
+    @Override
+    public void onChunkLoad() {
+        super.onChunkLoad();
+
+        // Check the blacklist
+        isBlacklistDimension = generators.windGenerationDimBlacklist.contains(world.provider.getDimension());
     }
 
     @Override
@@ -35,8 +44,15 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (!world.isRemote) {
             ChargeUtils.charge(0, this);
 
+            // If we're in a blacklisted dimension, there's nothing more to do
+            if (isBlacklistDimension) {
+                return;
+            }
+
             if (ticker % 20 == 0) {
-                setActive((currentMultiplier = getMultiplier()) > 0);
+                // Recalculate the current multiplier once a second
+                currentMultiplier = getMultiplier();
+                setActive(currentMultiplier > 0);
             }
 
             if (getActive()) {
@@ -55,6 +71,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
         if (world.isRemote) {
             currentMultiplier = dataStream.readFloat();
+            isBlacklistDimension = dataStream.readBoolean();
         }
     }
 
@@ -63,6 +80,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         super.getNetworkedData(data);
 
         data.add(currentMultiplier);
+        data.add(isBlacklistDimension);
 
         return data;
     }
@@ -129,6 +147,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 2), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 3), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 4), current);
+
+        // Check to see if the placement is happening in a blacklisted dimension
+        isBlacklistDimension = generators.windGenerationDimBlacklist.contains(world.provider.getDimension());
     }
 
     @Override
@@ -149,5 +170,17 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public boolean lightUpdate() {
         return false;
+    }
+
+    public float getCurrentMultiplier() {
+        return currentMultiplier;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public boolean isBlacklistDimension() {
+        return isBlacklistDimension;
     }
 }
