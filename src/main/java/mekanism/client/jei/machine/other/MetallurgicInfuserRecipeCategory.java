@@ -88,21 +88,6 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	}
 	
 	@Override
-	public void drawExtras(Minecraft minecraft)
-	{
-		super.drawExtras(minecraft);
-
-		if(tempRecipe == null)
-		{
-			return;
-		}
-		
-		InfuseType type = tempRecipe.getInput().infuse.type;
-		changeTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedRectFromIcon(2, 2, type.sprite, 4, 52);
-	}
-	
-	@Override
 	public IDrawable getBackground()
 	{
 		return background;
