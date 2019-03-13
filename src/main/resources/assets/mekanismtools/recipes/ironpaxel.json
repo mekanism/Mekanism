@@ -10,7 +10,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "T": {
-      "item": "minecraft:stick"
+      "item": "#STICK_WOOD"
     },
     "X": {
       "item": "minecraft:iron_axe"

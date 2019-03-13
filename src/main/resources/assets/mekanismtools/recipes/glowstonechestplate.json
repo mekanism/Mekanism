@@ -10,8 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "*": {
-      "ore": "ingotRefinedGlowstone",
-      "type": "forge:ore_dict"
+      "item": "#INGOT_REFINED_GLOWSTONE"
     }
   }
 }
