@@ -165,6 +165,7 @@ import com.mojang.authlib.GameProfile;
 						"after:galacticraft api;" +
 						"after:cyclicmagic;" +
 						"after:metallurgycore;"+
+						"after:metallurgy;"+
 						"after:crafttweaker"
 )
 @Mod.EventBusSubscriber()

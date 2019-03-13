@@ -94,6 +94,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded(METALLURGY_MOD_ID))
 		{
 			MetallurgyCoreLoaded = true;
+			addMetallurgy();
 		}
 
 		if(IC2Loaded)
@@ -220,6 +221,50 @@ public final class MekanismHooks
 		registerCyclicCombinerOreRecipe("dustDiamond", 3, end_stone, "end_diamond_ore");
 		registerCyclicCombinerOreRecipe("dustGold", 8, end_stone, "end_gold_ore");
 		registerCyclicCombinerOreRecipe("dustIron", 8, end_stone, "end_iron_ore");
+	}
+
+	private void addMetallurgy(){
+		OreDictManager.addStandardOredictMetal("Adamantine");
+		OreDictManager.addStandardOredictMetal("Alduorite");
+		OreDictManager.addStandardOredictMetal("Angmallen");
+		OreDictManager.addStandardOredictMetal("AstralSilver");
+		OreDictManager.addStandardOredictMetal("Atlarus");
+		OreDictManager.addStandardOredictMetal("Amordrine");
+		OreDictManager.addStandardOredictMetal("BlackSteel");
+		OreDictManager.addStandardOredictMetal("Brass");
+		OreDictManager.addStandardOredictMetal("Bronze");
+		OreDictManager.addStandardOredictMetal("Carmot");
+		OreDictManager.addStandardOredictMetal("Celenegil");
+		OreDictManager.addStandardOredictMetal("Ceruclase");
+		OreDictManager.addStandardOredictMetal("DamascusSteel");
+		OreDictManager.addStandardOredictMetal("DeepIron");
+		OreDictManager.addStandardOredictMetal("Desichalkos");
+		OreDictManager.addStandardOredictMetal("Electrum");
+		OreDictManager.addStandardOredictMetal("Eximite");
+		OreDictManager.addStandardOredictMetal("Haderoth");
+		OreDictManager.addStandardOredictMetal("Hepatizon");
+		OreDictManager.addStandardOredictMetal("Ignatius");
+		OreDictManager.addStandardOredictMetal("Infuscolium");
+		OreDictManager.addStandardOredictMetal("Inolashite");
+		OreDictManager.addStandardOredictMetal("Kalendrite");
+		OreDictManager.addStandardOredictMetal("Lemurite");
+		OreDictManager.addStandardOredictMetal("Manganese");
+		OreDictManager.addStandardOredictMetal("Meutoite");
+		OreDictManager.addStandardOredictMetal("Midasium");
+		OreDictManager.addStandardOredictMetal("Mithril");
+		OreDictManager.addStandardOredictMetal("Orichalcum");
+		OreDictManager.addStandardOredictMetal("Oureclase");
+		OreDictManager.addStandardOredictMetal("Prometheum");
+		OreDictManager.addStandardOredictMetal("Quicksilver");
+		OreDictManager.addStandardOredictMetal("Rubracium");
+		OreDictManager.addStandardOredictMetal("Sanguinite");
+		OreDictManager.addStandardOredictMetal("ShadowIron");
+		OreDictManager.addStandardOredictMetal("ShadowSteel");
+		OreDictManager.addStandardOredictMetal("Tartarite");
+		OreDictManager.addStandardOredictMetal("Vulcanite");
+		OreDictManager.addStandardOredictMetal("Vyroxeres");
+		OreDictManager.addStandardOredictMetal("Zinc");
+
 	}
 
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)
