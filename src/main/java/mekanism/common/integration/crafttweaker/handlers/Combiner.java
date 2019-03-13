@@ -51,12 +51,12 @@ public class Combiner {
 
     @ZenMethod
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
-          @Optional IIngredient gasInput) {
+          @Optional IIngredient extraInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<DoubleMachineInput, ItemStackOutput, CombinerRecipe>(NAME,
                         Recipe.COMBINER, new IngredientWrapper(itemOutput),
-                        new IngredientWrapper(itemInput, gasInput)));
+                        new IngredientWrapper(itemInput, extraInput)));
         }
     }
 

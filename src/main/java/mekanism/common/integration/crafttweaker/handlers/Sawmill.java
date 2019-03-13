@@ -47,8 +47,8 @@ public class Sawmill {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<ItemStackInput, ChanceOutput, SawmillRecipe>(NAME,
-                        Recipe.PRECISION_SAWMILL, new IngredientWrapper(itemInput),
-                        new IngredientWrapper(itemOutput, optionalItemOutput)));
+                        Recipe.PRECISION_SAWMILL, new IngredientWrapper(itemOutput, optionalItemOutput),
+                        new IngredientWrapper(itemInput)));
         }
     }
 

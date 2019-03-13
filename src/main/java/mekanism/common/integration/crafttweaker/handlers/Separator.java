@@ -46,8 +46,8 @@ public class Separator {
         if (IngredientHelper.checkNotNull(NAME, liquidInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
                   .add(new RemoveMekanismRecipe<FluidInput, ChemicalPairOutput, SeparatorRecipe>(NAME,
-                        Recipe.ELECTROLYTIC_SEPARATOR, new IngredientWrapper(liquidInput),
-                        new IngredientWrapper(leftGasOutput, rightGasOutput)));
+                        Recipe.ELECTROLYTIC_SEPARATOR, new IngredientWrapper(leftGasOutput, rightGasOutput),
+                        new IngredientWrapper(liquidInput)));
         }
     }
 
