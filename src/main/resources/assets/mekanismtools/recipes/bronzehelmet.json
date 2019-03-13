@@ -9,8 +9,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "*": {
-      "ore": "ingotBronze",
-      "type": "forge:ore_dict"
+      "item": "#INGOT_BRONZE"
     }
   }
 }

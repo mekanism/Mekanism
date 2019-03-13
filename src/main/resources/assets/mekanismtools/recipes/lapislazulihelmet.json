@@ -9,8 +9,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "*": {
-      "item": "minecraft:dye",
-      "data": 4
+      "item": "#GEM_LAPIS"
     }
   }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.config;
 
+import java.util.Set;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 
@@ -137,6 +138,8 @@ public class MekanismConfig {
 
         public static int windGenerationMinY;
         public static int windGenerationMaxY;
+
+        public static Set<Integer> windGenerationDimBlacklist;
 
         public static int turbineBladesPerCoil;
         public static double turbineVentGasFlow;

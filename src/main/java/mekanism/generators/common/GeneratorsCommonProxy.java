@@ -1,5 +1,9 @@
 package mekanism.generators.common;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.config.MekanismConfig.generators;
@@ -38,6 +42,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import scala.actors.threadpool.Arrays;
 
 /**
  * Common proxy for the Mekanism Generators module.
@@ -121,6 +126,10 @@ public class GeneratorsCommonProxy implements IGuiProvider {
             generators.generatorsManager.setEntry(type.blockName,
                   Mekanism.configuration.get("generators", type.blockName + "Enabled", true).getBoolean());
         }
+
+        int[] windGenerationBlacklistDims = Mekanism.configuration.get("generation", "WindGenerationDimBlacklist", new int[]{}).getIntList();
+        generators.windGenerationDimBlacklist = IntStream.of(windGenerationBlacklistDims).boxed().
+              collect(Collectors.toCollection(HashSet::new));
 
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
