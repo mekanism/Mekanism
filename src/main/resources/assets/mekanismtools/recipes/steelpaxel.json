@@ -16,7 +16,7 @@
       "item": "mekanismtools:steelpickaxe"
     },
     "I": {
-      "item": "minecraft:iron_ingot"
+      "item": "#INGOT_IRON"
     },
     "Z": {
       "item": "mekanismtools:steelshovel"

@@ -10,11 +10,10 @@
   "type": "forge:ore_shaped",
   "key": {
     "T": {
-      "item": "minecraft:stick"
+      "item": "#STICK_WOOD"
     },
     "X": {
-      "ore": "ingotRefinedObsidian",
-      "type": "forge:ore_dict"
+      "item": "#INGOT_REFINED_OBSIDIAN"
     }
   }
 }
