@@ -10,7 +10,7 @@
   "type": "forge:ore_shaped",
   "key": {
     "*": {
-      "ore": "ingotObsidian",
+      "ore": "ingotRefinedObsidian",
       "type": "forge:ore_dict"
     }
   }
