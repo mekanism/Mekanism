@@ -54,6 +54,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -381,71 +382,22 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 	{
 		if(player.dimension != coord.dimensionId)
 		{
-			int id = player.dimension;
-			WorldServer oldWorld = player.mcServer.getWorld(player.dimension);
-			player.dimension = coord.dimensionId;
-			WorldServer newWorld = player.mcServer.getWorld(player.dimension);
-			player.connection.sendPacket(new SPacketRespawn(player.dimension, player.world.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
-			oldWorld.removeEntityDangerously(player);
-			player.isDead = false;
-
-			if(player.isEntityAlive())
-			{
-				newWorld.spawnEntity(player);
-				player.setLocationAndAngles(coord.x +0.5, coord.y +1, coord.z +0.5, player.rotationYaw, player.rotationPitch);
-				newWorld.updateEntityWithOptionalForce(player, false);
-				player.setWorld(newWorld);
-			}
-
-			player.mcServer.getPlayerList().preparePlayer(player, oldWorld);
-			player.connection.setPlayerLocation(coord.x +0.5, coord.y +1, coord.z +0.5, player.rotationYaw, player.rotationPitch);
-			player.interactionManager.setWorld(newWorld);
-			player.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
-			player.mcServer.getPlayerList().syncPlayerInventory(player);
-
-			for(PotionEffect potioneffect : player.getActivePotionEffects())
-			{
-				player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
-			}
-
-			player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel)); // Force XP sync
-
-			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, id, coord.dimensionId);
+			player.changeDimension(coord.dimensionId, (world, entity, yaw) -> entity.setPositionAndUpdate(coord.x +0.5, coord.y +1, coord.z +0.5));
 		}
 		else {
-			player.connection.setPlayerLocation(coord.x +0.5, coord.y +1, coord.z +0.5, player.rotationYaw, player.rotationPitch);
+			player.setPositionAndUpdate(coord.x +0.5, coord.y +1, coord.z +0.5);
 		}
+		player.world.updateEntityWithOptionalForce(player, true);
 	}
 
 	public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter)
 	{
-		WorldServer world = server.getWorld(coord.dimensionId);
-
 		if(entity.world.provider.getDimension() != coord.dimensionId)
 		{
-			entity.world.removeEntity(entity);
-			entity.isDead = false;
-
-			world.spawnEntity(entity);
-			entity.setLocationAndAngles(coord.x +0.5, coord.y +1, coord.z +0.5, entity.rotationYaw, entity.rotationPitch);
-			world.updateEntityWithOptionalForce(entity, false);
-			entity.setWorld(world);
-			world.resetUpdateEntityTick();
-
-			Entity e = EntityList.newEntity(entity.getClass(), world);
-
-			if(e != null)
-			{
-				e.copyDataFromOld(entity);
-				
-				world.spawnEntity(e);
-				teleporter.didTeleport.add(e.getPersistentID());
-			}
-
-			entity.isDead = true;
+			entity.changeDimension(coord.dimensionId, (world, entity2, yaw) -> entity2.setPositionAndUpdate(coord.x +0.5, coord.y +1, coord.z +0.5));
 		}
 		else {
-			entity.setLocationAndAngles(coord.x +0.5, coord.y +1, coord.z +0.5, entity.rotationYaw, entity.rotationPitch);
+			entity.setPositionAndUpdate(coord.x +0.5, coord.y +1, coord.z +0.5);
 			Mekanism.packetHandler.sendToReceivers(new EntityMoveMessage(entity), new Range4D(new Coord4D(entity)));
 		}
 	}
