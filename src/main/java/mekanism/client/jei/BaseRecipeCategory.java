@@ -150,7 +150,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
               overlay ? fluidOverlay : null);
         group.init(slot, input, renderer, x, y, width, height, 0, 0);
         group.set(slot, stack);
-        group.addTooltipCallback((index, isInput, ingredient, tooltip) -> tooltip.remove(1));
     }
 
     public static class GuiDummy extends Gui {

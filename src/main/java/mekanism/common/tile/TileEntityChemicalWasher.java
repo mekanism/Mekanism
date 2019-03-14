@@ -65,7 +65,6 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     public TileEntityChemicalWasher() {
         super("machine.washer", "ChemicalWasher", BlockStateMachine.MachineType.CHEMICAL_WASHER.baseEnergy,
               usage.chemicalWasherUsage, 4);
-
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 

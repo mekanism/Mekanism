@@ -91,7 +91,6 @@ public class PRCRecipeCategory extends BaseRecipeCategory {
 
         fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlayLarge);
         fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
-        fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 

@@ -94,7 +94,6 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory {
 
         fluidStacks.init(0, true, 2, 2, 16, 58, tempRecipe.getInput().ingredient.amount, false, fluidOverlayLarge);
         fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
-        fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 

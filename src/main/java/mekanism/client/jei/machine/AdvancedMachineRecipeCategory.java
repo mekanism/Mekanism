@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
@@ -14,6 +13,7 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.IGuiHelper;
@@ -28,9 +28,6 @@ import net.minecraft.util.ResourceLocation;
 public class AdvancedMachineRecipeCategory extends BaseRecipeCategory {
 
     private final IDrawable background;
-
-    @Nullable
-    private AdvancedMachineRecipe tempRecipe;
 
     public AdvancedMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiAdvancedMachine.png", name, unlocalized, progress);
@@ -78,7 +75,7 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory {
             return;
         }
 
-        tempRecipe = ((AdvancedMachineRecipeWrapper) recipeWrapper).getRecipe();
+        AdvancedMachineRecipe tempRecipe = ((AdvancedMachineRecipeWrapper) recipeWrapper).getRecipe();
 
         AdvancedMachineInput input = (AdvancedMachineInput) tempRecipe.recipeInput;
 
@@ -94,6 +91,8 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory {
 
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 
-        initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(input.gasType, 1), false);
+        initGas(gasStacks, 0, true, 33, 21, 6, 12,
+              new GasStack(input.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
+                    * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK), false);
     }
 }

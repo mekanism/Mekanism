@@ -22,7 +22,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     public TileEntityChemicalInjectionChamber() {
         super("injection", "ChemicalInjectionChamber",
               BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy, usage.chemicalInjectionChamberUsage,
-              200, 1);
+              BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
 
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));

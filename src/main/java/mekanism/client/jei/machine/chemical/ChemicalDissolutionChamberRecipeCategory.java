@@ -5,6 +5,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiIngredientGroup;
@@ -60,7 +61,9 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 
-        initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58, new GasStack(MekanismFluids.SulfuricAcid, 1),
+        initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58,
+              new GasStack(MekanismFluids.SulfuricAcid, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE
+                    * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED),
               true);
         initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutput().output, true);
     }

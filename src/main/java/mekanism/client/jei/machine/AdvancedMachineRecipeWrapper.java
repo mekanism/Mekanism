@@ -6,6 +6,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.GasUtils;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -22,7 +23,9 @@ public class AdvancedMachineRecipeWrapper implements IRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         ingredients.setInput(ItemStack.class, ((AdvancedMachineInput) recipe.getInput()).itemStack);
-        ingredients.setInput(GasStack.class, new GasStack(((AdvancedMachineInput) recipe.getInput()).gasType, 1));
+        ingredients.setInput(GasStack.class, new GasStack(((AdvancedMachineInput) recipe.getInput()).gasType,
+              TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
+                    * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK));
         ingredients.setOutput(ItemStack.class, ((ItemStackOutput) recipe.getOutput()).output);
     }
 

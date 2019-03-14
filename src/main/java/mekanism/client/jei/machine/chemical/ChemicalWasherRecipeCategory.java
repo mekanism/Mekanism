@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
@@ -54,9 +55,9 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory {
 
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
 
-        fluidStacks.init(0, true, 6 - xOffset, 5 - yOffset, 16, 58, 1000, false, fluidOverlayLarge);
+        fluidStacks.init(0, true, 6 - xOffset, 5 - yOffset, 16, 58, TileEntityChemicalWasher.WATER_USAGE, false,
+              fluidOverlayLarge);
         fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
-        fluidStacks.addTooltipCallback((index, input, ingredient, tooltip) -> tooltip.remove(1));
 
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 

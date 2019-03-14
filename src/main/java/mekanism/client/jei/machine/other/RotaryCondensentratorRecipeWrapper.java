@@ -14,6 +14,8 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
 
     public Fluid fluidType;
     public Gas gasType;
+    public int gasAmount = 1;
+    public int fluidAmount = 1;
 
     public boolean condensentrating;
 
@@ -27,11 +29,11 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         if (condensentrating) {
-            ingredients.setInput(GasStack.class, new GasStack(gasType, 1000));
-            ingredients.setOutput(FluidStack.class, new FluidStack(fluidType, 1000));
+            ingredients.setInput(GasStack.class, new GasStack(gasType, gasAmount));
+            ingredients.setOutput(FluidStack.class, new FluidStack(fluidType, fluidAmount));
         } else {
-            ingredients.setInput(FluidStack.class, new FluidStack(fluidType, 1000));
-            ingredients.setOutput(GasStack.class, new GasStack(gasType, 1000));
+            ingredients.setInput(FluidStack.class, new FluidStack(fluidType, fluidAmount));
+            ingredients.setOutput(GasStack.class, new GasStack(gasType, gasAmount));
         }
     }
 

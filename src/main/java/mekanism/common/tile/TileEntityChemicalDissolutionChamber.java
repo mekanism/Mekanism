@@ -18,7 +18,6 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -42,15 +41,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
+    public static final int BASE_TICKS_REQUIRED = 100;
     public final double BASE_ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
     public GasTank injectTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
-    public double injectUsage = 1;
+    public double injectUsage = BASE_INJECT_USAGE;
     public int injectUsageThisTick;
     public int gasOutput = 256;
     public int operatingTicks = 0;
-    public int BASE_TICKS_REQUIRED = 100;
-    public int ticksRequired = 100;
+    public int ticksRequired = BASE_TICKS_REQUIRED;
     public DissolutionRecipe cachedRecipe;
 
     public TileEntityChemicalDissolutionChamber() {
@@ -59,6 +58,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
               usage.chemicalDissolutionChamberUsage, 4);
 
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+        upgradeComponent.setSupported(Upgrade.GAS);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
             DissolutionRecipe recipe = getRecipe();
 
-            injectUsageThisTick = Math.max(1, StatUtils.inversePoisson(injectUsage));
+            injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
 
             if (canOperate(recipe) && getEnergy() >= energyPerTick && injectTank.getStored() >= injectUsageThisTick
                   && MekanismUtils.canFunction(this)) {

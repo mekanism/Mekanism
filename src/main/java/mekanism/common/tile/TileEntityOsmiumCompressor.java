@@ -15,7 +15,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 
     public TileEntityOsmiumCompressor() {
         super("compressor", "OsmiumCompressor", BlockStateMachine.MachineType.OSMIUM_COMPRESSOR.baseEnergy,
-              usage.osmiumCompressorUsage, 200, 1);
+              usage.osmiumCompressorUsage, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

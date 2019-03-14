@@ -43,6 +43,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive",
           "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+    public static final int BASE_TICKS_REQUIRED = 200;
+    public static final int BASE_GAS_PER_TICK = 1;
     public static int MAX_GAS = 210;
     /**
      * How much secondary energy (fuel) this machine uses per tick, not including upgrades.

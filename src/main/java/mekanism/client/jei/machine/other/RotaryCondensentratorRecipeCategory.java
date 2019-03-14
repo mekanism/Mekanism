@@ -69,14 +69,14 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
 
-        fluidStacks.init(0, !tempRecipe.condensentrating, 134 - xOffset, 14 - yOffset, 16, 58, 1000, false,
+        fluidStacks.init(0, !tempRecipe.condensentrating, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.fluidAmount, false,
               fluidOverlayLarge);
 
         if (tempRecipe.condensentrating) {
-            initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.gasType, 1), true);
+            initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.gasType, tempRecipe.gasAmount), true);
             fluidStacks.set(0, ingredients.getOutputs(FluidStack.class).get(0));
         } else {
-            initGas(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.gasType, 1), true);
+            initGas(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.gasType, tempRecipe.gasAmount), true);
             fluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
         }
     }
