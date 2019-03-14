@@ -22,6 +22,16 @@ public interface IActiveState {
     void setActive(boolean active);
 
     /**
+     * Determine if a machine/generator was "recently" active, where "recently" is up to the interface
+     * implementor. This is useful for reducing rendering calls, esp. when the entity can oscillate between
+     * active/inactive states rapidly.
+     *
+     * The default implementation just returns current active state.
+     *
+     */
+    default boolean wasActiveRecently() { return getActive(); }
+
+    /**
      * Whether or not this block has a visual effect when it is on it's active state. Used for rendering.
      *
      * @return if the block has a visual effect in it's active state

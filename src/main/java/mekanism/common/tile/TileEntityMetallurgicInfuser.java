@@ -156,9 +156,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
         //Machine
         factory.progress[0] = operatingTicks;
-        factory.clientActive = clientActive;
         factory.isActive = isActive;
-        factory.updateDelay = updateDelay;
         factory.controlType = controlType;
         factory.prevEnergy = prevEnergy;
         factory.upgradeComponent.readFrom(upgradeComponent);

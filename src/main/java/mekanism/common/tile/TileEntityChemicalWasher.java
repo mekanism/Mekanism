@@ -149,12 +149,6 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
             TileUtils.readTankData(dataStream, fluidTank);
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = general.UPDATE_DELAY;
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 

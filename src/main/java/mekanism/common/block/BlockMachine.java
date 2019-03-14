@@ -298,11 +298,10 @@ public abstract class BlockMachine extends BlockContainer {
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         if (client.enableAmbientLighting) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-
-            if (tileEntity instanceof IActiveState) {
-                if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
-                    return client.ambientLightingLevel;
-                }
+            if (tileEntity instanceof IActiveState &&
+                  ((IActiveState) tileEntity).lightUpdate() &&
+                  ((IActiveState) tileEntity).wasActiveRecently()) {
+                return client.ambientLightingLevel;
             }
         }
 

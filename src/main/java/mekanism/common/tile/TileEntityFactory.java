@@ -196,9 +196,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         System.arraycopy(progress, 0, factory.progress, 0, tier.processes);
 
         factory.recipeTicks = recipeTicks;
-        factory.clientActive = clientActive;
         factory.isActive = isActive;
-        factory.updateDelay = updateDelay;
         factory.prevEnergy = prevEnergy;
         factory.gasTank.setGas(gasTank.getGas());
         factory.sorting = sorting;
