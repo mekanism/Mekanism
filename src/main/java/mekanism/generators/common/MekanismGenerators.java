@@ -41,14 +41,16 @@ import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
-@Mod(modid = "mekanismgenerators", name = "MekanismGenerators", version = "${version}", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MekanismGenerators.MODID, name = "MekanismGenerators", version = "${version}", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
 @Mod.EventBusSubscriber()
 public class MekanismGenerators implements IModule
 {
+	public static final String MODID = "mekanismgenerators";
+
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
 	public static GeneratorsCommonProxy proxy;
 	
-	@Instance("mekanismgenerators")
+	@Instance(MODID)
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
@@ -215,7 +217,7 @@ public class MekanismGenerators implements IModule
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)
 	{
-		if(event.getModID().equals("mekanismgenerators"))
+		if(event.getModID().equals(MekanismGenerators.MODID))
 		{
 			proxy.loadConfiguration();
 		}

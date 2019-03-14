@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("mekanismgenerators")
+@ObjectHolder(MekanismGenerators.MODID)
 public class GeneratorsItems
 {
 	public static final Item SolarPanel = new ItemMekanism();

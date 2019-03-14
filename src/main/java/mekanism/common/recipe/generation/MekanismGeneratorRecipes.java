@@ -7,6 +7,7 @@ import mekanism.common.Tier.GasTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsItems;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockType;
 import net.minecraft.init.Blocks;
@@ -15,7 +16,7 @@ import net.minecraft.item.ItemStack;
 
 public class MekanismGeneratorRecipes {
     public static void generate() {
-        RecipeGenerator recipeGenerator = new RecipeGenerator("mekanismgenerators");
+        RecipeGenerator recipeGenerator = new RecipeGenerator(MekanismGenerators.MODID);
 
         recipeGenerator.addShapedRecipe(GeneratorType.HEAT_GENERATOR.getStack(), "III", "WOW", "CFC", 'I', "ingotIron", 'C', "ingotCopper", 'O', "ingotOsmium", 'F', Blocks.FURNACE, 'W', "plankWood");
         recipeGenerator.addShapedRecipe(GeneratorType.SOLAR_GENERATOR.getStack(), "SSS", "AIA", "PEP", 'S', GeneratorsItems.SolarPanel, 'A', MekanismItems.EnrichedAlloy, 'I', "ingotIron", 'P', "dustOsmium", 'E', MekanismItems.EnergyTablet.getUnchargedItem());

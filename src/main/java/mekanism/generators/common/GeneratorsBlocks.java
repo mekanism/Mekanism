@@ -12,7 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("mekanismgenerators")
+@ObjectHolder(MekanismGenerators.MODID)
 public class GeneratorsBlocks
 {
 	public static final Block Generator = BlockGenerator.getGeneratorBlock(GENERATOR_BLOCK_1);

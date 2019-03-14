@@ -4,6 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
@@ -194,7 +195,7 @@ public class BlockStateReactor extends ExtendedBlockState
 				builder.append("normal");
 			}
 
-			ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators", nameOverride != null ? nameOverride : type.getName());
+			ResourceLocation baseLocation = new ResourceLocation(MekanismGenerators.MODID, nameOverride != null ? nameOverride : type.getName());
 			
 			return new ModelResourceLocation(baseLocation, builder.toString());
 		}

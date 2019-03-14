@@ -113,7 +113,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	
 	public void registerItemRender(Item item)
 	{
-		MekanismRenderer.registerItemRender("mekanismgenerators", item);
+		MekanismRenderer.registerItemRender(MekanismGenerators.MODID, item);
 	}
 	
 	@SubscribeEvent
@@ -121,7 +121,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
     {
 		for(String s : CUSTOM_RENDERS)
 		{
-			ModelResourceLocation model = new ModelResourceLocation("mekanismgenerators:" + s, "inventory");
+			ModelResourceLocation model = new ModelResourceLocation(MekanismGenerators.MODID+":" + s, "inventory");
 	        Object obj = event.getModelRegistry().getObject(model);
 	        
 	        if(obj instanceof IBakedModel)
