@@ -1,5 +1,6 @@
 package mekanism.client.render.obj;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -10,8 +11,14 @@ import net.minecraftforge.common.model.IModelState;
 
 import com.google.common.collect.ImmutableMap;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class MekanismOBJModel extends OBJModel
 {
 	public OBJModelType modelType;
@@ -45,17 +52,27 @@ public class MekanismOBJModel extends OBJModel
 	@Override
     public IModel process(ImmutableMap<String, String> customData)
     {
-    	MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib(), location);
-        return ret;
+		return new MekanismOBJModel(modelType, getMatLib(), location);
     }
 
     @Override
     public IModel retexture(ImmutableMap<String, String> textures)
     {
-    	MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
-        return ret;
+		return new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
     }
-	
+
+	@Override
+	public Collection<ResourceLocation> getTextures()
+	{
+		List<ResourceLocation> superlist = new ArrayList<>();
+		for (ResourceLocation r : super.getTextures()){
+			if (!r.getResourcePath().startsWith("#")){
+				superlist.add(r);
+			}
+		}
+		return superlist;
+	}
+
 	public enum OBJModelType
 	{
 		GLOW_PANEL,

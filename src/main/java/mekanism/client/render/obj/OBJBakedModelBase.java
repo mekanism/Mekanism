@@ -233,6 +233,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
 	
 	private static Method m_updateStateVisibilityMap;
 
+	@SuppressWarnings("deprecation")
 	protected void updateStateVisibilityMap(OBJState state)
     {
 		try {
@@ -249,7 +250,8 @@ public abstract class OBJBakedModelBase extends OBJBakedModel
     }
 	
 	private static Field f_textures;
-	
+
+	@SuppressWarnings("unchecked")
 	public static ImmutableMap<String, TextureAtlasSprite> getTexturesForOBJModel(IBakedModel model)
 	{
 		try {
