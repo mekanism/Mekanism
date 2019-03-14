@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  */
 public class Gas {
 
-    private String name;
+    private final String name;
 
     private String unlocalizedName;
 
@@ -41,8 +41,7 @@ public class Gas {
      * @param s - name or key to associate this Gas with
      */
     public Gas(String s, String icon) {
-        unlocalizedName = name = s;
-        iconLocation = new ResourceLocation(icon);
+        this(s, new ResourceLocation(icon));
     }
 
     public Gas(String s, ResourceLocation icon) {
@@ -57,8 +56,7 @@ public class Gas {
      * @param t - tint of this Gas
      */
     public Gas(String s, int t) {
-        unlocalizedName = name = s;
-        iconLocation = new ResourceLocation(Mekanism.MODID, "blocks/liquid/liquid");
+        this(s, "mekanism:blocks/liquid/liquid");
         tint = t;
     }
 
@@ -156,7 +154,6 @@ public class Gas {
      */
     public Gas setTranslationKey(String s) {
         unlocalizedName = s;
-
         return this;
     }
 

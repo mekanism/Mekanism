@@ -60,15 +60,11 @@ public class MekanismFluids {
         for (Resource resource : Resource.values()) {
             String name = resource.getName();
             String nameLower = name.toLowerCase(Locale.ROOT);
-
-            OreGas clean = new OreGas("clean" + name, "oregas." + nameLower);
-            clean.setVisible(false).setTint(resource.tint);
-
-            OreGas dirty = new OreGas(nameLower, "oregas." + nameLower).setCleanGas(clean);
-            dirty.setVisible(false).setTint(resource.tint);
-
+            //Clean
+            OreGas clean = new OreGas("clean" + name, "oregas." + nameLower, resource.tint);
             GasRegistry.register(clean);
-            GasRegistry.register(dirty);
+            //Dirty
+            GasRegistry.register(new OreGas(nameLower, "oregas." + nameLower, resource.tint, clean));
         }
 
         FluidRegistry.enableUniversalBucket();
