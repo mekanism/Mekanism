@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyGauge;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -12,7 +13,6 @@ import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -38,8 +38,7 @@ public class GuiEnergyCube extends GuiMekanism {
               MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
         guiElements.add(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.WIDE, this,
               MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 55, 18));
-        guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
-              LangUtils.localize("gui.storing") + ": " + MekanismUtils
+        guiElements.add(new GuiEnergyInfo(() -> Arrays.asList(LangUtils.localize("gui.storing") + ": " + MekanismUtils
                     .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
               LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput())
                     + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));

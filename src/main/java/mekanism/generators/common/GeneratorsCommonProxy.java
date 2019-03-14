@@ -1,6 +1,5 @@
 package mekanism.generators.common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,7 +41,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import scala.actors.threadpool.Arrays;
 
 /**
  * Common proxy for the Mekanism Generators module.

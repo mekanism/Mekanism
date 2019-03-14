@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
@@ -34,7 +35,6 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
@@ -156,7 +156,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (tank.getGas() != null) {
             if (mode != GasMode.DUMPING) {
                 GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), output));
-                tank.draw(GasUtils.emit(toSend, this, ListUtils.asList(side)), true);
+                tank.draw(GasUtils.emit(toSend, this, Arrays.asList(side)), true);
             } else {
                 tank.draw(dumpAmount, true);
             }

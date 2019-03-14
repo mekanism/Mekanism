@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import com.google.common.collect.Lists;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,7 +29,6 @@ import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
-import mekanism.common.util.ListUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -348,7 +348,7 @@ public class ClientTickHandler {
 
                 configurator.setState(stack, ConfiguratorMode.values()[newVal]);
                 Mekanism.packetHandler
-                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(newVal)));
+                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(newVal)));
                 event.setCanceled(true);
             }
         }

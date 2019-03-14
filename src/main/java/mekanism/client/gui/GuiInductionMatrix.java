@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiMatrixTab;
 import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
@@ -7,7 +8,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -25,12 +25,11 @@ public class GuiInductionMatrix extends GuiMekanism {
         tileEntity = tentity;
         guiElements.add(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, 6,
               MekanismUtils.getResource(ResourceType.GUI, "GuiInductionMatrix.png")));
-        guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
+        guiElements.add(new GuiEnergyInfo(() -> Arrays.asList(
               LangUtils.localize("gui.storing") + ": " + MekanismUtils
                     .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
               LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput)
-                    + "/t",
-              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput)
+                    + "/t", LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput)
                     + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiInductionMatrix.png")));
     }
 

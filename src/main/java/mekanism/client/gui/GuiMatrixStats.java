@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyGauge;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiMatrixTab;
@@ -9,7 +10,6 @@ import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -53,12 +53,11 @@ public class GuiMatrixStats extends GuiMekanism {
                 return tileEntity.structure.lastOutput / tileEntity.structure.transferCap;
             }
         }, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png"), 38, 13));
-        guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
+        guiElements.add(new GuiEnergyInfo(() -> Arrays.asList(
               LangUtils.localize("gui.storing") + ": " + MekanismUtils
                     .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
               LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput)
-                    + "/t",
-              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput)
+                    + "/t", LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput)
                     + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
     }
 

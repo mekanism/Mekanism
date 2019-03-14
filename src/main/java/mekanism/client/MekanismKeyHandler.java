@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import com.google.common.collect.Lists;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -21,7 +22,6 @@ import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -87,7 +87,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                       configurator.getState(toolStack).ordinal() + 1 : 0;
                 configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
                 Mekanism.packetHandler
-                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(toSet)));
+                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(toSet)));
                 player.sendMessage(new TextComponentString(
                       EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.configureState") + ": " + configurator
@@ -98,7 +98,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
                 bow.setFireState(toolStack, !bow.getFireState(toolStack));
                 Mekanism.packetHandler.sendToServer(
-                      new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(bow.getFireState(toolStack))));
+                      new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(bow.getFireState(toolStack))));
                 player.sendMessage(new TextComponentString(
                       EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.fireMode")
@@ -110,7 +110,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 if (BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.FLUID_TANK) {
                     machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
                     Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND,
-                          ListUtils.asArrayList(machine.getBucketMode(toolStack))));
+                          Lists.newArrayList(machine.getBucketMode(toolStack))));
                     player.sendMessage(new TextComponentString(
                           EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                                 .localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack)
@@ -124,7 +124,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     int newChan = wt.getChannel(toolStack) < 9 ? wt.getChannel(toolStack) + 1 : 1;
                     wt.setChannel(toolStack, newChan);
                     Mekanism.packetHandler
-                          .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(newChan)));
+                          .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(newChan)));
                 }
             } else if (player.isSneaking() && item instanceof ItemFlamethrower) {
                 ItemFlamethrower flamethrower = (ItemFlamethrower) item;

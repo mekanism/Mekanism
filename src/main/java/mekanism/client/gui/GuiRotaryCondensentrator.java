@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
+import java.util.Arrays;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
@@ -22,7 +23,6 @@ import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -65,7 +65,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism {
         guiElements.add(new GuiEnergyInfo(() ->
         {
             String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
-            return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t",
+            return Arrays.asList(LangUtils.localize("gui.using") + ": " + usage + "/t",
                   LangUtils.localize("gui.needed") + ": " + MekanismUtils
                         .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
         }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));

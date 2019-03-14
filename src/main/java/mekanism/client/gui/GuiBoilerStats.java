@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
 import mekanism.client.gui.element.GuiBoilerTab;
 import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.GuiGraph;
@@ -9,7 +10,6 @@ import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
@@ -37,7 +37,7 @@ public class GuiBoilerStats extends GuiMekanism {
             TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
             String environment = UnitDisplayUtils
                   .getDisplayShort(tileEntity.structure.lastEnvironmentLoss * unit.intervalSize, false, unit);
-            return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
+            return Arrays.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png")));
         guiElements
               .add(boilGraph = new GuiGraph(this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png"), 8,

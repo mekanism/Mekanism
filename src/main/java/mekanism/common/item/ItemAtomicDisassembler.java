@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import com.google.common.collect.Multimap;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
@@ -343,8 +343,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         public static Map<Block, List<Block>> ignoreBlocks = new HashMap<>();
 
         static {
-            ignoreBlocks.put(Blocks.REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
-            ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
+            ignoreBlocks.put(Blocks.REDSTONE_ORE, Arrays.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
+            ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, Arrays.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
         }
 
         private final EntityPlayer player;

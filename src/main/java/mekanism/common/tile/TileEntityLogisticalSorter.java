@@ -95,7 +95,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
                 outer:
                 for (TransporterFilter filter : filters) {
-                    inner:
                     for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.i >= 0; ) {
                         InvStack invStack = filter.getStackFromInventory(search);
 

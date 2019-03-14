@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.Coord4D;
@@ -19,7 +20,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class MinerUtils {
 
-    public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ICE, Blocks.CHORUS_FLOWER);
+    public static List<Block> specialSilkIDs = Arrays.asList(Blocks.ICE, Blocks.CHORUS_FLOWER);
 
     private static Method getSilkTouchDrop = null;
 

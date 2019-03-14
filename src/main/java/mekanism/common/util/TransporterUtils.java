@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import java.util.Arrays;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -18,7 +19,7 @@ import net.minecraft.util.EnumFacing;
 
 public final class TransporterUtils {
 
-    public static List<EnumColor> colors = ListUtils
+    public static List<EnumColor> colors = Arrays
           .asList(EnumColor.DARK_BLUE, EnumColor.DARK_GREEN, EnumColor.DARK_AQUA, EnumColor.DARK_RED, EnumColor.PURPLE,
                 EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK,
                 EnumColor.YELLOW, EnumColor.BLACK);

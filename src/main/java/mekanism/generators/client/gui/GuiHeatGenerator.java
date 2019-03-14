@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.util.Arrays;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiFluidGauge;
@@ -13,7 +14,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
@@ -37,7 +37,7 @@ public class GuiHeatGenerator extends GuiMekanism {
               MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
         guiElements.add(new GuiSecurityTab(this, tileEntity,
               MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
-        guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
+        guiElements.add(new GuiEnergyInfo(() -> Arrays.asList(
               LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.producingEnergy)
                     + "/t",
               LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput())
@@ -55,7 +55,7 @@ public class GuiHeatGenerator extends GuiMekanism {
             TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
             String transfer = UnitDisplayUtils.getDisplayShort(tileEntity.lastTransferLoss, false, unit);
             String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss, false, unit);
-            return ListUtils.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t",
+            return Arrays.asList(LangUtils.localize("gui.transferred") + ": " + transfer + "/t",
                   LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
     }
