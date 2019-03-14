@@ -100,6 +100,9 @@ if err != None:
     print("Build of %s tag failed" % (args.tag))
     sys.exit(1)
 
+# Print changelog
+print(changelog)
+
 # For each project, extract ID, filename and dependencies and upload
 for project in args.project:
     (id, name, dep) = project.split(":", 3)
@@ -113,9 +116,7 @@ for project in args.project:
         metadata["relations"] = {"projects": [{"slug": dep, "type": "requiredDependency"}]}
 
     if args.skipupload:
-        print("Skipping upload!")
-        print("Metadata: %s" % metadata)
-        print("Filename: %s" % filename)
+        print("Skipping upload of %s" % filename)
         continue
 
     # Setup files for POST
