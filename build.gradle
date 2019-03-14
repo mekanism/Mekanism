@@ -114,6 +114,8 @@ distsDirName = "../output"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+def explodedVersion = config.mod_version.split("\\.")
+
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
     mappings = "${config.mappings_version}"
@@ -121,7 +123,10 @@ minecraft {
     useDepAts = true
 
     replace '${version}', project.version
+    replace 'new Version(999, 999, 999)', "new Version(${explodedVersion[0]}, ${explodedVersion[1]}, ${explodedVersion[2]})"
     replaceIn "Mekanism.java"
+    replaceIn "MekanismGenerators.java"
+    replaceIn "MekanismTools.java"
 }
 
 dependencies {

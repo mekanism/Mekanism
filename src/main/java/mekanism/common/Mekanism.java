@@ -194,7 +194,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(9, 6, 1);
+	public static Version versionNumber = new Version(999, 999, 999);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<>("dynamicTank");
