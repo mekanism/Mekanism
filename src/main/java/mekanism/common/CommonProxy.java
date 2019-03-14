@@ -154,53 +154,7 @@ public class CommonProxy implements IGuiProvider
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */
-	public void registerSpecialTileEntities()
-	{
-		GameRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber");
-		GameRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor");
-		GameRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner");
-		GameRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher");
-		GameRegistry.registerTileEntity(TileEntityFactory.class, "SmeltingFactory");
-		GameRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory");
-		GameRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory");
-		GameRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber");
-		GameRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter");
-		GameRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser");
-		GameRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank");
-		GameRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube");
-		GameRegistry.registerTileEntity(TileEntityPersonalChest.class, "PersonalChest");
-		GameRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank");
-		GameRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve");
-		GameRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad");
-		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");
-		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
-		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
-		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
-		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
-		GameRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "ThermalEvaporationController");
-		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
-		GameRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer");
-		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
-		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
-		GameRegistry.registerTileEntity(TileEntityFluidTank.class, "FluidTank");
-		GameRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator");
-		GameRegistry.registerTileEntity(TileEntityFormulaicAssemblicator.class, "FormulaicAssemblicator");
-		GameRegistry.registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater");
-		GameRegistry.registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing");
-		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
-		GameRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk");
-		GameRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter");
-		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
-		
-		//transmitters
-		GameRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe");
-		GameRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable");
-		GameRegistry.registerTileEntity(TileEntityThermodynamicConductor.class, "ThermodynamicConductor");
-		GameRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter");
-		GameRegistry.registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube");
-		GameRegistry.registerTileEntity(TileEntityDiversionTransporter.class, "DiversionTransporter");
-		GameRegistry.registerTileEntity(TileEntityRestrictiveTransporter.class, "RestrictiveTransporter");
-	}
+	public void registerSpecialTileEntities(){	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}
 

@@ -26,6 +26,7 @@ import mekanism.generators.client.render.item.GeneratorItemModelFactory;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.GeneratorsItems;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorBlockStateMapper;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.block.states.BlockStateReactor.ReactorBlockStateMapper;
@@ -72,17 +73,17 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@Override
 	public void registerSpecialTileEntities()
 	{
-		ClientRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator", new RenderAdvancedSolarGenerator());
-		ClientRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator", new RenderSolarGenerator());
-		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
-		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
-		ClientRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator", new RenderGasGenerator());
-		ClientRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine", new RenderWindGenerator());
-		ClientRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController", new RenderReactor());
-		ClientRegistry.registerTileEntity(TileEntityTurbineRotor.class, "TurbineRod", new RenderTurbineRotor());
-		ClientRegistry.registerTileEntity(TileEntityTurbineCasing.class, "TurbineCasing", new RenderIndustrialTurbine());
-		ClientRegistry.registerTileEntity(TileEntityTurbineValve.class, "TurbineValve", new RenderIndustrialTurbine());
-		ClientRegistry.registerTileEntity(TileEntityTurbineVent.class, "TurbineVent", new RenderIndustrialTurbine());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedSolarGenerator.class, new RenderAdvancedSolarGenerator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySolarGenerator.class, new RenderSolarGenerator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBioGenerator.class, new RenderBioGenerator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHeatGenerator.class, new RenderHeatGenerator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasGenerator.class, new RenderGasGenerator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindGenerator.class, new RenderWindGenerator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorController.class, new RenderReactor());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineRotor.class, new RenderTurbineRotor());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineCasing.class, new RenderIndustrialTurbine());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineValve.class, new RenderIndustrialTurbine());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineVent.class, new RenderIndustrialTurbine());
 	}
 
 	@Override
