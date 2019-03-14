@@ -140,11 +140,12 @@ public class CraftTweakerGasStack implements IGasStack {
 
     @Override
     public String toCommandString() {
-        return String.format("<gas:%s>", stack.getGas().getName());
+        return stack.amount > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.amount)
+              : String.format("<gas:%s>", stack.getGas().getName());
     }
 
     @Override
     public String toString() {
-        return String.format("<gas:%s> * %s", stack.getGas().getName(), stack.amount);
+        return toCommandString();
     }
 }
