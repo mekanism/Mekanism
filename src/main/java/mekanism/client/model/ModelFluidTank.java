@@ -101,6 +101,7 @@ public class ModelFluidTank extends ModelBase {
         BackGlass.render(size);
         RightGlass.render(size);
         LeftGlass.render(size);
+        MekanismRenderer.resetColor();
         MekanismRenderer.blendOff();
     }
 
