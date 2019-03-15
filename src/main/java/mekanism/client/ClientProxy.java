@@ -4,7 +4,6 @@ import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,9 +250,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
-    //TODO: Restore the other use of CUSTOM_RENDERS
-    public static final String[] CUSTOM_RENDERS = new String[]{"bin_basic", "bin_advanced", "bin_elite", "bin_ultimate",
-          "bin_creative"};
     private static final IStateMapper machineMapper = new MachineBlockStateMapper();
     private static final IStateMapper basicMapper = new BasicBlockStateMapper();
     private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
@@ -547,7 +543,7 @@ public class ClientProxy extends CommonProxy {
                         entries.add("facing=north");
                     }
 
-                    String properties = getProperties(entries, Arrays.asList(CUSTOM_RENDERS).contains(type.getName()));
+                    String properties = getProperties(entries);
 
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
 
@@ -594,8 +590,8 @@ public class ClientProxy extends CommonProxy {
                         entries.add("facing=north");
                     }
 
-                    String properties = getProperties(entries,
-                          type == BasicBlockType.BIN || Arrays.asList(CUSTOM_RENDERS).contains(type.getName()));
+                    //TODO: Is this check against bin's needed
+                    String properties = type == BasicBlockType.BIN ? "inventory" : getProperties(entries);
 
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
 
@@ -790,10 +786,7 @@ public class ClientProxy extends CommonProxy {
         MekanismRenderer.registerItemRender("mekanism", item);
     }
 
-    private String getProperties(List<String> entries, boolean isInventory) {
-        if (isInventory) {
-            return "inventory";
-        }
+    private String getProperties(List<String> entries) {
         StringBuilder properties = new StringBuilder();
         for (int i = 0; i < entries.size(); i++) {
             properties.append(entries.get(i));
