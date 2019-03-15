@@ -28,7 +28,7 @@ public class RenderBasicBlockItem extends SubTypeItemRenderer<BasicBlockType> {
 
         if (basicType != null) {
             if (basicType == BasicBlockType.BIN) {
-                RenderBinItem.renderStack();
+                RenderBinItem.renderStack(stack);
             } else if (basicType == BasicBlockType.SECURITY_DESK) {
                 RenderSecurityDeskItem.renderStack();
             }

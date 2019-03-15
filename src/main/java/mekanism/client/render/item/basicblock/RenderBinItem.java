@@ -1,12 +1,14 @@
 package mekanism.client.render.item.basicblock;
 
+import javax.annotation.Nonnull;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderBinItem {
 
-    public static void renderStack() {
+    public static void renderStack(@Nonnull ItemStack stack) {
         //TODO: The idea of this is to render the bin's contents onto the bin
         //TODO: Implement it
         /*GlStateManager.pushMatrix();
