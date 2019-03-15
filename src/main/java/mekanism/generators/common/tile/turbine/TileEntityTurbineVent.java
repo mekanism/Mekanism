@@ -79,7 +79,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 
     @Override
     public boolean canDrain(EnumFacing from, FluidStack fluid) {
-        return fluid.getFluid().equals(FluidRegistry.WATER);
+        return fluid != null && fluid.getFluid().equals(FluidRegistry.WATER);
     }
 
     @Override
