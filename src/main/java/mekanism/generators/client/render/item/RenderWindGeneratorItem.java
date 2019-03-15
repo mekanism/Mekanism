@@ -1,10 +1,12 @@
 package mekanism.generators.client.render.item;
 
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -14,7 +16,7 @@ public class RenderWindGeneratorItem {
     private static ModelWindGenerator windGenerator = new ModelWindGenerator();
     private static int angle = 0;
 
-    public static void renderStack() {
+    public static void renderStack(@Nonnull ItemStack stack) {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);

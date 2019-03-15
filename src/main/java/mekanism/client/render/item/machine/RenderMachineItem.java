@@ -30,21 +30,21 @@ public class RenderMachineItem extends SubTypeItemRenderer<MachineType> {
             if (machineType == MachineType.FLUID_TANK) {
                 RenderFluidTankItem.renderStack(stack);
             } else if (machineType == MachineType.PERSONAL_CHEST) {
-                RenderPersonalChestItem.renderStack();
+                RenderPersonalChestItem.renderStack(stack);
             } else if (machineType == MachineType.SOLAR_NEUTRON_ACTIVATOR) {
-                RenderSolarNeutronActivatorItem.renderStack();
+                RenderSolarNeutronActivatorItem.renderStack(stack);
             } else if (machineType == MachineType.SEISMIC_VIBRATOR) {
-                RenderSeismicVibratorItem.renderStack();
+                RenderSeismicVibratorItem.renderStack(stack);
             } else if (machineType == MachineType.CHEMICAL_CRYSTALLIZER) {
-                RenderChemicalCrystallizerItem.renderStack();
+                RenderChemicalCrystallizerItem.renderStack(stack);
             } else if (machineType == MachineType.CHEMICAL_DISSOLUTION_CHAMBER) {
-                RenderChemicalDissolutionChamberItem.renderStack();
+                RenderChemicalDissolutionChamberItem.renderStack(stack);
             } else if (machineType == MachineType.QUANTUM_ENTANGLOPORTER) {
-                RenderQuantumEntangloporterItem.renderStack();
+                RenderQuantumEntangloporterItem.renderStack(stack);
             } else if (machineType == MachineType.RESISTIVE_HEATER) {
-                RenderResistiveHeaterItem.renderStack();
+                RenderResistiveHeaterItem.renderStack(stack);
             } else if (machineType == MachineType.DIGITAL_MINER) {
-                RenderDigitalMinerItem.renderStack();
+                RenderDigitalMinerItem.renderStack(stack);
             }
         }
     }

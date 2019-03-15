@@ -28,17 +28,17 @@ public class RenderGeneratorItem extends SubTypeItemRenderer<GeneratorType> {
 
         if (generatorType != null) {
             if (generatorType == GeneratorType.BIO_GENERATOR) {
-                RenderBioGeneratorItem.renderStack();
+                RenderBioGeneratorItem.renderStack(stack);
             } else if (generatorType == GeneratorType.ADVANCED_SOLAR_GENERATOR) {
-                RenderAdvancedSolarGeneratorItem.renderStack();
+                RenderAdvancedSolarGeneratorItem.renderStack(stack);
             } else if (generatorType == GeneratorType.SOLAR_GENERATOR) {
-                RenderSolarGeneratorItem.renderStack();
+                RenderSolarGeneratorItem.renderStack(stack);
             } else if (generatorType == GeneratorType.HEAT_GENERATOR) {
-                RenderHeatGeneratorItem.renderStack();
+                RenderHeatGeneratorItem.renderStack(stack);
             } else if (generatorType == GeneratorType.GAS_GENERATOR) {
-                RenderGasGeneratorItem.renderStack();
+                RenderGasGeneratorItem.renderStack(stack);
             } else if (generatorType == GeneratorType.WIND_GENERATOR) {
-                RenderWindGeneratorItem.renderStack();
+                RenderWindGeneratorItem.renderStack(stack);
             }
         }
     }
