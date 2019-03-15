@@ -2,6 +2,7 @@ package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
@@ -21,6 +22,7 @@ public class RenderHeatGeneratorItem {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslated(0.0F, -1.0F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
-        heatGenerator.render(0.0625F, false, Minecraft.getMinecraft().renderEngine);
+        heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0,
+              Minecraft.getMinecraft().renderEngine);
     }
 }
