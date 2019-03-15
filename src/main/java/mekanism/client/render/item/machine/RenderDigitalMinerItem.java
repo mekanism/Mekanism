@@ -3,9 +3,11 @@ package mekanism.client.render.item.machine;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,9 +19,12 @@ public class RenderDigitalMinerItem {
     private static ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 
     public static void renderStack(@Nonnull ItemStack stack) {
+        GlStateManager.pushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(0.35F, 0.1F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
-        digitalMiner.render(0.022F, false, Minecraft.getMinecraft().renderEngine, true);
+        digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0,
+              Minecraft.getMinecraft().renderEngine, true);
+        GlStateManager.popMatrix();
     }
 }
