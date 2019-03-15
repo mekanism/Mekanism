@@ -2,11 +2,22 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 {
+	public static final ItemStackIngredientMatcher DEFAULT_MATCHER = MachineInput::inputItemMatchesDefault;
+	static final Map<Class<? extends Item>,ItemStackIngredientMatcher> ITEM_MATCHER_OVERRIDES = new HashMap<>();
+
+	public static void addCustomItemMatcher(Class<? extends Item> clazz, ItemStackIngredientMatcher matcher){
+		ITEM_MATCHER_OVERRIDES.put(clazz, matcher);
+	}
+
 	public abstract boolean isValid();
 
 	public abstract INPUT copy();
@@ -30,15 +41,24 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 	{
 		if(!container.isEmpty() && container.getCount() >= contained.getCount())
 		{
-			if(MekanismUtils.getOreDictName(container).contains("treeSapling"))
-			{
-				return StackUtils.equalsWildcard(contained, container);
-			}
-			
-			return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
+			return inputItemMatches(container, contained);
 		}
 		
 		return false;
+	}
+
+	public static boolean inputItemMatches(ItemStack container, ItemStack contained){
+		return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER).test(container, contained);
+	}
+
+	private static boolean inputItemMatchesDefault(ItemStack container, ItemStack contained)
+	{
+		if(MekanismUtils.getOreDictName(container).contains("treeSapling"))
+		{
+			return StackUtils.equalsWildcard(contained, container);
+		}
+
+		return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
 	}
 
 	@Override
@@ -59,4 +79,19 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 	}
 
 	public abstract boolean isInstance(Object other);
+
+	@FunctionalInterface
+	public interface ItemStackIngredientMatcher
+	{
+		/**
+		 * Test equality to another input.
+		 * This should return true if the input matches this one,
+		 * IGNORING AMOUNTS.
+		 *
+		 * @param definition The ingredient stored in the ItemStackInput
+		 * @param test The other input to check
+		 * @return True if input matches this one, IGNORING AMOUNTS!
+		 */
+		boolean test(ItemStack definition, ItemStack test);
+	}
 }

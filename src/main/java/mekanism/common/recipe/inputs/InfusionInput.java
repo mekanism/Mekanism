@@ -87,7 +87,7 @@ public class InfusionInput extends MachineInput<InfusionInput>
 			return !other.isValid();
 		}
 		
-		return infuse.type == other.infuse.type && StackUtils.equalsWildcardWithNBT(inputStack, other.inputStack);
+		return infuse.type == other.infuse.type && MachineInput.inputItemMatches(inputStack, other.inputStack);
 	}
 
 	@Override

@@ -75,7 +75,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 			return false;
 		}
 
-		return StackUtils.equalsWildcard(stack, theSolid);
+		return MachineInput.inputItemMatches(stack, theSolid);
 	}
 
 	/**

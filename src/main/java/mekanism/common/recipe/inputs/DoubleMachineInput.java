@@ -84,7 +84,7 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput>
 			return !other.isValid();
 		}
 
-		return StackUtils.equalsWildcardWithNBT(itemStack, other.itemStack) && StackUtils.equalsWildcardWithNBT(extraStack, other.extraStack);
+		return MachineInput.inputItemMatches(itemStack, other.itemStack) && MachineInput.inputItemMatches(extraStack, other.extraStack);
 	}
 
 	@Override
