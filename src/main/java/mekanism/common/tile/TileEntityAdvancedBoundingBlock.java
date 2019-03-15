@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
@@ -334,14 +335,19 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return null;
         }
 
+        // Return the inventory/main tile; note that it's possible, esp. when chunks are
+        // loading that the inventory/main tile has not yet loaded and thus is null.
         TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
-
-        if (!(tile instanceof IAdvancedBoundingBlock)) {
-            world.setBlockToAir(mainPos);
-            return null;
+        if (tile instanceof  IAdvancedBoundingBlock) {
+            return (IAdvancedBoundingBlock) tile;
+        } else if (tile != null) {
+            // On the off chance that another block got placed there (which seems only likely with corruption,
+            // go ahead and log what we found.
+            Mekanism.logger.info("getInv() references a position that does not implement IAdvancedBoundingBlock: {}\n" +
+                  "\tFound instead: {}\nPlease report this to the maintainer of Mekanica!", mainPos, tile);
         }
 
-        return (IAdvancedBoundingBlock) tile;
+        return null;
     }
 
     @Override
