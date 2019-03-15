@@ -72,7 +72,17 @@ import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
-import mekanism.client.render.item.ItemModelWrapper;
+import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.client.render.item.basicblock.RenderBasicBlockItem;
+import mekanism.client.render.item.gear.RenderArmoredJetpack;
+import mekanism.client.render.item.gear.RenderAtomicDisassembler;
+import mekanism.client.render.item.gear.RenderFlameThrower;
+import mekanism.client.render.item.gear.RenderFreeRunners;
+import mekanism.client.render.item.gear.RenderGasMask;
+import mekanism.client.render.item.gear.RenderJetpack;
+import mekanism.client.render.item.machine.RenderMachineItem;
+import mekanism.client.render.item.RenderEnergyCubeItem;
+import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.obj.MekanismOBJLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
@@ -216,6 +226,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -240,13 +251,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
 
-    public static final String[] CUSTOM_RENDERS = new String[]{"fluid_tank", "bin_basic", "bin_advanced", "bin_elite",
-          "bin_ultimate",
-          "Jetpack", "FreeRunners", "AtomicDisassembler", "ScubaTank", "GasMask", "ArmoredJetpack", "Flamethrower",
-          "personal_chest",
-          "solar_neutron_activator", "chemical_dissolution_chamber", "chemical_crystallizer", "seismic_vibrator",
-          "security_desk",
-          "quantum_entangloporter", "resistive_heater", "EnergyCube", "digital_miner", "bin_creative"};
+    //TODO: Restore the other use of CUSTOM_RENDERS
+    public static final String[] CUSTOM_RENDERS = new String[]{/*"fluid_tank", */"bin_basic", "bin_advanced", "bin_elite",
+          "bin_ultimate", "bin_creative"};
     private static final IStateMapper machineMapper = new MachineBlockStateMapper();
     private static final IStateMapper basicMapper = new BasicBlockStateMapper();
     private static final IStateMapper plasticMapper = new PlasticBlockStateMapper();
@@ -436,6 +443,20 @@ public class ClientProxy extends CommonProxy {
 
         ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL,
               ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
+
+        MekanismItems.Jetpack.setTileEntityItemStackRenderer(new RenderJetpack());
+        MekanismItems.ArmoredJetpack.setTileEntityItemStackRenderer(new RenderArmoredJetpack());
+        MekanismItems.GasMask.setTileEntityItemStackRenderer(new RenderGasMask());
+        MekanismItems.ScubaTank.setTileEntityItemStackRenderer(new RenderScubaTank());
+        MekanismItems.FreeRunners.setTileEntityItemStackRenderer(new RenderFreeRunners());
+        MekanismItems.AtomicDisassembler.setTileEntityItemStackRenderer(new RenderAtomicDisassembler());
+        MekanismItems.Flamethrower.setTileEntityItemStackRenderer(new RenderFlameThrower());
+        Item.getItemFromBlock(MekanismBlocks.EnergyCube).setTileEntityItemStackRenderer(new RenderEnergyCubeItem());
+        Item.getItemFromBlock(MekanismBlocks.MachineBlock).setTileEntityItemStackRenderer(new RenderMachineItem());
+        Item.getItemFromBlock(MekanismBlocks.MachineBlock2).setTileEntityItemStackRenderer(new RenderMachineItem());
+        Item.getItemFromBlock(MekanismBlocks.MachineBlock3).setTileEntityItemStackRenderer(new RenderMachineItem());
+        Item.getItemFromBlock(MekanismBlocks.BasicBlock2).setTileEntityItemStackRenderer(new RenderBasicBlockItem());
+
     }
 
     @Override
@@ -464,6 +485,36 @@ public class ClientProxy extends CommonProxy {
               new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0,
               new ModelResourceLocation("mekanism:EnergyCube", "inventory"));
+
+
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock), 4,
+              new ModelResourceLocation("mekanism:digital_miner", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock), 13,
+              new ModelResourceLocation("mekanism:personal_chest", "inventory"));
+
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 6,
+              new ModelResourceLocation("mekanism:chemical_dissolution_chamber", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 8,
+              new ModelResourceLocation("mekanism:chemical_crystallizer", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 9,
+              new ModelResourceLocation("mekanism:seismic_vibrator", "inventory"));
+
+
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 11,
+              new ModelResourceLocation("mekanism:fluid_tank", "inventory"));
+
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 0,
+              new ModelResourceLocation("mekanism:quantum_entangloporter", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 1,
+              new ModelResourceLocation("mekanism:solar_neutron_activator", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 4,
+              new ModelResourceLocation("mekanism:resistive_heater", "inventory"));
+
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), 9,
+              new ModelResourceLocation("mekanism:security_desk", "inventory"));
+
+
+
 
         for (int i = 0; i < EnumColor.DYES.length; i++) {
             ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPanel), i,
@@ -497,19 +548,7 @@ public class ClientProxy extends CommonProxy {
                         entries.add("facing=north");
                     }
 
-                    String properties = "";
-
-                    for (int i = 0; i < entries.size(); i++) {
-                        properties += entries.get(i);
-
-                        if (i < entries.size() - 1) {
-                            properties += ",";
-                        }
-                    }
-
-                    if (Arrays.asList(CUSTOM_RENDERS).contains(type.getName())) {
-                        properties = "inventory";
-                    }
+                    String properties = getProperties(entries, Arrays.asList(CUSTOM_RENDERS).contains(type.getName()));
 
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
 
@@ -556,19 +595,8 @@ public class ClientProxy extends CommonProxy {
                         entries.add("facing=north");
                     }
 
-                    String properties = "";
-
-                    for (int i = 0; i < entries.size(); i++) {
-                        properties += entries.get(i);
-
-                        if (i < entries.size() - 1) {
-                            properties += ",";
-                        }
-                    }
-
-                    if (type == BasicBlockType.BIN || Arrays.asList(CUSTOM_RENDERS).contains(type.getName())) {
-                        properties = "inventory";
-                    }
+                    String properties = getProperties(entries,
+                          type == BasicBlockType.BIN || Arrays.asList(CUSTOM_RENDERS).contains(type.getName()));
 
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
 
@@ -761,6 +789,21 @@ public class ClientProxy extends CommonProxy {
 
     public void registerItemRender(Item item) {
         MekanismRenderer.registerItemRender("mekanism", item);
+    }
+
+    private String getProperties(List<String> entries, boolean isInventory) {
+        if (isInventory) {
+            return "inventory";
+        }
+        String properties = "";
+        for (int i = 0; i < entries.size(); i++) {
+            properties += entries.get(i);
+
+            if (i < entries.size() - 1) {
+                properties += ",";
+            }
+        }
+        return properties;
     }
 
     @Override
@@ -1026,13 +1069,72 @@ public class ClientProxy extends CommonProxy {
         HolidayManager.init();
     }
 
+    private static final ModelResourceLocation ERL =  new ModelResourceLocation("mekanism:EnergyCube", "inventory");
+    private static final ModelResourceLocation JetpackRL =  new ModelResourceLocation("mekanism:Jetpack", "inventory");
+    private static final ModelResourceLocation ArmorJetpackRL =  new ModelResourceLocation("mekanism:ArmoredJetpack", "inventory");
+    private static final ModelResourceLocation GasMaskRL =  new ModelResourceLocation("mekanism:GasMask", "inventory");
+    private static final ModelResourceLocation ScubaTankRL =  new ModelResourceLocation("mekanism:ScubaTank", "inventory");
+    private static final ModelResourceLocation FreeRunnerRL =  new ModelResourceLocation("mekanism:FreeRunners", "inventory");
+
+    private static final ModelResourceLocation AtomicDisassemblerRL =  new ModelResourceLocation("mekanism:AtomicDisassembler", "inventory");
+    private static final ModelResourceLocation FlamethrowerRL =  new ModelResourceLocation("mekanism:Flamethrower", "inventory");
+
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {
-        for (String s : CUSTOM_RENDERS) {
-            ModelResourceLocation modelLoc = new ModelResourceLocation("mekanism:" + s, "inventory");
-            IBakedModel bakedModel = event.getModelRegistry().getObject(modelLoc);
-            event.getModelRegistry().putObject(modelLoc, new ItemModelWrapper(bakedModel));
-        }
+        IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+        RenderEnergyCubeItem.model = new ItemLayerWrapper(modelRegistry.getObject(ERL));
+        modelRegistry.putObject(ERL, RenderEnergyCubeItem.model);
+
+
+        RenderJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(JetpackRL));
+        modelRegistry.putObject(JetpackRL, RenderJetpack.model);
+        RenderArmoredJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(ArmorJetpackRL));
+        modelRegistry.putObject(ArmorJetpackRL, RenderArmoredJetpack.model);
+
+        RenderGasMask.model = new ItemLayerWrapper(modelRegistry.getObject(GasMaskRL));
+        modelRegistry.putObject(GasMaskRL, RenderGasMask.model);
+
+        RenderScubaTank.model = new ItemLayerWrapper(modelRegistry.getObject(ScubaTankRL));
+        modelRegistry.putObject(ScubaTankRL, RenderScubaTank.model);
+
+        RenderFreeRunners.model = new ItemLayerWrapper(modelRegistry.getObject(FreeRunnerRL));
+        modelRegistry.putObject(FreeRunnerRL, RenderFreeRunners.model);
+
+        RenderAtomicDisassembler.model = new ItemLayerWrapper(modelRegistry.getObject(AtomicDisassemblerRL));
+        modelRegistry.putObject(AtomicDisassemblerRL, RenderAtomicDisassembler.model);
+
+        RenderFlameThrower.model = new ItemLayerWrapper(modelRegistry.getObject(FlamethrowerRL));
+        modelRegistry.putObject(FlamethrowerRL, RenderFlameThrower.model);
+
+
+
+        machineModelBake(modelRegistry, "digital_miner", MachineType.DIGITAL_MINER);
+        machineModelBake(modelRegistry, "solar_neutron_activator", MachineType.SOLAR_NEUTRON_ACTIVATOR);
+        machineModelBake(modelRegistry, "chemical_dissolution_chamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER);
+        machineModelBake(modelRegistry, "chemical_crystallizer", MachineType.CHEMICAL_CRYSTALLIZER);
+        machineModelBake(modelRegistry, "seismic_vibrator", MachineType.SEISMIC_VIBRATOR);
+        machineModelBake(modelRegistry, "quantum_entangloporter", MachineType.QUANTUM_ENTANGLOPORTER);
+        machineModelBake(modelRegistry, "resistive_heater", MachineType.RESISTIVE_HEATER);
+        machineModelBake(modelRegistry, "personal_chest", MachineType.PERSONAL_CHEST);
+
+        machineModelBake(modelRegistry, "fluid_tank", MachineType.FLUID_TANK);
+
+        //basicBlockModelBake(modelRegistry, "security_desk", BasicBlockType.SECURITY_DESK);
+        basicBlockModelBake(modelRegistry, "security_desk", BasicBlockType.SECURITY_DESK);
+    }
+
+    private void machineModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, MachineType machineType) {
+        ModelResourceLocation modelResourceLocation = new ModelResourceLocation("mekanism:" + type, "inventory");
+        ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
+        RenderMachineItem.modelMap.put(machineType, itemLayerWrapper);
+        modelRegistry.putObject(modelResourceLocation, itemLayerWrapper);
+    }
+
+    private void basicBlockModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, BasicBlockType basicType) {
+        ModelResourceLocation modelResourceLocation = new ModelResourceLocation("mekanism:" + type, "inventory");
+        ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
+        RenderBasicBlockItem.modelMap.put(basicType, itemLayerWrapper);
+        modelRegistry.putObject(modelResourceLocation, itemLayerWrapper);
     }
 
     @Override

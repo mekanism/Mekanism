@@ -192,6 +192,10 @@ public class MekanismRenderer {
         GlStateManager.popMatrix();
     }
 
+    public static void bindTexture(ResourceLocation texture) {
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+    }
+
     public static void color(EnumColor color) {
         color(color, 1.0F);
     }

@@ -385,6 +385,11 @@ public class BlockStateMachine extends ExtendedBlockState {
             return name().toLowerCase(Locale.ROOT);
         }
 
+        @Override
+        public String toString() {
+            return getName();
+        }
+
         public boolean canRotateTo(EnumFacing side) {
             return facingPredicate.apply(side);
         }
