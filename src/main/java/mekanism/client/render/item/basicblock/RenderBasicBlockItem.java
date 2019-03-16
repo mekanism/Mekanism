@@ -23,14 +23,14 @@ public class RenderBasicBlockItem extends SubTypeItemRenderer<BasicBlockType> {
     }
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         BasicBlockType basicType = BasicBlockType.get(stack);
 
         if (basicType != null) {
             if (basicType == BasicBlockType.BIN) {
-                RenderBinItem.renderStack(stack);
+                RenderBinItem.renderStack(stack, transformType);
             } else if (basicType == BasicBlockType.SECURITY_DESK) {
-                RenderSecurityDeskItem.renderStack(stack);
+                RenderSecurityDeskItem.renderStack(stack, transformType);
             }
         }
     }

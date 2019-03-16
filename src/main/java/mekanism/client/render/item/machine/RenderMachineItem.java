@@ -23,28 +23,28 @@ public class RenderMachineItem extends SubTypeItemRenderer<MachineType> {
     }
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         MachineType machineType = MachineType.get(stack);
 
         if (machineType != null) {
             if (machineType == MachineType.FLUID_TANK) {
-                RenderFluidTankItem.renderStack(stack);
+                RenderFluidTankItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.PERSONAL_CHEST) {
-                RenderPersonalChestItem.renderStack(stack);
+                RenderPersonalChestItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.SOLAR_NEUTRON_ACTIVATOR) {
-                RenderSolarNeutronActivatorItem.renderStack(stack);
+                RenderSolarNeutronActivatorItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.SEISMIC_VIBRATOR) {
-                RenderSeismicVibratorItem.renderStack(stack);
+                RenderSeismicVibratorItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.CHEMICAL_CRYSTALLIZER) {
-                RenderChemicalCrystallizerItem.renderStack(stack);
+                RenderChemicalCrystallizerItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.CHEMICAL_DISSOLUTION_CHAMBER) {
-                RenderChemicalDissolutionChamberItem.renderStack(stack);
+                RenderChemicalDissolutionChamberItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.QUANTUM_ENTANGLOPORTER) {
-                RenderQuantumEntangloporterItem.renderStack(stack);
+                RenderQuantumEntangloporterItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.RESISTIVE_HEATER) {
-                RenderResistiveHeaterItem.renderStack(stack);
+                RenderResistiveHeaterItem.renderStack(stack, transformType);
             } else if (machineType == MachineType.DIGITAL_MINER) {
-                RenderDigitalMinerItem.renderStack(stack);
+                RenderDigitalMinerItem.renderStack(stack, transformType);
             }
         }
     }

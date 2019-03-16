@@ -8,6 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,7 +19,7 @@ public class RenderDigitalMinerItem {
 
     private static ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 
-    public static void renderStack(@Nonnull ItemStack stack) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(0.35F, 0.1F, 0.0F);

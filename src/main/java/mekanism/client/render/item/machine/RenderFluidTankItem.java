@@ -13,6 +13,7 @@ import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -29,7 +30,7 @@ public class RenderFluidTankItem {
 
     private static int stages = 1400;
 
-    public static void renderStack(@Nonnull ItemStack stack) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
         float fluidScale =
               (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0)

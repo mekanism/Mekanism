@@ -22,7 +22,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
         EnergyCubeTier tier = EnergyCubeTier.values()[((ITierItem) stack.getItem()).getBaseTier(stack).ordinal()];
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);

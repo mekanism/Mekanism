@@ -1,6 +1,7 @@
 package mekanism.client.render.item.basicblock;
 
 import javax.annotation.Nonnull;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -8,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderBinItem {
 
-    public static void renderStack(@Nonnull ItemStack stack) {
+    public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         //TODO: The idea of this is to render the bin's contents onto the bin
         //TODO: Implement it
         /*GlStateManager.pushMatrix();

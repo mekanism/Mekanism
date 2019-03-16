@@ -20,7 +20,7 @@ public class RenderArmoredJetpack extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Override

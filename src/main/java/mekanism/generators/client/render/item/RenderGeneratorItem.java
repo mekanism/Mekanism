@@ -23,22 +23,22 @@ public class RenderGeneratorItem extends SubTypeItemRenderer<GeneratorType> {
     }
 
     @Override
-    protected void renderBlockSpecific(@Nonnull ItemStack stack) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         GeneratorType generatorType = GeneratorType.get(stack);
 
         if (generatorType != null) {
             if (generatorType == GeneratorType.BIO_GENERATOR) {
-                RenderBioGeneratorItem.renderStack(stack);
+                RenderBioGeneratorItem.renderStack(stack, transformType);
             } else if (generatorType == GeneratorType.ADVANCED_SOLAR_GENERATOR) {
-                RenderAdvancedSolarGeneratorItem.renderStack(stack);
+                RenderAdvancedSolarGeneratorItem.renderStack(stack, transformType);
             } else if (generatorType == GeneratorType.SOLAR_GENERATOR) {
-                RenderSolarGeneratorItem.renderStack(stack);
+                RenderSolarGeneratorItem.renderStack(stack, transformType);
             } else if (generatorType == GeneratorType.HEAT_GENERATOR) {
-                RenderHeatGeneratorItem.renderStack(stack);
+                RenderHeatGeneratorItem.renderStack(stack, transformType);
             } else if (generatorType == GeneratorType.GAS_GENERATOR) {
-                RenderGasGeneratorItem.renderStack(stack);
+                RenderGasGeneratorItem.renderStack(stack, transformType);
             } else if (generatorType == GeneratorType.WIND_GENERATOR) {
-                RenderWindGeneratorItem.renderStack(stack, getTransform(stack));
+                RenderWindGeneratorItem.renderStack(stack, transformType);
             }
         }
     }

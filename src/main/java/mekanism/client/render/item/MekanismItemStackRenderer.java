@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class MekanismItemStackRenderer extends TileEntityItemStackRenderer {
 
-    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack);
+    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType);
 
     protected abstract void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType);
 
@@ -33,7 +33,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
             GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
         }
 
-        renderBlockSpecific(stack);
+        renderBlockSpecific(stack, transformType);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
