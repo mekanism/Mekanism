@@ -52,16 +52,19 @@ public final class MinerVisualRenderer
 		cachedVisuals.put(data, display);
 		
 		List<Model3D> models = new ArrayList<>();
-		
-		for(int x = -data.radius; x <= data.radius; x++)
+
+		if (data.radius <= 64)
 		{
-			for(int y = data.minY-data.yCoord; y <= data.maxY-data.yCoord; y++)
+			for(int x = -data.radius; x <= data.radius; x++)
 			{
-				for(int z = -data.radius; z <= data.radius; z++)
+				for(int y = data.minY - data.yCoord; y <= data.maxY - data.yCoord; y++)
 				{
-					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
+					for(int z = -data.radius; z <= data.radius; z++)
 					{
-						models.add(createModel(new Coord4D(x, y, z, mc.world.provider.getDimension())));
+						if(x == -data.radius || x == data.radius || y == data.minY - data.yCoord || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius)
+						{
+							models.add(createModel(new Coord4D(x, y, z, mc.world.provider.getDimension())));
+						}
 					}
 				}
 			}

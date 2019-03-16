@@ -8,6 +8,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
+
+import java.util.Arrays;
 
 
 public class GuiVisualsTab extends GuiElement
@@ -52,7 +55,15 @@ public class GuiVisualsTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
-			displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
+			if (tileEntity.radius <= 64)
+			{
+				displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
+			} else {
+				displayTooltips(Arrays.asList(
+						LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
+						TextFormatting.RED.toString()+LangUtils.localize("mekanism.gui.visuals.toobig")
+				), xAxis, yAxis);
+			}
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

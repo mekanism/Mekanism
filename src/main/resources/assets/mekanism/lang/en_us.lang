@@ -496,6 +496,7 @@ gui.dynamicTank=Dynamic Tank
 gui.industrialTurbine=Industrial Turbine
 gui.thermoelectricBoiler=Thermoelectric Boiler
 gui.visuals=Visuals
+mekanism.gui.visuals.toobig=Radius too big to display visuals
 gui.noEject=Can't Eject
 gui.undefined=Undefined
 gui.owner=Owner
