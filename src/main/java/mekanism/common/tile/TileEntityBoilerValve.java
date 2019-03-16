@@ -18,6 +18,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nullable;
+
 public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration
 {
 	public BoilerTank waterTank;
@@ -140,7 +142,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		if((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure))
 		{

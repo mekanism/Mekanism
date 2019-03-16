@@ -51,6 +51,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nullable;
+
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IUpgradeTile, IRedstoneControl, ISecurityTile
 {
 	public Set<Coord4D> activeNodes = new LinkedHashSet<>();
@@ -475,7 +477,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		return false;
 	}

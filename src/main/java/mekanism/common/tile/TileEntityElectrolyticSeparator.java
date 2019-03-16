@@ -54,6 +54,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper, IComputerIntegration, ITubeConnection, ISustainedData, IGasHandler, IUpgradeInfoHandler, ITankManager
 {
@@ -529,7 +530,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		return false;
 	}

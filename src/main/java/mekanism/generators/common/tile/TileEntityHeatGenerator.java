@@ -35,6 +35,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nullable;
+
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer
 {
 	/** The FluidTank for this generator. */
@@ -336,7 +338,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		return false;
 	}

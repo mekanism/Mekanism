@@ -48,6 +48,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import javax.annotation.Nullable;
+
 public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile, ITierUpgradeable
 {
 	public boolean isActive;
@@ -585,7 +587,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		if(fluidTank != null)
 		{

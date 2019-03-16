@@ -62,6 +62,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection, IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile
 {
@@ -506,7 +507,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		if(hasFrequency() && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT)
 		{

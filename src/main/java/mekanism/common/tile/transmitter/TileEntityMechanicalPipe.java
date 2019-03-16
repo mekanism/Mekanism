@@ -27,6 +27,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nullable;
+
 public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandlerWrapper
 {
 	public Tier.PipeTier tier = Tier.PipeTier.BASIC;
@@ -250,7 +252,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		return false;
 	}

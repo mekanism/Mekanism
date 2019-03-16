@@ -48,6 +48,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, ITubeConnection, IHeatTransfer, IConfigurable
 {
@@ -160,9 +161,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
-		return (getReactor() != null && fluid.getFluid() == FluidRegistry.getFluid("steam"));
+		return getReactor() != null && (fluid == null || fluid.getFluid() == FluidRegistry.getFluid("steam"));
 	}
 
 	@Override

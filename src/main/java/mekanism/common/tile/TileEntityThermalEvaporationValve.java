@@ -14,6 +14,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nullable;
+
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandlerWrapper, IHeatTransfer
 {
 	public boolean prevMaster = false;
@@ -83,10 +85,10 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		TileEntityThermalEvaporationController controller = getController();
-		return controller != null && controller.outputTank.getFluidAmount() > 0;
+		return controller != null && controller.outputTank.getFluidAmount() > 0 && (fluid == null || controller.outputTank.getFluid().isFluidEqual(fluid));
 	}
 
 	@Override

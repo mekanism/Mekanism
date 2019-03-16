@@ -48,6 +48,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, ITubeConnection, IUpgradeInfoHandler, ITankManager
 {
@@ -401,9 +402,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
-		return mode == 0 && from == MekanismUtils.getRight(facing) && fluid != null && fluid.isFluidEqual(fluidTank.getFluid());
+		return mode == 0 && from == MekanismUtils.getRight(facing) && (fluid == null || fluid.isFluidEqual(fluidTank.getFluid()));
 	}
 
 	@Override

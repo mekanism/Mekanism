@@ -35,6 +35,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 
+import javax.annotation.Nullable;
+
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration
 {
 	public boolean ic2Registered = false;
@@ -412,7 +414,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		return false;
 	}

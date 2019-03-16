@@ -55,6 +55,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nullable;
+
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile
 {
 	/** This pump's tank */
@@ -511,7 +513,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		return from == EnumFacing.getFront(1);
 	}

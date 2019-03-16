@@ -15,6 +15,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import javax.annotation.Nullable;
+
 public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IFluidHandlerWrapper
 {
 	public FluidTankInfo fakeInfo = new FluidTankInfo(null, 1000);
@@ -87,9 +89,9 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
-		return fluid.getFluid() == FluidRegistry.WATER;
+		return fluid == null || fluid.getFluid() == FluidRegistry.WATER;
 	}
 	
 	@Override

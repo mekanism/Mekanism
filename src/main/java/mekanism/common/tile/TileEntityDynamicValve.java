@@ -12,6 +12,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nullable;
+
 public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper
 {
 	public DynamicFluidTank fluidTank;
@@ -72,7 +74,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
-	public boolean canDrain(EnumFacing from, FluidStack fluid)
+	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
 		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && fluid != null && fluid.isFluidEqual(structure.fluidStored);
 	}
