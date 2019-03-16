@@ -22,7 +22,8 @@
       "computercraft",
       "galaticraft api",
       "metallurgy",
-      "crafttweaker"
+      "crafttweaker",
+      "cofhcore"
     ],
     "requiredMods": [
       "forge@[14.21.0.2373,)"
