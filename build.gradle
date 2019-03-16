@@ -321,6 +321,12 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             println "Changelog generated"
         }
 
+        def releaseNotesFile = project.file("docs/release_${config.mod_version}.html")
+        if (releaseNotesFile.exists()){
+            def releaseNotes = releaseNotesFile.getText()
+            generatedChangelog = "$releaseNotes<br> $generatedChangelog"
+        }
+
         //Core
         project {
             id = '268560'
