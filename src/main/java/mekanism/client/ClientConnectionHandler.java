@@ -24,6 +24,7 @@ public class ClientConnectionHandler
 				try {
 					MekanismClient.voiceClient = new VoiceClient("127.0.0.1");
 					//Will probably not work when multiple integrateds are running on one computer
+					MekanismClient.voiceClient.start();//start here as config sync is not sent
 				} catch(Throwable e) {
 					Mekanism.logger.error("Unable to establish VoiceClient on local connection.");
 					e.printStackTrace();
