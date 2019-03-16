@@ -1,21 +1,13 @@
 import json
 
-def double_uv(s, doX, doY):
+def double_uv(s):
   with open(s) as f:
       raw = f.read()
       j = json.loads(raw)
       for entry in j.get("elements"):
           faces = entry["faces"]
           for key in faces:
-              coords = faces[key]["uv"] 
-              if doX:
-                  coords[0] = 2*coords[0]
-                  coords[2] = 2*coords[2]
-              if doY:
-                  coords[1] = 2*coords[1]
-                  coords[3] = 2*coords[3]
-              faces[key]["uv"] = coords
-
+              faces[key]["uv"] = [i*2 for i in faces[key]["uv"]] 
 
       with open(s, "w") as newf:
           newf.write(json.dumps(j, indent=4))
