@@ -138,7 +138,7 @@ public class GeneralConfig extends BaseConfig
 
 	public final BooleanOption destroyDisabledBlocks = new BooleanOption(this, "general", "DestroyDisabledBlocks", true, "If machine is disabled in config, do we set its block to air if it is found in world?");
 
-	public final IntOption digitalMinerMaxRadius = new IntOption(this, "general", "digitalMinerMaxRadius", 32, "Maximum radius in blocks that the Digital Miner can reach");
+	public final IntOption digitalMinerMaxRadius = new IntOption(this, "general", "digitalMinerMaxRadius", 32, "Maximum radius in blocks that the Digital Miner can reach", 1, Integer.MAX_VALUE);
 
 	public final TypeConfigManager<BlockStateMachine.MachineType> machinesManager = new TypeConfigManager<>(this, "machines", BlockStateMachine.MachineType.class, BlockStateMachine.MachineType::getValidMachines, t->t.blockName);
 
