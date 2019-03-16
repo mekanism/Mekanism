@@ -81,7 +81,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
-		if(world.canSeeSky(getPos().add(0, 4, 0))) 
+		if (isInBlacklistedDimension())
+		{
+			return 0;
+		}
+		if(world.canSeeSky(getPos().add(0, 4, 0)))
 		{
 			final float minY = (float) MekanismConfig.current().generators.windGenerationMinY.val();
 			final float maxY = (float) MekanismConfig.current().generators.windGenerationMaxY.val();
@@ -99,6 +103,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 		else {
 			return 0;
 		}
+	}
+
+	public boolean isInBlacklistedDimension()
+	{
+		return MekanismConfig.current().generators.windGenerationBlacklist.val().contains(world.provider.getDimension());
 	}
 
 	@Override

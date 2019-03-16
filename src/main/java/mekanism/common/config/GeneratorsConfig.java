@@ -39,6 +39,8 @@ public class GeneratorsConfig extends BaseConfig
 
 	public final IntOption windGenerationMaxY = new IntOption(this, "generation", "WindGenerationMaxY", 255);
 
+	public final IntSetOption windGenerationBlacklist = new IntSetOption(this, "generation", "WindGenerationDimBlacklist", new int[0], "List of dimension ids where Wind Generator will not function and instead report that there is no wind");
+
 	public TypeConfigManager<BlockStateGenerator.GeneratorType> generatorsManager = new TypeConfigManager<>(this, "generators", BlockStateGenerator.GeneratorType.class, BlockStateGenerator.GeneratorType::getGeneratorsForConfig, t->t.blockName);
 
 	@Override

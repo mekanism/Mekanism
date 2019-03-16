@@ -58,7 +58,8 @@ public class GuiWindGenerator extends GuiMekanism
 		if(!tileEntity.getActive())
 		{
 			size += 9;
-			fontRenderer.drawString(EnumColor.DARK_RED + LangUtils.localize("gui.skyBlocked"), 51, size, 0x00CD00);
+			final String message = LangUtils.localize(tileEntity.isInBlacklistedDimension() ? "mekanism.gui.noWind" : "gui.skyBlocked");
+			fontRenderer.drawString(EnumColor.DARK_RED + message, 51, size, 0x00CD00);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
