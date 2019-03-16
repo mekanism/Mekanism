@@ -19,23 +19,26 @@ public class RenderWindGeneratorItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(0.0F, 0.4F, 0.0F);
-
+        GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND
               || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+            GlStateManager.rotate(180F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.translate(0.0F, 0.4F, 0.0F);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                GlStateManager.rotate(-90, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(-45, 0.0F, 1.0F, 0.0F);
+            } else {
+                GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
             }
-            GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
             GlStateManager.rotate(50, 1.0F, 0.0F, 0.0F);
             GlStateManager.scale(2.0F, 2.0F, 2.0F);
             GlStateManager.translate(0.0F, -0.4F, 0.4F);
-        } else if (transformType == TransformType.GUI) {
-            GlStateManager.rotate(-90, 0.0F, 1.0F, 0.0F);
-        } else if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-            GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+        } else {
+            if (transformType == TransformType.GUI) {
+                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+            } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
+                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+            }
+            GlStateManager.translate(0.0F, 0.4F, 0.0F);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindGenerator.png"));
