@@ -6,7 +6,7 @@
       "#side": "mekanism:blocks/models/multipart/PressurizedTubeVerticalAdvanced",
       "#center": "mekanism:blocks/models/multipart/PressurizedTubeAdvanced",
       "#side_opaque": "mekanism:blocks/models/multipart/opaque/PressurizedTubeVerticalAdvanced",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/PressurizedTubeAdvanced"
+      "#center_opaque": "mekanism:blocks/models/multipart/PressurizedTubeAdvanced"
     },
     "custom": {
       "flip-v": true

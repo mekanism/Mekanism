@@ -6,7 +6,7 @@
       "#side": "mekanism:blocks/models/multipart/LogisticalTransporterVerticalElite",
       "#center": "mekanism:blocks/models/multipart/LogisticalTransporterElite",
       "#side_opaque": "mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalElite",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/LogisticalTransporterElite"
+      "#center_opaque": "mekanism:blocks/models/multipart/LogisticalTransporterElite"
     },
     "custom": {
       "flip-v": true

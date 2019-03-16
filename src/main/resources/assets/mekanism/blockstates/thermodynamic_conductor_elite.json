@@ -6,7 +6,7 @@
       "#side": "mekanism:blocks/models/multipart/ThermodynamicConductorVerticalElite",
       "#center": "mekanism:blocks/models/multipart/ThermodynamicConductorElite",
       "#side_opaque": "mekanism:blocks/models/multipart/opaque/ThermodynamicConductorVerticalElite",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/ThermodynamicConductorElite"
+      "#center_opaque": "mekanism:blocks/models/multipart/ThermodynamicConductorElite"
     },
     "custom": {
       "flip-v": true

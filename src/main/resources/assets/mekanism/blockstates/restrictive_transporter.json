@@ -6,7 +6,7 @@
       "#side": "mekanism:blocks/models/multipart/RestrictiveTransporterVertical",
       "#center": "mekanism:blocks/models/multipart/RestrictiveTransporter",
       "#side_opaque": "mekanism:blocks/models/multipart/opaque/RestrictiveTransporterVertical",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/RestrictiveTransporter"
+      "#center_opaque": "mekanism:blocks/models/multipart/RestrictiveTransporter"
     },
     "custom": {
       "flip-v": true
