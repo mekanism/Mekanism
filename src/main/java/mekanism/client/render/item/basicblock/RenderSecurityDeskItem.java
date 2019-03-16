@@ -18,7 +18,11 @@ public class RenderSecurityDeskItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.rotate(180, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+        if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+            GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+        } else {
+            GlStateManager.rotate(-90, 0.0F, 1.0F, 0.0F);
+        }
         GlStateManager.scale(0.8F, 0.8F, 0.8F);
         GlStateManager.translate(0.0F, -0.8F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SecurityDesk.png"));
