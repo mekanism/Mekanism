@@ -1,13 +1,13 @@
 package mekanism.client.voice;
 
+import mekanism.common.Mekanism;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 import java.io.EOFException;
-
-import mekanism.common.Mekanism;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class VoiceOutput extends Thread
@@ -30,8 +30,9 @@ public class VoiceOutput extends Thread
 	@Override
 	public void run()
 	{
-		try {
-			sourceLine = ((SourceDataLine)AudioSystem.getLine(speaker));
+		try
+		{
+			sourceLine = ((SourceDataLine) AudioSystem.getLine(speaker));
 			sourceLine.open(voiceClient.format, 2200);
 			sourceLine.start();
 			byte[] audioData = new byte[4096]; // less allocation/gc (if done outside the loop)
@@ -39,24 +40,41 @@ public class VoiceOutput extends Thread
 			int length;
 			while(voiceClient.running)
 			{
-				try {
-					byteCount = voiceClient.input.readUnsignedShort(); //Why would we only read signed shorts? negative amount of waiting data doesn't make sense anyway :D
-					while(byteCount>0 && voiceClient.running){
-						length=audioData.length;
-						if(length>byteCount) length=byteCount;
-						length = voiceClient.input.read(audioData, 0, length); // That one returns the actual read amount of data (we can begin transferring even if input is waiting/incomplete)
-						if(length<0) throw new EOFException();
-						sourceLine.write(audioData, 0, length);
-						byteCount-=length;
+				try
+				{
+					if (voiceClient.input.available() > 0)
+					{
+						byteCount = voiceClient.input.readUnsignedShort(); //Why would we only read signed shorts? negative amount of waiting data doesn't make sense anyway :D
+						while(byteCount > 0 && voiceClient.running)
+						{
+							length = audioData.length;
+							if(length > byteCount) length = byteCount;
+							length = voiceClient.input.read(audioData, 0, length); // That one returns the actual read amount of data (we can begin transferring even if input is waiting/incomplete)
+							if(length < 0) throw new EOFException();
+							sourceLine.write(audioData, 0, length);
+							byteCount -= length;
+						}
+					} else {
+						Thread.sleep(20);
 					}
-				} catch(EOFException eof){
-				Mekanism.logger.error("VoiceServer: Unexpected input EOF Exception occured.");
-				break; // voiceClient.input will continue throwing EOFs -> no need to go on checking
-				} catch(Exception e) {
-				/*Would a debug output be good here?*/
+				}
+				catch (EOFException eof)
+				{
+					Mekanism.logger.error("VoiceServer: Unexpected input EOF Exception occured.");
+					break; // voiceClient.input will continue throwing EOFs -> no need to go on checking
+				}
+				catch (InterruptedException e)
+				{
+					break;
+				}
+				catch (Exception e)
+				{
+					Mekanism.logger.error(e);
 				}
 			}
-		} catch(Exception e) {
+		}
+		catch (Exception e)
+		{
 			Mekanism.logger.error("VoiceServer: Error while running client output thread.");
 			e.printStackTrace();
 		}
