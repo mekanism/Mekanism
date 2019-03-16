@@ -23,7 +23,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.PressurizedInput;
@@ -43,7 +43,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -62,7 +61,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy, usage.pressurizedReactionBaseUsage, 3, 100, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
+		super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy, MekanismConfig.current().usage.pressurizedReactionBaseUsage.val(), 3, 100, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		

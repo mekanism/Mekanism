@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.Coord4D;
@@ -175,13 +174,13 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	@Override
 	public double getInverseConductionCoefficient()
 	{
-		return tier.inverseConduction;
+		return tier.getInverseConduction();
 	}
 
 	@Override
 	public double getInsulationCoefficient(EnumFacing side)
 	{
-		return tier.inverseConductionInsulation;
+		return tier.getInverseConductionInsulation();
 	}
 
 	@Override
@@ -199,7 +198,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 	@Override
 	public double applyTemperatureChange()
 	{
-		temperature += tier.inverseHeatCapacity * heatToAbsorb;
+		temperature += tier.getInverseHeatCapacity() * heatToAbsorb;
 		heatToAbsorb = 0;
 		
 		if(Math.abs(temperature - clientTemperature) > (temperature / 20))

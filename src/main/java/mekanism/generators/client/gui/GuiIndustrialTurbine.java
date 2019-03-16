@@ -13,8 +13,7 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank;
@@ -56,8 +55,8 @@ public class GuiIndustrialTurbine extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow);		
-				rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);
+				double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers* MekanismConfig.current().generators.turbineDisperserGasFlow.val());
+				rate = Math.min(rate, tileEntity.structure.vents* MekanismConfig.current().generators.turbineVentGasFlow.val());
 				
 				if(rate == 0)
 				{
@@ -69,7 +68,7 @@ public class GuiIndustrialTurbine extends GuiMekanism
 		}, MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png"), 40, 13));
 		guiElements.add(new GuiEnergyInfo(() ->
         {
-            double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+            double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val()/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils* MekanismConfig.current().generators.turbineBladesPerCoil.val());
 
             return ListUtils.asList(
                     LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
@@ -86,10 +85,10 @@ public class GuiIndustrialTurbine extends GuiMekanism
 		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 		fontRenderer.drawString(tileEntity.getName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getName())/2), 5, 0x404040);
 		
-		double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+		double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val()/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils* MekanismConfig.current().generators.turbineBladesPerCoil.val());
 		
-		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow);		
-		rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);
+		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers* MekanismConfig.current().generators.turbineDisperserGasFlow.val());
+		rate = Math.min(rate, tileEntity.structure.vents* MekanismConfig.current().generators.turbineVentGasFlow.val());
 		
 		renderScaledText(LangUtils.localize("gui.production") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow*energyMultiplier), 53, 26, 0x00CD00, 106);
 		renderScaledText(LangUtils.localize("gui.flowRate") + ": " + tileEntity.structure.clientFlow + " mB/t", 53, 35, 0x00CD00, 106);

@@ -24,7 +24,7 @@ import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.ItemBlockMachine;
@@ -85,7 +85,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import buildcraft.api.tools.IToolWrench;
 
 /**
  * Block class for handling multiple machine block IDs.
@@ -308,7 +307,7 @@ public abstract class BlockMachine extends BlockContainer
 			return;
 		}
 
-		if(MekanismUtils.isActive(world, pos) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
+		if(MekanismUtils.isActive(world, pos) && ((IActiveState)tileEntity).renderUpdate() && MekanismConfig.current().client.machineEffects.val())
 		{
 			float xRandom = (float)pos.getX() + 0.5F;
 			float yRandom = (float)pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -350,7 +349,7 @@ public abstract class BlockMachine extends BlockContainer
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if(client.enableAmbientLighting)
+		if(MekanismConfig.current().client.enableAmbientLighting.val())
 		{
 			TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 
@@ -358,7 +357,7 @@ public abstract class BlockMachine extends BlockContainer
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return client.ambientLightingLevel;
+					return MekanismConfig.current().client.ambientLightingLevel.val();
 				}
 			}
 		}

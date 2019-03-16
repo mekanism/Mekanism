@@ -3,7 +3,7 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
@@ -25,8 +25,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public TileEntitySolarGenerator()
 	{
-		this("SolarGenerator", 96000, generators.solarGeneration*2);
-		GENERATION_RATE = generators.solarGeneration;
+		this("SolarGenerator", 96000, MekanismConfig.current().generators.solarGeneration.val()*2);
+		GENERATION_RATE = MekanismConfig.current().generators.solarGeneration.val();
 	}
 
 	public TileEntitySolarGenerator(String name, double maxEnergy, double output)

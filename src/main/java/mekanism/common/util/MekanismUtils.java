@@ -39,8 +39,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
-import mekanism.common.config.MekanismConfig.client;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
 import mekanism.common.item.ItemBlockBasic;
@@ -115,7 +114,7 @@ public final class MekanismUtils
 	public static boolean checkForUpdates(EntityPlayer entityplayer)
 	{
 		try {
-			if(general.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
+			if(MekanismConfig.current().general.updateNotifications.val() && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 			{
 				if(!Mekanism.latestVersionNumber.equals("null"))
 				{
@@ -299,7 +298,7 @@ public final class MekanismUtils
 	 */
 	public static Object getControlCircuit(BaseTier tier)
 	{
-		return general.controlCircuitOreDict ? "circuit" + tier.getSimpleName() : new ItemStack(MekanismItems.ControlCircuit, 1, tier.ordinal());
+		return MekanismConfig.current().general.controlCircuitOreDict.val() ? "circuit" + tier.getSimpleName() : new ItemStack(MekanismItems.ControlCircuit, 1, tier.ordinal());
 	}
 	
 	/**
@@ -625,7 +624,7 @@ public final class MekanismUtils
 	 */
 	public static int getTicks(IUpgradeTile mgmt, int def)
 	{
-		return (int)(def * Math.pow(general.maxUpgradeMultiplier, -fractionUpgrades(mgmt, Upgrade.SPEED)));
+		return (int)(def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
 	}
 
 	/**
@@ -636,7 +635,7 @@ public final class MekanismUtils
 	 */
 	public static double getEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(general.maxUpgradeMultiplier, 2*fractionUpgrades(mgmt, Upgrade.SPEED)-fractionUpgrades(mgmt, Upgrade.ENERGY));
+		return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), 2*fractionUpgrades(mgmt, Upgrade.SPEED)-fractionUpgrades(mgmt, Upgrade.ENERGY));
 	}
 	
 	/**
@@ -647,7 +646,7 @@ public final class MekanismUtils
 	 */
 	public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(general.maxUpgradeMultiplier, -fractionUpgrades(mgmt, Upgrade.ENERGY));
+		return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.ENERGY));
 	}
 
 	/**
@@ -660,10 +659,10 @@ public final class MekanismUtils
 	{
 		if(mgmt.getComponent().supports(Upgrade.GAS))
 		{
-			return def * Math.pow(general.maxUpgradeMultiplier, 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
+			return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
 		}
 
-		return def * Math.pow(general.maxUpgradeMultiplier, fractionUpgrades(mgmt, Upgrade.SPEED));
+		return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.SPEED));
 	}
 
 	/**
@@ -674,7 +673,7 @@ public final class MekanismUtils
 	 */
 	public static double getMaxEnergy(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(general.maxUpgradeMultiplier, fractionUpgrades(mgmt, Upgrade.ENERGY));
+		return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), fractionUpgrades(mgmt, Upgrade.ENERGY));
 	}
 	
 	/**
@@ -687,7 +686,7 @@ public final class MekanismUtils
 	{
 		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemStack));
 		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
-		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
+		return def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
 	
 	/**
@@ -834,7 +833,7 @@ public final class MekanismUtils
 			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
-		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && client.machineEffects)
+		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && MekanismConfig.current().client.machineEffects.val())
 		{
 			updateAllLightTypes(world, pos);
 		}
@@ -1118,16 +1117,16 @@ public final class MekanismUtils
 			return LangUtils.localize("gui.infinite");
 		}
 		
-		switch(general.energyUnit)
+		switch(MekanismConfig.current().general.energyUnit.val())
 		{
 			case J:
 				return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return UnitDisplayUtils.getDisplayShort(energy * general.TO_RF, ElectricUnit.REDSTONE_FLUX);
+				return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_RF.val(), ElectricUnit.REDSTONE_FLUX);
 			case EU:
-				return UnitDisplayUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS);
+				return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_IC2.val(), ElectricUnit.ELECTRICAL_UNITS);
 			case T:
-				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TESLA, ElectricUnit.TESLA);
+				return UnitDisplayUtils.getDisplayShort(energy * MekanismConfig.current().general.TO_TESLA.val(), ElectricUnit.TESLA);
 		}
 
 		return "error";
@@ -1153,14 +1152,14 @@ public final class MekanismUtils
 	 */
 	public static double convertToJoules(double energy)
 	{
-		switch(general.energyUnit)
+		switch(MekanismConfig.current().general.energyUnit.val())
 		{
 			case RF:
-				return energy * general.FROM_RF;
+				return energy * MekanismConfig.current().general.FROM_RF.val();
 			case EU:
-				return energy * general.FROM_IC2;
+				return energy * MekanismConfig.current().general.FROM_IC2.val();
 			case T:
-				return energy * general.FROM_TESLA;
+				return energy * MekanismConfig.current().general.FROM_TESLA.val();
 			default:
 				return energy;
 		}
@@ -1173,14 +1172,14 @@ public final class MekanismUtils
 	 */
 	public static double convertToDisplay(double energy)
 	{
-		switch(general.energyUnit)
+		switch(MekanismConfig.current().general.energyUnit.val())
 		{
 			case RF:
-				return energy * general.TO_RF;
+				return energy * MekanismConfig.current().general.TO_RF.val();
 			case EU:
-				return energy * general.TO_IC2;
+				return energy * MekanismConfig.current().general.TO_IC2.val();
 			case T:
-				return energy * general.TO_RF / 10;
+				return energy * MekanismConfig.current().general.TO_RF.val() / 10;
 			default:
 				return energy;
 		}
@@ -1195,7 +1194,7 @@ public final class MekanismUtils
 	{
 		double TK = unit.convertToK(T, true);
 		
-		switch(general.tempUnit)
+		switch(MekanismConfig.current().general.tempUnit.val())
 		{
 			case K:
 				return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN);
@@ -1219,7 +1218,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useIC2()
 	{
-		return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !general.blacklistIC2;
+		return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !MekanismConfig.current().general.blacklistIC2.val();
 	}
 
 	/**
@@ -1228,7 +1227,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return Mekanism.hooks.RFLoaded && !general.blacklistRF;
+		return Mekanism.hooks.RFLoaded && !MekanismConfig.current().general.blacklistRF.val();
 	}
 	
 	/**
@@ -1237,7 +1236,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useTesla()
 	{
-		return Mekanism.hooks.TeslaLoaded && !general.blacklistTesla;
+		return Mekanism.hooks.TeslaLoaded && !MekanismConfig.current().general.blacklistTesla.val();
 	}
 	
 	/**
@@ -1246,7 +1245,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useForge()
 	{
-		return !general.blacklistForge;
+		return !MekanismConfig.current().general.blacklistForge.val();
 	}
 
 	/**
@@ -1430,7 +1429,7 @@ public final class MekanismUtils
 		
 		EntityPlayerMP player = (EntityPlayerMP)p;
 		
-		return general.opsBypassRestrictions && player.mcServer.getPlayerList().canSendCommands(player.getGameProfile());
+		return MekanismConfig.current().general.opsBypassRestrictions.val() && player.mcServer.getPlayerList().canSendCommands(player.getGameProfile());
 	}
 	
 	/**

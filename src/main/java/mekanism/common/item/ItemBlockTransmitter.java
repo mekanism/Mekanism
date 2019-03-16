@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mcmultipart.api.multipart.IMultipart;
@@ -27,7 +26,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -85,28 +83,28 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
 			
 			if(transmission == TransmissionType.ENERGY)
 			{
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.get(tier).cableCapacity) + "/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.get(tier).getCableCapacity()) + "/t");
 			}
 			else if(transmission == TransmissionType.FLUID)
 			{
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipeCapacity + "mB/t");
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipePullAmount + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).getPipeCapacity() + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).getPipePullAmount() + "mB/t");
 			}
 			else if(transmission == TransmissionType.GAS)
 			{
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubeCapacity + "mB/t");
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubePullAmount + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).getTubeCapacity() + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).getTubePullAmount() + "mB/t");
 			}
 			else if(transmission == TransmissionType.ITEM)
 			{
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (Tier.TransporterTier.get(tier).speed/(100/20)) + " m/s");
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TransporterTier.get(tier).pullAmount*2 + "/s");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (Tier.TransporterTier.get(tier).getSpeed() /(100/20)) + " m/s");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TransporterTier.get(tier).getPullAmount() *2 + "/s");
 			}
 			else if(transmission == TransmissionType.HEAT)
 			{
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY + Tier.ConductorTier.get(tier).inverseConduction);
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY + Tier.ConductorTier.get(tier).inverseConductionInsulation);
-				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY + Tier.ConductorTier.get(tier).inverseHeatCapacity);
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY + Tier.ConductorTier.get(tier).getInverseConduction());
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY + Tier.ConductorTier.get(tier).getInverseConductionInsulation());
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY + Tier.ConductorTier.get(tier).getInverseHeatCapacity());
 			}
 
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));

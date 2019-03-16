@@ -7,7 +7,7 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -107,7 +107,7 @@ public enum Upgrade
 		
 		if(canMultiply())
 		{
-			double effect = Math.pow(general.maxUpgradeMultiplier, (float)tile.getComponent().getUpgrades(this)/(float)getMax());
+			double effect = Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), (float)tile.getComponent().getUpgrades(this)/(float)getMax());
 			
 			ret.add(LangUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect*100)/100F) + "x");
 		}

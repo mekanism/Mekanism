@@ -16,7 +16,7 @@ import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
@@ -60,7 +60,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	@Override
 	public void update()
 	{
-		if(!world.isRemote && general.destroyDisabledBlocks)
+		if(!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val())
 		{
 			MachineType type = BlockStateMachine.MachineType.get(getBlockType(), getBlockMetadata());
 			

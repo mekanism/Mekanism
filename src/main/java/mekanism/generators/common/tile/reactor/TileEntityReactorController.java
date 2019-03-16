@@ -2,8 +2,6 @@ package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -14,7 +12,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.SoundWrapper;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
@@ -126,7 +124,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	@SideOnly(Side.CLIENT)
 	public void updateSound()
 	{
-		if(shouldPlaySound() && getSound().canRestart() && client.enableMachineSounds)
+		if(shouldPlaySound() && getSound().canRestart() && MekanismConfig.current().client.enableMachineSounds.val())
 		{
 			getSound().reset();
 			getSound().play();

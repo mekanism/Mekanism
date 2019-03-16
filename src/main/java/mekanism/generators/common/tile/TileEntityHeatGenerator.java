@@ -9,7 +9,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
@@ -27,7 +27,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -56,7 +55,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 	public TileEntityHeatGenerator()
 	{
-		super("heat", "HeatGenerator", 160000, generators.heatGeneration*2);
+		super("heat", "HeatGenerator", 160000, MekanismConfig.current().generators.heatGeneration.val()*2);
 		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
@@ -107,7 +106,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				setActive(true);
 
 				lavaTank.drain(10, true);
-				transferHeatTo(generators.heatGeneration);
+				transferHeatTo(MekanismConfig.current().generators.heatGeneration.val());
 			}
 			else {
 				setActive(false);
@@ -200,10 +199,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 		if(world.provider.getDimension() == -1)
 		{
-			netherBoost = generators.heatGenerationNether;
+			netherBoost = MekanismConfig.current().generators.heatGenerationNether.val();
 		}
 
-		return (generators.heatGenerationLava * lavaBoost) + netherBoost;
+		return (MekanismConfig.current().generators.heatGenerationLava.val() * lavaBoost) + netherBoost;
 	}
 	
 	private boolean isLava(BlockPos pos)

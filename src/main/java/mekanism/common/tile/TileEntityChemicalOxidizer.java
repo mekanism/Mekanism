@@ -12,7 +12,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.OxidationRecipe;
@@ -43,7 +43,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 
 	public TileEntityChemicalOxidizer()
 	{
-		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy, usage.rotaryCondensentratorUsage, 3, 100);
+		super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy, MekanismConfig.current().usage.rotaryCondensentratorUsage.val(), 3, 100);
 		
 		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	}

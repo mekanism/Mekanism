@@ -1,19 +1,94 @@
 package mekanism.common.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import io.netty.buffer.ByteBuf;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
-public class TypeConfigManager 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+@ParametersAreNonnullByDefault
+public class TypeConfigManager<T extends Enum<T>> extends Option
 {
-	private Map<String, Boolean> config = new HashMap<>();
-	
-	public boolean isEnabled(String type)
+	private EnumSet<T> config;
+	private Supplier<List<T>> validValuesSupplier;
+	private Function<T,String> nameSupplier;
+
+	TypeConfigManager(BaseConfig owner, String category, Class<T> enumClazz, Supplier<List<T>> validValuesSupplier, Function<T,String> nameSupplier)
 	{
-		return config.get(type) != null && config.get(type);
+		super(owner, category, "", null);//key unused
+		this.validValuesSupplier = validValuesSupplier;
+		this.nameSupplier = nameSupplier;
+		this.config = EnumSet.noneOf(enumClazz);
+	}
+
+	public boolean isEnabled(@Nullable T type)
+	{
+		return config.contains(type);
 	}
 	
-	public void setEntry(String type, boolean enabled)
+	public void setEntry(T type, boolean enabled)
 	{
-		config.put(type, enabled);
+		if (enabled)
+		{
+			config.add(type);
+		} else {
+			config.remove(type);
+		}
+	}
+
+	/**
+	 * Get the enum constant from a name.
+	 * Used in recipes, allowed to be non-cached
+	 *
+	 * @param name JSON supplied name
+	 * @return the found enum constant or null
+	 */
+	@Nullable
+	public T typeFromName(String name)
+	{
+		for(T type : validValuesSupplier.get())
+		{
+			if (nameSupplier.apply(type).equals(name)){
+				return type;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	protected void load(Configuration config)
+	{
+		for(T type : validValuesSupplier.get())
+		{
+			String typeName = nameSupplier.apply(type);
+			final Property property = config.get(this.category, typeName + "Enabled", true, "Allow " + typeName + " to be used/crafted. Requires game restart to fully take effect.");
+			property.setRequiresWorldRestart(true);
+			setEntry(type, property.getBoolean());
+		}
+	}
+
+	@Override
+	protected void write(ByteBuf buf)
+	{
+		for(T type : validValuesSupplier.get())
+		{
+			buf.writeBoolean(config.contains(type));
+		}
+	}
+
+	@Override
+	protected void read(ByteBuf buf)
+	{
+		config.clear();
+		for(T type : validValuesSupplier.get())
+		{
+			if (buf.readBoolean())
+				config.add(type);
+		}
 	}
 }

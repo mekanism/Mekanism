@@ -6,7 +6,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -22,7 +22,7 @@ public final class HolidayManager
 
 	public static void init()
 	{
-		if(client.holidays)
+		if(MekanismConfig.current().client.holidays.val())
 		{
 			holidays.add(new Christmas());
 			holidays.add(new NewYear());
@@ -52,7 +52,7 @@ public final class HolidayManager
 
 	public static ResourceLocation filterSound(ResourceLocation sound)
 	{
-		if(!client.holidays)
+		if(!MekanismConfig.current().client.holidays.val())
 		{
 			return sound;
 		}

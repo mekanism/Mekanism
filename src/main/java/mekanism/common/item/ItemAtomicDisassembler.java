@@ -8,7 +8,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.ListUtils;
@@ -43,7 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
-	public double HOE_USAGE = 10 * general.DISASSEMBLER_USAGE;
+	public double HOE_USAGE = 10 * MekanismConfig.current().general.DISASSEMBLER_USAGE.val();
 
 	public ItemAtomicDisassembler()
 	{
@@ -106,10 +106,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		if(state.getBlockHardness(world, pos) != 0.0D)
 		{
-			setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
+			setEnergy(itemstack, getEnergy(itemstack) - (MekanismConfig.current().general.DISASSEMBLER_USAGE.val()*getEfficiency(itemstack)));
 		}
 		else {
-			setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*(getEfficiency(itemstack))/2));
+			setEnergy(itemstack, getEnergy(itemstack) - (MekanismConfig.current().general.DISASSEMBLER_USAGE.val()*(getEfficiency(itemstack))/2));
 		}
 
 		return true;
@@ -164,7 +164,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 				for(Coord4D coord : found)
 				{
-					if(coord.equals(orig) || getEnergy(itemstack) < (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)))
+					if(coord.equals(orig) || getEnergy(itemstack) < (MekanismConfig.current().general.DISASSEMBLER_USAGE.val()*getEfficiency(itemstack)))
 					{
 						continue;
 					}
@@ -177,7 +177,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 					block2.breakBlock(player.world, coord.getPos(), state);
 					block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
 
-					setEnergy(itemstack, getEnergy(itemstack) - (general.DISASSEMBLER_USAGE*getEfficiency(itemstack)));
+					setEnergy(itemstack, getEnergy(itemstack) - (MekanismConfig.current().general.DISASSEMBLER_USAGE.val()*getEfficiency(itemstack)));
 				}
 			}
 		}

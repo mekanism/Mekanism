@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.security.ISecurityTile.SecurityMode;
@@ -66,7 +66,7 @@ public class TileComponentSecurity implements ITileComponent
 	
 	public SecurityMode getMode()
 	{
-		if(general.allowProtection) 
+		if(MekanismConfig.current().general.allowProtection.val())
 		{
 			return securityMode;
 		} 

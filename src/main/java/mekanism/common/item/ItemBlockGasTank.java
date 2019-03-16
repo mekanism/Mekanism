@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +20,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -89,7 +88,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		{
 			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 			tileEntity.tier = GasTankTier.values()[getBaseTier(stack).ordinal()];
-			tileEntity.gasTank.setMaxGas(tileEntity.tier.storage);
+			tileEntity.gasTank.setMaxGas(tileEntity.tier.getStorage());
 			tileEntity.gasTank.setGas(getGas(stack));
 			
 			if(tileEntity instanceof ISecurityTile)
@@ -145,7 +144,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			list.add(EnumColor.ORANGE + gasStack.getGas().getLocalizedName() + ": " + EnumColor.GREY + amount);
 		}
 		
-		int cap = GasTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
+		int cap = GasTankTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
 		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap));
 
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
@@ -209,7 +208,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			list.add(empty);
 		}
 
-		if(general.prefilledGasTanks)
+		if(MekanismConfig.current().general.prefilledGasTanks.val())
 		{
 			for(Gas type : GasRegistry.getRegisteredGasses())
 			{
@@ -249,13 +248,13 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
-		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
+		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
 	}
 
 	@Override
 	public int getRate(ItemStack itemstack)
 	{
-		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].output;
+		return GasTankTier.values()[getBaseTier(itemstack).ordinal()].getOutput();
 	}
 
 	@Override
@@ -379,7 +378,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(!general.allowProtection)
+		if(!MekanismConfig.current().general.allowProtection.val())
 		{
 			return SecurityMode.PUBLIC;
 		}

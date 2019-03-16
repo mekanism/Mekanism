@@ -3,7 +3,7 @@ package mekanism.common.world;
 import java.util.Random;
 
 import mekanism.common.MekanismBlocks;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -22,25 +22,25 @@ public class GenHandler implements IWorldGenerator
 	{
 		if(!(chunkGenerator instanceof ChunkGeneratorHell) && !(chunkGenerator instanceof ChunkGeneratorEnd))
 		{
-			for(int i = 0; i < general.osmiumPerChunk; i++)
+			for(int i = 0; i < MekanismConfig.current().general.osmiumPerChunk.val(); i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
 				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 
-			for(int i = 0; i < general.copperPerChunk; i++)
+			for(int i = 0; i < MekanismConfig.current().general.copperPerChunk.val(); i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
 				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 
-			for(int i = 0; i < general.tinPerChunk; i++)
+			for(int i = 0; i < MekanismConfig.current().general.tinPerChunk.val(); i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
 				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 			
-			for(int i = 0; i < general.saltPerChunk; i++)
+			for(int i = 0; i < MekanismConfig.current().general.saltPerChunk.val(); i++)
 			{
 				int randPosX = (chunkX*16) + random.nextInt(16) + 8;
 				int randPosZ = (chunkZ*16) + random.nextInt(16) + 8;

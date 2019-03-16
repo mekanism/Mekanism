@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
@@ -104,7 +102,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 
 		int count = getItemCount();
-		int remain = tier.storage-count;
+		int remain = tier.getStorage() -count;
 
 		if(remain >= itemType.getMaxStackSize())
 		{
@@ -152,7 +150,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 	public ItemStack add(ItemStack stack, boolean simulate)
 	{
-		if(isValid(stack) && (tier == BinTier.CREATIVE || getItemCount() != tier.storage))
+		if(isValid(stack) && (tier == BinTier.CREATIVE || getItemCount() != tier.getStorage()))
 		{
 			if(itemType.isEmpty() && !simulate)
 			{
@@ -161,7 +159,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 			if(tier != BinTier.CREATIVE)
 			{
-				if(getItemCount() + stack.getCount() <= tier.storage)
+				if(getItemCount() + stack.getCount() <= tier.getStorage())
 				{
 					if(!simulate)
 					{
@@ -172,11 +170,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				}
 				else {
 					ItemStack rejects = stack.copy();
-					rejects.setCount((getItemCount()+stack.getCount()) - tier.storage);
+					rejects.setCount((getItemCount()+stack.getCount()) - tier.getStorage());
 
 					if(!simulate)
 					{
-						setItemCount(tier.storage);
+						setItemCount(tier.getStorage());
 					}
 	
 					return rejects;
@@ -672,7 +670,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 //	@Override
 	public int getMaxStoredCount()
 	{
-		return tier.storage;
+		return tier.getStorage();
 	}
 
 	@Override
@@ -728,7 +726,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				return 0;
 			}
 			
-			return tier.storage;
+			return tier.getStorage();
 		}
 
 		@Override

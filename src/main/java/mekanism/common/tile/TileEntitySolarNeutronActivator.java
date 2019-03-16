@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -25,7 +24,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -211,7 +210,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	
 			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay = general.UPDATE_DELAY;
+				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
 				isActive = clientActive;
 				MekanismUtils.updateBlock(world, getPos());
 			}

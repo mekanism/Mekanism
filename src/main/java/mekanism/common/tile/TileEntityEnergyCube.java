@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -137,7 +135,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 			return Integer.MAX_VALUE;
 		}
 		
-		return tier.output;
+		return tier.getOutput();
 	}
 
 	@Override
@@ -176,7 +174,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 	@Override
 	public double getMaxEnergy()
 	{
-		return tier.maxEnergy;
+		return tier.getMaxEnergy();
 	}
 
 	@Override
@@ -216,7 +214,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 			case 0:
 				return new Object[] {getEnergy()};
 			case 1:
-				return new Object[] {tier.output};
+				return new Object[] {tier.getOutput()};
 			case 2:
 				return new Object[] {getMaxEnergy()};
 			case 3:

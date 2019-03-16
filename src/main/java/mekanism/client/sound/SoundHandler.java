@@ -3,7 +3,7 @@ package mekanism.client.sound;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
@@ -126,7 +126,7 @@ public class SoundHandler
 	
 	public static void playSound(SoundEvent sound)
 	{
-        playSound(PositionedSoundRecord.getMasterRecord(sound, client.baseSoundVolume));
+        playSound(PositionedSoundRecord.getMasterRecord(sound, (float) MekanismConfig.current().client.baseSoundVolume.val()));
 	}
 
 	public static void playSound(ISound sound)

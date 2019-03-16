@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -26,7 +26,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
 	public TileEntityWindGenerator()
 	{
-		super("wind", "WindGenerator", 200000, (generators.windGenerationMax)*2);
+		super("wind", "WindGenerator", 200000, (MekanismConfig.current().generators.windGenerationMax.val())*2);
 		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	}
 
@@ -46,7 +46,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 			
 			if(getActive())
 			{
-				setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
+				setEnergy(electricityStored + (MekanismConfig.current().generators.windGenerationMin.val()*currentMultiplier));
 			}
 		}
 		else {
@@ -83,10 +83,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	{
 		if(world.canSeeSky(getPos().add(0, 4, 0))) 
 		{
-			final float minY = (float)generators.windGenerationMinY;
-			final float maxY = (float)generators.windGenerationMaxY;
-			final float minG = (float)generators.windGenerationMin;
-			final float maxG = (float)generators.windGenerationMax;
+			final float minY = (float) MekanismConfig.current().generators.windGenerationMinY.val();
+			final float maxY = (float) MekanismConfig.current().generators.windGenerationMaxY.val();
+			final float minG = (float) MekanismConfig.current().generators.windGenerationMin.val();
+			final float maxG = (float) MekanismConfig.current().generators.windGenerationMax.val();
 
 			final float slope = (maxG - minG) / (maxY - minY);
 			final float intercept = minG - slope * minY;

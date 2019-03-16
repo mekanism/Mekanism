@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.LaserManager;
@@ -11,8 +9,7 @@ import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +33,7 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 
 	public TileEntityLaser()
 	{
-		super("machine.laser", "Laser", 2*usage.laserUsage);
+		super("machine.laser", "Laser", 2* MekanismConfig.current().usage.laserUsage.val());
 		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
 	}
 
@@ -49,7 +46,7 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 		{
 			if(isActive)
 			{
-				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, usage.laserUsage, world);
+				RayTraceResult mop = LaserManager.fireLaserClient(this, facing, MekanismConfig.current().usage.laserUsage.val(), world);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -66,9 +63,9 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 
 					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))))
 					{
-						diggingProgress += usage.laserUsage;
+						diggingProgress += MekanismConfig.current().usage.laserUsage.val();
 
-						if(diggingProgress < hardness*general.laserEnergyNeededPerHardness)
+						if(diggingProgress < hardness* MekanismConfig.current().general.laserEnergyNeededPerHardness.val())
 						{
 							Mekanism.proxy.addHitEffects(hitCoord, mop);
 						}
@@ -77,11 +74,11 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 			}
 		}
 		else {
-			if(getEnergy() >= usage.laserUsage)
+			if(getEnergy() >= MekanismConfig.current().usage.laserUsage.val())
 			{
 				setActive(true);
 				
-				LaserInfo info = LaserManager.fireLaser(this, facing, usage.laserUsage, world);
+				LaserInfo info = LaserManager.fireLaser(this, facing, MekanismConfig.current().usage.laserUsage.val(), world);
 				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -98,9 +95,9 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 					
 					if(!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))))
 					{
-						diggingProgress += usage.laserUsage;
+						diggingProgress += MekanismConfig.current().usage.laserUsage.val();
 
-						if(diggingProgress >= hardness*general.laserEnergyNeededPerHardness)
+						if(diggingProgress >= hardness* MekanismConfig.current().general.laserEnergyNeededPerHardness.val())
 						{
 							LaserManager.breakBlock(hitCoord, true, world);
 							diggingProgress = 0;
@@ -108,7 +105,7 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 					}
 				}
 
-				setEnergy(getEnergy() - usage.laserUsage);
+				setEnergy(getEnergy() - MekanismConfig.current().usage.laserUsage.val());
 			}
 			else {
 				setActive(false);

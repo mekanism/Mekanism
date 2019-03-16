@@ -1,17 +1,13 @@
 package mekanism.common.tile;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<SmeltingRecipe>
 {
@@ -19,7 +15,7 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<Smelti
 
 	public TileEntityEnergizedSmelter()
 	{
-		super("smelter", "EnergizedSmelter", BlockStateMachine.MachineType.ENERGIZED_SMELTER.baseEnergy, usage.energizedSmelterUsage, 200);
+		super("smelter", "EnergizedSmelter", BlockStateMachine.MachineType.ENERGIZED_SMELTER.baseEnergy, MekanismConfig.current().usage.energizedSmelterUsage.val(), 200);
 	}
 
 	@Override

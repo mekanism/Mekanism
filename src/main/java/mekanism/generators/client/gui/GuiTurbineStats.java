@@ -3,8 +3,7 @@ package mekanism.generators.client.gui;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.ListUtils;
@@ -32,7 +31,7 @@ public class GuiTurbineStats extends GuiMekanism
 		guiElements.add(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiNull.png")));
 		guiElements.add(new GuiEnergyInfo(() ->
         {
-            double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
+            double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val()/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils* MekanismConfig.current().generators.turbineBladesPerCoil.val());
 
             return ListUtils.asList(
                     LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
@@ -53,10 +52,10 @@ public class GuiTurbineStats extends GuiMekanism
 		
 		fontRenderer.drawString(LangUtils.localize("gui.tankVolume") + ": " + tileEntity.structure.lowerVolume, 8, 26, 0x404040);
 		
-		boolean dispersersLimiting = tileEntity.structure.lowerVolume*tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow < 
-				tileEntity.structure.vents*generators.turbineVentGasFlow;
-		boolean ventsLimiting = tileEntity.structure.lowerVolume*tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow > 
-				tileEntity.structure.vents*generators.turbineVentGasFlow;
+		boolean dispersersLimiting = tileEntity.structure.lowerVolume*tileEntity.structure.clientDispersers* MekanismConfig.current().generators.turbineDisperserGasFlow.val() <
+				tileEntity.structure.vents* MekanismConfig.current().generators.turbineVentGasFlow.val();
+		boolean ventsLimiting = tileEntity.structure.lowerVolume*tileEntity.structure.clientDispersers* MekanismConfig.current().generators.turbineDisperserGasFlow.val() >
+				tileEntity.structure.vents* MekanismConfig.current().generators.turbineVentGasFlow.val();
 		
 		fontRenderer.drawString(LangUtils.localize("gui.steamFlow"), 8, 40, 0x797979);
 		fontRenderer.drawString(LangUtils.localize("gui.dispersers") + ": " + tileEntity.structure.clientDispersers + (dispersersLimiting ? limiting : ""), 14, 49, 0x404040);
@@ -69,12 +68,12 @@ public class GuiTurbineStats extends GuiMekanism
 		fontRenderer.drawString(LangUtils.localize("gui.blades") + ": " + tileEntity.structure.blades + (bladesLimiting ? limiting : ""), 14, 81, 0x404040);
 		fontRenderer.drawString(LangUtils.localize("gui.coils") + ": " + tileEntity.structure.coils + (coilsLimiting ? limiting : ""), 14, 90, 0x404040);
 		
-		double energyMultiplier = (general.maxEnergyPerSteam/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils*generators.turbineBladesPerCoil);
-		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers*generators.turbineDisperserGasFlow);		
-		rate = Math.min(rate, tileEntity.structure.vents*generators.turbineVentGasFlow);
+		double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val()/TurbineUpdateProtocol.MAX_BLADES)*Math.min(tileEntity.structure.blades, tileEntity.structure.coils* MekanismConfig.current().generators.turbineBladesPerCoil.val());
+		double rate = tileEntity.structure.lowerVolume*(tileEntity.structure.clientDispersers* MekanismConfig.current().generators.turbineDisperserGasFlow.val());
+		rate = Math.min(rate, tileEntity.structure.vents* MekanismConfig.current().generators.turbineVentGasFlow.val());
 		
 		fontRenderer.drawString(LangUtils.localize("gui.maxProduction") + ": " + MekanismUtils.getEnergyDisplay(rate*energyMultiplier), 8, 104, 0x404040);
-		fontRenderer.drawString(LangUtils.localize("gui.maxWaterOutput") + ": " + tileEntity.structure.condensers*generators.condenserRate + " mB/t", 8, 113, 0x404040);
+		fontRenderer.drawString(LangUtils.localize("gui.maxWaterOutput") + ": " + tileEntity.structure.condensers* MekanismConfig.current().generators.condenserRate.val() + " mB/t", 8, 113, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

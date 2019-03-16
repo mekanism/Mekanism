@@ -8,7 +8,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketSecurityMode.SecurityModeMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
@@ -134,7 +134,7 @@ public class GuiSecurityTab extends GuiElement
 	
 	private SecurityMode getSecurity()
 	{
-		if(!general.allowProtection) 
+		if(!MekanismConfig.current().general.allowProtection.val())
 		{
 			return SecurityMode.PUBLIC;
 		}
@@ -199,7 +199,7 @@ public class GuiSecurityTab extends GuiElement
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		if(button == 0 && general.allowProtection)
+		if(button == 0 && MekanismConfig.current().general.allowProtection.val())
 		{
 			if(getOwner() != null && mc.player.getUniqueID().equals(getOwner()))
 			{

@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -31,7 +31,7 @@ public class LaserManager
 
 	public static LaserInfo fireLaser(Pos3D from, EnumFacing direction, double energy, World world)
 	{
-		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
+		Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
 
 		RayTraceResult mop = world.rayTraceBlocks(from, to);
 
@@ -77,7 +77,7 @@ public class LaserManager
 
 	public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world)
 	{
-		if(!general.aestheticWorldDamage)
+		if(!MekanismConfig.current().general.aestheticWorldDamage.val())
 		{
 			return null;
 		}
@@ -117,7 +117,7 @@ public class LaserManager
 
 	public static RayTraceResult fireLaserClient(Pos3D from, EnumFacing direction, double energy, World world)
 	{
-		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
+		Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
 		RayTraceResult mop = world.rayTraceBlocks(from, to);
 
 		if(mop != null)

@@ -1,6 +1,6 @@
 package mekanism.client.sound;
 
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.client.audio.SoundEventAccessor;
@@ -151,7 +151,7 @@ public class MekSound implements ISound
 	@Override
 	public float getVolume() 
 	{
-		return volume * client.baseSoundVolume;
+		return (float)(volume * MekanismConfig.current().client.baseSoundVolume.val());
 	}
 
 	@Override

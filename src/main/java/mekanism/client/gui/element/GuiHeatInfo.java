@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -50,7 +50,7 @@ public class GuiHeatInfo extends GuiElement
 
 			info.addAll(infoHandler.getInfo());
 			
-			info.add(LangUtils.localize("gui.unit") + ": " + general.tempUnit);
+			info.add(LangUtils.localize("gui.unit") + ": " + MekanismConfig.current().general.tempUnit.val());
 			displayTooltips(info, xAxis, yAxis);
 		}
 	}
@@ -65,7 +65,7 @@ public class GuiHeatInfo extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134)
 			{
-				general.tempUnit = TempType.values()[(general.tempUnit.ordinal()+1)%TempType.values().length];
+				MekanismConfig.current().general.tempUnit.set(TempType.values()[(MekanismConfig.current().general.tempUnit.val().ordinal()+1)%TempType.values().length]);
 			}
 		}
 	}

@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
@@ -11,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -110,7 +108,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 			
 			if(burning)
 			{
-				heatToAbsorb += general.heatPerFuelTick;
+				heatToAbsorb += MekanismConfig.current().general.heatPerFuelTick.val();
 			}
 			
 			double[] loss = simulateHeat();
@@ -162,7 +160,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
 			
 			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay = general.UPDATE_DELAY;
+				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
 				isActive = clientActive;
 				MekanismUtils.updateBlock(world, getPos());
 			}

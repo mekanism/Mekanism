@@ -11,7 +11,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.security.ISecurityItem;
@@ -61,7 +61,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import buildcraft.api.tools.IToolWrench;
 
 /**
  * Block class for handling multiple generator block IDs.
@@ -220,7 +219,7 @@ public abstract class BlockGenerator extends BlockContainer
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if(client.enableAmbientLighting)
+		if(MekanismConfig.current().client.enableAmbientLighting.val())
 		{
 			TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
 
@@ -228,7 +227,7 @@ public abstract class BlockGenerator extends BlockContainer
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return client.ambientLightingLevel;
+					return MekanismConfig.current().client.ambientLightingLevel.val();
 				}
 			}
 		}

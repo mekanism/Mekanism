@@ -22,8 +22,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.WasherRecipe;
@@ -43,7 +42,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -73,7 +71,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
 	public TileEntityChemicalWasher()
 	{
-		super("machine.washer", "ChemicalWasher", BlockStateMachine.MachineType.CHEMICAL_WASHER.baseEnergy, usage.chemicalWasherUsage, 4);
+		super("machine.washer", "ChemicalWasher", BlockStateMachine.MachineType.CHEMICAL_WASHER.baseEnergy, MekanismConfig.current().usage.chemicalWasherUsage.val(), 4);
 		
 		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 	}
@@ -205,7 +203,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 	
 			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay = general.UPDATE_DELAY;
+				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
 				isActive = clientActive;
 				MekanismUtils.updateBlock(world, getPos());
 			}

@@ -73,7 +73,6 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import buildcraft.api.tools.IToolWrench;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -468,7 +467,7 @@ public abstract class BlockBasic extends Block
 
 			if(!world.isRemote)
 			{
-				if(bin.getItemCount() < bin.tier.storage)
+				if(bin.getItemCount() < bin.tier.getStorage())
 				{
 					if(bin.addTicks == 0)
 					{
@@ -485,7 +484,7 @@ public abstract class BlockBasic extends Block
 	
 						for(int i = 0; i < inv.size(); i++)
 						{
-							if(bin.getItemCount() == bin.tier.storage)
+							if(bin.getItemCount() == bin.tier.getStorage())
 							{
 								break;
 							}

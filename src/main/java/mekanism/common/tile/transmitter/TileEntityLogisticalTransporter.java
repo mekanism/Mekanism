@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import mekanism.api.Coord4D;
@@ -137,7 +136,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
 				TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-				TransitRequest request = TransitRequest.getTopStacks(tile, side, tier.pullAmount);
+				TransitRequest request = TransitRequest.getTopStacks(tile, side, tier.getPullAmount());
 				
 				if(!request.isEmpty())
 				{
@@ -436,7 +435,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
 	public double getCost()
 	{
-		return (double)TransporterTier.ULTIMATE.speed / (double)tier.speed;
+		return (double) TransporterTier.ULTIMATE.getSpeed() / (double) tier.getSpeed();
 	}
 	
 	@Override

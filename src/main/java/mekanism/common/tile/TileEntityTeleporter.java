@@ -37,15 +37,10 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketEntityEffect;
-import net.minecraft.network.play.server.SPacketRespawn;
-import net.minecraft.network.play.server.SPacketSetExperience;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -53,8 +48,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -459,16 +452,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
 
 	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
-		int energyCost = MekanismConfig.usage.teleporterBaseUsage;
+		int energyCost = MekanismConfig.current().usage.teleporterBaseUsage.val();
 
 		if(entity.world.provider.getDimension() != coords.dimensionId)
 		{
-			energyCost+=MekanismConfig.usage.teleporterDimensionPenalty;
+			energyCost+= MekanismConfig.current().usage.teleporterDimensionPenalty.val();
 		}
 		else
 		{
 			int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
-			energyCost += (distance * MekanismConfig.usage.teleporterDistanceUsage);
+			energyCost += (distance * MekanismConfig.current().usage.teleporterDistanceUsage.val());
 		}
 
 		return energyCost;

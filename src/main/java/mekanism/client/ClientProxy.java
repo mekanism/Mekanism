@@ -122,8 +122,7 @@ import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
-import mekanism.common.config.MekanismConfig.client;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -264,17 +263,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadConfiguration();
 
-		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true, "Play sounds for Jetpack/Gas Mask/Flamethrower (all players)").getBoolean();
-		client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true, "Machine make sound?").getBoolean();
-		client.holidays = Mekanism.configuration.get("client", "Holidays", true, "Christmas/New Years greetings in chat").getBoolean();
-		client.baseSoundVolume = (float)Mekanism.configuration.get("client", "SoundVolume", 1D, "Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder").getDouble();
-		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true, "Show particles when machines active").getBoolean();
-		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
-				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
-		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", false, "Should active machines produce block light. Causes chunk redraws!").getBoolean();
-		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15, "How much light to produce if ambient lighting is enabled", 1, 15).getInt();
-		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false, "If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents").getBoolean();
-		client.allowConfiguratorModeScroll = Mekanism.configuration.get("client", "ConfiguratorModeScroll", true, "Allow sneak+scroll to change Configurator modes").getBoolean();
+		MekanismConfig.current().client.load(Mekanism.configuration);
 
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -1109,7 +1098,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.onConfigSync(fromPacket);
 
-		if(fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null)
+		if(fromPacket && MekanismConfig.current().general.voiceServerEnabled.val() && MekanismClient.voiceClient != null)
 		{
 			MekanismClient.voiceClient.start();
 		}

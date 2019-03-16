@@ -8,7 +8,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +18,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -34,7 +33,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 	public TileEntityBioGenerator()
 	{
-		super("bio", "BioGenerator", 160000, generators.bioGeneration*2);
+		super("bio", "BioGenerator", 160000, MekanismConfig.current().generators.bioGeneration.val()*2);
 		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	}
 
@@ -93,7 +92,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			}
 
 			bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
-			setEnergy(electricityStored + generators.bioGeneration);
+			setEnergy(electricityStored + MekanismConfig.current().generators.bioGeneration.val());
 		}
 		else {
 			if(!world.isRemote)

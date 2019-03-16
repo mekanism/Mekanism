@@ -21,7 +21,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
@@ -59,7 +59,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
 	public TileEntityChemicalInfuser()
 	{
-		super("machine.cheminfuser", "ChemicalInfuser", BlockStateMachine.MachineType.CHEMICAL_INFUSER.baseEnergy, usage.chemicalInfuserUsage, 4);
+		super("machine.cheminfuser", "ChemicalInfuser", BlockStateMachine.MachineType.CHEMICAL_INFUSER.baseEnergy, MekanismConfig.current().usage.chemicalInfuserUsage.val(), 4);
 		
 		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 	}

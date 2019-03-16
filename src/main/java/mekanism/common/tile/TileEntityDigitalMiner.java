@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +26,7 @@ import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -85,9 +84,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
-	public final double BASE_ENERGY_USAGE = usage.digitalMinerUsage;
+	public final double BASE_ENERGY_USAGE = MekanismConfig.current().usage.digitalMinerUsage.val();
 
-	public double energyUsage = usage.digitalMinerUsage;
+	public double energyUsage = MekanismConfig.current().usage.digitalMinerUsage.val();
 
 	public int radius;
 

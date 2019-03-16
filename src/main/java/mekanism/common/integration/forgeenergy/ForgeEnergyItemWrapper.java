@@ -2,7 +2,7 @@ package mekanism.common.integration.forgeenergy;
 
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -31,7 +31,7 @@ public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergySto
 
 			if(!simulate)
 			{
-				getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) + toReceive*general.FROM_TESLA);
+				getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) + toReceive* MekanismConfig.current().general.FROM_TESLA.val());
 			}
 
 			return toReceive;
@@ -50,7 +50,7 @@ public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergySto
 
 			if(!simulate)
 			{
-				getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) - toSend*general.FROM_TESLA);
+				getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) - toSend* MekanismConfig.current().general.FROM_TESLA.val());
 			}
 
 			return toSend;
@@ -62,13 +62,13 @@ public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergySto
 	@Override
 	public int getEnergyStored() 
 	{
-		return MekanismUtils.clampToInt(Math.round(getItem().getEnergy(getStack())*general.TO_FORGE));
+		return MekanismUtils.clampToInt(Math.round(getItem().getEnergy(getStack())* MekanismConfig.current().general.TO_FORGE.val()));
 	}
 
 	@Override
 	public int getMaxEnergyStored()
 	{
-		return MekanismUtils.clampToInt(Math.round(getItem().getMaxEnergy(getStack())*general.TO_FORGE));
+		return MekanismUtils.clampToInt(Math.round(getItem().getMaxEnergy(getStack())* MekanismConfig.current().general.TO_FORGE.val()));
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.PurificationRecipe;
@@ -23,7 +23,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("purification", "PurificationChamber", BlockStateMachine.MachineType.PURIFICATION_CHAMBER.baseEnergy, usage.purificationChamberUsage, 200, 1);
+		super("purification", "PurificationChamber", BlockStateMachine.MachineType.PURIFICATION_CHAMBER.baseEnergy, MekanismConfig.current().usage.purificationChamberUsage.val(), 200, 1);
 	}
 
 	@Override

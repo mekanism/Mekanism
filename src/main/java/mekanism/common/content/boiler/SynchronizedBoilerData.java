@@ -7,7 +7,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -59,13 +59,13 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	 */
 	public static double getHeatEnthalpy()
 	{
-		return general.maxEnergyPerSteam/general.energyPerHeat;
+		return MekanismConfig.current().general.maxEnergyPerSteam.val()/ MekanismConfig.current().general.energyPerHeat.val();
 	}
 	
 	public double getHeatAvailable()
 	{
 		double heatAvailable = (temperature-BASE_BOIL_TEMP)*locations.size();
-		return Math.min(heatAvailable, superheatingElements*general.superheatingHeatTransfer);
+		return Math.min(heatAvailable, superheatingElements* MekanismConfig.current().general.superheatingHeatTransfer.val());
 	}
 	
 	public boolean needsRenderUpdate()

@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.util.LangUtils;
@@ -35,7 +35,7 @@ public class GuiSeismicVibrator extends GuiMekanism
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png"), 164, 15));
 		guiElements.add(new GuiEnergyInfo(() ->
         {
-            String multiplier = MekanismUtils.getEnergyDisplay(usage.seismicVibratorUsage);
+            String multiplier = MekanismUtils.getEnergyDisplay(MekanismConfig.current().usage.seismicVibratorUsage.val());
             return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
         }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicVibrator.png")));
 

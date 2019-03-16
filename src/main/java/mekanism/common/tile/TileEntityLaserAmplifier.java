@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -14,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -102,7 +100,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					{
 						diggingProgress += lastFired;
 						
-						if(diggingProgress < hardness*general.laserEnergyNeededPerHardness)
+						if(diggingProgress < hardness* MekanismConfig.current().general.laserEnergyNeededPerHardness.val())
 						{
 							Mekanism.proxy.addHitEffects(hitCoord, mop);
 						}
@@ -154,7 +152,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					{
 						diggingProgress += firing;
 
-						if(diggingProgress >= hardness*general.laserEnergyNeededPerHardness)
+						if(diggingProgress >= hardness* MekanismConfig.current().general.laserEnergyNeededPerHardness.val())
 						{
 							LaserManager.breakBlock(hitCoord, true, world);
 							diggingProgress = 0;

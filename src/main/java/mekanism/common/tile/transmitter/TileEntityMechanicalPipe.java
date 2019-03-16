@@ -201,7 +201,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 	@Override
 	public int getCapacity()
 	{
-		return tier.pipeCapacity;
+		return tier.getPipeCapacity();
 	}
 
 	@Override
@@ -274,7 +274,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
 	public int getPullAmount()
 	{
-		return tier.pipePullAmount;
+		return tier.getPipePullAmount();
 	}
 
 	@Override

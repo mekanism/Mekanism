@@ -16,7 +16,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -26,7 +26,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -72,7 +71,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                 }
             }
 
-            if(client.opaqueTransmitters || message.coord4D == null || player == null)
+            if(MekanismConfig.current().client.opaqueTransmitters.val() || message.coord4D == null || player == null)
             {
                 return;
             }

@@ -2,7 +2,6 @@ package mekanism.common.content.entangloporter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import mekanism.api.gas.GasStack;
@@ -25,8 +24,8 @@ public class InventoryFrequency extends Frequency
 {
 	public static final String ENTANGLOPORTER = "Entangloporter";
 	
-	public static final int FLUID_TANK_SIZE = Tier.FluidTankTier.ULTIMATE.output;
-	public static final int GAS_TANK_SIZE = Tier.GasTankTier.ULTIMATE.output;
+	public static final int FLUID_TANK_SIZE = Tier.FluidTankTier.ULTIMATE.getOutput();
+	public static final int GAS_TANK_SIZE = Tier.GasTankTier.ULTIMATE.getOutput();
 
 	public double storedEnergy;
 	public FluidTank storedFluid;

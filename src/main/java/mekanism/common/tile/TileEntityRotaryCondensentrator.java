@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -23,7 +22,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -40,7 +39,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -68,7 +66,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
 	public TileEntityRotaryCondensentrator()
 	{
-		super("machine.rotarycondensentrator", "RotaryCondensentrator", BlockStateMachine.MachineType.ROTARY_CONDENSENTRATOR.baseEnergy, usage.rotaryCondensentratorUsage, 5);
+		super("machine.rotarycondensentrator", "RotaryCondensentrator", BlockStateMachine.MachineType.ROTARY_CONDENSENTRATOR.baseEnergy, MekanismConfig.current().usage.rotaryCondensentratorUsage.val(), 5);
 		inventory = NonNullList.withSize(6, ItemStack.EMPTY);
 	}
 

@@ -4,12 +4,15 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
-import mekanism.common.config.MekanismConfig.tools;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.ToolsConfig;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;
@@ -19,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
@@ -89,6 +93,7 @@ public class MekanismTools implements IModule
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		proxy.loadConfiguration();
 		addItems();
 	}
 
@@ -101,9 +106,6 @@ public class MekanismTools implements IModule
 		//Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
 		MinecraftForge.EVENT_BUS.register(this);
 
-		//Load the proxy
-		proxy.loadConfiguration();
-
 		//Load this module
 		addRecipes();
 		
@@ -114,188 +116,38 @@ public class MekanismTools implements IModule
 	public void addItems()
 	{
 		//Tools
-		toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN"
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "harvestLevel", 3).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "maxUses", 2500).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "efficiency", 20d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "damage", 10).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "enchantability", 40).getInt()
-		);
-		toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2"
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "harvestLevel", 3).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "maxUses", 3000).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "efficiency", 25d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "damage", 10).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "enchantability", 50).getInt()
-		);
-		toolLAZULI = EnumHelper.addToolMaterial("LAZULI"
-				, Mekanism.configuration.get("tools.tool-balance.lapis.regular", "harvestLevel", 2).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.lapis.regular", "maxUses", 200).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.lapis.regular", "efficiency", 5d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.lapis.regular", "damage", 2).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.lapis.regular", "enchantability", 8).getInt()
-		);
-		toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2"
-				, Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "harvestLevel", 2).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "maxUses", 250).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "efficiency", 6d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "damage", 4).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "enchantability", 10).getInt()
-		);
-		toolOSMIUM = EnumHelper.addToolMaterial("OSMIUM"
-				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "harvestLevel", 2).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "maxUses", 500).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.osmium.regular", "efficiency", 10d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "damage", 4).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.osmium.regular", "enchantability", 12).getInt()
-		);
-		toolOSMIUM2 = EnumHelper.addToolMaterial("OSMIUM2"
-				, Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "harvestLevel", 3).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "maxUses", 700).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "efficiency", 12d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "damage", 5).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "enchantability", 16).getInt()
-		);
-		toolBRONZE = EnumHelper.addToolMaterial("BRONZE"
-				, Mekanism.configuration.get("tools.tool-balance.bronze.regular", "harvestLevel", 2).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.bronze.regular", "maxUses", 800).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.bronze.regular", "efficiency", 14d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.bronze.regular", "damage", 6).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.bronze.regular", "enchantability", 10).getInt()
-		);
-		toolBRONZE2 = EnumHelper.addToolMaterial("BRONZE2"
-				, Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "harvestLevel", 3).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "maxUses", 1100).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "efficiency", 16d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "damage", 10).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "enchantability", 14).getInt()
-		);
-		toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE"
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "harvestLevel", 2).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "maxUses", 300).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "efficiency", 14d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "damage", 5).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "enchantability", 18).getInt()
-		);
-		toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2"
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "harvestLevel", 2).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "maxUses", 450).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "efficiency", 18d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "damage", 5).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "enchantability", 22).getInt()
-		);
-		toolSTEEL = EnumHelper.addToolMaterial("STEEL"
-				, Mekanism.configuration.get("tools.tool-balance.steel.regular", "harvestLevel", 3).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.steel.regular", "maxUses", 850).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.steel.regular", "efficiency", 14d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.steel.regular", "damage", 4).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.steel.regular", "enchantability", 10).getInt()
-		);
-		toolSTEEL2 = EnumHelper.addToolMaterial("STEEL2"
-				, Mekanism.configuration.get("tools.tool-balance.steel.paxel", "harvestLevel", 3).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.steel.paxel", "maxUses", 1250).getInt()
-				, (float)Mekanism.configuration.get("tools.tool-balance.steel.paxel", "efficiency", 18d).getDouble(0)
-				, Mekanism.configuration.get("tools.tool-balance.steel.paxel", "damage", 8).getInt()
-				, Mekanism.configuration.get("tools.tool-balance.steel.paxel", "enchantability", 14).getInt()
-		);
-		
-		AXE_DAMAGE.put(toolOBSIDIAN, (float)Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "axeAttackDamage", 12D).getDouble());
-		AXE_SPEED.put(toolOBSIDIAN, (float)Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "axeAttackSpeed", -2D).getDouble());
+		toolOBSIDIAN = getToolMaterial("OBSIDIAN", MekanismConfig.current().tools.toolOBSIDIAN);
+		toolOBSIDIAN2 = getToolMaterial("OBSIDIAN2", MekanismConfig.current().tools.toolOBSIDIAN2);
+		toolLAZULI = getToolMaterial("LAZULI", MekanismConfig.current().tools.toolLAZULI);
+		toolLAZULI2 = getToolMaterial("LAZULI2", MekanismConfig.current().tools.toolLAZULI2);
+		toolOSMIUM = getToolMaterial("OSMIUM", MekanismConfig.current().tools.toolOSMIUM);
+		toolOSMIUM2 = getToolMaterial("OSMIUM2", MekanismConfig.current().tools.toolOSMIUM2);
+		toolBRONZE = getToolMaterial("BRONZE", MekanismConfig.current().tools.toolBRONZE);
+		toolBRONZE2 = getToolMaterial("BRONZE2", MekanismConfig.current().tools.toolBRONZE2);
+		toolGLOWSTONE = getToolMaterial("GLOWSTONE", MekanismConfig.current().tools.toolGLOWSTONE);
+		toolGLOWSTONE2 = getToolMaterial("GLOWSTONE2", MekanismConfig.current().tools.toolGLOWSTONE2);
+		toolSTEEL = getToolMaterial("STEEL", MekanismConfig.current().tools.toolSTEEL);
+		toolSTEEL2 = getToolMaterial("STEEL2", MekanismConfig.current().tools.toolSTEEL2);
 
-		AXE_DAMAGE.put(toolLAZULI, (float)Mekanism.configuration.get("tools.tool-balance.lazuli.regular", "axeAttackDamage", 8D).getDouble());
-		AXE_SPEED.put(toolLAZULI, (float)Mekanism.configuration.get("tools.tool-balance.lazuli.regular", "axeAttackSpeed", -3.1D).getDouble());
-		
-		AXE_DAMAGE.put(toolOSMIUM, (float)Mekanism.configuration.get("tools.tool-balance.osmium.regular", "axeAttackDamage", 8D).getDouble());
-		AXE_SPEED.put(toolOSMIUM, (float)Mekanism.configuration.get("tools.tool-balance.osmium.regular", "axeAttackSpeed", -3D).getDouble());
-		
-		AXE_DAMAGE.put(toolBRONZE, (float)Mekanism.configuration.get("tools.tool-balance.bronze.regular", "axeAttackDamage", 8D).getDouble());
-		AXE_SPEED.put(toolBRONZE, (float)Mekanism.configuration.get("tools.tool-balance.bronze.regular", "axeAttackSpeed", -3.1D).getDouble());
-		
-		AXE_DAMAGE.put(toolGLOWSTONE, (float)Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "axeAttackDamage", 8D).getDouble());
-		AXE_SPEED.put(toolGLOWSTONE, (float)Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "axeAttackSpeed", -3.1D).getDouble());
-		
-		AXE_DAMAGE.put(toolSTEEL, (float)Mekanism.configuration.get("tools.tool-balance.steel.regular", "axeAttackDamage", 8D).getDouble());
-		AXE_SPEED.put(toolSTEEL, (float)Mekanism.configuration.get("tools.tool-balance.steel.regular", "axeAttackSpeed", -3D).getDouble());
-		
+		setAxeSpeedDamage(toolOBSIDIAN, MekanismConfig.current().tools.toolOBSIDIAN);
+
+		setAxeSpeedDamage(toolLAZULI, MekanismConfig.current().tools.toolLAZULI);
+
+		setAxeSpeedDamage(toolOSMIUM, MekanismConfig.current().tools.toolOSMIUM);
+
+		setAxeSpeedDamage(toolBRONZE, MekanismConfig.current().tools.toolBRONZE);
+
+		setAxeSpeedDamage(toolGLOWSTONE, MekanismConfig.current().tools.toolGLOWSTONE);
+
+		setAxeSpeedDamage(toolSTEEL, MekanismConfig.current().tools.toolSTEEL);
+
 		//Armors
-		armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", "TODO"
-				, Mekanism.configuration.get("tools.armor-balance.obsidian", "durability", 50).getInt()
-				, new int[]
-				{
-						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "feet", 5).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "legs", 8).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "chest", 12).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "head", 5).getInt()
-				}
-				, Mekanism.configuration.get("tools.armor-balance.obsidian", "enchantability", 40).getInt()
-				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
-				, (float)Mekanism.configuration.get("tools.armor-balance.obsidian", "toughness", 4D).getDouble()
-		);
-		armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", "TODO"
-				, Mekanism.configuration.get("tools.armor-balance.lapis", "durability", 13).getInt()
-				, new int[]
-				{
-						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "feet", 2).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "legs", 6).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "chest", 5).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.lapis.protection", "head", 2).getInt()
-				}
-				, Mekanism.configuration.get("tools.armor-balance.lapis", "enchantability", 8).getInt()
-				, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND
-				, (float)Mekanism.configuration.get("tools.armor-balance.lapis", "toughness", 0D).getDouble()
-		);
-		armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", "TODO"
-				, Mekanism.configuration.get("tools.armor-balance.osmium", "durability", 30).getInt()
-				, new int[]
-				{
-						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "feet", 3).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "legs", 6).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "chest", 5).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.osmium.protection", "head", 3).getInt()
-				}
-				, Mekanism.configuration.get("tools.armor-balance.osmium", "enchantability", 12).getInt()
-				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
-				, Mekanism.configuration.get("tools.armor-balance.osmium", "toughness", 1).getInt()
-		);
-		armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", "TODO"
-				, Mekanism.configuration.get("tools.armor-balance.bronze", "durability", 35).getInt()
-				, new int[]
-				{
-						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "feet", 2).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "legs", 5).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "chest", 6).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.bronze.protection", "head", 3).getInt()
-				}
-				, Mekanism.configuration.get("tools.armor-balance.bronze", "enchantability", 10).getInt()
-				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
-				, (float)Mekanism.configuration.get("tools.armor-balance.bronze", "toughness", 0D).getDouble()
-		);
-		armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", "TODO"
-				, Mekanism.configuration.get("tools.armor-balance.glowstone", "durability", 18).getInt()
-				, new int[]
-				{
-						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "feet", 3).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "legs", 6).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "chest", 7).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "head", 3).getInt()
-				}
-				, Mekanism.configuration.get("tools.armor-balance.glowstone", "enchantability", 18).getInt()
-				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
-				, (float)Mekanism.configuration.get("tools.armor-balance.glowstone", "toughness", 0D).getDouble()
-		);
-		armorSTEEL = EnumHelper.addArmorMaterial("STEEL", "TODO"
-				, Mekanism.configuration.get("tools.armor-balance.steel", "durability", 40).getInt()
-				, new int[]
-				{
-						Mekanism.configuration.get("tools.armor-balance.steel.protection", "feet", 3).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.steel.protection", "legs", 6).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.steel.protection", "chest", 7).getInt(),
-						Mekanism.configuration.get("tools.armor-balance.steel.protection", "head", 3).getInt()
-				}
-				, Mekanism.configuration.get("tools.armor-balance.steel", "enchantability", 10).getInt()
-				, SoundEvents.ITEM_ARMOR_EQUIP_IRON
-				, (float)Mekanism.configuration.get("tools.armor-balance.steel", "toughness", 1D).getDouble()
-		);
+		armorOBSIDIAN = getArmorMaterial("OBSIDIAN", MekanismConfig.current().tools.armorOBSIDIAN, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+		armorLAZULI = getArmorMaterial("LAZULI", MekanismConfig.current().tools.armorLAZULI, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND);
+		armorOSMIUM = getArmorMaterial("OSMIUM", MekanismConfig.current().tools.armorOSMIUM, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+		armorBRONZE = getArmorMaterial("BRONZE", MekanismConfig.current().tools.armorBRONZE, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+		armorGLOWSTONE = getArmorMaterial("GLOWSTONE", MekanismConfig.current().tools.armorGLOWSTONE, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+		armorSTEEL = getArmorMaterial("STEEL", MekanismConfig.current().tools.armorSTEEL, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
 		
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -304,6 +156,40 @@ public class MekanismTools implements IModule
 
 		ToolsItems.initializeItems();
 		ToolsItems.setHarvestLevels();
+	}
+
+	private void setAxeSpeedDamage(ToolMaterial toolOBSIDIAN, ToolsConfig.ToolBalance toolOBSIDIAN2)
+	{
+		AXE_DAMAGE.put(toolOBSIDIAN, toolOBSIDIAN2.axeAttackDamage.val());
+		AXE_SPEED.put(toolOBSIDIAN, toolOBSIDIAN2.axeAttackSpeed.val());
+	}
+
+	private ToolMaterial getToolMaterial(String enumName, ToolsConfig.ToolBalance toolConfig)
+	{
+		return EnumHelper.addToolMaterial(enumName
+				, toolConfig.harvestLevel.val()
+				, toolConfig.maxUses.val()
+				, toolConfig.efficiency.val()
+				, toolConfig.damage.val()
+				, toolConfig.enchantability.val()
+		);
+	}
+
+	private ArmorMaterial getArmorMaterial(String enumName, ToolsConfig.ArmorBalance settings, SoundEvent equipSoundEvent)
+	{
+		return EnumHelper.addArmorMaterial(enumName, "TODO"
+				, settings.durability.val()
+				, new int[]
+						{
+								settings.feetProtection.val(),
+								settings.legsProtection.val(),
+								settings.chestProtection.val(),
+								settings.headProtection.val(),
+						}
+				, settings.enchantability.val()
+				, equipSoundEvent
+				, settings.toughness.val()
+		);
 	}
 
 	public void addRecipes() {
@@ -367,61 +253,58 @@ public class MekanismTools implements IModule
 		GameRegistry.addSmelting(ToolsItems.SteelBoots, new ItemStack(MekanismItems.Nugget, 1, 4), 0.1F);
 	}
 
+	private void setStackIfEmpty(EntityLivingBase entity, EntityEquipmentSlot slot, ItemStack item){
+		if (entity.getItemStackFromSlot(slot).isEmpty()){
+			entity.setItemStackToSlot(slot, item);
+		}
+	}
+
+	private void setEntityArmorWithChance(Random random, EntityLivingBase entity, Item sword, Item helmet, Item chestplate, Item leggings, Item boots){
+		if(entity instanceof EntityZombie && random.nextInt(100) < 50)
+			setStackIfEmpty(entity, EntityEquipmentSlot.MAINHAND, new ItemStack(sword));
+		if(random.nextInt(100) < 50)
+			setStackIfEmpty(entity, EntityEquipmentSlot.HEAD, new ItemStack(helmet));
+		if(random.nextInt(100) < 50)
+			setStackIfEmpty(entity, EntityEquipmentSlot.CHEST, new ItemStack(chestplate));
+		if(random.nextInt(100) < 50)
+			setStackIfEmpty(entity, EntityEquipmentSlot.LEGS, new ItemStack(leggings));
+		if(random.nextInt(100) < 50)
+			setStackIfEmpty(entity, EntityEquipmentSlot.FEET, new ItemStack(boots));
+	}
+
 	@SubscribeEvent
 	public void onLivingSpecialSpawn(LivingSpawnEvent.SpecialSpawn event)
 	{
-		double chance = event.getWorld().rand.nextDouble();
-		int armorType = event.getWorld().rand.nextInt(4);
+		Random random = event.getWorld().rand;
+		double chance = random.nextDouble();
 		
-		if(chance < tools.armorSpawnRate)
+		if(chance < MekanismConfig.current().tools.armorSpawnRate.val())
 		{
-			if(event.getEntityLiving() instanceof EntityZombie || event.getEntityLiving() instanceof EntitySkeleton)
+			int armorType = random.nextInt(4);
+
+			EntityLivingBase entity = event.getEntityLiving();
+			
+			if(entity instanceof EntityZombie || entity instanceof EntitySkeleton)
 			{
-				int sword = event.getWorld().rand.nextInt(100);
-				int helmet = event.getWorld().rand.nextInt(100);
-				int chestplate = event.getWorld().rand.nextInt(100);
-				int leggings = event.getWorld().rand.nextInt(100);
-				int boots = event.getWorld().rand.nextInt(100);
-				
 				if(armorType == 0)
 				{
-					if(event.getEntityLiving() instanceof EntityZombie && sword < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ToolsItems.GlowstoneSword));
-					if(helmet < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(ToolsItems.GlowstoneHelmet));
-					if(chestplate < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(ToolsItems.GlowstoneChestplate));
-					if(leggings < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.LEGS, new ItemStack(ToolsItems.GlowstoneLeggings));
-					if(boots < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.FEET, new ItemStack(ToolsItems.GlowstoneBoots));
+					setEntityArmorWithChance(random, entity, ToolsItems.GlowstoneSword, ToolsItems.GlowstoneHelmet, ToolsItems.GlowstoneChestplate, ToolsItems.GlowstoneLeggings, ToolsItems.GlowstoneBoots);
 				}
 				else if(armorType == 1)
 				{
-					if(event.getEntityLiving() instanceof EntityZombie && sword < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ToolsItems.LazuliSword));
-					if(helmet < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(ToolsItems.LazuliHelmet));
-					if(chestplate < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(ToolsItems.LazuliChestplate));
-					if(leggings < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.LEGS, new ItemStack(ToolsItems.LazuliLeggings));
-					if(boots < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.FEET, new ItemStack(ToolsItems.LazuliBoots));
+					setEntityArmorWithChance(random, entity, ToolsItems.LazuliSword, ToolsItems.LazuliHelmet, ToolsItems.LazuliChestplate, ToolsItems.LazuliLeggings, ToolsItems.LazuliBoots);
 				}
 				else if(armorType == 2)
 				{
-					if(event.getEntityLiving() instanceof EntityZombie && sword < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ToolsItems.OsmiumSword));
-					if(helmet < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(ToolsItems.OsmiumHelmet));
-					if(chestplate < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(ToolsItems.OsmiumChestplate));
-					if(leggings < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.LEGS, new ItemStack(ToolsItems.OsmiumLeggings));
-					if(boots < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.FEET, new ItemStack(ToolsItems.OsmiumBoots));
+					setEntityArmorWithChance(random, entity, ToolsItems.OsmiumSword, ToolsItems.OsmiumHelmet, ToolsItems.OsmiumChestplate, ToolsItems.OsmiumLeggings, ToolsItems.OsmiumBoots);
 				}
 				else if(armorType == 3)
 				{
-					if(event.getEntityLiving() instanceof EntityZombie && sword < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ToolsItems.SteelSword));
-					if(helmet < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(ToolsItems.SteelHelmet));
-					if(chestplate < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(ToolsItems.SteelChestplate));
-					if(leggings < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.LEGS, new ItemStack(ToolsItems.SteelLeggings));
-					if(boots < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.FEET, new ItemStack(ToolsItems.SteelBoots));
+					setEntityArmorWithChance(random, entity, ToolsItems.SteelSword, ToolsItems.SteelHelmet, ToolsItems.SteelChestplate, ToolsItems.SteelLeggings, ToolsItems.SteelBoots);
 				}
 				else if(armorType == 4)
 				{
-					if(event.getEntityLiving() instanceof EntityZombie && sword < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ToolsItems.BronzeSword));
-					if(helmet < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(ToolsItems.BronzeHelmet));
-					if(chestplate < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(ToolsItems.BronzeChestplate));
-					if(leggings < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.LEGS, new ItemStack(ToolsItems.BronzeLeggings));
-					if(boots < 50) event.getEntityLiving().setItemStackToSlot(EntityEquipmentSlot.FEET, new ItemStack(ToolsItems.BronzeBoots));
+					setEntityArmorWithChance(random, entity, ToolsItems.BronzeSword, ToolsItems.BronzeHelmet, ToolsItems.BronzeChestplate, ToolsItems.BronzeLeggings, ToolsItems.BronzeBoots);
 				}
 			}
 		}
@@ -440,15 +323,15 @@ public class MekanismTools implements IModule
 	}
 
 	@Override
-	public void writeConfig(ByteBuf dataStream)
+	public void writeConfig(ByteBuf dataStream, MekanismConfig config)
 	{
-		dataStream.writeDouble(tools.armorSpawnRate);
+		config.tools.write(dataStream);
 	}
 
 	@Override
-	public void readConfig(ByteBuf dataStream)
+	public void readConfig(ByteBuf dataStream, MekanismConfig destConfig)
 	{
-		tools.armorSpawnRate = dataStream.readDouble();
+		destConfig.tools.read(dataStream);
 	}
 	
 	@Override
@@ -457,7 +340,7 @@ public class MekanismTools implements IModule
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)
 	{
-		if(event.getModID().equals("MekanismTools"))
+		if(event.getModID().equals("mekanismtools") || event.getModID().equals(Mekanism.MODID))
 		{
 			proxy.loadConfiguration();
 		}

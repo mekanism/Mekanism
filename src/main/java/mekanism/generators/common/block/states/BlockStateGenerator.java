@@ -7,8 +7,7 @@ import java.util.Locale;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
 import mekanism.common.block.states.BlockStateFacing;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
@@ -102,7 +101,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 	{
 		HEAT_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true, Plane.HORIZONTAL, false),
 		SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true, Plane.HORIZONTAL, false),
-		GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3, general.FROM_H2*100, TileEntityGasGenerator.class, true, Plane.HORIZONTAL, false),
+		GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3, -1/*uses config, set after generators config loaded*/, TileEntityGasGenerator.class, true, Plane.HORIZONTAL, false),
 		BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true, Plane.HORIZONTAL, false),
 		ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true, Plane.HORIZONTAL, false),
 		WIND_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true, Plane.HORIZONTAL, false),
@@ -136,20 +135,23 @@ public class BlockStateGenerator extends ExtendedBlockState
 			facingPredicate = predicate;
 			activable = hasActiveTexture;
 		}
-		
-		public static List<GeneratorType> getGeneratorsForConfig()
-		{
-			List<GeneratorType> ret = new ArrayList<>();
 
+		private static final List<GeneratorType> GENERATORS_FOR_CONFIG;
+		static
+		{
+			GENERATORS_FOR_CONFIG = new ArrayList<>();
 			for(GeneratorType type : GeneratorType.values())
 			{
 				if(type.ordinal() <= 5)
 				{
-					ret.add(type);
+					GENERATORS_FOR_CONFIG.add(type);
 				}
 			}
-
-			return ret;
+		}
+		
+		public static List<GeneratorType> getGeneratorsForConfig()
+		{
+			return GENERATORS_FOR_CONFIG;
 		}
 		
 		@Override
@@ -166,7 +168,7 @@ public class BlockStateGenerator extends ExtendedBlockState
 				return true;
 			}
 			
-			return generators.generatorsManager.isEnabled(blockName);
+			return MekanismConfig.current().generators.generatorsManager.isEnabled(this);
 		}
 
 		public static GeneratorType get(IBlockState state)

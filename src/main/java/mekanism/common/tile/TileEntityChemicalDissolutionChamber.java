@@ -17,7 +17,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
@@ -60,13 +60,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
 	public int ticksRequired = 100;
 
-	public final double BASE_ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
+	public final double BASE_ENERGY_USAGE = MekanismConfig.current().usage.chemicalDissolutionChamberUsage.val();
 
 	public DissolutionRecipe cachedRecipe;
 
 	public TileEntityChemicalDissolutionChamber()
 	{
-		super("machine.dissolution", "ChemicalDissolutionChamber", BlockStateMachine.MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy, usage.chemicalDissolutionChamberUsage, 4);
+		super("machine.dissolution", "ChemicalDissolutionChamber", BlockStateMachine.MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy, MekanismConfig.current().usage.chemicalDissolutionChamberUsage.val(), 4);
 		
 		inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 	}

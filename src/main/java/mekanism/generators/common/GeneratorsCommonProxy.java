@@ -2,11 +2,12 @@ package mekanism.generators.common;
 
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.TEFixer;
+import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
@@ -109,44 +110,18 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	 */
 	public void loadConfiguration()
 	{
-		generators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble();
-		generators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble();
-		generators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble();
-		generators.heatGenerationLava = Mekanism.configuration.get("generation", "HeatGenerationLava", 5D).getDouble();
-		generators.heatGenerationNether = Mekanism.configuration.get("generation", "HeatGenerationNether", 100D).getDouble();
-		generators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble();
-		
-		loadWindConfiguration();
-		
-		generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4).getInt();
-		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
-		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
-		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
-		
-		generators.energyPerFusionFuel = Mekanism.configuration.get("generation", "EnergyPerFusionFuel", 5E6D).getDouble();
-		
-		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
-		{
-			generators.generatorsManager.setEntry(type.blockName, Mekanism.configuration.get("generators", type.blockName + "Enabled", true).getBoolean());
-		}
+		MekanismConfig.local().generators.load(Mekanism.configuration);
+		setGasGeneratorMaxEnergy();
 
 		if(Mekanism.configuration.hasChanged())
 		{
 			Mekanism.configuration.save();
 		}
 	}
-	
-	private void loadWindConfiguration() 
+
+	protected void setGasGeneratorMaxEnergy()
 	{
-		generators.windGenerationMin = Mekanism.configuration.get("generation", "WindGenerationMin", 60D).getDouble();
-		generators.windGenerationMax = Mekanism.configuration.get("generation", "WindGenerationMax", 480D).getDouble();
-
-		//Ensure max > min to avoid division by zero later
-		final int minY = Mekanism.configuration.get("generation", "WindGenerationMinY", 24).getInt();
-		final int maxY = Mekanism.configuration.get("generation", "WindGenerationMaxY", 255).getInt();
-
-		generators.windGenerationMinY = minY;
-		generators.windGenerationMaxY = Math.max(minY + 1, maxY);
+		GeneratorType.GAS_GENERATOR.maxEnergy = MekanismConfig.local().general.FROM_H2.val()*100;
 	}
 
 	@Override

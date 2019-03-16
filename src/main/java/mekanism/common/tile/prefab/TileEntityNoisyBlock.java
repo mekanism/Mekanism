@@ -7,7 +7,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -142,7 +142,7 @@ public abstract class TileEntityNoisyBlock extends TileEntityElectricBlock imple
 	@SideOnly(Side.CLIENT)
 	public void updateSound()
 	{
-		if(shouldPlaySound() && getSound().canRestart() && client.enableMachineSounds)
+		if(shouldPlaySound() && getSound().canRestart() && MekanismConfig.current().client.enableMachineSounds.val())
 		{
 			getSound().reset();
 			getSound().play();

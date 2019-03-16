@@ -2,8 +2,6 @@ package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
@@ -11,7 +9,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -132,7 +130,7 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
 	
 			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay = general.UPDATE_DELAY;
+				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
 				isActive = clientActive;
 				MekanismUtils.updateBlock(world, getPos());
 			}

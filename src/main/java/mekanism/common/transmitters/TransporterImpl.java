@@ -48,7 +48,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 			{
 				if(stack != null)
 				{
-					stack.progress = Math.min(100, stack.progress+getTileEntity().tier.speed);
+					stack.progress = Math.min(100, stack.progress+ getTileEntity().tier.getSpeed());
 				}
 			}
 		}
@@ -73,7 +73,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 					}
 				}
 
-				stack.progress += getTileEntity().tier.speed;
+				stack.progress += getTileEntity().tier.getSpeed();
 
 				if(stack.progress > 100)
 				{

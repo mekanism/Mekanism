@@ -20,8 +20,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.client;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -263,7 +262,7 @@ public class ClientTickHandler
 				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.player.getName(), isGasMaskOn(mc.player)));
 			}
 
-			if(client.enablePlayerSounds)
+			if(MekanismConfig.current().client.enablePlayerSounds.val())
 			{
 				for(String username : Mekanism.jetpackOn)
 				{
@@ -273,7 +272,7 @@ public class ClientTickHandler
 					{
 						if(!SoundHandler.soundPlaying(player, JETPACK))
 						{
-							SoundHandler.addSound(player, JETPACK, client.replaceSoundsWhenResuming);
+							SoundHandler.addSound(player, JETPACK, MekanismConfig.current().client.replaceSoundsWhenResuming.val());
 						}
 
 						SoundHandler.playSound(player, JETPACK);
@@ -288,7 +287,7 @@ public class ClientTickHandler
 					{
 						if(!SoundHandler.soundPlaying(player, GASMASK))
 						{
-							SoundHandler.addSound(player, GASMASK, client.replaceSoundsWhenResuming);
+							SoundHandler.addSound(player, GASMASK, MekanismConfig.current().client.replaceSoundsWhenResuming.val());
 						}
 						
 						SoundHandler.playSound(player, GASMASK);
@@ -301,7 +300,7 @@ public class ClientTickHandler
 					{
 						if(!SoundHandler.soundPlaying(player, FLAMETHROWER))
 						{
-							SoundHandler.addSound(player, FLAMETHROWER, client.replaceSoundsWhenResuming);
+							SoundHandler.addSound(player, FLAMETHROWER, MekanismConfig.current().client.replaceSoundsWhenResuming.val());
 						}
 						
 						SoundHandler.playSound(player, FLAMETHROWER);
@@ -426,7 +425,7 @@ public class ClientTickHandler
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event)
 	{
-		if(client.allowConfiguratorModeScroll && mc.player != null && mc.player.isSneaking())
+		if(MekanismConfig.current().client.allowConfiguratorModeScroll.val() && mc.player != null && mc.player.isSneaking())
 		{
 			ItemStack stack = mc.player.getHeldItemMainhand();
 			int delta = event.getDwheel();
@@ -598,12 +597,12 @@ public class ClientTickHandler
 	
 	public static void portableTeleport(EntityPlayer player, EnumHand hand, Frequency freq)
 	{
-		if(general.portableTeleporterDelay == 0)
+		if(MekanismConfig.current().general.portableTeleporterDelay.val() == 0)
 		{
 			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
 		}
 		else {
-			portableTeleports.put(player, new TeleportData(hand, freq, mc.world.getWorldTime()+general.portableTeleporterDelay));
+			portableTeleports.put(player, new TeleportData(hand, freq, mc.world.getWorldTime()+ MekanismConfig.current().general.portableTeleporterDelay.val()));
 		}
 	}
 	

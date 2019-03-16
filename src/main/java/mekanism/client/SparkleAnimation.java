@@ -6,7 +6,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.MekanismSounds;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -35,7 +35,7 @@ public class SparkleAnimation
 	public void run()
 	{
 		try {
-			if(general.dynamicTankEasterEgg)
+			if(MekanismConfig.current().general.dynamicTankEasterEgg.val())
 			{
 				pointer.getWorld().playSound(null, pointer.getPos().getX(), pointer.getPos().getY(), pointer.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG, SoundCategory.BLOCKS, 1F, 1F);
 			}

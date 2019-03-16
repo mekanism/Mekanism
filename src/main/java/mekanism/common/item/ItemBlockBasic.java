@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -164,20 +163,20 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 						list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty"));
 					}
 					
-					int cap = BinTier.values()[getBaseTier(itemstack).ordinal()].storage;
+					int cap = BinTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
 					list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap) + " " + LangUtils.localize("transmission.Items"));
 				}
 				else if(type == BasicBlockType.INDUCTION_CELL)
 				{
 					InductionCellTier tier = InductionCellTier.values()[getBaseTier(itemstack).ordinal()];
 					
-					list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.maxEnergy));
+					list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getMaxEnergy()));
 				}
 				else if(type == BasicBlockType.INDUCTION_PROVIDER)
 				{
 					InductionProviderTier tier = InductionProviderTier.values()[getBaseTier(itemstack).ordinal()];
 					
-					list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.output));
+					list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.getOutput()));
 				}
 				
 				if(getMaxEnergy(itemstack) > 0)
@@ -329,7 +328,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 	{
 		if(BasicBlockType.get(itemStack) == BasicBlockType.INDUCTION_CELL)
 		{
-			return InductionCellTier.values()[getBaseTier(itemStack).ordinal()].maxEnergy;
+			return InductionCellTier.values()[getBaseTier(itemStack).ordinal()].getMaxEnergy();
 		}
 		
 		return 0;

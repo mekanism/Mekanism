@@ -5,7 +5,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -84,7 +84,7 @@ public class CommandMekanism extends CommandBase
 			{
 				if(!MekanismUtils.checkForUpdates((EntityPlayer)sender))
 				{
-					if(general.updateNotifications || Mekanism.latestVersionNumber == null || Mekanism.recentNews == null || Mekanism.latestVersionNumber.equals("null"))
+					if(MekanismConfig.current().general.updateNotifications.val() || Mekanism.latestVersionNumber == null || Mekanism.recentNews == null || Mekanism.latestVersionNumber.equals("null"))
 					{
 						sender.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Minecraft is in offline mode, could not check for updates."));
 					}

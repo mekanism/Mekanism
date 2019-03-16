@@ -19,8 +19,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -62,7 +61,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	public FluidTank fluidTank = new FluidTank(10000);
 	
 	/** How much energy this machine consumes per-tick. */
-	public double BASE_ENERGY_PER_TICK = usage.fluidicPlenisherUsage;
+	public double BASE_ENERGY_PER_TICK = MekanismConfig.current().usage.fluidicPlenisherUsage.val();
 
 	public double energyPerTick = BASE_ENERGY_PER_TICK;
 
@@ -144,7 +143,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	private void doPlenish()
 	{
-		if(usedNodes.size() >= general.maxPlenisherNodes)
+		if(usedNodes.size() >= MekanismConfig.current().general.maxPlenisherNodes.val())
 		{
 			finishedCalc = true;
 			return;

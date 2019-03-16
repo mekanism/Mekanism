@@ -2,7 +2,7 @@ package mekanism.client.render.transmitter;
 
 import mekanism.client.render.ColourTemperature;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -20,7 +20,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
 	@Override
 	public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage, float alpha)
 	{
-		if(client.opaqueTransmitters)
+		if(MekanismConfig.current().client.opaqueTransmitters.val())
 		{
 			return;
 		}

@@ -12,8 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
@@ -129,13 +128,13 @@ public class MekanismGenerators implements IModule
 				}
 			}
 
-			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (long)(240 * general.TO_RF / 20 * MjAPI.MJ), 40 * Fluid.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (long)(240 * MekanismConfig.current().general.TO_RF.val() / 20 * MjAPI.MJ), 40 * Fluid.BUCKET_VOLUME);
 		}
 	}
 	
 	public void addRecipes()
 	{
-		FuelHandler.addGas(MekanismFluids.Ethene, general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+		FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.current().general.ETHENE_BURN_TIME.val(), MekanismConfig.current().general.FROM_H2.val() + MekanismConfig.current().generators.bioGeneration.val() * 2 * MekanismConfig.current().general.ETHENE_BURN_TIME.val()); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
 	}
 
 	@Override
@@ -151,73 +150,28 @@ public class MekanismGenerators implements IModule
 	}
 	
 	@Override
-	public void writeConfig(ByteBuf dataStream)
+	public void writeConfig(ByteBuf dataStream, MekanismConfig config)
 	{
-		dataStream.writeDouble(generators.advancedSolarGeneration);
-		dataStream.writeDouble(generators.bioGeneration);
-		dataStream.writeDouble(generators.heatGeneration);
-		dataStream.writeDouble(generators.heatGenerationLava);
-		dataStream.writeDouble(generators.heatGenerationNether);
-		dataStream.writeDouble(generators.solarGeneration);
-		
-		dataStream.writeDouble(generators.windGenerationMin);
-		dataStream.writeDouble(generators.windGenerationMax);
-		
-		dataStream.writeInt(generators.windGenerationMinY);
-		dataStream.writeInt(generators.windGenerationMaxY);
-		
-		dataStream.writeInt(generators.turbineBladesPerCoil);
-		dataStream.writeDouble(generators.turbineVentGasFlow);
-		dataStream.writeDouble(generators.turbineDisperserGasFlow);
-		dataStream.writeInt(generators.condenserRate);
-		
-		dataStream.writeDouble(generators.energyPerFusionFuel);
-		
-		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
-		{
-			dataStream.writeBoolean(generators.generatorsManager.isEnabled(type.blockName));
-		}
+		config.generators.write(dataStream);
 	}
 
 	@Override
-	public void readConfig(ByteBuf dataStream)
+	public void readConfig(ByteBuf dataStream, MekanismConfig destConfig)
 	{
-		generators.advancedSolarGeneration = dataStream.readDouble();
-		generators.bioGeneration = dataStream.readDouble();
-		generators.heatGeneration = dataStream.readDouble();
-		generators.heatGenerationLava = dataStream.readDouble();
-		generators.heatGenerationNether = dataStream.readDouble();
-		generators.solarGeneration = dataStream.readDouble();
-		
-		generators.windGenerationMin = dataStream.readDouble();
-		generators.windGenerationMax = dataStream.readDouble();
-		
-		generators.windGenerationMinY = dataStream.readInt();
-		generators.windGenerationMaxY = dataStream.readInt();
-		
-		generators.turbineBladesPerCoil = dataStream.readInt();
-		generators.turbineVentGasFlow = dataStream.readDouble();
-		generators.turbineDisperserGasFlow = dataStream.readDouble();
-		generators.condenserRate = dataStream.readInt();
-		
-		generators.energyPerFusionFuel = dataStream.readDouble();
-		
-		for(GeneratorType type : GeneratorType.getGeneratorsForConfig())
-		{
-			generators.generatorsManager.setEntry(type.blockName, dataStream.readBoolean());
-		}
+		destConfig.generators.read(dataStream);
 	}
 	
 	@Override
 	public void resetClient()
 	{
 		SynchronizedTurbineData.clientRotationMap.clear();
+		proxy.setGasGeneratorMaxEnergy();
 	}
 
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)
 	{
-		if(event.getModID().equals(MekanismGenerators.MODID))
+		if(event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID))
 		{
 			proxy.loadConfiguration();
 		}

@@ -2,8 +2,6 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.client.sound.ISoundSource;
@@ -12,7 +10,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.TileNetworkList;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -91,7 +89,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 				}
 			}
 			
-			if(!world.isRemote && general.destroyDisabledBlocks)
+			if(!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val())
 			{
 				GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
 				
@@ -148,7 +146,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 
-			updateDelay = general.UPDATE_DELAY;
+			updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
 			clientActive = active;
 		}
 	}
@@ -171,7 +169,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
 	
 			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay = general.UPDATE_DELAY;
+				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
 				isActive = clientActive;
 				MekanismUtils.updateBlock(world, getPos());
 			}

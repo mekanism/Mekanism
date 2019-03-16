@@ -21,8 +21,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -67,7 +66,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public boolean suckedLastOperation;
 	
 	/** How much energy this machine consumes per-tick. */
-	public double BASE_ENERGY_PER_TICK = usage.electricPumpUsage;
+	public double BASE_ENERGY_PER_TICK = MekanismConfig.current().usage.electricPumpUsage.val();
 
 	public double energyPerTick = BASE_ENERGY_PER_TICK;
 
@@ -225,7 +224,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				Coord4D side = wrapper.offset(orientation);
 
-				if(Coord4D.get(this).distanceTo(side) <= general.maxPumpRange)
+				if(Coord4D.get(this).distanceTo(side) <= MekanismConfig.current().general.maxPumpRange.val())
 				{
 					fluid = MekanismUtils.getFluid(world, side, hasFilter());
 					
@@ -264,7 +263,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		if(fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater)
 		{
-			return general.pumpWaterSources;
+			return MekanismConfig.current().general.pumpWaterSources.val();
 		}
 		
 		return true;

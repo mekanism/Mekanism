@@ -1,7 +1,7 @@
 package mekanism.common.integration.tesla;
 
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -32,14 +32,14 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
 	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long getStoredPower() 
 	{
-		return (long)Math.round(tileEntity.getEnergy()*general.TO_TESLA);
+		return (long)Math.round(tileEntity.getEnergy()* MekanismConfig.current().general.TO_TESLA.val());
 	}
 
 	@Override
 	@Method(modid = MekanismHooks.TESLA_MOD_ID)
 	public long getCapacity() 
 	{
-		return (long)Math.round(tileEntity.getMaxEnergy()*general.TO_TESLA);
+		return (long)Math.round(tileEntity.getMaxEnergy()* MekanismConfig.current().general.TO_TESLA.val());
 	}
 	
 	@Override
@@ -58,11 +58,11 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
 	
 	public long rfToTesla(int rf)
 	{
-		return (long)Math.round(rf*general.FROM_RF*general.TO_TESLA);
+		return (long)Math.round(rf* MekanismConfig.current().general.FROM_RF.val()* MekanismConfig.current().general.TO_TESLA.val());
 	}
 	
 	public int teslaToRF(long tesla)
 	{
-		return (int)Math.round(Math.min(Integer.MAX_VALUE, tesla*general.FROM_TESLA*general.TO_RF));
+		return (int)Math.round(Math.min(Integer.MAX_VALUE, tesla* MekanismConfig.current().general.FROM_TESLA.val()* MekanismConfig.current().general.TO_RF.val()));
 	}
 }

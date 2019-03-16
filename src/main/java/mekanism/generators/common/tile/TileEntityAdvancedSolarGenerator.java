@@ -4,7 +4,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -13,8 +13,8 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
-		super("AdvancedSolarGenerator", 200000, generators.advancedSolarGeneration*2);
-		GENERATION_RATE = generators.advancedSolarGeneration;
+		super("AdvancedSolarGenerator", 200000, MekanismConfig.current().generators.advancedSolarGeneration.val()*2);
+		GENERATION_RATE = MekanismConfig.current().generators.advancedSolarGeneration.val();
 	}
 
 	@Override

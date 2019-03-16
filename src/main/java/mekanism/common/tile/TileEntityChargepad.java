@@ -2,10 +2,8 @@ package mekanism.common.tile;
 
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -17,7 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityNoisyBlock;
@@ -142,8 +140,8 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 			{
 				ITeslaConsumer consumer = itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
 				
-				long stored = (long)Math.round(getEnergy()*general.TO_TESLA);
-				setEnergy(getEnergy() - consumer.givePower(stored, false)*general.FROM_TESLA);
+				long stored = (long)Math.round(getEnergy()* MekanismConfig.current().general.TO_TESLA.val());
+				setEnergy(getEnergy() - consumer.givePower(stored, false)* MekanismConfig.current().general.FROM_TESLA.val());
 			}
 			else if(MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null))
 			{
@@ -151,20 +149,20 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 				
 				if(storage.canReceive())
 				{
-					int stored = (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()*general.TO_FORGE));
-					setEnergy(getEnergy() - storage.receiveEnergy(stored, false)*general.FROM_FORGE);
+					int stored = (int)Math.round(Math.min(Integer.MAX_VALUE, getEnergy()* MekanismConfig.current().general.TO_FORGE.val()));
+					setEnergy(getEnergy() - storage.receiveEnergy(stored, false)* MekanismConfig.current().general.FROM_FORGE.val());
 				}
 			}
 			else if(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem)
 			{
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 
-				int toTransfer = (int)Math.round(getEnergy()*general.TO_RF);
-				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_RF));
+				int toTransfer = (int)Math.round(getEnergy()* MekanismConfig.current().general.TO_RF.val());
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)* MekanismConfig.current().general.FROM_RF.val()));
 			}
 			else if(MekanismUtils.useIC2() && ChargeUtils.isIC2Chargeable(itemstack))
 			{
-				double sent = ElectricItem.manager.charge(itemstack, getEnergy()*general.TO_IC2, 4, true, false)*general.FROM_IC2;
+				double sent = ElectricItem.manager.charge(itemstack, getEnergy()* MekanismConfig.current().general.TO_IC2.val(), 4, true, false)* MekanismConfig.current().general.FROM_IC2.val();
 				setEnergy(getEnergy() - sent);
 			}
 		}

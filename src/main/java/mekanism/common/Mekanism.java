@@ -32,8 +32,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
@@ -439,9 +438,9 @@ public class Mekanism
 		RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.Deuterium, 1), new GasStack(MekanismFluids.Tritium, 1), new GasStack(MekanismFluids.FusionFuel, 2));
 
 		//Electrolytic Separator Recipes
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * general.FROM_H2, new GasStack(MekanismFluids.Hydrogen, 2), new GasStack(MekanismFluids.Oxygen, 1));
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * general.FROM_H2, new GasStack(MekanismFluids.Sodium, 1), new GasStack(MekanismFluids.Chlorine, 1));
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2), usage.heavyWaterElectrolysisUsage, new GasStack(MekanismFluids.Deuterium, 2), new GasStack(MekanismFluids.Oxygen, 1));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * MekanismConfig.current().general.FROM_H2.val(), new GasStack(MekanismFluids.Hydrogen, 2), new GasStack(MekanismFluids.Oxygen, 1));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * MekanismConfig.current().general.FROM_H2.val(), new GasStack(MekanismFluids.Sodium, 1), new GasStack(MekanismFluids.Chlorine, 1));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2), MekanismConfig.current().usage.heavyWaterElectrolysisUsage.val(), new GasStack(MekanismFluids.Deuterium, 2), new GasStack(MekanismFluids.Oxygen, 1));
 		
 		//Thermal Evaporation Plant Recipes
 		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("brine", 1));
@@ -507,7 +506,7 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.CompressedObsidian), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 80));
 
 		//Fuel Gases
-		FuelHandler.addGas(MekanismFluids.Hydrogen, 1, general.FROM_H2);
+		FuelHandler.addGas(MekanismFluids.Hydrogen, 1, MekanismConfig.current().general.FROM_H2.val());
 	}
 
 	/**
@@ -579,7 +578,7 @@ public class Mekanism
 		OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.OreBlock, 1, 1));
 		OreDictionary.registerOre("oreTin", new ItemStack(MekanismBlocks.OreBlock, 1, 2));
 		
-		if(general.controlCircuitOreDict)
+		if(MekanismConfig.current().general.controlCircuitOreDict.val())
 		{
 			OreDictionary.registerOre("circuitBasic", new ItemStack(MekanismItems.ControlCircuit, 1, 0));
 			OreDictionary.registerOre("circuitAdvanced", new ItemStack(MekanismItems.ControlCircuit, 1, 1));
@@ -686,7 +685,7 @@ public class Mekanism
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		if(general.voiceServerEnabled)
+		if(MekanismConfig.current().general.voiceServerEnabled.val())
 		{
 			voiceManager.start();
 		}
@@ -697,7 +696,7 @@ public class Mekanism
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
-		if(general.voiceServerEnabled)
+		if(MekanismConfig.current().general.voiceServerEnabled.val())
 		{
 			voiceManager.stop();
 		}
@@ -812,7 +811,7 @@ public class Mekanism
 		PacketSimpleGui.handlers.add(0, proxy);
 
 		//Set up VoiceServerManager
-		if(general.voiceServerEnabled)
+		if(MekanismConfig.current().general.voiceServerEnabled.val())
 		{
 			voiceManager = new VoiceServerManager();
 		}
@@ -821,7 +820,7 @@ public class Mekanism
 		TransmitterNetworkRegistry.initiate();
 		
 		//Add baby skeleton spawner
-		if(general.spawnBabySkeletons)
+		if(MekanismConfig.current().general.spawnBabySkeletons.val())
 		{
 			for(Biome biome : BiomeProvider.allowedBiomes) 
 			{
@@ -1012,7 +1011,7 @@ public class Mekanism
 			NBTTagCompound nbtTags = event.getData();
 
 			nbtTags.setInteger("MekanismWorldGen", baseWorldGenVersion);
-			nbtTags.setInteger("MekanismUserWorldGen", general.userWorldGenVersion);
+			nbtTags.setInteger("MekanismUserWorldGen", MekanismConfig.current().general.userWorldGenVersion.val());
 		}
 	}
 	
@@ -1021,11 +1020,11 @@ public class Mekanism
 	{
 		if(!event.getWorld().isRemote)
 		{
-			if(general.enableWorldRegeneration)
+			if(MekanismConfig.current().general.enableWorldRegeneration.val())
 			{
 				NBTTagCompound loadData = event.getData();
 				
-				if(loadData.getInteger("MekanismWorldGen") == baseWorldGenVersion && loadData.getInteger("MekanismUserWorldGen") == general.userWorldGenVersion)
+				if(loadData.getInteger("MekanismWorldGen") == baseWorldGenVersion && loadData.getInteger("MekanismUserWorldGen") == MekanismConfig.current().general.userWorldGenVersion.val())
 				{
 					return;
 				}

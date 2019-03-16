@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
 import mekanism.common.network.PacketFreeRunnerData;
@@ -28,7 +29,7 @@ public class CommonPlayerTracker
 	{
 		if(!event.player.world.isRemote)
 		{
-			Mekanism.packetHandler.sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new ConfigSyncMessage(MekanismConfig.local()), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
 			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);

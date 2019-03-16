@@ -66,7 +66,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
 					if(container != null)
 					{
-						GasStack received = container.drawGas(side.getOpposite(), tier.tubePullAmount, false);
+						GasStack received = container.drawGas(side.getOpposite(), tier.getTubePullAmount(), false);
 
 						if(received != null && received.amount != 0)
 						{
@@ -209,7 +209,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 	@Override
 	public int getCapacity()
 	{
-		return tier.tubeCapacity;
+		return tier.getTubeCapacity();
 	}
 
 	@Override

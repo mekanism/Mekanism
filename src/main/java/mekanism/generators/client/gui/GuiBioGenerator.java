@@ -8,7 +8,7 @@ import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +33,7 @@ public class GuiBioGenerator extends GuiMekanism
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBioGenerator.png")));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBioGenerator.png")));
 		guiElements.add(new GuiEnergyInfo(() -> ListUtils.asList(
-                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.bioGeneration : 0) + "/t",
+                LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? MekanismConfig.current().generators.bioGeneration.val() : 0) + "/t",
                 LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiBioGenerator.png")));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBioGenerator.png"), 164, 15));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBioGenerator.png"), 16, 34));

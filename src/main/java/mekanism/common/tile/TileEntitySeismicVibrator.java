@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
@@ -12,8 +10,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -86,10 +83,10 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 			
 			ChargeUtils.discharge(0, this);
 			
-			if(MekanismUtils.canFunction(this) && getEnergy() >= usage.seismicVibratorUsage)
+			if(MekanismUtils.canFunction(this) && getEnergy() >= MekanismConfig.current().usage.seismicVibratorUsage.val())
 			{
 				setActive(true);
-				setEnergy(getEnergy()- usage.seismicVibratorUsage);
+				setEnergy(getEnergy()- MekanismConfig.current().usage.seismicVibratorUsage.val());
 			}
 			else {
 				setActive(false);
@@ -145,7 +142,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 			
 			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay = general.UPDATE_DELAY;
+				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
 				isActive = clientActive;
 				MekanismUtils.updateBlock(world, getPos());
 			}

@@ -11,7 +11,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey.KeyMessage;
 import mekanism.common.security.SecurityData;
@@ -44,7 +44,7 @@ public class MekanismClient extends Mekanism
 		clientSecurityMap.clear();
 		clientUUIDMap.clear();
 		
-		if(general.voiceServerEnabled)
+		if(MekanismConfig.current().general.voiceServerEnabled.val())
 		{
 			if(MekanismClient.voiceClient != null)
 			{
@@ -69,6 +69,8 @@ public class MekanismClient extends Mekanism
 		Mekanism.freeRunnerOn.clear();
 		
 		SynchronizedBoilerData.clientHotMap.clear();
+
+		MekanismConfig.setSyncedConfig(null);
 		
 		for(IModule module : Mekanism.modulesLoaded)
 		{
@@ -76,9 +78,5 @@ public class MekanismClient extends Mekanism
 		}
 
 		SoundHandler.soundMaps.clear();
-
-		Mekanism.proxy.loadConfiguration();
-
-		Mekanism.logger.info("Reloaded config.");
 	}
 }

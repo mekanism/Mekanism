@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import buildcraft.api.mj.MjAPI;
 import mekanism.api.gas.Gas;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -61,7 +61,7 @@ public class FuelHandler
 
 			// getPowerPerCycle returns value in 1 BuildCraft micro MJ
 			// 1 BuildCraft MJ equals 20 RF
-			energyPerTick = bcFuel.getPowerPerCycle() / (double) MjAPI.MJ * 20 * general.FROM_RF;
+			energyPerTick = bcFuel.getPowerPerCycle() / (double) MjAPI.MJ * 20 * MekanismConfig.current().general.FROM_RF.val();
 		}
 	}
 

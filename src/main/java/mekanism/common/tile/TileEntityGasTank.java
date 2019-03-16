@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -91,7 +89,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		configComponent.setIOConfig(TransmissionType.GAS);
 		configComponent.setEjecting(TransmissionType.GAS, true);
 		
-		gasTank = new GasTank(tier.storage);
+		gasTank = new GasTank(tier.getStorage());
 		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 		dumping = GasMode.IDLE;
 		controlType = RedstoneControl.DISABLED;
@@ -125,7 +123,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			{
 				if(configComponent.isEjecting(TransmissionType.GAS))
 				{
-					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), tier.output));
+					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), tier.getOutput()));
 					gasTank.draw(GasUtils.emit(toSend, this, configComponent.getSidesForData(TransmissionType.GAS, facing, 2)), tier != GasTankTier.CREATIVE);
 				}
 			}
@@ -134,12 +132,12 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			{
 				if(dumping == GasMode.DUMPING)
 				{
-					gasTank.draw(tier.storage/400, true);
+					gasTank.draw(tier.getStorage() /400, true);
 				}
 		
-				if(dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.output)
+				if(dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.getOutput())
 				{
-					gasTank.draw(tier.output-gasTank.getNeeded(), true);
+					gasTank.draw(tier.getOutput() -gasTank.getNeeded(), true);
 				}
 			}
 			
@@ -171,7 +169,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		}
 		
 		tier = GasTankTier.values()[upgradeTier.ordinal()];
-		gasTank.setMaxGas(tier.storage);
+		gasTank.setMaxGas(tier.getStorage());
 		
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 		markDirty();
@@ -318,7 +316,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			GasTankTier prevTier = tier;
 			
 			tier = GasTankTier.values()[dataStream.readInt()];
-			gasTank.setMaxGas(tier.storage);
+			gasTank.setMaxGas(tier.getStorage());
 	
 			if(dataStream.readBoolean())
 			{

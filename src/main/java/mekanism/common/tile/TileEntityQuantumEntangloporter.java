@@ -28,7 +28,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -56,7 +56,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -443,7 +442,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public double getMaxOutput()
 	{
-		return !hasFrequency() ? 0 : general.quantumEntangloporterEnergyTransfer;
+		return !hasFrequency() ? 0 : MekanismConfig.current().general.quantumEntangloporterEnergyTransfer.val();
 	}
 
 	@Override
@@ -457,14 +456,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	{
 		if(hasFrequency())
 		{
-			frequency.storedEnergy = Math.min(general.quantumEntangloporterEnergyTransfer, energy);
+			frequency.storedEnergy = Math.min(MekanismConfig.current().general.quantumEntangloporterEnergyTransfer.val(), energy);
 		}
 	}
 
 	@Override
 	public double getMaxEnergy()
 	{
-		return !hasFrequency() ? 0 : general.quantumEntangloporterEnergyTransfer;
+		return !hasFrequency() ? 0 : MekanismConfig.current().general.quantumEntangloporterEnergyTransfer.val();
 	}
 
 	@Override
