@@ -47,8 +47,7 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
                 GlStateManager.rotate(75, 0.0F, 1.0F, 0.0F);
             } else //if(type == TransformType.THIRD_PERSON_LEFT_HAND)
             {
-                GlStateManager.translate(0.0F, 0.7F, 0.0F);
-                GlStateManager.rotate(-75, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translate(-0.5F, 0.7F, 0.0F);
             }
 
             GlStateManager.scale(2.5F, 2.5F, 2.5F);
