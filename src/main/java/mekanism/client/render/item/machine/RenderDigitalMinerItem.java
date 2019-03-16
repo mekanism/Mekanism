@@ -22,6 +22,11 @@ public class RenderDigitalMinerItem {
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+            GlStateManager.rotate(-90, 0.0F, 1.0F, 0.0F);
+        } else if (transformType != TransformType.GUI) {
+            GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+        }
         GL11.glTranslatef(0.35F, 0.1F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
         digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0,
