@@ -33,13 +33,21 @@ public class GeneralConfig extends BaseConfig
 
 	public final IntOption UPDATE_DELAY = new IntOption(this, "general", "ClientUpdateDelay", 10, "How many ticks must pass until a block's active state can sync with the client");
 
-	public final IntOption osmiumPerChunk = new IntOption(this, "general", "OsmiumPerChunk", 12);
+	public final IntOption osmiumPerChunk = new IntOption(this, "general", "OsmiumPerChunk", 12, "Chances for osmium to generate in a chunk", 0, Integer.MAX_VALUE);
 
-	public final IntOption copperPerChunk = new IntOption(this, "general", "CopperPerChunk", 16);
+	public final IntOption osmiumMaxVeinSize = new IntOption(this, "general", "OsmiumVeinSize", 8, "Max number of blocks in the osmium vein", 1, Integer.MAX_VALUE);
 
-	public final IntOption tinPerChunk = new IntOption(this, "general", "TinPerChunk", 14);
+	public final IntOption copperPerChunk = new IntOption(this, "general", "CopperPerChunk", 16, "Chances for copper to generate in a chunk", 0, Integer.MAX_VALUE);
 
-	public final IntOption saltPerChunk = new IntOption(this, "general", "SaltPerChunk", 2);
+	public final IntOption copperMaxVeinSize = new IntOption(this, "general", "CopperVeinSize", 8, "Max number of blocks in the copper vein", 1, Integer.MAX_VALUE);
+
+	public final IntOption tinPerChunk = new IntOption(this, "general", "TinPerChunk", 14, "Chances for tin to generate in a chunk", 0, Integer.MAX_VALUE);
+
+	public final IntOption tinMaxVeinSize = new IntOption(this, "general", "TinVeinSize", 8, "Max number of blocks in the tin vein", 1, Integer.MAX_VALUE);
+
+	public final IntOption saltPerChunk = new IntOption(this, "general", "SaltPerChunk", 2, "Chances for salt to generate in a chunk", 0, Integer.MAX_VALUE);
+
+	public final IntOption saltMaxVeinSize = new IntOption(this, "general", "SaltVeinSize", 6, "Max number of blocks in the salt vein", 1, Integer.MAX_VALUE);
 
 	public final IntOption userWorldGenVersion = new IntOption(this, "general", "WorldRegenVersion", 0, "Change this value to cause Mekanism to regen its ore in all loaded chunks");
 

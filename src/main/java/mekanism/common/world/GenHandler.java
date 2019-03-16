@@ -25,19 +25,19 @@ public class GenHandler implements IWorldGenerator
 			for(int i = 0; i < MekanismConfig.current().general.osmiumPerChunk.val(); i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
-				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
+				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0), MekanismConfig.current().general.osmiumMaxVeinSize.val(), BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 
 			for(int i = 0; i < MekanismConfig.current().general.copperPerChunk.val(); i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
-				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
+				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1), MekanismConfig.current().general.copperMaxVeinSize.val(), BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 
 			for(int i = 0; i < MekanismConfig.current().general.tinPerChunk.val(); i++)
 			{
 				BlockPos pos = new BlockPos(chunkX*16 + random.nextInt(16), random.nextInt(60), (chunkZ*16) + random.nextInt(16));
-				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2), 8, BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
+				new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2), MekanismConfig.current().general.tinMaxVeinSize.val(), BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
 			}
 			
 			for(int i = 0; i < MekanismConfig.current().general.saltPerChunk.val(); i++)
@@ -45,7 +45,7 @@ public class GenHandler implements IWorldGenerator
 				int randPosX = (chunkX*16) + random.nextInt(16) + 8;
 				int randPosZ = (chunkZ*16) + random.nextInt(16) + 8;
 				BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(randPosX, 60, randPosZ));
-				new WorldGenSalt(6).generate(world, random, pos);
+				new WorldGenSalt(MekanismConfig.current().general.saltMaxVeinSize.val()).generate(world, random, pos);
 			}
 		}
 	}
