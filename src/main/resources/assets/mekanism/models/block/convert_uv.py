@@ -1,6 +1,7 @@
 import json
 
-with open("fluid_tank.json") as f:
+s = "pressurized_reaction_chamber.json"
+with open(s) as f:
     raw = f.read()
     j = json.loads(raw)
     for entry in j.get("elements"):
@@ -9,5 +10,5 @@ with open("fluid_tank.json") as f:
             faces[key]["uv"] = [i*2 for i in faces[key]["uv"]]
 
 
-    with open("fluid_tank_new.json", "w") as newf:
+    with open(s, "w") as newf:
         newf.write(json.dumps(j, indent=4))
