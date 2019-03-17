@@ -20,7 +20,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.ajoberstar.grgit' version '2.2.0'
+    id 'org.ajoberstar.grgit' version '2.3.0'
 }
 
 apply plugin: 'idea'
@@ -52,7 +52,7 @@ repositories {
     }
     maven {
         name 'tesla'
-        url 'http://maven.mcmoddev.com'
+        url 'https://maven.mcmoddev.com'
     }
     maven {
         name 'curseforge'
@@ -96,29 +96,19 @@ repositories {
     }*/
 }
 
-// Define properties file
-ext.configFile = file "build.properties"
-
-configFile.withReader {
-    // Load config. It shall from now be referenced as simply config or project.config
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
 group = "mekanism"
-version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
+version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-def explodedVersion = config.mod_version.split("\\.")
+def explodedVersion = mod_version.split("\\.")
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
-    mappings = "${config.mappings_version}"
+    version = minecraft_version + "-" + forge_version
+    mappings = "${mappings_version}"
     runDir = "run"
     useDepAts = true
 
@@ -130,28 +120,28 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile "MCMultiPart2:MCMultiPart:${config.mcmp_version}"
-    compileOnly "mezz.jei:jei_1.12.2:${config.jei_version}:api"
-    runtime "mezz.jei:jei_1.12.2:${config.jei_version}"
-    compileOnly "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
-    compileOnly "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
-    compileOnly "li.cil.oc:OpenComputers:MC1.12.1-${config.opencomputers_version}:api" // Not updated yet
-    deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
-    deobfCompile "cofh:RedstoneFlux:1.12-${config.redstoneflux_version}:universal"
-    compileOnly "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
-    compileOnly "team.chisel.ctm:CTM:MC1.12.2-${config.ctm_version}:api"
-    runtime "team.chisel.ctm:CTM:MC1.12.2-${config.ctm_version}"
-    compileOnly "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
-    compileOnly ("CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}") {
+    deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
+    compileOnly "mezz.jei:jei_1.12.2:${jei_version}:api"
+    runtime "mezz.jei:jei_1.12.2:${jei_version}"
+    compileOnly "net.darkhax.tesla:Tesla-1.12:${tesla_version}"
+    compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
+    compileOnly "li.cil.oc:OpenComputers:MC1.12.1-${opencomputers_version}:api" // Not updated yet
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    deobfCompile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
+    compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
+    compileOnly "team.chisel.ctm:CTM:MC1.12.2-${ctm_version}:api"
+    runtime "team.chisel.ctm:CTM:MC1.12.2-${ctm_version}"
+    compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
+    compileOnly ("CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    runtime ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}") {
+    runtime ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    compileOnly "com.blamejared:MTLib:${config.mtlib_version}"
-    compileOnly "dan200.computercraft:ComputerCraft:${config.computercraft_version}:api"
-    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${config.top_version}:api"
-    compileOnly ("appeng:appliedenergistics2:${config.ae2_version}:api"){
+    compileOnly "com.blamejared:MTLib:${mtlib_version}"
+    compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
+    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
+    compileOnly ("appeng:appliedenergistics2:${ae2_version}:api"){
         exclude module: "jei_1.12.2"
     }
 }
@@ -159,13 +149,13 @@ dependencies {
 processResources
 {
     inputs.property "version", project.version
-    inputs.property "mc_version", config.minecraft_version
+    inputs.property "mc_version", minecraft_version
 
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
 
         // replace version and mcversion
-        expand "version": project.version, "mc_version": config.minecraft_version
+        expand "version": project.version, "mc_version": minecraft_version
     }
 
     // copy everything else, thats not the mcmod.info
@@ -183,13 +173,13 @@ jar {
 }
 
 task coreJar(type: Jar) {
-	archiveName = "Mekanism-${project.version}.jar"
-	dependsOn 'reobfJar'
-	classifier "core"
+    archiveName = "Mekanism-${project.version}.jar"
+    dependsOn 'reobfJar'
+    classifier "core"
 
     from('etc/core') {
         include '*.info'
-        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -202,13 +192,13 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-	archiveName = "MekanismTools-${project.version}.jar"
-	dependsOn 'reobfJar'
-	classifier "tools"
+    archiveName = "MekanismTools-${project.version}.jar"
+    dependsOn 'reobfJar'
+    classifier "tools"
 
     from('etc/tools') {
         include '*.info'
-        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -217,13 +207,13 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-	archiveName = "MekanismGenerators-${project.version}.jar"
-	dependsOn 'reobfJar'
-	classifier "generators"
+    archiveName = "MekanismGenerators-${project.version}.jar"
+    dependsOn 'reobfJar'
+    classifier "generators"
 
     from('etc/generators') {
         include '*.info'
-        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -296,7 +286,7 @@ uploadArchives {
 tasks.curseforge.dependsOn coreJar, toolsJar, generatorsJar, apiJar
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
-    println "Enabling Curseforge config"
+    println "Enabling Curseforge config" 
     curseforge {
         apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
 
@@ -321,7 +311,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             println "Changelog generated"
         }
 
-        def releaseNotesFile = project.file("docs/release_${config.mod_version}.html")
+        def releaseNotesFile = project.file("docs/release_${mod_version}.html")
         if (releaseNotesFile.exists()){
             def releaseNotes = releaseNotesFile.getText()
             generatedChangelog = "$releaseNotes<br> $generatedChangelog"
