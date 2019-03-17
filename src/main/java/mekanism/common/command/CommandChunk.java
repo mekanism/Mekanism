@@ -2,13 +2,16 @@ package mekanism.common.command;
 
 import java.util.HashSet;
 import java.util.Set;
+import mekanism.common.Mekanism;
 import mekanism.common.command.CommandMek.Cmd;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,6 +25,7 @@ public class CommandChunk extends CommandTreeBase {
         addSubcommand(new Cmd("watch", "cmd.mek.chunk.watch", this::addWatcher));
         addSubcommand(new Cmd("unwatch", "cmd.mek.chunk.unwatch", this::removeWatcher));
         addSubcommand(new Cmd("clear", "cmd.mek.chunk.clear", this::clearWatchers));
+        addSubcommand(new Cmd("flush", "cmd.mek.chunk.flush", this::flushChunks));
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -47,6 +51,10 @@ public class CommandChunk extends CommandTreeBase {
     }
 
     private void handleChunkEvent(ChunkEvent event, String direction) {
+        if (event.getWorld().isRemote) {
+            return;
+        }
+
         ChunkPos pos = event.getChunk().getPos();
         long key = ChunkPos.asLong(pos.x, pos.z);
         if (chunkWatchers.contains(key)) {
@@ -71,5 +79,17 @@ public class CommandChunk extends CommandTreeBase {
         int count = chunkWatchers.size();
         chunkWatchers.clear();
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.chunk.clear", count);
+    }
+
+    public void flushChunks(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (sender.getEntityWorld().isRemote) {
+            return;
+        }
+
+        ChunkProviderServer sp = (ChunkProviderServer)sender.getEntityWorld().getChunkProvider();
+        int startCount = sp.getLoadedChunkCount();
+        sp.queueUnloadAll();
+        sp.tick();
+        notifyCommandListener(sender, this, "cmd.mek.chunk.flush", startCount - sp.getLoadedChunkCount());
     }
 }

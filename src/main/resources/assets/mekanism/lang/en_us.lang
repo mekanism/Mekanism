@@ -1155,3 +1155,4 @@ cmd.mek.chunk.unwatch.usage=Remove caller's chunk from watch list for chunk load
 cmd.mek.chunk.unwatch=Chunk %d,%d removed from watch list
 cmd.mek.chunk.clear.usage=Remove all chunks from watch list for chunk loading/unloading events
 cmd.mek.chunk.clear=%d chunks removed from watch list
+cmd.mek.chunk.flush=%d chunks unloaded
