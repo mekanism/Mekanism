@@ -38,6 +38,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -49,35 +50,39 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class GeneratorsCommonProxy implements IGuiProvider {
 
+    private static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
+        GameRegistry.registerTileEntity(clazz, new ResourceLocation(MekanismGenerators.MODID, name));
+    }
+
     /**
      * Register normal tile entities
      */
-    public void registerRegularTileEntities() {
-        GameRegistry.registerTileEntity(TileEntityReactorFrame.class, "ReactorFrame");
-        GameRegistry.registerTileEntity(TileEntityReactorGlass.class, "ReactorGlass");
-        GameRegistry.registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "ReactorLaserFocus");
-        GameRegistry.registerTileEntity(TileEntityReactorPort.class, "ReactorPort");
-        GameRegistry.registerTileEntity(TileEntityReactorLogicAdapter.class, "ReactorLogicAdapter");
-        GameRegistry.registerTileEntity(TileEntityRotationalComplex.class, "RotationalComplex");
-        GameRegistry.registerTileEntity(TileEntityElectromagneticCoil.class, "ElectromagneticCoil");
-        GameRegistry.registerTileEntity(TileEntitySaturatingCondenser.class, "SaturatingCondenser");
+    public void registerTileEntities() {
+        registerTileEntity(TileEntityAdvancedSolarGenerator.class, "advanced_solar_generator");
+        registerTileEntity(TileEntityBioGenerator.class, "bio_generator");
+        registerTileEntity(TileEntityElectromagneticCoil.class, "electromagnetic_coil");
+        registerTileEntity(TileEntityGasGenerator.class, "gas_generator");
+        registerTileEntity(TileEntityHeatGenerator.class, "heat_generator");
+        registerTileEntity(TileEntityReactorController.class, "reactor_controller");
+        registerTileEntity(TileEntityReactorFrame.class, "reactor_frame");
+        registerTileEntity(TileEntityReactorGlass.class, "reactor_glass");
+        registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "reactor_laser_focus");
+        registerTileEntity(TileEntityReactorLogicAdapter.class, "reactor_logic_adapter");
+        registerTileEntity(TileEntityReactorPort.class, "reactor_port");
+        registerTileEntity(TileEntityRotationalComplex.class, "rotational_complex");
+        registerTileEntity(TileEntitySaturatingCondenser.class, "saturating_condenser");
+        registerTileEntity(TileEntitySolarGenerator.class, "solar_generator");
+        registerTileEntity(TileEntityTurbineCasing.class, "turbine_casing");
+        registerTileEntity(TileEntityTurbineRotor.class, "turbine_rod");
+        registerTileEntity(TileEntityTurbineValve.class, "turbine_valve");
+        registerTileEntity(TileEntityTurbineVent.class, "turbine_vent");
+        registerTileEntity(TileEntityWindGenerator.class, "wind_turbine");
     }
 
     /**
      * Register tile entities that have special models. Overwritten in client to register TESRs.
      */
-    public void registerSpecialTileEntities() {
-        GameRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator");
-        GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
-        GameRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator");
-        GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
-        GameRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator");
-        GameRegistry.registerTileEntity(TileEntityWindGenerator.class, "WindTurbine");
-        GameRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController");
-        GameRegistry.registerTileEntity(TileEntityTurbineRotor.class, "TurbineRod");
-        GameRegistry.registerTileEntity(TileEntityTurbineCasing.class, "TurbineCasing");
-        GameRegistry.registerTileEntity(TileEntityTurbineValve.class, "TurbineValve");
-        GameRegistry.registerTileEntity(TileEntityTurbineVent.class, "TurbineVent");
+    public void registerTESRs() {
     }
 
     /**
@@ -125,7 +130,8 @@ public class GeneratorsCommonProxy implements IGuiProvider {
                   Mekanism.configuration.get("generators", type.blockName + "Enabled", true).getBoolean());
         }
 
-        int[] windGenerationBlacklistDims = Mekanism.configuration.get("generation", "WindGenerationDimBlacklist", new int[]{}).getIntList();
+        int[] windGenerationBlacklistDims = Mekanism.configuration
+              .get("generation", "WindGenerationDimBlacklist", new int[]{}).getIntList();
         generators.windGenerationDimBlacklist = IntStream.of(windGenerationBlacklistDims).boxed().
               collect(Collectors.toCollection(HashSet::new));
 

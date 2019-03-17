@@ -21,15 +21,20 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.fixers.GeneratorTEFixer;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.CompoundDataFixer;
+import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -57,6 +62,7 @@ public class MekanismGenerators implements IModule {
      * MekanismGenerators version number
      */
     public static Version versionNumber = new Version(9, 4, 13);
+    public static final int DATA_VERSION = 1;
 
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>(
           "industrialTurbine");
@@ -100,8 +106,13 @@ public class MekanismGenerators implements IModule {
         MinecraftForge.EVENT_BUS.register(this);
 
         //Load the proxy
-        proxy.registerRegularTileEntities();
-        proxy.registerSpecialTileEntities();
+        proxy.registerTileEntities();
+        proxy.registerTESRs();
+
+        CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+        ModFixs fixes = fixer.init(MODID, DATA_VERSION);
+        //Fix old tile entity names
+        fixes.registerFix(FixTypes.BLOCK_ENTITY, new GeneratorTEFixer());
 
         //Finalization
         Mekanism.logger.info("Loaded MekanismGenerators module.");

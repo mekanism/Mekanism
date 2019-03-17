@@ -306,76 +306,68 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void registerSpecialTileEntities() {
-        ClientRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityCombiner.class, "Combiner", new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityCrusher.class, "Crusher", new RenderConfigurableMachine<>());
+    public void registerTESRs() {
         ClientRegistry
-              .registerTileEntity(TileEntityFactory.class, "SmeltingFactory", new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityAdvancedFactory.class, "AdvancedSmeltingFactory",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityEliteFactory.class, "UltimateSmeltingFactory",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityPurificationChamber.class, "PurificationChamber",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityEnergizedSmelter.class, "EnergizedSmelter",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityMetallurgicInfuser.class, "MetallurgicInfuser",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityGasTank.class, "GasTank", new RenderGasTank());
-        ClientRegistry.registerTileEntity(TileEntityEnergyCube.class, "EnergyCube", new RenderEnergyCube());
-        ClientRegistry.registerTileEntity(TileEntityPersonalChest.class, "PersonalChest", new RenderPersonalChest());
-        ClientRegistry.registerTileEntity(TileEntityDynamicTank.class, "DynamicTank", new RenderDynamicTank());
-        ClientRegistry.registerTileEntity(TileEntityDynamicValve.class, "DynamicValve", new RenderDynamicTank());
-        ClientRegistry.registerTileEntity(TileEntityChargepad.class, "Chargepad", new RenderChargepad());
+              .bindTileEntitySpecialRenderer(TileEntityEnrichmentChamber.class, new RenderConfigurableMachine<>());
         ClientRegistry
-              .registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter", new RenderLogisticalSorter());
-        ClientRegistry.registerTileEntity(TileEntityBin.class, "Bin", new RenderBin());
-        ClientRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner", new RenderDigitalMiner());
-        ClientRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter", new RenderTeleporter());
-        ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber",
+              .bindTileEntitySpecialRenderer(TileEntityOsmiumCompressor.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCombiner.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFactory.class, new RenderConfigurableMachine<>());
+        ClientRegistry
+              .bindTileEntitySpecialRenderer(TileEntityAdvancedFactory.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEliteFactory.class, new RenderConfigurableMachine<>());
+        ClientRegistry
+              .bindTileEntitySpecialRenderer(TileEntityPurificationChamber.class, new RenderConfigurableMachine<>());
+        ClientRegistry
+              .bindTileEntitySpecialRenderer(TileEntityEnergizedSmelter.class, new RenderConfigurableMachine<>());
+        ClientRegistry
+              .bindTileEntitySpecialRenderer(TileEntityMetallurgicInfuser.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasTank.class, new RenderGasTank());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyCube.class, new RenderEnergyCube());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPersonalChest.class, new RenderPersonalChest());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDynamicTank.class, new RenderDynamicTank());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDynamicValve.class, new RenderDynamicTank());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChargepad.class, new RenderChargepad());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLogisticalSorter.class, new RenderLogisticalSorter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBin.class, new RenderBin());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDigitalMiner.class, new RenderDigitalMiner());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTeleporter.class, new RenderTeleporter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalInjectionChamber.class,
               new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityThermalEvaporationController.class, "ThermalEvaporationController",
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermalEvaporationController.class,
               new RenderThermalEvaporationController());
-        ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill",
-              new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer",
-              new RenderChemicalCrystallizer());
         ClientRegistry
-              .registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator", new RenderSeismicVibrator());
+              .bindTileEntitySpecialRenderer(TileEntityPrecisionSawmill.class, new RenderConfigurableMachine<>());
         ClientRegistry
-              .registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderConfigurableMachine<>());
-        ClientRegistry.registerTileEntity(TileEntityFluidTank.class, "FluidTank", RenderFluidTank.INSTANCE);
-        ClientRegistry.registerTileEntity(TileEntitySolarNeutronActivator.class, "SolarNeutronActivator",
-              new RenderSolarNeutronActivator());
-        ClientRegistry.registerTileEntity(TileEntityFormulaicAssemblicator.class, "FormulaicAssemblicator",
-              new RenderConfigurableMachine<>());
+              .bindTileEntitySpecialRenderer(TileEntityChemicalCrystallizer.class, new RenderChemicalCrystallizer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySeismicVibrator.class, new RenderSeismicVibrator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPRC.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTank.class, RenderFluidTank.INSTANCE);
         ClientRegistry
-              .registerTileEntity(TileEntityResistiveHeater.class, "ResistiveHeater", new RenderResistiveHeater());
+              .bindTileEntitySpecialRenderer(TileEntitySolarNeutronActivator.class, new RenderSolarNeutronActivator());
         ClientRegistry
-              .registerTileEntity(TileEntityBoilerCasing.class, "BoilerCasing", new RenderThermoelectricBoiler());
-        ClientRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve", new RenderThermoelectricBoiler());
-        ClientRegistry.registerTileEntity(TileEntitySecurityDesk.class, "SecurityDesk", new RenderSecurityDesk());
-        ClientRegistry.registerTileEntity(TileEntityQuantumEntangloporter.class, "QuantumEntangloporter",
-              new RenderQuantumEntangloporter());
-        ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber",
+              .bindTileEntitySpecialRenderer(TileEntityFormulaicAssemblicator.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityResistiveHeater.class, new RenderResistiveHeater());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerCasing.class, new RenderThermoelectricBoiler());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerValve.class, new RenderThermoelectricBoiler());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySecurityDesk.class, new RenderSecurityDesk());
+        ClientRegistry
+              .bindTileEntitySpecialRenderer(TileEntityQuantumEntangloporter.class, new RenderQuantumEntangloporter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalDissolutionChamber.class,
               new RenderChemicalDissolutionChamber());
 
-        ClientRegistry.registerTileEntity(TileEntityMechanicalPipe.class, "MechanicalPipe", new RenderMechanicalPipe());
-        ClientRegistry.registerTileEntity(TileEntityUniversalCable.class, "UniversalCable", new RenderUniversalCable());
-        ClientRegistry.registerTileEntity(TileEntityThermodynamicConductor.class, "ThermodynamicConductor",
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMechanicalPipe.class, new RenderMechanicalPipe());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityUniversalCable.class, new RenderUniversalCable());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermodynamicConductor.class,
               new RenderThermodynamicConductor());
-        ClientRegistry.registerTileEntity(TileEntityLogisticalTransporter.class, "LogisticalTransporter",
-              new RenderLogisticalTransporter());
-        ClientRegistry.registerTileEntity(TileEntityDiversionTransporter.class, "DiversionTransporter",
-              new RenderLogisticalTransporter());
-        ClientRegistry.registerTileEntity(TileEntityRestrictiveTransporter.class, "RestrictiveTransporter",
-              new RenderLogisticalTransporter());
         ClientRegistry
-              .registerTileEntity(TileEntityPressurizedTube.class, "PressurizedTube", new RenderPressurizedTube());
+              .bindTileEntitySpecialRenderer(TileEntityLogisticalTransporter.class, new RenderLogisticalTransporter());
+        ClientRegistry
+              .bindTileEntitySpecialRenderer(TileEntityDiversionTransporter.class, new RenderLogisticalTransporter());
+        ClientRegistry
+              .bindTileEntitySpecialRenderer(TileEntityRestrictiveTransporter.class, new RenderLogisticalTransporter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPressurizedTube.class, new RenderPressurizedTube());
     }
 
     @Override
