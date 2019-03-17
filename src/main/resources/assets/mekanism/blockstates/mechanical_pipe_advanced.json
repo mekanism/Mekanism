@@ -6,7 +6,7 @@
       "#side": "mekanism:blocks/models/multipart/MechanicalPipeVerticalAdvanced",
       "#center": "mekanism:blocks/models/multipart/MechanicalPipeAdvanced",
       "#side_opaque": "mekanism:blocks/models/multipart/opaque/MechanicalPipeVerticalAdvanced",
-      "#center_opaque": "mekanism:blocks/models/multipart/MechanicalPipeAdvanced"
+      "#center_opaque": "mekanism:blocks/models/multipart/opaque/MechanicalPipeAdvanced"
     },
     "custom": {
       "flip-v": true
