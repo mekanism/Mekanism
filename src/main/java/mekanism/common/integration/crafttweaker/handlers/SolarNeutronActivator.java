@@ -1,6 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import mekanism.common.Mekanism;
@@ -21,7 +20,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.solarneutronactivator")
-@ModOnly("mtlib")
 @ZenRegister
 public class SolarNeutronActivator {
 

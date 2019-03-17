@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.gas;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.BracketHandler;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.zenscript.IBracketHandler;
@@ -20,7 +19,6 @@ import stanhebben.zenscript.type.natives.IJavaMethod;
 import stanhebben.zenscript.util.ZenPosition;
 
 @BracketHandler(priority = 100)
-@ModOnly("mtlib")
 @ZenRegister
 public class GasBracketHandler implements IBracketHandler {
 

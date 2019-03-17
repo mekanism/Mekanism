@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -24,7 +22,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.reaction")
-@ModOnly("mtlib")
 @ZenRegister
 public class Reaction {
 
@@ -37,9 +34,9 @@ public class Reaction {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
                         new PressurizedRecipe(
-                              new PressurizedInput(InputHelper.toStack(itemInput), InputHelper.toFluid(liquidInput),
-                                    GasHelper.toGas(gasInput)),
-                              new PressurizedOutput(InputHelper.toStack(itemOutput), GasHelper.toGas(gasOutput)),
+                              new PressurizedInput(IngredientHelper.toStack(itemInput),
+                                    IngredientHelper.toFluid(liquidInput), GasHelper.toGas(gasInput)),
+                              new PressurizedOutput(IngredientHelper.toStack(itemOutput), GasHelper.toGas(gasOutput)),
                               energy, duration)));
         }
     }

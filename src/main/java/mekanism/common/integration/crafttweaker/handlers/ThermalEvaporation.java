@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
@@ -21,7 +19,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.thermalevaporation")
-@ModOnly("mtlib")
 @ZenRegister
 public class ThermalEvaporation {
 
@@ -32,8 +29,8 @@ public class ThermalEvaporation {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, liquidOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.THERMAL_EVAPORATION_PLANT,
-                        new ThermalEvaporationRecipe(InputHelper.toFluid(liquidInput),
-                              InputHelper.toFluid(liquidOutput))));
+                        new ThermalEvaporationRecipe(IngredientHelper.toFluid(liquidInput),
+                              IngredientHelper.toFluid(liquidOutput))));
         }
     }
 

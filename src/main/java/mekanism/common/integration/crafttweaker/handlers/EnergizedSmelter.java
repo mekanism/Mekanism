@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -21,7 +19,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.smelter")
-@ModOnly("mtlib")
 @ZenRegister
 public class EnergizedSmelter {
 
@@ -42,7 +39,7 @@ public class EnergizedSmelter {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.ENERGIZED_SMELTER,
-                        new SmeltingRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput))));
+                        new SmeltingRecipe(IngredientHelper.toStack(itemInput), IngredientHelper.toStack(itemOutput))));
             addedRecipe = true;
         }
     }

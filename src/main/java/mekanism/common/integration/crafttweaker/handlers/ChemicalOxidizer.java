@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -23,7 +21,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.chemical.oxidizer")
-@ModOnly("mtlib")
 @ZenRegister
 public class ChemicalOxidizer {
 
@@ -34,7 +31,7 @@ public class ChemicalOxidizer {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_OXIDIZER,
-                        new OxidationRecipe(InputHelper.toStack(itemInput), GasHelper.toGas(gasOutput))));
+                        new OxidationRecipe(IngredientHelper.toStack(itemInput), GasHelper.toGas(gasOutput))));
         }
     }
 

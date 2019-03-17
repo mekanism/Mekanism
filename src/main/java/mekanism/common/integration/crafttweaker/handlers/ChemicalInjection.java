@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -23,7 +21,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.chemical.injection")
-@ModOnly("mtlib")
 @ZenRegister
 public class ChemicalInjection {
 
@@ -34,9 +31,9 @@ public class ChemicalInjection {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER,
-                        new InjectionRecipe(new AdvancedMachineInput(InputHelper.toStack(itemInput),
+                        new InjectionRecipe(new AdvancedMachineInput(IngredientHelper.toStack(itemInput),
                               GasHelper.toGas(gasInput).getGas()),
-                              new ItemStackOutput(InputHelper.toStack(itemOutput)))));
+                              new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
         }
     }
 

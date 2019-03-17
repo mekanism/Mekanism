@@ -1,6 +1,5 @@
 package mekanism.common.integration.crafttweaker.commands;
 
-import com.blamejared.mtlib.helpers.LogHelper;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.mc1120.commands.CraftTweakerCommand;
 import crafttweaker.mc1120.commands.SpecialMessagesChat;
@@ -75,7 +74,7 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                         CraftTweakerAPI
                               .logCommand(String.format("mods.mekanism.chemical.crystallizer.addRecipe(%s, %s)",
                                     RecipeInfoHelper.getGasName(recipe.getInput().ingredient),
-                                    LogHelper.getStackDescription(recipe.getOutput().output)
+                                    RecipeInfoHelper.getItemName(recipe.getOutput().output)
                               ));
                     }
                 }
@@ -86,7 +85,7 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof DissolutionRecipe) {
                         DissolutionRecipe recipe = (DissolutionRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.dissolution.addRecipe(%s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
                               RecipeInfoHelper.getGasName(recipe.getOutput().output)
                         ));
                     }
@@ -112,9 +111,9 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                         InjectionRecipe recipe = (InjectionRecipe) value;
                         CraftTweakerAPI
                               .logCommand(String.format("mods.mekanism.chemical.injection.addRecipe(%s, %s, %s)",
-                                    LogHelper.getStackDescription(recipe.getInput().itemStack),
+                                    RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
                                     RecipeInfoHelper.getGasName(recipe.getInput().gasType),
-                                    LogHelper.getStackDescription(recipe.getOutput().output)
+                                    RecipeInfoHelper.getItemName(recipe.getOutput().output)
                               ));
                     }
                 }
@@ -125,7 +124,7 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof OxidationRecipe) {
                         OxidationRecipe recipe = (OxidationRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.chemical.oxidizer.addRecipe(%s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
                               RecipeInfoHelper.getGasName(recipe.getOutput().output)
                         ));
                     }
@@ -149,9 +148,9 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof CombinerRecipe) {
                         CombinerRecipe recipe = (CombinerRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.combiner.addRecipe(%s, %s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().itemStack),
-                              LogHelper.getStackDescription(recipe.getInput().extraStack),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
+                              RecipeInfoHelper.getItemName(recipe.getInput().extraStack),
+                              RecipeInfoHelper.getItemName(recipe.getOutput().output)
                         ));
                     }
                 }
@@ -162,8 +161,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof CrusherRecipe) {
                         CrusherRecipe recipe = (CrusherRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.crusher.addRecipe(%s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getItemName(recipe.getOutput().output)
                         ));
                     }
                 }
@@ -174,7 +173,7 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof SeparatorRecipe) {
                         SeparatorRecipe recipe = (SeparatorRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.separator.addRecipe(%s, %s, %s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getFluidName(recipe.getInput().ingredient),
                               recipe.energyUsage,
                               RecipeInfoHelper.getGasName(recipe.getOutput().leftGas),
                               RecipeInfoHelper.getGasName(recipe.getOutput().rightGas)
@@ -188,8 +187,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof SmeltingRecipe) {
                         SmeltingRecipe recipe = (SmeltingRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.smelter.addRecipe(%s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getItemName(recipe.getOutput().output)
                         ));
                     }
                 }
@@ -200,8 +199,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof EnrichmentRecipe) {
                         EnrichmentRecipe recipe = (EnrichmentRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.enrichment.addRecipe(%s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getItemName(recipe.getOutput().output)
                         ));
                     }
                 }
@@ -214,8 +213,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.infuser.addRecipe(%s, %s, %s, %s)",
                               recipe.getInput().infuse.type,
                               recipe.getInput().infuse.amount,
-                              LogHelper.getStackDescription(recipe.getInput().inputStack),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getItemName(recipe.getInput().inputStack),
+                              RecipeInfoHelper.getItemName(recipe.getOutput().output)
                         ));
                     }
                 }
@@ -226,9 +225,9 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof OsmiumCompressorRecipe) {
                         OsmiumCompressorRecipe recipe = (OsmiumCompressorRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.compressor.addRecipe(%s, %s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().itemStack),
+                              RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
                               RecipeInfoHelper.getGasName(recipe.getInput().gasType),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getItemName(recipe.getOutput().output)
                         ));
                     }
                 }
@@ -239,9 +238,9 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof SawmillRecipe) {
                         SawmillRecipe recipe = (SawmillRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.sawmill.addRecipe(%s, %s, %s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
-                              LogHelper.getStackDescription(recipe.getOutput().primaryOutput),
-                              LogHelper.getStackDescription(recipe.getOutput().secondaryOutput),
+                              RecipeInfoHelper.getItemName(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getItemName(recipe.getOutput().primaryOutput),
+                              RecipeInfoHelper.getItemName(recipe.getOutput().secondaryOutput),
                               recipe.getOutput().secondaryChance
                         ));
                     }
@@ -254,10 +253,10 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                         PressurizedRecipe recipe = (PressurizedRecipe) value;
                         CraftTweakerAPI
                               .logCommand(String.format("mods.mekanism.reaction.addRecipe(%s, %s, %s, %s, %s, %s, %s)",
-                                    LogHelper.getStackDescription(recipe.getInput().getSolid()),
-                                    LogHelper.getStackDescription(recipe.getInput().getFluid()),
+                                    RecipeInfoHelper.getItemName(recipe.getInput().getSolid()),
+                                    RecipeInfoHelper.getFluidName(recipe.getInput().getFluid()),
                                     RecipeInfoHelper.getGasName(recipe.getInput().getGas()),
-                                    LogHelper.getStackDescription(recipe.getOutput().getItemOutput()),
+                                    RecipeInfoHelper.getItemName(recipe.getOutput().getItemOutput()),
                                     RecipeInfoHelper.getGasName(recipe.getOutput().getGasOutput()),
                                     recipe.extraEnergy,
                                     recipe.ticks
@@ -271,9 +270,9 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof PurificationRecipe) {
                         PurificationRecipe recipe = (PurificationRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.purification.addRecipe(%s, %s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().itemStack),
+                              RecipeInfoHelper.getItemName(recipe.getInput().itemStack),
                               RecipeInfoHelper.getGasName(recipe.getInput().gasType),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getItemName(recipe.getOutput().output)
                         ));
                     }
                 }
@@ -297,8 +296,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                     if (value instanceof ThermalEvaporationRecipe) {
                         ThermalEvaporationRecipe recipe = (ThermalEvaporationRecipe) value;
                         CraftTweakerAPI.logCommand(String.format("mods.mekanism.thermalevaporation.addRecipe(%s, %s)",
-                              LogHelper.getStackDescription(recipe.getInput().ingredient),
-                              LogHelper.getStackDescription(recipe.getOutput().output)
+                              RecipeInfoHelper.getFluidName(recipe.getInput().ingredient),
+                              RecipeInfoHelper.getFluidName(recipe.getOutput().output)
                         ));
                     }
                 }

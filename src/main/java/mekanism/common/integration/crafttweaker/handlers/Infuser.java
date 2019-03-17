@@ -1,8 +1,6 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import com.blamejared.mtlib.helpers.LogHelper;
-import crafttweaker.annotations.ModOnly;
+import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -23,7 +21,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.infuser")
-@ModOnly("mtlib")
 @ZenRegister
 public class Infuser {
 
@@ -32,15 +29,15 @@ public class Infuser {
     @ZenMethod
     public static void addRecipe(String infuseType, int infuseAmount, IItemStack itemInput, IItemStack itemOutput) {
         if (infuseType == null || infuseType.isEmpty()) {
-            LogHelper.logError(String.format("Required parameters missing for %s Recipe.", NAME));
+            CraftTweakerAPI.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
         }
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.METALLURGIC_INFUSER,
                         new MetallurgicInfuserRecipe(new InfusionInput(InfuseRegistry.get(infuseType), infuseAmount,
-                              InputHelper.toStack(itemInput)),
-                              new ItemStackOutput(InputHelper.toStack(itemOutput)))));
+                              IngredientHelper.toStack(itemInput)),
+                              new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
         }
     }
 

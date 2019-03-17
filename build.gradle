@@ -131,7 +131,6 @@ dependencies {
     deobfCompile ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    compileOnly "com.blamejared:MTLib:${config.mtlib_version}"
     compileOnly "dan200.computercraft:ComputerCraft:${config.computercraft_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${config.top_version}:api"
     compileOnly "appeng:appliedenergistics2:${config.ae2_version}:api"

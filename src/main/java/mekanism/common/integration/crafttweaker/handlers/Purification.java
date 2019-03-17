@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -23,7 +21,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.purification")
-@ModOnly("mtlib")
 @ZenRegister
 public class Purification {
 
@@ -34,7 +31,8 @@ public class Purification {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.PURIFICATION_CHAMBER,
-                        new PurificationRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput))));
+                        new PurificationRecipe(IngredientHelper.toStack(itemInput),
+                              IngredientHelper.toStack(itemOutput))));
         }
     }
 
@@ -43,9 +41,9 @@ public class Purification {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.PURIFICATION_CHAMBER,
-                        new PurificationRecipe(new AdvancedMachineInput(InputHelper.toStack(itemInput),
+                        new PurificationRecipe(new AdvancedMachineInput(IngredientHelper.toStack(itemInput),
                               GasHelper.toGas(gasInput).getGas()),
-                              new ItemStackOutput(InputHelper.toStack(itemOutput)))));
+                              new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
         }
     }
 

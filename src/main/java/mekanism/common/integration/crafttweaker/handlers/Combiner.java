@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -21,7 +19,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.combiner")
-@ModOnly("mtlib")
 @ZenRegister
 public class Combiner {
 
@@ -31,8 +28,8 @@ public class Combiner {
     public static void addRecipe(IItemStack itemInput, IItemStack extraInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, extraInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.COMBINER, new CombinerRecipe(
-                  new DoubleMachineInput(InputHelper.toStack(itemInput), InputHelper.toStack(extraInput)),
-                  new ItemStackOutput(InputHelper.toStack(itemOutput)))));
+                  new DoubleMachineInput(IngredientHelper.toStack(itemInput), IngredientHelper.toStack(extraInput)),
+                  new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
         }
     }
 
@@ -45,7 +42,7 @@ public class Combiner {
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.COMBINER,
-                  new CombinerRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput))));
+                  new CombinerRecipe(IngredientHelper.toStack(itemInput), IngredientHelper.toStack(itemOutput))));
         }
     }
 

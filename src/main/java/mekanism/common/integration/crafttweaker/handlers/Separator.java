@@ -1,7 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.mtlib.helpers.InputHelper;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.liquid.ILiquidStack;
@@ -23,7 +21,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.separator")
-@ModOnly("mtlib")
 @ZenRegister
 public class Separator {
 
@@ -35,8 +32,8 @@ public class Separator {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, leftGasOutput, rightGasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.ELECTROLYTIC_SEPARATOR,
-                        new SeparatorRecipe(InputHelper.toFluid(liquidInput), energy, GasHelper.toGas(leftGasOutput),
-                              GasHelper.toGas(rightGasOutput))));
+                        new SeparatorRecipe(IngredientHelper.toFluid(liquidInput), energy,
+                              GasHelper.toGas(leftGasOutput), GasHelper.toGas(rightGasOutput))));
         }
     }
 

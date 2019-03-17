@@ -1,8 +1,5 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import static com.blamejared.mtlib.helpers.InputHelper.toStack;
-
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
@@ -22,7 +19,6 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.mekanism.sawmill")
-@ModOnly("mtlib")
 @ZenRegister
 public class Sawmill {
 
@@ -34,10 +30,10 @@ public class Sawmill {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe(NAME, Recipe.PRECISION_SAWMILL,
-                        new SawmillRecipe(new ItemStackInput(toStack(itemInput)),
-                              optionalItemOutput == null ? new ChanceOutput(toStack(itemOutput))
-                                    : new ChanceOutput(toStack(itemOutput), toStack(optionalItemOutput),
-                                          optionalChance))));
+                        new SawmillRecipe(new ItemStackInput(IngredientHelper.toStack(itemInput)),
+                              optionalItemOutput == null ? new ChanceOutput(IngredientHelper.toStack(itemOutput))
+                                    : new ChanceOutput(IngredientHelper.toStack(itemOutput),
+                                          IngredientHelper.toStack(optionalItemOutput), optionalChance))));
         }
     }
 
