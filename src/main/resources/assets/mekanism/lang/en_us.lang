@@ -1133,3 +1133,25 @@ mekanism.configgui.ctgy.tools.tools=Tools Balance
 mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
 mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
 mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
+
+# Commands
+cmd.mek.usage=
+cmd.mek.debug.usage=
+cmd.mek.debug=
+cmd.mek.testrules.usage=Setup world rules for testing (no mob spawning, daylight cycle or weather)
+cmd.mek.testrules=Mob spawning, daylight cycle and weather disabled!
+cmd.mek.tp.usage=Teleport to new coordinates, saving last position on a stack
+cmd.mek.tp=Teleported to %d,%d,%d - saved last position on stack
+cmd.mek.tp.missing.args=Teleporting requires three coordinates: x, y, z
+cmd.mek.tpop.usage=Return to last position on stack
+cmd.mek.tpop=Returned to %d,%d,%d; %d positions on stack
+cmd.mek.tpop.empty.stack=No positions on stack
+cmd.mek.
+
+cmd.mek.chunk.usage=
+cmd.mek.chunk.watch.usage=Add caller's chunk to watch list for loading/unloading events
+cmd.mek.chunk.watch=Chunk %d,%d added to watch list
+cmd.mek.chunk.unwatch.usage=Remove caller's chunk from watch list for chunk loading/unloading events
+cmd.mek.chunk.unwatch=Chunk %d,%d removed from watch list
+cmd.mek.chunk.clear.usage=Remove all chunks from watch list for chunk loading/unloading events
+cmd.mek.chunk.clear=%d chunks removed from watch list

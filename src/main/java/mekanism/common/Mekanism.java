@@ -33,6 +33,7 @@ import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
+import mekanism.common.command.CommandMek;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -768,7 +769,7 @@ public class Mekanism {
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new CommandMekanism());
+        CommandMek.register(event);
     }
 
     @EventHandler
