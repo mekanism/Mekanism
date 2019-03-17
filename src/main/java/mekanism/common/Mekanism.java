@@ -983,6 +983,9 @@ public class Mekanism
 
 		event.blacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
 
+		//goes invalid on unbox
+		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ic2", "te")));
+
 		BoxBlacklistParser.load();
 	}
 	
