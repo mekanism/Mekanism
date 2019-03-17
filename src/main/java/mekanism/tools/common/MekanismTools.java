@@ -38,14 +38,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = "mekanismtools", name = "MekanismTools", version = "${version}", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MekanismTools.MODID, name = "MekanismTools", version = "${version}", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
 @Mod.EventBusSubscriber()
 public class MekanismTools implements IModule
 {
+	public static final String MODID = "mekanismtools";
+
 	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
 	public static ToolsCommonProxy proxy;
 	
-	@Instance("mekanismtools")
+	@Instance(MODID)
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
@@ -340,7 +342,7 @@ public class MekanismTools implements IModule
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)
 	{
-		if(event.getModID().equals("mekanismtools") || event.getModID().equals(Mekanism.MODID))
+		if(event.getModID().equals(MODID) || event.getModID().equals(Mekanism.MODID))
 		{
 			proxy.loadConfiguration();
 		}

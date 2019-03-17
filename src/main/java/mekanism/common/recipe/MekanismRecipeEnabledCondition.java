@@ -3,10 +3,12 @@ package mekanism.common.recipe;
 import com.google.gson.JsonObject;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator;
 import net.minecraft.util.JsonUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.fml.common.Loader;
 
 import java.util.function.BooleanSupplier;
 
@@ -27,11 +29,19 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory
             return () -> MekanismConfig.current().general.machinesManager.isEnabled(type);
         }
 
-        if(JsonUtils.hasField(json, "generatorType"))
+        if(Loader.isModLoaded(MekanismGenerators.MODID) && JsonUtils.hasField(json, "generatorType"))
         {
             final String generatorType = JsonUtils.getString(json, "generatorType");
             final BlockStateGenerator.GeneratorType type = MekanismConfig.current().generators.generatorsManager.typeFromName(generatorType);
-            return () -> MekanismConfig.current().generators.generatorsManager.isEnabled(type);
+            //noinspection Convert2Lambda - classloading issues if generators not installed
+            return new BooleanSupplier()
+            {
+                @Override
+                public boolean getAsBoolean()
+                {
+                    return MekanismConfig.current().generators.generatorsManager.isEnabled(type);
+                }
+            };
         }
 
         if(JsonUtils.hasField(json, "circuitOredict"))
@@ -39,6 +49,6 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory
             return () -> MekanismConfig.current().general.controlCircuitOreDict.val();
         }
 
-        throw new IllegalStateException("Config defined with recipe_enabled condition without a valid field defined! Valid values: \"machineType\", \"generatorType\" and \"circuitOredict\"");
+        throw new IllegalStateException("Config defined with recipe_enabled condition without a valid field defined! Valid values: \"machineType\", \"generatorType\" (when Mekanism Generators installed) and \"circuitOredict\"");
     }
 }

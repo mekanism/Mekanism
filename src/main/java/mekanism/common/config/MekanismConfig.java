@@ -1,5 +1,9 @@
 package mekanism.common.config;
 
+import mekanism.generators.common.MekanismGenerators;
+import mekanism.tools.common.MekanismTools;
+import net.minecraftforge.fml.common.Loader;
+
 import javax.annotation.Nullable;
 
 public class MekanismConfig
@@ -34,9 +38,11 @@ public class MekanismConfig
 	}
 
 	public GeneralConfig general = new GeneralConfig();
-	public GeneratorsConfig generators = new GeneratorsConfig();
 	public ClientConfig client = new ClientConfig();
 	public UsageConfig usage = new UsageConfig();
-	public ToolsConfig tools = new ToolsConfig();
+
+	public GeneratorsConfig generators = Loader.isModLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
+
+	public ToolsConfig tools = Loader.isModLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
 
 }
