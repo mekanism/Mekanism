@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine.chemical;
 
-import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiGasGauge;
 import mekanism.client.gui.element.GuiGauge;
@@ -10,6 +9,7 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -25,9 +25,6 @@ import net.minecraft.util.ResourceLocation;
 public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory {
 
     private final IDrawable background;
-
-    @Nullable
-    private OxidationRecipe tempRecipe;
 
     public ChemicalOxidizerRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiChemicalOxidizer.png", "chemical_oxidizer",
@@ -66,14 +63,14 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory {
             return;
         }
 
-        tempRecipe = ((ChemicalOxidizerRecipeWrapper) recipeWrapper).getRecipe();
+        OxidationRecipe tempRecipe = ((ChemicalOxidizerRecipeWrapper) recipeWrapper).getRecipe();
 
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
         itemStacks.set(0, tempRecipe.getInput().ingredient);
 
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
 
         initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.recipeOutput.output, true);
     }

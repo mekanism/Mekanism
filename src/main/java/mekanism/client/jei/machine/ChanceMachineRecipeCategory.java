@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -26,9 +25,6 @@ import net.minecraft.util.ResourceLocation;
 public class ChanceMachineRecipeCategory extends BaseRecipeCategory {
 
     private final IDrawable background;
-
-    @Nullable
-    private ChanceMachineRecipe tempRecipe;
 
     public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
         super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress);
@@ -73,7 +69,7 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory {
             return;
         }
 
-        tempRecipe = ((ChanceMachineRecipeWrapper) recipeWrapper).getRecipe();
+        ChanceMachineRecipe tempRecipe = ((ChanceMachineRecipeWrapper) recipeWrapper).getRecipe();
 
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 

@@ -4,8 +4,8 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.item.ItemStack;
 
 public class MachineRecipeWrapper implements IRecipeWrapper {
 
@@ -17,8 +17,8 @@ public class MachineRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(ItemStack.class, ((ItemStackInput) recipe.getInput()).ingredient);
-        ingredients.setOutput(ItemStack.class, ((ItemStackOutput) recipe.getOutput()).output);
+        ingredients.setInput(VanillaTypes.ITEM, ((ItemStackInput) recipe.getInput()).ingredient);
+        ingredients.setOutput(VanillaTypes.ITEM, ((ItemStackOutput) recipe.getOutput()).output);
     }
 
     public BasicMachineRecipe getRecipe() {

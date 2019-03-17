@@ -1,8 +1,8 @@
 package mekanism.client.jei.machine.chemical;
 
-import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -16,9 +16,6 @@ import net.minecraft.util.ResourceLocation;
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory {
 
     private final IDrawable background;
-
-    @Nullable
-    private ChemicalInfuserRecipe tempRecipe;
 
     public ChemicalInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiChemicalInfuser.png", "chemical_infuser",
@@ -49,9 +46,9 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory {
             return;
         }
 
-        tempRecipe = ((ChemicalInfuserRecipeWrapper) recipeWrapper).getRecipe();
+        ChemicalInfuserRecipe tempRecipe = ((ChemicalInfuserRecipeWrapper) recipeWrapper).getRecipe();
 
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
 
         initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().leftGas, true);
         initGas(gasStacks, 1, true, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().rightGas, true);

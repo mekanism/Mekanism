@@ -10,6 +10,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
@@ -89,7 +90,7 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory {
         itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
         itemStacks.set(2, ((AdvancedMachineRecipeWrapper) recipeWrapper).getFuelStacks(input.gasType));
 
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
 
         initGas(gasStacks, 0, true, 33, 21, 6, 12,
               new GasStack(input.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED

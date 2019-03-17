@@ -6,10 +6,10 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.item.ItemStack;
 
 public class ChanceMachineRecipeWrapper implements IRecipeWrapper {
 
@@ -22,8 +22,8 @@ public class ChanceMachineRecipeWrapper implements IRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         ChanceOutput output = (ChanceOutput) recipe.getOutput();
-        ingredients.setInput(ItemStack.class, ((ItemStackInput) recipe.getInput()).ingredient);
-        ingredients.setOutputs(ItemStack.class, Arrays.asList(output.primaryOutput, output.secondaryOutput));
+        ingredients.setInput(VanillaTypes.ITEM, ((ItemStackInput) recipe.getInput()).ingredient);
+        ingredients.setOutputs(VanillaTypes.ITEM, Arrays.asList(output.primaryOutput, output.secondaryOutput));
     }
 
     @Override

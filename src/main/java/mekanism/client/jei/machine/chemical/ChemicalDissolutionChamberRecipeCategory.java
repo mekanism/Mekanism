@@ -1,8 +1,8 @@
 package mekanism.client.jei.machine.chemical;
 
-import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
@@ -19,9 +19,6 @@ import net.minecraft.util.ResourceLocation;
 public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory {
 
     private final IDrawable background;
-
-    @Nullable
-    private DissolutionRecipe tempRecipe;
 
     public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png", "chemical_dissolution_chamber",
@@ -52,14 +49,14 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
             return;
         }
 
-        tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper) recipeWrapper).getRecipe();
+        DissolutionRecipe tempRecipe = ((ChemicalDissolutionChamberRecipeWrapper) recipeWrapper).getRecipe();
 
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
         itemStacks.set(0, tempRecipe.getInput().ingredient);
 
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
 
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58,
               new GasStack(MekanismFluids.SulfuricAcid, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE

@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -26,9 +25,6 @@ import net.minecraft.util.ResourceLocation;
 public class DoubleMachineRecipeCategory extends BaseRecipeCategory {
 
     private final IDrawable background;
-
-    @Nullable
-    private DoubleMachineRecipe tempRecipe;
 
     public DoubleMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
         super(helper, "mekanism:gui/guibasicmachine.png", name, unlocalized, progress);
@@ -76,7 +72,7 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory {
             return;
         }
 
-        tempRecipe = ((DoubleMachineRecipeWrapper) recipeWrapper).getRecipe();
+        DoubleMachineRecipe tempRecipe = ((DoubleMachineRecipeWrapper) recipeWrapper).getRecipe();
 
         DoubleMachineInput input = (DoubleMachineInput) tempRecipe.recipeInput;
 

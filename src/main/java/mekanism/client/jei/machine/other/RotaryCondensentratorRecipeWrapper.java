@@ -3,8 +3,10 @@ package mekanism.client.jei.machine.other;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.util.LangUtils;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fluids.Fluid;
@@ -29,11 +31,11 @@ public class RotaryCondensentratorRecipeWrapper implements IRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         if (condensentrating) {
-            ingredients.setInput(GasStack.class, new GasStack(gasType, gasAmount));
-            ingredients.setOutput(FluidStack.class, new FluidStack(fluidType, fluidAmount));
+            ingredients.setInput(MekanismJEI.TYPE_GAS, new GasStack(gasType, gasAmount));
+            ingredients.setOutput(VanillaTypes.FLUID, new FluidStack(fluidType, fluidAmount));
         } else {
-            ingredients.setInput(FluidStack.class, new FluidStack(fluidType, fluidAmount));
-            ingredients.setOutput(GasStack.class, new GasStack(gasType, gasAmount));
+            ingredients.setInput(VanillaTypes.FLUID, new FluidStack(fluidType, fluidAmount));
+            ingredients.setOutput(MekanismJEI.TYPE_GAS, new GasStack(gasType, gasAmount));
         }
     }
 

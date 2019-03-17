@@ -7,6 +7,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.InfuseStorage;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -24,9 +25,9 @@ public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper {
         List<ItemStack> inputStacks = Collections.singletonList(recipe.recipeInput.inputStack);
         List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.type);
 
-        ingredients.setInput(ItemStack.class, recipe.recipeInput.inputStack);
-        ingredients.setInputLists(ItemStack.class, Arrays.asList(inputStacks, infuseStacks));
-        ingredients.setOutput(ItemStack.class, recipe.recipeOutput.output);
+        ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.inputStack);
+        ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(inputStacks, infuseStacks));
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.output);
     }
 
     public MetallurgicInfuserRecipe getRecipe() {

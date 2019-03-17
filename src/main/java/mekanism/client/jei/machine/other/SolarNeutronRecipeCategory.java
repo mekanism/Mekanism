@@ -1,8 +1,8 @@
 package mekanism.client.jei.machine.other;
 
-import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -16,9 +16,6 @@ import net.minecraft.util.ResourceLocation;
 public class SolarNeutronRecipeCategory extends BaseRecipeCategory {
 
     private final IDrawable background;
-
-    @Nullable
-    private SolarNeutronRecipe tempRecipe;
 
     public SolarNeutronRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiSolarNeutronActivator.png", "solar_neutron_activator",
@@ -48,9 +45,9 @@ public class SolarNeutronRecipeCategory extends BaseRecipeCategory {
             return;
         }
 
-        tempRecipe = ((SolarNeutronRecipeWrapper) recipeWrapper).getRecipe();
+        SolarNeutronRecipe tempRecipe = ((SolarNeutronRecipeWrapper) recipeWrapper).getRecipe();
 
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(GasStack.class);
+        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
 
         initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, tempRecipe.recipeInput.ingredient, true);
         initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.recipeOutput.output, true);

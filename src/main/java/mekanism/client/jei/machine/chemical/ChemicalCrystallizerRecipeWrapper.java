@@ -1,10 +1,10 @@
 package mekanism.client.jei.machine.chemical;
 
-import mekanism.api.gas.GasStack;
+import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.item.ItemStack;
 
 public class ChemicalCrystallizerRecipeWrapper implements IRecipeWrapper {
 
@@ -16,8 +16,8 @@ public class ChemicalCrystallizerRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(GasStack.class, recipe.recipeInput.ingredient);
-        ingredients.setOutput(ItemStack.class, recipe.recipeOutput.output);
+        ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.ingredient);
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.output);
     }
 
     public CrystallizerRecipe getRecipe() {

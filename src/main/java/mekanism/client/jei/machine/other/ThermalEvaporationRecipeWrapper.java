@@ -2,8 +2,8 @@ package mekanism.client.jei.machine.other;
 
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraftforge.fluids.FluidStack;
 
 public class ThermalEvaporationRecipeWrapper implements IRecipeWrapper {
 
@@ -15,8 +15,8 @@ public class ThermalEvaporationRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(FluidStack.class, recipe.getInput().ingredient);
-        ingredients.setOutput(FluidStack.class, recipe.getOutput().output);
+        ingredients.setInput(VanillaTypes.FLUID, recipe.getInput().ingredient);
+        ingredients.setOutput(VanillaTypes.FLUID, recipe.getOutput().output);
     }
 
     public ThermalEvaporationRecipe getRecipe() {
