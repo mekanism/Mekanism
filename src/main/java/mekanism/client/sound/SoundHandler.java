@@ -128,9 +128,8 @@ public class SoundHandler {
             return;
         }
 
-        // Ignore any Mek sounds that aren't either a player or block event
-        SoundCategory category = event.getSound().getCategory();
-        if (!category.equals(SoundCategory.PLAYERS) && !category.equals(SoundCategory.BLOCKS)) {
+        // Ignore any non-tile Mek sounds
+        if (event.getName().startsWith("etc.")) {
             return;
         }
 
