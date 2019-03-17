@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.TileNetworkList;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -110,6 +111,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @SideOnly(Side.CLIENT)
     private void updateSound() {
+        // If machine sounds are disabled, noop
+        if (!MekanismConfig.client.enableMachineSounds) {
+            return;
+        }
+
         if (getActive() && !isInvalid()) {
             // If sounds are being muted, we can attempt to start them on every tick, only to have them
             // denied by the event bus, so use a cooldown period that ensures we're only trying once every

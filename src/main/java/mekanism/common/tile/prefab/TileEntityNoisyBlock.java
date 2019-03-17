@@ -3,6 +3,7 @@ package mekanism.common.tile.prefab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.util.ResourceLocation;
@@ -49,6 +50,11 @@ public abstract class TileEntityNoisyBlock extends TileEntityElectricBlock imple
 
     @SideOnly(Side.CLIENT)
     private void updateSound() {
+        // If machine sounds are disabled, noop
+        if (!MekanismConfig.client.enableMachineSounds) {
+            return;
+        }
+
         if (getActive() && !isInvalid()) {
             // If sounds are being muted, we can attempt to start them on every tick, only to have them
             // denied by the event bus, so use a cooldown period that ensures we're only trying once every
