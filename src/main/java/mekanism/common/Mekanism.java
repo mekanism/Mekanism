@@ -816,8 +816,8 @@ public class Mekanism {
         registerTileEntity(TileEntityEnergyCube.class, "energy_cube");
         registerTileEntity(TileEntityEnrichmentChamber.class, "enrichment_chamber");
         registerTileEntity(TileEntityFactory.class, "smelting_factory");
-        registerTileEntity(TileEntityFluidicPlenisher.class, "fluidic_plenisher");
         registerTileEntity(TileEntityFluidTank.class, "fluid_tank");
+        registerTileEntity(TileEntityFluidicPlenisher.class, "fluidic_plenisher");
         registerTileEntity(TileEntityFormulaicAssemblicator.class, "formulaic_assemblicator");
         registerTileEntity(TileEntityFuelwoodHeater.class, "fuelwood_heater");
         registerTileEntity(TileEntityGasTank.class, "gas_tank");
@@ -835,8 +835,8 @@ public class Mekanism {
         registerTileEntity(TileEntityMetallurgicInfuser.class, "metallurgic_infuser");
         registerTileEntity(TileEntityOredictionificator.class, "oredictionificator");
         registerTileEntity(TileEntityOsmiumCompressor.class, "osmium_compressor");
-        registerTileEntity(TileEntityPersonalChest.class, "personal_chest");
         registerTileEntity(TileEntityPRC.class, "pressurized_reaction_chamber");
+        registerTileEntity(TileEntityPersonalChest.class, "personal_chest");
         registerTileEntity(TileEntityPrecisionSawmill.class, "precision_sawmill");
         registerTileEntity(TileEntityPressureDisperser.class, "pressure_disperser");
         registerTileEntity(TileEntityPressurizedTube.class, "pressurized_tube");
