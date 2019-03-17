@@ -5,6 +5,7 @@ import mekanism.api.MekanismRecipeHelper;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Loader;
@@ -31,9 +32,15 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
+    @Deprecated
     public void addCombinerRecipe(ItemStack input, ItemStack output) {
+        addCombinerRecipe(input, new ItemStack(Blocks.COBBLESTONE), output);
+    }
+
+    @Override
+    public void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output) {
         checkPhase();
-        RecipeHandler.addCombinerRecipe(input, output);
+        RecipeHandler.addCombinerRecipe(input, extra, output);
     }
 
     @Override

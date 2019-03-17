@@ -7,7 +7,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultConfigCardAccess implements IConfigCardAccess {
 
     public static void register() {
-        CapabilityManager.INSTANCE
-              .register(IConfigCardAccess.class, new NullStorage<>(), DefaultConfigCardAccess.class);
+        CapabilityManager.INSTANCE.register(IConfigCardAccess.class, new NullStorage<>(), DefaultConfigCardAccess::new);
     }
 }

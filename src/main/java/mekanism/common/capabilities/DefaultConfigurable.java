@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultConfigurable implements IConfigurable {
 
     public static void register() {
-        CapabilityManager.INSTANCE.register(IConfigurable.class, new NullStorage<>(), DefaultConfigurable.class);
+        CapabilityManager.INSTANCE.register(IConfigurable.class, new NullStorage<>(), DefaultConfigurable::new);
     }
 
     @Override

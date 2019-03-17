@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -71,7 +72,6 @@ public class LaserManager {
             return null;
         }
 
-        List<ItemStack> ret = null;
         IBlockState state = blockCoord.getBlockState(world);
         Block blockHit = state.getBlock();
 
@@ -84,10 +84,12 @@ public class LaserManager {
             return null;
         }
 
+        NonNullList<ItemStack> ret = null;
         if (dropAtBlock) {
             blockHit.dropBlockAsItem(world, blockCoord.getPos(), state, 0);
         } else {
-            ret = blockHit.getDrops(world, blockCoord.getPos(), state, 0);
+            ret = NonNullList.create();
+            blockHit.getDrops(ret, world, blockCoord.getPos(), state, 0);
         }
 
         blockHit.breakBlock(world, blockCoord.getPos(), state);

@@ -16,7 +16,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N>> implements IGridTransmitter<A, N> {
 
     public static void register() {
-        CapabilityManager.INSTANCE.register(IGridTransmitter.class, new NullStorage<>(), DefaultGridTransmitter.class);
+        CapabilityManager.INSTANCE.register(IGridTransmitter.class, new NullStorage<>(), DefaultGridTransmitter::new);
     }
 
     @Override

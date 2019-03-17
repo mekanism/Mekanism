@@ -8,7 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultLaserReceptor implements ILaserReceptor {
 
     public static void register() {
-        CapabilityManager.INSTANCE.register(ILaserReceptor.class, new NullStorage<>(), DefaultLaserReceptor.class);
+        CapabilityManager.INSTANCE.register(ILaserReceptor.class, new NullStorage<>(), DefaultLaserReceptor::new);
     }
 
     @Override

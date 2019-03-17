@@ -24,7 +24,7 @@ public class DefaultStrictEnergyStorage implements IStrictEnergyStorage, INBTSer
 
     public static void register() {
         CapabilityManager.INSTANCE
-              .register(IStrictEnergyStorage.class, new DefaultStorage<>(), DefaultStrictEnergyStorage.class);
+              .register(IStrictEnergyStorage.class, new DefaultStorage<>(), DefaultStrictEnergyStorage::new);
     }
 
     @Override

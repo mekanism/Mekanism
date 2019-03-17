@@ -7,8 +7,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultEvaporationSolar implements IEvaporationSolar {
 
     public static void register() {
-        CapabilityManager.INSTANCE
-              .register(IEvaporationSolar.class, new NullStorage<>(), DefaultEvaporationSolar.class);
+        CapabilityManager.INSTANCE.register(IEvaporationSolar.class, new NullStorage<>(), DefaultEvaporationSolar::new);
     }
 
     @Override

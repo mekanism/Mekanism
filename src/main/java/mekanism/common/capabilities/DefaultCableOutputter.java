@@ -12,7 +12,7 @@ public class DefaultCableOutputter implements IStrictEnergyOutputter {
 
     public static void register() {
         CapabilityManager.INSTANCE
-              .register(IStrictEnergyOutputter.class, new NullStorage<>(), DefaultCableOutputter.class);
+              .register(IStrictEnergyOutputter.class, new NullStorage<>(), DefaultCableOutputter::new);
     }
 
     @Override

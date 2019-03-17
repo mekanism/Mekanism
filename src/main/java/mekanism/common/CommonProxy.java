@@ -601,7 +601,7 @@ public class CommonProxy implements IGuiProvider {
 
     public double getReach(EntityPlayer player) {
         if (player instanceof EntityPlayerMP) {
-            return ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
+            return player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
         }
 
         return 0;

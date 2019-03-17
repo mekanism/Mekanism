@@ -26,6 +26,7 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.Level;
 
 public class MekanismOBJLoader implements ICustomModelLoader {
 
@@ -63,7 +64,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
 
             for (String s : objModel.getMatLib().getMaterialNames()) {
                 if (objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getPath().startsWith("#")) {
-                    FMLLog.severe("OBJLoader: Unresolved texture '%s' for obj model '%s'",
+                    FMLLog.log(Level.ERROR, "OBJLoader: Unresolved texture '%s' for obj model '%s'",
                           objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getPath(),
                           modelLocation);
                     builder.put(s, missing);

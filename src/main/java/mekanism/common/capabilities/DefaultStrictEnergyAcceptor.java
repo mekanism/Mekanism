@@ -12,7 +12,7 @@ public class DefaultStrictEnergyAcceptor implements IStrictEnergyAcceptor {
 
     public static void register() {
         CapabilityManager.INSTANCE
-              .register(IStrictEnergyAcceptor.class, new DefaultStorage<>(), DefaultStrictEnergyAcceptor.class);
+              .register(IStrictEnergyAcceptor.class, new DefaultStorage<>(), DefaultStrictEnergyAcceptor::new);
     }
 
     @Override

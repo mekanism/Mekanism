@@ -30,7 +30,17 @@ public interface MekanismRecipeHelper {
      * @param input - input ItemStack
      * @param output - output ItemStack
      */
+    @Deprecated
     void addCombinerRecipe(ItemStack input, ItemStack output);
+
+    /**
+     * Add a Combiner recipe.
+     *
+     * @param input - input ItemStack
+     * @param extra - extra ItemStack
+     * @param output - output ItemStack
+     */
+    void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output);
 
     /**
      * Add a Crusher recipe.

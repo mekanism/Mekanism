@@ -490,7 +490,7 @@ public class RenderResizableCuboid {
                 list[i * arr.length + j] = used;
             }
         }
-        return new BakedQuad(list, -1, face, sprite);
+        return new BakedQuad(list, -1, face, sprite, true, DefaultVertexFormats.ITEM);
     }
 
     /**

@@ -12,7 +12,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultGasHandler implements IGasHandler {
 
     public static void register() {
-        CapabilityManager.INSTANCE.register(IGasHandler.class, new NullStorage<>(), DefaultGasHandler.class);
+        CapabilityManager.INSTANCE.register(IGasHandler.class, new NullStorage<>(), DefaultGasHandler::new);
     }
 
     @Override
