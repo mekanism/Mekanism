@@ -47,11 +47,9 @@ public class PlayerState {
 
         if (alreadyActive && !isActive) {
             // On -> off
-            Mekanism.logger.info("{} jetpack is now off", playerId);
             activeJetpacks.remove(playerId);
         } else if (!alreadyActive && isActive) {
             // Off -> on
-            Mekanism.logger.info("{} jetpack is now on", playerId);
             activeJetpacks.add(playerId);
         }
 
