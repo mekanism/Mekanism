@@ -24,7 +24,6 @@ public class MekanismConfig {
         public static int saltPerChunk = 2;
         public static int obsidianTNTDelay = 100;
         public static int UPDATE_DELAY = 10;
-        public static int VOICE_PORT = 36123;
         public static int maxUpgradeMultiplier = 10;
         public static int userWorldGenVersion = 0;
         public static double ENERGY_PER_REDSTONE = 10000;
