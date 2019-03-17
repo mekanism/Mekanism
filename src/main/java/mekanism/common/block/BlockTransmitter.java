@@ -136,6 +136,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(worldIn, pos);
         if (tile != null) {
@@ -147,6 +148,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         TransmitterType type = TransmitterType.get(meta);
         return getDefaultState().withProperty(BlockStateTransmitter.typeProperty, type);
@@ -186,6 +188,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 
@@ -197,6 +200,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos,
           @Nonnull AxisAlignedBB entityBox, @Nonnull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn,
           boolean b) {
@@ -213,11 +217,13 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getSelectedBoundingBox(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
         return getDefaultForTile(getTileEntitySidedPipe(world, pos)).offset(pos);
     }
 
     @Override
+    @Deprecated
     public RayTraceResult collisionRayTrace(IBlockState blockState, @Nonnull World world, @Nonnull BlockPos pos,
           @Nonnull Vec3d start, @Nonnull Vec3d end) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
@@ -325,6 +331,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
@@ -358,26 +365,31 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Override
+    @Deprecated
     public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullBlock(IBlockState state) {
         return false;
     }

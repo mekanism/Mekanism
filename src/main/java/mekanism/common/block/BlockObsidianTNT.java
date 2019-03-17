@@ -43,6 +43,7 @@ public class BlockObsidianTNT extends Block {
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         if (world.getRedstonePowerFromNeighbors(pos) > 0) {
@@ -91,6 +92,7 @@ public class BlockObsidianTNT extends Block {
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }

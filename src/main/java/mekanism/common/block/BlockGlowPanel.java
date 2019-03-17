@@ -104,6 +104,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
@@ -128,6 +129,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 
@@ -167,6 +169,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 
@@ -230,26 +233,31 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Override
+    @Deprecated
     public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullBlock(IBlockState state) {
         return false;
     }

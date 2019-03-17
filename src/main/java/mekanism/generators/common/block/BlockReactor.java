@@ -61,6 +61,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
@@ -83,6 +84,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta & 0xF);
 
@@ -101,6 +103,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         if (!world.isRemote) {
@@ -185,16 +188,19 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
@@ -206,6 +212,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     }
 
     @Override
+    @Deprecated
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
           EnumFacing side) {
@@ -227,6 +234,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     }
 
     @Override
+    @Deprecated
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 
@@ -238,6 +246,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     }
 
     @Override
+    @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), state.getBlock().getMetaFromState(state));
 

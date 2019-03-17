@@ -62,6 +62,7 @@ public class BlockGasTank extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState();
     }
@@ -73,6 +74,7 @@ public class BlockGasTank extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
@@ -119,6 +121,7 @@ public class BlockGasTank extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         if (!world.isRemote) {
@@ -131,6 +134,7 @@ public class BlockGasTank extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
           @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
@@ -243,18 +247,21 @@ public class BlockGasTank extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         return TANK_BOUNDS;
     }
@@ -302,11 +309,13 @@ public class BlockGasTank extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean hasComparatorInputOverride(IBlockState state) {
         return true;
     }
 
     @Override
+    @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
         return tileEntity.getRedstoneLevel();
@@ -347,11 +356,13 @@ public class BlockGasTank extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean isFullBlock(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }

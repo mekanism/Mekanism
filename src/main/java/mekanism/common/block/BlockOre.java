@@ -34,6 +34,7 @@ public class BlockOre extends Block {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
     }

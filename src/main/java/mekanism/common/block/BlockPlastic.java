@@ -42,6 +42,7 @@ public class BlockPlastic extends Block {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(BlockStatePlastic.colorProperty, EnumDyeColor.byDyeDamage(meta));
     }

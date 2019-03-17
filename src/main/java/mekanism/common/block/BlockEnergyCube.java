@@ -74,12 +74,14 @@ public class BlockEnergyCube extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState();
     }
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
@@ -99,6 +101,7 @@ public class BlockEnergyCube extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         if (!world.isRemote) {
@@ -168,6 +171,7 @@ public class BlockEnergyCube extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
           @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
@@ -254,12 +258,14 @@ public class BlockEnergyCube extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
@@ -322,17 +328,20 @@ public class BlockEnergyCube extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean hasComparatorInputOverride(IBlockState state) {
         return true;
     }
 
     @Override
+    @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         return tileEntity.getRedstoneLevel();
     }
 
     @Override
+    @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         return true;
     }

@@ -134,6 +134,7 @@ public abstract class BlockMachine extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         MachineType type = MachineType.get(getMachineBlock(), meta & 0xF);
 
@@ -148,6 +149,7 @@ public abstract class BlockMachine extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
@@ -505,6 +507,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
@@ -517,6 +520,7 @@ public abstract class BlockMachine extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
@@ -529,6 +533,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
           @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
@@ -569,11 +574,13 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean hasComparatorInputOverride(IBlockState state) {
         return true;
     }
 
     @Override
+    @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
@@ -689,6 +696,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         if (!world.isRemote) {
@@ -826,6 +834,7 @@ public abstract class BlockMachine extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
@@ -855,11 +864,13 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
@@ -913,6 +924,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
+    @Deprecated
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 

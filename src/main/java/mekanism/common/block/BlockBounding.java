@@ -37,6 +37,7 @@ public class BlockBounding extends Block {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(BlockStateBounding.advancedProperty, meta > 0);
     }
@@ -93,6 +94,7 @@ public class BlockBounding extends Block {
     }
 
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         try {
@@ -105,6 +107,7 @@ public class BlockBounding extends Block {
     }
 
     @Override
+    @Deprecated
     public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
           @Nonnull BlockPos pos) {
         try {
@@ -129,16 +132,19 @@ public class BlockBounding extends Block {
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.INVISIBLE;
     }
 
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }

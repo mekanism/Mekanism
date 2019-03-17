@@ -327,6 +327,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     @Nonnull
     @Override
+    @Deprecated
     public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
         Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
 

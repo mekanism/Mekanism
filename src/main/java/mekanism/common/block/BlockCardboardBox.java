@@ -53,6 +53,7 @@ public class BlockCardboardBox extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(storageProperty, meta == 1);
     }
@@ -121,6 +122,7 @@ public class BlockCardboardBox extends BlockContainer {
 
     @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
