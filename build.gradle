@@ -3,7 +3,7 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
         maven {
             name = "sonatype"
@@ -34,11 +34,11 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 repositories {
     maven {
         name 'ForgeFS'
-        url 'http://files.minecraftforge.net/maven'
+        url 'https://files.minecraftforge.net/maven'
     }
     maven {
         name 'amadornes'
-        url 'http://maven.amadornes.com/'
+        url 'https://maven.amadornes.com/'
     }
     maven {
         name 'prog'
@@ -46,7 +46,7 @@ repositories {
     }
     maven {
         name 'tesla'
-        url 'http://maven.mcmoddev.com'
+        url 'https://maven.mcmoddev.com'
     }
     maven {
         name 'curseforge'
@@ -58,11 +58,11 @@ repositories {
     }
     maven {
         name 'hwyla'
-        url 'http://tehnut.info/maven'
+        url 'https://tehnut.info/maven'
     }
     maven {
         name 'CoFH Maven'
-        url = 'http://maven.covers1624.net'
+        url 'https://maven.covers1624.net'
     }
     maven {
         name 'buildcraft'
@@ -70,7 +70,7 @@ repositories {
     }
     maven {
         name 'tterrag'
-        url 'http://maven.tterrag.com/'
+        url 'https://maven.tterrag.com/'
     }
     maven {
         name 'ic2'
@@ -78,33 +78,23 @@ repositories {
     }
     maven {
         name 'BlameJared - Crafttweaker'
-        url 'http://maven.blamejared.com/'
+        url 'https://maven.blamejared.com/'
     }
     maven {
         name 'thiakil'
-        url 'http://maven.thiakil.com'
+        url 'https://maven.thiakil.com'
     }
 }
 
-// Define properties file
-ext.configFile = file "build.properties"
-
-configFile.withReader {
-    // Load config. It shall from now be referenced as simply config or project.config
-    def prop = new Properties()
-    prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
-}
-
 group = "mekanica"
-version = "${config.minecraft_version}-${version}"
+version = "${minecraft_version}-${version}"
 archivesBaseName = "mekanica-all"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
-    mappings = "${config.mappings_version}"
+    version = "${minecraft_version}-${forge_version}"
+    mappings = "${mappings_version}"
     runDir = "run"
     useDepAts = true
 
@@ -113,39 +103,39 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile "MCMultiPart2:MCMultiPart:${config.mcmp_version}"
-    compileOnly "mezz.jei:jei_1.12.2:${config.jei_version}:api"
-    runtime "mezz.jei:jei_1.12.2:${config.jei_version}"
-    compileOnly "net.darkhax.tesla:Tesla-1.12:${config.tesla_version}"
-    compileOnly "inventory-tweaks:InventoryTweaks:${config.invtweak_version}:api"
-    compileOnly "li.cil.oc:OpenComputers:MC1.11.2-${config.opencomputers_version}:api" // Not updated yet
-    deobfCompile "mcp.mobius.waila:Hwyla:${config.hwyla_version}"
-    deobfCompile "cofh:RedstoneFlux:1.12-${config.redstoneflux_version}:universal"
-    compileOnly "com.mod-buildcraft:buildcraft-api:${config.buildcraft_version}"
-    compileOnly "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}:api"
-    runtime "team.chisel.ctm:CTM:MC1.12-${config.ctm_version}"
-    compileOnly "net.industrial-craft:industrialcraft-2:${config.ic2_version}:api"
-    compileOnly ("CraftTweaker2:CraftTweaker2-API:${config.crafttweaker_version}") {
+    deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
+    compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
+    runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    compileOnly "net.darkhax.tesla:Tesla-${minecraft_version}:${tesla_version}"
+    compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
+    compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
+    // Not updated yet
+    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
+    deobfCompile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
+    compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
+    compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
+    runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
+    compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
+    compileOnly("CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    deobfCompile ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${config.crafttweaker_version}") {
+    deobfCompile("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    compileOnly "dan200.computercraft:ComputerCraft:${config.computercraft_version}:api"
-    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${config.top_version}:api"
-    compileOnly "appeng:appliedenergistics2:${config.ae2_version}:api"
+    compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
+    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
+    compileOnly "appeng:appliedenergistics2:${ae2_version}:api"
 }
 
-processResources
-{
+processResources {
     inputs.property "version", project.version
-    inputs.property "mc_version", config.minecraft_version
+    inputs.property "mc_version", "${minecraft_version}"
 
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
 
         // replace version and mcversion
-        expand "version": project.version, "mc_version": config.minecraft_version
+        expand "version": project.version, "mc_version": "${minecraft_version}"
     }
 
     // copy everything else, thats not the mcmod.info
@@ -163,13 +153,13 @@ jar {
 }
 
 task coreJar(type: Jar) {
-	archiveName = "mekanica-${project.version}.jar"
-	dependsOn 'reobfJar'
-	classifier "core"
+    archiveName = "mekanica-${project.version}.jar"
+    dependsOn 'reobfJar'
+    classifier "core"
 
     from('etc/core') {
         include '*.info'
-        expand 'version':project.version, 'mc_version':config.minecraft_version, 'mcmp_version':config.mcmp_version
+        expand 'version': project.version, 'mc_version': "${minecraft_version}", 'mcmp_version': "${mcmp_version}"
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -182,13 +172,13 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-	archiveName = "mekanica-tools-${project.version}.jar"
-	dependsOn 'reobfJar'
-	classifier "tools"
+    archiveName = "mekanica-tools-${project.version}.jar"
+    dependsOn 'reobfJar'
+    classifier "tools"
 
     from('etc/tools') {
         include '*.info'
-        expand 'version':project.version, 'mc_version':config.minecraft_version, 'mcmp_version':config.mcmp_version
+        expand 'version': project.version, 'mc_version': "${minecraft_version}", 'mcmp_version': "${mcmp_version}"
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -197,13 +187,13 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-	archiveName = "mekanica-generators-${project.version}.jar"
-	dependsOn 'reobfJar'
-	classifier "generators"
+    archiveName = "mekanica-generators-${project.version}.jar"
+    dependsOn 'reobfJar'
+    classifier "generators"
 
     from('etc/generators') {
         include '*.info'
-        expand 'version':project.version,'mc_version':config.minecraft_version,'mcmp_version':config.mcmp_version
+        expand 'version': project.version, 'mc_version': "${minecraft_version}", 'mcmp_version': "${mcmp_version}"
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -234,4 +224,3 @@ task fullBuild(type: Delete) {
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-
