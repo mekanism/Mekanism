@@ -343,20 +343,22 @@ public class CommonProxy implements IGuiProvider {
               .get(Configuration.CATEGORY_GENERAL, "BlacklistForgePower", false).getBoolean();
 
         String s = Mekanism.configuration
-              .get(Configuration.CATEGORY_GENERAL, "EnergyType", "J", null, new String[]{"J", "RF", "EU", "T"})
-              .getString();
+              .get(Configuration.CATEGORY_GENERAL, "EnergyType", "RF", null, new String[]{"J", "RF", "EU", "T"})
+              .getString().trim().toLowerCase();
 
-        if (s != null) {
-            if (s.trim().equalsIgnoreCase("j") || s.trim().equalsIgnoreCase("joules")) {
+        switch (s) {
+            case "joules":
                 general.energyUnit = EnergyType.J;
-            } else if (s.trim().equalsIgnoreCase("rf") || s.trim().equalsIgnoreCase("te") || s.trim()
-                  .equalsIgnoreCase("thermal expansion")) {
-                general.energyUnit = EnergyType.RF;
-            } else if (s.trim().equalsIgnoreCase("eu") || s.trim().equalsIgnoreCase("ic2")) {
+                break;
+            case "eu":
+            case "ic2":
                 general.energyUnit = EnergyType.EU;
-            } else if (s.trim().equalsIgnoreCase("t") || s.trim().equalsIgnoreCase("tesla")) {
+                break;
+            case "tesla":
                 general.energyUnit = EnergyType.T;
-            }
+                break;
+            default:
+                general.energyUnit = EnergyType.RF;
         }
 
         s = Mekanism.configuration
