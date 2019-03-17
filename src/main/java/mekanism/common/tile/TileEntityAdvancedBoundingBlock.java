@@ -343,7 +343,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         } else if (tile != null) {
             // On the off chance that another block got placed there (which seems only likely with corruption,
             // go ahead and log what we found.
-            Mekanism.logger.info("getInv() references a position that does not implement IAdvancedBoundingBlock: {}\n" +
+            Mekanism.logger.warn("getInv() references a position that does not implement IAdvancedBoundingBlock: {}\n" +
                   "\tFound instead: {}\nPlease report this to the maintainer of Mekanica!", mainPos, tile);
         }
 
