@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
@@ -206,7 +207,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
 
                 if (tier == FluidTankTier.CREATIVE) {
-                    fluidTank.getFluid().amount = Integer.MAX_VALUE;
+                    FluidStack fluid = fluidTank.getFluid();
+                    if (fluid != null) {
+                        fluid.amount = Integer.MAX_VALUE;
+                    }
                 } else {
                     int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
 
@@ -437,7 +441,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         if (tier == FluidTankTier.CREATIVE) {
             return resource != null ? resource.amount : 0;
         }
@@ -465,7 +469,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         if (resource != null && canDrain(from, resource)) {
             return fluidTank.drain(resource.amount, tier != FluidTankTier.CREATIVE && doDrain);
         }
@@ -483,7 +487,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         TileEntity tile = world.getTileEntity(getPos().offset(EnumFacing.DOWN));
         if (from == EnumFacing.DOWN && world != null) {
             if (isActive && !(tile instanceof TileEntityFluidTank)) {
@@ -505,7 +509,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         if (fluidTank != null) {
             if (fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid)) {
                 return !(isActive && from == EnumFacing.DOWN);

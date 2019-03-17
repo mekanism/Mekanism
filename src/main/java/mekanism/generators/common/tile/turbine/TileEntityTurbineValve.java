@@ -8,6 +8,7 @@ import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IEnergyWrapper;
@@ -317,7 +318,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         if (resource == null || !canFill(from, resource)) {
             return 0;
         }
@@ -336,7 +337,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
@@ -346,8 +347,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        if (fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        if (fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
             return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
         }
 
@@ -355,7 +356,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 

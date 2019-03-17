@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -293,7 +294,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         if (canFill(from, resource)) {
             return fluidTank.fill(resource, doFill);
         }
@@ -302,8 +303,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource
+              .getFluid()) {
             return drain(from, resource.amount, doDrain);
         }
 
@@ -311,13 +313,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(
-              new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        return fluid != null && mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null
+              ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return mode == 0 && from == MekanismUtils.getRight(facing);
     }
 

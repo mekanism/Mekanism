@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.FluidSlot;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -99,9 +100,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                 return true;
             } else {
                 if (FluidRegistry.isFluidRegistered("bioethanol")) {
-                    if (FluidUtil.getFluidContained(itemstack) != null) {
-                        return FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry
-                              .getFluid("bioethanol");
+                    FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
+                    if (fluidContained != null) {
+                        return fluidContained.getFluid() == FluidRegistry.getFluid("bioethanol");
                     }
                 }
 
@@ -203,8 +204,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (FluidRegistry.isFluidRegistered("bioethanol") && from != facing) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+        if (resource != null && FluidRegistry.isFluidRegistered("bioethanol") && from != facing) {
             if (resource.getFluid() == FluidRegistry.getFluid("bioethanol")) {
                 int fuelTransfer;
                 int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
@@ -233,17 +234,17 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        return fluid.getFluid().equals(FluidRegistry.getFluid("bioethanol"));
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        return fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("bioethanol"));
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 

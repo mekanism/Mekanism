@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -155,9 +156,10 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 
         for (Coord4D coord : activeNodes) {
             if (coord.exists(world)) {
-                if (canReplace(coord, true, false)) {
+                FluidStack fluid = fluidTank.getFluid();
+                if (canReplace(coord, true, false) && fluid != null) {
                     world.setBlockState(coord.getPos(),
-                          MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
+                          MekanismUtils.getFlowingBlock(fluid.getFluid()).getDefaultState(), 3);
 
                     fluidTank.drain(Fluid.BUCKET_VOLUME, true);
                 }
@@ -293,8 +295,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         if (slotID == 1) {
             return false;
         } else if (slotID == 0) {
-            return FluidUtil.getFluidContained(itemstack) != null && FluidUtil.getFluidContained(itemstack).getFluid()
-                  .canBePlacedInWorld();
+            FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
+            return fluidContained != null && fluidContained.getFluid().canBePlacedInWorld();
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -364,8 +366,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()
               && from == EnumFacing.UP) {
             return drain(from, resource.amount, doDrain);
         }
@@ -374,8 +376,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (from == EnumFacing.UP && resource.getFluid().canBePlacedInWorld()) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+        if (from == EnumFacing.UP && resource != null && resource.getFluid().canBePlacedInWorld()) {
             return fluidTank.fill(resource, true);
         }
 
@@ -388,12 +390,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        return from == EnumFacing.UP && fluid.getFluid().canBePlacedInWorld();
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        return from == EnumFacing.UP && fluid != null && fluid.getFluid().canBePlacedInWorld();
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 

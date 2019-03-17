@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -115,8 +116,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
-            return getFuel(itemstack) > 0 || (FluidUtil.getFluidContained(itemstack) != null
-                  && FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry.LAVA);
+            if (getFuel(itemstack) > 0) {
+                return true;
+            }
+            FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
+            return fluidContained != null && fluidContained.getFluid() == FluidRegistry.LAVA;
         } else if (slotID == 1) {
             return ChargeUtils.canBeCharged(itemstack);
         }
@@ -260,8 +264,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (resource.getFluid() == FluidRegistry.LAVA && from != facing) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+        if (resource != null && resource.getFluid() == FluidRegistry.LAVA && from != facing) {
             return lavaTank.fill(resource, doFill);
         }
 
@@ -274,17 +278,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        return fluid.getFluid().equals(FluidRegistry.LAVA) && from != facing;
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        return fluid != null && fluid.getFluid().equals(FluidRegistry.LAVA) && from != facing;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 

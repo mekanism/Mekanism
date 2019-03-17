@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
@@ -197,7 +198,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         if (getConnectionType(from) == ConnectionType.NORMAL) {
             return takeFluid(resource, doFill);
         }
@@ -211,17 +212,17 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         return getConnectionType(from) == ConnectionType.NORMAL;
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 

@@ -1,9 +1,10 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -156,7 +157,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (tank.getGas() != null) {
             if (mode != GasMode.DUMPING) {
                 GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), output));
-                tank.draw(GasUtils.emit(toSend, this, Arrays.asList(side)), true);
+                tank.draw(GasUtils.emit(toSend, this, Collections.singletonList(side)), true);
             } else {
                 tank.draw(dumpAmount, true);
             }
@@ -404,23 +405,23 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        return fluid != null && Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid.getFluid());
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(resource.getFluid())) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+        if (resource != null && Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(resource.getFluid())) {
             return fluidTank.fill(resource, doFill);
         }
 

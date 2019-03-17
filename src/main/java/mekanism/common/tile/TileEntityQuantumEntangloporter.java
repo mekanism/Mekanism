@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
@@ -404,13 +405,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         return !hasFrequency() ? 0 : frequency.storedFluid.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (hasFrequency() && resource.isFluidEqual(frequency.storedFluid.getFluid())) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+        if (hasFrequency() && resource != null && resource.isFluidEqual(frequency.storedFluid.getFluid())) {
             return frequency.storedFluid.drain(resource.amount, doDrain);
         }
 
@@ -427,7 +428,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         if (hasFrequency()
               && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT) {
             return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
@@ -437,7 +438,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canDrain(EnumFacing from, FluidStack fluid) {
+    public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         if (hasFrequency()
               && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT) {
             return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
