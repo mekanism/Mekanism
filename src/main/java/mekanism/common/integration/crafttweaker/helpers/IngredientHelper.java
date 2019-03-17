@@ -73,9 +73,9 @@ public class IngredientHelper {
         if (input instanceof IGasStack) {
             return GasHelper.matches(toMatch, (IGasStack) input);
         } else if (input instanceof IItemStack) {
-            return ingredientMatchesStack(toMatch, (IItemStack) input);
+            return toMatch != null && toMatch.matches((IItemStack) input);
         } else if (input instanceof ILiquidStack) {
-            return ingredientMatchesLiquid(toMatch, (ILiquidStack) input);
+            return toMatch != null && toMatch.matches((ILiquidStack) input);
         }
         //TODO: Support other types of things like ore dict
         return false;
@@ -166,32 +166,5 @@ public class IngredientHelper {
 
     public static FluidStack toFluid(ILiquidStack fluid) {
         return fluid == null ? null : FluidRegistry.getFluidStack(fluid.getName(), fluid.getAmount());
-    }
-
-    public static boolean ingredientMatchesStack(IIngredient ingredient, IItemStack itemStack) {
-        return ingredient != null && ingredient.matches(itemStack);
-    }
-
-    public static boolean ingredientMatchesLiquid(IIngredient ingredient, ILiquidStack liquidStack) {
-        return ingredient != null && ingredient.matches(liquidStack);
-        /*if(ingredient == null) {
-            return false;
-        }
-
-        // Do we have a wildcard (<*>) ?
-        if(ingredient.matches(liquidStack)) {
-            return true;
-        }
-
-        // Does ingredient reference liquids?
-        if(ingredient.getLiquids() != null) {
-            for (ILiquidStack liquid : ingredient.getLiquids()) {
-                if(InputHelper.toFluid(liquid).isFluidEqual(InputHelper.toFluid(liquidStack))) {
-                    return true;
-                }
-            }
-        }
-
-        return false;*/
     }
 }
