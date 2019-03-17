@@ -181,7 +181,7 @@ public final class MekanismHooks {
                 FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid",
                       new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
             } else if (type.getTransmission().equals(TransmissionType.ENERGY)) {
-                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-forge-power",
+                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power",
                       new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
             }
         }
