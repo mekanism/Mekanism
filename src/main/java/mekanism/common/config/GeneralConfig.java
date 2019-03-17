@@ -152,10 +152,9 @@ public class GeneralConfig extends BaseConfig
 
 	public final EnumMap<Tier.BaseTier,TierConfig> tiers = TierConfig.create(this);
 
-	public final DoubleOption sawdustChancePlank = new DoubleOption(this, "general", "SawdustChancePlank", 0.25D, "Chance of producing sawdust per operation in the precision sawmill when turning planks into sticks.");
+	public final DoubleOption sawdustChancePlank = new DoubleOption(this, "general", "SawdustChancePlank", 0.25D, "Chance of producing sawdust per operation in the precision sawmill when turning planks into sticks.").setRequiresGameRestart(true);
 
-	public final DoubleOption sawdustChanceLog = new DoubleOption(this, "general", "SawdustChanceLog", 1D, "Chance of producing sawdust per operation in the precision sawmill when turning logs into planks.");
-
+	public final DoubleOption sawdustChanceLog = new DoubleOption(this, "general", "SawdustChanceLog", 1D, "Chance of producing sawdust per operation in the precision sawmill when turning logs into planks.").setRequiresGameRestart(true);
 
 
 }
