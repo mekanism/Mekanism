@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @FieldsAreNonnullByDefault
-abstract class Option
+abstract class Option<THISTYPE extends Option>
 {
 	protected final String key;
 
@@ -56,15 +56,17 @@ abstract class Option
 	 */
 	protected abstract void read(ByteBuf buf);
 
-	public Option setRequiresWorldRestart(boolean requiresWorldRestart)
+	public THISTYPE setRequiresWorldRestart(boolean requiresWorldRestart)
 	{
 		this.requiresWorldRestart = requiresWorldRestart;
-		return this;
+		//noinspection unchecked
+		return (THISTYPE)this;
 	}
 
-	public Option setRequiresGameRestart(boolean requiresGameRestart)
+	public THISTYPE setRequiresGameRestart(boolean requiresGameRestart)
 	{
 		this.requiresGameRestart = requiresGameRestart;
-		return this;
+		//noinspection unchecked
+		return (THISTYPE)this;
 	}
 }

@@ -11,7 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class IntListOption extends Option
+public class IntListOption extends Option<IntListOption>
 {
 	private int[] value;
 	private final int[] defaultValue;

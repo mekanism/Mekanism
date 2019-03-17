@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @ParametersAreNonnullByDefault
-public class TypeConfigManager<T extends Enum<T>> extends Option
+public class TypeConfigManager<T extends Enum<T>> extends Option<TypeConfigManager<T>>
 {
 	private EnumSet<T> config;
 	private Supplier<List<T>> validValuesSupplier;

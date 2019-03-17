@@ -12,7 +12,7 @@ import java.util.Objects;
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class EnumOption<T extends Enum<T>> extends Option
+public class EnumOption<T extends Enum<T>> extends Option<EnumOption<T>>
 {
 	private T value;
 	private final T defaultValue;

@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class IntSetOption extends Option
+public class IntSetOption extends Option<IntSetOption>
 {
 	private final int[] defaultValue;
 	private IntSet value;

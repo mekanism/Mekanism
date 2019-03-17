@@ -11,7 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class FloatOption extends Option
+public class FloatOption extends Option<FloatOption>
 {
 	private float value;
 	private final float defaultValue;

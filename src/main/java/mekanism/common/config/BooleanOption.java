@@ -11,7 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class BooleanOption extends Option
+public class BooleanOption extends Option<BooleanOption>
 {
 	private boolean value;
 	private final boolean defaultValue;

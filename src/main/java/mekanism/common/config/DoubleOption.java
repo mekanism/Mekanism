@@ -11,7 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class DoubleOption extends Option
+public class DoubleOption extends Option<DoubleOption>
 {
 	private double value;
 	private final double defaultValue;
