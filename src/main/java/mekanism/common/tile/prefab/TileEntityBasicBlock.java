@@ -58,6 +58,16 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	public List<ITileComponent> components = new ArrayList<>();
 
 	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(world.isRemote)
+		{
+			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+		}
+	}
+
+	@Override
 	public void update()
 	{
 		if(!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val())
@@ -105,7 +115,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	@Override
 	public void onChunkLoad()
 	{
-		
+
 	}
 
 	public void open(EntityPlayer player)
