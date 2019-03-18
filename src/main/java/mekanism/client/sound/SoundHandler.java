@@ -108,20 +108,9 @@ public class SoundHandler
 		return map;
 	}
 
-	public static SoundManager getSoundManager()
-	{
-		return mc.getSoundHandler().sndManager;
-	}
-
-	//Fudge required because sound thread gets behind and the biMap crashes when rapidly toggling sounds.
-	public static Map<ISound, String> getSoundMap()
-	{
-		return mc.getSoundHandler().sndManager.invPlayingSounds;
-	}
-
 	public static boolean canRestartSound(ITickableSound sound)
 	{
-		return sound.isDonePlaying() && !getSoundMap().containsKey(sound);
+		return !mc.getSoundHandler().sndManager.invPlayingSounds.containsKey(sound);
 	}
 	
 	public static void playSound(SoundEvent sound)

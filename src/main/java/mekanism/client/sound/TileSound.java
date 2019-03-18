@@ -122,9 +122,12 @@ public class TileSound extends MekSound implements IResettableSound
 	@Override
 	public void reset()
 	{
-		donePlaying = false;
-		beginFadeOut = false;
-		volume = baseVolume;
-		ticks = 0;
+		if (donePlaying || beginFadeOut)//if neither of these are true, just keep current values for repeating
+		{
+			donePlaying = false;
+			beginFadeOut = false;
+			volume = baseVolume;
+			ticks = 0;
+		}
 	}
 }

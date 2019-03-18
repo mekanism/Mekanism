@@ -91,7 +91,7 @@ public abstract class TileEntityNoisyBlock extends TileEntityElectricBlock imple
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRepeat()
 	{
-		return true;
+		return false;
 	}
 
 	@Override

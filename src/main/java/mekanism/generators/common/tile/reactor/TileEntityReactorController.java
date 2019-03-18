@@ -378,7 +378,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRepeat()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
