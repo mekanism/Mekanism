@@ -34,9 +34,8 @@ public class GuiSolarGenerator extends GuiMekanism {
 
         guiElements.add(new GuiEnergyInfo(() -> Arrays.asList(
               LangUtils.localize("gui.producing") + ": " + MekanismUtils
-                    .getEnergyDisplay(tileEntity.isActive ? tileEntity.getProduction() : 0) + "/t",
-              LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput())
-                    + "/t"), this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarGenerator.png")));
+                    .getEnergyDisplay(tileEntity.isActive ? tileEntity.getProduction() : 0)),
+              this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarGenerator.png")));
         guiElements.add(new GuiPowerBar(this, tileEntity,
               MekanismUtils.getResource(ResourceType.GUI, "GuiSolarGenerator.png"), 164, 15));
         guiElements.add(new GuiSlot(SlotType.NORMAL, this,
@@ -54,9 +53,9 @@ public class GuiSolarGenerator extends GuiMekanism {
               .drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26,
                     0x00CD00);
         fontRenderer
-              .drawString(LangUtils.localize("gui.solarGenerator.sun") + ": " + tileEntity.seesSun, 51, 35, 0x00CD00);
+              .drawString(LangUtils.localize("gui.solarGenerator.sun") + ": " + tileEntity.canSeeSun(), 51, 35, 0x00CD00);
         fontRenderer.drawString(
-              LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t",
+              LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getProduction()) + "/t",
               51, 44, 0x00CD00);
 
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -70,7 +69,7 @@ public class GuiSolarGenerator extends GuiMekanism {
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, (tileEntity.seesSun ? 52 : 64), 12, 12);
+        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, (tileEntity.canSeeSun() ? 52 : 64), 12, 12);
 
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

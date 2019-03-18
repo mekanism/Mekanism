@@ -275,7 +275,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         int ret = 0;
 
         for (IEvaporationSolar solar : solars) {
-            if (solar != null && solar.seesSun()) {
+            if (solar != null && solar.canSeeSun()) {
                 ret++;
             }
         }

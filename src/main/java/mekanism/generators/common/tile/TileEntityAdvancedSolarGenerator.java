@@ -15,12 +15,16 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     public TileEntityAdvancedSolarGenerator() {
         super("AdvancedSolarGenerator", 200000, generators.advancedSolarGeneration * 2);
-        GENERATION_RATE = generators.advancedSolarGeneration;
     }
 
     @Override
     public boolean sideIsOutput(EnumFacing side) {
         return side == facing;
+    }
+
+    @Override
+    protected float getConfiguredMax() {
+        return (float)generators.advancedSolarGeneration;
     }
 
     @Override
@@ -47,11 +51,6 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
         invalidate();
         world.setBlockToAir(getPos());
-    }
-
-    @Override
-    public boolean seesSun() {
-        return seesSun;
     }
 
     @Override

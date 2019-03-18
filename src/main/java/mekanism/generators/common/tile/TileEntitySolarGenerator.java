@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.util.ChargeUtils;
@@ -10,7 +11,9 @@ import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDesert;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,23 +22,22 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
           "getSeesSun"};
-    /**
-     * Whether or not this generator sees the sun.
-     */
-    public boolean seesSun = false;
-    /**
-     * How fast this tile entity generates energy.
-     */
-    public double GENERATION_RATE;
+
+    private boolean seesSun;
+    private boolean needsRainCheck = true;
+    private float   peakOutput;
 
     public TileEntitySolarGenerator() {
         this("SolarGenerator", 96000, generators.solarGeneration * 2);
-        GENERATION_RATE = generators.solarGeneration;
     }
 
     public TileEntitySolarGenerator(String name, double maxEnergy, double output) {
         super("solar", name, maxEnergy, output);
         inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+    }
+
+    public boolean canSeeSun() {
+        return seesSun;
     }
 
     @Nonnull
@@ -55,6 +57,28 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return facing != 0 && facing != 1;
     }
 
+
+    @Override
+    public void validate() {
+        super.validate();
+
+        Biome b = world.provider.getBiomeForCoords(getPos());
+
+        // Consider the best temperature to be 0.8; biomes that are higher than that
+        // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
+        // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
+        float tempEff = 0.3f * (0.8f - b.getTemperature(getPos()));
+
+        // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
+        // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
+        // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
+        // (like the End) have rainfall set, but can't actually support rain.
+        float humidityEff = -0.3f * (b.canRain() ? b.getRainfall() : 0.0f);
+
+        peakOutput = getConfiguredMax() * (1.0f + tempEff + humidityEff);
+        needsRainCheck = b.canRain();
+    }
+
     @Override
     public void onUpdate() {
         super.onUpdate();
@@ -62,11 +86,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (!world.isRemote) {
             ChargeUtils.charge(0, this);
 
-            // TODO Check isNether call, maybe it should be hasSkyLight
-            seesSun =
-                  world.isDaytime() && ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider
-                        .isNether() && world
-                        .canSeeSky(getPos().add(0, 4, 0));
+            // Sort out if the generator can see the sun; we no longer check if it's raining here,
+            // since under the new rules, we can still generate power when it's raining, albeit at a
+            // significant penalty.
+            seesSun = world.isDaytime() && world.canSeeSky(getPos().up(4)) && !world.provider.isNether();
 
             if (canOperate()) {
                 setActive(true);
@@ -75,10 +98,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
                 setActive(false);
             }
         }
-    }
-
-    public boolean isDesert() {
-        return world.provider.getBiomeForCoords(getPos()).getBiomeClass() == BiomeDesert.class;
     }
 
     @Override
@@ -105,21 +124,27 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     public double getProduction() {
-        if (seesSun) {
-            double ret = GENERATION_RATE;
+        // Get the brightness of the sun; note that there are some implementations that depend on the base
+        // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
+        float brightness = world.getSunBrightness(1.0f);
 
-            if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
-                ret *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
-            }
-
-            if (isDesert()) {
-                ret *= 1.5;
-            }
-
-            return ret;
+        if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
+            brightness *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
         }
 
-        return 0;
+        // Production is a function of the peak possible output in this biome and sun's current brightness
+        float production = peakOutput * brightness;
+
+        // If the generator is in a biome where it can rain and it's raining penalize production by 80%
+        if (needsRainCheck && (world.isRaining() || world.isThundering())) {
+            production *= 0.2;
+        }
+
+        return production;
+    }
+
+    public String getEfficiencyStr() {
+        return String.format("%2.0f", (getProduction() / getMaxOutput()) * 100);
     }
 
     @Override
@@ -174,5 +199,14 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public boolean lightUpdate() {
         return false;
+    }
+
+    protected float getConfiguredMax() {
+        return (float)generators.solarGeneration;
+    }
+
+    @Override
+    public double getMaxOutput() {
+        return peakOutput;
     }
 }

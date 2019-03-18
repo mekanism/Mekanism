@@ -7,5 +7,5 @@ package mekanism.api;
  */
 public interface IEvaporationSolar {
 
-    boolean seesSun();
+    boolean canSeeSun();
 }
