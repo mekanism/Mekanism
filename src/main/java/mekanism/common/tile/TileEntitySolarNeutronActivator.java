@@ -52,19 +52,14 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     public static final int MAX_GAS = 10000;
     public GasTank inputTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
-    public int updateDelay;
-
-    public boolean isActive;
-
-    public boolean clientActive;
 
     public int gasOutput = 256;
 
-    public SolarNeutronRecipe cachedRecipe;
+    private SolarNeutronRecipe cachedRecipe;
 
-    /**
-     * This machine's current RedstoneControl type.
-     */
+    private boolean isActive;
+    private boolean needsRainCheck;
+
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
@@ -77,45 +72,46 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     }
 
     @Override
+    public void validate() {
+        super.validate();
+
+        // Cache the flag to know if rain matters where this block is placed
+        needsRainCheck = world.provider.getBiomeForCoords(getPos()).canRain();
+    }
+
+    @Override
     public void onUpdate() {
-        if (world.isRemote && updateDelay > 0) {
-            updateDelay--;
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-
         if (!world.isRemote) {
-            if (updateDelay > 0) {
-                updateDelay--;
-
-                if (updateDelay == 0 && clientActive != isActive) {
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          new Range4D(Coord4D.get(this)));
-                }
-            }
-
             TileUtils.receiveGas(inventory.get(0), inputTank);
             TileUtils.drawGas(inventory.get(1), outputTank);
 
             SolarNeutronRecipe recipe = getRecipe();
 
-            boolean sky =
-                  ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.isNether() && world
-                        .canSeeSky(getPos().up()); // TODO Check isNether call, maybe it should be hasSkyLight
+            // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
+            // changing this would dramatically affect a lot of setups with Fusion reactors which can take
+            // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
+            // rain checks.
+            boolean seesSun = world.isDaytime() && world.canSeeSky(getPos().up(4)) && !world.provider.isNether();
+            if (needsRainCheck) {
+                seesSun &= !(world.isRaining() || world.isThundering());
+            }
 
-            if (world.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this)) {
+            if (seesSun && canOperate(recipe) && MekanismUtils.canFunction(this)) {
                 setActive(true);
-
-                int operations = operate(recipe);
+                operate(recipe);
             } else {
                 setActive(false);
             }
 
             TileUtils.emitGas(this, outputTank, gasOutput);
+
+            // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
+            // traffic from previous implementation that send the update every 10 ticks.
+            if (world.getTotalWorldTime() % 20 == 0) {
+                Mekanism.packetHandler
+                      .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                            new Range4D(Coord4D.get(this)));
+            }
         }
     }
 
@@ -124,10 +120,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
 
         return possibleProcess;
-    }
-
-    public boolean isDesert() {
-        return world.provider.getBiomeForCoords(getPos()) instanceof BiomeDesert;
     }
 
     public SolarNeutronRecipe getRecipe() {
@@ -148,12 +140,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         return recipe != null && recipe.canOperate(inputTank, outputTank);
     }
 
-    public int operate(SolarNeutronRecipe recipe) {
-        int operations = getUpgradedUsage();
-
-        recipe.operate(inputTank, outputTank, operations);
-
-        return operations;
+    public void operate(SolarNeutronRecipe recipe) {
+        recipe.operate(inputTank, outputTank, getUpgradedUsage());
     }
 
     @Override
@@ -165,11 +153,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
             controlType = RedstoneControl.values()[dataStream.readInt()];
             TileUtils.readTankData(dataStream, inputTank);
             TileUtils.readTankData(dataStream, outputTank);
-            if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = general.UPDATE_DELAY;
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
@@ -321,15 +304,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     @Override
     public void setActive(boolean active) {
-        isActive = active;
+        boolean stateChange = (isActive != active);
 
-        if (clientActive != active && updateDelay == 0) {
+        if (stateChange) {
+            isActive = active;
             Mekanism.packetHandler
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));
-
-            updateDelay = 10;
-            clientActive = active;
         }
     }
 
@@ -340,7 +321,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     @Override
     public boolean lightUpdate() {
-        return true;
+        return false;
     }
 
     @Override
@@ -368,5 +349,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
+    }
+
+    public double getProgress() {
+        if (isActive) {
+            return .16 * (1 + (world.getTotalWorldTime() % 6));
+        }
+        return 0;
     }
 }

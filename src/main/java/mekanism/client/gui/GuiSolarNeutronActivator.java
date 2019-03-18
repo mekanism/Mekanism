@@ -51,7 +51,7 @@ public class GuiSolarNeutronActivator extends GuiMekanism {
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.isActive ? 1 : 0;
+                return tileEntity.getProgress();
             }
         }, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 62, 38));
     }
