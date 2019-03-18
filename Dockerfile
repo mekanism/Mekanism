@@ -1,6 +1,6 @@
 FROM openjdk:8-jdk-slim
 
-RUN apt-get update && apt-get install -y python3-requests make git
+RUN apt-get update && apt-get install -y python3-requests make git vim
 
 # Caching step; ForgeGradle requires a fairly significant number
 # of downloads that don't vary unless build.gradle changes. We
