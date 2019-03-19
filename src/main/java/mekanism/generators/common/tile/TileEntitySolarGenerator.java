@@ -126,7 +126,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     public double getProduction() {
         // Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        float brightness = world.getSunBrightness(1.0f);
+        float brightness = world.getSunBrightnessFactor(1.0f);
 
         if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
             brightness *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
