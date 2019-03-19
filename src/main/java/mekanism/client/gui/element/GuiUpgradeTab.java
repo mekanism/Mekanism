@@ -15,14 +15,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiUpgradeTab extends GuiElement {
-
-    TileEntity tileEntity;
+public class GuiUpgradeTab extends GuiTileEntityElement<TileEntity> {
 
     public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeTab.png"), gui, def);
-
-        tileEntity = tile;
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeTab.png"), gui, def, tile);
     }
 
     @Override
@@ -31,28 +27,24 @@ public class GuiUpgradeTab extends GuiElement {
     }
 
     @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28;
+    }
+
+    @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 26);
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
-            guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 0, 18, 18);
-        } else {
-            guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, 18, 18, 18);
-        }
-
+        guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 10, 26, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
+        if (inBounds(xAxis, yAxis)) {
             displayTooltip(LangUtils.localize("gui.upgrades"), xAxis, yAxis);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -62,11 +54,9 @@ public class GuiUpgradeTab extends GuiElement {
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0) {
-            if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
-                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 43));
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
+        if (button == 0 && inBounds(xAxis, yAxis)) {
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 0, 43));
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }
 }

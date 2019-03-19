@@ -3,14 +3,15 @@ package mekanism.common.content.miner;
 import io.netty.buffer.ByteBuf;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.TileNetworkList;
+import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class MOreDictFilter extends MinerFilter {
+public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
 
-    public String oreDictName;
+    private String oreDictName;
 
     @Override
     public boolean canFilter(ItemStack itemStack) {
@@ -75,5 +76,15 @@ public class MOreDictFilter extends MinerFilter {
         filter.oreDictName = oreDictName;
 
         return filter;
+    }
+
+    @Override
+    public void setOreDictName(String name) {
+        oreDictName = name;
+    }
+
+    @Override
+    public String getOreDictName() {
+        return oreDictName;
     }
 }

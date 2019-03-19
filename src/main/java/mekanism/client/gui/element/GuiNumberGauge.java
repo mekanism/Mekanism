@@ -12,11 +12,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiNumberGauge extends GuiGauge {
 
-    INumberInfoHandler infoHandler;
+    private final INumberInfoHandler infoHandler;
 
     public GuiNumberGauge(INumberInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         super(type, gui, def, x, y);
-
         infoHandler = handler;
     }
 

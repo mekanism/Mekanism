@@ -2,13 +2,14 @@ package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.common.base.TileNetworkList;
+import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class MItemStackFilter extends MinerFilter {
+public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
 
     public ItemStack itemType = ItemStack.EMPTY;
     public boolean fuzzy;

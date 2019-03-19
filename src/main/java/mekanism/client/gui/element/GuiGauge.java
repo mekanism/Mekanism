@@ -20,14 +20,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiGauge<T> extends GuiElement {
 
-    public EnumColor color;
-    protected int xLocation;
-    protected int yLocation;
-    protected int texX;
-    protected int texY;
-    protected int width;
-    protected int height;
-    protected int number;
+    protected EnumColor color;
+    protected final int xLocation;
+    protected final int yLocation;
+    protected final int texX;
+    protected final int texY;
+    protected final int width;
+    protected final int height;
+    protected final int number;
     protected boolean dummy;
 
     protected T dummyType;
@@ -61,13 +61,10 @@ public abstract class GuiGauge<T> extends GuiElement {
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, texX, texY, width, height);
-
         if (!dummy) {
             renderScale(xAxis, yAxis, guiWidth, guiHeight);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -135,8 +132,8 @@ public abstract class GuiGauge<T> extends GuiElement {
                                 break;
                             }
                         }
-
-                        guiObj.displayTooltip(color + data.localize() + " (" + color.getColoredName() + ")", xAxis,
+                        String localized = data == null ? "" : data.localize();
+                        guiObj.displayTooltip(color + localized + " (" + color.getColoredName() + ")", xAxis,
                               yAxis);
                     }
                 }
@@ -148,12 +145,10 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     @Override
     public void preMouseClicked(int xAxis, int yAxis, int button) {
-
     }
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-
     }
 
     public abstract TransmissionType getTransmission();

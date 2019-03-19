@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -23,10 +24,9 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiRobitMain extends GuiMekanism {
 
-    public EntityRobit robit;
+    private final EntityRobit robit;
 
-    public boolean displayNameChange;
-
+    private boolean displayNameChange;
     private GuiTextField nameChangeField;
     private GuiButton confirmName;
 
@@ -266,5 +266,10 @@ public class GuiRobitMain extends GuiMekanism {
                       .sendToServer(new RobitMessage(RobitPacketType.DROP_PICKUP, robit.getEntityId(), 0, null));
             }
         }
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return null;
     }
 }

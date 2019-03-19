@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import mekanism.api.Coord4D;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -23,10 +24,10 @@ import org.lwjgl.util.Rectangle;
 @SideOnly(Side.CLIENT)
 public class GuiSeismicReader extends GuiScreen {
 
-    public ItemStack itemStack;
-    public Coord4D pos;
-    protected int xSize = 137;
-    protected int ySize = 182;
+    private ItemStack itemStack;
+    private Coord4D pos;
+    private int xSize = 137;
+    private int ySize = 182;
     private World worldObj;
     private ArrayList<Pair<Integer, Block>> blockList = new ArrayList<>();
     private Rectangle upButton, downButton, tooltip;
@@ -152,7 +153,8 @@ public class GuiSeismicReader extends GuiScreen {
             if (blockList.get(currentLayer - 1) != null) {
                 Block block = blockList.get(currentLayer - 1).getRight();
 
-                if (pair.getRight() == block && pair.getLeft() == blockList.get(currentLayer - 1).getLeft()) {
+                if (pair.getRight() == block && Objects
+                      .equals(pair.getLeft(), blockList.get(currentLayer - 1).getLeft())) {
                     frequency++;
                 }
             }

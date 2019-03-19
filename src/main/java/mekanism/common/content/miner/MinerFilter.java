@@ -2,13 +2,14 @@ package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.common.base.TileNetworkList;
+import mekanism.common.content.filter.IFilter;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public abstract class MinerFilter {
+public abstract class MinerFilter implements IFilter {
 
     public ItemStack replaceStack = ItemStack.EMPTY;
 

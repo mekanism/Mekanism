@@ -9,8 +9,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiEnrichmentChamber extends GuiElectricMachine {
 
-    public GuiEnrichmentChamber(InventoryPlayer inventory, TileEntityElectricMachine tentity) {
-        super(inventory, tentity);
+    public GuiEnrichmentChamber(InventoryPlayer inventory, TileEntityElectricMachine tile) {
+        super(inventory, tile);
     }
 
     @Override

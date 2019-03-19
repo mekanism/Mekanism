@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,31 +39,21 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class GuiDigitalMiner extends GuiMekanism {
+public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner> {
 
-    public TileEntityDigitalMiner tileEntity;
+    private GuiButton startButton;
+    private GuiButton stopButton;
+    private GuiButton configButton;
 
-    public GuiButton startButton;
-    public GuiButton stopButton;
-    public GuiButton configButton;
-
-    public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity) {
-        super(tentity, new ContainerDigitalMiner(inventory, tentity));
-        tileEntity = tentity;
-
-        guiElements.add(new GuiRedstoneControl(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-        guiElements.add(new GuiSecurityTab(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-        guiElements.add(new GuiUpgradeTab(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-        guiElements
-              .add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"),
-                    163, 23));
-        guiElements.add(new GuiVisualsTab(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-        guiElements.add(new GuiEnergyInfo(() ->
-        {
+    public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tile) {
+        super(tile, new ContainerDigitalMiner(inventory, tile));
+        ResourceLocation resource = getGuiLocation();
+        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
+        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
+        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
+        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 163, 23));
+        addGuiElement(new GuiVisualsTab(this, tileEntity, resource));
+        addGuiElement(new GuiEnergyInfo(() -> {
             double perTick = tileEntity.getPerTick();
             String multiplier = MekanismUtils.getEnergyDisplay(perTick);
             ArrayList<String> ret = new ArrayList<>(4);
@@ -75,42 +66,30 @@ public class GuiDigitalMiner extends GuiMekanism {
             ret.add(LangUtils.localize("mekanism.gui.bufferfree") + ": " + MekanismUtils
                   .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
             return ret;
-        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 151, 5).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 143, 26));
-
+        }, this, resource));
+        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
+        addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
         ySize += 64;
     }
 
     @Override
     public void initGui() {
         super.initGui();
-
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-
         buttonList.clear();
         startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, LangUtils.localize("gui.start"));
-
         if (tileEntity.searcher.state != State.IDLE && tileEntity.running) {
             startButton.enabled = false;
         }
-
         stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, LangUtils.localize("gui.stop"));
-
         if (tileEntity.searcher.state == State.IDLE || !tileEntity.running) {
             stopButton.enabled = false;
         }
-
         configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, LangUtils.localize("gui.config"));
-
         if (tileEntity.searcher.state != State.IDLE) {
             configButton.enabled = false;
         }
-
         buttonList.add(startButton);
         buttonList.add(stopButton);
         buttonList.add(configButton);
@@ -119,14 +98,11 @@ public class GuiDigitalMiner extends GuiMekanism {
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-
         if (guibutton.id == 0) {
             TileNetworkList data = TileNetworkList.withContents(3);
-
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
         } else if (guibutton.id == 1) {
             TileNetworkList data = TileNetworkList.withContents(4);
-
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
         } else if (guibutton.id == 2) {
             Mekanism.packetHandler
@@ -137,22 +113,15 @@ public class GuiDigitalMiner extends GuiMekanism {
     @Override
     public void updateScreen() {
         super.updateScreen();
-
         startButton.enabled = tileEntity.searcher.state == State.IDLE || !tileEntity.running;
-
         stopButton.enabled = tileEntity.searcher.state != State.IDLE && tileEntity.running;
-
         configButton.enabled = tileEntity.searcher.state == State.IDLE;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
-
         fontRenderer.drawString(tileEntity.getName(), 69, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-
         String runningType;
         if (tileEntity.getPerTick() > tileEntity.getMaxEnergy()) {
             runningType = LangUtils.localize("mekanism.gui.digitalMiner.lowPower");
@@ -180,9 +149,7 @@ public class GuiDigitalMiner extends GuiMekanism {
             GL11.glColor4f(1, 1, 1, 1);
             RenderHelper.enableGUIStandardItemLighting();
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-
             mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-
             drawTexturedRectFromIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
             itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
 
@@ -193,19 +160,18 @@ public class GuiDigitalMiner extends GuiMekanism {
             drawTexturedModalRect(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
         }
 
+        int xAxis = (mouseX - (width - xSize) / 2);
+        int yAxis = (mouseY - (height - ySize) / 2);
         if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis,
                   yAxis);
         }
-
         if (xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61) {
             drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
         }
-
         if (xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
         }
-
         if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
             if (!tileEntity.missingStack.isEmpty()) {
                 drawHoveringText(LangUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
@@ -213,21 +179,18 @@ public class GuiDigitalMiner extends GuiMekanism {
                 drawHoveringText(LangUtils.localize("gui.well"), xAxis, yAxis);
             }
         }
-
         if (xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
         }
-
         if (xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
         }
-
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"));
+        mc.renderEngine.bindTexture(getGuiLocation());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -308,5 +271,10 @@ public class GuiDigitalMiner extends GuiMekanism {
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
             }
         }
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png");
     }
 }

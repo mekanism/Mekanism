@@ -1084,7 +1084,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             String ore = (String) arguments[0];
             MOreDictFilter filter = new MOreDictFilter();
 
-            filter.oreDictName = ore;
+            filter.setOreDictName(ore);
             filters.add(filter);
 
             return new Object[]{"Added filter."};
@@ -1100,7 +1100,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 MinerFilter filter = iter.next();
 
                 if (filter instanceof MOreDictFilter) {
-                    if (((MOreDictFilter) filter).oreDictName.equals(ore)) {
+                    if (((MOreDictFilter) filter).getOreDictName().equals(ore)) {
                         iter.remove();
                         return new Object[]{"Removed filter."};
                     }

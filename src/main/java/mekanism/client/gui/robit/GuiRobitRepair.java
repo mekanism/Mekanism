@@ -25,9 +25,10 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiRobitRepair extends GuiRobit implements IContainerListener {
 
-    private ContainerRepair repairContainer;
+    private final ContainerRepair repairContainer;
+    private final InventoryPlayer playerInventory;
+
     private GuiTextField itemNameField;
-    private InventoryPlayer playerInventory;
 
     public GuiRobitRepair(InventoryPlayer inventory, EntityRobit entity) {
         super(entity, new ContainerRobitRepair(inventory, entity));

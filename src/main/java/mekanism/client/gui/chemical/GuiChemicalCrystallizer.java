@@ -1,10 +1,11 @@
-package mekanism.client.gui;
+package mekanism.client.gui.chemical;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.OreGas;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
 import mekanism.client.gui.element.GuiGauge;
@@ -31,86 +32,59 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiChemicalCrystallizer extends GuiMekanism {
+public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer> {
 
-    public TileEntityChemicalCrystallizer tileEntity;
+    private List<ItemStack> iterStacks = new ArrayList<>();
+    private ItemStack renderStack = ItemStack.EMPTY;
+    private int stackSwitch = 0;
+    private int stackIndex = 0;
+    private Gas prevGas;
 
-    public Gas prevGas;
-
-    public ItemStack renderStack = ItemStack.EMPTY;
-
-    public int stackSwitch = 0;
-
-    public int stackIndex = 0;
-
-    public List<ItemStack> iterStacks = new ArrayList<>();
-
-    public GuiChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tentity) {
-        super(tentity, new ContainerChemicalCrystallizer(inventory, tentity));
-        tileEntity = tentity;
-
-        guiElements.add(new GuiSecurityTab(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-        guiElements.add(new GuiRedstoneControl(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-        guiElements.add(new GuiUpgradeTab(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-        guiElements.add(new GuiPowerBar(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 160, 23));
-        guiElements.add(new GuiSideConfigurationTab(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-        guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-        guiElements.add(new GuiEnergyInfo(() ->
-        {
+    public GuiChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tile) {
+        super(tile, new ContainerChemicalCrystallizer(inventory, tile));
+        ResourceLocation resource = getGuiLocation();
+        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
+        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
+        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
+        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 160, 23));
+        addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));
+        addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
+        addGuiElement(new GuiEnergyInfo(() -> {
             String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
                   LangUtils.localize("gui.needed") + ": " + MekanismUtils
                         .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
-        }, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
-        guiElements.add(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 4));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 64)
-              .with(SlotOverlay.PLUS));
-        guiElements.add(new GuiSlot(SlotType.POWER, this,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 154, 4)
-              .with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 130, 56));
-
-        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+        }, this, resource));
+        addGuiElement(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
+        addGuiElement(new GuiSlot(SlotType.EXTRA, this, resource, 5, 64).with(SlotOverlay.PLUS));
+        addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 154, 4).with(SlotOverlay.POWER));
+        addGuiElement(new GuiSlot(SlotType.OUTPUT, this, resource, 130, 56));
+        addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tileEntity.getScaledProgress();
             }
-        }, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"),
-              51, 60));
+        }, ProgressBar.LARGE_RIGHT, this, resource, 51, 60));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
-
         fontRenderer.drawString(tileEntity.getName(), 37, 4, 0x404040);
-
         if (tileEntity.inputTank.getGas() != null) {
             fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
-
             if (tileEntity.inputTank.getGas().getGas() instanceof OreGas) {
                 fontRenderer
                       .drawString("(" + ((OreGas) tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24,
                             0x00CD00);
             } else {
                 CrystallizerRecipe recipe = tileEntity.getRecipe();
-
                 if (recipe == null) {
                     fontRenderer.drawString("(" + LangUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
                 } else {
@@ -118,7 +92,6 @@ public class GuiChemicalCrystallizer extends GuiMekanism {
                 }
             }
         }
-
         if (!renderStack.isEmpty()) {
             try {
                 GlStateManager.pushMatrix();
@@ -129,19 +102,22 @@ public class GuiChemicalCrystallizer extends GuiMekanism {
             } catch (Exception ignored) {
             }
         }
-
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"));
+        mc.renderEngine.bindTexture(getGuiLocation());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png");
     }
 
     private Gas getInputGas() {
@@ -161,18 +137,14 @@ public class GuiChemicalCrystallizer extends GuiMekanism {
 
         if (prevGas != getInputGas()) {
             prevGas = getInputGas();
-
             boolean reset = false;
-
             if (prevGas == null || !(prevGas instanceof OreGas) || !((OreGas) prevGas).isClean()) {
                 reset = true;
                 resetStacks();
             }
-
             if (!reset) {
                 OreGas gas = (OreGas) prevGas;
                 String oreDictName = "ore" + gas.getName().substring(5);
-
                 updateStackList(oreDictName);
             }
         }
@@ -183,13 +155,11 @@ public class GuiChemicalCrystallizer extends GuiMekanism {
 
         if (stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0) {
             stackSwitch = 20;
-
             if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
                 stackIndex = 0;
             } else if (stackIndex < iterStacks.size() - 1) {
                 stackIndex++;
             }
-
             renderStack = iterStacks.get(stackIndex);
         } else if (iterStacks != null && iterStacks.size() == 0) {
             renderStack = ItemStack.EMPTY;
@@ -204,21 +174,24 @@ public class GuiChemicalCrystallizer extends GuiMekanism {
         }
 
         List<String> keys = new ArrayList<>();
-
         for (String s : OreDictionary.getOreNames()) {
             if (oreName.equals(s) || oreName.equals("*")) {
                 keys.add(s);
-            } else if (oreName.endsWith("*") && !oreName.startsWith("*")) {
-                if (s.startsWith(oreName.substring(0, oreName.length() - 1))) {
-                    keys.add(s);
-                }
-            } else if (oreName.startsWith("*") && !oreName.endsWith("*")) {
-                if (s.endsWith(oreName.substring(1))) {
-                    keys.add(s);
-                }
-            } else if (oreName.startsWith("*") && oreName.endsWith("*")) {
-                if (s.contains(oreName.substring(1, oreName.length() - 1))) {
-                    keys.add(s);
+            } else {
+                boolean endsWith = oreName.endsWith("*");
+                boolean startsWith = oreName.startsWith("*");
+                if (endsWith && !startsWith) {
+                    if (s.startsWith(oreName.substring(0, oreName.length() - 1))) {
+                        keys.add(s);
+                    }
+                } else if (startsWith && !endsWith) {
+                    if (s.endsWith(oreName.substring(1))) {
+                        keys.add(s);
+                    }
+                } else if (startsWith) {
+                    if (s.contains(oreName.substring(1, oreName.length() - 1))) {
+                        keys.add(s);
+                    }
                 }
             }
         }
@@ -226,13 +199,11 @@ public class GuiChemicalCrystallizer extends GuiMekanism {
         for (String key : keys) {
             for (ItemStack stack : OreDictionary.getOres(key)) {
                 ItemStack toAdd = stack.copy();
-
                 if (!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock) {
                     iterStacks.add(stack.copy());
                 }
             }
         }
-
         stackSwitch = 0;
         stackIndex = -1;
     }

@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -40,7 +41,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiDigitalMinerConfig extends GuiMekanism {
+public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMiner> {
 
     // Scrollbar dimensions
     private final int scrollX = 154;
@@ -52,24 +53,22 @@ public class GuiDigitalMinerConfig extends GuiMekanism {
     private final int filterY = 18;
     private final int filterW = 96;
     private final int filterH = 29;
-    public TileEntityDigitalMiner tileEntity;
-    public boolean isDragging = false;
-    public int dragOffset = 0;
+    private boolean isDragging = false;
+    private int dragOffset = 0;
 
-    public int stackSwitch = 0;
+    private int stackSwitch = 0;
 
-    public Map<MOreDictFilter, StackData> oreDictStacks = new HashMap<>();
-    public Map<MModIDFilter, StackData> modIDStacks = new HashMap<>();
+    private Map<MOreDictFilter, StackData> oreDictStacks = new HashMap<>();
+    private Map<MModIDFilter, StackData> modIDStacks = new HashMap<>();
 
-    public float scroll;
+    private float scroll;
 
     private GuiTextField radiusField;
     private GuiTextField minField;
     private GuiTextField maxField;
 
-    public GuiDigitalMinerConfig(EntityPlayer player, TileEntityDigitalMiner tentity) {
-        super(tentity, new ContainerNull(player, tentity));
-        tileEntity = tentity;
+    public GuiDigitalMinerConfig(EntityPlayer player, TileEntityDigitalMiner tile) {
+        super(tile, new ContainerNull(player, tile));
     }
 
     public int getScroll() {
@@ -272,11 +271,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
-
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
-
         if (isDragging) {
+            int yAxis = (mouseY - (height - ySize) / 2);
             scroll = Math.min(Math.max((float) (yAxis - 18 - dragOffset) / 123F, 0), 1);
         }
     }
@@ -321,6 +317,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism {
                 scroll = 1.0F;
             }
         }
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMinerConfig.png");
     }
 
     @Override
@@ -421,10 +422,10 @@ public class GuiDigitalMinerConfig extends GuiMekanism {
                 } else if (filter instanceof MMaterialFilter) {
                     MMaterialFilter itemFilter = (MMaterialFilter) filter;
 
-                    if (!itemFilter.materialItem.isEmpty()) {
+                    if (!itemFilter.getMaterialItem().isEmpty()) {
                         GlStateManager.pushMatrix();
                         RenderHelper.enableGUIStandardItemLighting();
-                        itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
+                        itemRender.renderItemAndEffectIntoGUI(itemFilter.getMaterialItem(), 59, yStart + 3);
                         RenderHelper.disableStandardItemLighting();
                         GlStateManager.popMatrix();
                     }
@@ -466,7 +467,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism {
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMinerConfig.png"));
+        mc.renderEngine.bindTexture(getGuiLocation());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
@@ -610,7 +611,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism {
             oreDictStacks.put(filter, new StackData());
         }
 
-        oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.oreDictName, true);
+        oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.getOreDictName(), true);
 
         stackSwitch = 0;
         updateScreen();
@@ -622,7 +623,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism {
             modIDStacks.put(filter, new StackData());
         }
 
-        modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.modID, true);
+        modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.getModID(), true);
 
         stackSwitch = 0;
         updateScreen();

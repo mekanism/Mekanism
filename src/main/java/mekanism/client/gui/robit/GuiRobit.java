@@ -6,9 +6,12 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit;
+import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -16,12 +19,17 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public abstract class GuiRobit extends GuiMekanism {
 
-    public EntityRobit robit;
+    protected final EntityRobit robit;
 
     protected GuiRobit(EntityRobit robit, Container container) {
         super(container);
         this.robit = robit;
         xSize += 25;
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, getBackgroundImage());
     }
 
     protected abstract String getBackgroundImage();
@@ -30,7 +38,7 @@ public abstract class GuiRobit extends GuiMekanism {
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, getBackgroundImage()));
+        mc.renderEngine.bindTexture(getGuiLocation());
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
@@ -49,11 +57,11 @@ public abstract class GuiRobit extends GuiMekanism {
         drawTexturedModalRect(guiWidth + 179, guiHeight + heightBonus, 201, textureY + yBonus, 18, 18);
     }
 
-    protected void buttonClicked(int id) {
+    private void buttonClicked(int id) {
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         if (openGui(id)) {
-            Mekanism.packetHandler.sendToServer(
-                  new PacketRobit.RobitMessage(PacketRobit.RobitPacketType.GUI, id, robit.getEntityId(), null));
+            Mekanism.packetHandler
+                  .sendToServer(new RobitMessage(PacketRobit.RobitPacketType.GUI, id, robit.getEntityId(), null));
             mc.player.openGui(Mekanism.instance, 21 + id, mc.world, robit.getEntityId(), 0, 0);
         }
     }
@@ -67,18 +75,18 @@ public abstract class GuiRobit extends GuiMekanism {
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         extraClickListeners(mouseX, mouseY, button);
-        if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
+        int xAxis = (mouseX - (width - xSize) / 2);
+        if (button == 0 && xAxis >= 179 && xAxis <= 197) {
             int yAxis = (mouseY - (height - ySize) / 2);
-            if (xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28) {
+            if (yAxis >= 10 && yAxis <= 28) {
                 buttonClicked(0);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48) {
+            } else if (yAxis >= 30 && yAxis <= 48) {
                 buttonClicked(1);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68) {
+            } else if (yAxis >= 50 && yAxis <= 68) {
                 buttonClicked(2);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88) {
+            } else if (yAxis >= 70 && yAxis <= 88) {
                 buttonClicked(3);
-            } else if (xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108) {
+            } else if (yAxis >= 90 && yAxis <= 108) {
                 buttonClicked(4);
             }
         }

@@ -23,11 +23,10 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class GuiGasGauge extends GuiGauge<Gas> {
 
-    IGasInfoHandler infoHandler;
+    private final IGasInfoHandler infoHandler;
 
     public GuiGasGauge(IGasInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         super(type, gui, def, x, y);
-
         infoHandler = handler;
     }
 
@@ -39,14 +38,19 @@ public class GuiGasGauge extends GuiGauge<Gas> {
     }
 
     @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
+              && yAxis <= yLocation + height - 1;
+    }
+
+    @Override
     public TransmissionType getTransmission() {
         return TransmissionType.GAS;
     }
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
-              && yAxis <= yLocation + height - 1) {
+        if (inBounds(xAxis, yAxis)) {
             ItemStack stack = mc.player.inventory.getItemStack();
 
             if (guiObj instanceof GuiMekanism && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {

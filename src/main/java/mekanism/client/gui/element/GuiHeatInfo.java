@@ -15,11 +15,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiHeatInfo extends GuiElement {
 
-    public IInfoHandler infoHandler;
+    private final IInfoHandler infoHandler;
 
     public GuiHeatInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiHeatInfo.png"), gui, def);
-
         infoHandler = handler;
     }
 
@@ -29,20 +28,21 @@ public class GuiHeatInfo extends GuiElement {
     }
 
     @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134;
+    }
+
+    @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 112, 0, 0, 26, 26);
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134) {
-
+        if (inBounds(xAxis, yAxis)) {
             List<String> info = new ArrayList<>(infoHandler.getInfo());
-
             info.add(LangUtils.localize("gui.unit") + ": " + general.tempUnit);
             displayTooltips(info, xAxis, yAxis);
         }
@@ -54,10 +54,8 @@ public class GuiHeatInfo extends GuiElement {
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0) {
-            if (xAxis >= -21 && xAxis <= -3 && yAxis >= 116 && yAxis <= 134) {
-                general.tempUnit = TempType.values()[(general.tempUnit.ordinal() + 1) % TempType.values().length];
-            }
+        if (button == 0 && inBounds(xAxis, yAxis)) {
+            general.tempUnit = TempType.values()[(general.tempUnit.ordinal() + 1) % TempType.values().length];
         }
     }
 }

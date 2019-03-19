@@ -3,7 +3,7 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiOredictionificator;
-import mekanism.client.gui.GuiOredictionificatorFilter;
+import mekanism.client.gui.filter.GuiOredictionificatorFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.TileNetworkList;

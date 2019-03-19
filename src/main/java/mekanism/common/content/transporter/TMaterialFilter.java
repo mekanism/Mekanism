@@ -2,6 +2,7 @@ package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.common.base.TileNetworkList;
+import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.transporter.Finder.MaterialFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -12,9 +13,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TMaterialFilter extends TransporterFilter {
+public class TMaterialFilter extends TransporterFilter implements IMaterialFilter {
 
-    public ItemStack materialItem = ItemStack.EMPTY;
+    private ItemStack materialItem = ItemStack.EMPTY;
 
     public Material getMaterial() {
         return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getItemDamage())
@@ -92,5 +93,15 @@ public class TMaterialFilter extends TransporterFilter {
         filter.materialItem = materialItem;
 
         return filter;
+    }
+
+    @Override
+    public ItemStack getMaterialItem() {
+        return materialItem;
+    }
+
+    @Override
+    public void setMaterialItem(ItemStack stack) {
+        materialItem = stack;
     }
 }

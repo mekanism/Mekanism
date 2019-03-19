@@ -14,11 +14,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiEnergyGauge extends GuiGauge {
 
-    IEnergyInfoHandler infoHandler;
+    private final IEnergyInfoHandler infoHandler;
 
     public GuiEnergyGauge(IEnergyInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         super(type, gui, def, x, y);
-
         infoHandler = handler;
     }
 

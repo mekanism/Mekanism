@@ -22,7 +22,7 @@ public class GuiElementHandler implements IAdvancedGuiHandler {
 
             GuiMekanism guiMek = (GuiMekanism) gui;
 
-            for (GuiElement element : guiMek.guiElements) {
+            for (GuiElement element : guiMek.getGuiElements()) {
                 list.add(element.getBounds(guiMek.getXPos(), guiMek.getYPos()).toRectangle());
             }
 

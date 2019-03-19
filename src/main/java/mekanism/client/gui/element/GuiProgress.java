@@ -10,13 +10,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiProgress extends GuiElement {
 
-    private int xLocation;
-    private int yLocation;
-
-    private int innerOffsetX = 2;
-
-    private ProgressBar type;
-    private IProgressInfoHandler handler;
+    private final IProgressInfoHandler handler;
+    private final ProgressBar type;
+    private final int xLocation;
+    private final int yLocation;
 
     public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, ResourceLocation def, int x,
           int y) {
@@ -40,6 +37,7 @@ public class GuiProgress extends GuiElement {
         if (handler.isActive()) {
             guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY,
                   type.width, type.height);
+            int innerOffsetX = 2;
             int displayInt = (int) (handler.getProgress() * (type.width - 2 * innerOffsetX));
             guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation,
                   type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);

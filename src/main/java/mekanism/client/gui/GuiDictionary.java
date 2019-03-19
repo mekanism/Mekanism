@@ -13,6 +13,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -27,19 +28,13 @@ public class GuiDictionary extends GuiMekanism {
 
     public GuiDictionary(InventoryPlayer inventory) {
         super(new ContainerDictionary(inventory));
-
-        guiElements.add(scrollList = new GuiScrollList(this,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 8, 30, 160, 4));
+        addGuiElement(scrollList = new GuiScrollList(this, getGuiLocation(), 8, 30, 160, 4));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
-
         fontRenderer.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-
         if (!itemType.isEmpty()) {
             GlStateManager.pushMatrix();
             RenderHelper.enableGUIStandardItemLighting();
@@ -47,21 +42,18 @@ public class GuiDictionary extends GuiMekanism {
             RenderHelper.disableStandardItemLighting();
             GlStateManager.popMatrix();
         }
-
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDictionary.png"));
+        mc.renderEngine.bindTexture(getGuiLocation());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
         int xAxis = mouseX - guiWidth;
         int yAxis = mouseY - guiHeight;
-
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
             GlStateManager.pushMatrix();
             GL11.glDisable(GL11.GL_LIGHTING);
@@ -75,7 +67,6 @@ public class GuiDictionary extends GuiMekanism {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GlStateManager.popMatrix();
         }
-
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
@@ -136,5 +127,10 @@ public class GuiDictionary extends GuiMekanism {
         }
 
         super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "GuiDictionary.png");
     }
 }

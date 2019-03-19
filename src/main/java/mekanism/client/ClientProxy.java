@@ -14,12 +14,12 @@ import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiBoilerStats;
-import mekanism.client.gui.GuiChemicalCrystallizer;
-import mekanism.client.gui.GuiChemicalDissolutionChamber;
-import mekanism.client.gui.GuiChemicalInfuser;
-import mekanism.client.gui.GuiChemicalInjectionChamber;
-import mekanism.client.gui.GuiChemicalOxidizer;
-import mekanism.client.gui.GuiChemicalWasher;
+import mekanism.client.gui.chemical.GuiChemicalCrystallizer;
+import mekanism.client.gui.chemical.GuiChemicalDissolutionChamber;
+import mekanism.client.gui.chemical.GuiChemicalInfuser;
+import mekanism.client.gui.chemical.GuiChemicalInjectionChamber;
+import mekanism.client.gui.chemical.GuiChemicalOxidizer;
+import mekanism.client.gui.chemical.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDictionary;
@@ -956,13 +956,13 @@ public class ClientProxy extends CommonProxy {
     public void handleTeleporterUpdate(PortableTeleporterMessage message) {
         GuiScreen screen = Minecraft.getMinecraft().currentScreen;
 
-        if (screen instanceof GuiTeleporter && !((GuiTeleporter) screen).itemStack.isEmpty()) {
+        if (screen instanceof GuiTeleporter && !((GuiTeleporter) screen).isStackEmpty()) {
             GuiTeleporter teleporter = (GuiTeleporter) screen;
 
-            teleporter.clientStatus = message.status;
-            teleporter.clientFreq = message.frequency;
-            teleporter.clientPublicCache = message.publicCache;
-            teleporter.clientPrivateCache = message.privateCache;
+            teleporter.setStatus(message.status);
+            teleporter.setFrequency(message.frequency);
+            teleporter.setPublicCache(message.publicCache);
+            teleporter.setPrivateCache(message.privateCache);
 
             teleporter.updateButtons();
         }
