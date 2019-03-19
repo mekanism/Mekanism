@@ -3,7 +3,7 @@ package mekanism.client.gui.element;
 import java.util.Arrays;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -66,8 +66,8 @@ public class GuiFluidGauge extends GuiGauge<Fluid> {
         if (inBounds(xAxis, yAxis)) {
             ItemStack stack = mc.player.inventory.getItemStack();
 
-            if (guiObj instanceof GuiMekanism && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-                TileEntity tile = ((GuiMekanism) guiObj).getTileEntity();
+            if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+                TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
 
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
                     int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(infoHandler.getTank());

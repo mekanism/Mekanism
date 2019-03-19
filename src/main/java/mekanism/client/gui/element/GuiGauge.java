@@ -2,7 +2,7 @@ package mekanism.client.gui.element;
 
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.SideData;
@@ -119,8 +119,8 @@ public abstract class GuiGauge<T> extends GuiElement {
             ItemStack stack = mc.player.inventory.getItemStack();
 
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
-                if (guiObj instanceof GuiMekanism && ((GuiMekanism) guiObj).getTileEntity() != null) {
-                    TileEntity tile = ((GuiMekanism) guiObj).getTileEntity();
+                if (guiObj instanceof GuiMekanismTile && ((GuiMekanismTile) guiObj).getTileEntity() != null) {
+                    TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
 
                     if (tile instanceof ISideConfiguration && getTransmission() != null) {
                         SideData data = null;
