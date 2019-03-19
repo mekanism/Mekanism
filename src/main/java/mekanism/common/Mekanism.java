@@ -27,7 +27,6 @@ import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.IModule;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -1140,19 +1139,6 @@ public class Mekanism {
         }
 
         BoxBlacklistParser.load();
-    }
-
-    @SubscribeEvent
-    public synchronized void onChunkLoad(ChunkEvent.Load event) {
-        if (event.getChunk() != null && !event.getWorld().isRemote) {
-            Map<BlockPos, TileEntity> copy = new HashMap<>(event.getChunk().getTileEntityMap());
-
-            for (TileEntity tileEntity : copy.values()) {
-                if (tileEntity instanceof IChunkLoadHandler) {
-                    ((IChunkLoadHandler) tileEntity).onChunkLoad();
-                }
-            }
-        }
     }
 
     @SubscribeEvent
