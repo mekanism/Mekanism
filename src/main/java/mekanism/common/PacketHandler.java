@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import mekanism.api.Range4D;
 import mekanism.common.config.MekanismConfig;
@@ -81,6 +82,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -90,7 +92,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class PacketHandler
 {
 	public SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("MEK");
-	
+
 	public void initialize()
 	{
 		netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
@@ -361,5 +363,17 @@ public class PacketHandler
 				}
 			}
 		}
+	}
+
+	@NotNull
+	public static UUID readUUID(ByteBuf dataStream)
+	{
+		return new UUID(dataStream.readLong(), dataStream.readLong());
+	}
+
+	public static void writeUUID(ByteBuf dataStream, UUID uuid)
+	{
+		dataStream.writeLong(uuid.getMostSignificantBits());
+		dataStream.writeLong(uuid.getLeastSignificantBits());
 	}
 }

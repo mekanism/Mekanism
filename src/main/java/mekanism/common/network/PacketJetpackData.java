@@ -13,6 +13,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import java.util.UUID;
+
 public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IMessage>
 {
 	@Override
@@ -26,15 +28,15 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
             {
                 if(message.value)
                 {
-                    Mekanism.jetpackOn.add(message.username);
+                    Mekanism.jetpackOn.add(message.userId);
                 }
                 else {
-                    Mekanism.jetpackOn.remove(message.username);
+                    Mekanism.jetpackOn.remove(message.userId);
                 }
 
                 if(!player.world.isRemote)
                 {
-                    Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
+                    Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.userId, message.value), player.world.provider.getDimension());
                 }
             }
             else if(message.packetType == JetpackPacket.MODE)
@@ -61,19 +63,19 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 	{
 		public JetpackPacket packetType;
 	
-		public String username;
+		public UUID userId;
 		public boolean value;
 		
 		public JetpackDataMessage() {}
 	
-		public JetpackDataMessage(JetpackPacket type, String name, boolean state)
+		public JetpackDataMessage(JetpackPacket type, UUID name, boolean state)
 		{
 			packetType = type;
 			value = state;
 	
 			if(packetType == JetpackPacket.UPDATE)
 			{
-				username = name;
+				userId = name;
 			}
 		}
 	
@@ -88,7 +90,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 			}
 			else if(packetType == JetpackPacket.UPDATE)
 			{
-				PacketHandler.writeString(dataStream, username);
+				PacketHandler.writeUUID(dataStream, userId);
 				dataStream.writeBoolean(value);
 			}
 			else if(packetType == JetpackPacket.FULL)
@@ -97,9 +99,9 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
 				synchronized(Mekanism.jetpackOn)
 				{
-					for(String username : Mekanism.jetpackOn)
+					for(UUID uuid : Mekanism.jetpackOn)
 					{
-						PacketHandler.writeString(dataStream, username);
+						PacketHandler.writeUUID(dataStream, uuid);
 					}
 				}
 			}
@@ -116,7 +118,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 			}
 			else if(packetType == JetpackPacket.UPDATE)
 			{
-				username = PacketHandler.readString(dataStream);
+				userId = PacketHandler.readUUID(dataStream);
 				value = dataStream.readBoolean();
 			}
 			else if(packetType == JetpackPacket.FULL)
@@ -127,7 +129,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 	
 				for(int i = 0; i < amount; i++)
 				{
-					Mekanism.jetpackOn.add(PacketHandler.readString(dataStream));
+					Mekanism.jetpackOn.add(PacketHandler.readUUID(dataStream));
 				}
 			}
 		}

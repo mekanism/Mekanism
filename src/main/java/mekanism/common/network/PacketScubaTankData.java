@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import java.util.UUID;
+
 public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage, IMessage>
 {
 	@Override
@@ -23,15 +25,15 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 		{
 			if(message.value)
 			{
-				Mekanism.gasmaskOn.add(message.username);
+				Mekanism.gasmaskOn.add(message.userId);
 			}
 			else {
-				Mekanism.gasmaskOn.remove(message.username);
+				Mekanism.gasmaskOn.remove(message.userId);
 			}
 
 			if(!player.world.isRemote)
 			{
-				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.world.provider.getDimension());
+				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.userId, message.value), player.world.provider.getDimension());
 			}
 		}
 		else if(message.packetType == ScubaTankPacket.MODE)
@@ -51,18 +53,18 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 	{
 		public ScubaTankPacket packetType;
 	
-		public String username;
+		public UUID userId;
 		public boolean value;
 		
 		public ScubaTankDataMessage() {}
 	
-		public ScubaTankDataMessage(ScubaTankPacket type, String name, boolean state)
+		public ScubaTankDataMessage(ScubaTankPacket type, UUID name, boolean state)
 		{
 			packetType = type;
 	
 			if(packetType == ScubaTankPacket.UPDATE)
 			{
-				username = name;
+				userId = name;
 				value = state;
 			}
 		}
@@ -74,7 +76,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 	
 			if(packetType == ScubaTankPacket.UPDATE)
 			{
-				PacketHandler.writeString(dataStream, username);
+				PacketHandler.writeUUID(dataStream, userId);
 				dataStream.writeBoolean(value);
 			}
 			else if(packetType == ScubaTankPacket.FULL)
@@ -83,9 +85,9 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 
 				synchronized(Mekanism.gasmaskOn)
 				{
-					for (String name : Mekanism.gasmaskOn)
+					for (UUID name : Mekanism.gasmaskOn)
 					{
-						PacketHandler.writeString(dataStream, name);
+						PacketHandler.writeUUID(dataStream, name);
 					}
 				}
 			}
@@ -104,12 +106,12 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 	
 				for(int i = 0; i < amount; i++)
 				{
-					Mekanism.gasmaskOn.add(PacketHandler.readString(dataStream));
+					Mekanism.gasmaskOn.add(PacketHandler.readUUID(dataStream));
 				}
 			}
 			else if(packetType == ScubaTankPacket.UPDATE)
 			{
-				username = PacketHandler.readString(dataStream);
+				userId = PacketHandler.readUUID(dataStream);
 				value = dataStream.readBoolean();
 			}
 		}

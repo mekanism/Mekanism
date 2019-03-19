@@ -11,6 +11,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import java.util.UUID;
+
 public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerData.FreeRunnerDataMessage, IMessage>
 {
     @Override
@@ -23,16 +25,16 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
             {
                 if(message.value)
                 {
-                    Mekanism.freeRunnerOn.add(message.username);
+                    Mekanism.freeRunnerOn.add(message.userId);
                 }
                 else
                 {
-                    Mekanism.freeRunnerOn.remove(message.username);
+                    Mekanism.freeRunnerOn.remove(message.userId);
                 }
 
                 if(!entityPlayer.world.isRemote)
                 {
-                    Mekanism.packetHandler.sendToDimension(new FreeRunnerDataMessage(FreeRunnerPacket.UPDATE, message.username, message.value), entityPlayer.world.provider.getDimension());
+                    Mekanism.packetHandler.sendToDimension(new FreeRunnerDataMessage(FreeRunnerPacket.UPDATE, message.userId, message.value), entityPlayer.world.provider.getDimension());
                 }
             }
             else if(message.packetType == FreeRunnerPacket.MODE)
@@ -60,19 +62,19 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
     {
         public FreeRunnerPacket packetType;
 
-        public String username;
+        public UUID userId;
         public boolean value;
 
         public FreeRunnerDataMessage() {}
 
-        public FreeRunnerDataMessage(FreeRunnerPacket packetType, String username, boolean value)
+        public FreeRunnerDataMessage(FreeRunnerPacket packetType, UUID username, boolean value)
         {
             this.packetType = packetType;
             this.value = value;
 
             if(packetType == FreeRunnerPacket.UPDATE)
             {
-                this.username = username;
+                this.userId = username;
             }
         }
 
@@ -87,7 +89,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
             }
             else if(packetType == FreeRunnerPacket.UPDATE)
             {
-                PacketHandler.writeString(buf, username);
+                PacketHandler.writeUUID(buf, userId);
                 buf.writeBoolean(value);
             }
             else if(packetType == FreeRunnerPacket.FULL)
@@ -96,9 +98,9 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
 
                 synchronized (Mekanism.freeRunnerOn)
                 {
-                    for(String usernameToSend : Mekanism.freeRunnerOn)
+                    for(UUID usernameToSend : Mekanism.freeRunnerOn)
                     {
-                        PacketHandler.writeString(buf, usernameToSend);
+                        PacketHandler.writeUUID(buf, usernameToSend);
                     }
                 }
             }
@@ -114,7 +116,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
             }
             else if(packetType == FreeRunnerPacket.UPDATE)
             {
-                username = PacketHandler.readString(buf);
+                userId = PacketHandler.readUUID(buf);
                 value = buf.readBoolean();
             }
             else if(packetType == FreeRunnerPacket.FULL)
@@ -125,7 +127,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
 
                 for(int i = 0; i < amount; i++)
                 {
-                    Mekanism.freeRunnerOn.add(PacketHandler.readString(buf));
+                    Mekanism.freeRunnerOn.add(PacketHandler.readUUID(buf));
                 }
             }
         }

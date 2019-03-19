@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
 import java.util.Random;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -132,9 +133,9 @@ public class RenderTickHandler
 
 				synchronized(Mekanism.jetpackOn)
 				{
-					for(String s : Mekanism.jetpackOn)
+					for(UUID s : Mekanism.jetpackOn)
 					{
-						EntityPlayer p = mc.world.getPlayerEntityByName(s);
+						EntityPlayer p = mc.world.getPlayerEntityByUUID(s);
 
 						if(p == null)
 						{
@@ -177,9 +178,9 @@ public class RenderTickHandler
 				{
 					if(world.getWorldTime() % 4 == 0)
 					{
-						for(String s : Mekanism.gasmaskOn)
+						for(UUID s : Mekanism.gasmaskOn)
 						{
-							EntityPlayer p = mc.world.getPlayerEntityByName(s);
+							EntityPlayer p = mc.world.getPlayerEntityByUUID(s);
 	
 							if(p == null || !p.isInWater())
 							{
@@ -204,7 +205,7 @@ public class RenderTickHandler
 				{
 					for(EntityPlayer p : world.playerEntities)
 					{
-						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && !p.inventory.getCurrentItem().isEmpty() && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.flamethrowerActive.contains(p.getUniqueID()) && !p.isSwingInProgress && !p.inventory.getCurrentItem().isEmpty() && p.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower)
 						{
 							if(((ItemFlamethrower)p.inventory.getCurrentItem().getItem()).getGas(p.inventory.getCurrentItem()) != null)
 							{

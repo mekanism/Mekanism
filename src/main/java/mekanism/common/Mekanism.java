@@ -227,10 +227,10 @@ public class Mekanism
 	
 	public static KeySync keyMap = new KeySync();
 	
-	public static final Set<String> jetpackOn = new HashSet<>();
-	public static final Set<String> gasmaskOn = new HashSet<>();
-	public static final Set<String> freeRunnerOn = new HashSet<>();
-	public static final Set<String> flamethrowerActive = new HashSet<>();
+	public static final Set<UUID> jetpackOn = new HashSet<>();
+	public static final Set<UUID> gasmaskOn = new HashSet<>();
+	public static final Set<UUID> freeRunnerOn = new HashSet<>();
+	public static final Set<UUID> flamethrowerActive = new HashSet<>();
 	
 	public static Set<Coord4D> activeVibrators = new HashSet<>();
 	
