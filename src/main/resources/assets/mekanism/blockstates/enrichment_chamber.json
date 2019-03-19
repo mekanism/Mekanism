@@ -23,10 +23,10 @@
       "true": {
         "textures": {
           "front": "mekanism:blocks/enrichment_chamber/EnrichmentChamberFrontOn",
-          "west": "mekanism:blocks/enrichment_chamber/EnrichmentChamberRightOn",
-          "east": "mekanism:blocks/enrichment_chamber/EnrichmentChamberLeftOn",
-          "south": "mekanism:blocks/enrichment_chamber/EnrichmentChamberBackOn",
-          "up": "mekanism:blocks/enrichment_chamber/EnrichmentChamberTopOn"
+          "west": "mekanism:blocks/enrichment_chamber/EnrichmentChamberRight",
+          "east": "mekanism:blocks/enrichment_chamber/EnrichmentChamberLeft",
+          "south": "mekanism:blocks/enrichment_chamber/EnrichmentChamberBack",
+          "up": "mekanism:blocks/enrichment_chamber/EnrichmentChamberTop"
         }
       },
       "false": {}
