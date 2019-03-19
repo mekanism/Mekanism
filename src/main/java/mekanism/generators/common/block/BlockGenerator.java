@@ -389,7 +389,7 @@ public abstract class BlockGenerator extends BlockContainer {
 
             if (!entityplayer.isSneaking()) {
                 if (!stack.isEmpty() && stack.getItem() == GeneratorsItems.TurbineBlade) {
-                    if (rod.editBlade(true)) {
+                    if (rod.addBlade()) {
                         if (!entityplayer.capabilities.isCreativeMode) {
                             stack.shrink(1);
 
@@ -402,7 +402,7 @@ public abstract class BlockGenerator extends BlockContainer {
                     return true;
                 }
             } else if (stack.isEmpty()) {
-                if (rod.editBlade(false)) {
+                if (rod.removeBlade()) {
                     if (!entityplayer.capabilities.isCreativeMode) {
                         entityplayer.setHeldItem(hand, new ItemStack(GeneratorsItems.TurbineBlade));
                         entityplayer.inventory.markDirty();
@@ -410,7 +410,7 @@ public abstract class BlockGenerator extends BlockContainer {
                 }
             } else if (stack.getItem() == GeneratorsItems.TurbineBlade) {
                 if (stack.getCount() < stack.getMaxStackSize()) {
-                    if (rod.editBlade(false)) {
+                    if (rod.removeBlade()) {
                         if (!entityplayer.capabilities.isCreativeMode) {
                             stack.grow(1);
                             entityplayer.inventory.markDirty();

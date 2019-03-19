@@ -9,30 +9,28 @@ import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.TileNetworkList;
+import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTurbineRotor extends TileEntityBasicBlock {
+public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
-    public List<Coord4D> rotors = new ArrayList<>();
-
-    public boolean hasComplex;
-
-    public String multiblockUUID;
-
-    //Total blades on server, housed blades on client
+    // Blades on this rotor
     public int blades = 0;
 
-    //Client stuff
-    public int clientIndex;
+    // Position of this rotor, relative to bottom
+    private int position = -1;
 
+    // Rendering helpers
     public float rotationLower;
     public float rotationUpper;
 
@@ -44,130 +42,106 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock {
     }
 
     public void updateRotors() {
-        if (rotors.contains(Coord4D.get(this))) {
-            rotors.add(Coord4D.get(this));
-        }
+        // In order to render properly, each rotor has to know its position, relative to other contiguous rotors
+        // along the Z axis. When a neighbor changes, rescan the rotors and figure out everyone's position
+        // N.B. must be in bottom->top order.
 
-        buildRotors();
-        Mekanism.packetHandler
-              .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                    new Range4D(Coord4D.get(this)));
-    }
-
-    private void buildRotors() {
-        List<Coord4D> newRotors = new ArrayList<>();
-        int newBlades = 0;
-        boolean complex = false;
-        String id = null;
-
-        Coord4D pointer = Coord4D.get(this);
-
-        //Go to bottom rotor
-        while (true) {
-            if (isRotor(pointer.offset(EnumFacing.DOWN))) {
-                pointer = pointer.offset(EnumFacing.DOWN);
-                continue;
-            }
-
-            break;
-        }
-
-        //Put all rotors in new list, top to bottom
-        while (true) {
-            newRotors.add(pointer.clone());
-            newBlades += ((TileEntityTurbineRotor) pointer.getTileEntity(world)).getHousedBlades();
-
-            if (isRotor(pointer.offset(EnumFacing.UP))) {
-                pointer = pointer.offset(EnumFacing.UP);
-                continue;
-            }
-
-            break;
-        }
-
-        if (isComplex(pointer.offset(EnumFacing.UP))) {
-            id = ((TileEntityRotationalComplex) pointer.offset(EnumFacing.UP).getTileEntity(world)).multiblockUUID;
-            complex = true;
-        }
-
-        //Update all rotors, send packet if necessary
-        for (Coord4D coord : newRotors) {
-            TileEntityTurbineRotor rotor = (TileEntityTurbineRotor) coord.getTileEntity(world);
-            int prevHoused = rotor.getHousedBlades();
-            int prevBlades = rotor.blades;
-
-            rotor.rotors = newRotors;
-            rotor.blades = newBlades;
-            rotor.multiblockUUID = id;
-
-            if (rotors.indexOf(coord) == rotors.size() - 1) {
-                rotor.hasComplex = complex;
-            } else {
-                rotor.hasComplex = false;
-            }
-
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(coord, rotor.getNetworkedData(new TileNetworkList())),
-                        new Range4D(coord));
+        // Find the bottom-most rotor and start scan from there
+        TileEntityTurbineRotor rotor = nextRotor(getPos().down());
+        if (rotor != null) {
+            rotor.updateRotors();
+        } else {
+            // This is the bottom-most rotor, so start scan up
+            scanRotors(0);
         }
     }
 
-    public boolean editBlade(boolean add) {
-        if (!rotors.contains(Coord4D.get(this))) {
-            rotors.add(Coord4D.get(this));
+    private void scanRotors(int index) {
+        if (index != position) {
+            // Our position has changed, update and generate an update packet for client
+            position = index;
+            sendUpdatePacket();
         }
 
-        if ((add && (rotors.size() * 2) - blades > 0) || (!add && (blades > 0))) {
-            for (Coord4D coord : rotors) {
-                TileEntityTurbineRotor rotor = (TileEntityTurbineRotor) coord.getTileEntity(world);
-                rotor.internalEditBlade(add);
-            }
+        // Pass the scan along to next rotor up, along with their new index
+        TileEntityTurbineRotor rotor = nextRotor(getPos().up());
+        if (rotor != null) {
+            rotor.scanRotors(index+1);
+        }
+    }
+
+
+    public boolean addBlade() {
+        // If the the rotor beneath has less than two blades, add to it
+        TileEntityTurbineRotor next = nextRotor(getPos().down());
+        if (next != null && next.blades < 2) {
+            return next.addBlade();
+        } else if (blades < 2) {
+            // Add the blades to this rotor
+            blades++;
+
+            // Update client state
+            sendUpdatePacket();
 
             return true;
+        }
+
+        // This rotor and the rotor below are full up; pass the call
+        // on up to the next rotor in stack
+        next = nextRotor(getPos().up());
+        if (next != null) {
+            return next.addBlade();
         } else {
             return false;
         }
     }
 
-    public void internalEditBlade(boolean add) {
-        int prev = getHousedBlades();
+    public boolean removeBlade() {
+        // If the the rotor above has any blades, remove them first
+        TileEntityTurbineRotor next = nextRotor(getPos().up());
+        if (next != null && next.blades > 0) {
+            return next.removeBlade();
+        } else if (blades > 0) {
+            // Remove blades from this rotor
+            blades--;
 
-        blades += add ? 1 : -1;
+            // Update client state
+            sendUpdatePacket();
 
-        if (getHousedBlades() != prev) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            return true;
+        }
+
+        // This rotor and the rotor above are empty; pass the call
+        // on up to the next rotor in stack
+        next = nextRotor(getPos().down());
+        if (next != null) {
+            return next.removeBlade();
+        } else {
+            return false;
         }
     }
+
 
     public int getHousedBlades() {
-        if (!world.isRemote) {
-            if (rotors.size() > 0) {
-                return Math.max(0, Math.min(2, blades - (rotors.indexOf(Coord4D.get(this))) * 2));
-            } else {
-                return blades;
-            }
-        } else {
-            return blades;
+        return blades;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    private TileEntityTurbineRotor nextRotor(BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileEntityTurbineRotor) {
+            return (TileEntityTurbineRotor)tile;
         }
+        return null;
     }
 
-    private boolean isRotor(Coord4D coord) {
-        return coord.getTileEntity(world) instanceof TileEntityTurbineRotor;
-    }
-
-    private boolean isComplex(Coord4D coord) {
-        return coord.getTileEntity(world) instanceof TileEntityRotationalComplex;
-    }
-
-    @Override
-    public void onChunkLoad() {
-        super.onChunkLoad();
-
-        if (!world.isRemote) {
-            updateRotors();
-        }
+    private void sendUpdatePacket() {
+        Mekanism.packetHandler
+              .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                    new Range4D(Coord4D.get(this)));
     }
 
     @Override
@@ -176,18 +150,12 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock {
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             int prevBlades = blades;
-            int prevIndex = clientIndex;
+            int prevPosition = position;
 
             blades = dataStream.readInt();
-            clientIndex = dataStream.readInt();
+            position = dataStream.readInt();
 
-            if (dataStream.readBoolean()) {
-                multiblockUUID = PacketHandler.readString(dataStream);
-            } else {
-                multiblockUUID = null;
-            }
-
-            if (prevBlades != blades || prevIndex != clientIndex) {
+            if (prevBlades != blades || prevPosition != prevBlades) {
                 rotationLower = 0;
                 rotationUpper = 0;
             }
@@ -198,15 +166,8 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock {
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        data.add(getHousedBlades());
-        data.add(rotors.indexOf(Coord4D.get(this)));
-
-        if (multiblockUUID != null) {
-            data.add(true);
-            data.add(multiblockUUID);
-        } else {
-            data.add(false);
-        }
+        data.add(blades);
+        data.add(position);
 
         return data;
     }
@@ -236,6 +197,13 @@ public class TileEntityTurbineRotor extends TileEntityBasicBlock {
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate() {}
+
+    @Override
+    public void setMultiblock(String id) {
+        // Override the multiblock setter so that we can be sure to relay the ID down to the client; otherwise,
+        // the rendering won't work properly
+        super.setMultiblock(id);
+        sendUpdatePacket();
     }
 }

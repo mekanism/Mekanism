@@ -26,7 +26,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
     }
 
     private void renderAModelAt(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick) {
-        if (tileEntity.multiblockUUID != null && !internalRender) {
+        if (tileEntity.getMultiblock() != null && !internalRender) {
             return;
         }
 
@@ -34,12 +34,12 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
 
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Turbine.png"));
 
-        int baseIndex = tileEntity.clientIndex * 2;
+        int baseIndex = tileEntity.getPosition() * 2;
         float rotateSpeed = 0.0F;
 
-        if (tileEntity.multiblockUUID != null && SynchronizedTurbineData.clientRotationMap
-              .containsKey(tileEntity.multiblockUUID)) {
-            rotateSpeed = SynchronizedTurbineData.clientRotationMap.get(tileEntity.multiblockUUID);
+        if (tileEntity.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap
+              .containsKey(tileEntity.getMultiblock())) {
+            rotateSpeed = SynchronizedTurbineData.clientRotationMap.get(tileEntity.getMultiblock());
         }
 
         if (!Mekanism.proxy.isPaused()) {

@@ -44,4 +44,6 @@ public class TileEntityInternalMultiblock extends TileEntityBasicBlock {
     public void setMultiblock(String id) {
         multiblockUUID = id;
     }
+
+    public String getMultiblock() { return multiblockUUID; }
 }
