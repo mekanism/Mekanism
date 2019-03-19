@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.TileNetworkList;
@@ -36,8 +35,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = MekanismHooks.IC2_MOD_ID)
-public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IChunkLoadHandler,
-      IFrequencyHandler, ITickable {
+public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable {
 
     /**
      * The direction this block is facing.
@@ -102,11 +100,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         super.updateContainingBlockInfo();
 
         onAdded();
-    }
-
-    @Override
-    public void onChunkLoad() {
-
     }
 
     public void open(EntityPlayer player) {
