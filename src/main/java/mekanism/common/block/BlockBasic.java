@@ -816,25 +816,25 @@ public abstract class BlockBasic extends Block {
 
     @Override
     public boolean isBeaconBase(IBlockAccess world, BlockPos pos, BlockPos beacon) {
-        return BasicBlockType.get(world.getBlockState(pos)).isBeaconBase;
+        BasicBlockType basicBlockType = BasicBlockType.get(world.getBlockState(pos));
+        return basicBlockType != null && basicBlockType.isBeaconBase;
     }
 
     @Override
     public boolean hasComparatorInputOverride(IBlockState blockState) {
-        return BasicBlockType.get(blockState).hasRedstoneOutput;
+        BasicBlockType basicBlockType = BasicBlockType.get(blockState);
+        return basicBlockType != null && basicBlockType.hasRedstoneOutput;
     }
 
     @Override
     public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
-        if (BasicBlockType.get(blockState).hasRedstoneOutput) {
+        BasicBlockType basicBlockType = BasicBlockType.get(blockState);
+        if (basicBlockType != null && basicBlockType.hasRedstoneOutput) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof TileEntityBin) {
-                TileEntityBin binTile = (TileEntityBin)tile;
-                float percentFull = binTile.getItemCount() / (binTile.getMaxStoredCount() * 1.0f);
-                return (int)(percentFull * 15);
+                return ((TileEntityBin) tile).getRedstoneLevel();
             }
         }
-
         return 0;
     }
 }

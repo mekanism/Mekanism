@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
@@ -547,6 +548,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    public int getRedstoneLevel() {
+        double fractionFull = (float) getItemCount() / (float) getMaxStoredCount();
+        return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
     }
 
     //	@Override
