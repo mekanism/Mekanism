@@ -23,14 +23,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLaser extends TileEntityEffectsBlock implements IActiveState {
+public class TileEntityLaser extends TileEntityEffectsBlock {
 
     public Coord4D digging;
     public double diggingProgress;
-
-    public boolean isActive;
-
-    public boolean clientActive;
 
     public TileEntityLaser() {
         super("machine.laser", "Laser", 2 * usage.laserUsage);
@@ -108,23 +104,6 @@ public class TileEntityLaser extends TileEntityEffectsBlock implements IActiveSt
     }
 
     @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-
-        if (clientActive != active) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-            clientActive = active;
-        }
-    }
-
-    @Override
     public boolean renderUpdate() {
         return false;
     }
@@ -132,45 +111,5 @@ public class TileEntityLaser extends TileEntityEffectsBlock implements IActiveSt
     @Override
     public boolean lightUpdate() {
         return false;
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-
-        data.add(isActive);
-
-        return data;
-    }
-
-    @Override
-    public void handlePacketData(ByteBuf dataStream) {
-        super.handlePacketData(dataStream);
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            clientActive = dataStream.readBoolean();
-
-            if (clientActive != isActive) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTags) {
-        super.readFromNBT(nbtTags);
-
-        isActive = nbtTags.getBoolean("isActive");
-    }
-
-    @Nonnull
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
-        super.writeToNBT(nbtTags);
-
-        nbtTags.setBoolean("isActive", isActive);
-
-        return nbtTags;
     }
 }
