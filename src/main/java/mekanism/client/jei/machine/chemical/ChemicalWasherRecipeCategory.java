@@ -6,7 +6,6 @@ import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -17,25 +16,15 @@ import net.minecraft.client.Minecraft;
 
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public ChemicalWasherRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiChemicalWasher.png", "chemical_washer",
-              "tile.MachineBlock2.ChemicalWasher.name", null);
-        xOffset = 3;
-        yOffset = 3;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 70);
+              "tile.MachineBlock2.ChemicalWasher.name", null, 3, 3, 170, 70);
     }
 
     @Override
     public void drawExtras(Minecraft minecraft) {
         super.drawExtras(minecraft);
         drawTexturedRect(61 - xOffset, 39 - yOffset, 176, 63, 55, 8);
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

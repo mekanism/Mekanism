@@ -12,7 +12,6 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -21,14 +20,9 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public ChemicalOxidizerRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiChemicalOxidizer.png", "chemical_oxidizer",
-              "tile.MachineBlock2.ChemicalOxidizer.name", ProgressBar.LARGE_RIGHT);
-        xOffset = 20;
-        yOffset = 12;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 132, 62);
+              "tile.MachineBlock2.ChemicalOxidizer.name", ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
     }
 
     @Override
@@ -41,11 +35,6 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory {
                 return (double) timer.getValue() / 20F;
             }
         }, progressBar, this, guiLocation, 62, 39));
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

@@ -10,7 +10,6 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -18,11 +17,8 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class MachineRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public MachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
-        super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress);
-        background = guiHelper.createDrawable(guiLocation, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress, 28, 16, 144, 54);
     }
 
     @Override
@@ -42,11 +38,6 @@ public class MachineRecipeCategory extends BaseRecipeCategory {
                 return (double) timer.getValue() / 20F;
             }
         }, progressBar, this, guiLocation, 77, 37));
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

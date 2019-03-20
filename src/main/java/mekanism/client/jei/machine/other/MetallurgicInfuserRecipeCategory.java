@@ -16,7 +16,6 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -25,14 +24,9 @@ import net.minecraft.item.ItemStack;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiMetallurgicInfuser.png", "metallurgic_infuser",
-              "tile.MachineBlock.MetallurgicInfuser.name", ProgressBar.MEDIUM);
-        xOffset = 5;
-        yOffset = 16;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 166, 54);
+              "tile.MachineBlock.MetallurgicInfuser.name", ProgressBar.MEDIUM, 5, 16, 166, 54);
     }
 
     public static List<ItemStack> getInfuseStacks(InfuseType type) {
@@ -58,11 +52,6 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory {
                 return (double) timer.getValue() / 20F;
             }
         }, ProgressBar.MEDIUM, this, guiLocation, 70, 46));
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

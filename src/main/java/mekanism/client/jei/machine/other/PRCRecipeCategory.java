@@ -16,7 +16,6 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
@@ -26,14 +25,9 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class PRCRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public PRCRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiPRC.png", "pressurized_reaction_chamber",
-              "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM);
-        xOffset = 3;
-        yOffset = 11;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 68);
+              "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM, 3, 11, 170, 68);
     }
 
     @Override
@@ -59,11 +53,6 @@ public class PRCRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
-    }
-
-    @Override
     public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
         if (recipeWrapper instanceof PRCRecipeWrapper) {
             PressurizedRecipe tempRecipe = ((PRCRecipeWrapper) recipeWrapper).getRecipe();
@@ -77,7 +66,8 @@ public class PRCRecipeCategory extends BaseRecipeCategory {
             fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
             IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
             initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
-            initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);
+            initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(),
+                  true);
         }
     }
 }

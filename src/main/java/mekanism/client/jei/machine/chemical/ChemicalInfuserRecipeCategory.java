@@ -5,7 +5,6 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -14,14 +13,9 @@ import net.minecraft.client.Minecraft;
 
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public ChemicalInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiChemicalInfuser.png", "chemical_infuser",
-              "tile.MachineBlock2.ChemicalInfuser.name", null);
-        xOffset = 3;
-        yOffset = 3;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 80);
+              "tile.MachineBlock2.ChemicalInfuser.name", null, 3, 3, 170, 80);
     }
 
     @Override
@@ -32,18 +26,14 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background;
-    }
-
-    @Override
     public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
         if (recipeWrapper instanceof ChemicalInfuserRecipeWrapper) {
             ChemicalInfuserRecipe tempRecipe = ((ChemicalInfuserRecipeWrapper) recipeWrapper).getRecipe();
             IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
             initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().leftGas, true);
             initGas(gasStacks, 1, true, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().rightGas, true);
-            initGas(gasStacks, 2, false, 80 - xOffset, 5 - yOffset, 16, 58, tempRecipe.getOutput().output, true);return;
+            initGas(gasStacks, 2, false, 80 - xOffset, 5 - yOffset, 16, 58, tempRecipe.getOutput().output, true);
+            return;
         }
     }
 }

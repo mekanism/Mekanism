@@ -7,7 +7,6 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -17,25 +16,15 @@ import net.minecraft.client.Minecraft;
 
 public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png", "chemical_dissolution_chamber",
-              "gui.chemicalDissolutionChamber.short", null);
-        xOffset = 3;
-        yOffset = 3;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 79);
+              "gui.chemicalDissolutionChamber.short", null, 3, 3, 170, 79);
     }
 
     @Override
     public void drawExtras(Minecraft minecraft) {
         super.drawExtras(minecraft);
         drawTexturedRect(64 - xOffset, 40 - yOffset, 176, 63, (int) (48 * ((float) timer.getValue() / 20F)), 8);
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

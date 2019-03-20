@@ -16,7 +16,6 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -26,16 +25,9 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public ElectrolyticSeparatorRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/GuiElectrolyticSeparator.png", "electrolytic_separator",
-              "tile.MachineBlock2.ElectrolyticSeparator.name", ProgressBar.BI);
-
-        xOffset = 4;
-        yOffset = 9;
-
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 167, 62);
+              "tile.MachineBlock2.ElectrolyticSeparator.name", ProgressBar.BI, 4, 9, 167, 62);
     }
 
     @Override
@@ -59,11 +51,6 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory {
                 return 1;
             }
         }, progressBar, this, guiLocation, 78, 29));
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

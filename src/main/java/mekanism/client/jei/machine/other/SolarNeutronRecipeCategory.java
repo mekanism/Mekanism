@@ -5,7 +5,6 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -14,25 +13,15 @@ import net.minecraft.client.Minecraft;
 
 public class SolarNeutronRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public SolarNeutronRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiSolarNeutronActivator.png", "solar_neutron_activator",
-              "tile.MachineBlock3.SolarNeutronActivator.name", null);
-        xOffset = 3;
-        yOffset = 12;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 70);
+              "tile.MachineBlock3.SolarNeutronActivator.name", null, 3, 12, 170, 70);
     }
 
     @Override
     public void drawExtras(Minecraft minecraft) {
         super.drawExtras(minecraft);
         drawTexturedRect(64 - xOffset, 39 - yOffset, 176, 58, 55, 8);
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

@@ -13,7 +13,6 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -21,18 +20,15 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class ChanceMachineRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
-        super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress);
-        background = guiHelper.createDrawable(guiLocation, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress, 28, 16, 144, 54);
     }
 
     @Override
     public void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 55,  16));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 55,  52).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, guiLocation,  111, 30));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 55, 16));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 55, 52).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, guiLocation, 111, 30));
         guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
             public double getLevel() {
@@ -45,11 +41,6 @@ public class ChanceMachineRecipeCategory extends BaseRecipeCategory {
                 return (double) timer.getValue() / 20F;
             }
         }, progressBar, this, guiLocation, 77, 37));
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

@@ -45,8 +45,10 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
     private String recipeName;
     private String unlocalizedName;
 
+    private final IDrawable background;
+
     public BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized,
-          @Nullable ProgressBar progress) {
+          @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;
         guiLocation = new ResourceLocation(guiTexture);
 
@@ -62,6 +64,10 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
         fluidOverlaySmall = guiHelper.createDrawable(resource, 19, 1, 16, 29);
 
         addGuiElements();
+
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, width, height);
     }
 
     @Override
@@ -114,6 +120,11 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
     }
 
     public void addGuiElements() {
+    }
+
+    @Override
+    public IDrawable getBackground() {
+        return background;
     }
 
     @Override

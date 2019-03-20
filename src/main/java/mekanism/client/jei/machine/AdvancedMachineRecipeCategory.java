@@ -16,7 +16,6 @@ import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -25,11 +24,8 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 
 public class AdvancedMachineRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public AdvancedMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
-        super(helper, "mekanism:gui/GuiAdvancedMachine.png", name, unlocalized, progress);
-        background = guiHelper.createDrawable(guiLocation, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/GuiAdvancedMachine.png", name, unlocalized, progress, 28, 16, 144, 54);
     }
 
     @Override
@@ -50,11 +46,6 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory {
                 return (double) timer.getValue() / 20F;
             }
         }, progressBar, this, guiLocation, 77, 37));
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override

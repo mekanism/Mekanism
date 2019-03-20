@@ -4,7 +4,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiIngredientGroup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -15,33 +14,20 @@ import net.minecraft.client.Minecraft;
 
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
     private final boolean condensentrating;
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         super(helper, "mekanism:gui/nei/GuiRotaryCondensentrator.png",
               condensentrating ? "rotary_condensentrator_condensentrating"
                     : "rotary_condensentrator_decondensentrating",
-              condensentrating ? "gui.condensentrating" : "gui.decondensentrating", null);
-        xOffset = 3;
-        yOffset = 12;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 71);
+              condensentrating ? "gui.condensentrating" : "gui.decondensentrating", null, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
     }
 
     @Override
     public void drawExtras(Minecraft minecraft) {
         super.drawExtras(minecraft);
-        if (condensentrating) {
-            drawTexturedRect(64 - xOffset, 39 - yOffset, 176, 123, 48, 8);
-        } else {
-            drawTexturedRect(64 - xOffset, 39 - yOffset, 176, 115, 48, 8);
-        }
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
+        drawTexturedRect(64 - xOffset, 39 - yOffset, 176, condensentrating ? 123 : 115, 48, 8);
     }
 
     @Override

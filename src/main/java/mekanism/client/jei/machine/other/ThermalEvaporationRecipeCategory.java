@@ -3,7 +3,6 @@ package mekanism.client.jei.machine.other;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -12,25 +11,15 @@ import net.minecraft.client.Minecraft;
 
 public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory {
 
-    private final IDrawable background;
-
     public ThermalEvaporationRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png", "thermal_evaporation_plant",
-              "gui.thermalEvaporationController.short", null);
-        xOffset = 3;
-        yOffset = 12;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 62);
+              "gui.thermalEvaporationController.short", null, 3, 12, 170, 62);
     }
 
     @Override
     public void drawExtras(Minecraft minecraft) {
         super.drawExtras(minecraft);
         drawTexturedRect(49 - xOffset, 64 - yOffset, 176, 59, 78, 8);
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override
