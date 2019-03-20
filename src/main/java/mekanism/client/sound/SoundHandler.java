@@ -80,6 +80,12 @@ public class SoundHandler {
     }
 
     public static ISound startTileSound(ResourceLocation soundLoc, float volume, BlockPos pos) {
+        // Check to see if the game has focus; in SP mode sounds aren't paused until AFTER the game menu is displayed,
+        // which means that a sound can slip into queue after user has already paused the game.
+        if (!Minecraft.getMinecraft().inGameHasFocus) {
+            return null;
+        }
+
         // First, check to see if there's already a sound playing at the desired location
         ISound s = soundMap.get(pos.toLong());
         if (s == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(s)) {
