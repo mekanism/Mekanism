@@ -31,7 +31,7 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void addGuiElements() {
+    protected void addGuiElements() {
         guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, guiLocation, 5, 10));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, guiLocation, 58, 18));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, guiLocation, 100, 18));

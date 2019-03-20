@@ -35,7 +35,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void addGuiElements() {
+    protected void addGuiElements() {
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, guiLocation, 16, 34));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 50, 42));
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 142, 34).with(SlotOverlay.POWER));

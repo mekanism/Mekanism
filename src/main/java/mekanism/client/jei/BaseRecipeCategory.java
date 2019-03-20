@@ -32,13 +32,13 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
     private static final GuiDummy gui = new GuiDummy();
 
-    protected IGuiHelper guiHelper;
+    private IGuiHelper guiHelper;
     protected ResourceLocation guiLocation;
     @Nullable
     protected ProgressBar progressBar;
     protected ITickTimer timer;
-    protected int xOffset = 28;
-    protected int yOffset = 16;
+    protected int xOffset;
+    protected int yOffset;
     protected IDrawable fluidOverlayLarge;
     protected IDrawable fluidOverlaySmall;
     protected Set<GuiElement> guiElements = new HashSet<>();
@@ -47,7 +47,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
     private final IDrawable background;
 
-    public BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized,
+    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized,
           @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;
         guiLocation = new ResourceLocation(guiTexture);
@@ -88,7 +88,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
     @Override
     public void drawExtras(Minecraft minecraft) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        changeTexture(guiLocation);
+        minecraft.renderEngine.bindTexture(guiLocation);
         guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }
 
@@ -115,11 +115,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
         return null;
     }
 
-    public void changeTexture(ResourceLocation texture) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-    }
-
-    public void addGuiElements() {
+    protected void addGuiElements() {
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void addGuiElements() {
+    protected void addGuiElements() {
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, guiLocation, 133, 13));
         guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 25, 35));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {

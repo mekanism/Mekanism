@@ -25,7 +25,7 @@ public class DoubleMachineRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void addGuiElements() {
+    protected void addGuiElements() {
         guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 55, 16));
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 30, 34).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, guiLocation, 55, 52));

@@ -22,7 +22,7 @@ public class MachineRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void addGuiElements() {
+    protected void addGuiElements() {
         guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 55, 16));
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 55, 52).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, guiLocation, 111, 30));

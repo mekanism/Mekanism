@@ -31,7 +31,7 @@ public class PRCRecipeCategory extends BaseRecipeCategory {
     }
 
     @Override
-    public void addGuiElements() {
+    protected void addGuiElements() {
         guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 53, 34));
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 140, 18).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 115, 34));
