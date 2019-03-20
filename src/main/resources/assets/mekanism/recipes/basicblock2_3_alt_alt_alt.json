@@ -12,7 +12,7 @@
     "CEC",
     "TCT"
   ],
-  "type": "minecraft:crafting_shaped",
+  "type": "mekanism:ore_shaped",
   "key": {
     "C": {
       "nbt": {
