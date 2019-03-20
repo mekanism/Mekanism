@@ -41,7 +41,7 @@ public class Crusher
 
         CrusherRecipe recipe = new CrusherRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CRUSHER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CRUSHER.get(), recipe));
     }
 
     @ZenMethod
@@ -59,12 +59,12 @@ public class Crusher
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CRUSHER.get(), itemOutput, itemInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<ItemStackInput, CrusherRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient itemInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput)
+        public Remove(String name, Map<ItemStackInput, CrusherRecipe> map, IIngredient itemOutput, IIngredient itemInput)
         {
             super(name, map);
 
@@ -75,9 +75,9 @@ public class Crusher
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<ItemStackInput, CrusherRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<ItemStackInput, CrusherRecipe> entry : ((Map<ItemStackInput, CrusherRecipe>) RecipeHandler.Recipe.CRUSHER.get()).entrySet())
+            for (Map.Entry<ItemStackInput, CrusherRecipe> entry : RecipeHandler.Recipe.CRUSHER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
                 IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);

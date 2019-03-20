@@ -50,7 +50,7 @@ public class ChemicalInjection
 
         InjectionRecipe recipe = new InjectionRecipe(input, output);
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -70,13 +70,13 @@ public class ChemicalInjection
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER.get(), itemOutput, itemInput, gasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<AdvancedMachineInput,InjectionRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient itemInput;
         private IIngredient gasInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient gasInput)
+        public Remove(String name, Map<AdvancedMachineInput,InjectionRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient gasInput)
         {
             super(name, map);
             this.itemOutput = itemOutput;
@@ -87,9 +87,9 @@ public class ChemicalInjection
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<AdvancedMachineInput,InjectionRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<AdvancedMachineInput, InjectionRecipe> entry : ((Map<AdvancedMachineInput, InjectionRecipe>) RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER.get()).entrySet())
+            for (Map.Entry<AdvancedMachineInput, InjectionRecipe> entry : RecipeHandler.Recipe.CHEMICAL_INJECTION_CHAMBER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
                 IGasStack inputGas = new CraftTweakerGasStack(new GasStack(entry.getKey().gasType, 1));

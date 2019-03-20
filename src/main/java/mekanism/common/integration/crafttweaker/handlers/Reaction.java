@@ -50,7 +50,7 @@ public class Reaction
 
         PressurizedRecipe recipe = new PressurizedRecipe(input, output, energy, duration);
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -72,7 +72,7 @@ public class Reaction
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get(), itemOutput, gasOutput, itemInput, liquidInput, gasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<PressurizedInput, PressurizedRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient gasOutput;
@@ -80,7 +80,7 @@ public class Reaction
         private IIngredient liquidInput;
         private IIngredient gasInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient gasOutput, IIngredient itemInput, IIngredient liquidInput, IIngredient gasInput)
+        public Remove(String name, Map<PressurizedInput, PressurizedRecipe> map, IIngredient itemOutput, IIngredient gasOutput, IIngredient itemInput, IIngredient liquidInput, IIngredient gasInput)
         {
             super(name, map);
 
@@ -94,9 +94,9 @@ public class Reaction
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<PressurizedInput, PressurizedRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<PressurizedInput, PressurizedRecipe> entry : ((Map<PressurizedInput, PressurizedRecipe>) RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get()).entrySet())
+            for (Map.Entry<PressurizedInput, PressurizedRecipe> entry : RecipeHandler.Recipe.PRESSURIZED_REACTION_CHAMBER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().getSolid());
                 ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().getFluid());

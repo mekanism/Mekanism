@@ -19,6 +19,7 @@ import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -44,7 +45,7 @@ public class ChemicalCrystallizer
 
         CrystallizerRecipe recipe = new CrystallizerRecipe(GasHelper.toGas(gasInput), InputHelper.toStack(itemOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get(), recipe));
     }
 
     @ZenMethod
@@ -62,12 +63,12 @@ public class ChemicalCrystallizer
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get(), itemOutput, gasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<GasInput, CrystallizerRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient gasInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient gasInput)
+        public Remove(String name, Map<GasInput, CrystallizerRecipe> map, IIngredient itemOutput, IIngredient gasInput)
         {
             super(name, map);
             this.itemOutput = itemOutput;
@@ -77,9 +78,9 @@ public class ChemicalCrystallizer
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<GasInput, CrystallizerRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<GasInput, CrystallizerRecipe> entry : ((Map<GasInput, CrystallizerRecipe>) RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get()).entrySet())
+            for (Map.Entry<GasInput, CrystallizerRecipe> entry : RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.get().entrySet())
             {
                 IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
                 IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);

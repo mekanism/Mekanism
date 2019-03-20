@@ -41,7 +41,7 @@ public class Enrichment
 
         EnrichmentRecipe recipe = new EnrichmentRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -60,12 +60,12 @@ public class Enrichment
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get(), itemInput, itemOutput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<ItemStackInput, EnrichmentRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient itemInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemInput, IIngredient itemOutput)
+        public Remove(String name, Map<ItemStackInput, EnrichmentRecipe> map, IIngredient itemInput, IIngredient itemOutput)
         {
             super(name, map);
             this.itemOutput = itemOutput;
@@ -75,9 +75,9 @@ public class Enrichment
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<ItemStackInput, EnrichmentRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<ItemStackInput, EnrichmentRecipe> entry : ((Map<ItemStackInput, EnrichmentRecipe>) RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get()).entrySet())
+            for (Map.Entry<ItemStackInput, EnrichmentRecipe> entry : RecipeHandler.Recipe.ENRICHMENT_CHAMBER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
                 IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);

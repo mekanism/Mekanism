@@ -44,7 +44,7 @@ public class Combiner
         ItemStackOutput output = new ItemStackOutput(InputHelper.toStack(itemOutput));
         CombinerRecipe recipe = new CombinerRecipe(input, output);
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.COMBINER.get(), recipe));
     }
 
     /**
@@ -63,7 +63,7 @@ public class Combiner
 
         CombinerRecipe recipe = new CombinerRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.COMBINER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.COMBINER.get(), recipe));
     }
 
     @ZenMethod
@@ -83,13 +83,13 @@ public class Combiner
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.COMBINER.get(), itemOutput, itemInput, gasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<DoubleMachineInput, CombinerRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient itemInput;
         private IIngredient itemExtra;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient extraInput)
+        public Remove(String name, Map<DoubleMachineInput, CombinerRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient extraInput)
         {
             super(name, map);
 
@@ -101,9 +101,9 @@ public class Combiner
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<DoubleMachineInput, CombinerRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<DoubleMachineInput, CombinerRecipe> entry : ((Map<DoubleMachineInput, CombinerRecipe>) RecipeHandler.Recipe.COMBINER.get()).entrySet())
+            for (Map.Entry<DoubleMachineInput, CombinerRecipe> entry : RecipeHandler.Recipe.COMBINER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
                 IItemStack extraItem = InputHelper.toIItemStack(entry.getKey().extraStack);

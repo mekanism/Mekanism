@@ -41,7 +41,7 @@ public class ChemicalInfuser
 
         ChemicalInfuserRecipe recipe = new ChemicalInfuserRecipe(GasHelper.toGas(leftGasInput), GasHelper.toGas(rightGasInput), GasHelper.toGas(gasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_INFUSER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_INFUSER.get(), recipe));
     }
 
     @ZenMethod
@@ -61,13 +61,13 @@ public class ChemicalInfuser
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_INFUSER.get(), gasOutput, leftGasInput, rightGasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<ChemicalPairInput,ChemicalInfuserRecipe>
     {
         private IIngredient gasOutput;
         private IIngredient leftGasInput;
         private IIngredient rightGasInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient gasOutput, IIngredient leftGasInput, IIngredient rightGasInput)
+        public Remove(String name, Map<ChemicalPairInput,ChemicalInfuserRecipe> map, IIngredient gasOutput, IIngredient leftGasInput, IIngredient rightGasInput)
         {
             super(name, map);
 
@@ -79,9 +79,9 @@ public class ChemicalInfuser
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<ChemicalPairInput,ChemicalInfuserRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<ChemicalPairInput, ChemicalInfuserRecipe> entry : ((Map<ChemicalPairInput, ChemicalInfuserRecipe>) RecipeHandler.Recipe.CHEMICAL_INFUSER.get()).entrySet())
+            for (Map.Entry<ChemicalPairInput, ChemicalInfuserRecipe> entry : RecipeHandler.Recipe.CHEMICAL_INFUSER.get().entrySet())
             {
                 IGasStack inputGasLeft = new CraftTweakerGasStack(entry.getKey().leftGas);
                 IGasStack inputGasRight = new CraftTweakerGasStack(entry.getKey().rightGas);

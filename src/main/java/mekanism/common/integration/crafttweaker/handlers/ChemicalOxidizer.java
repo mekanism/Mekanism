@@ -44,7 +44,7 @@ public class ChemicalOxidizer
 
         OxidationRecipe recipe = new OxidationRecipe(InputHelper.toStack(itemInput), GasHelper.toGas(gasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get(), recipe));
     }
 
     @ZenMethod
@@ -62,12 +62,12 @@ public class ChemicalOxidizer
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get(), gasOutput, itemInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<ItemStackInput, OxidationRecipe>
     {
         private IIngredient gasOutput;
         private IIngredient itemInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient gasOutput, IIngredient itemInput)
+        public Remove(String name, Map<ItemStackInput, OxidationRecipe> map, IIngredient gasOutput, IIngredient itemInput)
         {
             super(name, map);
 
@@ -78,9 +78,9 @@ public class ChemicalOxidizer
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<ItemStackInput, OxidationRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<ItemStackInput, OxidationRecipe> entry : ((Map<ItemStackInput, OxidationRecipe>) RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get()).entrySet())
+            for (Map.Entry<ItemStackInput, OxidationRecipe> entry : RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
                 IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);

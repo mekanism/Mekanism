@@ -14,11 +14,11 @@ import mekanism.common.recipe.outputs.PressurizedOutput;
 
 import java.util.Map;
 
-public class AddMekanismRecipe extends BaseMapAddition<MachineInput, MachineRecipe>
+public class AddMekanismRecipe<INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> extends BaseMapAddition<INPUT, RECIPE>
 {
-    private MachineRecipe recipe;
+    private RECIPE recipe;
 
-    public AddMekanismRecipe(String name, Map<MachineInput, MachineRecipe> map, MachineRecipe recipe)
+    public AddMekanismRecipe(String name, Map<INPUT, RECIPE> map, RECIPE recipe)
     {
         super(name, map);
         this.recipe = recipe;
@@ -31,7 +31,7 @@ public class AddMekanismRecipe extends BaseMapAddition<MachineInput, MachineReci
     }
 
     @Override
-    protected String getRecipeInfo(Map.Entry<MachineInput, MachineRecipe> recipe)
+    protected String getRecipeInfo(Map.Entry<INPUT, RECIPE> recipe)
     {
         MachineOutput output = recipe.getValue().recipeOutput;
 

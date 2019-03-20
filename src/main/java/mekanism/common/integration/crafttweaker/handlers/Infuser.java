@@ -46,7 +46,7 @@ public class Infuser
 
         MetallurgicInfuserRecipe recipe = new MetallurgicInfuserRecipe(input, output);
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER.get(), recipe));
     }
 
     @ZenMethod
@@ -66,13 +66,13 @@ public class Infuser
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.METALLURGIC_INFUSER.get(), itemOutput, itemInput, infuseType));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<InfusionInput, MetallurgicInfuserRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient itemInput;
         private String infuseType;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput, String infuseType)
+        public Remove(String name, Map<InfusionInput, MetallurgicInfuserRecipe> map, IIngredient itemOutput, IIngredient itemInput, String infuseType)
         {
             super(name, map);
 
@@ -84,9 +84,9 @@ public class Infuser
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<InfusionInput, MetallurgicInfuserRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<InfusionInput, MetallurgicInfuserRecipe> entry : ((Map<InfusionInput, MetallurgicInfuserRecipe>) RecipeHandler.Recipe.METALLURGIC_INFUSER.get()).entrySet())
+            for (Map.Entry<InfusionInput, MetallurgicInfuserRecipe> entry : RecipeHandler.Recipe.METALLURGIC_INFUSER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().inputStack);
                 String typeInfuse = entry.getKey().infuse.type.name;

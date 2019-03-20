@@ -46,7 +46,7 @@ public class Compressor
 
         OsmiumCompressorRecipe recipe = new OsmiumCompressorRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.OSMIUM_COMPRESSOR.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.OSMIUM_COMPRESSOR.get(), recipe));
     }
 
     @ZenMethod
@@ -63,7 +63,7 @@ public class Compressor
 
         OsmiumCompressorRecipe recipe = new OsmiumCompressorRecipe(input, output);
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.OSMIUM_COMPRESSOR.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.OSMIUM_COMPRESSOR.get(), recipe));
     }
 
     @ZenMethod
@@ -83,13 +83,13 @@ public class Compressor
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.OSMIUM_COMPRESSOR.get(), itemOutput, itemInput, gasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<AdvancedMachineInput, OsmiumCompressorRecipe>
     {
         private IIngredient itemOutput;
         private IIngredient itemInput;
         private IIngredient gasInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient gasInput)
+        public Remove(String name, Map<AdvancedMachineInput, OsmiumCompressorRecipe> map, IIngredient itemOutput, IIngredient itemInput, IIngredient gasInput)
         {
             super(name, map);
 
@@ -101,9 +101,9 @@ public class Compressor
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<AdvancedMachineInput, OsmiumCompressorRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<AdvancedMachineInput, OsmiumCompressorRecipe> entry : ((Map<AdvancedMachineInput, OsmiumCompressorRecipe>) RecipeHandler.Recipe.OSMIUM_COMPRESSOR.get()).entrySet())
+            for (Map.Entry<AdvancedMachineInput, OsmiumCompressorRecipe> entry : RecipeHandler.Recipe.OSMIUM_COMPRESSOR.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
                 IGasStack inputGas = new CraftTweakerGasStack(new GasStack(entry.getKey().gasType, 1));

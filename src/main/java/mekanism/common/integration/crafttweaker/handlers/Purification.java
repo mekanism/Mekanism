@@ -46,7 +46,7 @@ public class Purification
 
         PurificationRecipe recipe = new PurificationRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -63,7 +63,7 @@ public class Purification
 
         PurificationRecipe recipe = new PurificationRecipe(input, output);
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), recipe));
     }
 
     @ZenMethod
@@ -80,7 +80,7 @@ public class Purification
         if (gasInput == null)
             gasInput = IngredientAny.INSTANCE;
 
-        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), itemOutput, itemInput, gasInput));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, (Map)RecipeHandler.Recipe.PURIFICATION_CHAMBER.get(), itemOutput, itemInput, gasInput));
     }
 
     private static class Remove extends RemoveMekanismRecipe
@@ -103,7 +103,7 @@ public class Purification
         {
             Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<AdvancedMachineInput, PurificationRecipe> entry : ((Map<AdvancedMachineInput, PurificationRecipe>) RecipeHandler.Recipe.PURIFICATION_CHAMBER.get()).entrySet())
+            for (Map.Entry<AdvancedMachineInput, PurificationRecipe> entry : RecipeHandler.Recipe.PURIFICATION_CHAMBER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().itemStack);
                 IGasStack inputGas = new CraftTweakerGasStack(new GasStack(entry.getKey().gasType, 1));

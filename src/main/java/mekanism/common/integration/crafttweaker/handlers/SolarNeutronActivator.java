@@ -41,7 +41,7 @@ public class SolarNeutronActivator
 
         SolarNeutronRecipe recipe = new SolarNeutronRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get(), recipe));
     }
 
     @ZenMethod
@@ -59,12 +59,12 @@ public class SolarNeutronActivator
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get(), gasInput, gasOutput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<GasInput, SolarNeutronRecipe>
     {
         private IIngredient gasInput;
         private IIngredient gasOutput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient gasInput, IIngredient gasOutput)
+        public Remove(String name, Map<GasInput, SolarNeutronRecipe> map, IIngredient gasInput, IIngredient gasOutput)
         {
             super(name, map);
             this.gasInput = gasInput;
@@ -74,9 +74,9 @@ public class SolarNeutronActivator
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<GasInput, SolarNeutronRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<GasInput, SolarNeutronRecipe> entry : ((Map<GasInput, SolarNeutronRecipe>) RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get()).entrySet())
+            for (Map.Entry<GasInput, SolarNeutronRecipe> entry : RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get().entrySet())
             {
                 IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
                 IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);

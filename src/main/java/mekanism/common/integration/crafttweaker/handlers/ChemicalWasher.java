@@ -41,7 +41,7 @@ public class ChemicalWasher
 
         WasherRecipe recipe = new WasherRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), recipe));
     }
 
     @ZenMethod
@@ -59,12 +59,12 @@ public class ChemicalWasher
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), gasOutput, gasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<GasInput, WasherRecipe>
     {
         private IIngredient gasOutput;
         private IIngredient gasInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient gasOutput, IIngredient gasInput)
+        public Remove(String name, Map<GasInput, WasherRecipe> map, IIngredient gasOutput, IIngredient gasInput)
         {
             super(name, map);
 
@@ -75,9 +75,9 @@ public class ChemicalWasher
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<GasInput, WasherRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<GasInput, WasherRecipe> entry : ((Map<GasInput, WasherRecipe>) RecipeHandler.Recipe.CHEMICAL_WASHER.get()).entrySet())
+            for (Map.Entry<GasInput, WasherRecipe> entry : RecipeHandler.Recipe.CHEMICAL_WASHER.get().entrySet())
             {
                 IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
                 IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);

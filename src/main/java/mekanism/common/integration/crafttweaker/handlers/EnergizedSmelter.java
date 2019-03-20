@@ -53,7 +53,7 @@ public class EnergizedSmelter
 
         SmeltingRecipe recipe = new SmeltingRecipe(InputHelper.toStack(itemInput), InputHelper.toStack(itemOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ENERGIZED_SMELTER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.ENERGIZED_SMELTER.get(), recipe));
         addedRecipe = true;
     }
 
@@ -73,12 +73,12 @@ public class EnergizedSmelter
         removedRecipe = true;
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<ItemStackInput, SmeltingRecipe>
     {
         private IIngredient itemInput;
         private IIngredient itemOutput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemInput, IIngredient itemOutput)
+        public Remove(String name, Map<ItemStackInput, SmeltingRecipe> map, IIngredient itemInput, IIngredient itemOutput)
         {
             super(name, map);
 
@@ -89,9 +89,9 @@ public class EnergizedSmelter
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<ItemStackInput, SmeltingRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<ItemStackInput, SmeltingRecipe> entry : ((Map<ItemStackInput, SmeltingRecipe>) RecipeHandler.Recipe.ENERGIZED_SMELTER.get()).entrySet())
+            for (Map.Entry<ItemStackInput, SmeltingRecipe> entry : RecipeHandler.Recipe.ENERGIZED_SMELTER.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
                 IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.output);

@@ -39,7 +39,7 @@ public class ThermalEvaporation
 
         ThermalEvaporationRecipe recipe = new ThermalEvaporationRecipe(InputHelper.toFluid(liquidInput), InputHelper.toFluid(liquidOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get(), recipe));
     }
 
     @ZenMethod
@@ -54,12 +54,12 @@ public class ThermalEvaporation
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get(), liquidInput, liquidOutput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<FluidInput, ThermalEvaporationRecipe>
     {
         private IIngredient liquidInput;
         private IIngredient liquidOutput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient liquidInput, IIngredient liquidOutput)
+        public Remove(String name, Map<FluidInput, ThermalEvaporationRecipe> map, IIngredient liquidInput, IIngredient liquidOutput)
         {
             super(name, map);
             this.liquidInput = liquidInput;
@@ -69,9 +69,9 @@ public class ThermalEvaporation
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<FluidInput, ThermalEvaporationRecipe> recipesToRemove = new HashMap<>();
 
-            for(Map.Entry<FluidInput, ThermalEvaporationRecipe> entry : ((Map<FluidInput, ThermalEvaporationRecipe>) RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get()).entrySet() ) {
+            for(Map.Entry<FluidInput, ThermalEvaporationRecipe> entry : RecipeHandler.Recipe.THERMAL_EVAPORATION_PLANT.get().entrySet() ) {
                 ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().ingredient);
                 ILiquidStack outputLiquid = InputHelper.toILiquidStack(entry.getValue().recipeOutput.output);
 

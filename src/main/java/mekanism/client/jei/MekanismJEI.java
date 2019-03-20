@@ -209,17 +209,17 @@ public class MekanismJEI implements IModPlugin
 		categories.add(Pair.of(MachineType.SOLAR_NEUTRON_ACTIVATOR, ()->new SolarNeutronRecipeCategory(guiHelper)));
 		categories.add(Pair.of(null, ()->new ThermalEvaporationRecipeCategory(guiHelper)));
 
-		categories.add(Pair.of(MachineType.COMBINER, ()->new DoubleMachineRecipeCategory(guiHelper, Recipe.COMBINER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.Combiner.name", ProgressBar.STONE)));
+		categories.add(Pair.of(MachineType.COMBINER, ()->new DoubleMachineRecipeCategory(guiHelper, Recipe.COMBINER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.Combiner.name", ProgressBar.STONE)));
 
-		categories.add(Pair.of(MachineType.PURIFICATION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.PURIFICATION_CHAMBER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED)));
-		categories.add(Pair.of(MachineType.OSMIUM_COMPRESSOR, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.OSMIUM_COMPRESSOR.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED)));
-		categories.add(Pair.of(MachineType.CHEMICAL_INJECTION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.name().toLowerCase(Locale.ROOT), "nei.chemicalInjectionChamber", ProgressBar.YELLOW)));
+		categories.add(Pair.of(MachineType.PURIFICATION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.PURIFICATION_CHAMBER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED)));
+		categories.add(Pair.of(MachineType.OSMIUM_COMPRESSOR, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.OSMIUM_COMPRESSOR.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED)));
+		categories.add(Pair.of(MachineType.CHEMICAL_INJECTION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.getRecipeName().toLowerCase(Locale.ROOT), "nei.chemicalInjectionChamber", ProgressBar.YELLOW)));
 
-		categories.add(Pair.of(MachineType.PRECISION_SAWMILL, ()->new ChanceMachineRecipeCategory(guiHelper, Recipe.PRECISION_SAWMILL.name().toLowerCase(Locale.ROOT), "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE)));
+		categories.add(Pair.of(MachineType.PRECISION_SAWMILL, ()->new ChanceMachineRecipeCategory(guiHelper, Recipe.PRECISION_SAWMILL.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE)));
 
-		categories.add(Pair.of(MachineType.ENRICHMENT_CHAMBER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENRICHMENT_CHAMBER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE)));
-		categories.add(Pair.of(MachineType.CRUSHER, ()->new MachineRecipeCategory(guiHelper, Recipe.CRUSHER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH)));
-		categories.add(Pair.of(MachineType.ENERGIZED_SMELTER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENERGIZED_SMELTER.name().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnergizedSmelter.name", ProgressBar.BLUE)));
+		categories.add(Pair.of(MachineType.ENRICHMENT_CHAMBER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENRICHMENT_CHAMBER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE)));
+		categories.add(Pair.of(MachineType.CRUSHER, ()->new MachineRecipeCategory(guiHelper, Recipe.CRUSHER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH)));
+		categories.add(Pair.of(MachineType.ENERGIZED_SMELTER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENERGIZED_SMELTER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnergizedSmelter.name", ProgressBar.BLUE)));
 
 		registry.addRecipeCategories(categories.stream().filter(p->p.getLeft()==null||p.getLeft().isEnabled()).map(it->it.getRight().get()).toArray(IRecipeCategory[]::new));
 	}
@@ -379,7 +379,7 @@ public class MekanismJEI implements IModPlugin
 			else if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe()) // Added but not removed
 			{
 				// Only add added recipes
-				@SuppressWarnings("unchecked") HashMap<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
+				Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
 				Collection<SmeltingRecipe> recipes = smeltingRecipes.entrySet().stream()
 						.filter(entry -> !FurnaceRecipes.instance().getSmeltingList().keySet().contains(entry.getKey().ingredient))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).values();

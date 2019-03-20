@@ -47,7 +47,7 @@ public class Sawmill
 
         SawmillRecipe recipe = new SawmillRecipe(input, output);
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.PRECISION_SAWMILL.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.PRECISION_SAWMILL.get(), recipe));
     }
 
     @ZenMethod
@@ -67,13 +67,13 @@ public class Sawmill
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.PRECISION_SAWMILL.get(), itemInput, itemOutput, optionalItemOutput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<ItemStackInput, SawmillRecipe>
     {
         private IIngredient itemInput;
         private IIngredient itemOutput;
         private IIngredient optionalItemOutput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient itemInput, IIngredient itemOutput, IIngredient optionalItemOutput)
+        public Remove(String name, Map<ItemStackInput, SawmillRecipe> map, IIngredient itemInput, IIngredient itemOutput, IIngredient optionalItemOutput)
         {
             super(name, map);
             this.itemInput = itemInput;
@@ -84,9 +84,9 @@ public class Sawmill
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<ItemStackInput, SawmillRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<ItemStackInput, SawmillRecipe> entry : ((Map<ItemStackInput, SawmillRecipe>) RecipeHandler.Recipe.PRECISION_SAWMILL.get()).entrySet())
+            for (Map.Entry<ItemStackInput, SawmillRecipe> entry : RecipeHandler.Recipe.PRECISION_SAWMILL.get().entrySet())
             {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
                 IItemStack outputItem = InputHelper.toIItemStack(entry.getValue().recipeOutput.primaryOutput);

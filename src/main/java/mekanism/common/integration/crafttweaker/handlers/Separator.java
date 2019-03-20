@@ -44,7 +44,7 @@ public class Separator
 
         SeparatorRecipe recipe = new SeparatorRecipe(InputHelper.toFluid(liquidInput), energy, GasHelper.toGas(leftGasOutput), GasHelper.toGas(rightGasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get(), recipe));
     }
 
     @ZenMethod
@@ -64,13 +64,13 @@ public class Separator
         CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get(), liquidInput, leftGasInput, rightGasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe
+    private static class Remove extends RemoveMekanismRecipe<FluidInput, SeparatorRecipe>
     {
         private IIngredient liquidInput;
         private IIngredient leftGasInput;
         private IIngredient rightGasInput;
 
-        public Remove(String name, Map<MachineInput, MachineRecipe> map, IIngredient liquidInput, IIngredient leftGasInput, IIngredient rightGasInput)
+        public Remove(String name, Map<FluidInput, SeparatorRecipe> map, IIngredient liquidInput, IIngredient leftGasInput, IIngredient rightGasInput)
         {
             super(name, map);
             this.liquidInput = liquidInput;
@@ -81,9 +81,9 @@ public class Separator
         @Override
         public void addRecipes()
         {
-            Map<MachineInput, MachineRecipe> recipesToRemove = new HashMap<>();
+            Map<FluidInput, SeparatorRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<FluidInput, SeparatorRecipe> entry : ((Map<FluidInput, SeparatorRecipe>) RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get()).entrySet())
+            for (Map.Entry<FluidInput, SeparatorRecipe> entry : RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.get().entrySet())
             {
                 ILiquidStack inputLiquid = InputHelper.toILiquidStack(entry.getKey().ingredient);
                 IGasStack outputItemLeft = new CraftTweakerGasStack(entry.getValue().recipeOutput.leftGas);

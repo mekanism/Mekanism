@@ -14,11 +14,11 @@ import mekanism.common.recipe.outputs.PressurizedOutput;
 
 import java.util.Map;
 
-public abstract class RemoveMekanismRecipe extends BaseMapRemoval<MachineInput, MachineRecipe>
+public abstract class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> extends BaseMapRemoval<INPUT, RECIPE>
 {
     private boolean hasAddedRecipes = false;
 
-    public RemoveMekanismRecipe(String name, Map<MachineInput, MachineRecipe> map)
+    public RemoveMekanismRecipe(String name, Map<INPUT, RECIPE> map)
     {
         super(name, map);
     }
@@ -47,7 +47,7 @@ public abstract class RemoveMekanismRecipe extends BaseMapRemoval<MachineInput, 
     }
 
     @Override
-    protected String getRecipeInfo(Map.Entry<MachineInput, MachineRecipe> recipe)
+    protected String getRecipeInfo(Map.Entry<INPUT, RECIPE> recipe)
     {
         MachineOutput output = recipe.getValue().recipeOutput;
 
