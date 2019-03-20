@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine.other;
 
-import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
@@ -19,9 +18,6 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
     private final IDrawable background;
     private final boolean condensentrating;
 
-    @Nullable
-    private RotaryCondensentratorRecipeWrapper tempRecipe;
-
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         super(helper, "mekanism:gui/nei/GuiRotaryCondensentrator.png",
               condensentrating ? "rotary_condensentrator_condensentrating"
@@ -36,10 +32,6 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
     @Override
     public void drawExtras(Minecraft minecraft) {
         super.drawExtras(minecraft);
-        //TODO: Move this to the wrapper
-        if (tempRecipe == null) {
-            return;
-        }
         if (condensentrating) {
             drawTexturedRect(64 - xOffset, 39 - yOffset, 176, 123, 48, 8);
         } else {
@@ -55,7 +47,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
         if (recipeWrapper instanceof RotaryCondensentratorRecipeWrapper) {
-            tempRecipe = (RotaryCondensentratorRecipeWrapper) recipeWrapper;
+            RotaryCondensentratorRecipeWrapper tempRecipe = (RotaryCondensentratorRecipeWrapper) recipeWrapper;
             IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
             IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
             fluidStacks
