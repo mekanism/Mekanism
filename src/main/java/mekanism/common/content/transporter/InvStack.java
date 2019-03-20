@@ -62,7 +62,24 @@ public final class InvStack
 
 	public void use(int amount)
 	{
-		if(tileEntity instanceof IInventory)
+		if(InventoryUtils.isItemHandler(tileEntity, side))
+		{
+			IItemHandler handler = InventoryUtils.getItemHandler(tileEntity, side);
+
+			for(int i = 0; i < slotIDs.size(); i++)
+			{
+				ItemStack stack = itemStacks.get(i);
+				int toUse = Math.min(amount, stack.getCount());
+				handler.extractItem(slotIDs.get(i), toUse, false);
+				amount -= toUse;
+
+				if(amount == 0)
+				{
+					return;
+				}
+			}
+		}
+		else if(tileEntity instanceof IInventory)
 		{
 			IInventory inventory = InventoryUtils.checkChestInv((IInventory)tileEntity);
 			
@@ -81,23 +98,6 @@ public final class InvStack
 					inventory.setInventorySlotContents(slotIDs.get(i), ret);
 					amount -= stack.getCount();
 				}
-				
-				if(amount == 0)
-				{
-					return;
-				}
-			}
-		}
-		else if(InventoryUtils.isItemHandler(tileEntity, side))
-		{
-			IItemHandler handler = InventoryUtils.getItemHandler(tileEntity, side);
-			
-			for(int i = 0; i < slotIDs.size(); i++)
-			{
-				ItemStack stack = itemStacks.get(i);
-				int toUse = Math.min(amount, stack.getCount());
-				handler.extractItem(slotIDs.get(i), toUse, false);
-				amount -= toUse;
 				
 				if(amount == 0)
 				{
