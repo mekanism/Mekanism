@@ -52,6 +52,7 @@ public class BlockStateBasic extends ExtendedBlockState {
               new IUnlistedProperty[]{});
     }
 
+
     public enum BasicBlock {
         BASIC_BLOCK_1,
         BASIC_BLOCK_2;
@@ -91,7 +92,7 @@ public class BlockStateBasic extends ExtendedBlockState {
               false, true),
         STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false, Predicates.alwaysFalse(), false, false,
               true),
-        BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, true, Plane.HORIZONTAL, true, true, false),
+        BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, true, Plane.HORIZONTAL, true, true, false, true),
         TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, true, Predicates.alwaysFalse(), false,
               false, false),
         STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true, Predicates.alwaysFalse(), false, false,
@@ -140,6 +141,7 @@ public class BlockStateBasic extends ExtendedBlockState {
         public boolean activable;
         public boolean tiers;
         public boolean isBeaconBase;
+        public boolean hasRedstoneOutput = false;
 
         BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc,
               Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase) {
@@ -152,6 +154,20 @@ public class BlockStateBasic extends ExtendedBlockState {
             activable = activeState;
             tiers = t;
             isBeaconBase = beaconBase;
+        }
+
+        BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc,
+              Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput) {
+            blockType = block;
+            meta = metadata;
+            name = s;
+            tileEntityClass = tileClass;
+            hasDescription = hasDesc;
+            facingPredicate = facingAllowed;
+            activable = activeState;
+            tiers = t;
+            isBeaconBase = beaconBase;
+            this.hasRedstoneOutput = hasRedstoneOutput;
         }
 
         @Nullable
