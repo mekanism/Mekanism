@@ -57,7 +57,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.isActive ? 1 : 0;
+                return tileEntity.getActive() ? 1 : 0;
             }
 
             @Override
@@ -68,7 +68,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.isActive ? 1 : 0;
+                return tileEntity.getActive() ? 1 : 0;
             }
 
             @Override

@@ -30,7 +30,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator>
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
         addGuiElement(new GuiEnergyInfo(() -> Collections.singletonList(
               LangUtils.localize("gui.producing") + ": " + MekanismUtils
-                    .getEnergyDisplay(tileEntity.isActive ? tileEntity.getProduction() : 0)), this, resource));
+                    .getEnergyDisplay(tileEntity.getActive() ? tileEntity.getProduction() : 0)), this, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }

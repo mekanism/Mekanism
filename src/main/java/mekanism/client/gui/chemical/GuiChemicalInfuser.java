@@ -48,13 +48,13 @@ public class GuiChemicalInfuser extends GuiChemical<TileEntityChemicalInfuser> {
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.isActive ? 1 : 0;
+                return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_RIGHT, this, resource, 45, 38));
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.isActive ? 1 : 0;
+                return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_LEFT, this, resource, 99, 38));
     }

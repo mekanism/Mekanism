@@ -12,7 +12,7 @@ import mekanism.common.base.TileNetworkList;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -23,7 +23,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveState {
+public class TileEntityLaser extends TileEntityEffectsBlock implements IActiveState {
 
     public Coord4D digging;
     public double diggingProgress;

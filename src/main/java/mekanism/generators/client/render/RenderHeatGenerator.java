@@ -37,7 +37,7 @@ public class RenderHeatGenerator extends TileEntitySpecialRenderer<TileEntityHea
         }
 
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
-        model.render(0.0625F, tileEntity.isActive, rendererDispatcher.renderEngine);
+        model.render(0.0625F, tileEntity.getActive(), rendererDispatcher.renderEngine);
         GlStateManager.popMatrix();
     }
 }

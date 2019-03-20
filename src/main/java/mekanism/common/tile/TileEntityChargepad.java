@@ -11,7 +11,7 @@ import mekanism.common.base.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,7 +26,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChargepad extends TileEntityNoisyBlock {
+public class TileEntityChargepad extends TileEntityEffectsBlock {
 
     public boolean isActive;
     public boolean clientActive;

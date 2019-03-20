@@ -15,7 +15,7 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
@@ -28,7 +28,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements IHeatTransfer, IComputerIntegration,
+public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements IHeatTransfer, IComputerIntegration,
       IRedstoneControl, ISecurityTile {
 
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature",

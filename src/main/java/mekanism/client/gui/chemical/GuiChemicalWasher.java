@@ -50,7 +50,7 @@ public class GuiChemicalWasher extends GuiChemical<TileEntityChemicalWasher> {
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.isActive ? 1 : 0;
+                return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 38));
     }

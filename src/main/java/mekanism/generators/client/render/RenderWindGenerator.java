@@ -37,7 +37,7 @@ public class RenderWindGenerator extends TileEntitySpecialRenderer<TileEntityWin
 
         double angle = tileEntity.getAngle();
 
-        if (tileEntity.isActive) {
+        if (tileEntity.getActive()) {
             angle = (tileEntity.getAngle()
                   + ((tileEntity.getPos().getY() + 4F) / TileEntityWindGenerator.SPEED_SCALED) * partialTick) % 360;
         }

@@ -60,7 +60,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addGuiElement(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.isActive ? 1 : 0;
+                return tileEntity.getActive() ? 1 : 0;
             }
         }, ProgressBar.BI, this, resource, 78, 29));
     }
