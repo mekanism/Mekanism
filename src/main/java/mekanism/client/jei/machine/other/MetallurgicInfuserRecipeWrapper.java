@@ -24,7 +24,6 @@ public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper {
     public void getIngredients(IIngredients ingredients) {
         List<ItemStack> inputStacks = Collections.singletonList(recipe.recipeInput.inputStack);
         List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.type);
-
         ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.inputStack);
         ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(inputStacks, infuseStacks));
         ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.output);

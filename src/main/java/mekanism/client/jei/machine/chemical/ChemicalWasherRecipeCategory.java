@@ -14,7 +14,6 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory {
 
@@ -23,17 +22,14 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory {
     public ChemicalWasherRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiChemicalWasher.png", "chemical_washer",
               "tile.MachineBlock2.ChemicalWasher.name", null);
-
         xOffset = 3;
         yOffset = 3;
-
-        background = guiHelper.createDrawable(new ResourceLocation(guiTexture), xOffset, yOffset, 170, 70);
+        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 70);
     }
 
     @Override
     public void drawExtras(Minecraft minecraft) {
         super.drawExtras(minecraft);
-
         drawTexturedRect(61 - xOffset, 39 - yOffset, 176, 63, 55, 8);
     }
 
@@ -44,21 +40,15 @@ public class ChemicalWasherRecipeCategory extends BaseRecipeCategory {
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (!(recipeWrapper instanceof ChemicalWasherRecipeWrapper)) {
-            return;
+        if (recipeWrapper instanceof ChemicalWasherRecipeWrapper) {
+            WasherRecipe tempRecipe = ((ChemicalWasherRecipeWrapper) recipeWrapper).getRecipe();
+            IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+            fluidStacks.init(0, true, 6 - xOffset, 5 - yOffset, 16, 58, TileEntityChemicalWasher.WATER_USAGE, false,
+                  fluidOverlayLarge);
+            fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
+            IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
+            initGas(gasStacks, 0, true, 27 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().ingredient, true);
+            initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutput().output, true);
         }
-
-        WasherRecipe tempRecipe = ((ChemicalWasherRecipeWrapper) recipeWrapper).getRecipe();
-
-        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-
-        fluidStacks.init(0, true, 6 - xOffset, 5 - yOffset, 16, 58, TileEntityChemicalWasher.WATER_USAGE, false,
-              fluidOverlayLarge);
-        fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
-
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-
-        initGas(gasStacks, 0, true, 27 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getInput().ingredient, true);
-        initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutput().output, true);
     }
 }

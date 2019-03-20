@@ -56,15 +56,12 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         TextureMap textureMapBlocks = minecraft.getTextureMapBlocks();
         ResourceLocation gasStill = gas.getIcon();
         TextureAtlasSprite gasStillSprite = null;
-
         if (gasStill != null) {
             gasStillSprite = textureMapBlocks.getTextureExtry(gasStill.toString());
         }
-
         if (gasStillSprite == null) {
             gasStillSprite = textureMapBlocks.getMissingSprite();
         }
-
         return gasStillSprite;
     }
 
@@ -72,7 +69,6 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         float red = (color >> 16 & 0xFF) / 255.0F;
         float green = (color >> 8 & 0xFF) / 255.0F;
         float blue = (color & 0xFF) / 255.0F;
-
         GlStateManager.color(red, green, blue, 1.0F);
     }
 
@@ -99,11 +95,8 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     public void render(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
         GlStateManager.enableBlend();
         GlStateManager.enableAlpha();
-
         drawGas(minecraft, xPosition, yPosition, gasStack);
-
         GlStateManager.color(1, 1, 1, 1);
-
         if (overlay != null) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 200);
@@ -116,31 +109,18 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     private void drawGas(Minecraft minecraft, final int xPosition, final int yPosition, @Nullable GasStack gasStack) {
-        if (gasStack == null) {
-            return;
-        }
-
-        Gas gas = gasStack.getGas();
-
+        Gas gas = gasStack == null ? null : gasStack.getGas();
         if (gas == null) {
             return;
         }
-
-        TextureAtlasSprite gasStillSprite = getStillGasSprite(minecraft, gas);
-
-        int gasColor = gas.getTint();
-
         int scaledAmount = (gasStack.amount * height) / capacityMb;
-
         if (gasStack.amount > 0 && scaledAmount < MIN_FLUID_HEIGHT) {
             scaledAmount = MIN_FLUID_HEIGHT;
         }
-
         if (scaledAmount > height) {
             scaledAmount = height;
         }
-
-        drawTiledSprite(minecraft, xPosition, yPosition, width, height, gasColor, scaledAmount, gasStillSprite);
+        drawTiledSprite(minecraft, xPosition, yPosition, width, height, gas.getTint(), scaledAmount, getStillGasSprite(minecraft, gas));
     }
 
     private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth,
@@ -152,21 +132,20 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         final int xRemainder = tiledWidth - (xTileCount * TEX_WIDTH);
         final int yTileCount = scaledAmount / TEX_HEIGHT;
         final int yRemainder = scaledAmount - (yTileCount * TEX_HEIGHT);
-
         final int yStart = yPosition + tiledHeight;
 
         for (int xTile = 0; xTile <= xTileCount; xTile++) {
-            for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                int width = (xTile == xTileCount) ? xRemainder : TEX_WIDTH;
-                int height = (yTile == yTileCount) ? yRemainder : TEX_HEIGHT;
+            int width = (xTile == xTileCount) ? xRemainder : TEX_WIDTH;
+            if (width > 0) {
                 int x = xPosition + (xTile * TEX_WIDTH);
-                int y = yStart - ((yTile + 1) * TEX_HEIGHT);
-
-                if (width > 0 && height > 0) {
-                    int maskTop = TEX_HEIGHT - height;
-                    int maskRight = TEX_WIDTH - width;
-
-                    drawTextureWithMasking(x, y, sprite, maskTop, maskRight, 100);
+                int maskRight = TEX_WIDTH - width;
+                for (int yTile = 0; yTile <= yTileCount; yTile++) {
+                    int height = (yTile == yTileCount) ? yRemainder : TEX_HEIGHT;
+                    if (height > 0) {
+                        int y = yStart - ((yTile + 1) * TEX_HEIGHT);
+                        int maskTop = TEX_HEIGHT - height;
+                        drawTextureWithMasking(x, y, sprite, maskTop, maskRight, 100);
+                    }
                 }
             }
         }
@@ -176,14 +155,11 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     public List<String> getTooltip(Minecraft minecraft, GasStack gasStack, ITooltipFlag tooltipFlag) {
         List<String> tooltip = new ArrayList<>();
         Gas gasType = gasStack.getGas();
-
         if (gasType == null) {
             return tooltip;
         }
-
         String gasName = gasType.getLocalizedName();
         tooltip.add(gasName);
-
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
             String amount = LangUtils
                   .localizeWithFormat("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb);
@@ -192,7 +168,6 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
             String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount", gasStack.amount);
             tooltip.add(TextFormatting.GRAY + amount);
         }
-
         return tooltip;
     }
 

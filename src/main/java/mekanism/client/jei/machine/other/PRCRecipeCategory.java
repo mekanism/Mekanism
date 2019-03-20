@@ -23,7 +23,6 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import net.minecraft.util.ResourceLocation;
 
 public class PRCRecipeCategory extends BaseRecipeCategory {
 
@@ -32,11 +31,9 @@ public class PRCRecipeCategory extends BaseRecipeCategory {
     public PRCRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiPRC.png", "pressurized_reaction_chamber",
               "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM);
-
         xOffset = 3;
         yOffset = 11;
-
-        background = guiHelper.createDrawable(new ResourceLocation(guiTexture), xOffset, yOffset, 170, 68);
+        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, 170, 68);
     }
 
     @Override
@@ -44,11 +41,9 @@ public class PRCRecipeCategory extends BaseRecipeCategory {
         guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 53, 34));
         guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 140, 18).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 115, 34));
-
         guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, guiLocation, 5, 10));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40));
-
         guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
             public double getLevel() {
@@ -70,28 +65,19 @@ public class PRCRecipeCategory extends BaseRecipeCategory {
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
-        if (!(recipeWrapper instanceof PRCRecipeWrapper)) {
-            return;
+        if (recipeWrapper instanceof PRCRecipeWrapper) {
+            PressurizedRecipe tempRecipe = ((PRCRecipeWrapper) recipeWrapper).getRecipe();
+            IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+            itemStacks.init(0, true, 53 - xOffset, 34 - yOffset);
+            itemStacks.init(1, false, 115 - xOffset, 34 - yOffset);
+            itemStacks.set(0, tempRecipe.recipeInput.getSolid());
+            itemStacks.set(1, tempRecipe.recipeOutput.getItemOutput());
+            IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
+            fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlayLarge);
+            fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
+            IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
+            initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
+            initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);
         }
-
-        PressurizedRecipe tempRecipe = ((PRCRecipeWrapper) recipeWrapper).getRecipe();
-
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-
-        itemStacks.init(0, true, 53 - xOffset, 34 - yOffset);
-        itemStacks.init(1, false, 115 - xOffset, 34 - yOffset);
-
-        itemStacks.set(0, tempRecipe.recipeInput.getSolid());
-        itemStacks.set(1, tempRecipe.recipeOutput.getItemOutput());
-
-        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-
-        fluidStacks.init(0, true, 3, 0, 16, 58, tempRecipe.getInput().getFluid().amount, false, fluidOverlayLarge);
-        fluidStacks.set(0, tempRecipe.recipeInput.getFluid());
-
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-
-        initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, tempRecipe.recipeInput.getGas(), true);
-        initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, tempRecipe.recipeOutput.getGasOutput(), true);
     }
 }

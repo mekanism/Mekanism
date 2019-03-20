@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.common.Mekanism;
@@ -33,7 +33,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
     private static final GuiDummy gui = new GuiDummy();
 
     protected IGuiHelper guiHelper;
-    protected String guiTexture;
     protected ResourceLocation guiLocation;
     @Nullable
     protected ProgressBar progressBar;
@@ -46,10 +45,9 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
     private String recipeName;
     private String unlocalizedName;
 
-    public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized,
+    public BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized,
           @Nullable ProgressBar progress) {
         guiHelper = helper;
-        guiTexture = gui;
         guiLocation = new ResourceLocation(guiTexture);
 
         progressBar = progress;
@@ -59,12 +57,9 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
         timer = helper.createTickTimer(20, 20, false);
 
-        fluidOverlayLarge = guiHelper.createDrawable(
-              MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16,
-              59);
-        fluidOverlaySmall = guiHelper.createDrawable(
-              MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16,
-              29);
+        ResourceLocation resource = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, Type.STANDARD.textureLocation);
+        fluidOverlayLarge = guiHelper.createDrawable(resource, 19, 1, 16, 59);
+        fluidOverlaySmall = guiHelper.createDrawable(resource, 19, 1, 16, 29);
 
         addGuiElements();
     }
@@ -88,10 +83,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
     public void drawExtras(Minecraft minecraft) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         changeTexture(guiLocation);
-
-        for (GuiElement e : guiElements) {
-            e.renderBackground(0, 0, -xOffset, -yOffset);
-        }
+        guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }
 
     @Override
@@ -115,10 +107,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
     @Override
     public FontRenderer getFont() {
         return null;
-    }
-
-    public String stripTexture() {
-        return guiTexture.replace("mekanism:gui/", "");
     }
 
     public void changeTexture(ResourceLocation texture) {
