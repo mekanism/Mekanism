@@ -7,6 +7,7 @@ import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
@@ -377,16 +378,22 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	public IAdvancedBoundingBlock getInv()
 	{
-		if(!receivedCoords)
+		if(!receivedCoords || !world.isBlockLoaded(mainPos))
 		{
 			return null;
 		}
-		
+
 		TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
+
+		if (tile == null)
+		{
+			return null;
+		}
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
-			world.setBlockToAir(mainPos);
+			Mekanism.logger.error("Found tile {} instead of an IAdvancedBoundingBlock, at {}. Multiblock cannot function", tile, mainPos);
+			//world.setBlockToAir(mainPos);
 			return null;
 		}
 
