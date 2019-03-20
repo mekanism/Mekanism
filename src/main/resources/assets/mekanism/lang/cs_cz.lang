@@ -932,9 +932,6 @@ reactor.depleted.desc=Reaktor má nedostatek paliva k udržení reakce
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
-# NEI stuff
-nei.chemicalInjectionChamber=Ch. Vstřikovací Komora
-
 #############
 # GENERATORS
 #############

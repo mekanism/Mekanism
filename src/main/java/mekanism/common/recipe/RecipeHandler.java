@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.gas.Gas;
@@ -652,6 +653,10 @@ public final class RecipeHandler {
 
         public String getRecipeName() {
             return recipeName;
+        }
+
+        public String getName() {
+            return name().toLowerCase(Locale.ROOT);
         }
 
         public <INPUT> INPUT createInput(NBTTagCompound nbtTags) {

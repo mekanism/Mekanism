@@ -932,9 +932,6 @@ reactor.depleted.desc=O reator tem combustível insuficiente para manter uma rea
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
-# NEI stuff
-nei.chemicalInjectionChamber=Câm. Injeção Quím.
-
 #############
 # GENERATORS
 #############
