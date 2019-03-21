@@ -116,7 +116,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             return;
         }
 
-        if (getActive() && !isInvalid()) {
+        if (isBurning() && !isInvalid()) {
             // If sounds are being muted, we can attempt to start them on every tick, only to have them
             // denied by the event bus, so use a cooldown period that ensures we're only trying once every
             // second or so to start a sound.
