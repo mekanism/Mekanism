@@ -2,6 +2,7 @@ package mekanism.common.base;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.InfuseStorage;
@@ -146,12 +147,10 @@ public interface IFactory {
                 if (infuse.type != null) {
                     return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
                 } else {
-                    for (Object obj : Recipe.METALLURGIC_INFUSER.get().entrySet()) {
-                        Map.Entry entry = (Map.Entry) obj;
-                        InfusionInput input = (InfusionInput) entry.getKey();
-
-                        if (input.inputStack.isItemEqual(slotStack)) {
-                            return (MetallurgicInfuserRecipe) entry.getValue();
+                    for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get()
+                          .entrySet()) {
+                        if (entry.getKey().inputStack.isItemEqual(slotStack)) {
+                            return entry.getValue();
                         }
                     }
                 }

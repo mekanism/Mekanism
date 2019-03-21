@@ -2,8 +2,8 @@ package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -81,8 +81,9 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, EnrichmentRecipe.class, MachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, getCategory(Recipe.ENRICHMENT_CHAMBER));
-        registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER);
+        registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7,
+              Recipe.ENRICHMENT_CHAMBER.getJEICategory());
+        registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER, Recipe.ENRICHMENT_CHAMBER);
     }
 
     public static void registerCrusher(IModRegistry registry) {
@@ -90,8 +91,8 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.CRUSHER, CrusherRecipe.class, MachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, getCategory(Recipe.CRUSHER));
-        registerRecipeItem(registry, MachineType.CRUSHER);
+        registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, Recipe.CRUSHER.getJEICategory());
+        registerRecipeItem(registry, MachineType.CRUSHER, Recipe.CRUSHER);
     }
 
     public static void registerCombiner(IModRegistry registry) {
@@ -99,8 +100,8 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.COMBINER, CombinerRecipe.class, DoubleMachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, getCategory(Recipe.COMBINER));
-        registerRecipeItem(registry, MachineType.COMBINER);
+        registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, Recipe.COMBINER.getJEICategory());
+        registerRecipeItem(registry, MachineType.COMBINER, Recipe.COMBINER);
     }
 
     public static void registerPurification(IModRegistry registry) {
@@ -109,8 +110,8 @@ public class RecipeRegistryHelper {
         }
         addRecipes(registry, Recipe.PURIFICATION_CHAMBER, PurificationRecipe.class, AdvancedMachineRecipeWrapper::new);
         registry.addRecipeClickArea(GuiPurificationChamber.class, 79, 40, 24, 7,
-              getCategory(Recipe.PURIFICATION_CHAMBER));
-        registerRecipeItem(registry, MachineType.PURIFICATION_CHAMBER);
+              Recipe.PURIFICATION_CHAMBER.getJEICategory());
+        registerRecipeItem(registry, MachineType.PURIFICATION_CHAMBER, Recipe.PURIFICATION_CHAMBER);
     }
 
     public static void registerCompressor(IModRegistry registry) {
@@ -118,8 +119,9 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, OsmiumCompressorRecipe.class, AdvancedMachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, getCategory(Recipe.OSMIUM_COMPRESSOR));
-        registerRecipeItem(registry, MachineType.OSMIUM_COMPRESSOR);
+        registry
+              .addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, Recipe.OSMIUM_COMPRESSOR.getJEICategory());
+        registerRecipeItem(registry, MachineType.OSMIUM_COMPRESSOR, Recipe.OSMIUM_COMPRESSOR);
     }
 
     public static void registerInjection(IModRegistry registry) {
@@ -129,8 +131,8 @@ public class RecipeRegistryHelper {
         addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, InjectionRecipe.class,
               AdvancedMachineRecipeWrapper::new);
         registry.addRecipeClickArea(GuiChemicalInjectionChamber.class, 79, 40, 24, 7,
-              getCategory(Recipe.CHEMICAL_INJECTION_CHAMBER));
-        registerRecipeItem(registry, MachineType.CHEMICAL_INJECTION_CHAMBER);
+              Recipe.CHEMICAL_INJECTION_CHAMBER.getJEICategory());
+        registerRecipeItem(registry, MachineType.CHEMICAL_INJECTION_CHAMBER, Recipe.CHEMICAL_INJECTION_CHAMBER);
     }
 
     public static void registerSawmill(IModRegistry registry) {
@@ -138,8 +140,9 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.PRECISION_SAWMILL, SawmillRecipe.class, ChanceMachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiPrecisionSawmill.class, 79, 40, 24, 7, getCategory(Recipe.PRECISION_SAWMILL));
-        registerRecipeItem(registry, MachineType.PRECISION_SAWMILL);
+        registry
+              .addRecipeClickArea(GuiPrecisionSawmill.class, 79, 40, 24, 7, Recipe.PRECISION_SAWMILL.getJEICategory());
+        registerRecipeItem(registry, MachineType.PRECISION_SAWMILL, Recipe.PRECISION_SAWMILL);
     }
 
     public static void registerMetallurgicInfuser(IModRegistry registry) {
@@ -149,8 +152,9 @@ public class RecipeRegistryHelper {
         addRecipes(registry, Recipe.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class,
               MetallurgicInfuserRecipeWrapper::new);
         registry
-              .addRecipeClickArea(GuiMetallurgicInfuser.class, 72, 47, 32, 8, getCategory(Recipe.METALLURGIC_INFUSER));
-        registerRecipeItem(registry, MachineType.METALLURGIC_INFUSER);
+              .addRecipeClickArea(GuiMetallurgicInfuser.class, 72, 47, 32, 8,
+                    Recipe.METALLURGIC_INFUSER.getJEICategory());
+        registerRecipeItem(registry, MachineType.METALLURGIC_INFUSER, Recipe.METALLURGIC_INFUSER);
     }
 
     public static void registerCrystallizer(IModRegistry registry) {
@@ -160,8 +164,8 @@ public class RecipeRegistryHelper {
         addRecipes(registry, Recipe.CHEMICAL_CRYSTALLIZER, CrystallizerRecipe.class,
               ChemicalCrystallizerRecipeWrapper::new);
         registry.addRecipeClickArea(GuiChemicalCrystallizer.class, 53, 62, 48, 8,
-              getCategory(Recipe.CHEMICAL_CRYSTALLIZER));
-        registerRecipeItem(registry, MachineType.CHEMICAL_CRYSTALLIZER);
+              Recipe.CHEMICAL_CRYSTALLIZER.getJEICategory());
+        registerRecipeItem(registry, MachineType.CHEMICAL_CRYSTALLIZER, Recipe.CHEMICAL_CRYSTALLIZER);
     }
 
     public static void registerDissolution(IModRegistry registry) {
@@ -171,8 +175,8 @@ public class RecipeRegistryHelper {
         addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, DissolutionRecipe.class,
               ChemicalDissolutionChamberRecipeWrapper::new);
         registry.addRecipeClickArea(GuiChemicalDissolutionChamber.class, 64, 40, 48, 8,
-              getCategory(Recipe.CHEMICAL_DISSOLUTION_CHAMBER));
-        registerRecipeItem(registry, MachineType.CHEMICAL_DISSOLUTION_CHAMBER);
+              Recipe.CHEMICAL_DISSOLUTION_CHAMBER.getJEICategory());
+        registerRecipeItem(registry, MachineType.CHEMICAL_DISSOLUTION_CHAMBER, Recipe.CHEMICAL_DISSOLUTION_CHAMBER);
     }
 
     public static void registerChemicalInfuser(IModRegistry registry) {
@@ -180,9 +184,9 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.CHEMICAL_INFUSER, ChemicalInfuserRecipe.class, ChemicalInfuserRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiChemicalInfuser.class, 47, 39, 28, 8, getCategory(Recipe.CHEMICAL_INFUSER));
-        registry.addRecipeClickArea(GuiChemicalInfuser.class, 101, 39, 28, 8, getCategory(Recipe.CHEMICAL_INFUSER));
-        registerRecipeItem(registry, MachineType.CHEMICAL_INFUSER);
+        registry.addRecipeClickArea(GuiChemicalInfuser.class, 47, 39, 28, 8, Recipe.CHEMICAL_INFUSER.getJEICategory());
+        registry.addRecipeClickArea(GuiChemicalInfuser.class, 101, 39, 28, 8, Recipe.CHEMICAL_INFUSER.getJEICategory());
+        registerRecipeItem(registry, MachineType.CHEMICAL_INFUSER, Recipe.CHEMICAL_INFUSER);
     }
 
     public static void registerOxidizer(IModRegistry registry) {
@@ -190,8 +194,9 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.CHEMICAL_OXIDIZER, OxidationRecipe.class, ChemicalOxidizerRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiChemicalOxidizer.class, 64, 40, 48, 8, getCategory(Recipe.CHEMICAL_OXIDIZER));
-        registerRecipeItem(registry, MachineType.CHEMICAL_OXIDIZER);
+        registry
+              .addRecipeClickArea(GuiChemicalOxidizer.class, 64, 40, 48, 8, Recipe.CHEMICAL_OXIDIZER.getJEICategory());
+        registerRecipeItem(registry, MachineType.CHEMICAL_OXIDIZER, Recipe.CHEMICAL_OXIDIZER);
     }
 
     public static void registerWasher(IModRegistry registry) {
@@ -199,8 +204,8 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.CHEMICAL_WASHER, WasherRecipe.class, ChemicalWasherRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiChemicalWasher.class, 61, 39, 55, 8, getCategory(Recipe.CHEMICAL_WASHER));
-        registerRecipeItem(registry, MachineType.CHEMICAL_WASHER);
+        registry.addRecipeClickArea(GuiChemicalWasher.class, 61, 39, 55, 8, Recipe.CHEMICAL_WASHER.getJEICategory());
+        registerRecipeItem(registry, MachineType.CHEMICAL_WASHER, Recipe.CHEMICAL_WASHER);
     }
 
     public static void registerNeutronActivator(IModRegistry registry) {
@@ -209,8 +214,8 @@ public class RecipeRegistryHelper {
         }
         addRecipes(registry, Recipe.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronRecipe.class, SolarNeutronRecipeWrapper::new);
         registry.addRecipeClickArea(GuiSolarNeutronActivator.class, 64, 39, 48, 8,
-              getCategory(Recipe.SOLAR_NEUTRON_ACTIVATOR));
-        registerRecipeItem(registry, MachineType.SOLAR_NEUTRON_ACTIVATOR);
+              Recipe.SOLAR_NEUTRON_ACTIVATOR.getJEICategory());
+        registerRecipeItem(registry, MachineType.SOLAR_NEUTRON_ACTIVATOR, Recipe.SOLAR_NEUTRON_ACTIVATOR);
     }
 
     public static void registerSeparator(IModRegistry registry) {
@@ -221,8 +226,8 @@ public class RecipeRegistryHelper {
               ElectrolyticSeparatorRecipeWrapper::new);
 
         registry.addRecipeClickArea(GuiElectrolyticSeparator.class, 80, 30, 16, 6,
-              getCategory(Recipe.ELECTROLYTIC_SEPARATOR));
-        registerRecipeItem(registry, MachineType.ELECTROLYTIC_SEPARATOR);
+              Recipe.ELECTROLYTIC_SEPARATOR.getJEICategory());
+        registerRecipeItem(registry, MachineType.ELECTROLYTIC_SEPARATOR, Recipe.ELECTROLYTIC_SEPARATOR);
     }
 
     public static void registerEvaporationPlant(IModRegistry registry) {
@@ -230,10 +235,10 @@ public class RecipeRegistryHelper {
               ThermalEvaporationRecipeWrapper::new);
 
         registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38,
-              getCategory(Recipe.THERMAL_EVAPORATION_PLANT));
+              Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
 
         registry.addRecipeCatalyst(BasicBlockType.THERMAL_EVAPORATION_CONTROLLER.getStack(1),
-              getCategory(Recipe.THERMAL_EVAPORATION_PLANT));
+              Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
     }
 
     public static void registerReactionChamber(IModRegistry registry) {
@@ -242,8 +247,8 @@ public class RecipeRegistryHelper {
         }
         addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, PressurizedRecipe.class, PRCRecipeWrapper::new);
 
-        registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, getCategory(Recipe.PRESSURIZED_REACTION_CHAMBER));
-        registerRecipeItem(registry, MachineType.PRESSURIZED_REACTION_CHAMBER);
+        registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, Recipe.PRESSURIZED_REACTION_CHAMBER.getJEICategory());
+        registerRecipeItem(registry, MachineType.PRESSURIZED_REACTION_CHAMBER, Recipe.PRESSURIZED_REACTION_CHAMBER);
     }
 
     public static void registerCondensentrator(IModRegistry registry) {
@@ -272,7 +277,8 @@ public class RecipeRegistryHelper {
         if (!MachineType.ENERGIZED_SMELTER.isEnabled()) {
             return;
         }
-        registry.handleRecipes(SmeltingRecipe.class, MachineRecipeWrapper::new, getCategory(Recipe.ENERGIZED_SMELTER));
+        registry.handleRecipes(SmeltingRecipe.class, MachineRecipeWrapper::new,
+              Recipe.ENERGIZED_SMELTER.getJEICategory());
 
         boolean crafttweakerLoaded = Loader.isModLoaded("crafttweaker");
 
@@ -281,29 +287,30 @@ public class RecipeRegistryHelper {
             // Add all recipes
             Collection<SmeltingRecipe> recipeList = Recipe.ENERGIZED_SMELTER.get().values();
             registry.addRecipes(recipeList.stream().map(MachineRecipeWrapper::new).collect(Collectors.toList()),
-                  getCategory(Recipe.ENERGIZED_SMELTER));
+                  Recipe.ENERGIZED_SMELTER.getJEICategory());
 
             registry
-                  .addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, getCategory(Recipe.ENERGIZED_SMELTER));
+                  .addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7,
+                        Recipe.ENERGIZED_SMELTER.getJEICategory());
         } else if (crafttweakerLoaded && EnergizedSmelter.hasAddedRecipe()) // Added but not removed
         {
             // Only add added recipes
-            HashMap<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
+            Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
             List<MachineRecipeWrapper> smeltingWrapper = smeltingRecipes.entrySet().stream()
                   .filter(entry -> !FurnaceRecipes.instance().getSmeltingList().keySet()
                         .contains(entry.getKey().ingredient)).map(entry -> new MachineRecipeWrapper(entry.getValue()))
                   .collect(Collectors.toList());
-            registry.addRecipes(smeltingWrapper, getCategory(Recipe.ENERGIZED_SMELTER));
+            registry.addRecipes(smeltingWrapper, Recipe.ENERGIZED_SMELTER.getJEICategory());
 
             registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING,
-                  getCategory(Recipe.ENERGIZED_SMELTER));
+                  Recipe.ENERGIZED_SMELTER.getJEICategory());
             registerVanillaSmeltingRecipeCatalyst(registry);
         } else {
             //Only use furnace list, so no extra registration.
             registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING);
             registerVanillaSmeltingRecipeCatalyst(registry);
         }
-        registerRecipeItem(registry, MachineType.ENERGIZED_SMELTER);
+        registerRecipeItem(registry, MachineType.ENERGIZED_SMELTER, Recipe.ENERGIZED_SMELTER);
     }
 
 
@@ -329,20 +336,15 @@ public class RecipeRegistryHelper {
 
     private static <T> void addRecipes(IModRegistry registry, Recipe type, Class<T> recipeClass,
           IRecipeWrapperFactory<T> factory) {
-        String recipeCategoryUid = getCategory(type);
+        String recipeCategoryUid = type.getJEICategory();
         registry.handleRecipes(recipeClass, factory, recipeCategoryUid);
         Collection<T> recipeList = type.get().values();
         registry.addRecipes(recipeList.stream().map(factory::getRecipeWrapper).collect(Collectors.toList()),
               recipeCategoryUid);
     }
 
-    private static String getCategory(Recipe type) {
-        return "mekanism." + type.getName();
-    }
-
-    private static void registerRecipeItem(IModRegistry registry, MachineType type) {
-        String category = "mekanism." + type.getName();
-        registry.addRecipeCatalyst(type.getStack(), category);
+    private static void registerRecipeItem(IModRegistry registry, MachineType type, Recipe recipe) {
+        registry.addRecipeCatalyst(type.getStack(), recipe.getJEICategory());
         RecipeType factoryType = null;
         for (RecipeType t : RecipeType.values()) {
             if (t.getType() == type) {
@@ -353,7 +355,7 @@ public class RecipeRegistryHelper {
         if (factoryType != null) {
             for (Tier.FactoryTier tier : Tier.FactoryTier.values()) {
                 if (tier.machineType.isEnabled()) {
-                    registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, factoryType), category);
+                    registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, factoryType), recipe.getJEICategory());
                 }
             }
         }

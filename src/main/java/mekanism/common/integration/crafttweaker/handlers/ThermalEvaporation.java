@@ -11,9 +11,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
-import mekanism.common.recipe.outputs.FluidOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -28,7 +26,7 @@ public class ThermalEvaporation {
     public static void addRecipe(ILiquidStack liquidInput, ILiquidStack liquidOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput, liquidOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.THERMAL_EVAPORATION_PLANT,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.THERMAL_EVAPORATION_PLANT,
                         new ThermalEvaporationRecipe(IngredientHelper.toFluid(liquidInput),
                               IngredientHelper.toFluid(liquidOutput))));
         }
@@ -38,15 +36,14 @@ public class ThermalEvaporation {
     public static void removeRecipe(IIngredient liquidInput, @Optional IIngredient liquidOutput) {
         if (IngredientHelper.checkNotNull(NAME, liquidInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<FluidInput, FluidOutput, ThermalEvaporationRecipe>(NAME,
-                        Recipe.THERMAL_EVAPORATION_PLANT, new IngredientWrapper(liquidOutput),
-                        new IngredientWrapper(liquidInput)));
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.THERMAL_EVAPORATION_PLANT,
+                        new IngredientWrapper(liquidOutput), new IngredientWrapper(liquidInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<ThermalEvaporationRecipe>(NAME, Recipe.THERMAL_EVAPORATION_PLANT));
+              .add(new RemoveAllMekanismRecipe<>(NAME, Recipe.THERMAL_EVAPORATION_PLANT));
     }
 }

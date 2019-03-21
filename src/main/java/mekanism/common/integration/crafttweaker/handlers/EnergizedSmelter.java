@@ -11,9 +11,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -38,7 +36,7 @@ public class EnergizedSmelter {
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.ENERGIZED_SMELTER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.ENERGIZED_SMELTER,
                         new SmeltingRecipe(IngredientHelper.toStack(itemInput), IngredientHelper.toStack(itemOutput))));
             addedRecipe = true;
         }
@@ -48,8 +46,7 @@ public class EnergizedSmelter {
     public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<ItemStackInput, ItemStackOutput, SmeltingRecipe>(NAME,
-                        Recipe.ENERGIZED_SMELTER, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.ENERGIZED_SMELTER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput)));
             removedRecipe = true;
         }
@@ -57,7 +54,6 @@ public class EnergizedSmelter {
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<SmeltingRecipe>(NAME, Recipe.ENERGIZED_SMELTER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.ENERGIZED_SMELTER));
     }
 }

@@ -3,6 +3,7 @@ package mekanism.client.jei.machine.chemical;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mezz.jei.api.IGuiHelper;
@@ -17,7 +18,7 @@ import net.minecraft.client.Minecraft;
 public class ChemicalWasherRecipeCategory extends BaseRecipeCategory {
 
     public ChemicalWasherRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiChemicalWasher.png", "chemical_washer",
+        super(helper, "mekanism:gui/nei/GuiChemicalWasher.png", Recipe.CHEMICAL_WASHER.getJEICategory(),
               "tile.MachineBlock2.ChemicalWasher.name", null, 3, 3, 170, 70);
     }
 

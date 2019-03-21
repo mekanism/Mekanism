@@ -29,7 +29,7 @@ public class Sawmill {
           @Optional double optionalChance) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.PRECISION_SAWMILL,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL,
                         new SawmillRecipe(new ItemStackInput(IngredientHelper.toStack(itemInput)),
                               optionalItemOutput == null ? new ChanceOutput(IngredientHelper.toStack(itemOutput))
                                     : new ChanceOutput(IngredientHelper.toStack(itemOutput),
@@ -42,15 +42,13 @@ public class Sawmill {
           @Optional IIngredient optionalItemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<ItemStackInput, ChanceOutput, SawmillRecipe>(NAME,
-                        Recipe.PRECISION_SAWMILL, new IngredientWrapper(itemOutput, optionalItemOutput),
-                        new IngredientWrapper(itemInput)));
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL,
+                        new IngredientWrapper(itemOutput, optionalItemOutput), new IngredientWrapper(itemInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<SawmillRecipe>(NAME, Recipe.PRECISION_SAWMILL));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.PRECISION_SAWMILL));
     }
 }

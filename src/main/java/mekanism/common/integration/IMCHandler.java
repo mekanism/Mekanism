@@ -33,7 +33,8 @@ public class IMCHandler {
                 }
 
                 for (Recipe type : Recipe.values()) {
-                    if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe")) {
+                    if (message.equalsIgnoreCase(type.getRecipeName() + "Recipe") ||
+                          message.equalsIgnoreCase(type.getOldRecipeName() + "Recipe")) {
                         MachineInput input = type.createInput(msg.getNBTValue());
 
                         if (input != null && input.isValid()) {

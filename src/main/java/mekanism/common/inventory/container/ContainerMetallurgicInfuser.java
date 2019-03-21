@@ -82,15 +82,10 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
             return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tileEntity.infuseStored, itemStack))
                   != null;
         } else {
-            for (Object obj : Recipe.METALLURGIC_INFUSER.get().keySet()) {
-                InfusionInput input = (InfusionInput) obj;
-                if (input.inputStack.isItemEqual(itemStack)) {
-                    return true;
-                }
-            }
+            return Recipe.METALLURGIC_INFUSER.get().keySet().stream()
+                  .anyMatch(input -> input.inputStack.isItemEqual(itemStack));
         }
 
-        return false;
     }
 
     @Override

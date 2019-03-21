@@ -13,9 +13,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -30,7 +28,7 @@ public class ChemicalCrystallizer {
     public static void addRecipe(IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_CRYSTALLIZER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER,
                         new CrystallizerRecipe(GasHelper.toGas(gasInput), IngredientHelper.toStack(itemOutput))));
         }
     }
@@ -39,15 +37,13 @@ public class ChemicalCrystallizer {
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<GasInput, ItemStackOutput, CrystallizerRecipe>(NAME,
-                        Recipe.CHEMICAL_CRYSTALLIZER, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(gasInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<CrystallizerRecipe>(NAME, Recipe.CHEMICAL_CRYSTALLIZER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER));
     }
 }

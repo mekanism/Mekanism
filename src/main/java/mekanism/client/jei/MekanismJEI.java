@@ -122,31 +122,31 @@ public class MekanismJEI implements IModPlugin {
         addRecipeCategory(registry, MachineType.SOLAR_NEUTRON_ACTIVATOR, new SolarNeutronRecipeCategory(guiHelper));
 
         addRecipeCategory(registry, MachineType.COMBINER,
-              new DoubleMachineRecipeCategory(guiHelper, Recipe.COMBINER.getName(),
+              new DoubleMachineRecipeCategory(guiHelper, Recipe.COMBINER.getJEICategory(),
                     "tile.MachineBlock.Combiner.name", ProgressBar.STONE));
 
         addRecipeCategory(registry, MachineType.PURIFICATION_CHAMBER,
-              new AdvancedMachineRecipeCategory(guiHelper, Recipe.PURIFICATION_CHAMBER.getName(),
+              new AdvancedMachineRecipeCategory(guiHelper, Recipe.PURIFICATION_CHAMBER.getJEICategory(),
                     "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED));
         addRecipeCategory(registry, MachineType.OSMIUM_COMPRESSOR,
-              new AdvancedMachineRecipeCategory(guiHelper, Recipe.OSMIUM_COMPRESSOR.getName(),
+              new AdvancedMachineRecipeCategory(guiHelper, Recipe.OSMIUM_COMPRESSOR.getJEICategory(),
                     "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED));
         addRecipeCategory(registry, MachineType.CHEMICAL_INJECTION_CHAMBER,
-              new AdvancedMachineRecipeCategory(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.getName(),
+              new AdvancedMachineRecipeCategory(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.getJEICategory(),
                     "tile.MachineBlock2.ChemicalInjectionChamber.name", ProgressBar.YELLOW));
 
         addRecipeCategory(registry, MachineType.PRECISION_SAWMILL,
-              new ChanceMachineRecipeCategory(guiHelper, Recipe.PRECISION_SAWMILL.getName(),
+              new ChanceMachineRecipeCategory(guiHelper, Recipe.PRECISION_SAWMILL.getJEICategory(),
                     "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE));
 
         addRecipeCategory(registry, MachineType.ENRICHMENT_CHAMBER,
-              new MachineRecipeCategory(guiHelper, Recipe.ENRICHMENT_CHAMBER.getName(),
+              new MachineRecipeCategory(guiHelper, Recipe.ENRICHMENT_CHAMBER.getJEICategory(),
                     "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE));
         addRecipeCategory(registry, MachineType.CRUSHER,
-              new MachineRecipeCategory(guiHelper, Recipe.CRUSHER.getName(), "tile.MachineBlock.Crusher.name",
+              new MachineRecipeCategory(guiHelper, Recipe.CRUSHER.getJEICategory(), "tile.MachineBlock.Crusher.name",
                     ProgressBar.CRUSH));
         addRecipeCategory(registry, MachineType.ENERGIZED_SMELTER,
-              new MachineRecipeCategory(guiHelper, Recipe.ENERGIZED_SMELTER.getName(),
+              new MachineRecipeCategory(guiHelper, Recipe.ENERGIZED_SMELTER.getJEICategory(),
                     "tile.MachineBlock.EnergizedSmelter.name", ProgressBar.BLUE));
 
         //There is no config option to disable the thermal evaporation plant

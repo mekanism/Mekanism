@@ -30,7 +30,7 @@ public class Purification {
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.PURIFICATION_CHAMBER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
                         new PurificationRecipe(IngredientHelper.toStack(itemInput),
                               IngredientHelper.toStack(itemOutput))));
         }
@@ -40,7 +40,7 @@ public class Purification {
     public static void addRecipe(IItemStack itemInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.PURIFICATION_CHAMBER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER,
                         new PurificationRecipe(new AdvancedMachineInput(IngredientHelper.toStack(itemInput),
                               GasHelper.toGas(gasInput).getGas()),
                               new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
@@ -52,15 +52,13 @@ public class Purification {
           @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<AdvancedMachineInput, ItemStackOutput, PurificationRecipe>(NAME,
-                        Recipe.PURIFICATION_CHAMBER, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, gasInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<PurificationRecipe>(NAME, Recipe.PURIFICATION_CHAMBER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.PURIFICATION_CHAMBER));
     }
 }

@@ -11,9 +11,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -28,7 +26,7 @@ public class Enrichment {
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.ENRICHMENT_CHAMBER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.ENRICHMENT_CHAMBER,
                         new EnrichmentRecipe(IngredientHelper.toStack(itemInput),
                               IngredientHelper.toStack(itemOutput))));
         }
@@ -38,15 +36,13 @@ public class Enrichment {
     public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<ItemStackInput, ItemStackOutput, EnrichmentRecipe>(NAME,
-                        Recipe.ENRICHMENT_CHAMBER, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.ENRICHMENT_CHAMBER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<EnrichmentRecipe>(NAME, Recipe.ENRICHMENT_CHAMBER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.ENRICHMENT_CHAMBER));
     }
 }

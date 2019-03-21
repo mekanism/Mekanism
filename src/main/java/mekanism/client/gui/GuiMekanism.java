@@ -170,5 +170,11 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper {
         this.renderHoveredToolTip(mouseX, mouseY);
     }
 
+    protected void renderCenteredText(int leftMargin, int areaWidth, int y, int color, String text) {
+        int textWidth = fontRenderer.getStringWidth(text);
+        int centerX = leftMargin + (areaWidth/2) - (textWidth/2);
+        fontRenderer.drawString(text, centerX, y, color);
+    }
+
     protected abstract ResourceLocation getGuiLocation();
 }

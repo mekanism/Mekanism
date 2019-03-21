@@ -3,6 +3,7 @@ package mekanism.client.jei.machine.other;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiIngredientGroup;
@@ -14,7 +15,7 @@ import net.minecraft.client.Minecraft;
 public class SolarNeutronRecipeCategory extends BaseRecipeCategory {
 
     public SolarNeutronRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiSolarNeutronActivator.png", "solar_neutron_activator",
+        super(helper, "mekanism:gui/nei/GuiSolarNeutronActivator.png", Recipe.SOLAR_NEUTRON_ACTIVATOR.getJEICategory(),
               "tile.MachineBlock3.SolarNeutronActivator.name", null, 3, 12, 170, 70);
     }
 

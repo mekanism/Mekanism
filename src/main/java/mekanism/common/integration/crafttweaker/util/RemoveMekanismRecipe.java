@@ -13,7 +13,8 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
     private final IngredientWrapper input;
     private final IngredientWrapper output;
 
-    public RemoveMekanismRecipe(String name, Recipe recipeType, IngredientWrapper output, IngredientWrapper input) {
+    public RemoveMekanismRecipe(String name, Recipe<INPUT, OUTPUT, RECIPE> recipeType, IngredientWrapper output,
+          IngredientWrapper input) {
         super(name, false, recipeType);
         this.input = input;
         this.output = output;

@@ -34,7 +34,7 @@ public class Infuser {
         }
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.METALLURGIC_INFUSER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER,
                         new MetallurgicInfuserRecipe(new InfusionInput(InfuseRegistry.get(infuseType), infuseAmount,
                               IngredientHelper.toStack(itemInput)),
                               new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
@@ -46,15 +46,13 @@ public class Infuser {
           @Optional String infuseType) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe>(NAME,
-                        Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, infuseType)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<MetallurgicInfuserRecipe>(NAME, Recipe.CHEMICAL_CRYSTALLIZER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER));
     }
 }
