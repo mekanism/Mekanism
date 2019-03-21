@@ -206,6 +206,7 @@ import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -225,6 +226,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -276,6 +278,8 @@ public class ClientProxy extends CommonProxy {
         client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
         client.allowConfiguratorModeScroll = Mekanism.configuration.get("client", "ConfiguratorModeScroll", true)
               .getBoolean();
+        client.enableMultiblockFormationParticles = Mekanism.configuration.get("client", "MultiblockFormParticles", true,
+            "Set to false to prevent particle spam when loading multiblocks").getBoolean();
 
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
@@ -977,12 +981,18 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker) {
-        new SparkleAnimation(tileEntity, checker).run();
+        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.multiblockformed"), true);
+        if(client.enableMultiblockFormationParticles) {
+            new SparkleAnimation(tileEntity, checker).run();
+        }
     }
 
     @Override
     public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity) {
-        new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
+        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.multiblockformed"), true);
+        if(client.enableMultiblockFormationParticles) {
+            new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
+        }
     }
 
     @Override

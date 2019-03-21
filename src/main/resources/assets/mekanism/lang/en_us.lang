@@ -1143,7 +1143,6 @@ cmd.mek.tp.missing.args=Teleporting requires three coordinates: x, y, z
 cmd.mek.tpop.usage=Return to last position on stack
 cmd.mek.tpop=Returned to %d,%d,%d; %d positions on stack
 cmd.mek.tpop.empty.stack=No positions on stack
-cmd.mek.
 
 cmd.mek.chunk.usage=
 cmd.mek.chunk.watch.usage=Add caller's chunk to watch list for loading/unloading events
@@ -1153,3 +1152,6 @@ cmd.mek.chunk.unwatch=Chunk %d,%d removed from watch list
 cmd.mek.chunk.clear.usage=Remove all chunks from watch list for chunk loading/unloading events
 cmd.mek.chunk.clear=%d chunks removed from watch list
 cmd.mek.chunk.flush=%d chunks unloaded
+
+#chat messages
+chat.multiblockformed=Multiblock Formed
