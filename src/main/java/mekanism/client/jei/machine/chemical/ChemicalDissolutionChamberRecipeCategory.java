@@ -4,6 +4,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.MekanismFluids;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -26,7 +27,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 	
 	public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper)
 	{
-		super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png", "chemical_dissolution_chamber", "gui.chemicalDissolutionChamber.short", null);
+		super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png", Recipe.CHEMICAL_DISSOLUTION_CHAMBER.jeiRecipeUid, "gui.chemicalDissolutionChamber.short", null);
 
 		xOffset = 3;
 		yOffset = 3;

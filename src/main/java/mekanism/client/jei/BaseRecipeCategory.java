@@ -74,7 +74,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 	@Override
 	public String getUid() 
 	{
-		return "mekanism." + recipeName;
+		return recipeName;
 	}
 
 	@Override

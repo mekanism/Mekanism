@@ -14,6 +14,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -39,7 +40,7 @@ public class ElectrolyticSeparatorRecipeCategory extends BaseRecipeCategory
 	
 	public ElectrolyticSeparatorRecipeCategory(IGuiHelper helper)
 	{
-		super(helper, "mekanism:gui/GuiElectrolyticSeparator.png", "electrolytic_separator", "tile.MachineBlock2.ElectrolyticSeparator.name", ProgressBar.BI);
+		super(helper, "mekanism:gui/GuiElectrolyticSeparator.png", Recipe.ELECTROLYTIC_SEPARATOR.jeiRecipeUid, "tile.MachineBlock2.ElectrolyticSeparator.name", ProgressBar.BI);
 		
 		xOffset = 4;
 		yOffset = 9;

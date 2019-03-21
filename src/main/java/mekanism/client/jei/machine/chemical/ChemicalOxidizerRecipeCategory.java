@@ -10,6 +10,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -33,7 +34,7 @@ public class ChemicalOxidizerRecipeCategory extends BaseRecipeCategory
 	
 	public ChemicalOxidizerRecipeCategory(IGuiHelper helper)
 	{
-		super(helper, "mekanism:gui/GuiChemicalOxidizer.png", "chemical_oxidizer", "tile.MachineBlock2.ChemicalOxidizer.name", ProgressBar.LARGE_RIGHT);
+		super(helper, "mekanism:gui/GuiChemicalOxidizer.png", Recipe.CHEMICAL_OXIDIZER.jeiRecipeUid, "tile.MachineBlock2.ChemicalOxidizer.name", ProgressBar.LARGE_RIGHT);
 
 		xOffset = 20;
 		yOffset = 12;

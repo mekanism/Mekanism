@@ -19,6 +19,8 @@ import javax.annotation.Nullable;
 
 public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 {
+	public static final String UID_COND = "mekanism.rotary_condensentrator_condensentrating";
+	public static final String UID_DECOND = "mekanism.rotary_condensentrator_decondensentrating";
 	private final IDrawable background;
 	private final boolean condensentrating;
 
@@ -29,7 +31,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory
 	{
 		super(helper,
 				"mekanism:gui/nei/GuiRotaryCondensentrator.png",
-				condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating",
+				condensentrating ? UID_COND : UID_DECOND,
 				condensentrating ? "gui.condensentrating" : "gui.decondensentrating",
 				null);
 

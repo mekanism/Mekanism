@@ -1,6 +1,7 @@
 package mekanism.client.jei.machine.other;
 
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -22,7 +23,7 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory
 	
 	public ThermalEvaporationRecipeCategory(IGuiHelper helper)
 	{
-		super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png", "thermal_evaporation_plant", "gui.thermalEvaporationController.short", null);
+		super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png", Recipe.THERMAL_EVAPORATION_PLANT.jeiRecipeUid, "gui.thermalEvaporationController.short", null);
 
 		xOffset = 3;
 		yOffset = 12;

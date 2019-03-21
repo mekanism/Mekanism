@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -40,7 +41,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory
 	
 	public MetallurgicInfuserRecipeCategory(IGuiHelper helper)
 	{
-		super(helper, "mekanism:gui/GuiMetallurgicInfuser.png", "metallurgic_infuser", "tile.MachineBlock.MetallurgicInfuser.name", ProgressBar.MEDIUM);
+		super(helper, "mekanism:gui/GuiMetallurgicInfuser.png", Recipe.METALLURGIC_INFUSER.jeiRecipeUid, "tile.MachineBlock.MetallurgicInfuser.name", ProgressBar.MEDIUM);
 
 		xOffset = 5;
 		yOffset = 16;

@@ -209,17 +209,17 @@ public class MekanismJEI implements IModPlugin
 		categories.add(Pair.of(MachineType.SOLAR_NEUTRON_ACTIVATOR, ()->new SolarNeutronRecipeCategory(guiHelper)));
 		categories.add(Pair.of(null, ()->new ThermalEvaporationRecipeCategory(guiHelper)));
 
-		categories.add(Pair.of(MachineType.COMBINER, ()->new DoubleMachineRecipeCategory(guiHelper, Recipe.COMBINER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.Combiner.name", ProgressBar.STONE)));
+		categories.add(Pair.of(MachineType.COMBINER, ()->new DoubleMachineRecipeCategory(guiHelper, Recipe.COMBINER.jeiRecipeUid, "tile.MachineBlock.Combiner.name", ProgressBar.STONE)));
 
-		categories.add(Pair.of(MachineType.PURIFICATION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.PURIFICATION_CHAMBER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED)));
-		categories.add(Pair.of(MachineType.OSMIUM_COMPRESSOR, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.OSMIUM_COMPRESSOR.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED)));
-		categories.add(Pair.of(MachineType.CHEMICAL_INJECTION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.getRecipeName().toLowerCase(Locale.ROOT), "nei.chemicalInjectionChamber", ProgressBar.YELLOW)));
+		categories.add(Pair.of(MachineType.PURIFICATION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.PURIFICATION_CHAMBER.jeiRecipeUid, "tile.MachineBlock.PurificationChamber.name", ProgressBar.RED)));
+		categories.add(Pair.of(MachineType.OSMIUM_COMPRESSOR, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.OSMIUM_COMPRESSOR.jeiRecipeUid, "tile.MachineBlock.OsmiumCompressor.name", ProgressBar.RED)));
+		categories.add(Pair.of(MachineType.CHEMICAL_INJECTION_CHAMBER, ()->new AdvancedMachineRecipeCategory(guiHelper, Recipe.CHEMICAL_INJECTION_CHAMBER.jeiRecipeUid, "nei.chemicalInjectionChamber", ProgressBar.YELLOW)));
 
-		categories.add(Pair.of(MachineType.PRECISION_SAWMILL, ()->new ChanceMachineRecipeCategory(guiHelper, Recipe.PRECISION_SAWMILL.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE)));
+		categories.add(Pair.of(MachineType.PRECISION_SAWMILL, ()->new ChanceMachineRecipeCategory(guiHelper, Recipe.PRECISION_SAWMILL.jeiRecipeUid, "tile.MachineBlock2.PrecisionSawmill.name", ProgressBar.PURPLE)));
 
-		categories.add(Pair.of(MachineType.ENRICHMENT_CHAMBER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENRICHMENT_CHAMBER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE)));
-		categories.add(Pair.of(MachineType.CRUSHER, ()->new MachineRecipeCategory(guiHelper, Recipe.CRUSHER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH)));
-		categories.add(Pair.of(MachineType.ENERGIZED_SMELTER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENERGIZED_SMELTER.getRecipeName().toLowerCase(Locale.ROOT), "tile.MachineBlock.EnergizedSmelter.name", ProgressBar.BLUE)));
+		categories.add(Pair.of(MachineType.ENRICHMENT_CHAMBER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENRICHMENT_CHAMBER.jeiRecipeUid, "tile.MachineBlock.EnrichmentChamber.name", ProgressBar.BLUE)));
+		categories.add(Pair.of(MachineType.CRUSHER, ()->new MachineRecipeCategory(guiHelper, Recipe.CRUSHER.jeiRecipeUid, "tile.MachineBlock.Crusher.name", ProgressBar.CRUSH)));
+		categories.add(Pair.of(MachineType.ENERGIZED_SMELTER, ()->new MachineRecipeCategory(guiHelper, Recipe.ENERGIZED_SMELTER.jeiRecipeUid, "tile.MachineBlock.EnergizedSmelter.name", ProgressBar.BLUE)));
 
 		registry.addRecipeCategories(categories.stream().filter(p->p.getLeft()==null||p.getLeft().isEnabled()).map(it->it.getRight().get()).toArray(IRecipeCategory[]::new));
 	}
@@ -234,119 +234,119 @@ public class MekanismJEI implements IModPlugin
 
 		if (MachineType.ENRICHMENT_CHAMBER.isEnabled())
 		{
-			registry.handleRecipes(EnrichmentRecipe.class, EnrichmentRecipeWrapper::new, "mekanism.enrichment_chamber");
-			addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, BasicMachineRecipe.class, EnrichmentRecipeWrapper.class, "mekanism.enrichment_chamber");
-			registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, "mekanism.enrichment_chamber");
+			registry.handleRecipes(EnrichmentRecipe.class, EnrichmentRecipeWrapper::new, Recipe.ENRICHMENT_CHAMBER.jeiRecipeUid);
+			addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, BasicMachineRecipe.class, EnrichmentRecipeWrapper.class, Recipe.ENRICHMENT_CHAMBER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, Recipe.ENRICHMENT_CHAMBER.jeiRecipeUid);
 		}
 
 		if (MachineType.CRUSHER.isEnabled())
 		{
-			registry.handleRecipes(CrusherRecipe.class, CrusherRecipeWrapper::new, "mekanism.crusher");
-			addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, CrusherRecipeWrapper.class, "mekanism.crusher");
-			registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, "mekanism.crusher");
+			registry.handleRecipes(CrusherRecipe.class, CrusherRecipeWrapper::new, Recipe.CRUSHER.jeiRecipeUid);
+			addRecipes(registry, Recipe.CRUSHER, BasicMachineRecipe.class, CrusherRecipeWrapper.class, Recipe.CRUSHER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiCrusher.class, 79, 40, 24, 7, Recipe.CRUSHER.jeiRecipeUid);
 		}
 
 		if (MachineType.COMBINER.isEnabled())
 		{
-			registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, "mekanism.combiner");
-			addRecipes(registry, Recipe.COMBINER, DoubleMachineRecipe.class, CombinerRecipeWrapper.class, "mekanism.combiner");
-			registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, "mekanism.combiner");
+			registry.handleRecipes(CombinerRecipe.class, CombinerRecipeWrapper::new, Recipe.COMBINER.jeiRecipeUid);
+			addRecipes(registry, Recipe.COMBINER, DoubleMachineRecipe.class, CombinerRecipeWrapper.class, Recipe.COMBINER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiCombiner.class, 79, 40, 24, 7, Recipe.COMBINER.jeiRecipeUid);
 		}
 
 		if (MachineType.PURIFICATION_CHAMBER.isEnabled())
 		{
-			registry.handleRecipes(PurificationRecipe.class, PurificationChamberRecipeWrapper::new, "mekanism.purification_chamber");
-			addRecipes(registry, Recipe.PURIFICATION_CHAMBER, AdvancedMachineRecipe.class, PurificationChamberRecipeWrapper.class, "mekanism.purification_chamber");
-			registry.addRecipeClickArea(GuiPurificationChamber.class, 79, 40, 24, 7, "mekanism.purification_chamber");
+			registry.handleRecipes(PurificationRecipe.class, PurificationChamberRecipeWrapper::new, Recipe.PURIFICATION_CHAMBER.jeiRecipeUid);
+			addRecipes(registry, Recipe.PURIFICATION_CHAMBER, AdvancedMachineRecipe.class, PurificationChamberRecipeWrapper.class, Recipe.PURIFICATION_CHAMBER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiPurificationChamber.class, 79, 40, 24, 7, Recipe.PURIFICATION_CHAMBER.jeiRecipeUid);
 		}
 
 		if (MachineType.OSMIUM_COMPRESSOR.isEnabled())
 		{
-			registry.handleRecipes(OsmiumCompressorRecipe.class, OsmiumCompressorRecipeWrapper::new, "mekanism.osmium_compressor");
-			addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, AdvancedMachineRecipe.class, OsmiumCompressorRecipeWrapper.class, "mekanism.osmium_compressor");
-			registry.addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, "mekanism.osmium_compressor");
+			registry.handleRecipes(OsmiumCompressorRecipe.class, OsmiumCompressorRecipeWrapper::new, Recipe.OSMIUM_COMPRESSOR.jeiRecipeUid);
+			addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, AdvancedMachineRecipe.class, OsmiumCompressorRecipeWrapper.class, Recipe.OSMIUM_COMPRESSOR.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, Recipe.OSMIUM_COMPRESSOR.jeiRecipeUid);
 		}
 
 		if (MachineType.CHEMICAL_INJECTION_CHAMBER.isEnabled())
 		{
-			registry.handleRecipes(InjectionRecipe.class, ChemicalInjectionChamberRecipeWrapper::new, "mekanism.chemical_injection_chamber");
-			addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, AdvancedMachineRecipe.class, ChemicalInjectionChamberRecipeWrapper.class, "mekanism.chemical_injection_chamber");
-			registry.addRecipeClickArea(GuiChemicalInjectionChamber.class, 79, 40, 24, 7, "mekanism.chemical_injection_chamber");
+			registry.handleRecipes(InjectionRecipe.class, ChemicalInjectionChamberRecipeWrapper::new, Recipe.CHEMICAL_INJECTION_CHAMBER.jeiRecipeUid);
+			addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, AdvancedMachineRecipe.class, ChemicalInjectionChamberRecipeWrapper.class, Recipe.CHEMICAL_INJECTION_CHAMBER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiChemicalInjectionChamber.class, 79, 40, 24, 7, Recipe.CHEMICAL_INJECTION_CHAMBER.jeiRecipeUid);
 		}
 
 		if (MachineType.PRECISION_SAWMILL.isEnabled())
 		{
-			registry.handleRecipes(SawmillRecipe.class, PrecisionSawmillRecipeWrapper::new, "mekanism.precision_sawmill");
-			addRecipes(registry, Recipe.PRECISION_SAWMILL, ChanceMachineRecipe.class, PrecisionSawmillRecipeWrapper.class, "mekanism.precision_sawmill");
-			registry.addRecipeClickArea(GuiPrecisionSawmill.class, 79, 40, 24, 7, "mekanism.precision_sawmill");
+			registry.handleRecipes(SawmillRecipe.class, PrecisionSawmillRecipeWrapper::new, Recipe.PRECISION_SAWMILL.jeiRecipeUid);
+			addRecipes(registry, Recipe.PRECISION_SAWMILL, ChanceMachineRecipe.class, PrecisionSawmillRecipeWrapper.class, Recipe.PRECISION_SAWMILL.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiPrecisionSawmill.class, 79, 40, 24, 7, Recipe.PRECISION_SAWMILL.jeiRecipeUid);
 		}
 
 		if (MachineType.METALLURGIC_INFUSER.isEnabled())
 		{
-			registry.handleRecipes(MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper::new, "mekanism.metallurgic_infuser");
-			addRecipes(registry, Recipe.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper.class, "mekanism.metallurgic_infuser");
-			registry.addRecipeClickArea(GuiMetallurgicInfuser.class, 72, 47, 32, 8, "mekanism.metallurgic_infuser");
+			registry.handleRecipes(MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper::new, Recipe.METALLURGIC_INFUSER.jeiRecipeUid);
+			addRecipes(registry, Recipe.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper.class, Recipe.METALLURGIC_INFUSER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiMetallurgicInfuser.class, 72, 47, 32, 8, Recipe.METALLURGIC_INFUSER.jeiRecipeUid);
 		}
 
 		if (MachineType.CHEMICAL_CRYSTALLIZER.isEnabled())
 		{
-			registry.handleRecipes(CrystallizerRecipe.class, ChemicalCrystallizerRecipeWrapper::new, "mekanism.chemical_crystallizer");
-			addRecipes(registry, Recipe.CHEMICAL_CRYSTALLIZER, CrystallizerRecipe.class, ChemicalCrystallizerRecipeWrapper.class, "mekanism.chemical_crystallizer");
-			registry.addRecipeClickArea(GuiChemicalCrystallizer.class, 53, 62, 48, 8, "mekanism.chemical_crystallizer");
+			registry.handleRecipes(CrystallizerRecipe.class, ChemicalCrystallizerRecipeWrapper::new, Recipe.CHEMICAL_CRYSTALLIZER.jeiRecipeUid);
+			addRecipes(registry, Recipe.CHEMICAL_CRYSTALLIZER, CrystallizerRecipe.class, ChemicalCrystallizerRecipeWrapper.class, Recipe.CHEMICAL_CRYSTALLIZER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiChemicalCrystallizer.class, 53, 62, 48, 8, Recipe.CHEMICAL_CRYSTALLIZER.jeiRecipeUid);
 		}
 
 		if (MachineType.CHEMICAL_DISSOLUTION_CHAMBER.isEnabled())
 		{
-			registry.handleRecipes(DissolutionRecipe.class, ChemicalDissolutionChamberRecipeWrapper::new, "mekanism.chemical_dissolution_chamber");
-			addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, DissolutionRecipe.class, ChemicalDissolutionChamberRecipeWrapper.class, "mekanism.chemical_dissolution_chamber");
-			registry.addRecipeClickArea(GuiChemicalDissolutionChamber.class, 64, 40, 48, 8, "mekanism.chemical_dissolution_chamber");
+			registry.handleRecipes(DissolutionRecipe.class, ChemicalDissolutionChamberRecipeWrapper::new, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.jeiRecipeUid);
+			addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, DissolutionRecipe.class, ChemicalDissolutionChamberRecipeWrapper.class, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiChemicalDissolutionChamber.class, 64, 40, 48, 8, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.jeiRecipeUid);
 		}
 
 		if (MachineType.CHEMICAL_INFUSER.isEnabled())
 		{
-			registry.handleRecipes(ChemicalInfuserRecipe.class, ChemicalInfuserRecipeWrapper::new, "mekanism.chemical_infuser");
-			addRecipes(registry, Recipe.CHEMICAL_INFUSER, ChemicalInfuserRecipe.class, ChemicalInfuserRecipeWrapper.class, "mekanism.chemical_infuser");
-			registry.addRecipeClickArea(GuiChemicalInfuser.class, 47, 39, 28, 8, "mekanism.chemical_infuser");
-			registry.addRecipeClickArea(GuiChemicalInfuser.class, 101, 39, 28, 8, "mekanism.chemical_infuser");
+			registry.handleRecipes(ChemicalInfuserRecipe.class, ChemicalInfuserRecipeWrapper::new, Recipe.CHEMICAL_INFUSER.jeiRecipeUid);
+			addRecipes(registry, Recipe.CHEMICAL_INFUSER, ChemicalInfuserRecipe.class, ChemicalInfuserRecipeWrapper.class, Recipe.CHEMICAL_INFUSER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiChemicalInfuser.class, 47, 39, 28, 8, Recipe.CHEMICAL_INFUSER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiChemicalInfuser.class, 101, 39, 28, 8, Recipe.CHEMICAL_INFUSER.jeiRecipeUid);
 		}
 
 		if (MachineType.CHEMICAL_OXIDIZER.isEnabled())
 		{
-			registry.handleRecipes(OxidationRecipe.class, ChemicalOxidizerRecipeWrapper::new, "mekanism.chemical_oxidizer");
-			addRecipes(registry, Recipe.CHEMICAL_OXIDIZER, OxidationRecipe.class, ChemicalOxidizerRecipeWrapper.class, "mekanism.chemical_oxidizer");
-			registry.addRecipeClickArea(GuiChemicalOxidizer.class, 64, 40, 48, 8, "mekanism.chemical_oxidizer");
+			registry.handleRecipes(OxidationRecipe.class, ChemicalOxidizerRecipeWrapper::new, Recipe.CHEMICAL_OXIDIZER.jeiRecipeUid);
+			addRecipes(registry, Recipe.CHEMICAL_OXIDIZER, OxidationRecipe.class, ChemicalOxidizerRecipeWrapper.class, Recipe.CHEMICAL_OXIDIZER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiChemicalOxidizer.class, 64, 40, 48, 8, Recipe.CHEMICAL_OXIDIZER.jeiRecipeUid);
 		}
 
 		if (MachineType.CHEMICAL_WASHER.isEnabled())
 		{
-			registry.handleRecipes(WasherRecipe.class, ChemicalWasherRecipeWrapper::new, "mekanism.chemical_washer");
-			addRecipes(registry, Recipe.CHEMICAL_WASHER, WasherRecipe.class, ChemicalWasherRecipeWrapper.class, "mekanism.chemical_washer");
-			registry.addRecipeClickArea(GuiChemicalWasher.class, 61, 39, 55, 8, "mekanism.chemical_washer");
+			registry.handleRecipes(WasherRecipe.class, ChemicalWasherRecipeWrapper::new, Recipe.CHEMICAL_WASHER.jeiRecipeUid);
+			addRecipes(registry, Recipe.CHEMICAL_WASHER, WasherRecipe.class, ChemicalWasherRecipeWrapper.class, Recipe.CHEMICAL_WASHER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiChemicalWasher.class, 61, 39, 55, 8, Recipe.CHEMICAL_WASHER.jeiRecipeUid);
 		}
 
 		if (MachineType.SOLAR_NEUTRON_ACTIVATOR.isEnabled())
 		{
-			registry.handleRecipes(SolarNeutronRecipe.class, SolarNeutronRecipeWrapper::new, "mekanism.solar_neutron_activator");
-			addRecipes(registry, Recipe.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronRecipe.class, SolarNeutronRecipeWrapper.class, "mekanism.solar_neutron_activator");
-			registry.addRecipeClickArea(GuiSolarNeutronActivator.class, 64, 39, 48, 8, "mekanism.solar_neutron_activator");
+			registry.handleRecipes(SolarNeutronRecipe.class, SolarNeutronRecipeWrapper::new, Recipe.SOLAR_NEUTRON_ACTIVATOR.jeiRecipeUid);
+			addRecipes(registry, Recipe.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronRecipe.class, SolarNeutronRecipeWrapper.class, Recipe.SOLAR_NEUTRON_ACTIVATOR.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiSolarNeutronActivator.class, 64, 39, 48, 8, Recipe.SOLAR_NEUTRON_ACTIVATOR.jeiRecipeUid);
 		}
 
 		if (MachineType.ELECTROLYTIC_SEPARATOR.isEnabled())
 		{
-			registry.handleRecipes(SeparatorRecipe.class, ElectrolyticSeparatorRecipeWrapper::new, "mekanism.electrolytic_separator");
-			addRecipes(registry, Recipe.ELECTROLYTIC_SEPARATOR, SeparatorRecipe.class, ElectrolyticSeparatorRecipeWrapper.class, "mekanism.electrolytic_separator");
-			registry.addRecipeClickArea(GuiElectrolyticSeparator.class, 80, 30, 16, 6, "mekanism.electrolytic_separator");
+			registry.handleRecipes(SeparatorRecipe.class, ElectrolyticSeparatorRecipeWrapper::new, Recipe.ELECTROLYTIC_SEPARATOR.jeiRecipeUid);
+			addRecipes(registry, Recipe.ELECTROLYTIC_SEPARATOR, SeparatorRecipe.class, ElectrolyticSeparatorRecipeWrapper.class, Recipe.ELECTROLYTIC_SEPARATOR.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiElectrolyticSeparator.class, 80, 30, 16, 6, Recipe.ELECTROLYTIC_SEPARATOR.jeiRecipeUid);
 		}
 
-		registry.handleRecipes(ThermalEvaporationRecipe.class, ThermalEvaporationRecipeWrapper::new, "mekanism.thermal_evaporation_plant");
-		addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, ThermalEvaporationRecipe.class, ThermalEvaporationRecipeWrapper.class, "mekanism.thermal_evaporation_plant");
-		registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38, "mekanism.thermal_evaporation_plant");
+		registry.handleRecipes(ThermalEvaporationRecipe.class, ThermalEvaporationRecipeWrapper::new, Recipe.THERMAL_EVAPORATION_PLANT.jeiRecipeUid);
+		addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, ThermalEvaporationRecipe.class, ThermalEvaporationRecipeWrapper.class, Recipe.THERMAL_EVAPORATION_PLANT.jeiRecipeUid);
+		registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38, Recipe.THERMAL_EVAPORATION_PLANT.jeiRecipeUid);
 
 		if (MachineType.PRESSURIZED_REACTION_CHAMBER.isEnabled())
 		{
-			registry.handleRecipes(PressurizedRecipe.class, PRCRecipeWrapper::new, "mekanism.pressurized_reaction_chamber");
-			addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, PressurizedRecipe.class, PRCRecipeWrapper.class, "mekanism.pressurized_reaction_chamber");
-			registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, "mekanism.pressurized_reaction_chamber");
+			registry.handleRecipes(PressurizedRecipe.class, PRCRecipeWrapper::new, Recipe.PRESSURIZED_REACTION_CHAMBER.jeiRecipeUid);
+			addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, PressurizedRecipe.class, PRCRecipeWrapper.class, Recipe.PRESSURIZED_REACTION_CHAMBER.jeiRecipeUid);
+			registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, Recipe.PRESSURIZED_REACTION_CHAMBER.jeiRecipeUid);
 		}
 
 		if (MachineType.ROTARY_CONDENSENTRATOR.isEnabled())
@@ -362,19 +362,19 @@ public class MekanismJEI implements IModPlugin
 					decondensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, false));
 				}
 			}
-			registry.addRecipes(condensentratorRecipes, "mekanism.rotary_condensentrator_condensentrating");
-			registry.addRecipes(decondensentratorRecipes, "mekanism.rotary_condensentrator_decondensentrating");
-			registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, "mekanism.rotary_condensentrator_condensentrating", "mekanism.rotary_condensentrator_decondensentrating");
+			registry.addRecipes(condensentratorRecipes, RotaryCondensentratorRecipeCategory.UID_COND);
+			registry.addRecipes(decondensentratorRecipes, RotaryCondensentratorRecipeCategory.UID_DECOND);
+			registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, RotaryCondensentratorRecipeCategory.UID_COND, RotaryCondensentratorRecipeCategory.UID_DECOND);
 		}
 
 		if (MachineType.ENERGIZED_SMELTER.isEnabled())
 		{
-			registry.handleRecipes(SmeltingRecipe.class, SmeltingRecipeWrapper::new, "mekanism.energized_smelter");
+			registry.handleRecipes(SmeltingRecipe.class, SmeltingRecipeWrapper::new, Recipe.ENERGIZED_SMELTER.jeiRecipeUid);
 
 			if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasRemovedRecipe()) // Removed / Removed + Added
 			{
 				// Add all recipes
-				addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, "mekanism.energized_smelter");
+				addRecipes(registry, Recipe.ENERGIZED_SMELTER, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, Recipe.ENERGIZED_SMELTER.jeiRecipeUid);
 			}
 			else if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe()) // Added but not removed
 			{
@@ -384,7 +384,7 @@ public class MekanismJEI implements IModPlugin
 						.filter(entry -> !FurnaceRecipes.instance().getSmeltingList().keySet().contains(entry.getKey().ingredient))
 						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).values();
 
-				addRecipes(registry, recipes, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, "mekanism.energized_smelter");
+				addRecipes(registry, recipes, BasicMachineRecipe.class, SmeltingRecipeWrapper.class, Recipe.ENERGIZED_SMELTER.jeiRecipeUid);
 			}
 			// else - Only use furnace list, so no extra registration.
 		}
@@ -394,11 +394,11 @@ public class MekanismJEI implements IModPlugin
 			// Energized smelter
 			if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasRemovedRecipe())
 			{
-				registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, "mekanism.energized_smelter");
+				registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, Recipe.ENERGIZED_SMELTER.jeiRecipeUid);
 			}
 			else if(CRAFTTWEAKER_LOADED && EnergizedSmelter.hasAddedRecipe())
 			{
-				registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING, "mekanism.energized_smelter");
+				registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING, Recipe.ENERGIZED_SMELTER.jeiRecipeUid);
 
 				registerVanillaSmeltingRecipeCatalyst(registry);
 			}
@@ -410,38 +410,37 @@ public class MekanismJEI implements IModPlugin
 			}
 		}
 		
-		registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER);
-		registerRecipeItem(registry, MachineType.CRUSHER);
-		registerRecipeItem(registry, MachineType.ENERGIZED_SMELTER);
-		registerRecipeItem(registry, MachineType.COMBINER);
-		registerRecipeItem(registry, MachineType.PURIFICATION_CHAMBER);
-		registerRecipeItem(registry, MachineType.OSMIUM_COMPRESSOR);
-		registerRecipeItem(registry, MachineType.CHEMICAL_INJECTION_CHAMBER);
-		registerRecipeItem(registry, MachineType.PRECISION_SAWMILL);
-		registerRecipeItem(registry, MachineType.METALLURGIC_INFUSER);
-		registerRecipeItem(registry, MachineType.CHEMICAL_CRYSTALLIZER);
-		registerRecipeItem(registry, MachineType.CHEMICAL_DISSOLUTION_CHAMBER);
-		registerRecipeItem(registry, MachineType.CHEMICAL_INFUSER);
-		registerRecipeItem(registry, MachineType.CHEMICAL_OXIDIZER);
-		registerRecipeItem(registry, MachineType.CHEMICAL_WASHER);
-		registerRecipeItem(registry, MachineType.SOLAR_NEUTRON_ACTIVATOR);
-		registerRecipeItem(registry, MachineType.ELECTROLYTIC_SEPARATOR);
-		registerRecipeItem(registry, MachineType.PRESSURIZED_REACTION_CHAMBER);
-		registry.addRecipeCatalyst(MachineType.ROTARY_CONDENSENTRATOR.getStack(), "mekanism.rotary_condensentrator_condensentrating", "mekanism.rotary_condensentrator_decondensentrating");
+		registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER, Recipe.ENRICHMENT_CHAMBER);
+		registerRecipeItem(registry, MachineType.CRUSHER, Recipe.CRUSHER);
+		registerRecipeItem(registry, MachineType.ENERGIZED_SMELTER, Recipe.ENERGIZED_SMELTER);
+		registerRecipeItem(registry, MachineType.COMBINER, Recipe.COMBINER);
+		registerRecipeItem(registry, MachineType.PURIFICATION_CHAMBER, Recipe.PURIFICATION_CHAMBER);
+		registerRecipeItem(registry, MachineType.OSMIUM_COMPRESSOR, Recipe.OSMIUM_COMPRESSOR);
+		registerRecipeItem(registry, MachineType.CHEMICAL_INJECTION_CHAMBER, Recipe.CHEMICAL_INJECTION_CHAMBER);
+		registerRecipeItem(registry, MachineType.PRECISION_SAWMILL, Recipe.PRECISION_SAWMILL);
+		registerRecipeItem(registry, MachineType.METALLURGIC_INFUSER, Recipe.METALLURGIC_INFUSER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_CRYSTALLIZER, Recipe.CHEMICAL_CRYSTALLIZER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_DISSOLUTION_CHAMBER, Recipe.CHEMICAL_DISSOLUTION_CHAMBER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_INFUSER, Recipe.CHEMICAL_INFUSER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_OXIDIZER, Recipe.CHEMICAL_OXIDIZER);
+		registerRecipeItem(registry, MachineType.CHEMICAL_WASHER, Recipe.CHEMICAL_WASHER);
+		registerRecipeItem(registry, MachineType.SOLAR_NEUTRON_ACTIVATOR, Recipe.SOLAR_NEUTRON_ACTIVATOR);
+		registerRecipeItem(registry, MachineType.ELECTROLYTIC_SEPARATOR, Recipe.ELECTROLYTIC_SEPARATOR);
+		registerRecipeItem(registry, MachineType.PRESSURIZED_REACTION_CHAMBER, Recipe.PRESSURIZED_REACTION_CHAMBER);
+		registry.addRecipeCatalyst(MachineType.ROTARY_CONDENSENTRATOR.getStack(), RotaryCondensentratorRecipeCategory.UID_COND, RotaryCondensentratorRecipeCategory.UID_DECOND);
 		
-		registry.addRecipeCatalyst(BasicBlockType.THERMAL_EVAPORATION_CONTROLLER.getStack(1), "mekanism.thermal_evaporation_plant");
+		registry.addRecipeCatalyst(BasicBlockType.THERMAL_EVAPORATION_CONTROLLER.getStack(1), Recipe.THERMAL_EVAPORATION_PLANT.jeiRecipeUid);
 		registry.addRecipeCatalyst(MachineType.FORMULAIC_ASSEMBLICATOR.getStack(), VanillaRecipeCategoryUid.CRAFTING);
 
 		registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerFormulaicAssemblicator.class, VanillaRecipeCategoryUid.CRAFTING, 20, 9, 35, 36);
 		registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerRobitInventory.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
 	}
 	
-	private void registerRecipeItem(IModRegistry registry, MachineType type)
+	private void registerRecipeItem(IModRegistry registry, MachineType type, Recipe<?,?,?> recipeType)
 	{
 		if (!type.isEnabled())
 			return;
-		String category = "mekanism." + type.getName();
-		registry.addRecipeCatalyst(type.getStack(), category);
+		registry.addRecipeCatalyst(type.getStack(), recipeType.jeiRecipeUid);
 		RecipeType factoryType = null;
 		for (RecipeType t : RecipeType.values()){
 			if (t.getType() == type){
@@ -455,7 +454,7 @@ public class MekanismJEI implements IModPlugin
 			{
 				if(tier.machineType.isEnabled())
 				{
-					registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, factoryType), category);
+					registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, factoryType), recipeType.jeiRecipeUid);
 				}
 			}
 		}
