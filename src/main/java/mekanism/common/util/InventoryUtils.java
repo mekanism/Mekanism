@@ -67,7 +67,17 @@ public final class InventoryUtils {
             ItemStack toInsert = requestEntry.getKey().copy();
 
             //prioritize other implementations first to allow item forcing
-            if (tile instanceof ISidedInventory) {
+            if (isItemHandler(tile, side.getOpposite())) {
+                IItemHandler inventory = getItemHandler(tile, side.getOpposite());
+
+                for (int i = 0; i < inventory.getSlots(); i++) {
+                    toInsert = inventory.insertItem(i, toInsert, false);
+
+                    if (toInsert.isEmpty()) {
+                        return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+                    }
+                }
+            } else if (tile instanceof ISidedInventory) {
                 ISidedInventory sidedInventory = (ISidedInventory) tile;
                 int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
@@ -195,16 +205,6 @@ public final class InventoryUtils {
 
                             toInsert = remains;
                         }
-                    }
-                }
-            } else if (isItemHandler(tile, side.getOpposite())) {
-                IItemHandler inventory = getItemHandler(tile, side.getOpposite());
-
-                for (int i = 0; i < inventory.getSlots(); i++) {
-                    toInsert = inventory.insertItem(i, toInsert, false);
-
-                    if (toInsert.isEmpty()) {
-                        return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
                     }
                 }
             }
