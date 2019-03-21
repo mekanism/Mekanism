@@ -47,9 +47,9 @@ public class TierConfig
 		EnergyCubeOutput = new DoubleOption(baseConfig, "tier", tier.getSimpleName()+"EnergyCubeOutput", Tier.EnergyCubeTier.values()[tier.ordinal()].baseOutput);
 		FluidTankStorage = new IntOption(baseConfig, "tier", tier.getSimpleName() + "FluidTankStorage", Tier.FluidTankTier.values()[tier.ordinal()].baseStorage);
 		FluidTankOutput = new IntOption(baseConfig, "tier", tier.getSimpleName() + "FluidTankOutput", Tier.FluidTankTier.values()[tier.ordinal()].baseOutput);
-		GasTankStorage = new IntOption(baseConfig, "tier", tier.getSimpleName() + "GasTankStorage", Tier.FluidTankTier.values()[tier.ordinal()].baseStorage);
-		GasTankOutput = new IntOption(baseConfig, "tier", tier.getSimpleName() + "GasTankOutput", Tier.FluidTankTier.values()[tier.ordinal()].baseOutput);
-		BinStorage = new IntOption(baseConfig, "tier", tier.getSimpleName() + "BinStorage", Tier.FluidTankTier.values()[tier.ordinal()].baseOutput);
+		GasTankStorage = new IntOption(baseConfig, "tier", tier.getSimpleName() + "GasTankStorage", Tier.GasTankTier.values()[tier.ordinal()].baseStorage);
+		GasTankOutput = new IntOption(baseConfig, "tier", tier.getSimpleName() + "GasTankOutput", Tier.GasTankTier.values()[tier.ordinal()].baseOutput);
+		BinStorage = new IntOption(baseConfig, "tier", tier.getSimpleName() + "BinStorage", Tier.BinTier.values()[tier.ordinal()].baseStorage);
 		if (tier != Tier.BaseTier.CREATIVE)
 		{
 			InductionCellMaxEnergy = new DoubleOption(baseConfig, "tier", tier.getSimpleName() + "InductionCellMaxEnergy", Tier.InductionCellTier.values()[tier.ordinal()].baseMaxEnergy);
