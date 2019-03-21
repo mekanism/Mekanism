@@ -14,7 +14,7 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

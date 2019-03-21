@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;

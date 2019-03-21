@@ -17,7 +17,6 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -171,7 +170,7 @@ public class MekanismGenerators implements IModule
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)
 	{
-		if(event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID))
+		if(event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(MekanismAPI.MODID))
 		{
 			proxy.loadConfiguration();
 		}

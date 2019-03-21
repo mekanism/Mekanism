@@ -3,7 +3,6 @@ package mekanism.common.item;
 import cofh.api.item.IToolHammer;
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

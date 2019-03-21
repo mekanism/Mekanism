@@ -10,7 +10,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile.SecurityMode;

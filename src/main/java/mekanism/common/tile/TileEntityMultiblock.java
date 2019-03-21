@@ -2,13 +2,11 @@ package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;

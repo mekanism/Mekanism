@@ -2,13 +2,11 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

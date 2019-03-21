@@ -11,7 +11,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;

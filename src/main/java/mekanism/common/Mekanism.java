@@ -136,7 +136,7 @@ import com.mojang.authlib.GameProfile;
  * @author AidanBrady
  *
  */
-@Mod(modid = Mekanism.MODID, name = "Mekanism", version = "${version}", guiFactory = "mekanism.client.gui.ConfigGuiFactory", useMetadata = true,
+@Mod(modid = MekanismAPI.MODID, name = "Mekanism", version = "${version}", guiFactory = "mekanism.client.gui.ConfigGuiFactory", useMetadata = true,
 		acceptedMinecraftVersions = "[1.12,1.13)",
 		dependencies =	"required-after:forge@[14.21.0.2373,);" +
 						"after:redstoneflux;" +
@@ -156,8 +156,6 @@ import com.mojang.authlib.GameProfile;
 @Mod.EventBusSubscriber()
 public class Mekanism
 {
-	public static final String MODID = "mekanism";
-
 	/** Mekanism Packet Pipeline */
 	public static PacketHandler packetHandler = new PacketHandler();
 
@@ -596,7 +594,7 @@ public class Mekanism
 	}
 
 	private static void registerTileEntity(Class<?extends TileEntity> clazz, String name){
-		GameRegistry.registerTileEntity(clazz, new ResourceLocation(MODID, name));
+		GameRegistry.registerTileEntity(clazz, new ResourceLocation(MekanismAPI.MODID, name));
 	}
 	
 	/**
@@ -678,7 +676,7 @@ public class Mekanism
 		proxy.registerSpecialTileEntities();
 
 		//Fix old names to be domain specific
-		ModFixs fixes = FMLCommonHandler.instance().getDataFixer().init(MODID, 1);
+		ModFixs fixes = FMLCommonHandler.instance().getDataFixer().init(MekanismAPI.MODID, 1);
 		fixes.registerFix(FixTypes.BLOCK_ENTITY, new TEFixer.Mekanism());
 	}
 	

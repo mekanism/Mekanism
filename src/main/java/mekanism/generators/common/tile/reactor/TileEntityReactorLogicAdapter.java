@@ -2,7 +2,7 @@ package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
 
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;

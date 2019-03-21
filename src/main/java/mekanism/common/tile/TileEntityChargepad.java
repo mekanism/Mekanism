@@ -12,7 +12,7 @@ import mekanism.api.Range4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;

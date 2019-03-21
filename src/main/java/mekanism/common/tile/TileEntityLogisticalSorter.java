@@ -15,7 +15,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;

@@ -12,7 +12,7 @@ import mekanism.common.Tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;

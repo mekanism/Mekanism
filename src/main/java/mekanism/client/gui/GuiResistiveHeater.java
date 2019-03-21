@@ -13,7 +13,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

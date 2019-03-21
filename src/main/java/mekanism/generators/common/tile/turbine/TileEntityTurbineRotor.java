@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;

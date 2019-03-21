@@ -13,7 +13,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;

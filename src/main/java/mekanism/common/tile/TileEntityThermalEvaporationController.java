@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;

@@ -18,7 +18,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;

@@ -3,7 +3,7 @@ package mekanism.common.content.transporter;
 import io.netty.buffer.ByteBuf;
 
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

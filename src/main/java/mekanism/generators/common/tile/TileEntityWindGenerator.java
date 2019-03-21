@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import mekanism.api.Coord4D;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;

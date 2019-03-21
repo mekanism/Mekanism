@@ -14,6 +14,8 @@ import javax.annotation.Nonnull;
 
 public class MekanismAPI
 {
+	public static final String MODID = "mekanism";
+
 	//Add a BlockInfo value here if you don't want a certain block to be picked up by cardboard boxes
 	private static Set<BlockInfo> cardboardBoxIgnore = new HashSet<>();
 

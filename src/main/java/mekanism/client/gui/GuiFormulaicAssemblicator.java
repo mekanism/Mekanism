@@ -16,7 +16,7 @@ import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

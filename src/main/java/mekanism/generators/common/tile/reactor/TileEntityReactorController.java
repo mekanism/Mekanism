@@ -11,7 +11,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IHasSound;
 import mekanism.common.base.SoundWrapper;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;

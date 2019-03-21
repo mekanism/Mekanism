@@ -3,7 +3,6 @@ package mekanism.common.frequency;
 import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;

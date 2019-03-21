@@ -2,8 +2,6 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
@@ -14,7 +12,7 @@ import mekanism.client.gui.GuiMModIDFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;

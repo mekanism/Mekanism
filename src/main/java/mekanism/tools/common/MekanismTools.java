@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.Version;
@@ -342,7 +343,7 @@ public class MekanismTools implements IModule
 	@SubscribeEvent
 	public void onConfigChanged(OnConfigChangedEvent event)
 	{
-		if(event.getModID().equals(MODID) || event.getModID().equals(Mekanism.MODID))
+		if(event.getModID().equals(MODID) || event.getModID().equals(MekanismAPI.MODID))
 		{
 			proxy.loadConfiguration();
 		}

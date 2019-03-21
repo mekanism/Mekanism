@@ -2,7 +2,7 @@ package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
 
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;

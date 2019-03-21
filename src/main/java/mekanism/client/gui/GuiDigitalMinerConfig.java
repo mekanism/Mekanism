@@ -13,7 +13,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MMaterialFilter;

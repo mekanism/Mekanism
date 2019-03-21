@@ -2,7 +2,7 @@ package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
 
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.transporter.Finder.MaterialFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;

@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;

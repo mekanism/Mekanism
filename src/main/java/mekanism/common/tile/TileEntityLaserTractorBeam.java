@@ -9,7 +9,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

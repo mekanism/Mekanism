@@ -10,7 +10,7 @@ import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.transmitters.grid.FluidNetwork;

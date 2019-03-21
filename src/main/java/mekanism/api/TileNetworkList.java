@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.api;
 
 import net.minecraft.util.NonNullList;
 import org.apache.commons.lang3.Validate;

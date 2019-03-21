@@ -16,7 +16,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.content.transporter.TModIDFilter;

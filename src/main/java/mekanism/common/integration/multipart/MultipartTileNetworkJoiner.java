@@ -1,6 +1,5 @@
 package mekanism.common.integration.multipart;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,7 @@ import mcmultipart.api.slot.EnumFaceSlot;
 import mcmultipart.api.slot.IPartSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
