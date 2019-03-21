@@ -28,10 +28,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator>
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Collections.singletonList(
-              LangUtils.localize("gui.producing") + ": " + MekanismUtils
-                    .getEnergyDisplay(tileEntity.getActive() ? tileEntity.getProduction() : 0)), this, resource));
-        addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
+        addGuiElement(new GuiEnergyInfo(() -> Collections.EMPTY_LIST, this, resource));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
 
@@ -39,15 +36,12 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator>
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), !tileEntity.fullName.contains("Advanced") ? 45 : 30, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        fontRenderer
-              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26,
-                    0x00CD00);
-        fontRenderer
-              .drawString(LangUtils.localize("gui.solarGenerator.sun") + ": " + tileEntity.canSeeSun(), 51, 35,
-                    0x00CD00);
-        fontRenderer.drawString(
-              LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getProduction()) + "/t",
-              51, 44, 0x00CD00);
+
+        renderCenteredText(48, 80, 28, 0x00CD00,
+              LangUtils.localize("gui.producing"));
+        renderCenteredText(48, 80, 42, 0x00CD00,
+              MekanismUtils.getEnergyDisplay(tileEntity.getProduction()) + "/t");
+
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
