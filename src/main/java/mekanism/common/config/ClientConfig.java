@@ -29,7 +29,7 @@ public class ClientConfig extends BaseConfig
 
 	public final BooleanOption doMultiblockSparkle = new BooleanOption(this, "client", "MultiblockSparkle", true, "Spawn redstone particles on successful multiblock forming");
 
-	public final IntOption multiblockSparkleIntensity = new IntOption(this, "client", "MultiblockSparkleIntensity", 1, "How many particles to spawn for EACH block in the multiblock frame. Each particle will have a slightly randomised offset. Old default is 6");
+	public final IntOption multiblockSparkleIntensity = new IntOption(this, "client", "MultiblockSparkleIntensity", 1, "How many particles rounds to spawn for EACH block in the multiblock frame. Each particle will have a slightly randomised offset. A round is 6 particles. Old default is 6");
 
 	//todo remove??
 	public boolean oldTransmitterRender = false;
