@@ -984,6 +984,8 @@ public class Mekanism
 		//goes invalid on unbox
 		event.blacklist(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ic2", "te")));
 
+		event.blacklistMod("colossalchests");//I herd you liek multiblocks
+
 		BoxBlacklistParser.load();
 	}
 	
