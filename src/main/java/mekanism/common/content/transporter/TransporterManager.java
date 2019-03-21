@@ -459,7 +459,7 @@ public class TransporterManager
 
 					ItemStack inSlot = copy.inventory.get(i);
 
-					if(toInsert.isEmpty())
+					if(rejectStack.isEmpty())
 					{
 						return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
 					}
