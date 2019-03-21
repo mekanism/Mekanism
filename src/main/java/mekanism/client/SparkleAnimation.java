@@ -48,9 +48,11 @@ public class SparkleAnimation
 			{
                 World world = pointer.getWorld();
 
+				int count = MekanismConfig.current().client.multiblockSparkleIntensity.val();
+
                 for(Coord4D coord : iteratedNodes)
                 {
-                    for(int i = 0; i < 6; i++)
+                    for(int i = 0; i < count; i++)
                     {
                         world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + -.01, coord.z + random.nextDouble(), 0, 0, 0);
                         world.spawnParticle(EnumParticleTypes.REDSTONE, coord.x + random.nextDouble(), coord.y + 1.01, coord.z + random.nextDouble(), 0, 0, 0);

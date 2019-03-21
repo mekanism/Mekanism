@@ -967,7 +967,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity)
 	{
-		new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
+		if (MekanismConfig.current().client.doMultiblockSparkle.val())
+			new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
 	}
 
 	@Override

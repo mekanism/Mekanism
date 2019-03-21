@@ -27,6 +27,10 @@ public class ClientConfig extends BaseConfig
 
 	public final BooleanOption allowConfiguratorModeScroll = new BooleanOption(this, "client", "ConfiguratorModeScroll", true, "Allow sneak+scroll to change Configurator modes");
 
+	public final BooleanOption doMultiblockSparkle = new BooleanOption(this, "client", "MultiblockSparkle", true, "Spawn redstone particles on successful multiblock forming");
+
+	public final IntOption multiblockSparkleIntensity = new IntOption(this, "client", "MultiblockSparkleIntensity", 1, "How many particles to spawn for EACH block in the multiblock frame. Each particle will have a slightly randomised offset. Old default is 6");
+
 	//todo remove??
 	public boolean oldTransmitterRender = false;
 
