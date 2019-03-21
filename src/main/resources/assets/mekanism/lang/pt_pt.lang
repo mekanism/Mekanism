@@ -388,18 +388,18 @@ entity.Robit.name=Robit
 entity.BabySkeleton.name=Esqueleto Bebé
 
 # Config Gui
-mekanism.configgui.ctgy.general=Configurações Gerais do Mekanism
+mekanism.configgui.ctgy.general=Configurações Gerais do Mekanica
 mekanism.configgui.ctgy.machines=Configurações das Máquinas
 mekanism.configgui.ctgy.tier=Configurações dos Níveis
 mekanism.configgui.ctgy.usage=Configurações de Uso
 mekanism.configgui.ctgy.client=Configurações do Cliente
 
 # Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=Configurações gerais relativas a Mekanism e todos os seus módulos
+mekanism.configgui.ctgy.general.tooltip=Configurações gerais relativas a Mekanica e todos os seus módulos
 mekanism.configgui.ctgy.machines.tooltip=Configurações relativas a habilitar e desabilitar maquinário especifico
-mekanism.configgui.ctgy.tier.tooltip=Configurações relativas a níveis do Mekanism e seus valores correspondentes
+mekanism.configgui.ctgy.tier.tooltip=Configurações relativas a níveis do Mekanica e seus valores correspondentes
 mekanism.configgui.ctgy.usage.tooltip=Configurações relativas a máquinas e seu consumo de energia
-mekanism.configgui.ctgy.client.tooltip=Configurações específicas do cliente sobre Mekanism e todos os seus módulos
+mekanism.configgui.ctgy.client.tooltip=Configurações específicas do cliente sobre Mekanica e todos os seus módulos
 
 # Gui text
 gui.condensentrating=Condensentrando
@@ -795,7 +795,7 @@ tooltip.Crusher=Uma máquina usada para triturar barras em pó, como também faz
 tooltip.DigitalMiner=Uma automineradora altamente avançada com filtros que pode minerar qualquer bloco que ordenar num raio de 32 blocos (máx.).
 tooltip.MetallurgicInfuser=Uma máquina usada para infundir vários materiais em (geralmente) materiais para criar ligas metálicas e outros compostos
 tooltip.PurificationChamber=Uma máquina avançada capaz de processar minérios em aglomerados, servindo como o estágio inicial do processamento de minérios 300%.
-tooltip.EnergizedSmelter=Uma máquina simples que serve como uma fornalha baseada no Mekanism que usa energia.
+tooltip.EnergizedSmelter=Uma máquina simples que serve como uma fornalha baseada no Mekanica que usa energia.
 tooltip.Teleporter=Uma máquina capaz de teletransportar jogadores pra vários lugares definidos por outros Teletransportadores.
 tooltip.ElectricPump=Uma bomba capaz de bombear um lago de lava inteiro.
 tooltip.PersonalChest=Um baú de 54 lugares que pode ser aberto em qualquer lugar - mesmo a partir de seu próprio inventário.
@@ -930,7 +930,7 @@ reactor.depleted=Pouco Combustível
 reactor.depleted.desc=O reator tem combustível insuficiente para manter uma reação
 
 # Creative tab
-itemGroup.tabMekanism=Mekanism
+itemGroup.tabMekanism=Mekanica
 
 ##############
 # GENERATORS

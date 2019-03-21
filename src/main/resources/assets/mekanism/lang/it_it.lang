@@ -356,18 +356,18 @@ entity.Robit.name=Robit
 entity.BabySkeleton.name=Scheletro baby
 
 # Config Gui
-mekanism.configgui.ctgy.general=Impostazioni generali di Mekanism
+mekanism.configgui.ctgy.general=Impostazioni generali di Mekanica
 mekanism.configgui.ctgy.machines=Impostazioni dei macchinario
 mekanism.configgui.ctgy.tier=Impostazioni dei livelli
 mekanism.configgui.ctgy.usage=Impostazioni dell'uso
 mekanism.configgui.ctgy.client=Impostazioni del client
 
 # Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=Impostazioni generali riguardo a Mekanism e ai suoi moduli
+mekanism.configgui.ctgy.general.tooltip=Impostazioni generali riguardo a Mekanica e ai suoi moduli
 mekanism.configgui.ctgy.machines.tooltip=Impostazioni riguardo all'attivare e disattivare di macchinari specifici
-mekanism.configgui.ctgy.tier.tooltip=Impostazioni riguardo ai livelli di Mekanism e i loro valori corrispondenti
+mekanism.configgui.ctgy.tier.tooltip=Impostazioni riguardo ai livelli di Mekanica e i loro valori corrispondenti
 mekanism.configgui.ctgy.usage.tooltip=Impostazioni riguardo ai macchinari e al loro uso di energia
-mekanism.configgui.ctgy.client.tooltip=Impostazioni specifici del Client riguardo a Mekanism e ai suoi moduli
+mekanism.configgui.ctgy.client.tooltip=Impostazioni specifici del Client riguardo a Mekanica e ai suoi moduli
 
 # Gui text
 gui.remove=Rimuovi
@@ -792,7 +792,7 @@ reactor.depleted=Carburante insufficiente
 reactor.depleted.desc=Il reattore non ha carburante sufficiente per sostenere una reazione
 
 # Creative tab
-itemGroup.tabMekanism=Mekanism
+itemGroup.tabMekanism=Mekanica
 
 #############
 # GENERATORS

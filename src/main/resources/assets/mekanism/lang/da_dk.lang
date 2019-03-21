@@ -383,18 +383,18 @@ entity.Robit.name=Robit
 entity.BabySkeleton.name=Baby Skelet
 
 # Config Gui
-mekanism.configgui.ctgy.general=Mekanism Generelle Indstillinger
+mekanism.configgui.ctgy.general=Mekanica Generelle Indstillinger
 mekanism.configgui.ctgy.machines=Maskinindstillinger
 mekanism.configgui.ctgy.tier=Tierindstillinger
 mekanism.configgui.ctgy.usage=Brugsindstillinger
 mekanism.configgui.ctgy.client=Klientindstillinger
 
 # Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=Generelle indstillinger vedr. Mekanism og alle dets moduler
+mekanism.configgui.ctgy.general.tooltip=Generelle indstillinger vedr. Mekanica og alle dets moduler
 mekanism.configgui.ctgy.machines.tooltip=Indstillinger vedr. aktivering og deaktivering af specifikke maskiner
-mekanism.configgui.ctgy.tier.tooltip=Indstillinger vedr. Mekanism tiers og deres tilsvarende værdier
+mekanism.configgui.ctgy.tier.tooltip=Indstillinger vedr. Mekanica tiers og deres tilsvarende værdier
 mekanism.configgui.ctgy.usage.tooltip=Indstillinger vedr. machinery og deres energiforbrug
-mekanism.configgui.ctgy.client.tooltip=Klientspecifikke indstillinger vedr. Mekanism og alle dets moduler
+mekanism.configgui.ctgy.client.tooltip=Klientspecifikke indstillinger vedr. Mekanica og alle dets moduler
 
 # Gui text
 gui.condensentrating=Condensentrating
@@ -783,7 +783,7 @@ tooltip.Crusher=En maskine brugt til at knuse barrer om til deres støvmodparter
 tooltip.DigitalMiner=En højtavanceret, filterbaseret, auto-miner der kan mine hvilken som helst blok du beder den om inden for en 32-bloks(maks)radius.
 tooltip.MetallurgicInfuser=En maskine brugt til at infuse adskillige materialer om til (generelt) metaller til at lave legeringer og andre sammensætninger.
 tooltip.PurificationChamber=En avanceret maskine i stand til at processere malm om til the klumper: Bruges som det indledende fase i 300%-malmforarbejdning.
-tooltip.EnergizedSmelter=En simpel maskine der bruges som en Mekanism-baseret ovn, der kører på energy.
+tooltip.EnergizedSmelter=En simpel maskine der bruges som en Mekanica-baseret ovn, der kører på energy.
 tooltip.Teleporter=En maskine i stand til at teleportere spillere til forskellige steder defineret af en anden teleporter.
 tooltip.ElectricPump=En avanceret pumpe i stand til at pumpe en hele lavasø op.
 tooltip.Chargepad=En universal chargepad der kan lade enhver energibaseret ting fra enhver mod.
@@ -909,7 +909,7 @@ reactor.depleted=Utilstrækkelig Brændstof
 reactor.depleted.desc=Reaktoren har utilstrækkelig brændstof til at vedligeholde en reaktion
 
 # Creative tab
-itemGroup.tabMekanism=Mekanism
+itemGroup.tabMekanism=Mekanica
 
 #############
 # GENERATORS

@@ -417,11 +417,11 @@ mekanism.configgui.ctgy.usage=Настройки потребления
 mekanism.configgui.ctgy.client=Настройки клиента
 
 # Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=Общие настройки, касающиеся Mekanism и всех его модулей
+mekanism.configgui.ctgy.general.tooltip=Общие настройки, касающиеся Mekanica и всех его модулей
 mekanism.configgui.ctgy.machines.tooltip=Настройки, касающиеся включения и отключения определённых механизмов
-mekanism.configgui.ctgy.tier.tooltip=Настройки, касающиеся уровней Mekanism и их соответствующих значений
+mekanism.configgui.ctgy.tier.tooltip=Настройки, касающиеся уровней Mekanica и их соответствующих значений
 mekanism.configgui.ctgy.usage.tooltip=Настройки, касающиеся механизмов, и использования ими же энергии
-mekanism.configgui.ctgy.client.tooltip=Настройки клиента относительно Mekanism и всех его модулей
+mekanism.configgui.ctgy.client.tooltip=Настройки клиента относительно Mekanica и всех его модулей
 
 # Gui text
 gui.condensentrating=Конденсация
@@ -840,7 +840,7 @@ tooltip.Crusher=Механизм, используемый для дроблен
 tooltip.DigitalMiner=Высоко продвинутый, основанный на фильтре, авто-шахтёр, который может добывать любые блоки, на которые Вы укажите в пределах 32 блоков (макс).
 tooltip.MetallurgicInfuser=Механизм, используемый для "наполнения" металлов (как правило) различными материалами, для создания металлических сплавов и других соединений.
 tooltip.PurificationChamber=Продвинутый механизм, способный перерабатывать руды в три глыбы, выступающий в качестве начальной стадии 300% переработки руды.
-tooltip.EnergizedSmelter=Простой механизм, который служит в качестве базовой Mekanism-печи, работающей от энергии.
+tooltip.EnergizedSmelter=Простой механизм, который служит в качестве базовой Mekanica-печи, работающей от энергии.
 tooltip.Teleporter=Механизм, способный телепортировать игроков в различные места, определённые другим телепортом.
 tooltip.ElectricPump=Продвинутая помпа, способная выкачать целое озеро лавы.
 tooltip.PersonalChest=54-слотовый сундук, который можно открыть везде, даже из инвентаря игрока.
@@ -976,7 +976,7 @@ reactor.depleted=Недостаточно топлива
 reactor.depleted.desc=Реактору не хватает топлива для поддержания реакции
 
 # Creative tab
-itemGroup.tabMekanism=Mekanism
+itemGroup.tabMekanism=Mekanica
 
 #############
 # GENERATORS

@@ -292,7 +292,7 @@ key.mode=Endre modus
 key.voice=Stemme
 
 # Config Gui
-mekanism.configgui.ctgy.general=Mekanism Generelle Innstillinger
+mekanism.configgui.ctgy.general=Mekanica Generelle Innstillinger
 mekanism.configgui.ctgy.machines=Maskin Innstillinger
 mekanism.configgui.ctgy.usage=Bruk Innstillinger
 mekanism.configgui.ctgy.client=Klient Innstillinger
@@ -548,7 +548,7 @@ tooltip.Crusher=En maskin bruk til å knuse barrer til støv, !nog utføre mange
 tooltip.DigitalMiner=En meget avansert, filer-basert, auto-graver !nsom kan grave hvilken som helst blokk du ber den om !ninnenfor en 32 blokkers (maks) radius.
 tooltip.MetallurgicInfuser=En maskin brukt til å sette materialer !nmot (generellt) metaller for å lage metall legeringer !nog andre forbindelser.
 tooltip.PurificationChamber=En avansert maskin i stand til å prosessere en !nmalm til tree klumper, fungerer som den første !nsteget i 300% malm prosessering.
-tooltip.EnergizedSmelter=En enkel maskin som fungerer som en Mekanism-basert !novn som kjører på energi.
+tooltip.EnergizedSmelter=En enkel maskin som fungerer som en Mekanica-basert !novn som kjører på energi.
 tooltip.Teleporter=En maskin som er i stand til å teleportere spillere til forskjellige !nsteder definert av en annen teleportør.
 tooltip.ElectricPump=En avansert pumpe som er i stand til å pumpe !nopp en hel lava sjø.
 tooltip.Chargepad=En universal ladepad som kan lade !nalle energi baserte ting fra alle modder.
@@ -652,7 +652,7 @@ dye.yellow=Gul
 dye.white=Hvit
 
 # Creative tab
-itemGroup.tabMekanism=Mekanism
+itemGroup.tabMekanism=Mekanica
 
 #############
 # GENERATORS
