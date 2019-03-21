@@ -593,76 +593,79 @@ public final class RecipeHandler {
         private static final List<Recipe> values = new ArrayList<>();
 
         public static final Recipe<ItemStackInput, ItemStackOutput, SmeltingRecipe> ENERGIZED_SMELTER = new Recipe<>(
-              MachineType.ENERGIZED_SMELTER.blockName, ItemStackInput.class, ItemStackOutput.class,
+              MachineType.ENERGIZED_SMELTER.blockName, "ENERGIZED_SMELTER", ItemStackInput.class, ItemStackOutput.class,
               SmeltingRecipe.class);
 
         public static final Recipe<ItemStackInput, ItemStackOutput, EnrichmentRecipe> ENRICHMENT_CHAMBER = new Recipe<>(
-              MachineType.ENRICHMENT_CHAMBER.blockName, ItemStackInput.class, ItemStackOutput.class,
-              EnrichmentRecipe.class);
+              MachineType.ENRICHMENT_CHAMBER.blockName, "ENRICHMENT_CHAMBER", ItemStackInput.class,
+              ItemStackOutput.class, EnrichmentRecipe.class);
 
         public static final Recipe<AdvancedMachineInput, ItemStackOutput, OsmiumCompressorRecipe> OSMIUM_COMPRESSOR = new Recipe<>(
-              MachineType.OSMIUM_COMPRESSOR.blockName, AdvancedMachineInput.class, ItemStackOutput.class,
-              OsmiumCompressorRecipe.class);
+              MachineType.OSMIUM_COMPRESSOR.blockName, "OSMIUM_COMPRESSOR", AdvancedMachineInput.class,
+              ItemStackOutput.class, OsmiumCompressorRecipe.class);
 
         public static final Recipe<DoubleMachineInput, ItemStackOutput, CombinerRecipe> COMBINER = new Recipe<>(
-              MachineType.COMBINER.blockName, DoubleMachineInput.class, ItemStackOutput.class, CombinerRecipe.class);
+              MachineType.COMBINER.blockName, "COMBINER", DoubleMachineInput.class, ItemStackOutput.class,
+              CombinerRecipe.class);
 
         public static final Recipe<ItemStackInput, ItemStackOutput, CrusherRecipe> CRUSHER = new Recipe<>(
-              MachineType.CRUSHER.blockName, ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class);
+              MachineType.CRUSHER.blockName, "CRUSHER", ItemStackInput.class, ItemStackOutput.class,
+              CrusherRecipe.class);
 
         public static final Recipe<AdvancedMachineInput, ItemStackOutput, PurificationRecipe> PURIFICATION_CHAMBER = new Recipe<>(
-              MachineType.PURIFICATION_CHAMBER.blockName, AdvancedMachineInput.class,
+              MachineType.PURIFICATION_CHAMBER.blockName, "PURIFICATION_CHAMBER", AdvancedMachineInput.class,
               ItemStackOutput.class, PurificationRecipe.class);
 
         public static final Recipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe> METALLURGIC_INFUSER = new Recipe<>(
-              MachineType.METALLURGIC_INFUSER.blockName, InfusionInput.class, ItemStackOutput.class,
-              MetallurgicInfuserRecipe.class);
+              MachineType.METALLURGIC_INFUSER.blockName, "METALLURGIC_INFUSER", InfusionInput.class,
+              ItemStackOutput.class, MetallurgicInfuserRecipe.class);
 
         public static final Recipe<ChemicalPairInput, GasOutput, ChemicalInfuserRecipe> CHEMICAL_INFUSER = new Recipe<>(
-              MachineType.CHEMICAL_INFUSER.blockName, ChemicalPairInput.class, GasOutput.class,
+              MachineType.CHEMICAL_INFUSER.blockName, "CHEMICAL_INFUSER", ChemicalPairInput.class, GasOutput.class,
               ChemicalInfuserRecipe.class);
 
         public static final Recipe<ItemStackInput, GasOutput, OxidationRecipe> CHEMICAL_OXIDIZER = new Recipe<>(
-              MachineType.CHEMICAL_OXIDIZER.blockName, ItemStackInput.class, GasOutput.class,
+              MachineType.CHEMICAL_OXIDIZER.blockName, "CHEMICAL_OXIDIZER", ItemStackInput.class, GasOutput.class,
               OxidationRecipe.class);
 
         public static final Recipe<AdvancedMachineInput, ItemStackOutput, InjectionRecipe> CHEMICAL_INJECTION_CHAMBER = new Recipe<>(
-              MachineType.CHEMICAL_INJECTION_CHAMBER.blockName, AdvancedMachineInput.class,
-              ItemStackOutput.class, InjectionRecipe.class);
+              MachineType.CHEMICAL_INJECTION_CHAMBER.blockName, "CHEMICAL_INJECTION_CHAMBER",
+              AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class);
 
         public static final Recipe<FluidInput, ChemicalPairOutput, SeparatorRecipe> ELECTROLYTIC_SEPARATOR = new Recipe<>(
-              MachineType.ELECTROLYTIC_SEPARATOR.blockName, FluidInput.class, ChemicalPairOutput.class,
-              SeparatorRecipe.class);
+              MachineType.ELECTROLYTIC_SEPARATOR.blockName, "ELECTROLYTIC_SEPARATOR", FluidInput.class,
+              ChemicalPairOutput.class, SeparatorRecipe.class);
 
         public static final Recipe<ItemStackInput, ChanceOutput, SawmillRecipe> PRECISION_SAWMILL = new Recipe<>(
-              MachineType.PRECISION_SAWMILL.blockName, ItemStackInput.class, ChanceOutput.class,
+              MachineType.PRECISION_SAWMILL.blockName, "PRECISION_SAWMILL", ItemStackInput.class, ChanceOutput.class,
               SawmillRecipe.class);
 
         public static final Recipe<ItemStackInput, GasOutput, DissolutionRecipe> CHEMICAL_DISSOLUTION_CHAMBER = new Recipe<>(
-              MachineType.CHEMICAL_DISSOLUTION_CHAMBER.blockName, ItemStackInput.class,
+              MachineType.CHEMICAL_DISSOLUTION_CHAMBER.blockName, "CHEMICAL_DISSOLUTION_CHAMBER", ItemStackInput.class,
               GasOutput.class, DissolutionRecipe.class);
 
         public static final Recipe<GasInput, GasOutput, WasherRecipe> CHEMICAL_WASHER = new Recipe<>(
-              MachineType.CHEMICAL_WASHER.blockName, GasInput.class, GasOutput.class, WasherRecipe.class);
+              MachineType.CHEMICAL_WASHER.blockName, "CHEMICAL_WASHER", GasInput.class, GasOutput.class,
+              WasherRecipe.class);
 
         public static final Recipe<GasInput, ItemStackOutput, CrystallizerRecipe> CHEMICAL_CRYSTALLIZER = new Recipe<>(
-              MachineType.CHEMICAL_CRYSTALLIZER.blockName, GasInput.class, ItemStackOutput.class,
-              CrystallizerRecipe.class);
+              MachineType.CHEMICAL_CRYSTALLIZER.blockName, "CHEMICAL_CRYSTALLIZER", GasInput.class,
+              ItemStackOutput.class, CrystallizerRecipe.class);
 
         public static final Recipe<PressurizedInput, PressurizedOutput, PressurizedRecipe> PRESSURIZED_REACTION_CHAMBER = new Recipe<>(
-              MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, PressurizedInput.class,
-              PressurizedOutput.class, PressurizedRecipe.class);
+              MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, "PRESSURIZED_REACTION_CHAMBER",
+              PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class);
 
         public static final Recipe<IntegerInput, GasOutput, AmbientGasRecipe> AMBIENT_ACCUMULATOR = new Recipe<>(
-              MachineType.AMBIENT_ACCUMULATOR.blockName, IntegerInput.class, GasOutput.class,
+              MachineType.AMBIENT_ACCUMULATOR.blockName, "AMBIENT_ACCUMULATOR", IntegerInput.class, GasOutput.class,
               AmbientGasRecipe.class);
 
         public static final Recipe<FluidInput, FluidOutput, ThermalEvaporationRecipe> THERMAL_EVAPORATION_PLANT = new Recipe<>(
-              "ThermalEvaporationPlant", FluidInput.class, FluidOutput.class,
+              "ThermalEvaporationPlant", "THERMAL_EVAPORATION_PLANT", FluidInput.class, FluidOutput.class,
               ThermalEvaporationRecipe.class);
 
         public static final Recipe<GasInput, GasOutput, SolarNeutronRecipe> SOLAR_NEUTRON_ACTIVATOR = new Recipe<>(
-              MachineType.SOLAR_NEUTRON_ACTIVATOR.blockName, GasInput.class, GasOutput.class,
+              MachineType.SOLAR_NEUTRON_ACTIVATOR.blockName, "SOLAR_NEUTRON_ACTIVATOR", GasInput.class, GasOutput.class,
               SolarNeutronRecipe.class);
 
         //TODO: Replace this with Recipe being Iterable
@@ -672,6 +675,7 @@ public final class RecipeHandler {
 
         private final Map<INPUT, RECIPE> recipes = new HashMap<>();
         private final String recipeName;
+        private final String oldRecipeName;
         private final String jeiCategory;
 
         private Class<? extends MachineInput> inputClass;
@@ -679,8 +683,9 @@ public final class RecipeHandler {
         private Class<? extends MachineRecipe> recipeClass;
 
 
-        private Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe) {
+        private Recipe(String name, String oldName, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe) {
             recipeName = name;
+            oldRecipeName = oldName;
             jeiCategory = "mekanism." + recipeName.toLowerCase(Locale.ROOT);
 
             inputClass = input;
@@ -700,6 +705,10 @@ public final class RecipeHandler {
 
         public String getRecipeName() {
             return recipeName;
+        }
+
+        public String getOldRecipeName() {
+            return oldRecipeName;
         }
 
         public String getJEICategory() {

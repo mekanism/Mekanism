@@ -14,6 +14,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
@@ -26,7 +27,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 public class PRCRecipeCategory extends BaseRecipeCategory {
 
     public PRCRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiPRC.png", "pressurized_reaction_chamber",
+        super(helper, "mekanism:gui/nei/GuiPRC.png", Recipe.PRESSURIZED_REACTION_CHAMBER.getJEICategory(),
               "tile.MachineBlock2.PressurizedReactionChamber.short.name", ProgressBar.MEDIUM, 3, 11, 170, 68);
     }
 

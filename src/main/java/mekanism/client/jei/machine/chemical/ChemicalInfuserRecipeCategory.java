@@ -3,6 +3,7 @@ package mekanism.client.jei.machine.chemical;
 import mekanism.api.gas.GasStack;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiIngredientGroup;
@@ -14,7 +15,7 @@ import net.minecraft.client.Minecraft;
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory {
 
     public ChemicalInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/GuiChemicalInfuser.png", "chemical_infuser",
+        super(helper, "mekanism:gui/nei/GuiChemicalInfuser.png", Recipe.CHEMICAL_INFUSER.getJEICategory(),
               "tile.MachineBlock2.ChemicalInfuser.name", null, 3, 3, 170, 80);
     }
 
