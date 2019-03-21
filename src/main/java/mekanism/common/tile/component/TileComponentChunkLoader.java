@@ -8,7 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.security.ISecurityTile;

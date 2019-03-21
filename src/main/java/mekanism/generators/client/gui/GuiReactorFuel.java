@@ -13,7 +13,7 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

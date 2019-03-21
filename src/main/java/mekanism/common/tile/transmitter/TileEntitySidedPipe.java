@@ -16,7 +16,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;

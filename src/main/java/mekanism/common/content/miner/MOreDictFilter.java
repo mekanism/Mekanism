@@ -2,7 +2,7 @@ package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemBlock;

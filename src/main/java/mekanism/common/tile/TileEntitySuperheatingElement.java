@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

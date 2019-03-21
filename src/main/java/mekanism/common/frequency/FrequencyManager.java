@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;

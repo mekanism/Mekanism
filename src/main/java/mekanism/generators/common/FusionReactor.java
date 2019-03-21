@@ -13,7 +13,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;

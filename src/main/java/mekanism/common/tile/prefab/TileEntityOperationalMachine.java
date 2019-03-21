@@ -3,7 +3,7 @@ package mekanism.common.tile.prefab;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.common.Upgrade;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;

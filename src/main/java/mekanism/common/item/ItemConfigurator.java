@@ -18,7 +18,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

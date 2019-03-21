@@ -1,8 +1,5 @@
 package mekanism.api.gas;
 
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -185,12 +182,13 @@ public class Gas {
      * @return associated IIcon
      */
     public TextureAtlasSprite getSprite() {
+        TextureMap texMap = Minecraft.getMinecraft().getTextureMapBlocks();
         if (from_fluid) {
-            return MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+            return texMap.getAtlasSprite(fluid.getStill().toString());
         }
 
         if (sprite == null) {
-            sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getIcon().toString());
+            sprite = texMap.getAtlasSprite(getIcon().toString());
         }
 
         return sprite;

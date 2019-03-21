@@ -6,7 +6,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;

@@ -2,7 +2,6 @@ package mekanism.api;
 
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
-import mekanism.common.base.TileNetworkList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;

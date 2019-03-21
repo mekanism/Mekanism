@@ -7,7 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;

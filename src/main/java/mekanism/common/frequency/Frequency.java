@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 

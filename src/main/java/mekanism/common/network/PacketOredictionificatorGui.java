@@ -6,7 +6,7 @@ import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.filter.GuiOredictionificatorFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;

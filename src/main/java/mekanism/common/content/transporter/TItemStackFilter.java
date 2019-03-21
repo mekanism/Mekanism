@@ -1,7 +1,7 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
 import mekanism.common.util.InventoryUtils;

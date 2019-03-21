@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import io.netty.buffer.ByteBuf;
+import mekanism.api.TileNetworkList;
 import net.minecraft.nbt.NBTTagCompound;
 
 public interface ITileComponent {

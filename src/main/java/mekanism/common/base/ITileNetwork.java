@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import io.netty.buffer.ByteBuf;
+import mekanism.api.TileNetworkList;
 
 /**
  * Internal interface used for blocks that send data between clients and the server

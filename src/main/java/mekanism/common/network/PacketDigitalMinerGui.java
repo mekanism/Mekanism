@@ -11,7 +11,7 @@ import mekanism.client.gui.filter.GuiMModIDFilter;
 import mekanism.client.gui.filter.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;

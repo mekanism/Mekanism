@@ -20,7 +20,7 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
-import mekanism.common.base.TileNetworkList;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.integration.MekanismHooks;
