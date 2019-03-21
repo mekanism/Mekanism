@@ -981,7 +981,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker) {
-        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.multiblockformed"), true);
+        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
         if(client.enableMultiblockFormationParticles) {
             new SparkleAnimation(tileEntity, checker).run();
         }
@@ -989,7 +989,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity) {
-        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.multiblockformed"), true);
+        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
         if(client.enableMultiblockFormationParticles) {
             new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
         }

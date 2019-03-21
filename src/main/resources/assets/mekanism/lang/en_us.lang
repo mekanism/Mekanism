@@ -1154,4 +1154,4 @@ cmd.mek.chunk.clear=%d chunks removed from watch list
 cmd.mek.chunk.flush=%d chunks unloaded
 
 #chat messages
-chat.multiblockformed=Multiblock Formed
+chat.mek.multiblockformed=Multiblock Formed
