@@ -12,9 +12,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.WasherRecipe;
-import mekanism.common.recipe.outputs.GasOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -28,7 +26,7 @@ public class ChemicalWasher {
     @ZenMethod
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_WASHER,
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
                   new WasherRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput))));
         }
     }
@@ -36,14 +34,14 @@ public class ChemicalWasher {
     @ZenMethod
     public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<GasInput, GasOutput, WasherRecipe>(NAME,
-                  Recipe.CHEMICAL_WASHER, new IngredientWrapper(gasOutput), new IngredientWrapper(gasInput)));
+            CrafttweakerIntegration.LATE_REMOVALS
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER, new IngredientWrapper(gasOutput),
+                        new IngredientWrapper(gasInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<WasherRecipe>(NAME, Recipe.CHEMICAL_WASHER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER));
     }
 }

@@ -27,9 +27,11 @@ public class Combiner {
     @ZenMethod
     public static void addRecipe(IItemStack itemInput, IItemStack extraInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, extraInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.COMBINER, new CombinerRecipe(
-                  new DoubleMachineInput(IngredientHelper.toStack(itemInput), IngredientHelper.toStack(extraInput)),
-                  new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
+            CrafttweakerIntegration.LATE_ADDITIONS
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.COMBINER, new CombinerRecipe(
+                        new DoubleMachineInput(IngredientHelper.toStack(itemInput),
+                              IngredientHelper.toStack(extraInput)),
+                        new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
         }
     }
 
@@ -41,7 +43,7 @@ public class Combiner {
     @Deprecated
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.COMBINER,
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.COMBINER,
                   new CombinerRecipe(IngredientHelper.toStack(itemInput), IngredientHelper.toStack(itemOutput))));
         }
     }
@@ -51,14 +53,13 @@ public class Combiner {
           @Optional IIngredient extraInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<DoubleMachineInput, ItemStackOutput, CombinerRecipe>(NAME,
-                        Recipe.COMBINER, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.COMBINER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, extraInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<CombinerRecipe>(NAME, Recipe.COMBINER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.COMBINER));
     }
 }

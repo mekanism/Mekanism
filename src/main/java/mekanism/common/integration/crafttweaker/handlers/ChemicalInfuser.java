@@ -12,9 +12,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
-import mekanism.common.recipe.outputs.GasOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -29,7 +27,7 @@ public class ChemicalInfuser {
     public static void addRecipe(IGasStack leftGasInput, IGasStack rightGasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, leftGasInput, rightGasInput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.CHEMICAL_INFUSER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER,
                         new ChemicalInfuserRecipe(GasHelper.toGas(leftGasInput), GasHelper.toGas(rightGasInput),
                               GasHelper.toGas(gasOutput))));
         }
@@ -40,15 +38,13 @@ public class ChemicalInfuser {
           @Optional IIngredient rightGasInput) {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<ChemicalPairInput, GasOutput, ChemicalInfuserRecipe>(NAME,
-                        Recipe.CHEMICAL_INFUSER, new IngredientWrapper(gasOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER, new IngredientWrapper(gasOutput),
                         new IngredientWrapper(leftGasInput, rightGasInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<ChemicalInfuserRecipe>(NAME, Recipe.CHEMICAL_INFUSER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER));
     }
 }

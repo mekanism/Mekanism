@@ -32,7 +32,7 @@ public class Reaction {
           IItemStack itemOutput, IGasStack gasOutput, double energy, int duration) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, liquidInput, gasInput, itemOutput, gasOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
                         new PressurizedRecipe(
                               new PressurizedInput(IngredientHelper.toStack(itemInput),
                                     IngredientHelper.toFluid(liquidInput), GasHelper.toGas(gasInput)),
@@ -46,8 +46,8 @@ public class Reaction {
           @Optional IIngredient liquidInput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput, gasOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<PressurizedInput, PressurizedOutput, PressurizedRecipe>(NAME,
-                        Recipe.PRESSURIZED_REACTION_CHAMBER, new IngredientWrapper(itemOutput, gasOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
+                        new IngredientWrapper(itemOutput, gasOutput),
                         new IngredientWrapper(itemInput, liquidInput, gasInput)));
         }
     }
@@ -55,6 +55,6 @@ public class Reaction {
     @ZenMethod
     public static void removeAllRecipes() {
         CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<PressurizedRecipe>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER));
+              .add(new RemoveAllMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER));
     }
 }

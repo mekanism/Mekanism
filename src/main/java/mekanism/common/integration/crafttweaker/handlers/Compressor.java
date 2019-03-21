@@ -30,7 +30,7 @@ public class Compressor {
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.OSMIUM_COMPRESSOR,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR,
                         new OsmiumCompressorRecipe(IngredientHelper.toStack(itemInput),
                               IngredientHelper.toStack(itemOutput))));
         }
@@ -40,7 +40,7 @@ public class Compressor {
     public static void addRecipe(IItemStack itemInput, IGasStack gasInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe(NAME, Recipe.OSMIUM_COMPRESSOR,
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR,
                         new OsmiumCompressorRecipe(new AdvancedMachineInput(IngredientHelper.toStack(itemInput),
                               GasHelper.toGas(gasInput).getGas()),
                               new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
@@ -52,15 +52,13 @@ public class Compressor {
           @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<AdvancedMachineInput, ItemStackOutput, OsmiumCompressorRecipe>(NAME,
-                        Recipe.OSMIUM_COMPRESSOR, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput, gasInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<OsmiumCompressorRecipe>(NAME, Recipe.OSMIUM_COMPRESSOR));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR));
     }
 }

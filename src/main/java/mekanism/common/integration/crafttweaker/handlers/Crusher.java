@@ -11,9 +11,7 @@ import mekanism.common.integration.crafttweaker.util.IngredientWrapper;
 import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.CrusherRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -27,7 +25,7 @@ public class Crusher {
     @ZenMethod
     public static void addRecipe(IItemStack itemInput, IItemStack itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput, itemOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe(NAME, Recipe.CRUSHER,
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CRUSHER,
                   new CrusherRecipe(IngredientHelper.toStack(itemInput), IngredientHelper.toStack(itemOutput))));
         }
     }
@@ -36,14 +34,13 @@ public class Crusher {
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
             CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<ItemStackInput, ItemStackOutput, CrusherRecipe>(NAME,
-                        Recipe.CRUSHER, new IngredientWrapper(itemOutput),
+                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.CRUSHER, new IngredientWrapper(itemOutput),
                         new IngredientWrapper(itemInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<CrusherRecipe>(NAME, Recipe.CRUSHER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CRUSHER));
     }
 }

@@ -18,8 +18,8 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         super(helper, "mekanism:gui/nei/GuiRotaryCondensentrator.png",
-              condensentrating ? "rotary_condensentrator_condensentrating"
-                    : "rotary_condensentrator_decondensentrating",
+              condensentrating ? "mekanism.rotary_condensentrator_condensentrating"
+                    : "mekanism.rotary_condensentrator_decondensentrating",
               condensentrating ? "gui.condensentrating" : "gui.decondensentrating", null, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
     }
