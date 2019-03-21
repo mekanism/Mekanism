@@ -46,7 +46,10 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         super(name, maxEnergy);
 
         // TODO: Have subclasses pass in a static SoundEvent so we avoid per-instance # of SoundEvents for same sound
-        soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile." + sound));
+        // TODO: Factories don't currently pass in the right value for sound ID of wrapped machine; overhaul this.
+        if (!sound.equals("null")) {
+            soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile." + sound));
+        }
     }
 
 
@@ -67,7 +70,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @SideOnly(Side.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
-        if (!MekanismConfig.client.enableMachineSounds) {
+        if (!MekanismConfig.client.enableMachineSounds || soundEvent == null) {
             return;
         }
 
@@ -84,7 +87,11 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
                 playSoundCooldown = 20;
             }
         } else {
-            if (activeSound != null) {
+            // Determine how long the machine has been stopped (ala lighting changes). Don't try and stop the sound
+            // unless machine has been stopped at least half-a-second, so that machines which are rapidly flipping on/off
+            // just sound like they are continuously on.
+            long downtime = world.getTotalWorldTime() - lastActive;
+            if (activeSound != null && downtime > 10) {
                 SoundHandler.stopTileSound(getPos());
                 activeSound = null;
                 playSoundCooldown = 0;
