@@ -18,6 +18,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
+import java.util.Objects;
+
 public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 {
 	public BlockPos mainPos = BlockPos.ORIGIN;
@@ -32,7 +34,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		
 		if(!world.isRemote)
 		{
-			mainPos = pos;
+			mainPos = Objects.requireNonNull(pos);
 
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
 		}

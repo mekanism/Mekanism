@@ -29,7 +29,7 @@ public class BlockBounding extends Block
 	private static BlockPos getMainBlockPos(World world, BlockPos thisPos)
 	{
 		TileEntity te = world.getTileEntity(thisPos);
-		if (te instanceof TileEntityBoundingBlock && !((TileEntityBoundingBlock) te).mainPos.equals(thisPos))
+		if (te instanceof TileEntityBoundingBlock && !thisPos.equals(((TileEntityBoundingBlock) te).mainPos))
 		{
 			return ((TileEntityBoundingBlock) te).mainPos;
 		}
