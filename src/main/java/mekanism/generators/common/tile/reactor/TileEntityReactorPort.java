@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -17,7 +18,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
@@ -143,7 +143,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return getReactor() != null && fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("steam"));
+        return getReactor() != null && fluid != null && fluid.getFluid() == FluidRegistry.getFluid("steam");
     }
 
     @Override
