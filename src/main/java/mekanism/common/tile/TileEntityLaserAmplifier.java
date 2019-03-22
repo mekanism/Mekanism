@@ -134,7 +134,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                         diggingProgress += firing;
 
                         if (diggingProgress >= hardness * general.laserEnergyNeededPerHardness) {
-                            LaserManager.breakBlock(hitCoord, true, world);
+                            LaserManager.breakBlock(hitCoord, true, world, pos);
                             diggingProgress = 0;
                         }
                     }

@@ -111,7 +111,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
                         diggingProgress += firing;
 
                         if (diggingProgress >= hardness * general.laserEnergyNeededPerHardness) {
-                            List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world);
+                            List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world, pos);
                             if (drops != null) {
                                 receiveDrops(drops);
                             }

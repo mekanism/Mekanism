@@ -75,7 +75,7 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
                         diggingProgress += usage.laserUsage;
 
                         if (diggingProgress >= hardness * general.laserEnergyNeededPerHardness) {
-                            LaserManager.breakBlock(hitCoord, true, world);
+                            LaserManager.breakBlock(hitCoord, true, world, pos);
                             diggingProgress = 0;
                         }
                     }

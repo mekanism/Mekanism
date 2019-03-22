@@ -16,6 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -67,7 +68,7 @@ public class LaserManager {
         return new LaserInfo(mop, foundEntity);
     }
 
-    public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world) {
+    public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world, BlockPos laserPos) {
         if (!general.aestheticWorldDamage) {
             return null;
         }
@@ -75,8 +76,7 @@ public class LaserManager {
         IBlockState state = blockCoord.getBlockState(world);
         Block blockHit = state.getBlock();
 
-        EntityPlayer dummy = Mekanism.proxy
-              .getDummyPlayer((WorldServer) world, blockCoord.x, blockCoord.y, blockCoord.z).get();
+        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, laserPos).get();
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
 

@@ -365,7 +365,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     private boolean canMine(Coord4D coord) {
         IBlockState state = coord.getBlockState(world);
 
-        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, coord.x, coord.y, coord.z).get();
+        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get();
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
 

@@ -58,29 +58,17 @@ import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
-import mekanism.common.tile.TileEntityAdvancedFactory;
-import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityBoilerCasing;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityChanceMachine;
-import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
-import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.tile.TileEntityChemicalWasher;
-import mekanism.common.tile.TileEntityCombiner;
-import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
-import mekanism.common.tile.TileEntityEliteFactory;
-import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
-import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
@@ -90,15 +78,10 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
-import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityOredictionificator;
-import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPersonalChest;
-import mekanism.common.tile.TileEntityPrecisionSawmill;
-import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -111,13 +94,6 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
-import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
-import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 import net.minecraft.block.Block;
@@ -136,7 +112,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 
 /**
@@ -636,6 +611,10 @@ public class CommonProxy implements IGuiProvider {
 
     public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, double x, double y, double z) {
         return MekFakePlayer.getInstance(world, x, y, z);
+    }
+
+    public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, BlockPos pos) {
+        return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public EntityPlayer getPlayer(MessageContext context) {
