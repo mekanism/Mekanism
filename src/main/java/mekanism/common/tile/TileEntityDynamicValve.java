@@ -76,7 +76,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
-		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && fluid != null && fluid.isFluidEqual(structure.fluidStored);
+		return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) && (structure.fluidStored != null && structure.fluidStored.amount > 0) && (fluid == null || fluid.isFluidEqual(structure.fluidStored));
 	}
 	
 	@Override

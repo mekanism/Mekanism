@@ -589,9 +589,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	@Override
 	public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid)
 	{
-		if(fluidTank != null)
+		if(fluidTank != null && fluidTank.getFluid() != null)
 		{
-			if(fluid == null || fluidTank.getFluid() != null && fluidTank.getFluid().isFluidEqual(fluid))
+			if(fluid == null || fluidTank.getFluid().isFluidEqual(fluid))
 			{
 				return !(isActive && from == EnumFacing.DOWN);
 
