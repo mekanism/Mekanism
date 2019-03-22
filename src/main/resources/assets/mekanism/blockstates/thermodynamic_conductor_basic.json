@@ -6,7 +6,7 @@
       "#side": "mekanism:blocks/models/multipart/ThermodynamicConductorVerticalBasic",
       "#center": "mekanism:blocks/models/multipart/ThermodynamicConductorBasic",
       "#side_opaque": "mekanism:blocks/models/multipart/opaque/ThermodynamicConductorVerticalBasic",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/ThermodynamicConductorBasic"
+      "#center_opaque": "mekanism:blocks/models/multipart/ThermodynamicConductorBasic"
     },
     "custom": {
       "flip-v": true

@@ -3,13 +3,13 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/bin/BinEliteRight",
-      "front": "mekanism:blocks/bin/BinEliteFront",
-      "west": "mekanism:blocks/bin/BinEliteRight",
-      "east": "mekanism:blocks/bin/BinEliteLeft",
-      "south": "mekanism:blocks/bin/BinEliteBack",
-      "up": "mekanism:blocks/bin/BinEliteTop",
-      "down": "mekanism:blocks/bin/BinEliteBottom"
+      "sides": "mekanism:blocks/bin/bineliteside",
+      "front": "mekanism:blocks/bin/binelitefront",
+      "west": "mekanism:blocks/bin/bineliteside",
+      "east": "mekanism:blocks/bin/bineliteside",
+      "south": "mekanism:blocks/bin/bineliteside",
+      "up": "mekanism:blocks/bin/binelitetop",
+      "down": "mekanism:blocks/bin/binbottom"
     }
   },
   "variants": {
@@ -20,13 +20,13 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {    
+      "true": {
         "textures": {
-          "front": "mekanism:blocks/bin/BinEliteFrontOn",
-          "west": "mekanism:blocks/bin/BinEliteRightOn",
-          "east": "mekanism:blocks/bin/BinEliteLeftOn",
-          "south": "mekanism:blocks/bin/BinEliteBackOn",
-          "up": "mekanism:blocks/bin/BinEliteTopOn"
+          "front": "mekanism:blocks/bin/binelitefronton",
+          "west": "mekanism:blocks/bin/binelitesideon",
+          "east": "mekanism:blocks/bin/binelitesideon",
+          "south": "mekanism:blocks/bin/binelitesideon",
+          "up": "mekanism:blocks/bin/binelitetopon"
         }
       },
       "false": {}

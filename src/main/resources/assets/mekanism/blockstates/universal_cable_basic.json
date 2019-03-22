@@ -6,7 +6,7 @@
       "#side": "mekanism:blocks/models/multipart/UniversalCableVerticalBasic",
       "#center": "mekanism:blocks/models/multipart/UniversalCableBasic",
       "#side_opaque": "mekanism:blocks/models/multipart/opaque/UniversalCableVerticalBasic",
-      "#center_opaque": "mekanism:blocks/models/multipart/opaque/UniversalCableBasic"
+      "#center_opaque": "mekanism:blocks/models/multipart/UniversalCableBasic"
     },
     "custom": {
       "flip-v": true
