@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -29,7 +30,7 @@ public class ChemicalCrystallizer {
         if (IngredientHelper.checkNotNull(NAME, gasInput, itemOutput)) {
             CrafttweakerIntegration.LATE_ADDITIONS
                   .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_CRYSTALLIZER,
-                        new CrystallizerRecipe(GasHelper.toGas(gasInput), IngredientHelper.toStack(itemOutput))));
+                        new CrystallizerRecipe(GasHelper.toGas(gasInput), CraftTweakerMC.getItemStack(itemOutput))));
         }
     }
 

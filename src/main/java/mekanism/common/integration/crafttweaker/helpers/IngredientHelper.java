@@ -5,8 +5,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.api.liquid.ILiquidStack;
-import crafttweaker.mc1120.item.MCItemStack;
-import crafttweaker.mc1120.liquid.MCLiquidStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
@@ -55,15 +54,15 @@ public class IngredientHelper {
 
     private static IIngredient getIngredient(Object ingredient) {
         if (ingredient instanceof ItemStack) {
-            return toIItemStack((ItemStack) ingredient);
+            return CraftTweakerMC.getIItemStack((ItemStack) ingredient);
         } else if (ingredient instanceof GasStack) {
             return new CraftTweakerGasStack((GasStack) ingredient);
         } else if (ingredient instanceof Gas) {
             return new CraftTweakerGasStack(new GasStack((Gas) ingredient, 1));
         } else if (ingredient instanceof FluidStack) {
-            return toILiquidStack((FluidStack) ingredient);
+            return CraftTweakerMC.getILiquidStack((FluidStack) ingredient);
         } else if (ingredient instanceof Fluid) {
-            return toILiquidStack(new FluidStack((Fluid) ingredient, 1));
+            return CraftTweakerMC.getILiquidStack(new FluidStack((Fluid) ingredient, 1));
         }
         //TODO: Support other types of things like ore dict
         return IngredientAny.INSTANCE;
@@ -142,26 +141,6 @@ public class IngredientHelper {
                   toMatch.getRight());
         }
         return false;
-    }
-
-    public static ILiquidStack toILiquidStack(FluidStack stack) {
-        return stack == null ? null : new MCLiquidStack(stack);
-    }
-
-    public static IItemStack toIItemStack(ItemStack stack) {
-        return stack.isEmpty() ? null : new MCItemStack(stack);
-    }
-
-    public static ItemStack toStack(IItemStack stack) {
-        if (stack != null) {
-            Object internal = stack.getInternal();
-            if (internal instanceof ItemStack) {
-                return (ItemStack) internal;
-            } else {
-                CraftTweakerAPI.logError("Not a valid item stack: " + stack);
-            }
-        }
-        return ItemStack.EMPTY;
     }
 
     public static FluidStack toFluid(ILiquidStack fluid) {

@@ -2,7 +2,10 @@ package mekanism.common.integration.crafttweaker.handlers;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
+import java.util.ArrayList;
+import java.util.List;
+import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -14,6 +17,7 @@ import mekanism.common.integration.crafttweaker.util.RemoveAllMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -25,11 +29,15 @@ public class ChemicalDissolution {
     public static final String NAME = Mekanism.MOD_NAME + " Chemical Dissolution Chamber";
 
     @ZenMethod
-    public static void addRecipe(IItemStack itemInput, IGasStack gasOutput) {
-        if (IngredientHelper.checkNotNull(NAME, itemInput, gasOutput)) {
+    public static void addRecipe(IIngredient ingredientInput, IGasStack gasOutput) {
+        if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasOutput)) {
+            GasStack output = GasHelper.toGas(gasOutput);
+            List<DissolutionRecipe> recipes = new ArrayList<>();
+            for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
+                recipes.add(new DissolutionRecipe(stack, output));
+            }
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
-                        new DissolutionRecipe(IngredientHelper.toStack(itemInput), GasHelper.toGas(gasOutput))));
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, recipes));
         }
     }
 

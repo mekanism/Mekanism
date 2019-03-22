@@ -3,6 +3,10 @@ package mekanism.common.integration.crafttweaker.handlers;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
+import java.util.ArrayList;
+import java.util.List;
+import mekanism.api.gas.Gas;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -16,6 +20,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -27,13 +32,16 @@ public class ChemicalInjection {
     public static final String NAME = Mekanism.MOD_NAME + " Chemical Injection Chamber";
 
     @ZenMethod
-    public static void addRecipe(IItemStack itemInput, IGasStack gasInput, IItemStack itemOutput) {
-        if (IngredientHelper.checkNotNull(NAME, itemInput, gasInput, itemOutput)) {
+    public static void addRecipe(IIngredient ingredientInput, IGasStack gasInput, IItemStack itemOutput) {
+        if (IngredientHelper.checkNotNull(NAME, ingredientInput, gasInput, itemOutput)) {
+            ItemStackOutput output = new ItemStackOutput(CraftTweakerMC.getItemStack(itemOutput));
+            Gas gas = GasHelper.toGas(gasInput).getGas();
+            List<InjectionRecipe> recipes = new ArrayList<>();
+            for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
+                recipes.add(new InjectionRecipe(new AdvancedMachineInput(stack, gas), output));
+            }
             CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER,
-                        new InjectionRecipe(new AdvancedMachineInput(IngredientHelper.toStack(itemInput),
-                              GasHelper.toGas(gasInput).getGas()),
-                              new ItemStackOutput(IngredientHelper.toStack(itemOutput)))));
+                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INJECTION_CHAMBER, recipes));
         }
     }
 

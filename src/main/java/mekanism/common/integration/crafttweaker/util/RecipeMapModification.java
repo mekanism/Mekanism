@@ -60,6 +60,7 @@ public abstract class RecipeMapModification<INPUT extends MachineInput<INPUT>, R
 
     @Override
     public String describe() {
-        return String.format("Removing %d %s Recipe(s) for %s", recipes.size(), name, getRecipeInfo());
+        return String
+              .format("%s %d %s Recipe(s) for %s", add ? "Adding" : "Removing", recipes.size(), name, getRecipeInfo());
     }
 }
