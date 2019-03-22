@@ -971,6 +971,26 @@ public abstract class BlockBasic extends Block
 	@Override
 	public boolean isBeaconBase(IBlockAccess world, BlockPos pos, BlockPos beacon) 
 	{
-		return BasicBlockType.get(world.getBlockState(pos)).isBeaconBase;
+		BasicBlockType basicBlockType = BasicBlockType.get(world.getBlockState(pos));
+		return basicBlockType != null && basicBlockType.isBeaconBase;
+	}
+
+	@Override
+	@Deprecated
+	public boolean hasComparatorInputOverride(IBlockState blockState) {
+		return BasicBlockType.get(blockState) == BasicBlockType.BIN;
+	}
+
+	@Override
+	@Deprecated
+	public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
+		if (BasicBlockType.get(blockState) == BasicBlockType.BIN) {
+			TileEntity tile = worldIn.getTileEntity(pos);
+			if (tile instanceof TileEntityBin) {
+				return ((TileEntityBin) tile).getRedstoneLevel();
+			}
+		}
+
+		return 0;
 	}
 }
