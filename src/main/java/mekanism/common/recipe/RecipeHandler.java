@@ -673,7 +673,7 @@ public final class RecipeHandler {
             return values;
         }
 
-        private final Map<INPUT, RECIPE> recipes = new HashMap<>();
+        private final HashMap<INPUT, RECIPE> recipes = new HashMap<>();
         private final String recipeName;
         private final String oldRecipeName;
         private final String jeiCategory;
@@ -800,7 +800,8 @@ public final class RecipeHandler {
             return false;
         }
 
-        public Map<INPUT, RECIPE> get() {
+        // N.B. Must return a HashMap, not Map as Unidict expects the stronger type
+        public HashMap<INPUT, RECIPE> get() {
             return recipes;
         }
 
