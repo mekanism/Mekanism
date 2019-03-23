@@ -3,7 +3,7 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/bin/binelitesides",
+      "sides": "mekanism:blocks/bin/bineliteside",
       "front": "mekanism:blocks/bin/binelitefront",
       "west": "mekanism:blocks/bin/bineliteside",
       "east": "mekanism:blocks/bin/bineliteside",
@@ -27,7 +27,7 @@
           "east": "mekanism:blocks/bin/binelitesideon",
           "south": "mekanism:blocks/bin/binelitesideon",
           "up": "mekanism:blocks/bin/binelitetopon"
-        }
+        } 
       },
       "false": {}
     },
