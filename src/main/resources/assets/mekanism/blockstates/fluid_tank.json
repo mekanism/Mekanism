@@ -1,17 +1,21 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:fluid_tank"
+    "model": "mekanism:fluid_tank",
+    "textures": {
+      "frame": "mekanism:blocks/models/fluid_tank",
+      "glass": "mekanism:blocks/models/fluid_tank_side_off"
+    }
   },
   "variants": {
     "normal": [{}],
     "active": {
-      "true": {"textures": {"all": "mekanism:blocks/models/fluid_tank_on"}},
-      "false": {"textures": {"all": "mekanism:blocks/models/fluid_tank"}}
+      "true": {"textures": {"glass": "mekanism:blocks/models/fluid_tank_side_on"}},
+      "false": {"textures": {"glass": "mekanism:blocks/models/fluid_tank_side_off"}}
     },
     "inventory": [{
       "textures": {
-        "all": "mekanism:blocks/models/fluid_tank"
+        "frame": "mekanism:blocks/models/fluid_tank"
       }
     }]
   }
