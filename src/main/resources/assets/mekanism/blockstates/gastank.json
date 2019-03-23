@@ -1,7 +1,11 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:gas_tank"
+    "model": "mekanism:gas_tank",
+    "textures": {
+      "body": "mekanism:blocks/models/gas_tank",
+      "valve": "mekanism:blocks/models/gas_tank_basic_valve"
+    }
   },
   "variants": {
     "facing": {
@@ -13,11 +17,11 @@
       "west":  {"y": -90}
     },
     "tier": {
-      "basic": {"textures": {"all": "mekanism:blocks/models/gas_tank_basic"}},
-      "advanced": {"textures": {"all": "mekanism:blocks/models/gas_tank_advanced"}},
-      "elite": {"textures": {"all": "mekanism:blocks/models/gas_tank_elite"}},
-      "ultimate": {"textures": {"all": "mekanism:blocks/models/gas_tank_ultimate"}},
-      "creative": {"textures": {"all": "mekanism:blocks/models/gas_tank_creative"}}
+      "basic": {"textures": {"valve": "mekanism:blocks/models/gas_tank_basic_valve"}},
+      "advanced": {"textures": {"valve": "mekanism:blocks/models/gas_tank_advanced_valve"}},
+      "elite": {"textures": {"valve": "mekanism:blocks/models/gas_tank_elite_valve"}},
+      "ultimate": {"textures": {"valve": "mekanism:blocks/models/gas_tank_ultimate_valve"}},
+      "creative": {"textures": {"valve": "mekanism:blocks/models/gas_tank_creative_valve"}}
     },
     "inventory": [{}]
   }
