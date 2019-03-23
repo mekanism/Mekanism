@@ -27,7 +27,7 @@
           "east": "mekanism:blocks/bin/binelitesideon",
           "south": "mekanism:blocks/bin/binelitesideon",
           "up": "mekanism:blocks/bin/binelitetopon"
-        } 
+        }
       },
       "false": {}
     },
