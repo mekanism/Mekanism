@@ -705,58 +705,22 @@
             ],
             "faces": {
                 "down": {
-                    "uv": [
-                        10.75,
-                        5.5,
-                        10.5,
-                        5.75
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "up": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.25,
-                        5.5
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "north": {
-                    "uv": [
-                        10.25,
-                        5.75,
-                        10.5,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "south": {
-                    "uv": [
-                        10.75,
-                        5.75,
-                        11.0,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "west": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.75,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "east": {
-                    "uv": [
-                        10,
-                        5.75,
-                        10.25,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 }
             }
         },
@@ -843,58 +807,22 @@
             ],
             "faces": {
                 "down": {
-                    "uv": [
-                        10.75,
-                        5.5,
-                        10.5,
-                        5.75
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "up": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.25,
-                        5.5
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "north": {
-                    "uv": [
-                        10.25,
-                        5.75,
-                        10.5,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "south": {
-                    "uv": [
-                        10.75,
-                        5.75,
-                        11.0,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "west": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.75,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "east": {
-                    "uv": [
-                        10,
-                        5.75,
-                        10.25,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 }
             }
         },
@@ -1326,58 +1254,22 @@
             ],
             "faces": {
                 "down": {
-                    "uv": [
-                        10.75,
-                        5.5,
-                        10.5,
-                        5.75
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "up": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.25,
-                        5.5
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "north": {
-                    "uv": [
-                        10.25,
-                        5.75,
-                        10.5,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "south": {
-                    "uv": [
-                        10.75,
-                        5.75,
-                        11.0,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "west": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.75,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "east": {
-                    "uv": [
-                        10,
-                        5.75,
-                        10.25,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 }
             }
         },
@@ -1602,58 +1494,22 @@
             ],
             "faces": {
                 "down": {
-                    "uv": [
-                        10.75,
-                        5.5,
-                        10.5,
-                        5.75
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "up": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.25,
-                        5.5
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "north": {
-                    "uv": [
-                        10.25,
-                        5.75,
-                        10.5,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "south": {
-                    "uv": [
-                        10.75,
-                        5.75,
-                        11.0,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "west": {
-                    "uv": [
-                        10.5,
-                        5.75,
-                        10.75,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 },
                 "east": {
-                    "uv": [
-                        10,
-                        5.75,
-                        10.25,
-                        6
-                    ],
-                    "texture": "#all"
+                    "texture": "#led"
                 }
             }
         },
