@@ -66,7 +66,6 @@ public final class InventoryUtils {
         for (Map.Entry<ItemStack, Integer> requestEntry : request.itemMap.entrySet()) {
             ItemStack toInsert = requestEntry.getKey().copy();
 
-            //prioritize other implementations first to allow item forcing
             if (isItemHandler(tile, side.getOpposite())) {
                 IItemHandler inventory = getItemHandler(tile, side.getOpposite());
 

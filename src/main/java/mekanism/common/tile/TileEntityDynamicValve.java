@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
@@ -94,5 +95,12 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? new int[]{0, 1}
+              : InventoryUtils.EMPTY;
     }
 }

@@ -10,6 +10,7 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
@@ -29,7 +30,8 @@ public final class TransporterUtils {
             return false;
         }
 
-        if (InventoryUtils.isItemHandler(tile, side.getOpposite())) {
+        //Don't let the bin accept from all sides
+        if (!(tile instanceof TileEntityBin) && InventoryUtils.isItemHandler(tile, side.getOpposite())) {
             return true;
         } else if (tile instanceof IInventory) {
             IInventory inventory = (IInventory) tile;

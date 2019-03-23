@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -21,7 +22,6 @@ import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
@@ -120,6 +120,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     public boolean clientRendering = false;
 
+    private final int[] inventorySlots;
+
     /**
      * This machine's current RedstoneControl type.
      */
@@ -134,6 +136,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public TileEntityDigitalMiner() {
         super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
         inventory = NonNullList.withSize(29, ItemStack.EMPTY);
+        inventorySlots = new int[inventory.size()];
+        for (int i = 0; i < inventorySlots.length; i++) {
+            inventorySlots[i] = i;
+        }
         radius = 10;
 
         upgradeComponent.setSupported(Upgrade.ANCHOR);
@@ -274,23 +280,21 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             TransitRequest ejectMap = getEjectItemMap();
 
-            if (doEject && delayTicks == 0 && !ejectMap.isEmpty() && getEjectInv() != null && getEjectTile() != null) {
-                if (CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
+            TileEntity ejectInv;
+            TileEntity ejectTile;
+            if (doEject && delayTicks == 0 && !ejectMap.isEmpty() && (ejectInv = getEjectInv()) != null
+                  && (ejectTile = getEjectTile()) != null) {
+                TransitResponse response;
+                if (CapabilityUtils.hasCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
                       facing.getOpposite())) {
-                    TransitResponse response = TransporterUtils.insert(getEjectTile(), CapabilityUtils
-                          .getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
+                    response = TransporterUtils.insert(ejectTile, CapabilityUtils
+                          .getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
                                 facing.getOpposite()), ejectMap, null, true, 0);
-
-                    if (!response.isEmpty()) {
-                        response.getInvStack(this, facing.getOpposite()).use();
-                    }
                 } else {
-                    TransitResponse response = InventoryUtils
-                          .putStackInInventory(getEjectInv(), ejectMap, facing.getOpposite(), false);
-
-                    if (!response.isEmpty()) {
-                        response.getInvStack(this, facing.getOpposite()).use();
-                    }
+                    response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
+                }
+                if (!response.isEmpty()) {
+                    response.getInvStack(this, facing.getOpposite()).use();
                 }
 
                 delayTicks = 10;
@@ -942,6 +946,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        if (side == facing.getOpposite()) {
+            return inventorySlots;
+        }
         return InventoryUtils.EMPTY;
     }
 

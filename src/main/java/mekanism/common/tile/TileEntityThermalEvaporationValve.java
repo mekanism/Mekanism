@@ -7,6 +7,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.EnumFacing;
@@ -158,5 +159,12 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        //TODO: Improve this at some point by allowing for input output slot distinguishing
+        return getController() == null ? InventoryUtils.EMPTY : new int[]{0, 1, 2, 3};
     }
 }

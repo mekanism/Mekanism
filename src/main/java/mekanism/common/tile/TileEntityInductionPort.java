@@ -13,10 +13,10 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.config.MekanismConfig.general;
@@ -26,6 +26,7 @@ import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -473,5 +474,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         }
 
         return super.getCapability(capability, facing);
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
+            //Inserting into input make it draw power from the item inserted
+            return new int[]{mode ? 0 : 1};
+        }
+        return InventoryUtils.EMPTY;
     }
 }
