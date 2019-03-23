@@ -2,7 +2,11 @@
   "forge_marker": 1,
   "defaults": {
     "model": "mekanism:laser_amplifier",
-    "textures": {"all": "mekanism:blocks/models/laser_tractor_beam"}
+    "textures": {
+      "frame": "mekanism:blocks/models/laser_device_frame",
+      "side_empty": "mekanism:blocks/models/laser_tractor_beam_side_empty",
+      "side_full": "mekanism:blocks/models/laser_tractor_beam_side_full"
+    }
   },
   "variants": {
     "normal": [{}],
