@@ -5,6 +5,7 @@ import java.util.UUID;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
@@ -22,6 +23,11 @@ public final class SecurityUtils
 {
 	public static boolean canAccess(EntityPlayer player, ItemStack stack)
 	{
+		if (!MekanismConfig.current().general.allowProtection.val())
+		{
+			return true;
+		}
+
 		if(!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem)
 		{
 			UUID owner = ((IOwnerItem)stack.getItem()).getOwnerUUID(stack);
@@ -46,7 +52,7 @@ public final class SecurityUtils
 	
 	public static boolean canAccess(EntityPlayer player, TileEntity tile)
 	{
-		if(tile == null || !(tile instanceof ISecurityTile))
+		if(!MekanismConfig.current().general.allowProtection.val() || !(tile instanceof ISecurityTile))
 		{
 			return true;
 		}
