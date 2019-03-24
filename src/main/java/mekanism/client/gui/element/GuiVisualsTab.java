@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import java.util.Arrays;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -8,6 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -40,8 +42,16 @@ public class GuiVisualsTab extends GuiTileEntityElement<TileEntityDigitalMiner> 
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
-                  xAxis, yAxis);
+            if (tileEntity.radius <= 64) {
+                displayTooltip(
+                      LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
+                      xAxis, yAxis);
+            } else {
+                displayTooltips(Arrays.asList(
+                      LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
+                      TextFormatting.RED.toString() + LangUtils.localize("mekanism.gui.visuals.toobig")
+                ), xAxis, yAxis);
+            }
         }
         mc.renderEngine.bindTexture(defaultLocation);
     }

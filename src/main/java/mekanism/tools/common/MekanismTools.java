@@ -109,213 +109,295 @@ public class MekanismTools implements IModule {
 
     public void addItems() {
         //Tools
-        toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN"
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "harvestLevel", 3).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "maxUses", 2500).getInt()
-              ,
-              (float) Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "efficiency", 20d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "damage", 10).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "enchantability", 40).getInt()
+        toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN",
+              Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "harvestLevel", 3,
+                    "Harvest level of refined obsidian tools.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "maxUses", 2500,
+                    "Maximum durability of refined obsidian tools.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "efficiency", 20D,
+                    "Base speed of refined obsidian.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "damage", 10,
+                    "Base attack damage of refined obsidian.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "enchantability", 40,
+                    "Natural enchantability factor of refined obsidian.").getInt()
         );
-        toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2"
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "harvestLevel", 3).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "maxUses", 3000).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "efficiency", 25d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "damage", 10).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "enchantability", 50).getInt()
+        toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2",
+              Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "harvestLevel", 3,
+                    "Harvest level of the refined obsidian paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "maxUses", 3000,
+                    "Maximum durability of the refined obsidian paxel.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "efficiency", 25D,
+                    "Base speed of a refined obsidian paxel.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "attackDamage", 10,
+                    "Base attack damage of a refined obsidian paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.obsidian.paxel", "enchantability", 50,
+                    "Natural enchantability factor of a refined obsidian paxel.").getInt()
         );
-        toolLAZULI = EnumHelper.addToolMaterial("LAZULI"
-              , Mekanism.configuration.get("tools.tool-balance.lapis.regular", "harvestLevel", 2).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.lapis.regular", "maxUses", 200).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.lapis.regular", "efficiency", 5d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.lapis.regular", "damage", 2).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.lapis.regular", "enchantability", 8).getInt()
+        toolLAZULI = EnumHelper.addToolMaterial("LAZULI",
+              Mekanism.configuration.get("tools.tool-balance.lapis.regular", "harvestLevel", 2,
+                    "Harvest level of lapis lazuli tools.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.lapis.regular", "maxUses", 200,
+                    "Maximum durability of lapis lazuli tools.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.lapis.regular", "efficiency", 5D,
+                    "Base speed of lapis lazuli.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.lapis.regular", "damage", 2,
+                    "Base attack damage of lapis lazuli.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.lapis.regular", "enchantability", 8,
+                    "Natural enchantability factor of lapis lazuli.").getInt()
         );
-        toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2"
-              , Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "harvestLevel", 2).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "maxUses", 250).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "efficiency", 6d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "damage", 4).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "enchantability", 10).getInt()
+        toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2",
+              Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "harvestLevel", 2,
+                    "Harvest level of the lapis lazuli paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "maxUses", 250,
+                    "Maximum durability of the lapis lazuli paxel.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "efficiency", 6D,
+                    "Base speed of a lapis lazuli paxel.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "damage", 4,
+                    "Base attack damage of a lapis lazuli paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.lapis.paxel", "enchantability", 10,
+                    "Natural enchantability factor of a lapis lazuli paxel.").getInt()
         );
-        toolOSMIUM = EnumHelper.addToolMaterial("OSMIUM"
-              , Mekanism.configuration.get("tools.tool-balance.osmium.regular", "harvestLevel", 2).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.osmium.regular", "maxUses", 500).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.osmium.regular", "efficiency", 10d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.osmium.regular", "damage", 4).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.osmium.regular", "enchantability", 12).getInt()
+        toolOSMIUM = EnumHelper.addToolMaterial("OSMIUM",
+              Mekanism.configuration.get("tools.tool-balance.osmium.regular", "harvestLevel", 2,
+                    "Harvest level of osmium tools.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.osmium.regular", "maxUses", 500,
+                    "Maximum durability of osmium tools.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.osmium.regular", "efficiency", 10D,
+                    "Base speed of osmium.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.osmium.regular", "damage", 4,
+                    "Base attack damage of osmium.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.osmium.regular", "enchantability", 12,
+                    "Natural enchantability factor of osmium.").getInt()
         );
-        toolOSMIUM2 = EnumHelper.addToolMaterial("OSMIUM2"
-              , Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "harvestLevel", 3).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "maxUses", 700).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "efficiency", 12d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "damage", 5).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "enchantability", 16).getInt()
+        toolOSMIUM2 = EnumHelper.addToolMaterial("OSMIUM2",
+              Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "harvestLevel", 3,
+                    "Harvest level of the osmium paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "maxUses", 700,
+                    "Maximum durability of the osmium paxel.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "efficiency", 12D,
+                    "Base speed of an osmium paxel.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "damage", 5,
+                    "Base attack damage of an osmium paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.osmium.paxel", "enchantability", 16,
+                    "Natural enchantability factor of an osmium paxel.").getInt()
         );
-        toolBRONZE = EnumHelper.addToolMaterial("BRONZE"
-              , Mekanism.configuration.get("tools.tool-balance.bronze.regular", "harvestLevel", 2).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.bronze.regular", "maxUses", 800).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.bronze.regular", "efficiency", 14d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.bronze.regular", "damage", 6).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.bronze.regular", "enchantability", 10).getInt()
+        toolBRONZE = EnumHelper.addToolMaterial("BRONZE",
+              Mekanism.configuration.get("tools.tool-balance.bronze.regular", "harvestLevel", 2,
+                    "Harvest level of bronze tools.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.bronze.regular", "maxUses", 800,
+                    "Maximum durability of bronze tools.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.bronze.regular", "efficiency", 14D,
+                    "Base speed of bronze.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.bronze.regular", "damage", 6,
+                    "Base attack damage of bronze.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.bronze.regular", "enchantability", 10,
+                    "Natural enchantability factor of bronze.").getInt()
         );
-        toolBRONZE2 = EnumHelper.addToolMaterial("BRONZE2"
-              , Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "harvestLevel", 3).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "maxUses", 1100).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "efficiency", 16d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "damage", 10).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "enchantability", 14).getInt()
+        toolBRONZE2 = EnumHelper.addToolMaterial("BRONZE2",
+              Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "harvestLevel", 3,
+                    "Harvest level of the bronze paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "maxUses", 1100,
+                    "Maximum durability of the bronze paxel.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "efficiency", 16D,
+                    "Base speed of a bronze paxel.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "damage", 10,
+                    "Base attack damage of a bronze paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.bronze.paxel", "enchantability", 14,
+                    "Natural enchantability factor of a bronze paxel.").getInt()
         );
-        toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE"
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "harvestLevel", 2).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "maxUses", 300).getInt()
-              ,
-              (float) Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "efficiency", 14d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "damage", 5).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "enchantability", 18).getInt()
+        toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE",
+              Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "harvestLevel", 2,
+                    "Harvest level of refined glowstone tools.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "maxUses", 300,
+                    "Maximum durability of refined glowstone tools.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "efficiency", 14D,
+                    "Base speed of refined glowstone.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "damage", 5,
+                    "Base attack damage of refined glowstone.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "enchantability", 18,
+                    "Natural enchantability factor of refined glowstone.").getInt()
         );
-        toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2"
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "harvestLevel", 2).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "maxUses", 450).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "efficiency", 18d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "damage", 5).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "enchantability", 22).getInt()
+        toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2",
+              Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "harvestLevel", 2,
+                    "Harvest level of the refined glowstone paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "maxUses", 450,
+                    "Maximum durability of the refined glowstone paxel.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "efficiency", 18D,
+                    "Base speed of a refined glwostone paxel.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "damage", 5,
+                    "Base attack damage of a refined glowstone paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.glowstone.paxel", "enchantability", 22,
+                    "Natural enchantability factor of a refined glowstone paxel.").getInt()
         );
-        toolSTEEL = EnumHelper.addToolMaterial("STEEL"
-              , Mekanism.configuration.get("tools.tool-balance.steel.regular", "harvestLevel", 3).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.steel.regular", "maxUses", 850).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.steel.regular", "efficiency", 14d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.steel.regular", "damage", 4).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.steel.regular", "enchantability", 10).getInt()
+        toolSTEEL = EnumHelper.addToolMaterial("STEEL",
+              Mekanism.configuration.get("tools.tool-balance.steel.regular", "harvestLevel", 3,
+                    "Harvest level of steel tools.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.steel.regular", "maxUses", 850,
+                    "Maximum durability of steel tools.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.steel.regular", "efficiency", 14D,
+                    "Base speed of steel.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.steel.regular", "damage", 4,
+                    "Base attack damage of steel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.steel.regular", "enchantability", 10,
+                    "Natural enchantability factor of steel.").getInt()
         );
-        toolSTEEL2 = EnumHelper.addToolMaterial("STEEL2"
-              , Mekanism.configuration.get("tools.tool-balance.steel.paxel", "harvestLevel", 3).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.steel.paxel", "maxUses", 1250).getInt()
-              , (float) Mekanism.configuration.get("tools.tool-balance.steel.paxel", "efficiency", 18d).getDouble(0)
-              , Mekanism.configuration.get("tools.tool-balance.steel.paxel", "damage", 8).getInt()
-              , Mekanism.configuration.get("tools.tool-balance.steel.paxel", "enchantability", 14).getInt()
+        toolSTEEL2 = EnumHelper.addToolMaterial("STEEL2",
+              Mekanism.configuration.get("tools.tool-balance.steel.paxel", "harvestLevel", 3,
+                    "Harvest level of the steel paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.steel.paxel", "maxUses", 1250,
+                    "Maximum durability of the steel paxel.").getInt(),
+              (float) Mekanism.configuration.get("tools.tool-balance.steel.paxel", "efficiency", 18D,
+                    "Base speed of a steel paxel.").getDouble(0),
+              Mekanism.configuration.get("tools.tool-balance.steel.paxel", "damage", 8,
+                    "Base attack damage of a steel paxel.").getInt(),
+              Mekanism.configuration.get("tools.tool-balance.steel.paxel", "enchantability", 14,
+                    "Natural enchantability factor of a steel paxel.").getInt()
         );
 
         AXE_DAMAGE.put(toolOBSIDIAN,
-              (float) Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "axeAttackDamage", 12D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "axeAttackDamage", 12D,
+                    "Base attack damage of a refined obsidian axe.").getDouble());
         AXE_SPEED.put(toolOBSIDIAN,
-              (float) Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "axeAttackSpeed", -2D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.obsidian.regular", "axeAttackSpeed", -2D,
+                    "Base attack speed of a refined obsidian axe.").getDouble());
 
         AXE_DAMAGE.put(toolLAZULI,
-              (float) Mekanism.configuration.get("tools.tool-balance.lazuli.regular", "axeAttackDamage", 8D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.lazuli.regular", "axeAttackDamage", 8D,
+                    "Base attack damage of a lapis lazuli axe.").getDouble());
         AXE_SPEED.put(toolLAZULI,
-              (float) Mekanism.configuration.get("tools.tool-balance.lazuli.regular", "axeAttackSpeed", -3.1D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.lazuli.regular", "axeAttackSpeed", -3.1D,
+                    "Base attack speed of a lapis lazuli axe.").getDouble());
 
         AXE_DAMAGE.put(toolOSMIUM,
-              (float) Mekanism.configuration.get("tools.tool-balance.osmium.regular", "axeAttackDamage", 8D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.osmium.regular", "axeAttackDamage", 8D,
+                    "Base attack damage of an osmium axe.").getDouble());
         AXE_SPEED.put(toolOSMIUM,
-              (float) Mekanism.configuration.get("tools.tool-balance.osmium.regular", "axeAttackSpeed", -3D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.osmium.regular", "axeAttackSpeed", -3D,
+                    "Base attack speed of an osmium axe.").getDouble());
 
         AXE_DAMAGE.put(toolBRONZE,
-              (float) Mekanism.configuration.get("tools.tool-balance.bronze.regular", "axeAttackDamage", 8D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.bronze.regular", "axeAttackDamage", 8D,
+                    "Base attack damage of a bronze axe.").getDouble());
         AXE_SPEED.put(toolBRONZE,
-              (float) Mekanism.configuration.get("tools.tool-balance.bronze.regular", "axeAttackSpeed", -3.1D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.bronze.regular", "axeAttackSpeed", -3.1D,
+                    "Base attack speed of a bronze axe.").getDouble());
 
         AXE_DAMAGE.put(toolGLOWSTONE,
-              (float) Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "axeAttackDamage", 8D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "axeAttackDamage", 8D,
+                    "Base attack damage of a refined glowstone axe.").getDouble());
         AXE_SPEED.put(toolGLOWSTONE,
-              (float) Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "axeAttackSpeed", -3.1D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.glowstone.regular", "axeAttackSpeed", -3.1D,
+                    "Base attack speed of a refined glowstone axe.").getDouble());
 
         AXE_DAMAGE.put(toolSTEEL,
-              (float) Mekanism.configuration.get("tools.tool-balance.steel.regular", "axeAttackDamage", 8D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.steel.regular", "axeAttackDamage", 8D,
+                    "Base attack damage of a steel axe.").getDouble());
         AXE_SPEED.put(toolSTEEL,
-              (float) Mekanism.configuration.get("tools.tool-balance.steel.regular", "axeAttackSpeed", -3D)
-                    .getDouble());
+              (float) Mekanism.configuration.get("tools.tool-balance.steel.regular", "axeAttackSpeed", -3D,
+                    "Base attack speed of a steel axe.").getDouble());
 
         //Armors
-        armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", "TODO"
-              , Mekanism.configuration.get("tools.armor-balance.obsidian", "durability", 50).getInt()
-              , new int[]
-                    {
-                          Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "feet", 5).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "legs", 8).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "chest", 12).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "head", 5).getInt()
-                    }
-              , Mekanism.configuration.get("tools.armor-balance.obsidian", "enchantability", 40).getInt()
-              , SoundEvents.ITEM_ARMOR_EQUIP_IRON
-              , (float) Mekanism.configuration.get("tools.armor-balance.obsidian", "toughness", 4D).getDouble()
+        armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", "TODO",
+              Mekanism.configuration.get("tools.armor-balance.obsidian", "durability", 50,
+                    "Base durability of refined obsidian armor.").getInt(), new int[]{
+                    Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "feet", 5,
+                          "Protection value of refined obsidian boots.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "legs", 8,
+                          "Protection value of refined obsidian leggings.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "chest", 12,
+                          "Protection value of refined obsidian chestplates.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.obsidian.protection", "head", 5,
+                          "Protection value of refined obsidian helmets.").getInt()
+              }, Mekanism.configuration.get("tools.armor-balance.obsidian", "enchantability", 40,
+                    "Natural enchantability factor of refined obsidian armor.").getInt(),
+              SoundEvents.ITEM_ARMOR_EQUIP_IRON,
+              (float) Mekanism.configuration.get("tools.armor-balance.obsidian", "toughness", 4D,
+                    "Base armor toughness value of refined obsidian armor.").getDouble()
         );
-        armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", "TODO"
-              , Mekanism.configuration.get("tools.armor-balance.lapis", "durability", 13).getInt()
-              , new int[]
-                    {
-                          Mekanism.configuration.get("tools.armor-balance.lapis.protection", "feet", 2).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.lapis.protection", "legs", 6).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.lapis.protection", "chest", 5).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.lapis.protection", "head", 2).getInt()
-                    }
-              , Mekanism.configuration.get("tools.armor-balance.lapis", "enchantability", 8).getInt()
-              , SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND
-              , (float) Mekanism.configuration.get("tools.armor-balance.lapis", "toughness", 0D).getDouble()
+        armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", "TODO",
+              Mekanism.configuration.get("tools.armor-balance.lapis", "durability", 13,
+                    "Base durability of lapis lazuli armor.").getInt(), new int[]{
+                    Mekanism.configuration.get("tools.armor-balance.lapis.protection", "feet", 2,
+                          "Protection value of lapis lazuli boots.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.lapis.protection", "legs", 6,
+                          "Protection value of lapis lazuli leggings.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.lapis.protection", "chest", 5,
+                          "Protection value of lapis lazuli chestplates.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.lapis.protection", "head", 2,
+                          "Protection value of lapis lazuli helmets.").getInt()
+              }, Mekanism.configuration.get("tools.armor-balance.lapis", "enchantability", 8,
+                    "Natural enchantability factor of lapis lazuli armor.").getInt(),
+              SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND,
+              (float) Mekanism.configuration.get("tools.armor-balance.lapis", "toughness", 0D,
+                    "Base armor toughness value of lapis lazuli armor.").getDouble()
         );
-        armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", "TODO"
-              , Mekanism.configuration.get("tools.armor-balance.osmium", "durability", 30).getInt()
-              , new int[]
-                    {
-                          Mekanism.configuration.get("tools.armor-balance.osmium.protection", "feet", 3).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.osmium.protection", "legs", 6).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.osmium.protection", "chest", 5).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.osmium.protection", "head", 3).getInt()
-                    }
-              , Mekanism.configuration.get("tools.armor-balance.osmium", "enchantability", 12).getInt()
-              , SoundEvents.ITEM_ARMOR_EQUIP_IRON
-              , Mekanism.configuration.get("tools.armor-balance.osmium", "toughness", 1).getInt()
+        armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", "TODO",
+              Mekanism.configuration.get("tools.armor-balance.osmium", "durability", 30,
+                    "Base durability of osmium armor.").getInt(), new int[]{
+                    Mekanism.configuration.get("tools.armor-balance.osmium.protection", "feet", 3,
+                          "Protection value of osmium boots.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.osmium.protection", "legs", 6,
+                          "Protection value of osmium leggings.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.osmium.protection", "chest", 5,
+                          "Protection value of osmium chestplates.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.osmium.protection", "head", 3,
+                          "Protection value of osmium helmets.").getInt()
+              }, Mekanism.configuration.get("tools.armor-balance.osmium", "enchantability", 12,
+                    "Natural enchantability factor of osmium armor.").getInt(),
+              SoundEvents.ITEM_ARMOR_EQUIP_IRON,
+              Mekanism.configuration.get("tools.armor-balance.osmium", "toughness", 1,
+                    "Base armor toughness value of osmium armor.").getInt()
         );
-        armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", "TODO"
-              , Mekanism.configuration.get("tools.armor-balance.bronze", "durability", 35).getInt()
-              , new int[]
-                    {
-                          Mekanism.configuration.get("tools.armor-balance.bronze.protection", "feet", 2).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.bronze.protection", "legs", 5).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.bronze.protection", "chest", 6).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.bronze.protection", "head", 3).getInt()
-                    }
-              , Mekanism.configuration.get("tools.armor-balance.bronze", "enchantability", 10).getInt()
-              , SoundEvents.ITEM_ARMOR_EQUIP_IRON
-              , (float) Mekanism.configuration.get("tools.armor-balance.bronze", "toughness", 0D).getDouble()
+        armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", "TODO",
+              Mekanism.configuration.get("tools.armor-balance.bronze", "durability", 35,
+                    "Base durability of bronze armor.").getInt(), new int[]{
+                    Mekanism.configuration.get("tools.armor-balance.bronze.protection", "feet", 2,
+                          "Protection value of bronze boots.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.bronze.protection", "legs", 5,
+                          "Protection value of bronze leggings.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.bronze.protection", "chest", 6,
+                          "Protection value of bronze chestplates.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.bronze.protection", "head", 3,
+                          "Protection value of bronze helmets.").getInt()
+              }, Mekanism.configuration.get("tools.armor-balance.bronze", "enchantability", 10,
+                    "Natural enchantability factor of bronze armor.").getInt(),
+              SoundEvents.ITEM_ARMOR_EQUIP_IRON,
+              (float) Mekanism.configuration.get("tools.armor-balance.bronze", "toughness", 0D,
+                    "Base armor toughness value of bronze armor.").getDouble()
         );
-        armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", "TODO"
-              , Mekanism.configuration.get("tools.armor-balance.glowstone", "durability", 18).getInt()
-              , new int[]
-                    {
-                          Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "feet", 3).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "legs", 6).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "chest", 7).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "head", 3).getInt()
-                    }
-              , Mekanism.configuration.get("tools.armor-balance.glowstone", "enchantability", 18).getInt()
-              , SoundEvents.ITEM_ARMOR_EQUIP_IRON
-              , (float) Mekanism.configuration.get("tools.armor-balance.glowstone", "toughness", 0D).getDouble()
+        armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", "TODO",
+              Mekanism.configuration.get("tools.armor-balance.glowstone", "durability", 18,
+                    "Base durability of refined glowstone armor.").getInt(), new int[]{
+                    Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "feet", 3,
+                          "Protection value of refined glowstone boots.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "legs", 6,
+                          "Protection value of refined glowstone leggings.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "chest", 7,
+                          "Protection value of refined glowstone chestplates.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.glowstone.protection", "head", 3,
+                          "Protection value of refined glowstone helmets.").getInt()
+              }, Mekanism.configuration.get("tools.armor-balance.glowstone", "enchantability", 18,
+                    "Natural enchantability factor of refined glowstone armor.").getInt(),
+              SoundEvents.ITEM_ARMOR_EQUIP_IRON,
+              (float) Mekanism.configuration.get("tools.armor-balance.glowstone", "toughness", 0D,
+                    "Base armor toughness value of refined glowstone armor.").getDouble()
         );
-        armorSTEEL = EnumHelper.addArmorMaterial("STEEL", "TODO"
-              , Mekanism.configuration.get("tools.armor-balance.steel", "durability", 40).getInt()
-              , new int[]
-                    {
-                          Mekanism.configuration.get("tools.armor-balance.steel.protection", "feet", 3).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.steel.protection", "legs", 6).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.steel.protection", "chest", 7).getInt(),
-                          Mekanism.configuration.get("tools.armor-balance.steel.protection", "head", 3).getInt()
-                    }
-              , Mekanism.configuration.get("tools.armor-balance.steel", "enchantability", 10).getInt()
-              , SoundEvents.ITEM_ARMOR_EQUIP_IRON
-              , (float) Mekanism.configuration.get("tools.armor-balance.steel", "toughness", 1D).getDouble()
+        armorSTEEL = EnumHelper.addArmorMaterial("STEEL", "TODO",
+              Mekanism.configuration.get("tools.armor-balance.steel", "durability", 40,
+                    "Base durability of steel armor.").getInt(), new int[]{
+                    Mekanism.configuration.get("tools.armor-balance.steel.protection", "feet", 3,
+                          "Protection value of steel boots.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.steel.protection", "legs", 6,
+                          "Protection value of steel leggings.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.steel.protection", "chest", 7,
+                          "Protection value of steel chestplates.").getInt(),
+                    Mekanism.configuration.get("tools.armor-balance.steel.protection", "head", 3,
+                          "Protection value of steel helmets.").getInt()
+              }, Mekanism.configuration.get("tools.armor-balance.steel", "enchantability", 10,
+                    "Natural enchantability factor of steel armor.").getInt(),
+              SoundEvents.ITEM_ARMOR_EQUIP_IRON,
+              (float) Mekanism.configuration.get("tools.armor-balance.steel", "toughness", 1D,
+                    "Base armor toughness value of steel armor.").getDouble()
         );
 
         if (Mekanism.configuration.hasChanged()) {

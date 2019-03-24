@@ -13,6 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -40,7 +41,14 @@ public final class OreDictManager {
             ItemStack plank = StackUtils.size(ore, 1);
             if (!Recipe.PRECISION_SAWMILL.containsRecipe(plank)) {
                 RecipeHandler.addPrecisionSawmillRecipe(plank, new ItemStack(Items.STICK, 6),
-                      new ItemStack(MekanismItems.Sawdust), 0.25);
+                      new ItemStack(MekanismItems.Sawdust), general.sawdustChancePlank);
+            }
+        }
+
+        for (ItemStack ore : OreDictionary.getOres("stickWood")) {
+            ItemStack stick = StackUtils.size(ore, 1);
+            if (!Recipe.PRECISION_SAWMILL.containsRecipe(stick)) {
+                RecipeHandler.addPrecisionSawmillRecipe(stick, new ItemStack(MekanismItems.Sawdust));
             }
         }
 
@@ -326,25 +334,21 @@ public final class OreDictManager {
         for (ItemStack logEntry : registeredOres) {
             if (logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
                 for (int j = 0; j < 16; j++) {
-                    ItemStack log = new ItemStack(logEntry.getItem(), 1, j);
-                    tempCrafting.setInventorySlotContents(0, log);
-                    ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
-
-                    if (!resultEntry.isEmpty()) {
-                        RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6),
-                              new ItemStack(MekanismItems.Sawdust), 1);
-                    }
+                    addSawmillLog(tempCrafting, new ItemStack(logEntry.getItem(), 1, j));
                 }
             } else {
-                ItemStack log = StackUtils.size(logEntry, 1);
-                tempCrafting.setInventorySlotContents(0, log);
-                ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
-
-                if (!resultEntry.isEmpty()) {
-                    RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6),
-                          new ItemStack(MekanismItems.Sawdust), 1);
-                }
+                addSawmillLog(tempCrafting, StackUtils.size(logEntry, 1));
             }
+        }
+    }
+
+    private static void addSawmillLog(InventoryCrafting tempCrafting, ItemStack log) {
+        tempCrafting.setInventorySlotContents(0, log);
+        ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
+
+        if (!resultEntry.isEmpty()) {
+            RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6),
+                  new ItemStack(MekanismItems.Sawdust), general.sawdustChanceLog);
         }
     }
 }

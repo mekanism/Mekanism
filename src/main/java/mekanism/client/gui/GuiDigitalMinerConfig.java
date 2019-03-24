@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
-import mekanism.api.TileNetworkList;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.content.miner.MModIDFilter;
@@ -339,7 +340,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
         String prevMax = maxField != null ? maxField.getText() : "";
 
         radiusField = new GuiTextField(1, fontRenderer, guiWidth + 12, guiHeight + 67, 26, 11);
-        radiusField.setMaxStringLength(2);
+        radiusField.setMaxStringLength(Integer.toString(general.digitalMinerMaxRadius).length());
         radiusField.setText(prevRad);
 
         minField = new GuiTextField(2, fontRenderer, guiWidth + 12, guiHeight + 92, 26, 11);
@@ -572,7 +573,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
 
     private void setRadius() {
         if (!radiusField.getText().isEmpty()) {
-            int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), 32));
+            int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), general.digitalMinerMaxRadius));
 
             TileNetworkList data = TileNetworkList.withContents(6, toUse);
 

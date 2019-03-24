@@ -123,10 +123,11 @@ public final class Tier {
         @Override
         public void loadConfig() {
             if (this != CREATIVE) {
-                maxEnergy = Mekanism.configuration
-                      .get("tier", getBaseTier().getSimpleName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
-                output = Mekanism.configuration
-                      .get("tier", getBaseTier().getSimpleName() + "EnergyCubeOutput", baseOutput).getDouble();
+                String name = getBaseTier().getSimpleName();
+                maxEnergy = Mekanism.configuration.get("tier", name + "EnergyCubeMaxEnergy", baseMaxEnergy,
+                      "Maximum number of Joules a " + name + " energy cube can store.").getDouble();
+                output = Mekanism.configuration.get("tier", name + "EnergyCubeOutput", baseOutput,
+                      "Output rate in Joules of a " + name + " energy cube.").getDouble();
             }
         }
 
@@ -177,8 +178,9 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            maxEnergy = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "InductionCellMaxEnergy", baseMaxEnergy).getDouble();
+            String name = getBaseTier().getSimpleName();
+            maxEnergy = Mekanism.configuration.get("tier", name + "InductionCellMaxEnergy", baseMaxEnergy,
+                  "Maximum number of Joules a " + name + " induction cell can store.").getDouble();
         }
 
         @Override
@@ -212,8 +214,9 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            output = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "InductionProviderOutput", baseOutput).getDouble();
+            String name = getBaseTier().getSimpleName();
+            output = Mekanism.configuration.get("tier", name + "InductionProviderOutput", baseOutput,
+                  "Maximum number of Joules a " + name + " induction provider can output or accept.").getDouble();
         }
 
         @Override
@@ -291,8 +294,9 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            cableCapacity = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "CableCapacity", baseCapacity).getInt();
+            String name = getBaseTier().getSimpleName();
+            cableCapacity = Mekanism.configuration.get("tier", name + "CableCapacity", baseCapacity,
+                  "Internal buffer in Joules of each " + name + " universal cable.").getInt();
         }
 
         @Override
@@ -339,10 +343,11 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            pipeCapacity = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "PipeCapacity", baseCapacity).getInt();
-            pipePullAmount = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "PipePullAmount", basePull).getInt();
+            String name = getBaseTier().getSimpleName();
+            pipeCapacity = Mekanism.configuration.get("tier", name + "PipeCapacity", baseCapacity,
+                  "Capacity of " + name + " mechanical pipe in mB.").getInt();
+            pipePullAmount = Mekanism.configuration.get("tier", name + "PipePullAmount", basePull,
+                  "Pump rate of " + name + " mechanical pipe in mB/t.").getInt();
         }
 
         @Override
@@ -391,10 +396,11 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            tubeCapacity = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "TubeCapacity", baseCapacity).getInt();
-            tubePullAmount = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "TubePullAmount", basePull).getInt();
+            String name = getBaseTier().getSimpleName();
+            tubeCapacity = Mekanism.configuration.get("tier", name + "TubeCapacity", baseCapacity,
+                  "Capacity of " + name + " pressurized tube in mB.").getInt();
+            tubePullAmount = Mekanism.configuration.get("tier", name + "TubePullAmount", basePull,
+                  "Pump rate of " + name + " pressurized tube in mB/t.").getInt();
         }
 
         @Override
@@ -443,10 +449,11 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            pullAmount = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "TransporterPullAmount", basePull).getInt();
-            speed = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "TransporterSpeed", baseSpeed)
-                  .getInt();
+            String name = getBaseTier().getSimpleName();
+            pullAmount = Mekanism.configuration.get("tier", name + "TransporterPullAmount", basePull,
+                  "Item throughput rate of " + name + " logistical transporter in items/s.").getInt();
+            speed = Mekanism.configuration.get("tier", name + "TransporterSpeed", baseSpeed,
+                  "Five times travel speed of " + name + " logistical transporter.").getInt();
         }
 
         @Override
@@ -501,14 +508,14 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            inverseConduction = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "ConductorInverseConduction", baseConduction)
-                  .getDouble();
-            inverseHeatCapacity = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "ConductorHeatCapacity", baseHeatCapacity).getDouble();
+            String name = getBaseTier().getSimpleName();
+            inverseConduction = Mekanism.configuration.get("tier", name + "ConductorInverseConduction", baseConduction,
+                  "Conduction value of " + name + " thermodynamic conductor.").getDouble();
+            inverseHeatCapacity = Mekanism.configuration.get("tier", name + "ConductorHeatCapacity", baseHeatCapacity,
+                  "Heat capacity of " + name + " thermodynamic conductor.").getDouble();
             inverseConductionInsulation = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "ConductorConductionInsulation",
-                        baseConductionInsulation).getDouble();
+                  .get("tier", name + "ConductorConductionInsulation", baseConductionInsulation,
+                        "Insulation value of " + name + " thermodynamic conductor.").getDouble();
         }
 
         @Override
@@ -550,10 +557,11 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            storage = Mekanism.configuration
-                  .get("tier", getBaseTier().getSimpleName() + "FluidTankStorage", baseStorage).getInt();
-            output = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "FluidTankOutput", baseOutput)
-                  .getInt();
+            String name = getBaseTier().getSimpleName();
+            storage = Mekanism.configuration.get("tier", name + "FluidTankStorage", baseStorage,
+                  "Storage size of " + name + " gas tank in mB.").getInt();
+            output = Mekanism.configuration.get("tier", name + "FluidTankOutput", baseOutput,
+                  "Output rate of " + name + " gas tank in mB.").getInt();
         }
 
         @Override
@@ -593,10 +601,11 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            storage = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "GasTankStorage", baseStorage)
-                  .getInt();
-            output = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "GasTankOutput", baseOutput)
-                  .getInt();
+            String name = getBaseTier().getSimpleName();
+            storage = Mekanism.configuration.get("tier", name + "GasTankStorage", baseStorage,
+                  "Storage size of " + name + " gas tank in mB.").getInt();
+            output = Mekanism.configuration.get("tier", name + "GasTankOutput", baseOutput,
+                  "Output rate of " + name + " gas tank in mB.").getInt();
         }
 
         @Override
@@ -638,8 +647,9 @@ public final class Tier {
 
         @Override
         public void loadConfig() {
-            storage = Mekanism.configuration.get("tier", getBaseTier().getSimpleName() + "BinStorage", baseStorage)
-                  .getInt();
+            String name = getBaseTier().getSimpleName();
+            storage = Mekanism.configuration.get("tier", name + "BinStorage", baseStorage,
+                  "The number of items a " + name + " bin can store.").getInt();
         }
 
         @Override

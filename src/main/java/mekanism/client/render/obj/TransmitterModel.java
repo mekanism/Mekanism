@@ -238,7 +238,7 @@ public class TransmitterModel extends OBJBakedModelBase {
                     connection.connectionTypes);
 
         if (type == ConnectionType.NONE) {
-            if (client.oldTransmitterRender || connection.renderCenter) {
+            if (connection.renderCenter) {
                 return (byte) 0;
             } else if (connection.connectionByte == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP) {
                 return (byte) 1;

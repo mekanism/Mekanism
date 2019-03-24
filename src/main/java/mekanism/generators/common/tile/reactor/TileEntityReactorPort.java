@@ -269,7 +269,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public double getMaxOutput() {
-        return 1000000000;
+        return Integer.MAX_VALUE;
     }
 
     @Override

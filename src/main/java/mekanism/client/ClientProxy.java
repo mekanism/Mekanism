@@ -14,12 +14,6 @@ import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.ParticleLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiBoilerStats;
-import mekanism.client.gui.chemical.GuiChemicalCrystallizer;
-import mekanism.client.gui.chemical.GuiChemicalDissolutionChamber;
-import mekanism.client.gui.chemical.GuiChemicalInfuser;
-import mekanism.client.gui.chemical.GuiChemicalInjectionChamber;
-import mekanism.client.gui.chemical.GuiChemicalOxidizer;
-import mekanism.client.gui.chemical.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDictionary;
@@ -60,6 +54,12 @@ import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.GuiThermoelectricBoiler;
 import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
+import mekanism.client.gui.chemical.GuiChemicalCrystallizer;
+import mekanism.client.gui.chemical.GuiChemicalDissolutionChamber;
+import mekanism.client.gui.chemical.GuiChemicalInfuser;
+import mekanism.client.gui.chemical.GuiChemicalInjectionChamber;
+import mekanism.client.gui.chemical.GuiChemicalOxidizer;
+import mekanism.client.gui.chemical.GuiChemicalWasher;
 import mekanism.client.gui.robit.GuiRobitCrafting;
 import mekanism.client.gui.robit.GuiRobitInventory;
 import mekanism.client.gui.robit.GuiRobitMain;
@@ -226,8 +226,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.registry.IRegistry;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -235,6 +235,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -266,20 +267,38 @@ public class ClientProxy extends CommonProxy {
     public void loadConfiguration() {
         super.loadConfiguration();
 
-        client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true).getBoolean();
-        client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true).getBoolean();
-        client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean();
-        client.baseSoundVolume = (float) Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble();
-        client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean();
-        client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
-              "If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
-        client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
-        client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
-        client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
-        client.allowConfiguratorModeScroll = Mekanism.configuration.get("client", "ConfiguratorModeScroll", true)
+        client.enablePlayerSounds = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "EnablePlayerSounds", true,
+                    "Play sounds for Jetpack/Gas Mask/Flamethrower (all players).").getBoolean();
+        client.enableMachineSounds = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "EnableMachineSounds", true,
+                    "If enabled machines play their sounds while running.").getBoolean();
+        client.holidays = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "Holidays", true, "Christmas/New Years greetings in chat.")
               .getBoolean();
-        client.enableMultiblockFormationParticles = Mekanism.configuration.get("client", "MultiblockFormParticles", true,
-            "Set to false to prevent particle spam when loading multiblocks").getBoolean();
+        client.baseSoundVolume = (float) Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "SoundVolume", 1D,
+                    "Adjust Mekanica sounds' base volume. < 1 is softer, higher is louder.").getDouble();
+        client.machineEffects = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "MachineEffects", true, "Show particles when machines active.")
+              .getBoolean();
+        client.enableAmbientLighting = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "EnableAmbientLighting", true,
+                    "Should active machines produce block light.").getBoolean();
+        client.ambientLightingLevel = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "AmbientLightingLevel", 15,
+                    "How much light to produce if ambient lighting is enabled.", 1, 15).getInt();
+        client.opaqueTransmitters = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "OpaqueTransmitterRender", false,
+                    "If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.")
+              .getBoolean();
+        client.allowConfiguratorModeScroll = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "ConfiguratorModeScroll", true,
+                    "Allow sneak+scroll to change Configurator modes.").getBoolean();
+        client.enableMultiblockFormationParticles = Mekanism.configuration
+              .get(Configuration.CATEGORY_CLIENT, "MultiblockFormParticles", true,
+                    "Set to false to prevent particle spam when loading multiblocks (notification message will still display).")
+              .getBoolean();
 
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
@@ -981,16 +1000,20 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker) {
-        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
-        if(client.enableMultiblockFormationParticles) {
+        Minecraft.getMinecraft().player
+              .sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"),
+                    true);
+        if (client.enableMultiblockFormationParticles) {
             new SparkleAnimation(tileEntity, checker).run();
         }
     }
 
     @Override
     public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity) {
-        Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
-        if(client.enableMultiblockFormationParticles) {
+        Minecraft.getMinecraft().player
+              .sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"),
+                    true);
+        if (client.enableMultiblockFormationParticles) {
             new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
         }
     }
