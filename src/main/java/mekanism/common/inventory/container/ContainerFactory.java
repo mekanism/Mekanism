@@ -6,11 +6,14 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -35,14 +38,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 55 + (i*38);
 
-				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
+				addSlotToContainer(new FactoryInputSlot(tentity, getInputSlotIndex(i), xAxis, 13, i));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 55 + (i*38);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, getOutputSlotIndex(i), xAxis, 57));
 			}
 		}
 		else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -51,14 +54,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 35 + (i*26);
 
-				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
+				addSlotToContainer(new FactoryInputSlot(tentity, getInputSlotIndex(i), xAxis, 13, i));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 35 + (i*26);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, getOutputSlotIndex(i), xAxis, 57));
 			}
 		}
 		else if(tileEntity.tier == FactoryTier.ELITE)
@@ -67,14 +70,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 29 + (i*19);
 
-				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
+				addSlotToContainer(new FactoryInputSlot(tentity, getInputSlotIndex(i), xAxis, 13, i));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 29 + (i*19);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, getOutputSlotIndex(i), xAxis, 57));
 			}
 		}
 
@@ -97,6 +100,16 @@ public class ContainerFactory extends Container
 		tileEntity.openInventory(inventory.player);
 	}
 
+	private int getOutputSlotIndex(int processNumber)
+	{
+		return tileEntity.tier.processes+5+ processNumber;
+	}
+
+	private int getInputSlotIndex(int processNumber)
+	{
+		return 5+ processNumber;
+	}
+
 	@Override
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
@@ -116,7 +129,7 @@ public class ContainerFactory extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+		Slot currentSlot = inventorySlots.get(slotID);
 		
 		if(currentSlot != null && currentSlot.getHasStack())
 		{
@@ -271,5 +284,36 @@ public class ContainerFactory extends Container
 	public boolean isOutputSlot(int slot)
 	{
 		return slot >= 4+tileEntity.tier.processes && slot < 4+tileEntity.tier.processes*2;
+	}
+
+	class FactoryInputSlot extends Slot
+	{
+		/**
+		 * The index of the processes slot. 0 <= processNumber < tileEntity.tier.processes
+		 * For matching the input to output slot
+		 */
+		private final int processNumber;
+
+		public FactoryInputSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, int processNumber)
+		{
+			super(inventoryIn, index, xPosition, yPosition);
+			this.processNumber = processNumber;
+		}
+
+		@Override
+		public boolean isItemValid(ItemStack stack)
+		{
+			ItemStack outputSlotStack = tileEntity.inventory.get(getOutputSlotIndex(this.processNumber));
+			if (outputSlotStack.isEmpty())
+			{
+				return super.isItemValid(stack);
+			}
+			MachineRecipe matchingRecipe = tileEntity.recipeType.getAnyRecipe(stack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(), tileEntity.infuseStored);
+			if (matchingRecipe.recipeOutput instanceof ItemStackOutput)
+			{
+				return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, stack);
+			}
+			return super.isItemValid(stack);
+		}
 	}
 }
