@@ -7,10 +7,10 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -22,6 +22,7 @@ import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
@@ -604,5 +605,24 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public Object[] getTanks() {
         return new Object[]{inputTank, outputTank};
+    }
+
+    //TODO: Move getSlotsForFace and isItemValidForSlot to Valve
+    //NOTE: For now it has to be in the controller as it uses the old multiblock structure so the valve's don't actually
+    //have an inventory, which causes a crash trying to insert into them
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return getController() == null ? InventoryUtils.EMPTY : new int[]{0, 1, 2, 3};
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        if (slot == 0) {
+            return FluidContainerUtils.isFluidContainer(stack) && !FluidContainerUtils.isEmpty(stack);
+        } else if (slot == 2) {
+            return FluidContainerUtils.isFluidContainer(stack) && FluidContainerUtils.isEmpty(stack);
+        }
+        return false;
     }
 }

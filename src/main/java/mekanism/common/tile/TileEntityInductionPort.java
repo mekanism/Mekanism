@@ -26,10 +26,12 @@ import mekanism.common.integration.tesla.TeslaIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
@@ -484,5 +486,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return new int[]{mode ? 0 : 1};
         }
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return ChargeUtils.canBeCharged(stack);
     }
 }

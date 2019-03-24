@@ -70,10 +70,15 @@ public final class InventoryUtils {
                 IItemHandler inventory = getItemHandler(tile, side.getOpposite());
 
                 for (int i = 0; i < inventory.getSlots(); i++) {
-                    toInsert = inventory.insertItem(i, toInsert, false);
+                    //Check validation
+                    if (inventory.isItemValid(i, toInsert)) {
+                        //Do insert
+                        toInsert = inventory.insertItem(i, toInsert, false);
 
-                    if (toInsert.isEmpty()) {
-                        return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+                        //If empty, end
+                        if (toInsert.isEmpty()) {
+                            return new TransitResponse(requestEntry.getValue(), requestEntry.getKey());
+                        }
                     }
                 }
             } else if (tile instanceof ISidedInventory) {
@@ -336,10 +341,14 @@ public final class InventoryUtils {
             IItemHandler inventory = getItemHandler(tileEntity, side.getOpposite());
 
             for (int i = 0; i < inventory.getSlots(); i++) {
-                ItemStack rejects = inventory.insertItem(i, itemStack, true);
+                //Check validation
+                if (inventory.isItemValid(i, itemStack)) {
+                    //Simulate insert
+                    ItemStack rejects = inventory.insertItem(i, itemStack, true);
 
-                if (TransporterManager.didEmit(itemStack, rejects)) {
-                    return true;
+                    if (TransporterManager.didEmit(itemStack, rejects)) {
+                        return true;
+                    }
                 }
             }
         } else if (tileEntity instanceof ISidedInventory) {

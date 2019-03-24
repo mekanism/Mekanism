@@ -11,6 +11,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -360,5 +361,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return side == facing ? new int[]{1} : new int[]{0};
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return stack.getItem() instanceof IGasItem;
     }
 }

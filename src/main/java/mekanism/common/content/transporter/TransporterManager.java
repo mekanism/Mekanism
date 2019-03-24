@@ -136,10 +136,17 @@ public class TransporterManager {
         if (InventoryUtils.isItemHandler(tile, side.getOpposite())) {
             IItemHandler inv = InventoryUtils.getItemHandler(tile, side.getOpposite());
 
-            for (int i = 0; i <= inv.getSlots() - 1; i++) {
+            for (int i = 0; i < inv.getSlots(); i++) {
                 if (stack.pathType != Path.HOME) {
+                    //Validate
+                    if (!inv.isItemValid(i, toInsert)) {
+                        continue;
+                    }
+
+                    //Simulate insert
                     ItemStack rejectStack = inv.insertItem(i, toInsert, true);
 
+                    //If failed to insert, skip
                     if (!TransporterManager.didEmit(toInsert, rejectStack)) {
                         continue;
                     }
@@ -381,9 +388,16 @@ public class TransporterManager {
             if (InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
                 IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
 
-                for (int i = 0; i <= inventory.getSlots() - 1; i++) {
+                for (int i = 0; i < inventory.getSlots(); i++) {
+                    //Validate
+                    if (!inventory.isItemValid(i, toInsert)) {
+                        continue;
+                    }
+
+                    //Simulate insert
                     ItemStack rejectStack = inventory.insertItem(i, toInsert, true);
 
+                    //If didn't insert, skip
                     if (!TransporterManager.didEmit(toInsert, rejectStack)) {
                         continue;
                     }

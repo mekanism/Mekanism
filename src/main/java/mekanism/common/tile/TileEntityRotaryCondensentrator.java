@@ -12,6 +12,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -360,11 +361,25 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getRight(facing)) {
-            return new int[]{2, 3};
-        } else if (side == MekanismUtils.getLeft(facing)) {
+        if (side == MekanismUtils.getLeft(facing)) {
+            //Gas
             return new int[]{0, 1};
+        } else if (side == MekanismUtils.getRight(facing)) {
+            //Fluid
+            return new int[]{2, 3};
         }
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        if (slot == 0) {
+            //Gas
+            return stack.getItem() instanceof IGasItem;
+        } else if (slot == 2) {
+            //Fluid
+            return FluidContainerUtils.isFluidContainer(stack);
+        }
+        return false;
     }
 }

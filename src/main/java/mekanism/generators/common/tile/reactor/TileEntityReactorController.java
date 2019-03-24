@@ -16,6 +16,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
+import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.item.ItemStack;
@@ -325,5 +326,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return isFormed() ? new int[]{0} : InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return stack.getItem() instanceof ItemHohlraum;
     }
 }

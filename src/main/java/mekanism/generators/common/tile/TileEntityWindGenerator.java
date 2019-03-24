@@ -193,4 +193,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return new int[]{0};
     }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return ChargeUtils.canBeCharged(stack);
+    }
 }
