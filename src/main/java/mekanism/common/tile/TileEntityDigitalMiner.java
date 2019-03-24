@@ -280,24 +280,25 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             TransitRequest ejectMap = getEjectItemMap();
 
-            TileEntity ejectInv;
-            TileEntity ejectTile;
-            if (doEject && delayTicks == 0 && !ejectMap.isEmpty() && (ejectInv = getEjectInv()) != null
-                  && (ejectTile = getEjectTile()) != null) {
-                TransitResponse response;
-                if (CapabilityUtils.hasCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
-                      facing.getOpposite())) {
-                    response = TransporterUtils.insert(ejectTile, CapabilityUtils
-                          .getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
-                                facing.getOpposite()), ejectMap, null, true, 0);
-                } else {
-                    response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
-                }
-                if (!response.isEmpty()) {
-                    response.getInvStack(this, facing.getOpposite()).use();
-                }
+            if (doEject && delayTicks == 0 && !ejectMap.isEmpty()) {
+                TileEntity ejectInv = getEjectInv();
+                TileEntity ejectTile = getEjectTile();
+                if (ejectInv != null && ejectTile != null) {
+                    TransitResponse response;
+                    if (CapabilityUtils.hasCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
+                          facing.getOpposite())) {
+                        response = TransporterUtils.insert(ejectTile, CapabilityUtils
+                              .getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
+                                    facing.getOpposite()), ejectMap, null, true, 0);
+                    } else {
+                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
+                    }
+                    if (!response.isEmpty()) {
+                        response.getInvStack(this, facing.getOpposite()).use();
+                    }
 
-                delayTicks = 10;
+                    delayTicks = 10;
+                }
             } else if (delayTicks > 0) {
                 delayTicks--;
             }
@@ -345,7 +346,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                   Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
 
             IBlockState s = obj.getBlockState(world);
-            if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock()).canBlockStay(world, obj.getPos(), s)) {
+            if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock())
+                  .canBlockStay(world, obj.getPos(), s)) {
                 s.getBlock().dropBlockAsItem(world, obj.getPos(), s, 1);
                 world.setBlockToAir(obj.getPos());
             }
@@ -457,7 +459,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                     added++;
 
                     continue stacks;
-                } else if (testInv.get(i).isItemEqual(stack) && testInv.get(i).getCount() + stack.getCount() <= stack
+                } else if (testInv.get(i).isItemEqual(stack)
+                      && testInv.get(i).getCount() + stack.getCount() <= stack
                       .getMaxStackSize()) {
                     testInv.get(i).grow(stack.getCount());
                     added++;
@@ -886,7 +889,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
         if (clientActive != active) {
             Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                  .sendToReceivers(
+                        new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));
 
             clientActive = active;

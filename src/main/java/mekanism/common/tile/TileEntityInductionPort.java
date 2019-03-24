@@ -481,11 +481,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
-            //Inserting into input make it draw power from the item inserted
-            return new int[]{mode ? 0 : 1};
-        }
-        return InventoryUtils.EMPTY;
+        //Inserting into input make it draw power from the item inserted
+        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? new int[]{
+              mode ? 0 : 1} : InventoryUtils.EMPTY;
     }
 
     @Override
