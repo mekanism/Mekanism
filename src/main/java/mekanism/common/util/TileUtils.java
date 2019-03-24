@@ -77,10 +77,6 @@ public class TileUtils {
         }
     }
 
-    public static void emitGas(TileEntityBasicBlock tile, GasTank tank, int gasOutput) {
-        emitGas(tile, tank, gasOutput, MekanismUtils.getRight(tile.facing));
-    }
-
     public static void emitGas(TileEntityBasicBlock tile, GasTank tank, int gasOutput, EnumFacing facing) {
         if (tank.getGas() != null) {
             GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), gasOutput));

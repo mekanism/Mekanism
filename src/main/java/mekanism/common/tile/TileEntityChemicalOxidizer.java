@@ -75,7 +75,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
 
             prevEnergy = getEnergy();
 
-            TileUtils.emitGas(this, gasTank, gasOutput);
+            TileUtils.emitGas(this, gasTank, gasOutput, MekanismUtils.getRight(facing));
         }
     }
 

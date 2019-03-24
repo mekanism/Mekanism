@@ -113,7 +113,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
             prevEnergy = getEnergy();
 
-            TileUtils.emitGas(this, outputTank, gasOutput);
+            TileUtils.emitGas(this, outputTank, gasOutput, MekanismUtils.getRight(facing));
         }
     }
 

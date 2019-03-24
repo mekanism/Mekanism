@@ -97,7 +97,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                 }
             } else if (mode == 1) {
                 TileUtils.drawGas(inventory.get(0), gasTank);
-                TileUtils.emitGas(this, gasTank, gasOutput);
+                TileUtils.emitGas(this, gasTank, gasOutput, MekanismUtils.getLeft(facing));
 
                 if (FluidContainerUtils.isFluidContainer(inventory.get(2))) {
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);

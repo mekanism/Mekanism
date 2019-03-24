@@ -93,7 +93,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
                 }
             }
 
-            TileUtils.emitGas(this, outputTank, gasOutput);
+            TileUtils.emitGas(this, outputTank, gasOutput, MekanismUtils.getRight(facing));
 
             prevEnergy = getEnergy();
         }

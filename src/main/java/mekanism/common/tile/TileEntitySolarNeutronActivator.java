@@ -101,7 +101,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
                 setActive(false);
             }
 
-            TileUtils.emitGas(this, outputTank, gasOutput);
+            TileUtils.emitGas(this, outputTank, gasOutput, facing);
 
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
