@@ -32,7 +32,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     private long lastActive = -1;
 
     // Number of ticks that the block can be inactive before it's considered not recently active
-    private final int RECENT_THRESHOLD = 100;
+    private final int RECENT_THRESHOLD;
 
 
     /**
@@ -50,6 +50,14 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         if (!sound.equals("null")) {
             soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile." + sound));
         }
+        RECENT_THRESHOLD = 100;
+    }
+
+    public TileEntityEffectsBlock(SoundEvent sound, String name, double maxEnergy, int activeThreshold) {
+        super(name, maxEnergy);
+
+        soundEvent = sound;
+        RECENT_THRESHOLD = activeThreshold;
     }
 
 

@@ -17,7 +17,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
@@ -30,7 +29,7 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -46,16 +45,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState,
+public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implements IRedstoneControl, IActiveState,
       ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration {
 
-    public final int MAX_DELAY = 10;
-    public final double ENERGY_PER_ITEM = 5;
     public HashList<TransporterFilter> filters = new HashList<>();
     public RedstoneControl controlType = RedstoneControl.DISABLED;
     public EnumColor color;
@@ -70,7 +66,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
           "addOreFilter", "removeOreFilter"};
 
     public TileEntityLogisticalSorter() {
-        super("LogisticalSorter", BlockStateMachine.MachineType.LOGISTICAL_SORTER.baseEnergy);
+        super(MekanismSounds.CLICK, "LogisticalSorter", BlockStateMachine.MachineType.LOGISTICAL_SORTER.baseEnergy, 4);
         inventory = NonNullList.withSize(1, ItemStack.EMPTY);
         doAutoSync = false;
     }
@@ -267,7 +263,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
             int type = dataStream.readInt();
 
             if (type == 0) {
-                clientActive = dataStream.readBoolean();
+                clientActive = dataStream.readBoolean();    //TODO - safe to remove this or will it cause data corruption?
                 controlType = RedstoneControl.values()[dataStream.readInt()];
 
                 int c = dataStream.readInt();
@@ -320,7 +316,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         data.add(0);
 
-        data.add(isActive);
+        data.add(isActive); //TODO - similarly, safe to remove?
         data.add(controlType.ordinal());
 
         if (color != null) {
@@ -438,29 +434,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     @Override
     public boolean canPulse() {
         return true;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-
-        if (clientActive != active) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
-            if (active && client.enableMachineSounds) {
-                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK,
-                      SoundCategory.BLOCKS, 0.3F, 1);
-            }
-
-            clientActive = active;
-        }
     }
 
     @Override
