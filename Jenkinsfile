@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh "./gradlew"
+        sh "./gradlew setupCIWorkspace build"
       }
     }
     stage('Deploy') {
@@ -26,6 +26,9 @@ pipeline {
     stage('Cleanup') {
       steps{
         dir('output') {
+          deleteDir()
+        }
+        dir('build') {
           deleteDir()
         }
       }
