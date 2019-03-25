@@ -451,7 +451,7 @@ public class CommonProxy implements IGuiProvider {
         usage.precisionSawmillUsage = Mekanism.configuration
               .get("usage", "PrecisionSawmillUsage", 50D, "Energy per operation tick (Joules).").getDouble();
         usage.chemicalDissolutionChamberUsage = Mekanism.configuration
-              .get("usage", "ChemicalDissolutionChamberUsage", 400D).getDouble();
+              .get("usage", "ChemicalDissolutionChamberUsage", 400D, "Energy per operation tick (Joules).").getDouble();
         usage.chemicalWasherUsage = Mekanism.configuration
               .get("usage", "ChemicalWasherUsage", 200D, "Energy per operation tick (Joules).").getDouble();
         usage.chemicalCrystallizerUsage = Mekanism.configuration
