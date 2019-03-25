@@ -22,6 +22,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -30,6 +31,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock
 {
+	private static final int[] SLOTS = {0,1};
+
 	public UUID ownerUUID;
 	public String clientOwner;
 	
@@ -39,7 +42,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	{
 		super("SecurityDesk");
 		
-		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -327,5 +330,11 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return SLOTS;
 	}
 }

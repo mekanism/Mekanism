@@ -6,6 +6,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -191,5 +192,11 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 			default:
 				throw new NoSuchMethodException();
 		}
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

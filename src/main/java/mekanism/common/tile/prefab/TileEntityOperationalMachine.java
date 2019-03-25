@@ -8,7 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityOperationalMachine extends TileEntityMachine
+public abstract class TileEntityOperationalMachine extends TileEntityMachine
 {
 	public int operatingTicks;
 

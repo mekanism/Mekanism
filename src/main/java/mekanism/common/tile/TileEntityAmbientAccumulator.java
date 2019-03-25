@@ -15,6 +15,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -124,5 +125,11 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 				collectedGas.setGas(new GasStack(gasID, data.readInt()));
 			}
 		}
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

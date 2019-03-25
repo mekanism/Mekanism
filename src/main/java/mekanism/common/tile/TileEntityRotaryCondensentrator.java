@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
@@ -28,6 +29,7 @@ import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
@@ -52,6 +54,7 @@ import javax.annotation.Nullable;
 
 public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, ITubeConnection, IUpgradeInfoHandler, ITankManager
 {
+	private static final int[] INV_SLOTS = {0,1,2,3,4};
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
 	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
@@ -67,8 +70,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
 	public TileEntityRotaryCondensentrator()
 	{
-		super("machine.rotarycondensentrator", "RotaryCondensentrator", BlockStateMachine.MachineType.ROTARY_CONDENSENTRATOR.baseEnergy, MekanismConfig.current().usage.rotaryCondensentratorUsage.val(), 5);
-		inventory = NonNullList.withSize(6, ItemStack.EMPTY);
+		super("machine.rotarycondensentrator", "RotaryCondensentrator", BlockStateMachine.MachineType.ROTARY_CONDENSENTRATOR.baseEnergy, MekanismConfig.current().usage.rotaryCondensentratorUsage.val(), INV_SLOTS.length);
+		inventory = NonNullList.withSize(INV_SLOTS.length+1, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -445,5 +448,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 	public Object[] getTanks() 
 	{
 		return new Object[] {gasTank, fluidTank};
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return side != MekanismUtils.getRight(facing) && side != MekanismUtils.getLeft(facing) ? INV_SLOTS : InventoryUtils.EMPTY;
 	}
 }

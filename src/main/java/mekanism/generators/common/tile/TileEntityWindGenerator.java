@@ -7,6 +7,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -18,6 +19,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 {
 	public static final float SPEED = 32F;
 	public static final float SPEED_SCALED = 256F/SPEED;
+	public static final int[] SLOTS = {0};
 	
 	/** The angle the blades of this Wind Turbine are currently at. */
 	public double angle;
@@ -182,5 +184,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 	public boolean lightUpdate()
 	{
 		return false;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return sideIsOutput(side) ? InventoryUtils.EMPTY : SLOTS;
 	}
 }

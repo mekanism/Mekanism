@@ -59,6 +59,9 @@ import javax.annotation.Nullable;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile
 {
+	private static final int[] UPSLOTS = {0};
+	private static final int[] DOWNSLOTS = {1};
+	private static final int[] SIDESLOTS = {2};
 	/** This pump's tank */
 	public FluidTank fluidTank = new FluidTank(10000);
 	
@@ -432,14 +435,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		if(side == EnumFacing.UP)
 		{
-			return new int[] {0};
+			return UPSLOTS;
 		}
 		else if(side == EnumFacing.DOWN)
 		{
-			return new int[] {1};
+			return DOWNSLOTS;
 		}
 		else {
-			return new int[] {2};
+			return SIDESLOTS;
 		}
 	}
 

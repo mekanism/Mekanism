@@ -18,6 +18,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
@@ -409,6 +410,12 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		if(capability == Capabilities.LASER_RECEPTOR_CAPABILITY)
 			return (T)this;
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 	
 	public enum RedstoneOutput

@@ -20,6 +20,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -31,6 +32,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager
 {
+	protected static final int[] SLOTS = {0,1};
+
 	/** A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids. */
 	public Set<ValveData> valveViewing = new HashSet<>();
 
@@ -47,7 +50,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	public TileEntityDynamicTank(String name)
 	{
 		super(name);
-		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -303,5 +306,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		}
 		
 		structure.editMode = mode;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

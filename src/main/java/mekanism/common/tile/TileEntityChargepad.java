@@ -20,6 +20,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.entity.EntityLivingBase;
@@ -259,5 +260,11 @@ public class TileEntityChargepad extends TileEntityNoisyBlock
 	public boolean lightUpdate()
 	{
 		return true;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -76,6 +77,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock
 {
 	public static int[] EJECT_INV;
+	private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
 	public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
 	public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
@@ -128,14 +130,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 28);
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, INV_SLOTS.length);
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
 
 	public TileEntityDigitalMiner()
 	{
 		super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
-		inventory = NonNullList.withSize(29, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(INV_SLOTS.length+1, ItemStack.EMPTY);
 		radius = 10;
 		
 		upgradeComponent.setSupported(Upgrade.ANCHOR);
@@ -1169,7 +1171,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return InventoryUtils.EMPTY;
+		return side == facing.getOpposite() ? INV_SLOTS : InventoryUtils.EMPTY;
 	}
 
 	public TileEntity getEjectTile()

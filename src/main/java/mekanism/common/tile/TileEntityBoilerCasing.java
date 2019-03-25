@@ -18,6 +18,7 @@ import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,6 +33,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer
 {
+	protected static final int[] INV_SLOTS = {0,1};
 	/** A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids. */
 	public Set<ValveData> valveViewing = new HashSet<>();
 
@@ -49,7 +51,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	public TileEntityBoilerCasing(String name)
 	{
 		super(name);
-		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(INV_SLOTS.length, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -432,5 +434,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 	public String getName()
 	{
 		return LangUtils.localize("gui.thermoelectricBoiler");
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

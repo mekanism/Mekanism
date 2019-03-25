@@ -16,6 +16,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,6 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl, ISecurityTile, IBoundingBlock
 {
+	private static final int[] SLOTS = {0};
+
 	public boolean isActive;
 
 	public boolean clientActive;
@@ -44,7 +47,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		super("SeismicVibrator", BlockStateMachine.MachineType.SEISMIC_VIBRATOR.baseEnergy);
 		
-		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -247,5 +250,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return sideIsConsumer(side) ? InventoryUtils.EMPTY : SLOTS;
 	}
 }

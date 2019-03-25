@@ -15,6 +15,7 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -23,6 +24,7 @@ import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -288,5 +290,11 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	public MultiblockManager<SynchronizedTurbineData> getManager() 
 	{
 		return MekanismGenerators.turbineManager;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

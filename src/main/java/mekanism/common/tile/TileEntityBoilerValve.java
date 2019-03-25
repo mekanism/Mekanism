@@ -218,4 +218,10 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
 		
 		return super.getCapability(capability, side);
 	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return INV_SLOTS;
+	}
 }

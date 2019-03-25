@@ -34,6 +34,7 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.GasUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
@@ -52,6 +53,8 @@ import javax.annotation.Nonnull;
 
 public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager, ISecurityTile, IUpgradeTile, IUpgradeInfoHandler
 {
+	private static final int[] SLOTS = {0,1,2};
+
 	public GasTank inputTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
 	
@@ -70,14 +73,14 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, SLOTS.length);
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntitySolarNeutronActivator()
 	{
 		super("SolarNeutronActivator");
 		upgradeComponent.setSupported(Upgrade.ENERGY, false);
-		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(SLOTS.length+1, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -459,5 +462,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return canTubeConnect(side) ? InventoryUtils.EMPTY : SLOTS;
 	}
 }

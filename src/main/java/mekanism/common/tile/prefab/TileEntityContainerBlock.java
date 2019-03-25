@@ -201,10 +201,10 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public int[] getSlotsForFace(EnumFacing side)
-	{
+	public abstract int[] getSlotsForFace(EnumFacing side);
+	/*{
 		return InventoryUtils.EMPTY;
-	}
+	}*/
 
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)

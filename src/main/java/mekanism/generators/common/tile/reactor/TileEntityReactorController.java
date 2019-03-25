@@ -14,11 +14,13 @@ import mekanism.common.base.SoundWrapper;
 import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -410,5 +412,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	public void initSounds()
 	{
 		sound = new SoundWrapper(this, this);
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

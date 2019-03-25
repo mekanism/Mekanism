@@ -19,6 +19,7 @@ import mekanism.common.tile.prefab.TileEntityNoisyBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,6 +31,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
 {
+	private static final int[] SLOTS = {0};
 	public double energyUsage = 100;
 	
 	public double temperature;
@@ -55,7 +57,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 	public TileEntityResistiveHeater()
 	{
 		super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.baseEnergy);
-		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -380,5 +382,11 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
 	public TileComponentSecurity getSecurity()
 	{
 		return securityComponent;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return sideIsConsumer(side) ? InventoryUtils.EMPTY : SLOTS;
 	}
 }

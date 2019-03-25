@@ -12,6 +12,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -193,5 +194,11 @@ public class TileEntityLaser extends TileEntityNoisyBlock implements IActiveStat
 		nbtTags.setBoolean("isActive", isActive);
 		
 		return nbtTags;
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

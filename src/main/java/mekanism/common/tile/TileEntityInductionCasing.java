@@ -15,10 +15,12 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
@@ -26,6 +28,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration
 {
+	protected static final int[] SLOTS = {0,1};
+
 	public int clientCells;
 	public int clientProviders;
 	
@@ -37,7 +41,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	public TileEntityInductionCasing(String name)
 	{
 		super(name);
-		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
 	}
 	
 	@Override
@@ -232,5 +236,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY)
 			return (T) this;
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return InventoryUtils.EMPTY;
 	}
 }

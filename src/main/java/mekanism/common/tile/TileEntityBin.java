@@ -44,6 +44,8 @@ import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IConfigurable, ITierUpgradeable
 {
+	private static final int[] UPSLOTS = {1};
+	private static final int[] DOWNSLOTS = {0};
 	public boolean isActive;
 
 	public boolean clientActive;
@@ -575,11 +577,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		if(side == EnumFacing.UP)
 		{
-			return new int[] {1};
+			return UPSLOTS;
 		}
 		else if(side == EnumFacing.DOWN)
 		{
-			return new int[] {0};
+			return DOWNSLOTS;
 		}
 
 		return InventoryUtils.EMPTY;

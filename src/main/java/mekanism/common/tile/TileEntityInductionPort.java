@@ -537,4 +537,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		
 		return super.getCapability(capability, facing);
 	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return SLOTS;
+	}
 }

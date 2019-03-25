@@ -45,6 +45,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public static final int MAX_OUTPUT = 10000;
 	public static final int MAX_SOLARS = 4;
 	public static final int MAX_HEIGHT = 18;
+	private static final int[] SLOTS = {0,1,2,3};
 
 	public FluidTank inputTank = new FluidTank(0);
 	public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
@@ -85,7 +86,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	{
 		super("ThermalEvaporationController");
 		
-		inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+		inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
 	}
 
 	@Override
@@ -730,5 +731,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public Object[] getTanks() 
 	{
 		return new Object[] {inputTank, outputTank};
+	}
+
+	@Override
+	public int[] getSlotsForFace(EnumFacing side)
+	{
+		return SLOTS;
 	}
 }
