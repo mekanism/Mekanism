@@ -84,7 +84,6 @@ import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.item.machine.RenderMachineItem;
 import mekanism.client.render.obj.MekanismOBJLoader;
 import mekanism.client.render.tileentity.RenderBin;
-import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
@@ -334,7 +333,6 @@ public class ClientProxy extends CommonProxy {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBin.class, new RenderBin());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerCasing.class, new RenderThermoelectricBoiler());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerValve.class, new RenderThermoelectricBoiler());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChargepad.class, new RenderChargepad());
         ClientRegistry
               .bindTileEntitySpecialRenderer(TileEntityChemicalCrystallizer.class, new RenderChemicalCrystallizer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalDissolutionChamber.class,
