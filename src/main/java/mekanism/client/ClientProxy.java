@@ -150,7 +150,6 @@ import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityBoilerValve;
-import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
