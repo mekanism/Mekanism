@@ -59,8 +59,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     public boolean roundRobin;
     public int rrIndex = 0;
     public int delayTicks;
-    public boolean isActive;
-    public boolean clientActive;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter",
           "addOreFilter", "removeOreFilter"};
@@ -263,7 +261,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             int type = dataStream.readInt();
 
             if (type == 0) {
-                clientActive = dataStream.readBoolean();    //TODO - safe to remove this or will it cause data corruption?
                 controlType = RedstoneControl.values()[dataStream.readInt()];
 
                 int c = dataStream.readInt();
@@ -285,7 +282,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                     filters.add(TransporterFilter.readFromPacket(dataStream));
                 }
             } else if (type == 1) {
-                clientActive = dataStream.readBoolean();
                 controlType = RedstoneControl.values()[dataStream.readInt()];
 
                 int c = dataStream.readInt();
@@ -316,7 +312,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
 
         data.add(0);
 
-        data.add(isActive); //TODO - similarly, safe to remove?
         data.add(controlType.ordinal());
 
         if (color != null) {
@@ -342,7 +337,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
 
         data.add(1);
 
-        data.add(isActive);
         data.add(controlType.ordinal());
 
         if (color != null) {
