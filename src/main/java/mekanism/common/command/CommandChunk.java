@@ -2,9 +2,7 @@ package mekanism.common.command;
 
 import java.util.HashSet;
 import java.util.Set;
-import mekanism.common.Mekanism;
 import mekanism.common.command.CommandMek.Cmd;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

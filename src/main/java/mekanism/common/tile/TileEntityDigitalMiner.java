@@ -73,7 +73,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.collection.immutable.Stack;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {

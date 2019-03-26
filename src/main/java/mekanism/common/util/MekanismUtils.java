@@ -17,17 +17,10 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
-import mekanism.common.MekanismItems;
-import mekanism.common.OreDictCache;
 import mekanism.common.SideData;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.BinTier;
-import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Tier.GasTankTier;
-import mekanism.common.Tier.InductionCellTier;
-import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory;
@@ -41,10 +34,7 @@ import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
@@ -89,7 +79,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.

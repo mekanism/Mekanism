@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.IllegalFormatException;
-import mekanism.api.gas.GasStack;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 

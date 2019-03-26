@@ -18,7 +18,6 @@ import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
