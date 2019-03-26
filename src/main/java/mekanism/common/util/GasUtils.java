@@ -13,6 +13,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.MekanismFluids;
+import mekanism.common.OreDictCache;
 import mekanism.common.Tier.GasTankTier;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.init.Items;
@@ -198,7 +199,7 @@ public final class GasUtils {
                 return gasStack;
             }
         }
-        List<String> oreDictNames = MekanismUtils.getOreDictName(itemStack);
+        List<String> oreDictNames = OreDictCache.getOreDictName(itemStack);
         if (oreDictNames.contains("dustSulfur")) {
             gasStack = getIfValid.apply(MekanismFluids.SulfuricAcid, 2);
             if (gasStack != null) {

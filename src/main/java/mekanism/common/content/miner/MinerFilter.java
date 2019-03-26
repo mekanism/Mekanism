@@ -3,7 +3,6 @@ package mekanism.common.content.miner;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -71,7 +70,7 @@ public abstract class MinerFilter implements IFilter {
         requireStack = nbtTags.getBoolean("requireStack");
 
         if (nbtTags.hasKey("replaceStack")) {
-            replaceStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("replaceStack"));
+            replaceStack = new ItemStack(nbtTags.getCompoundTag("replaceStack"));
         }
     }
 

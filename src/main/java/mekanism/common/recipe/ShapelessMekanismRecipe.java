@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -50,7 +49,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
             return null;
         }
 
-        ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
+        ItemStack result = new ItemStack(nbtTags.getCompoundTag("result"));
         NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
 
         if (result.isEmpty() || list.tagCount() == 0) {
@@ -67,7 +66,7 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
             if (compound.hasKey("oredict")) {
                 ret[i] = compound.getString("oredict");
             } else if (compound.hasKey("itemstack")) {
-                ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
+                ret[i] = new ItemStack(compound.getCompoundTag("itemstack"));
             } else {
                 Mekanism.logger.error(Mekanism.LOG_TAG + " Shapeless recipe parse error: invalid input tag data key.");
                 return null;

@@ -3,7 +3,6 @@ package mekanism.common.content.miner;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -51,7 +50,7 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
         super.read(nbtTags);
 
         fuzzy = nbtTags.getBoolean("fuzzy");
-        itemType = InventoryUtils.loadFromNBT(nbtTags);
+        itemType = new ItemStack(nbtTags);
     }
 
     @Override

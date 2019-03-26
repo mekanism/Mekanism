@@ -1,6 +1,5 @@
 package mekanism.common.recipe.inputs;
 
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,8 +21,8 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        itemStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
-        extraStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("extra"));
+        itemStack = new ItemStack(nbtTags.getCompoundTag("input"));
+        extraStack = new ItemStack(nbtTags.getCompoundTag("extra"));
     }
 
     @Override

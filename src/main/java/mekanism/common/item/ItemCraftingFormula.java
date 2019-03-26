@@ -128,7 +128,7 @@ public class ItemCraftingFormula extends ItemMekanism {
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < 9) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
 

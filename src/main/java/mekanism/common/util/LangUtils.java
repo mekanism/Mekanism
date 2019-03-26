@@ -24,10 +24,6 @@ public final class LangUtils {
               : fluidStack.getFluid().getLocalizedName(fluidStack);
     }
 
-    public static String localizeGasStack(GasStack gasStack) {
-        return (gasStack == null || gasStack.getGas() == null) ? null : gasStack.getGas().getLocalizedName();
-    }
-
     /**
      * Localizes the defined string.
      *

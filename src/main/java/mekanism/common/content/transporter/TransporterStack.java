@@ -13,7 +13,6 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -135,7 +134,7 @@ public class TransporterStack {
         }
 
         pathType = Path.values()[nbtTags.getInteger("pathType")];
-        itemStack = InventoryUtils.loadFromNBT(nbtTags);
+        itemStack = new ItemStack(nbtTags);
     }
 
     public void setPath(List<Coord4D> path, Path type) {

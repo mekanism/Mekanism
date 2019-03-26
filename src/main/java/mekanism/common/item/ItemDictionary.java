@@ -4,8 +4,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +37,7 @@ public class ItemDictionary extends ItemMekanism {
 
             if (world.isRemote) {
                 ItemStack testStack = new ItemStack(block, 1, block.getMetaFromState(state));
-                List<String> names = MekanismUtils.getOreDictName(testStack);
+                List<String> names = OreDictCache.getOreDictName(testStack);
 
                 if (!names.isEmpty()) {
                     player.sendMessage(new TextComponentString(

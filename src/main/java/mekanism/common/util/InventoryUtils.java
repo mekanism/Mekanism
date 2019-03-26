@@ -440,11 +440,6 @@ public final class InventoryUtils {
         return false;
     }
 
-    public static ItemStack loadFromNBT(NBTTagCompound nbtTags) {
-        ItemStack ret = new ItemStack(nbtTags);
-        return ret;
-    }
-
     public static boolean isItemHandler(TileEntity tile, EnumFacing side) {
         return CapabilityUtils.hasCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
     }

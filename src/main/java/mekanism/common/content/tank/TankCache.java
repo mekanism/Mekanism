@@ -2,7 +2,6 @@ package mekanism.common.content.tank;
 
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -44,7 +43,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < 2) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
 

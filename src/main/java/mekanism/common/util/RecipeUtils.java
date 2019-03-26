@@ -226,7 +226,7 @@ public class RecipeUtils {
         }
 
         if (nbtTags.hasKey("itemstack")) {
-            return InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemstack"));
+            return new ItemStack(nbtTags.getCompoundTag("itemstack"));
         } else if (nbtTags.hasKey("itemname")) {
             Item item = Item.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("itemname")));
 

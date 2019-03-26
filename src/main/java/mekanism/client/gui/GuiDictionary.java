@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -100,7 +101,7 @@ public class GuiDictionary extends GuiMekanism {
                         itemType = stack.copy();
                         itemType.setCount(1);
 
-                        scrollList.setText(MekanismUtils.getOreDictName(itemType));
+                        scrollList.setText(OreDictCache.getOreDictName(itemType));
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
 
                         return;
@@ -115,7 +116,7 @@ public class GuiDictionary extends GuiMekanism {
                     itemType = stack.copy();
                     itemType.setCount(1);
 
-                    scrollList.setText(MekanismUtils.getOreDictName(itemType));
+                    scrollList.setText(OreDictCache.getOreDictName(itemType));
                 } else if (stack.isEmpty() && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                     itemType = ItemStack.EMPTY;
 

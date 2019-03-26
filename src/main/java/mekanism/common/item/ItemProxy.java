@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +39,7 @@ public class ItemProxy extends Item {
 
     public ItemStack getSavedItem(ItemStack stack) {
         if (ItemDataUtils.getBoolean(stack, "hasStack")) {
-            return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
+            return new ItemStack(ItemDataUtils.getCompound(stack, "savedItem"));
         }
 
         return ItemStack.EMPTY;

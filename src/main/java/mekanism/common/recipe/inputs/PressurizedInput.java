@@ -2,7 +2,6 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,7 +30,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        theSolid = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemInput"));
+        theSolid = new ItemStack(nbtTags.getCompoundTag("itemInput"));
         theFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("fluidInput"));
         theGas = GasStack.readFromNBT(nbtTags.getCompoundTag("gasInput"));
     }

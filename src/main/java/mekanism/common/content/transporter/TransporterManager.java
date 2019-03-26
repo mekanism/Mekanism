@@ -341,11 +341,7 @@ public class TransporterManager {
             return stack;
         }
 
-        return MekanismUtils.size(stack, stack.getCount() - returned.getCount());
-    }
-
-    public static ItemStack getToUse(ItemStack stack, int rejected) {
-        return MekanismUtils.size(stack, stack.getCount() - rejected);
+        return StackUtils.size(stack, stack.getCount() - returned.getCount());
     }
 
     /**

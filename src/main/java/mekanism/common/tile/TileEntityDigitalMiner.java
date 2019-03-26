@@ -48,6 +48,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
@@ -72,6 +73,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import scala.collection.immutable.Stack;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
@@ -390,7 +392,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             if (!inventory.get(i).isEmpty() && inventory.get(i).isItemEqual(filter.replaceStack)) {
                 inventory.get(i).shrink(1);
 
-                return MekanismUtils.size(filter.replaceStack, 1);
+                return StackUtils.size(filter.replaceStack, 1);
             }
         }
 
@@ -400,7 +402,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             if (stack != null) {
                 stack.use();
-                return MekanismUtils.size(filter.replaceStack, 1);
+                return StackUtils.size(filter.replaceStack, 1);
             }
         }
 
