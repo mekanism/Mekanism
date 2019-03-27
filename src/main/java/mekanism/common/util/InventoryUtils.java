@@ -13,7 +13,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -438,11 +437,6 @@ public final class InventoryUtils {
         }
 
         return false;
-    }
-
-    public static ItemStack loadFromNBT(NBTTagCompound nbtTags) {
-        ItemStack ret = new ItemStack(nbtTags);
-        return ret;
     }
 
     public static boolean isItemHandler(TileEntity tile, EnumFacing side) {

@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.transporter.Finder.MaterialFinder;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -48,7 +47,7 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
 
-        materialItem = InventoryUtils.loadFromNBT(nbtTags);
+        materialItem = new ItemStack(nbtTags);
     }
 
     @Override

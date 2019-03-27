@@ -243,7 +243,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
 

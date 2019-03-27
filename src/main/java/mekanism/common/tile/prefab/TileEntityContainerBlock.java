@@ -93,7 +93,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
                 byte slotID = tagCompound.getByte("Slot");
 
                 if (slotID >= 0 && slotID < getSizeInventory()) {
-                    setInventorySlotContents(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                    setInventorySlotContents(slotID, new ItemStack(tagCompound));
                 }
             }
         }
@@ -233,7 +233,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
     }

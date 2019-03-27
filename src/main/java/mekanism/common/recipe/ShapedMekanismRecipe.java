@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -54,7 +53,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
             return null;
         }
 
-        ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
+        ItemStack result = new ItemStack(nbtTags.getCompoundTag("result"));
         NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
 
         if (result.isEmpty() || list.tagCount() == 0) {
@@ -83,7 +82,7 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
 
                 ret[i] = compound.getString("character").toCharArray()[0];
             } else if (compound.hasKey("itemstack")) {
-                ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
+                ret[i] = new ItemStack(compound.getCompoundTag("itemstack"));
             } else {
                 Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid input tag data key.");
                 return null;

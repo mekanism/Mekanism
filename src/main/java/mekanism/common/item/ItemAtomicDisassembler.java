@@ -11,10 +11,10 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.state.IBlockState;
@@ -131,7 +131,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
             Coord4D orig = new Coord4D(pos, player.world);
 
-            List<String> names = MekanismUtils.getOreDictName(stack);
+            List<String> names = OreDictCache.getOreDictName(stack);
 
             boolean isOre = false;
 
@@ -379,7 +379,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                       .getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
 
                 if (coord.exists(world) && checkID(coord.getBlock(world)) && (stack.isItemEqual(blockStack) || (
-                      coord.getBlock(world) == startBlock && MekanismUtils.getOreDictName(stack).contains("logWood")
+                      coord.getBlock(world) == startBlock && OreDictCache.getOreDictName(stack).contains("logWood")
                             && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4))) {
                     loop(coord);
                 }

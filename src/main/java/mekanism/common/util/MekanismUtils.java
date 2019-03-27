@@ -17,17 +17,10 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
-import mekanism.common.MekanismItems;
-import mekanism.common.OreDictCache;
 import mekanism.common.SideData;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.BinTier;
-import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Tier.GasTankTier;
-import mekanism.common.Tier.InductionCellTier;
-import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory;
@@ -41,10 +34,7 @@ import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
@@ -89,7 +79,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -118,94 +107,6 @@ public final class MekanismUtils {
         }
     }
 
-
-    public static String merge(List<String> text) {
-        StringBuilder builder = new StringBuilder();
-
-        for (String s : text) {
-            builder.append(s);
-        }
-
-        return builder.toString();
-    }
-
-    /**
-     * Copies an ItemStack and returns it with a defined getCount().
-     *
-     * @param itemstack - stack to change size
-     * @param size - size to change to
-     * @return resized ItemStack
-     */
-    public static ItemStack size(ItemStack itemstack, int size) {
-        ItemStack newStack = itemstack.copy();
-        newStack.setCount(size);
-        return newStack;
-    }
-
-    /**
-     * Adds a recipe directly to the CraftingManager that works with the Forge Ore Dictionary.
-     *
-     * @param output the ItemStack produced by this recipe
-     * @param params the items/blocks/itemstacks required to create the output ItemStack
-     */
-    public static void addRecipe(ItemStack output, Object[] params) {
-//		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
-    }
-
-    /**
-     * Retrieves an empty Energy Cube with a defined tier.
-     *
-     * @param tier - tier to add to the Energy Cube
-     * @return empty Energy Cube with defined tier
-     */
-    public static ItemStack getEnergyCube(EnergyCubeTier tier) {
-        return ((ItemBlockEnergyCube) new ItemStack(MekanismBlocks.EnergyCube).getItem()).getUnchargedItem(tier);
-    }
-
-    /**
-     * Returns a Control Circuit with a defined tier, using an OreDict value if enabled in the config.
-     *
-     * @param tier - tier to add to the Control Circuit
-     * @return Control Circuit with defined tier
-     */
-    public static Object getControlCircuit(BaseTier tier) {
-        return general.controlCircuitOreDict ? "circuit" + tier.getSimpleName()
-              : new ItemStack(MekanismItems.ControlCircuit, 1, tier.ordinal());
-    }
-
-    /**
-     * Retrieves an empty Induction Cell with a defined tier.
-     *
-     * @param tier - tier to add to the Induction Cell
-     * @return empty Induction Cell with defined tier
-     */
-    public static ItemStack getInductionCell(InductionCellTier tier) {
-        return ((ItemBlockBasic) new ItemStack(MekanismBlocks.BasicBlock2, 1, 3).getItem()).getUnchargedCell(tier);
-    }
-
-    /**
-     * Retrieves an Induction Provider with a defined tier.
-     *
-     * @param tier - tier to add to the Induction Provider
-     * @return Induction Provider with defined tier
-     */
-    public static ItemStack getInductionProvider(InductionProviderTier tier) {
-        return ((ItemBlockBasic) new ItemStack(MekanismBlocks.BasicBlock2, 1, 4).getItem()).getUnchargedProvider(tier);
-    }
-
-    /**
-     * Retrieves an Bin with a defined tier.
-     *
-     * @param tier - tier to add to the Bin
-     * @return Bin with defined tier
-     */
-    public static ItemStack getBin(BinTier tier) {
-        ItemStack ret = new ItemStack(MekanismBlocks.BasicBlock, 1, 6);
-        ((ItemBlockBasic) ret.getItem()).setBaseTier(ret, tier.getBaseTier());
-
-        return ret;
-    }
-
     /**
      * Retrieves an empty Gas Tank.
      *
@@ -213,14 +114,6 @@ public final class MekanismUtils {
      */
     public static ItemStack getEmptyGasTank(GasTankTier tier) {
         return ((ItemBlockGasTank) new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem(tier);
-    }
-
-    public static ItemStack getEmptyFluidTank(FluidTankTier tier) {
-        ItemStack stack = new ItemStack(MekanismBlocks.MachineBlock2, 1, 11);
-        ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
-        itemMachine.setBaseTier(stack, tier.getBaseTier());
-
-        return stack;
     }
 
     public static ItemStack getTransmitter(TransmitterType type, BaseTier tier, int amount) {
@@ -292,35 +185,6 @@ public final class MekanismUtils {
      */
     public static EnumFacing getBack(EnumFacing orientation) {
         return orientation.getOpposite();
-    }
-
-    /**
-     * Checks to see if a specified ItemStack is stored in the Ore Dictionary with the specified name.
-     *
-     * @param check - ItemStack to check
-     * @param oreDict - name to check with
-     * @return if the ItemStack has the Ore Dictionary key
-     */
-    public static boolean oreDictCheck(ItemStack check, String oreDict) {
-        boolean hasResource = false;
-
-        for (ItemStack ore : OreDictionary.getOres(oreDict)) {
-            if (ore.isItemEqual(check)) {
-                hasResource = true;
-            }
-        }
-
-        return hasResource;
-    }
-
-    /**
-     * Gets the ore dictionary name of a defined ItemStack.
-     *
-     * @param check - ItemStack to check OreDict name of
-     * @return OreDict name
-     */
-    public static List<String> getOreDictName(ItemStack check) {
-        return OreDictCache.getOreDictName(check);
     }
 
     /**
@@ -786,36 +650,6 @@ public final class MekanismUtils {
      */
     public static ResourceLocation getResource(ResourceType type, String name) {
         return new ResourceLocation("mekanism", type.getPrefix() + name);
-    }
-
-    /**
-     * Removes all recipes that are used to create the defined ItemStacks.
-     *
-     * @param itemStacks - ItemStacks to perform the operation on
-     * @return if any recipes were removed
-     */
-    public static boolean removeRecipes(ItemStack... itemStacks) {
-        boolean didRemove = false;
-
-//		for(Iterator itr = CraftingManager.getInstance().getRecipeList().iterator(); itr.hasNext();)
-//		{
-//			Object obj = itr.next();
-//
-//			if(obj instanceof IRecipe && ((IRecipe)obj).getRecipeOutput() != null)
-//			{
-//				for(ItemStack itemStack : itemStacks)
-//				{
-//					if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
-//					{
-//						itr.remove();
-//						didRemove = true;
-//						break;
-//					}
-//				}
-//			}
-//		}
-
-        return didRemove;
     }
 
     /**

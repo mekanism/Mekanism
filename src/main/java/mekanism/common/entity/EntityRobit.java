@@ -22,7 +22,6 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -454,7 +453,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
     }
@@ -619,7 +618,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
     }

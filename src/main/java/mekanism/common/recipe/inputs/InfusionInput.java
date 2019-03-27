@@ -3,7 +3,6 @@ package mekanism.common.recipe.inputs;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.InfuseStorage;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +39,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        inputStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
+        inputStack = new ItemStack(nbtTags.getCompoundTag("input"));
         InfuseType type = InfuseRegistry.get(nbtTags.getString("infuseType"));
         int amount = nbtTags.getInteger("infuseAmount");
         infuse = new InfuseStorage(type, amount);

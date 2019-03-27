@@ -23,6 +23,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -125,7 +126,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         for (OredictionificatorFilter filter : filters) {
             if (filter.filter.equals(s)) {
                 if (ores.size() - 1 >= filter.index) {
-                    return MekanismUtils.size(ores.get(filter.index), 1);
+                    return StackUtils.size(ores.get(filter.index), 1);
                 } else {
                     return ItemStack.EMPTY;
                 }

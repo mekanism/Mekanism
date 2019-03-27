@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.IllegalFormatException;
-import mekanism.api.gas.GasStack;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -22,10 +21,6 @@ public final class LangUtils {
     public static String localizeFluidStack(FluidStack fluidStack) {
         return (fluidStack == null || fluidStack.getFluid() == null) ? null
               : fluidStack.getFluid().getLocalizedName(fluidStack);
-    }
-
-    public static String localizeGasStack(GasStack gasStack) {
-        return (gasStack == null || gasStack.getGas() == null) ? null : gasStack.getGas().getLocalizedName();
     }
 
     /**

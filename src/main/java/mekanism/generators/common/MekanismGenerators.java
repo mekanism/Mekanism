@@ -18,7 +18,7 @@ import mekanism.common.config.MekanismConfig.generators;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.fixers.GeneratorTEFixer;
@@ -140,7 +140,7 @@ public class MekanismGenerators implements IModule {
               * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
 
         for (ItemStack ore : OreDictionary.getOres("dustGold")) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4),
+            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, StackUtils.size(ore, 4),
                   GeneratorsItems.Hohlraum.getEmptyItem());
         }
     }

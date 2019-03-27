@@ -16,6 +16,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
+import mekanism.common.OreDictCache;
 import mekanism.common.Resource;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.computer.CCPeripheral;
@@ -23,7 +24,6 @@ import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -106,7 +106,7 @@ public final class MekanismHooks {
         for (MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes()) {
             if (!entry.getInput().getInputs().isEmpty()) {
                 if (!RecipeHandler.Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0))) {
-                    List<String> names = MekanismUtils.getOreDictName(entry.getInput().getInputs().get(0));
+                    List<String> names = OreDictCache.getOreDictName(entry.getInput().getInputs().get(0));
 
                     for (String name : names) {
                         if (name.startsWith("ingot") || name.startsWith("crystal")) {

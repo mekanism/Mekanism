@@ -2,7 +2,6 @@ package mekanism.common.recipe.outputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -22,7 +21,7 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        itemOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemOutput"));
+        itemOutput = new ItemStack(nbtTags.getCompoundTag("itemOutput"));
         gasOutput = GasStack.readFromNBT(nbtTags.getCompoundTag("gasOutput"));
     }
 
