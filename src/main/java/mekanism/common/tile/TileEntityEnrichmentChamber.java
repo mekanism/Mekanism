@@ -21,10 +21,4 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<Enric
     public Map<ItemStackInput, EnrichmentRecipe> getRecipes() {
         return Recipe.ENRICHMENT_CHAMBER.get();
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public float getInitialVolume() {
-        return 0.3F * super.getInitialVolume();
-    }
 }

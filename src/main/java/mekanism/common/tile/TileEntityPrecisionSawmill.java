@@ -22,10 +22,4 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillR
     public Map<ItemStackInput, SawmillRecipe> getRecipes() {
         return Recipe.PRECISION_SAWMILL.get();
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public float getInitialVolume() {
-        return 0.7F * super.getInitialVolume();
-    }
 }

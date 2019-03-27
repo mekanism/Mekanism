@@ -170,11 +170,6 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     }
 
     @Override
-    protected float getInitialVolume() {
-        return 0.4F * super.getInitialVolume();
-    }
-
-    @Override
     public boolean renderUpdate() {
         return false;
     }

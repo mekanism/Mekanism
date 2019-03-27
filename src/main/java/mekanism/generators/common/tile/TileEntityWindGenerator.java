@@ -112,11 +112,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    protected float getInitialVolume() {
-        return 1.5F * super.getInitialVolume();
-    }
-
-    @Override
     public String[] getMethods() {
         return methods;
     }

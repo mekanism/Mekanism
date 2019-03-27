@@ -126,11 +126,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     }
 
     @Override
-    public float getInitialVolume() {
-        return super.getInitialVolume() * Math.max(0.001F, soundScale);
-    }
-
-    @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 

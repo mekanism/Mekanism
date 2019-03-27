@@ -1,5 +1,6 @@
 package mekanism.client.sound;
 
+import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSound;
 import net.minecraft.entity.player.EntityPlayer;
@@ -71,4 +72,9 @@ public abstract class PlayerSound extends PositionedSound implements ITickableSo
     }
 
     public abstract boolean shouldPlaySound();
+
+    @Override
+    public float getVolume() {
+        return super.getVolume() * client.baseSoundVolume;
+    }
 }
