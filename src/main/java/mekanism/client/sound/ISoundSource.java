@@ -6,26 +6,26 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public interface ISoundSource
-{
-	@SideOnly(Side.CLIENT)
+public interface ISoundSource {
+
+    @SideOnly(Side.CLIENT)
     ResourceLocation getSoundLocation();
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     float getVolume();
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     float getFrequency();
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     Vec3d getSoundPosition();
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     boolean shouldRepeat();
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     int getRepeatDelay();
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     AttenuationType getAttenuation();
 }

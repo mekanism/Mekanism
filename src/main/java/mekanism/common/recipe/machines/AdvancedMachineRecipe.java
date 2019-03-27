@@ -7,32 +7,31 @@ import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public abstract class AdvancedMachineRecipe<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends MachineRecipe<AdvancedMachineInput, ItemStackOutput, RECIPE>
-{
-	public AdvancedMachineRecipe(AdvancedMachineInput input, ItemStackOutput output)
-	{
-		super(input, output);
-	}
+public abstract class AdvancedMachineRecipe<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends
+      MachineRecipe<AdvancedMachineInput, ItemStackOutput, RECIPE> {
 
-	public AdvancedMachineRecipe(ItemStack input, Gas gas, ItemStack output)
-	{
-		this(new AdvancedMachineInput(input, gas), new ItemStackOutput(output));
-	}
+    public AdvancedMachineRecipe(AdvancedMachineInput input, ItemStackOutput output) {
+        super(input, output);
+    }
 
-	public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, GasTank gasTank, int amount){
-		return getInput().useItem(inventory, inputIndex, false) && getInput().useSecondary(gasTank, amount, false);
-	}
+    public AdvancedMachineRecipe(ItemStack input, Gas gas, ItemStack output) {
+        this(new AdvancedMachineInput(input, gas), new ItemStackOutput(output));
+    }
 
-	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, GasTank gasTank, int amount)
-	{
-		 return inputMatches(inventory, inputIndex, gasTank, amount) && getOutput().applyOutputs(inventory, outputIndex, false);
-	}
+    public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, GasTank gasTank, int amount) {
+        return getInput().useItem(inventory, inputIndex, false) && getInput().useSecondary(gasTank, amount, false);
+    }
 
-	public void operate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, GasTank gasTank, int needed)
-	{
-		if(getInput().useItem(inventory, inputIndex, true) && getInput().useSecondary(gasTank, needed, true))
-		{
-			getOutput().applyOutputs(inventory, outputIndex, true);
-		}
-	}
+    public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, GasTank gasTank,
+          int amount) {
+        return inputMatches(inventory, inputIndex, gasTank, amount) && getOutput()
+              .applyOutputs(inventory, outputIndex, false);
+    }
+
+    public void operate(NonNullList<ItemStack> inventory, int inputIndex, int outputIndex, GasTank gasTank,
+          int needed) {
+        if (getInput().useItem(inventory, inputIndex, true) && getInput().useSecondary(gasTank, needed, true)) {
+            getOutput().applyOutputs(inventory, outputIndex, true);
+        }
+    }
 }

@@ -8,30 +8,27 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class JetpackSound extends PlayerSound
-{
-	public JetpackSound(EntityPlayer player)
-	{
-		super(player, new ResourceLocation("mekanism", "item.jetpack"));
-		
-		setFadeIn(10);
-		setFadeOut(5);
-	}
+public class JetpackSound extends PlayerSound {
 
-	@Override
-	public boolean isDonePlaying()
-	{
-		return donePlaying;
-	}
+    public JetpackSound(EntityPlayer player) {
+        super(player, new ResourceLocation("mekanism", "item.jetpack"));
 
-	@Override
-	public boolean shouldPlaySound()
-	{
-		return hasJetpack(player) && ClientTickHandler.isJetpackOn(player);
-	}
+        setFadeIn(10);
+        setFadeOut(5);
+    }
 
-	private boolean hasJetpack(EntityPlayer player)
-	{
-		return !player.inventory.armorInventory.get(2).isEmpty() && player.inventory.armorInventory.get(2).getItem() instanceof ItemJetpack;
-	}
+    @Override
+    public boolean isDonePlaying() {
+        return donePlaying;
+    }
+
+    @Override
+    public boolean shouldPlaySound() {
+        return hasJetpack(player) && ClientTickHandler.isJetpackOn(player);
+    }
+
+    private boolean hasJetpack(EntityPlayer player) {
+        return !player.inventory.armorInventory.get(2).isEmpty() && player.inventory.armorInventory.get(2)
+              .getItem() instanceof ItemJetpack;
+    }
 }

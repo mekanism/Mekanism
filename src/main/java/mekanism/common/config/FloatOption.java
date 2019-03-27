@@ -1,85 +1,77 @@
 package mekanism.common.config;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 /**
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class FloatOption extends Option<FloatOption>
-{
-	private float value;
-	private final float defaultValue;
-	private boolean hasRange = false;
-	private float min;
-	private float max;
+public class FloatOption extends Option<FloatOption> {
 
-	FloatOption(BaseConfig owner, String category, String key, float defaultValue, @Nullable String comment)
-	{
-		super(owner, category, key, comment);
-		this.defaultValue = defaultValue;
-		this.value = defaultValue;
-	}
+    private final float defaultValue;
+    private float value;
+    private boolean hasRange = false;
+    private float min;
+    private float max;
 
-	FloatOption(BaseConfig owner, String category, String key, float defaultValue){
-		this(owner, category, key, defaultValue, null);
-	}
+    FloatOption(BaseConfig owner, String category, String key, float defaultValue, @Nullable String comment) {
+        super(owner, category, key, comment);
+        this.defaultValue = defaultValue;
+        this.value = defaultValue;
+    }
 
-	FloatOption(BaseConfig owner, String category, String key){
-		this(owner, category, key, 0, null);
-	}
+    FloatOption(BaseConfig owner, String category, String key, float defaultValue) {
+        this(owner, category, key, defaultValue, null);
+    }
 
-	FloatOption(BaseConfig owner, String category, String key, float defaultValue, @Nullable String comment, float min, float max)
-	{
-		this(owner, category, key, defaultValue, comment);
-		this.hasRange = true;
-		this.min = min;
-		this.max = max;
-	}
+    FloatOption(BaseConfig owner, String category, String key) {
+        this(owner, category, key, 0, null);
+    }
 
-	public float val()
-	{
-		return value;
-	}
+    FloatOption(BaseConfig owner, String category, String key, float defaultValue, @Nullable String comment, float min,
+          float max) {
+        this(owner, category, key, defaultValue, comment);
+        this.hasRange = true;
+        this.min = min;
+        this.max = max;
+    }
 
-	public void set(float value)
-	{
-		this.value = value;
-	}
+    public float val() {
+        return value;
+    }
 
-	@SuppressWarnings("Duplicates")//types are different
-	@Override
-	protected void load(Configuration config)
-	{
-		Property prop;
+    public void set(float value) {
+        this.value = value;
+    }
 
-		if (hasRange)
-		{
-			prop = config.get(this.category, this.key, this.defaultValue, this.comment, this.min, this.max);
-		} else {
-			prop = config.get(this.category, this.key, this.defaultValue, this.comment);
-		}
+    @SuppressWarnings("Duplicates")//types are different
+    @Override
+    protected void load(Configuration config) {
+        Property prop;
 
-		prop.setRequiresMcRestart(this.requiresGameRestart);
-		prop.setRequiresWorldRestart(this.requiresWorldRestart);
+        if (hasRange) {
+            prop = config.get(this.category, this.key, this.defaultValue, this.comment, this.min, this.max);
+        } else {
+            prop = config.get(this.category, this.key, this.defaultValue, this.comment);
+        }
 
-		this.value = (float)prop.getDouble();
-	}
+        prop.setRequiresMcRestart(this.requiresGameRestart);
+        prop.setRequiresWorldRestart(this.requiresWorldRestart);
 
-	@Override
-	protected void write(ByteBuf buf)
-	{
-		buf.writeFloat(this.value);
-	}
+        this.value = (float) prop.getDouble();
+    }
 
-	@Override
-	protected void read(ByteBuf buf)
-	{
-		this.value = buf.readFloat();
-	}
+    @Override
+    protected void write(ByteBuf buf) {
+        buf.writeFloat(this.value);
+    }
+
+    @Override
+    protected void read(ByteBuf buf) {
+        this.value = buf.readFloat();
+    }
 }

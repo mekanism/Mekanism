@@ -6,105 +6,92 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import mekanism.api.MekanismAPI;
 import net.minecraft.block.Block;
 
-public final class BoxBlacklistParser
-{
-	private static File mekanismDir = new File(Mekanism.proxy.getMinecraftDir(), "config/mekanism");
-	private static File boxBlacklistFile = new File(mekanismDir, "BoxBlacklist.txt");
+public final class BoxBlacklistParser {
 
-	private BoxBlacklistParser() {}
+    private static File mekanismDir = new File(Mekanism.proxy.getMinecraftDir(), "config/mekanism");
+    private static File boxBlacklistFile = new File(mekanismDir, "BoxBlacklist.txt");
 
-	public static void load()
-	{
-		try {
-			generateFiles();
-			readBlacklist();
-		} catch(Exception e) {
-			Mekanism.logger.warn("Couldn't load Cardboard Box blacklist", e);
-		}
-	}
+    private BoxBlacklistParser() {
+    }
 
-	private static void generateFiles() throws IOException
-	{
-		mekanismDir.mkdirs();
+    public static void load() {
+        try {
+            generateFiles();
+            readBlacklist();
+        } catch (Exception e) {
+            Mekanism.logger.warn("Couldn't load Cardboard Box blacklist", e);
+        }
+    }
 
-		if(!boxBlacklistFile.exists())
-		{
-			boxBlacklistFile.createNewFile();
-			writeExamples();
-		}
-	}
+    private static void generateFiles() throws IOException {
+        mekanismDir.mkdirs();
 
-	private static boolean isInteger(String s)
-	{
-		try {
-			Integer.parseInt(s);
-			return true;
-		}
-		catch(Exception e) {
-			return false;
-		}
-	}
+        if (!boxBlacklistFile.exists()) {
+            boxBlacklistFile.createNewFile();
+            writeExamples();
+        }
+    }
 
-	private static void readBlacklist() throws IOException
-	{
-		try(BufferedReader reader = new BufferedReader(new FileReader((boxBlacklistFile))))
-		{
-			int entries = 0;
+    private static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-			String readingLine;
-			int line = 0;
+    private static void readBlacklist() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader((boxBlacklistFile)))) {
+            int entries = 0;
 
-			while((readingLine = reader.readLine()) != null)
-			{
-				line++;
+            String readingLine;
+            int line = 0;
 
-				if(readingLine.startsWith("#") || readingLine.trim().isEmpty())
-				{
-					continue;
-				}
+            while ((readingLine = reader.readLine()) != null) {
+                line++;
 
-				String[] split = readingLine.split(" ");
+                if (readingLine.startsWith("#") || readingLine.trim().isEmpty()) {
+                    continue;
+                }
 
-				if(split.length != 2 || !isInteger(split[split.length-1]))
-				{
-					Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
-					continue;
-				}
+                String[] split = readingLine.split(" ");
 
-				String blockName = split[0].trim();
+                if (split.length != 2 || !isInteger(split[split.length - 1])) {
+                    Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
+                    continue;
+                }
 
-				Block block = Block.getBlockFromName(blockName);
+                String blockName = split[0].trim();
 
-				if(block == null)
-				{
-					Mekanism.logger.error("BoxBlacklist.txt: Couldn't find specified block on line " + line);
-					continue;
-				}
+                Block block = Block.getBlockFromName(blockName);
 
-				MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length-1]));
-				entries++;
+                if (block == null) {
+                    Mekanism.logger.error("BoxBlacklist.txt: Couldn't find specified block on line " + line);
+                    continue;
+                }
 
-			}
-			Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
-		}
-	}
+                MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length - 1]));
+                entries++;
 
-	private static void writeExamples() throws IOException
-	{
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(boxBlacklistFile)))
-		{
+            }
+            Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
+        }
+    }
 
-			writer.append("# Use this file to tell Mekanism which blocks should not be picked up by a cardboard box.");
-			writer.newLine();
+    private static void writeExamples() throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(boxBlacklistFile))) {
 
-			writer.append("# Proper syntax is \"NAME META\". Example (for stone):");
-			writer.newLine();
+            writer.append("# Use this file to tell Mekanism which blocks should not be picked up by a cardboard box.");
+            writer.newLine();
 
-			writer.append("# minecraft:stone 0");
-		}
-	}
+            writer.append("# Proper syntax is \"NAME META\". Example (for stone):");
+            writer.newLine();
+
+            writer.append("# minecraft:stone 0");
+        }
+    }
 }

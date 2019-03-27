@@ -1,13 +1,12 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -26,284 +25,256 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implements IHeatTransfer, ISecurityTile, IActiveState
-{
-	public double temperature;
-	public double heatToAbsorb = 0;
-	
-	public int burnTime;
-	public int maxBurnTime;
-	
-	/** Whether or not this machine is in it's active state. */
-	public boolean isActive;
+public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implements IHeatTransfer, ISecurityTile,
+      IActiveState {
 
-	/** The client's current active state. */
-	public boolean clientActive;
-	
-	/** How many ticks must pass until this block's active state can sync with the client. */
-	public int updateDelay;
-	
-	public double lastEnvironmentLoss;
-	
-	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
-	
-	public TileEntityFuelwoodHeater() 
-	{
-		super("FuelwoodHeater");
-		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
-	}
-	
-	@Override
-	public void onUpdate()
-	{
-		if(world.isRemote && updateDelay > 0)
-		{
-			updateDelay--;
+    public double temperature;
+    public double heatToAbsorb = 0;
 
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-		
-		if(!world.isRemote)
-		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
+    public int burnTime;
+    public int maxBurnTime;
 
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
-				}
-			}
-			
-			boolean burning = false;
-			
-			if(burnTime > 0)
-			{
-				burnTime--;
-				burning = true;
-			}
-			else {
-				if(!inventory.get(0).isEmpty())
-				{
-					maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory.get(0))/2;
-					
-					if(burnTime > 0)
-					{
-						ItemStack preShrunk = inventory.get(0).copy();
-						inventory.get(0).shrink(1);
-						
-						if(inventory.get(0).getCount() == 0)
-						{
-							inventory.set(0, preShrunk.getItem().getContainerItem(preShrunk));
-						}
-						
-						burning = true;
-					}
-				}
-			}
-			
-			if(burning)
-			{
-				heatToAbsorb += MekanismConfig.current().general.heatPerFuelTick.val();
-			}
-			
-			double[] loss = simulateHeat();
-			applyTemperatureChange();
-			
-			lastEnvironmentLoss = loss[1];
-			
-			setActive(burning);
-		}
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
+    /**
+     * Whether or not this machine is in it's active state.
+     */
+    public boolean isActive;
 
-		temperature = nbtTags.getDouble("temperature");
-		clientActive = isActive = nbtTags.getBoolean("isActive");
-		burnTime = nbtTags.getInteger("burnTime");
-		maxBurnTime = nbtTags.getInteger("maxBurnTime");
-	}
+    /**
+     * The client's current active state.
+     */
+    public boolean clientActive;
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
+    /**
+     * How many ticks must pass until this block's active state can sync with the client.
+     */
+    public int updateDelay;
 
-		nbtTags.setDouble("temperature", temperature);
-		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("burnTime", burnTime);
-		nbtTags.setInteger("maxBurnTime", maxBurnTime);
-		
-		return nbtTags;
-	}
-	
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		super.handlePacketData(dataStream);
-		
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			temperature = dataStream.readDouble();
-			clientActive = dataStream.readBoolean();
-			burnTime = dataStream.readInt();
-			maxBurnTime = dataStream.readInt();
-			
-			lastEnvironmentLoss = dataStream.readDouble();
-			
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-	}
+    public double lastEnvironmentLoss;
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		super.getNetworkedData(data);
-		
-		data.add(temperature);
-		data.add(isActive);
-		data.add(burnTime);
-		data.add(maxBurnTime);
-		
-		data.add(lastEnvironmentLoss);
-		
-		return data;
-	}
-	
-	@Override
-	public boolean canSetFacing(int side)
-	{
-		return side != 0 && side != 1;
-	}
-	
-	@Override
-	public int[] getSlotsForFace(EnumFacing side)
-	{
-		return new int[] {0};
-	}
-	
-	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
+    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+    public TileEntityFuelwoodHeater() {
+        super("FuelwoodHeater");
+        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+    }
 
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
-	
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-	
-	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
+    @Override
+    public void onUpdate() {
+        if (world.isRemote && updateDelay > 0) {
+            updateDelay--;
 
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
-	
-	@Override
-	public double getTemp() 
-	{
-		return temperature;
-	}
+            if (updateDelay == 0 && clientActive != isActive) {
+                isActive = clientActive;
+                MekanismUtils.updateBlock(world, getPos());
+            }
+        }
 
-	@Override
-	public double getInverseConductionCoefficient() 
-	{
-		return 5;
-	}
+        if (!world.isRemote) {
+            if (updateDelay > 0) {
+                updateDelay--;
 
-	@Override
-	public double getInsulationCoefficient(EnumFacing side)
-	{
-		return 1000;
-	}
+                if (updateDelay == 0 && clientActive != isActive) {
+                    Mekanism.packetHandler.sendToReceivers(
+                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                          new Range4D(Coord4D.get(this)));
+                }
+            }
 
-	@Override
-	public void transferHeatTo(double heat)
-	{
-		heatToAbsorb += heat;
-	}
+            boolean burning = false;
 
-	@Override
-	public double[] simulateHeat() 
-	{
-		return HeatUtils.simulate(this);
-	}
+            if (burnTime > 0) {
+                burnTime--;
+                burning = true;
+            } else {
+                if (!inventory.get(0).isEmpty()) {
+                    maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory.get(0)) / 2;
 
-	@Override
-	public double applyTemperatureChange() 
-	{
-		temperature += heatToAbsorb;
-		heatToAbsorb = 0;
-		
-		return temperature;
-	}
+                    if (burnTime > 0) {
+                        ItemStack preShrunk = inventory.get(0).copy();
+                        inventory.get(0).shrink(1);
 
-	@Override
-	public boolean canConnectHeat(EnumFacing side)
-	{
-		return true;
-	}
+                        if (inventory.get(0).getCount() == 0) {
+                            inventory.set(0, preShrunk.getItem().getContainerItem(preShrunk));
+                        }
 
-	@Override
-	public IHeatTransfer getAdjacent(EnumFacing side)
-	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-		
-		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
-		{
-			return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
-	{
-		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
-	}
+                        burning = true;
+                    }
+                }
+            }
 
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
-	{
-		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
-		{
-			return (T)this;
-		}
-		
-		return super.getCapability(capability, side);
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
-	}
+            if (burning) {
+                heatToAbsorb += MekanismConfig.current().general.heatPerFuelTick.val();
+            }
+
+            double[] loss = simulateHeat();
+            applyTemperatureChange();
+
+            lastEnvironmentLoss = loss[1];
+
+            setActive(burning);
+        }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags) {
+        super.readFromNBT(nbtTags);
+
+        temperature = nbtTags.getDouble("temperature");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
+        burnTime = nbtTags.getInteger("burnTime");
+        maxBurnTime = nbtTags.getInteger("maxBurnTime");
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        super.writeToNBT(nbtTags);
+
+        nbtTags.setDouble("temperature", temperature);
+        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("burnTime", burnTime);
+        nbtTags.setInteger("maxBurnTime", maxBurnTime);
+
+        return nbtTags;
+    }
+
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        super.handlePacketData(dataStream);
+
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            temperature = dataStream.readDouble();
+            clientActive = dataStream.readBoolean();
+            burnTime = dataStream.readInt();
+            maxBurnTime = dataStream.readInt();
+
+            lastEnvironmentLoss = dataStream.readDouble();
+
+            if (updateDelay == 0 && clientActive != isActive) {
+                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
+                isActive = clientActive;
+                MekanismUtils.updateBlock(world, getPos());
+            }
+        }
+    }
+
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
+
+        data.add(temperature);
+        data.add(isActive);
+        data.add(burnTime);
+        data.add(maxBurnTime);
+
+        data.add(lastEnvironmentLoss);
+
+        return data;
+    }
+
+    @Override
+    public boolean canSetFacing(int side) {
+        return side != 0 && side != 1;
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side) {
+        return new int[]{0};
+    }
+
+    @Override
+    public boolean getActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        isActive = active;
+
+        if (clientActive != active && updateDelay == 0) {
+            Mekanism.packetHandler
+                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                        new Range4D(Coord4D.get(this)));
+
+            updateDelay = 10;
+            clientActive = active;
+        }
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return false;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
+    }
+
+    @Override
+    public double getTemp() {
+        return temperature;
+    }
+
+    @Override
+    public double getInverseConductionCoefficient() {
+        return 5;
+    }
+
+    @Override
+    public double getInsulationCoefficient(EnumFacing side) {
+        return 1000;
+    }
+
+    @Override
+    public void transferHeatTo(double heat) {
+        heatToAbsorb += heat;
+    }
+
+    @Override
+    public double[] simulateHeat() {
+        return HeatUtils.simulate(this);
+    }
+
+    @Override
+    public double applyTemperatureChange() {
+        temperature += heatToAbsorb;
+        heatToAbsorb = 0;
+
+        return temperature;
+    }
+
+    @Override
+    public boolean canConnectHeat(EnumFacing side) {
+        return true;
+    }
+
+    @Override
+    public IHeatTransfer getAdjacent(EnumFacing side) {
+        TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
+
+        if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
+            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+            return (T) this;
+        }
+
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public TileComponentSecurity getSecurity() {
+        return securityComponent;
+    }
 }

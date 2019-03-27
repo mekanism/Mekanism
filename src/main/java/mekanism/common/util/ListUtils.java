@@ -6,269 +6,234 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class ListUtils
-{
-	public static <V> List<V> inverse(List<V> list)
-	{
-		List<V> toReturn = new ArrayList<>();
+public class ListUtils {
 
-		for(int i = list.size() - 1; i >= 0; i--)
-		{
-			toReturn.add(list.get(i));
-		}
+    public static <V> List<V> inverse(List<V> list) {
+        List<V> toReturn = new ArrayList<>();
 
-		return toReturn;
-	}
+        for (int i = list.size() - 1; i >= 0; i--) {
+            toReturn.add(list.get(i));
+        }
 
-	public static <V> List<V> cap(List<V> list, int cap)
-	{
-		List<V> toReturn = new ArrayList<>();
+        return toReturn;
+    }
 
-		if(list.size() <= cap)
-		{
-			toReturn = copy(list);
-		}
-		else {
-			int count = 0;
+    public static <V> List<V> cap(List<V> list, int cap) {
+        List<V> toReturn = new ArrayList<>();
 
-			for(V obj : list)
-			{
-				count++;
+        if (list.size() <= cap) {
+            toReturn = copy(list);
+        } else {
+            int count = 0;
 
-				toReturn.add(obj);
+            for (V obj : list) {
+                count++;
 
-				if(count == cap)
-				{
-					break;
-				}
-			}
-		}
+                toReturn.add(obj);
 
-		return toReturn;
-	}
+                if (count == cap) {
+                    break;
+                }
+            }
+        }
 
-	public static <V> List<V> copy(List<V> list)
-	{
-		List<V> toReturn = new ArrayList<>();
+        return toReturn;
+    }
 
-		toReturn.addAll(list);
+    public static <V> List<V> copy(List<V> list) {
+        List<V> toReturn = new ArrayList<>();
 
-		return toReturn;
-	}
+        toReturn.addAll(list);
 
-	public static <V> List<V> merge(List<V> listOne, List<V> listTwo)
-	{
-		List<V> newList = new ArrayList<>();
+        return toReturn;
+    }
 
-		newList.addAll(listOne);
-		newList.addAll(listTwo);
+    public static <V> List<V> merge(List<V> listOne, List<V> listTwo) {
+        List<V> newList = new ArrayList<>();
 
-		return newList;
-	}
+        newList.addAll(listOne);
+        newList.addAll(listTwo);
 
-	public static <V> List<V> capRemains(List<V> list, int cap)
-	{
-		List<V> toReturn = new ArrayList<>();
+        return newList;
+    }
 
-		if(list.size() <= cap)
-		{
-			return toReturn;
-		}
-		else {
-			List<V> inverse = inverse(list);
+    public static <V> List<V> capRemains(List<V> list, int cap) {
+        List<V> toReturn = new ArrayList<>();
 
-			int iterNeeded = list.size() - cap;
-			int count = 0;
+        if (list.size() <= cap) {
+            return toReturn;
+        } else {
+            List<V> inverse = inverse(list);
 
-			for(V obj : list)
-			{
-				count++;
+            int iterNeeded = list.size() - cap;
+            int count = 0;
 
-				toReturn.add(obj);
+            for (V obj : list) {
+                count++;
 
-				if(count == iterNeeded)
-				{
-					break;
-				}
-			}
+                toReturn.add(obj);
 
-			return toReturn;
-		}
-	}
+                if (count == iterNeeded) {
+                    break;
+                }
+            }
 
-	public static <V> ArrayList<List<V>> split(List<V> list, int divide)
-	{
-		int remain = list.size() % divide;
-		int size = (list.size() - remain) / divide;
+            return toReturn;
+        }
+    }
 
-		ArrayList<List<V>> toReturn = new ArrayList<>();
+    public static <V> ArrayList<List<V>> split(List<V> list, int divide) {
+        int remain = list.size() % divide;
+        int size = (list.size() - remain) / divide;
 
-		for(int i = 0; i < divide; i++)
-		{
-			toReturn.add(i, new ArrayList<>());
-		}
+        ArrayList<List<V>> toReturn = new ArrayList<>();
 
-		for(List<V> iterSet : toReturn)
-		{
-			List<V> removed = new ArrayList<>();
+        for (int i = 0; i < divide; i++) {
+            toReturn.add(i, new ArrayList<>());
+        }
 
-			int toAdd = size;
+        for (List<V> iterSet : toReturn) {
+            List<V> removed = new ArrayList<>();
 
-			if(remain > 0)
-			{
-				remain--;
-				toAdd++;
-			}
+            int toAdd = size;
 
-			for(V obj : list)
-			{
-				if(toAdd == 0)
-				{
-					break;
-				}
+            if (remain > 0) {
+                remain--;
+                toAdd++;
+            }
 
-				iterSet.add(obj);
-				removed.add(obj);
-				toAdd--;
-			}
+            for (V obj : list) {
+                if (toAdd == 0) {
+                    break;
+                }
 
-			list.removeAll(removed);
-		}
+                iterSet.add(obj);
+                removed.add(obj);
+                toAdd--;
+            }
 
-		return toReturn;
-	}
+            list.removeAll(removed);
+        }
 
-	public static <V> V getTop(List<V> list)
-	{
-		return list.stream().findFirst().orElse(null);
-	}
+        return toReturn;
+    }
 
-	public static <V> List<V> asList(Set<V> set)
-	{
-		return (List<V>)Arrays.asList(set.toArray());
-	}
+    public static <V> V getTop(List<V> list) {
+        return list.stream().findFirst().orElse(null);
+    }
 
-	public static <V> List<V> asList(V... values)
-	{
-		return (List<V>)Arrays.asList(values);
-	}
-	
-	public static <V> ArrayList<V> asArrayList(V... values)
-	{
-		ArrayList<V> ret = new ArrayList<>();
+    public static <V> List<V> asList(Set<V> set) {
+        return (List<V>) Arrays.asList(set.toArray());
+    }
 
-		Collections.addAll(ret, values);
-		
-		return ret;
-	}
+    public static <V> List<V> asList(V... values) {
+        return Arrays.asList(values);
+    }
 
-	public static double[] splitDouble(int size, double num)
-	{
-		double[] split = new double[size];
+    public static <V> ArrayList<V> asArrayList(V... values) {
+        ArrayList<V> ret = new ArrayList<>();
 
-		for(int i = 0; i < size; i++)
-		{
-			double remain = num%size;
-			double ret = (num-remain)/size;
-			ret += remain;
+        Collections.addAll(ret, values);
 
-			split[i] = ret;
-			num -= remain;
-		}
+        return ret;
+    }
 
-		return split;
-	}
+    public static double[] splitDouble(int size, double num) {
+        double[] split = new double[size];
 
-	public static double[] percent(double[] values)
-	{
-		double[] ret = new double[values.length];
-		double total = 0;
+        for (int i = 0; i < size; i++) {
+            double remain = num % size;
+            double ret = (num - remain) / size;
+            ret += remain;
 
-		for(double d : values) total += d;
+            split[i] = ret;
+            num -= remain;
+        }
 
-		for(int i = 0; i < values.length; i++)
-		{
-			ret[i] = values[i]/total;
-		}
+        return split;
+    }
 
-		return ret;
-	}
+    public static double[] percent(double[] values) {
+        double[] ret = new double[values.length];
+        double total = 0;
 
-	public static int[] calcPercentInt(double[] percent, int val)
-	{
-		int[] ret = new int[percent.length];
+        for (double d : values) {
+            total += d;
+        }
 
-		for(int i = 0; i < percent.length; i++)
-		{
-			ret[i] = (int)Math.round(val*percent[i]);
-		}
+        for (int i = 0; i < values.length; i++) {
+            ret[i] = values[i] / total;
+        }
 
-		int newTotal = 0;
-		for(int i : ret) newTotal += i;
+        return ret;
+    }
 
-		int diff = val-newTotal;
+    public static int[] calcPercentInt(double[] percent, int val) {
+        int[] ret = new int[percent.length];
 
-		if(diff != val)
-		{
-			for(int i = 0; i < ret.length; i++)
-			{
-				int num = ret[i];
+        for (int i = 0; i < percent.length; i++) {
+            ret[i] = (int) Math.round(val * percent[i]);
+        }
 
-				if(diff < 0 && num == 0)
-				{
-					continue;
-				}
+        int newTotal = 0;
+        for (int i : ret) {
+            newTotal += i;
+        }
 
-				if(diff > 0)
-				{
-					ret[i]++;
-					diff--;
-				}
-				else if(diff < 0)
-				{
-					ret[i]--;
-					diff++;
-				}
+        int diff = val - newTotal;
 
-				if(diff == 0)
-				{
-					return ret;
-				}
-			}
-		}
+        if (diff != val) {
+            for (int i = 0; i < ret.length; i++) {
+                int num = ret[i];
 
-		return ret;
-	}
+                if (diff < 0 && num == 0) {
+                    continue;
+                }
 
-	public static int[] splitInt(int size, int num)
-	{
-		int[] split = new int[size];
+                if (diff > 0) {
+                    ret[i]++;
+                    diff--;
+                } else if (diff < 0) {
+                    ret[i]--;
+                    diff++;
+                }
 
-		for(int i = 0; i < size; i++)
-		{
-			int remain = num%size;
-			int ret = (num-remain)/size;
-			ret += remain;
+                if (diff == 0) {
+                    return ret;
+                }
+            }
+        }
 
-			split[i] = ret;
-			num -= remain;
-		}
+        return ret;
+    }
 
-		return split;
-	}
+    public static int[] splitInt(int size, int num) {
+        int[] split = new int[size];
 
-	public static double[] percent(int[] values)
-	{
-		double[] ret = new double[values.length];
-		double total = 0;
+        for (int i = 0; i < size; i++) {
+            int remain = num % size;
+            int ret = (num - remain) / size;
+            ret += remain;
 
-		for(double d : values) total += d;
+            split[i] = ret;
+            num -= remain;
+        }
 
-		for(int i = 0; i < values.length; i++)
-		{
-			ret[i] = values[i]/total;
-		}
+        return split;
+    }
 
-		return ret;
-	}
+    public static double[] percent(int[] values) {
+        double[] ret = new double[values.length];
+        double total = 0;
+
+        for (double d : values) {
+            total += d;
+        }
+
+        for (int i = 0; i < values.length; i++) {
+            ret[i] = values[i] / total;
+        }
+
+        return ret;
+    }
 }

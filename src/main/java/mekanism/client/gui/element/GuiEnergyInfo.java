@@ -2,7 +2,6 @@ package mekanism.client.gui.element;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
@@ -15,59 +14,54 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 @SideOnly(Side.CLIENT)
-public class GuiEnergyInfo extends GuiElement
-{
-	public IInfoHandler infoHandler;
+public class GuiEnergyInfo extends GuiElement {
 
-	public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
+    public IInfoHandler infoHandler;
 
-		infoHandler = handler;
-	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
-	}
+    public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        infoHandler = handler;
+    }
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
-		{
-			List<String> info = new ArrayList<>();
+        guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
 
-			info.addAll(infoHandler.getInfo());
-			
-			info.add(LangUtils.localize("gui.unit") + ": " + MekanismConfig.current().general.energyUnit.val());
-			displayTooltips(info, xAxis, yAxis);
-		}
-	}
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160) {
+            List<String> info = new ArrayList<>();
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button) 
-	{
-		if(button == 0)
-		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
-			{
-				MekanismConfig.current().general.energyUnit.set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal()+1)%EnergyType.values().length]);
-			}
-		}
-	}
+            info.addAll(infoHandler.getInfo());
+
+            info.add(LangUtils.localize("gui.unit") + ": " + MekanismConfig.current().general.energyUnit.val());
+            displayTooltips(info, xAxis, yAxis);
+        }
+    }
+
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (button == 0) {
+            if (xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160) {
+                MekanismConfig.current().general.energyUnit
+                      .set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1)
+                            % EnergyType.values().length]);
+            }
+        }
+    }
 }

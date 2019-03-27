@@ -15,103 +15,89 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiMatrixTab extends GuiElement
-{
-	private TileEntity tileEntity;
-	private MatrixTab tabType;
-	private int yPos;
+public class GuiMatrixTab extends GuiElement {
 
-	public GuiMatrixTab(IGuiWrapper gui, TileEntity tile, MatrixTab type, int y, ResourceLocation def)
-	{
-		super(type.getResource(), gui, def);
+    private TileEntity tileEntity;
+    private MatrixTab tabType;
+    private int yPos;
 
-		tileEntity = tile;
-		tabType = type;
-		yPos = y;
-	}
+    public GuiMatrixTab(IGuiWrapper gui, TileEntity tile, MatrixTab type, int y, ResourceLocation def) {
+        super(type.getResource(), gui, def);
 
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + yPos, 26, 26);
-	}
+        tileEntity = tile;
+        tabType = type;
+        yPos = y;
+    }
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth - 26, guiHeight + yPos, 26, 26);
+    }
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + yPos, 0, 0, 26, 26);
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
-		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos+4, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos+4, 26, 18, 18, 18);
-		}
+        guiObj.drawTexturedRect(guiWidth - 26, guiHeight + yPos, 0, 0, 26, 26);
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos + 4, 26, 0, 18, 18);
+        } else {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos + 4, 26, 18, 18, 18);
+        }
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
-		{
-			displayTooltip(tabType.getDesc(), xAxis, yAxis);
-		}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
+            displayTooltip(tabType.getDesc(), xAxis, yAxis);
+        }
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(button == 0)
-		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
-			{
-				tabType.openGui(tileEntity);
-				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-			}
-		}
-	}
-	
-	public enum MatrixTab
-	{
-		MAIN("GuiEnergyTab.png", 49, "gui.main"),
-		STAT("GuiStatsTab.png", 50, "gui.stats");
-		
-		private String path;
-		private int guiId;
-		private String desc;
-		
-		MatrixTab(String s, int id, String s1)
-		{
-			path = s;
-			guiId = id;
-			desc = s1;
-		}
-		
-		public ResourceLocation getResource()
-		{
-			return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
-		}
-		
-		public void openGui(TileEntity tile)
-		{
-			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
-		}
-		
-		public String getDesc()
-		{
-			return LangUtils.localize(desc);
-		}
-	}
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (button == 0) {
+            if (xAxis >= -21 && xAxis <= -3 && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
+                tabType.openGui(tileEntity);
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            }
+        }
+    }
+
+    public enum MatrixTab {
+        MAIN("GuiEnergyTab.png", 49, "gui.main"),
+        STAT("GuiStatsTab.png", 50, "gui.stats");
+
+        private String path;
+        private int guiId;
+        private String desc;
+
+        MatrixTab(String s, int id, String s1) {
+            path = s;
+            guiId = id;
+            desc = s1;
+        }
+
+        public ResourceLocation getResource() {
+            return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
+        }
+
+        public void openGui(TileEntity tile) {
+            Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 0, guiId));
+        }
+
+        public String getDesc() {
+            return LangUtils.localize(desc);
+        }
+    }
 }

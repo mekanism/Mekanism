@@ -11,34 +11,30 @@ import net.minecraft.util.math.RayTraceResult;
 /**
  * Translates to Buildcraft's IToolWrench
  */
-public class BuildCraftProxy implements MekWrenchProxy, IMekWrench
-{
-	public static final String BUILDCRAFT_WRENCH_CLASS = "buildcraft.api.tools.IToolWrench";
+public class BuildCraftProxy implements MekWrenchProxy, IMekWrench {
 
-	@Override
-	public IMekWrench get(ItemStack stack)
-	{
-		return stack.getItem() instanceof IToolWrench ? this : null;
-	}
+    public static final String BUILDCRAFT_WRENCH_CLASS = "buildcraft.api.tools.IToolWrench";
 
-	@Override
-	public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos)
-	{
-		return false;//compat only, needs raytrace
-	}
+    @Override
+    public IMekWrench get(ItemStack stack) {
+        return stack.getItem() instanceof IToolWrench ? this : null;
+    }
 
-	@Override
-	public boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace)
-	{
-		return stack.getItem() instanceof IToolWrench && ((IToolWrench)stack.getItem()).canWrench(player, hand, stack, rayTrace);
-	}
+    @Override
+    public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos) {
+        return false;//compat only, needs raytrace
+    }
 
-	@Override
-	public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace)
-	{
-		if(stack.getItem() instanceof IToolWrench)
-		{
-			((IToolWrench)stack.getItem()).wrenchUsed(player, hand, stack, rayTrace);
-		}
-	}
+    @Override
+    public boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace) {
+        return stack.getItem() instanceof IToolWrench && ((IToolWrench) stack.getItem())
+              .canWrench(player, hand, stack, rayTrace);
+    }
+
+    @Override
+    public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace) {
+        if (stack.getItem() instanceof IToolWrench) {
+            ((IToolWrench) stack.getItem()).wrenchUsed(player, hand, stack, rayTrace);
+        }
+    }
 }

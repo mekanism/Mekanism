@@ -1,97 +1,86 @@
 package mekanism.common.recipe.inputs;
 
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.HashMap;
-import java.util.Map;
+public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
 
-public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
-{
-	public static final ItemStackIngredientMatcher DEFAULT_MATCHER = MachineInput::inputItemMatchesDefault;
-	static final Map<Class<? extends Item>,ItemStackIngredientMatcher> ITEM_MATCHER_OVERRIDES = new HashMap<>();
+    public static final ItemStackIngredientMatcher DEFAULT_MATCHER = MachineInput::inputItemMatchesDefault;
+    static final Map<Class<? extends Item>, ItemStackIngredientMatcher> ITEM_MATCHER_OVERRIDES = new HashMap<>();
 
-	public static void addCustomItemMatcher(Class<? extends Item> clazz, ItemStackIngredientMatcher matcher){
-		ITEM_MATCHER_OVERRIDES.put(clazz, matcher);
-	}
+    public static void addCustomItemMatcher(Class<? extends Item> clazz, ItemStackIngredientMatcher matcher) {
+        ITEM_MATCHER_OVERRIDES.put(clazz, matcher);
+    }
 
-	public abstract boolean isValid();
+    public static boolean inputContains(ItemStack container, ItemStack contained) {
+        if (!container.isEmpty() && container.getCount() >= contained.getCount()) {
+            return inputItemMatches(container, contained);
+        }
 
-	public abstract INPUT copy();
+        return false;
+    }
 
-	public abstract int hashIngredients();
-	
-	public abstract void load(NBTTagCompound nbtTags);
+    public static boolean inputItemMatches(ItemStack container, ItemStack contained) {
+        return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER)
+              .test(container, contained);
+    }
 
-	/**
-	 * Test equality to another input.
-	 * This should return true if the input matches this one,
-	 * IGNORING AMOUNTS.
-	 * Allows usage of HashMap optimisation to get recipes.
-	 *
-	 * @param other The other input to check
-	 * @return True if input matches this one, IGNORING AMOUNTS!
-	 */
-	public abstract boolean testEquality(INPUT other);
-	
-	public static boolean inputContains(ItemStack container, ItemStack contained)
-	{
-		if(!container.isEmpty() && container.getCount() >= contained.getCount())
-		{
-			return inputItemMatches(container, contained);
-		}
-		
-		return false;
-	}
+    private static boolean inputItemMatchesDefault(ItemStack container, ItemStack contained) {
+        if (MekanismUtils.getOreDictName(container).contains("treeSapling")) {
+            return StackUtils.equalsWildcard(contained, container);
+        }
 
-	public static boolean inputItemMatches(ItemStack container, ItemStack contained){
-		return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER).test(container, contained);
-	}
+        return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
+    }
 
-	private static boolean inputItemMatchesDefault(ItemStack container, ItemStack contained)
-	{
-		if(MekanismUtils.getOreDictName(container).contains("treeSapling"))
-		{
-			return StackUtils.equalsWildcard(contained, container);
-		}
+    public abstract boolean isValid();
 
-		return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
-	}
+    public abstract INPUT copy();
 
-	@Override
-	public int hashCode()
-	{
-		return hashIngredients();
-	}
+    public abstract int hashIngredients();
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if(isInstance(other))
-		{
-			return testEquality((INPUT)other);
-		}
-		
-		return false;
-	}
+    public abstract void load(NBTTagCompound nbtTags);
 
-	public abstract boolean isInstance(Object other);
+    /**
+     * Test equality to another input. This should return true if the input matches this one, IGNORING AMOUNTS. Allows
+     * usage of HashMap optimisation to get recipes.
+     *
+     * @param other The other input to check
+     * @return True if input matches this one, IGNORING AMOUNTS!
+     */
+    public abstract boolean testEquality(INPUT other);
 
-	@FunctionalInterface
-	public interface ItemStackIngredientMatcher
-	{
-		/**
-		 * Test equality to another input.
-		 * This should return true if the input matches this one,
-		 * IGNORING AMOUNTS.
-		 *
-		 * @param definition The ingredient stored in the ItemStackInput
-		 * @param test The other input to check
-		 * @return True if input matches this one, IGNORING AMOUNTS!
-		 */
-		boolean test(ItemStack definition, ItemStack test);
-	}
+    @Override
+    public int hashCode() {
+        return hashIngredients();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (isInstance(other)) {
+            return testEquality((INPUT) other);
+        }
+
+        return false;
+    }
+
+    public abstract boolean isInstance(Object other);
+
+    @FunctionalInterface
+    public interface ItemStackIngredientMatcher {
+
+        /**
+         * Test equality to another input. This should return true if the input matches this one, IGNORING AMOUNTS.
+         *
+         * @param definition The ingredient stored in the ItemStackInput
+         * @param test The other input to check
+         * @return True if input matches this one, IGNORING AMOUNTS!
+         */
+        boolean test(ItemStack definition, ItemStack test);
+    }
 }

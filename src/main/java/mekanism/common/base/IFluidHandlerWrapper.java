@@ -1,14 +1,12 @@
 package mekanism.common.base;
 
+import javax.annotation.Nullable;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 
-import javax.annotation.Nullable;
+public interface IFluidHandlerWrapper {
 
-public interface IFluidHandlerWrapper 
-{
     int fill(EnumFacing from, FluidStack resource, boolean doFill);
 
     FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain);
@@ -18,7 +16,7 @@ public interface IFluidHandlerWrapper
     boolean canFill(EnumFacing from, FluidStack fluid);
 
     boolean canDrain(EnumFacing from, @Nullable FluidStack fluid);
-    
+
     FluidTankInfo[] getTankInfo(EnumFacing from);
 
     FluidTankInfo[] getAllTanks();

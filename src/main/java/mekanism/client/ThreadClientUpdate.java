@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import mekanism.api.EnumColor;
 import mekanism.client.gui.GuiCredits;
 import mekanism.common.Mekanism;
@@ -18,193 +17,169 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Thread that downloads the latest release of Mekanism. The older file is deleted and the newly downloaded file takes it's place.
- * @author AidanBrady
+ * Thread that downloads the latest release of Mekanism. The older file is deleted and the newly downloaded file takes
+ * it's place.
  *
+ * @author AidanBrady
  */
 @SideOnly(Side.CLIENT)
-public class ThreadClientUpdate extends Thread
-{
-	private int bytesDownloaded;
-	private int lastBytesDownloaded;
-	private byte[] buffer = new byte[10240];
+public class ThreadClientUpdate extends Thread {
 
-	private static File modsDir = new File(Mekanism.proxy.getMinecraftDir(), "mods");
-	private static File tempDir = new File(modsDir, "temp");
-	private static URL zipUrl = createURL();
+    public static boolean hasUpdated;
+    private static File modsDir = new File(Mekanism.proxy.getMinecraftDir(), "mods");
+    private static File tempDir = new File(modsDir, "temp");
+    private static URL zipUrl = createURL();
+    private int bytesDownloaded;
+    private int lastBytesDownloaded;
+    private byte[] buffer = new byte[10240];
 
-	public static boolean hasUpdated;
+    public ThreadClientUpdate() {
+        setDaemon(false);
+        start();
+    }
 
-	public ThreadClientUpdate()
-	{
-		setDaemon(false);
-		start();
-	}
+    private static URL createURL() {
+        try {
+            return new URL("http://ci.aidancbrady.com/job/Mekanism/Recommended/artifact/*zip*/archive.zip");
+        } catch (Exception e) {
+        }
 
-	@Override
-	public void run()
-	{
-		try {
-			deleteTemp();
-			createTemp();
+        return null;
+    }
 
-			File download = new File(tempDir, "builds.zip");
+    @Override
+    public void run() {
+        try {
+            deleteTemp();
+            createTemp();
 
-			prepareForDownload();
-			download.createNewFile();
+            File download = new File(tempDir, "builds.zip");
 
-			GuiCredits.updateInfo("Downloading...");
+            prepareForDownload();
+            download.createNewFile();
 
-			FileOutputStream outputStream = new FileOutputStream(download.getAbsolutePath());
-			InputStream stream = zipUrl.openStream();
+            GuiCredits.updateInfo("Downloading...");
 
-			while((lastBytesDownloaded = stream.read(buffer)) > 0)
-			{
-				outputStream.write(buffer, 0, lastBytesDownloaded);
-				buffer = new byte[10240];
-				bytesDownloaded += lastBytesDownloaded;
-			}
+            FileOutputStream outputStream = new FileOutputStream(download.getAbsolutePath());
+            InputStream stream = zipUrl.openStream();
 
-			outputStream.close();
-			stream.close();
+            while ((lastBytesDownloaded = stream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, lastBytesDownloaded);
+                buffer = new byte[10240];
+                bytesDownloaded += lastBytesDownloaded;
+            }
 
-			if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
-			{
-				ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
-				deployEntry(zip, "Mekanism-");
-				zip.close();
-			}
+            outputStream.close();
+            stream.close();
 
-			for(IModule module : Mekanism.modulesLoaded)
-			{
-				if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
-				{
-					ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
-					deployEntry(zip, "Mekanism" + module.getName());
-					zip.close();
-				}
-			}
+            if (Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1) {
+                ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
+                deployEntry(zip, "Mekanism-");
+                zip.close();
+            }
 
-			deleteTemp();
+            for (IModule module : Mekanism.modulesLoaded) {
+                if (module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1) {
+                    ZipInputStream zip = new ZipInputStream(new FileInputStream(download));
+                    deployEntry(zip, "Mekanism" + module.getName());
+                    zip.close();
+                }
+            }
 
-			hasUpdated = true;
-			GuiCredits.updateInfo("Update installed, reboot Minecraft for changes.");
-			Mekanism.logger.info("Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
+            deleteTemp();
 
-			finalize();
-		} catch(Throwable t) {
-			GuiCredits.updateInfo(EnumColor.DARK_RED + "Error updating.");
-			hasUpdated = true;
-			Mekanism.logger.error("Error while finishing update thread: " + t.getMessage());
-			t.printStackTrace();
-		}
-	}
+            hasUpdated = true;
+            GuiCredits.updateInfo("Update installed, reboot Minecraft for changes.");
+            Mekanism.logger.info("Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
 
-	private void deployEntry(ZipInputStream zip, String filePrefix) throws IOException
-	{
-		byte[] zipBuffer = new byte[1024];
-		ZipEntry entry = zip.getNextEntry();
+            finalize();
+        } catch (Throwable t) {
+            GuiCredits.updateInfo(EnumColor.DARK_RED + "Error updating.");
+            hasUpdated = true;
+            Mekanism.logger.error("Error while finishing update thread: " + t.getMessage());
+            t.printStackTrace();
+        }
+    }
 
-		while(entry != null)
-		{
-			if(entry.isDirectory())
-			{
-				continue;
-			}
+    private void deployEntry(ZipInputStream zip, String filePrefix) throws IOException {
+        byte[] zipBuffer = new byte[1024];
+        ZipEntry entry = zip.getNextEntry();
 
-			if(entry.getName().contains(filePrefix))
-			{
-				File modFile = new File(modsDir, entry.getName().replace("output/", ""));
+        while (entry != null) {
+            if (entry.isDirectory()) {
+                continue;
+            }
 
-				if(modFile.exists())
-				{
-					modFile.delete();
-				}
+            if (entry.getName().contains(filePrefix)) {
+                File modFile = new File(modsDir, entry.getName().replace("output/", ""));
 
-				modFile.createNewFile();
+                if (modFile.exists()) {
+                    modFile.delete();
+                }
 
-				FileOutputStream outStream = new FileOutputStream(modFile);
+                modFile.createNewFile();
 
-				int len;
+                FileOutputStream outStream = new FileOutputStream(modFile);
 
-				while((len = zip.read(zipBuffer)) > 0)
-				{
-					outStream.write(zipBuffer, 0, len);
-				}
+                int len;
 
-				zip.closeEntry();
-				outStream.close();
-				break;
-			}
+                while ((len = zip.read(zipBuffer)) > 0) {
+                    outStream.write(zipBuffer, 0, len);
+                }
 
-			entry = zip.getNextEntry();
-		}
-	}
+                zip.closeEntry();
+                outStream.close();
+                break;
+            }
 
-	private void createTemp()
-	{
-		if(!tempDir.exists())
-		{
-			tempDir.mkdir();
-		}
-	}
+            entry = zip.getNextEntry();
+        }
+    }
 
-	private void deleteTemp()
-	{
-		if(tempDir.exists())
-		{
-			clearFiles(tempDir);
-		}
-	}
+    private void createTemp() {
+        if (!tempDir.exists()) {
+            tempDir.mkdir();
+        }
+    }
 
-	private void clearFiles(File file)
-	{
-		if(file.isDirectory())
-		{
-			for(File sub : file.listFiles())
-			{
-				clearFiles(sub);
-			}
-		}
+    private void deleteTemp() {
+        if (tempDir.exists()) {
+            clearFiles(tempDir);
+        }
+    }
 
-		file.delete();
-	}
+    private void clearFiles(File file) {
+        if (file.isDirectory()) {
+            for (File sub : file.listFiles()) {
+                clearFiles(sub);
+            }
+        }
 
-	private void prepareForDownload()
-	{
-		File[] modsList = new File(String.valueOf(Mekanism.proxy.getMinecraftDir()) + File.separator + "mods").listFiles();
+        file.delete();
+    }
 
-		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
-		{
-			for(File file : modsList)
-			{
-				if(file.getName().startsWith("Mekanism-") && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
-				{
-					file.delete();
-				}
-			}
-		}
+    private void prepareForDownload() {
+        File[] modsList = new File(Mekanism.proxy.getMinecraftDir() + File.separator + "mods")
+              .listFiles();
 
-		for(IModule module : Mekanism.modulesLoaded)
-		{
-			for(File file : modsList)
-			{
-				if(file.getName().startsWith("Mekanism" + module.getName()) && file.getName().endsWith(".jar") && !file.getName().contains(Mekanism.latestVersionNumber))
-				{
-					file.delete();
-				}
-			}
-		}
+        if (Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1) {
+            for (File file : modsList) {
+                if (file.getName().startsWith("Mekanism-") && file.getName().endsWith(".jar") && !file.getName()
+                      .contains(Mekanism.latestVersionNumber)) {
+                    file.delete();
+                }
+            }
+        }
 
-		Mekanism.logger.info("Preparing to update...");
-	}
+        for (IModule module : Mekanism.modulesLoaded) {
+            for (File file : modsList) {
+                if (file.getName().startsWith("Mekanism" + module.getName()) && file.getName().endsWith(".jar") && !file
+                      .getName().contains(Mekanism.latestVersionNumber)) {
+                    file.delete();
+                }
+            }
+        }
 
-	private static URL createURL()
-	{
-		try {
-			return new URL("http://ci.aidancbrady.com/job/Mekanism/Recommended/artifact/*zip*/archive.zip");
-		} catch(Exception e) {}
-
-		return null;
-	}
+        Mekanism.logger.info("Preparing to update...");
+    }
 }

@@ -1,21 +1,20 @@
 package mekanism.common.base;
 
 import io.netty.buffer.ByteBuf;
-
 import mekanism.api.TileNetworkList;
 import net.minecraft.nbt.NBTTagCompound;
 
-public interface ITileComponent
-{
-	void tick();
+public interface ITileComponent {
 
-	void read(NBTTagCompound nbtTags);
+    void tick();
 
-	void read(ByteBuf dataStream);
+    void read(NBTTagCompound nbtTags);
 
-	void write(NBTTagCompound nbtTags);
+    void read(ByteBuf dataStream);
 
-	void write(TileNetworkList data);
-	
-	void invalidate();
+    void write(NBTTagCompound nbtTags);
+
+    void write(TileNetworkList data);
+
+    void invalidate();
 }

@@ -2,6 +2,14 @@ package mekanism.common.recipe.generation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
@@ -15,15 +23,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class RecipeGenerator {
 
     // Replace calls to GameRegistry.addShapeless/ShapedRecipe with these methods, which will dump it to a json in your dir of choice
@@ -32,14 +31,75 @@ public class RecipeGenerator {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final File RECIPE_DIR;
 
-    public RecipeGenerator(String modid)
-    {
+    public RecipeGenerator(String modid) {
         RECIPE_DIR = new File("recipeoutput" + File.separator + modid);
         if (!RECIPE_DIR.exists()) {
             boolean success = RECIPE_DIR.mkdirs();
-            if(!success)
+            if (!success) {
                 throw new IllegalStateException("Cannot create recipe output dir!");
+            }
         }
+    }
+
+    public static Map<String, Object> serializeItem(Object thing) {
+        if (thing instanceof Item) {
+            return serializeItem(new ItemStack((Item) thing));
+        }
+        if (thing instanceof Block) {
+            return serializeItem(new ItemStack((Block) thing));
+        }
+        if (thing instanceof ItemStack) {
+            ItemStack stack = (ItemStack) thing;
+            Map<String, Object> ret = new HashMap<>();
+            ret.put("item", stack.getItem().getRegistryName().toString());
+            if (stack.getItem().getHasSubtypes() || stack.getItemDamage() != 0) {
+                ret.put("data", stack.getItemDamage());
+            }
+            if (stack.getCount() > 1) {
+                ret.put("count", stack.getCount());
+            }
+
+            if (stack.hasTagCompound()) {
+                Map<String, Object> tag = new HashMap<>();
+
+                NBTTagCompound compound = stack.getTagCompound();
+                Set<String> keySet = compound.getKeySet();
+
+                for (String key : keySet) {
+
+                    if (key.equals("tier") || key.equals("recipeType")) {
+                        tag.put(key, compound.getInteger(key));
+                    } else if (key.equals("mekData")) {
+                        //TODO
+                    } else {
+                        throw new IllegalArgumentException("Missing NBT mapping for Key: " + key);
+                    }
+                }
+                ret.put("type", "mekanism:item_nbt");
+                ret.put("nbt", tag);
+            }
+
+            return ret;
+        }
+        if (thing instanceof String) {
+            String oredict = (String) thing;
+            Map<String, Object> ret = new HashMap<>();
+
+            //Filter circuits as they could be disabled -> Redirect the actual value to _constants.json with #OREDICTNAME
+            if (oredict != null && (oredict.equals("circuitBasic") ||
+                  oredict.equals("circuitAdvanced") ||
+                  oredict.equals("circuitElite") ||
+                  oredict.equals("circuitUltimate"))) {
+                ret.put("item", "#" + oredict.toUpperCase());
+            } else {
+                ret.put("type", "forge:ore_dict");
+                ret.put("ore", oredict);
+            }
+
+            return ret;
+        }
+
+        throw new IllegalArgumentException("Not a block, item, stack, or od name");
     }
 
     public void addShapedRecipe(ItemStack result, Object... components) {
@@ -60,17 +120,20 @@ public class RecipeGenerator {
             Object o = components[i];
             if (o instanceof Character) {
                 if (curKey != null) {
-                    Mekanism.logger.fatal("Failed to convert recipe. Provided two chars keys in a row", new IllegalArgumentException());
+                    Mekanism.logger.fatal("Failed to convert recipe. Provided two chars keys in a row",
+                          new IllegalArgumentException());
                     return;
                 }
                 curKey = (Character) o;
             } else {
                 if (curKey == null) {
-                    Mekanism.logger.fatal("Failed to convert recipe. Providing object without a char key", new IllegalArgumentException());
+                    Mekanism.logger.fatal("Failed to convert recipe. Providing object without a char key",
+                          new IllegalArgumentException());
                     return;
                 }
-                if (o instanceof String)
+                if (o instanceof String) {
                     isOreDict = true;
+                }
                 try {
                     key.put(Character.toString(curKey), serializeItem(o));
                 } catch (IllegalArgumentException e) {
@@ -91,7 +154,7 @@ public class RecipeGenerator {
 
         // Add recipe_enabled condition to all available machine types.
         BlockStateMachine.MachineType machineType = BlockStateMachine.MachineType.get(result);
-        if(machineType != null) {
+        if (machineType != null) {
             Map<String, String> condition = new HashMap<>();
             condition.put("type", "mekanism:recipe_enabled");
             condition.put("machineType", machineType.blockName);
@@ -100,7 +163,7 @@ public class RecipeGenerator {
 
         // Add recipe_enabled condition to generator types which can be disabled.
         BlockStateGenerator.GeneratorType generatorType = BlockStateGenerator.GeneratorType.get(result);
-        if(generatorType != null && result.getItemDamage() <= BlockStateGenerator.GeneratorType.WIND_GENERATOR.meta) {
+        if (generatorType != null && result.getItemDamage() <= BlockStateGenerator.GeneratorType.WIND_GENERATOR.meta) {
             Map<String, String> condition = new HashMap<>();
             condition.put("type", "mekanism:recipe_enabled");
             condition.put("generatorType", generatorType.blockName);
@@ -125,15 +188,15 @@ public class RecipeGenerator {
         }
     }
 
-    public void addShapelessRecipe(ItemStack result, Object... components)
-    {
+    public void addShapelessRecipe(ItemStack result, Object... components) {
         Map<String, Object> json = new HashMap<>();
 
         boolean isOreDict = false;
         List<Map<String, Object>> ingredients = new ArrayList<>();
         for (Object o : components) {
-            if (o instanceof String)
+            if (o instanceof String) {
                 isOreDict = true;
+            }
             try {
                 ingredients.add(serializeItem(o));
             } catch (IllegalArgumentException e) {
@@ -162,7 +225,6 @@ public class RecipeGenerator {
             f = new File(RECIPE_DIR, result.getItem().getRegistryName().getResourcePath() + suffix + ".json");
         }
 
-
         try (FileWriter w = new FileWriter(f)) {
             GSON.toJson(json, w);
         } catch (IOException e) {
@@ -170,87 +232,19 @@ public class RecipeGenerator {
         }
     }
 
-    public static Map<String, Object> serializeItem(Object thing) {
-        if (thing instanceof Item) {
-            return serializeItem(new ItemStack((Item) thing));
-        }
-        if (thing instanceof Block) {
-            return serializeItem(new ItemStack((Block) thing));
-        }
-        if (thing instanceof ItemStack) {
-            ItemStack stack = (ItemStack) thing;
-            Map<String, Object> ret = new HashMap<>();
-            ret.put("item", stack.getItem().getRegistryName().toString());
-            if (stack.getItem().getHasSubtypes() || stack.getItemDamage() != 0) {
-                ret.put("data", stack.getItemDamage());
-            }
-            if (stack.getCount() > 1) {
-                ret.put("count", stack.getCount());
-            }
-
-            if (stack.hasTagCompound()) {
-                Map<String, Object> tag = new HashMap<>();
-
-                NBTTagCompound compound = stack.getTagCompound();
-                Set<String> keySet = compound.getKeySet();
-
-                for(String key: keySet) {
-
-                    if(key.equals("tier") || key.equals("recipeType")) {
-                        tag.put(key, compound.getInteger(key));
-                    } else if (key.equals("mekData")) {
-                        //TODO
-                    } else {
-                        throw new IllegalArgumentException("Missing NBT mapping for Key: " + key);
-                    }
-                }
-                ret.put("type", "mekanism:item_nbt");
-                ret.put("nbt", tag);
-            }
-
-            return ret;
-        }
-        if (thing instanceof String) {
-            String oredict = (String) thing;
-            Map<String, Object> ret = new HashMap<>();
-
-            //Filter circuits as they could be disabled -> Redirect the actual value to _constants.json with #OREDICTNAME
-            if(oredict != null && (oredict.equals("circuitBasic") ||
-                    oredict.equals("circuitAdvanced") ||
-                    oredict.equals("circuitElite") ||
-                    oredict.equals("circuitUltimate")))
-            {
-                ret.put("item", "#" + oredict.toUpperCase());
-            }
-            else
-            {
-                ret.put("type", "forge:ore_dict");
-                ret.put("ore", oredict);
-            }
-
-            return ret;
-        }
-
-        throw new IllegalArgumentException("Not a block, item, stack, or od name");
-    }
-
-    private String getRecipeType(ItemStack result, boolean isOreDict, boolean shaped)
-    {
+    private String getRecipeType(ItemStack result, boolean isOreDict, boolean shaped) {
         String type = shaped ? "minecraft:crafting_shaped" : "minecraft:crafting_shapeless";
-        if(isOreDict)
-        {
+        if (isOreDict) {
             Item resultItem = result.getItem();
-            if(resultItem instanceof IEnergizedItem ||
-                    resultItem instanceof IGasItem ||
-                    resultItem instanceof ISecurityItem ||
-                    FluidContainerUtils.isFluidContainer(result) ||
-                    BlockStateBasic.BasicBlockType.get(result) == BlockStateBasic.BasicBlockType.BIN ||
-                    BlockStateMachine.MachineType.get(result) != null && BlockStateMachine.MachineType.get(result).supportsUpgrades)
-            {
+            if (resultItem instanceof IEnergizedItem ||
+                  resultItem instanceof IGasItem ||
+                  resultItem instanceof ISecurityItem ||
+                  FluidContainerUtils.isFluidContainer(result) ||
+                  BlockStateBasic.BasicBlockType.get(result) == BlockStateBasic.BasicBlockType.BIN ||
+                  BlockStateMachine.MachineType.get(result) != null && BlockStateMachine.MachineType
+                        .get(result).supportsUpgrades) {
                 type = shaped ? "mekanism:ore_shaped" : "mekanism:ore_shapeless";
-            }
-            else
-            {
+            } else {
                 type = shaped ? "forge:ore_shaped" : "forge:ore_shapeless";
             }
         }

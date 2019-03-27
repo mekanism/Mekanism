@@ -7,14 +7,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ClientPlayerTracker
-{
-	@SubscribeEvent
-	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event)
-	{
-		Mekanism.jetpackOn.remove(event.player.getUniqueID());
-		Mekanism.gasmaskOn.remove(event.player.getUniqueID());
-		Mekanism.flamethrowerActive.remove(event.player.getUniqueID());
-		Mekanism.freeRunnerOn.remove(event.player.getUniqueID());
-	}
+public class ClientPlayerTracker {
+
+    @SubscribeEvent
+    public void onPlayerChangedDimension(PlayerChangedDimensionEvent event) {
+        Mekanism.jetpackOn.remove(event.player.getUniqueID());
+        Mekanism.gasmaskOn.remove(event.player.getUniqueID());
+        Mekanism.flamethrowerActive.remove(event.player.getUniqueID());
+        Mekanism.freeRunnerOn.remove(event.player.getUniqueID());
+    }
 }

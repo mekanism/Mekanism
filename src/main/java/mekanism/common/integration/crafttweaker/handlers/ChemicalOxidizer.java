@@ -8,6 +8,8 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IngredientAny;
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -16,59 +18,53 @@ import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.OxidationRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @ZenClass("mods.mekanism.chemical.oxidizer")
 @ModOnly("mtlib")
 @ZenRegister
-public class ChemicalOxidizer
-{
+public class ChemicalOxidizer {
+
     public static final String NAME = "Mekanism Chemical Oxidizer";
 
     @ZenMethod
-    public static void addRecipe(IItemStack itemInput, IGasStack gasOutput)
-    {
-        if (itemInput == null || gasOutput == null)
-        {
+    public static void addRecipe(IItemStack itemInput, IGasStack gasOutput) {
+        if (itemInput == null || gasOutput == null) {
             LogHelper.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
         }
 
         OxidationRecipe recipe = new OxidationRecipe(InputHelper.toStack(itemInput), GasHelper.toGas(gasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS
+              .add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get(), recipe));
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient itemInput)
-    {
-        if (gasOutput == null)
-        {
+    public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient itemInput) {
+        if (gasOutput == null) {
             LogHelper.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
         }
 
-        if (itemInput == null)
+        if (itemInput == null) {
             itemInput = IngredientAny.INSTANCE;
+        }
 
-        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get(), gasOutput, itemInput));
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get(), gasOutput, itemInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe<ItemStackInput, OxidationRecipe>
-    {
+    private static class Remove extends RemoveMekanismRecipe<ItemStackInput, OxidationRecipe> {
+
         private IIngredient gasOutput;
         private IIngredient itemInput;
 
-        public Remove(String name, Map<ItemStackInput, OxidationRecipe> map, IIngredient gasOutput, IIngredient itemInput)
-        {
+        public Remove(String name, Map<ItemStackInput, OxidationRecipe> map, IIngredient gasOutput,
+              IIngredient itemInput) {
             super(name, map);
 
             this.gasOutput = gasOutput;
@@ -76,30 +72,30 @@ public class ChemicalOxidizer
         }
 
         @Override
-        public void addRecipes()
-        {
+        public void addRecipes() {
             Map<ItemStackInput, OxidationRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<ItemStackInput, OxidationRecipe> entry : RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get().entrySet())
-            {
+            for (Map.Entry<ItemStackInput, OxidationRecipe> entry : RecipeHandler.Recipe.CHEMICAL_OXIDIZER.get()
+                  .entrySet()) {
                 IItemStack inputItem = InputHelper.toIItemStack(entry.getKey().ingredient);
                 IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);
 
-                if (!StackHelper.matches(itemInput, inputItem))
+                if (!StackHelper.matches(itemInput, inputItem)) {
                     continue;
-                if (!GasHelper.matches(gasOutput, outputGas))
+                }
+                if (!GasHelper.matches(gasOutput, outputGas)) {
                     continue;
+                }
 
                 recipesToRemove.put(entry.getKey(), entry.getValue());
             }
 
-            if (!recipesToRemove.isEmpty())
-            {
+            if (!recipesToRemove.isEmpty()) {
                 recipes.putAll(recipesToRemove);
-            }
-            else
-            {
-                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), itemInput.toString()));
+            } else {
+                LogHelper.logInfo(
+                      String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(),
+                            itemInput.toString()));
             }
         }
     }
