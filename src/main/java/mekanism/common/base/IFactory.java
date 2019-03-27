@@ -15,9 +15,11 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
@@ -51,7 +53,8 @@ public interface IFactory
 	public static enum MachineFuelType {
 		BASIC,
 		ADVANCED,
-		DOUBLE
+		DOUBLE,
+		CHANCE
 	}
 
 	public static enum RecipeType implements IStringSerializable
@@ -63,7 +66,8 @@ public interface IFactory
 		COMBINING("Combining", "combiner", MachineType.COMBINER, MachineFuelType.DOUBLE, false, Recipe.COMBINER),
 		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.PURIFICATION_CHAMBER),
 		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true, Recipe.CHEMICAL_INJECTION_CHAMBER),
-		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER);
+		INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false, Recipe.METALLURGIC_INFUSER),
+		SAWING("Sawing", "sawmill", MachineType.PRECISION_SAWMILL, MachineFuelType.CHANCE, false, Recipe.PRECISION_SAWMILL);
 
 		private String name;
 		private ResourceLocation sound;
@@ -102,6 +106,16 @@ public interface IFactory
 		{
 			return getRecipe(new DoubleMachineInput(input, extra));
 		}
+		
+		public ChanceMachineRecipe getChanceRecipe(ItemStackInput input)
+		{
+			return RecipeHandler.getChanceRecipe(input, recipe.get());
+		}
+
+		public ChanceMachineRecipe getChanceRecipe(ItemStack input)
+		{
+			return getChanceRecipe(new ItemStackInput(input));
+		}
 
 		public MetallurgicInfuserRecipe getRecipe(InfusionInput input)
 		{
@@ -122,6 +136,10 @@ public interface IFactory
 			else if(fuelType == MachineFuelType.DOUBLE)
 			{
 				return getRecipe(slotStack, extraStack);
+			}
+			else if(fuelType == MachineFuelType.CHANCE)
+			{
+				return getChanceRecipe(slotStack);
 			}
 			else if(this == INFUSING)
 			{

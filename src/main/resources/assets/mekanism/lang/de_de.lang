@@ -216,6 +216,12 @@ tile.EnergyCubeElite.name=Elite-Energiewürfel
 tile.EnergyCubeUltimate.name=Ultimativer Energiewürfel
 tile.EnergyCubeCreative.name=Kreativer Energiewürfel
 
+# Tier Installers
+item.basicTierInstaller.name=Gewöhnlich Stufe Einbauwerkzeug
+item.advancedTierInstaller.name=Fortgeschritten Stufe Einbauwerkzeug
+item.eliteTierInstaller.name=Elite Stufe Einbauwerkzeug
+item.ultimateTierInstaller.name=Ultimativ Stufe Einbauwerkzeug
+
 # Dust
 item.ironDust.name=Eisenstaub
 item.goldDust.name=Goldstaub
@@ -345,10 +351,10 @@ oregas.obsidian=Obsidianerz
 oregas.lead=Bleierz
 
 # Tier names
-tier.Basic=Gewöhnlich
-tier.Advanced=Fortgeschritten
+tier.Basic=Gewöhnliche
+tier.Advanced=Fortgeschrittene
 tier.Elite=Elite
-tier.Ultimate=Ultimativ
+tier.Ultimate=Ultimative
 tier.Creative=Kreativ
 
 # Transmission types
@@ -585,6 +591,7 @@ gui.factory.Combining=Kombinieren
 gui.factory.Purifying=Purifizieren
 gui.factory.Injecting=Injezieren
 gui.factory.Infusing=Infundieren
+gui.factory.Sawing=Sägen
 
 gui.seismicReader.short=S. Lesegerät
 gui.seismicReader.solids=Feststoffe

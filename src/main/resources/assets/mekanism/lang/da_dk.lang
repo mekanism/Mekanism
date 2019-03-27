@@ -573,6 +573,7 @@ gui.factory.Combining=Kombinerings
 gui.factory.Purifying=Rensnings
 gui.factory.Injecting=Injicerings
 gui.factory.Infusing=Infusions
+gui.factory.Sawing=Savning
 
 gui.seismicReader.short=S. Aflæser
 gui.seismicReader.solids=Faste Stoffer

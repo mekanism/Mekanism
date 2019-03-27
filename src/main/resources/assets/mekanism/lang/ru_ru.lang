@@ -615,6 +615,7 @@ gui.factory.Combining=Объединяющий
 gui.factory.Purifying=Очищающий
 gui.factory.Injecting=Впрыскивающий
 gui.factory.Infusing=Наполняющий
+gui.factory.Sawing=Распиловка
 
 gui.seismicReader.short=Сейсм. считыватель
 gui.seismicReader.solids=Твёрдые

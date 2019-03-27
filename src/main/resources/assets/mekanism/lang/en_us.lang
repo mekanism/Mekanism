@@ -617,6 +617,7 @@ gui.factory.Combining=Combining
 gui.factory.Purifying=Purifying
 gui.factory.Injecting=Injecting
 gui.factory.Infusing=Infusing
+gui.factory.Sawing=Sawing
 
 gui.seismicReader.short=S. Reader
 gui.seismicReader.solids=Solids
