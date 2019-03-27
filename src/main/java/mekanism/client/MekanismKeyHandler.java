@@ -22,7 +22,6 @@ import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
@@ -75,7 +74,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             EntityPlayer player = FMLClientHandler.instance().getClient().player;
             ItemStack toolStack = player.inventory.getCurrentItem();
 
-            Item item = StackUtils.getItem(toolStack);
+            Item item = toolStack.getItem();
 
             if (player.isSneaking() && item instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) item;
@@ -138,7 +137,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
         } else if (kb == armorModeSwitchKey) {
             EntityPlayer player = FMLClientHandler.instance().getClient().player;
             ItemStack chestStack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            Item chestItem = StackUtils.getItem(chestStack);
+            Item chestItem = chestStack.getItem();
 
             if (chestItem instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chestItem;
@@ -161,7 +160,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
         } else if (kb == freeRunnerModeSwitchKey) {
             EntityPlayer player = FMLClientHandler.instance().getClient().player;
             ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
-            Item feetItem = StackUtils.getItem(feetStack);
+            Item feetItem = feetStack.getItem();
 
             if (feetItem instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) feetItem;
