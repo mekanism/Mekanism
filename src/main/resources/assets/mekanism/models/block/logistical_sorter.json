@@ -1,7 +1,8 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "mekanism:blocks/models/logistical_sorter"
+		"all": "mekanism:blocks/models/logistical_sorter",
+		"particle": "mekanism:blocks/SteelCasing"
 	},
 	"elements": [
 		{
@@ -138,13 +139,14 @@
 			"name": "led1",
 			"from": [11.5, 7.5, 6.5],
 			"to": [12.5, 8.5, 7.5],
+			"color": 5,
 			"faces": {
-				"north": {"uv": [10.25, 5.75, 10.5, 6], "texture": "#all"},
-				"east": {"uv": [10, 5.75, 10.25, 6], "texture": "#all"},
-				"south": {"uv": [10.75, 5.75, 11, 6], "texture": "#all"},
-				"west": {"uv": [10.5, 5.75, 10.75, 6], "texture": "#all"},
-				"up": {"uv": [10.5, 5.75, 10.25, 5.5], "texture": "#all"},
-				"down": {"uv": [10.75, 5.5, 10.5, 5.75], "texture": "#all"}
+				"north": {"uv": [3.5, 7.5, 4.5, 8.5], "texture": "#led"},
+				"east": {"uv": [8.5, 7.5, 9.5, 8.5], "texture": "#led"},
+				"south": {"uv": [11.5, 7.5, 12.5, 8.5], "texture": "#led"},
+				"west": {"uv": [6.5, 7.5, 7.5, 8.5], "texture": "#led"},
+				"up": {"uv": [11.5, 6.5, 12.5, 7.5], "texture": "#led"},
+				"down": {"uv": [11.5, 8.5, 12.5, 9.5], "texture": "#led"}
 			}
 		},
 		{
@@ -164,13 +166,14 @@
 			"name": "led2",
 			"from": [11.5, 7.5, 4.5],
 			"to": [12.5, 8.5, 5.5],
+			"color": 2,
 			"faces": {
-				"north": {"uv": [10.25, 5.75, 10.5, 6], "texture": "#all"},
-				"east": {"uv": [10, 5.75, 10.25, 6], "texture": "#all"},
-				"south": {"uv": [10.75, 5.75, 11, 6], "texture": "#all"},
-				"west": {"uv": [10.5, 5.75, 10.75, 6], "texture": "#all"},
-				"up": {"uv": [10.5, 5.75, 10.25, 5.5], "texture": "#all"},
-				"down": {"uv": [10.75, 5.5, 10.5, 5.75], "texture": "#all"}
+				"north": {"uv": [3.5, 7.5, 4.5, 8.5], "texture": "#led"},
+				"east": {"uv": [10.5, 7.5, 11.5, 8.5], "texture": "#led"},
+				"south": {"uv": [11.5, 7.5, 12.5, 8.5], "texture": "#led"},
+				"west": {"uv": [4.5, 7.5, 5.5, 8.5], "texture": "#led"},
+				"up": {"uv": [11.5, 4.5, 12.5, 5.5], "texture": "#led"},
+				"down": {"uv": [11.5, 10.5, 12.5, 11.5], "texture": "#led"}
 			}
 		},
 		{
@@ -255,13 +258,14 @@
 			"name": "led4",
 			"from": [3.5, 7.5, 6.5],
 			"to": [4.5, 8.5, 7.5],
+			"color": 2,
 			"faces": {
-				"north": {"uv": [10.25, 5.75, 10.5, 6], "texture": "#all"},
-				"east": {"uv": [10, 5.75, 10.25, 6], "texture": "#all"},
-				"south": {"uv": [10.75, 5.75, 11, 6], "texture": "#all"},
-				"west": {"uv": [10.5, 5.75, 10.75, 6], "texture": "#all"},
-				"up": {"uv": [10.5, 5.75, 10.25, 5.5], "texture": "#all"},
-				"down": {"uv": [10.75, 5.5, 10.5, 5.75], "texture": "#all"}
+				"north": {"uv": [11.5, 7.5, 12.5, 8.5], "texture": "#led"},
+				"east": {"uv": [8.5, 7.5, 9.5, 8.5], "texture": "#led"},
+				"south": {"uv": [3.5, 7.5, 4.5, 8.5], "texture": "#led"},
+				"west": {"uv": [6.5, 7.5, 7.5, 8.5], "texture": "#led"},
+				"up": {"uv": [3.5, 6.5, 4.5, 7.5], "texture": "#led"},
+				"down": {"uv": [3.5, 8.5, 4.5, 9.5], "texture": "#led"}
 			}
 		},
 		{
@@ -307,13 +311,14 @@
 			"name": "led3",
 			"from": [3.5, 7.5, 4.5],
 			"to": [4.5, 8.5, 5.5],
+			"color": 5,
 			"faces": {
-				"north": {"uv": [10.25, 5.75, 10.5, 6], "texture": "#all"},
-				"east": {"uv": [10, 5.75, 10.25, 6], "texture": "#all"},
-				"south": {"uv": [10.75, 5.75, 11, 6], "texture": "#all"},
-				"west": {"uv": [10.5, 5.75, 10.75, 6], "texture": "#all"},
-				"up": {"uv": [10.5, 5.75, 10.25, 5.5], "texture": "#all"},
-				"down": {"uv": [10.75, 5.5, 10.5, 5.75], "texture": "#all"}
+				"north": {"uv": [11.5, 7.5, 12.5, 8.5], "texture": "#led"},
+				"east": {"uv": [10.5, 7.5, 11.5, 8.5], "texture": "#led"},
+				"south": {"uv": [3.5, 7.5, 4.5, 8.5], "texture": "#led"},
+				"west": {"uv": [4.5, 7.5, 5.5, 8.5], "texture": "#led"},
+				"up": {"uv": [3.5, 4.5, 4.5, 5.5], "texture": "#led"},
+				"down": {"uv": [3.5, 10.5, 4.5, 11.5], "texture": "#led"}
 			}
 		},
 		{

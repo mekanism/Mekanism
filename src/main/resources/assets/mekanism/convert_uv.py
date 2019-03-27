@@ -1,13 +1,14 @@
 import json
 
-def double_uv(s):
+def double_uv(s, scale, filter= lambda x: True):
   with open(s) as f:
       raw = f.read()
       j = json.loads(raw)
       for entry in j.get("elements"):
           faces = entry["faces"]
           for key in faces:
-              faces[key]["uv"] = [i*2 for i in faces[key]["uv"]] 
+            if filter(faces[key]):
+              faces[key]["uv"] = [i*scale for i in faces[key]["uv"]]
 
       with open(s, "w") as newf:
           newf.write(json.dumps(j, indent=4))
