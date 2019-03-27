@@ -3,6 +3,7 @@ package mekanism.common.util;
 import com.mojang.authlib.GameProfile;
 import ic2.api.energy.EnergyNet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -883,56 +884,16 @@ public final class MekanismUtils {
     public static List<String> splitTooltip(String s, ItemStack stack) {
         s = s.trim();
 
-        try {
-            FontRenderer renderer = (FontRenderer) Mekanism.proxy.getFontRenderer();
-
-            if (!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null) {
-                renderer = stack.getItem().getFontRenderer(stack);
-            }
-
-            List<String> words = new ArrayList<>();
-            List<String> lines = new ArrayList<>();
-
-            String currentWord = "";
-
-            for (Character c : s.toCharArray()) {
-                if (c.equals(' ')) {
-                    words.add(currentWord);
-                    currentWord = "";
-                } else {
-                    currentWord += c;
-                }
-            }
-
-            if (!currentWord.isEmpty()) {
-                words.add(currentWord);
-            }
-
-            String currentLine = "";
-
-            for (String word : words) {
-                if (currentLine.isEmpty() || renderer.getStringWidth(currentLine + " " + word) <= 200) {
-                    if (currentLine.length() > 0) {
-                        currentLine += " ";
-                    }
-
-                    currentLine += word;
-                } else {
-                    lines.add(currentLine);
-                    currentLine = word;
-                }
-            }
-
-            if (!currentLine.isEmpty()) {
-                lines.add(currentLine);
-            }
-
-            return lines;
-        } catch (Throwable t) {
-            t.printStackTrace();
+        FontRenderer renderer = (FontRenderer) Mekanism.proxy.getFontRenderer();
+        if (!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null) {
+            renderer = stack.getItem().getFontRenderer(stack);
         }
 
-        return new ArrayList<>();
+        if(renderer != null) {
+            return renderer.listFormattedStringToWidth(s, 200);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**
