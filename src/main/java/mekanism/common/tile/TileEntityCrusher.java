@@ -20,10 +20,4 @@ public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe> 
     public Map<ItemStackInput, CrusherRecipe> getRecipes() {
         return Recipe.CRUSHER.get();
     }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public float getInitialVolume() {
-        return 0.5F * super.getInitialVolume();
-    }
 }

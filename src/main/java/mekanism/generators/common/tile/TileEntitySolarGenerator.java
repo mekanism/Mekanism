@@ -44,12 +44,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public float getInitialVolume() {
-        return 0.05F * super.getInitialVolume();
-    }
-
-    @Override
     public boolean canSetFacing(int facing) {
         return facing != 0 && facing != 1;
     }
