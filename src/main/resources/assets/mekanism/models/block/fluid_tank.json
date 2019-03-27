@@ -1,490 +1,120 @@
 {
-    "textures": {
-        "particle": "#frame"
-    },
-    "elements": [
-        {
-            "name": "RightGlass",
-            "from": [
-                13,
-                1,
-                3
-            ],
-            "to": [
-                14,
-                15,
-                13
-            ],
-            "faces": {
-                "east": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                },
-                "west": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                }
-            }
-        },
-        {
-            "name": "PoleBR",
-            "from": [
-                13,
-                1,
-                13
-            ],
-            "to": [
-                14,
-                15,
-                14
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        13.0,
-                        0,
-                        14.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "east": {
-                    "uv": [
-                        12,
-                        0,
-                        13.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "south": {
-                    "uv": [
-                        15.0,
-                        0,
-                        16,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "west": {
-                    "uv": [
-                        14.0,
-                        0,
-                        15.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                }
-            }
-        },
-        {
-            "name": "Top",
-            "from": [
-                2,
-                15,
-                2
-            ],
-            "to": [
-                14,
-                16,
-                14
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "east": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "south": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "west": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "up": {
-                    "uv": [
-                        12,
-                        12,
-                        0,
-                        0
-                    ],
-                    "texture": "#frame"
-                },
-                "down": {
-                    "uv": [
-                        12,
-                        12,
-                        0,
-                        0
-                    ],
-                    "texture": "#frame"
-                }
-            }
-        },
-        {
-            "name": "PoleFL",
-            "from": [
-                2,
-                1,
-                2
-            ],
-            "to": [
-                3,
-                15,
-                3
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        13.0,
-                        0,
-                        14.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "east": {
-                    "uv": [
-                        12,
-                        0,
-                        13.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "south": {
-                    "uv": [
-                        15.0,
-                        0,
-                        16,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "west": {
-                    "uv": [
-                        14.0,
-                        0,
-                        15.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                }
-            }
-        },
-        {
-            "name": "FrontGlass",
-            "from": [
-                3,
-                1,
-                2
-            ],
-            "to": [
-                13,
-                15,
-                3
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                },
-                "south": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                }
-            }
-        },
-        {
-            "name": "LeftGlass",
-            "from": [
-                2,
-                1,
-                3
-            ],
-            "to": [
-                3,
-                15,
-                13
-            ],
-            "faces": {
-                "east": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                },
-                "west": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                }
-            }
-        },
-        {
-            "name": "BackGlass",
-            "from": [
-                3,
-                1,
-                13
-            ],
-            "to": [
-                13,
-                15,
-                14
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                },
-                "south": {
-                    "uv": [
-                        3,
-                        1,
-                        13,
-                        15
-                    ],
-                    "texture": "#glass",
-                    "tintindex": 0
-                }
-            }
-        },
-        {
-            "name": "Base",
-            "from": [
-                2,
-                0,
-                2
-            ],
-            "to": [
-                14,
-                1,
-                14
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "east": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "south": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "west": {
-                    "uv": [
-                        0,
-                        12,
-                        12,
-                        13.0
-                    ],
-                    "texture": "#frame"
-                },
-                "up": {
-                    "uv": [
-                        12,
-                        12,
-                        0,
-                        0
-                    ],
-                    "texture": "#frame"
-                },
-                "down": {
-                    "uv": [
-                        12,
-                        12,
-                        0,
-                        0
-                    ],
-                    "texture": "#frame"
-                }
-            }
-        },
-        {
-            "name": "PoleLB",
-            "from": [
-                2,
-                1,
-                13
-            ],
-            "to": [
-                3,
-                15,
-                14
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        13.0,
-                        0,
-                        14.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "east": {
-                    "uv": [
-                        12,
-                        0,
-                        13.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "south": {
-                    "uv": [
-                        15.0,
-                        0,
-                        16,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "west": {
-                    "uv": [
-                        14.0,
-                        0,
-                        15.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                }
-            }
-        },
-        {
-            "name": "PoleRF",
-            "from": [
-                13,
-                1,
-                2
-            ],
-            "to": [
-                14,
-                15,
-                3
-            ],
-            "faces": {
-                "north": {
-                    "uv": [
-                        13.0,
-                        0,
-                        14.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "east": {
-                    "uv": [
-                        12,
-                        0,
-                        13.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "south": {
-                    "uv": [
-                        15.0,
-                        0,
-                        16,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                },
-                "west": {
-                    "uv": [
-                        14.0,
-                        0,
-                        15.0,
-                        14.0
-                    ],
-                    "texture": "#frame"
-                }
-            }
-        }
-    ],
-    "display": {}
+	"elements": [
+		{
+			"name": "RightGlass",
+			"from": [13, 1, 3],
+			"to": [14, 15, 13],
+			"color": 4,
+			"faces": {
+				"east": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0},
+				"west": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0}
+			}
+		},
+		{
+			"name": "PoleBR",
+			"from": [13, 1, 13],
+			"to": [14, 15, 14],
+			"color": 3,
+			"faces": {
+				"north": {"uv": [13, 0, 14, 14], "texture": "#frame"},
+				"east": {"uv": [12, 0, 13, 14], "texture": "#frame"},
+				"south": {"uv": [15, 0, 16, 14], "texture": "#frame"},
+				"west": {"uv": [14, 0, 15, 14], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "Top",
+			"from": [2, 15, 2],
+			"to": [14, 16, 14],
+			"color": 2,
+			"faces": {
+				"north": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"east": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"south": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"west": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"up": {"uv": [12, 12, 0, 0], "texture": "#frame"},
+				"down": {"uv": [12, 12, 0, 0], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "PoleFL",
+			"from": [2, 1, 2],
+			"to": [3, 15, 3],
+			"color": 1,
+			"faces": {
+				"north": {"uv": [13, 0, 14, 14], "texture": "#frame"},
+				"east": {"uv": [12, 0, 13, 14], "texture": "#frame"},
+				"south": {"uv": [15, 0, 16, 14], "texture": "#frame"},
+				"west": {"uv": [14, 0, 15, 14], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "FrontGlass",
+			"from": [3, 1, 2],
+			"to": [13, 15, 3],
+			"color": 2,
+			"faces": {
+				"north": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0},
+				"south": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0}
+			}
+		},
+		{
+			"name": "LeftGlass",
+			"from": [2, 1, 3],
+			"to": [3, 15, 13],
+			"color": 0,
+			"faces": {
+				"east": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0},
+				"west": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0}
+			}
+		},
+		{
+			"name": "BackGlass",
+			"from": [3, 1, 13],
+			"to": [13, 15, 14],
+			"color": 7,
+			"faces": {
+				"north": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0},
+				"south": {"uv": [3, 1, 13, 15], "texture": "#glass", "tintindex": 0}
+			}
+		},
+		{
+			"name": "Base",
+			"from": [2, 0, 2],
+			"to": [14, 1, 14],
+			"color": 4,
+			"faces": {
+				"north": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"east": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"south": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"west": {"uv": [0, 12, 12, 13], "texture": "#frame"},
+				"up": {"uv": [12, 12, 0, 0], "texture": "#frame"},
+				"down": {"uv": [12, 12, 0, 0], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "PoleLB",
+			"from": [2, 1, 13],
+			"to": [3, 15, 14],
+			"color": 5,
+			"faces": {
+				"north": {"uv": [13, 0, 14, 14], "texture": "#frame"},
+				"east": {"uv": [12, 0, 13, 14], "texture": "#frame"},
+				"south": {"uv": [15, 0, 16, 14], "texture": "#frame"},
+				"west": {"uv": [14, 0, 15, 14], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "PoleRF",
+			"from": [13, 1, 2],
+			"to": [14, 15, 3],
+			"color": 3,
+			"faces": {
+				"north": {"uv": [13, 0, 14, 14], "texture": "#frame"},
+				"east": {"uv": [12, 0, 13, 14], "texture": "#frame"},
+				"south": {"uv": [15, 0, 16, 14], "texture": "#frame"},
+				"west": {"uv": [14, 0, 15, 14], "texture": "#frame"}
+			}
+		}
+	]
 }

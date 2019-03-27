@@ -2,50 +2,31 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 
 public final class StackUtils {
 
-    public static List<ItemStack> split(ItemStack stack) {
-        if (stack.isEmpty() || stack.getCount() == 0) {
-            return null;
-        }
-
-        List<ItemStack> ret = new ArrayList<>();
-
-        if (stack.getCount() == 1) {
-            ret.add(stack);
-            return ret;
-        }
-
-        int remain = stack.getCount() % 2;
-        int split = (int) ((float) (stack.getCount()) / 2F);
-
-        ret.add(size(stack, split + remain));
-        ret.add(size(stack, split));
-
-        return ret;
-    }
-
-    public static Item getItem(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return null;
-        }
-
-        return stack.getItem();
-    }
-
-    public static boolean diffIgnoreNull(ItemStack stack1, ItemStack stack2) {
+    //only used in factory
+    public static boolean diffIgnoreEmpty(ItemStack stack1, ItemStack stack2) {
         if (stack1.isEmpty() || stack2.isEmpty()) {
             return false;
         }
-
         return stack1.getItem() != stack2.getItem() || stack1.getItemDamage() != stack2.getItemDamage();
     }
 
+    //only used in factory
+    //could be inlined at this point probably
+    public static Pair<ItemStack, ItemStack> even(ItemStack stack1, ItemStack stack2) {
+        int count = stack1.getCount() + stack2.getCount();
+        ItemStack stack = stack1.isEmpty() ? stack2 : stack1;
+        return Pair.of(size(stack, (count + 1)/2), size(stack, count/2));
+    }
+
+    //ignores count
     public static boolean equalsWildcard(ItemStack wild, ItemStack check) {
         if (wild.isEmpty() || check.isEmpty()) {
             return check == wild;
@@ -56,6 +37,7 @@ public final class StackUtils {
               .getItemDamage());
     }
 
+    //ignores count
     public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check) {
         boolean wildcard = equalsWildcard(wild, check);
 
@@ -68,45 +50,7 @@ public final class StackUtils {
                     .equals(check.getTagCompound())));
     }
 
-    public static List<ItemStack> even(ItemStack stack1, ItemStack stack2) {
-        ArrayList<ItemStack> ret = new ArrayList<>();
-
-        if (getSize(stack1) == getSize(stack2) || Math.abs(getSize(stack1) - getSize(stack2)) == 1) {
-            ret.add(stack1);
-            ret.add(stack2);
-
-            return ret;
-        }
-
-        if (getSize(stack1) > getSize(stack2)) {
-            int diff = getSize(stack1) - getSize(stack2);
-
-            List<ItemStack> split = split(size(stack1, diff));
-
-            ret.add(subtract(stack1, split.get(0)));
-            ret.add(add(stack2, split.get(0)));
-        } else if (getSize(stack2) > getSize(stack1)) {
-            int diff = getSize(stack2) - getSize(stack1);
-
-            List<ItemStack> split = split(size(stack2, diff));
-
-            ret.add(subtract(stack2, split.get(0)));
-            ret.add(add(stack1, split.get(0)));
-        }
-
-        return ret;
-    }
-
-    public static ItemStack add(ItemStack stack1, ItemStack stack2) {
-        if (stack1.isEmpty()) {
-            return stack2;
-        } else if (stack2.isEmpty()) {
-            return stack1;
-        }
-
-        return size(stack1, getSize(stack1) + getSize(stack2));
-    }
-
+    //assumes stacks same
     public static ItemStack subtract(ItemStack stack1, ItemStack stack2) {
         if (stack1.isEmpty()) {
             return ItemStack.EMPTY;
@@ -114,7 +58,7 @@ public final class StackUtils {
             return stack1;
         }
 
-        return size(stack1, getSize(stack1) - getSize(stack2));
+        return size(stack1, stack1.getCount() - stack2.getCount());
     }
 
     public static ItemStack size(ItemStack stack, int size) {
@@ -126,18 +70,6 @@ public final class StackUtils {
         ret.setCount(size);
 
         return ret;
-    }
-
-    public static ItemStack copy(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-
-        return stack.copy();
-    }
-
-    public static int getSize(ItemStack stack) {
-        return !stack.isEmpty() ? stack.getCount() : 0;
     }
 
     public static List<ItemStack> getMergeRejects(NonNullList<ItemStack> orig, NonNullList<ItemStack> toAdd) {
@@ -164,7 +96,7 @@ public final class StackUtils {
         }
     }
 
-    public static ItemStack merge(ItemStack orig, ItemStack toAdd) {
+    private static ItemStack merge(ItemStack orig, ItemStack toAdd) {
         if (orig.isEmpty()) {
             return toAdd;
         }
@@ -177,10 +109,10 @@ public final class StackUtils {
             return orig;
         }
 
-        return StackUtils.size(orig, Math.min(orig.getMaxStackSize(), orig.getCount() + toAdd.getCount()));
+        return size(orig, Math.min(orig.getMaxStackSize(), orig.getCount() + toAdd.getCount()));
     }
 
-    public static ItemStack getMergeReject(ItemStack orig, ItemStack toAdd) {
+    private static ItemStack getMergeReject(ItemStack orig, ItemStack toAdd) {
         if (orig.isEmpty()) {
             return ItemStack.EMPTY;
         }
@@ -196,9 +128,9 @@ public final class StackUtils {
         int newSize = orig.getCount() + toAdd.getCount();
 
         if (newSize > orig.getMaxStackSize()) {
-            return StackUtils.size(orig, newSize - orig.getMaxStackSize());
+            return size(orig, newSize - orig.getMaxStackSize());
         } else {
-            return StackUtils.size(orig, newSize);
+            return size(orig, newSize);
         }
     }
 
@@ -207,8 +139,8 @@ public final class StackUtils {
             return -1;
         }
 
-        String name = stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ? stack.getItem().getTranslationKey()
-              : stack.getItem().getTranslationKey(stack);
-        return name.hashCode() << 8 | stack.getItemDamage();
+        ResourceLocation registryName = stack.getItem().getRegistryName();
+        int nameHash = registryName == null ? 0 : registryName.hashCode();
+        return nameHash << 8 | stack.getMetadata();
     }
 }
