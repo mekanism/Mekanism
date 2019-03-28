@@ -1,6 +1,7 @@
 package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -80,9 +81,16 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public TileNetworkList getSyncPacket(TransporterStack stack, boolean kill) {
-        TileNetworkList data = super.getSyncPacket(stack, kill);
+    public TileNetworkList makeSyncPacket(TransporterStack stack) {
+        return addModes(super.makeSyncPacket(stack));
+    }
 
+    @Override
+    public TileNetworkList makeBatchPacket(Set<TransporterStack> updates, Set<TransporterStack> deletes) {
+        return addModes(super.makeBatchPacket(updates, deletes));
+    }
+
+    private TileNetworkList addModes(TileNetworkList data) {
         data.add(modes[0]);
         data.add(modes[1]);
         data.add(modes[2]);
