@@ -16,67 +16,58 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiFuelTab extends GuiElement
-{
-	TileEntity tileEntity;
+public class GuiFuelTab extends GuiElement {
 
-	public GuiFuelTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiFuelTab.png"), gui, def);
+    TileEntity tileEntity;
 
-		tileEntity = tile;
-	}
+    public GuiFuelTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiFuelTab.png"), gui, def);
 
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 34, 26, 26);
-	}
+        tileEntity = tile;
+    }
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth - 26, guiHeight + 34, 26, 26);
+    }
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 34, 0, 0, 26, 26);
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56)
-		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 38, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 38, 26, 18, 18, 18);
-		}
+        guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 34, 0, 0, 26, 26);
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56) {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 38, 26, 0, 18, 18);
+        } else {
+            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 38, 26, 18, 18, 18);
+        }
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56)
-		{
-			displayTooltip(LangUtils.localize("gui.fuel"), xAxis, yAxis);
-		}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56) {
+            displayTooltip(LangUtils.localize("gui.fuel"), xAxis, yAxis);
+        }
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(button == 0)
-		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56)
-			{
-				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 12));
-				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-			}
-		}
-	}
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (button == 0) {
+            if (xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56) {
+                Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 1, 12));
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            }
+        }
+    }
 }

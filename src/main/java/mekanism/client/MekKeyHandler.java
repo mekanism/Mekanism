@@ -1,80 +1,70 @@
 package mekanism.client;
 
 import net.minecraft.client.settings.KeyBinding;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-public abstract class MekKeyHandler
-{
-	public KeyBinding[] keyBindings;
-	public boolean[] keyDown;
-	public boolean[] repeatings;
-	public boolean isDummy;
+public abstract class MekKeyHandler {
 
-	/**
-	 * Pass an array of keybindings and a repeat flag for each one
-	 *
-	 * @param bindings Bindings to set
-	 * @param rep Repeat flags for bindings
-	 */
-	public MekKeyHandler(KeyBinding[] bindings, boolean[] rep)
-	{
-		keyBindings = bindings;
-		repeatings = rep;
-		keyDown = new boolean[keyBindings.length];
-	}
+    public KeyBinding[] keyBindings;
+    public boolean[] keyDown;
+    public boolean[] repeatings;
+    public boolean isDummy;
 
-	/**
-	 * Register the keys into the system. You will do your own keyboard
-	 * management elsewhere. No events will fire if you use this method
-	 *
-	 * @param bindings Bindings to set
-	 */
-	public MekKeyHandler(KeyBinding[] bindings)
-	{
-		keyBindings = bindings;
-		isDummy = true;
-	}
+    /**
+     * Pass an array of keybindings and a repeat flag for each one
+     *
+     * @param bindings Bindings to set
+     * @param rep Repeat flags for bindings
+     */
+    public MekKeyHandler(KeyBinding[] bindings, boolean[] rep) {
+        keyBindings = bindings;
+        repeatings = rep;
+        keyDown = new boolean[keyBindings.length];
+    }
 
-	public static boolean getIsKeyPressed(KeyBinding keyBinding)
-	{
-		try {
-			int keyCode = keyBinding.getKeyCode();
-			return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
-		} catch(Exception e) {
-			return false;
-		}
-	}
+    /**
+     * Register the keys into the system. You will do your own keyboard management elsewhere. No events will fire if you
+     * use this method
+     *
+     * @param bindings Bindings to set
+     */
+    public MekKeyHandler(KeyBinding[] bindings) {
+        keyBindings = bindings;
+        isDummy = true;
+    }
 
-	public KeyBinding[] getKeyBindings ()
-	{
-		return keyBindings;
-	}
+    public static boolean getIsKeyPressed(KeyBinding keyBinding) {
+        try {
+            int keyCode = keyBinding.getKeyCode();
+            return keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-	public void keyTick()
-	{
-		for(int i = 0; i < keyBindings.length; i++)
-		{
-			KeyBinding keyBinding = keyBindings[i];
-			boolean state = keyBinding.isPressed();
+    public KeyBinding[] getKeyBindings() {
+        return keyBindings;
+    }
 
-			if(state != keyDown[i] || (state && repeatings[i]))
-			{
-				if(state)
-				{
-					keyDown(keyBinding, state == keyDown[i]);
-				}
-				else {
-					keyUp(keyBinding);
-				}
-				
-				keyDown[i] = state;
-			}
-		}
-	}
+    public void keyTick() {
+        for (int i = 0; i < keyBindings.length; i++) {
+            KeyBinding keyBinding = keyBindings[i];
+            boolean state = keyBinding.isPressed();
 
-	public abstract void keyDown(KeyBinding kb, boolean isRepeat);
+            if (state != keyDown[i] || (state && repeatings[i])) {
+                if (state) {
+                    keyDown(keyBinding, state == keyDown[i]);
+                } else {
+                    keyUp(keyBinding);
+                }
 
-	public abstract void keyUp(KeyBinding kb);
+                keyDown[i] = state;
+            }
+        }
+    }
+
+    public abstract void keyDown(KeyBinding kb, boolean isRepeat);
+
+    public abstract void keyUp(KeyBinding kb);
 }

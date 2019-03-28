@@ -1,34 +1,30 @@
 package mekanism.common.block.states;
 
+import java.util.Locale;
 import mekanism.common.block.BlockOre;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.util.IStringSerializable;
 
-import java.util.Locale;
-
 /**
  * Created by ben on 23/12/14.
  */
-public class BlockStateOre extends BlockStateContainer
-{
-	public static final PropertyEnum<EnumOreType> typeProperty = PropertyEnum.create("type", EnumOreType.class);
+public class BlockStateOre extends BlockStateContainer {
 
-	public BlockStateOre(BlockOre block)
-	{
-		super(block, typeProperty);
-	}
+    public static final PropertyEnum<EnumOreType> typeProperty = PropertyEnum.create("type", EnumOreType.class);
 
-	public enum EnumOreType implements IStringSerializable
-	{
-		OSMIUM,
-		COPPER,
-		TIN;
+    public BlockStateOre(BlockOre block) {
+        super(block, typeProperty);
+    }
 
-		@Override
-		public String getName()
-		{
-			return name().toLowerCase(Locale.ROOT);
-		}
-	}
+    public enum EnumOreType implements IStringSerializable {
+        OSMIUM,
+        COPPER,
+        TIN;
+
+        @Override
+        public String getName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
+    }
 }

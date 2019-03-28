@@ -1,92 +1,82 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
-
-import mekanism.common.PacketHandler;
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TOreDictFilter extends TransporterFilter
-{
-	public String oreDictName;
+public class TOreDictFilter extends TransporterFilter {
 
-	@Override
-	public boolean canFilter(ItemStack itemStack, boolean strict)
-	{
-		if(itemStack.isEmpty())
-		{
-			return false;
-		}
+    public String oreDictName;
 
-		return new OreDictFinder(oreDictName).modifies(itemStack);
-	}
+    @Override
+    public boolean canFilter(ItemStack itemStack, boolean strict) {
+        if (itemStack.isEmpty()) {
+            return false;
+        }
 
-	@Override
-	public Finder getFinder()
-	{
-		return new OreDictFinder(oreDictName);
-	}
+        return new OreDictFinder(oreDictName).modifies(itemStack);
+    }
 
-	@Override
-	public void write(NBTTagCompound nbtTags)
-	{
-		super.write(nbtTags);
+    @Override
+    public Finder getFinder() {
+        return new OreDictFinder(oreDictName);
+    }
 
-		nbtTags.setInteger("type", 1);
-		nbtTags.setString("oreDictName", oreDictName);
-	}
+    @Override
+    public void write(NBTTagCompound nbtTags) {
+        super.write(nbtTags);
 
-	@Override
-	protected void read(NBTTagCompound nbtTags)
-	{
-		super.read(nbtTags);
+        nbtTags.setInteger("type", 1);
+        nbtTags.setString("oreDictName", oreDictName);
+    }
 
-		oreDictName = nbtTags.getString("oreDictName");
-	}
+    @Override
+    protected void read(NBTTagCompound nbtTags) {
+        super.read(nbtTags);
 
-	@Override
-	public void write(TileNetworkList data)
-	{
-		data.add(1);
+        oreDictName = nbtTags.getString("oreDictName");
+    }
 
-		super.write(data);
+    @Override
+    public void write(TileNetworkList data) {
+        data.add(1);
 
-		data.add(oreDictName);
-	}
+        super.write(data);
 
-	@Override
-	protected void read(ByteBuf dataStream)
-	{
-		super.read(dataStream);
+        data.add(oreDictName);
+    }
 
-		oreDictName = PacketHandler.readString(dataStream);
-	}
+    @Override
+    protected void read(ByteBuf dataStream) {
+        super.read(dataStream);
 
-	@Override
-	public int hashCode()
-	{
-		int code = 1;
-		code = 31 * code + super.hashCode();
-		code = 31 * code + oreDictName.hashCode();
-		return code;
-	}
+        oreDictName = PacketHandler.readString(dataStream);
+    }
 
-	@Override
-	public boolean equals(Object filter)
-	{
-		return super.equals(filter) && filter instanceof TOreDictFilter && ((TOreDictFilter)filter).oreDictName.equals(oreDictName);
-	}
+    @Override
+    public int hashCode() {
+        int code = 1;
+        code = 31 * code + super.hashCode();
+        code = 31 * code + oreDictName.hashCode();
+        return code;
+    }
 
-	@Override
-	public TOreDictFilter clone()
-	{
-		TOreDictFilter filter = new TOreDictFilter();
-		filter.allowDefault = allowDefault;
-		filter.color = color;
-		filter.oreDictName = oreDictName;
+    @Override
+    public boolean equals(Object filter) {
+        return super.equals(filter) && filter instanceof TOreDictFilter && ((TOreDictFilter) filter).oreDictName
+              .equals(oreDictName);
+    }
 
-		return filter;
-	}
+    @Override
+    public TOreDictFilter clone() {
+        TOreDictFilter filter = new TOreDictFilter();
+        filter.allowDefault = allowDefault;
+        filter.color = color;
+        filter.oreDictName = oreDictName;
+
+        return filter;
+    }
 }

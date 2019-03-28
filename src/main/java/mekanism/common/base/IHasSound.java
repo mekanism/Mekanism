@@ -5,14 +5,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Implement this if your TileEntity has a specific sound.
- * @author AidanBrady
  *
+ * @author AidanBrady
  */
-public interface IHasSound
-{
-	@SideOnly(Side.CLIENT)
+public interface IHasSound {
+
+    @SideOnly(Side.CLIENT)
     SoundWrapper getSound();
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     boolean shouldPlaySound();
 }

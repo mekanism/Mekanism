@@ -5,21 +5,18 @@ import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 
-public class InjectionRecipe extends AdvancedMachineRecipe<InjectionRecipe>
-{
-	public InjectionRecipe(AdvancedMachineInput input, ItemStackOutput output)
-	{
-		super(input, output);
-	}
+public class InjectionRecipe extends AdvancedMachineRecipe<InjectionRecipe> {
 
-	public InjectionRecipe(ItemStack input, Gas gas, ItemStack output)
-	{
-		super(input, gas, output);
-	}
+    public InjectionRecipe(AdvancedMachineInput input, ItemStackOutput output) {
+        super(input, output);
+    }
 
-	@Override
-	public InjectionRecipe copy()
-	{
-		return new InjectionRecipe(getInput().copy(), getOutput().copy());
-	}
+    public InjectionRecipe(ItemStack input, Gas gas, ItemStack output) {
+        super(input, gas, output);
+    }
+
+    @Override
+    public InjectionRecipe copy() {
+        return new InjectionRecipe(getInput().copy(), getOutput().copy());
+    }
 }

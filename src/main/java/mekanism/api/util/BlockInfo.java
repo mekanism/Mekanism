@@ -4,36 +4,32 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 //TODO: @Deprecated Just use IBlockState instead?
-public class BlockInfo
-{
-	public Block block;
-	public int meta;
+public class BlockInfo {
 
-	public BlockInfo(Block b, int j)
-	{
-		block = b;
-		meta = j;
-	}
+    public Block block;
+    public int meta;
 
-	public static BlockInfo get(ItemStack stack)
-	{
-		return new BlockInfo(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
-	}
+    public BlockInfo(Block b, int j) {
+        block = b;
+        meta = j;
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		return obj instanceof BlockInfo &&
-				((BlockInfo)obj).block == block &&
-				((BlockInfo)obj).meta == meta;
-	}
+    public static BlockInfo get(ItemStack stack) {
+        return new BlockInfo(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
+    }
 
-	@Override
-	public int hashCode()
-	{
-		int code = 1;
-		code = 31 * code + block.getUnlocalizedName().hashCode();
-		code = 31 * code + meta;
-		return code;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof BlockInfo &&
+              ((BlockInfo) obj).block == block &&
+              ((BlockInfo) obj).meta == meta;
+    }
+
+    @Override
+    public int hashCode() {
+        int code = 1;
+        code = 31 * code + block.getUnlocalizedName().hashCode();
+        code = 31 * code + meta;
+        return code;
+    }
 }

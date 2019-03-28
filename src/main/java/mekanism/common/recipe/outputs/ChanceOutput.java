@@ -1,114 +1,97 @@
 package mekanism.common.recipe.outputs;
 
 import java.util.Random;
-
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 
-public class ChanceOutput extends MachineOutput<ChanceOutput>
-{
-	private static Random rand = new Random();
+public class ChanceOutput extends MachineOutput<ChanceOutput> {
 
-	public ItemStack primaryOutput = ItemStack.EMPTY;
+    private static Random rand = new Random();
 
-	public ItemStack secondaryOutput = ItemStack.EMPTY;
+    public ItemStack primaryOutput = ItemStack.EMPTY;
 
-	public double secondaryChance;
+    public ItemStack secondaryOutput = ItemStack.EMPTY;
 
-	public ChanceOutput(ItemStack primary, ItemStack secondary, double chance)
-	{
-		primaryOutput = primary;
-		secondaryOutput = secondary;
-		secondaryChance = chance;
-	}
-	
-	public ChanceOutput() {}
-	
-	@Override
-	public void load(NBTTagCompound nbtTags)
-	{
-		primaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("primaryOutput"));
-		secondaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("secondaryOutput"));
-		secondaryChance = nbtTags.getDouble("secondaryChance");
-	}
+    public double secondaryChance;
 
-	public ChanceOutput(ItemStack primary)
-	{
-		primaryOutput = primary;
-	}
+    public ChanceOutput(ItemStack primary, ItemStack secondary, double chance) {
+        primaryOutput = primary;
+        secondaryOutput = secondary;
+        secondaryChance = chance;
+    }
 
-	public boolean checkSecondary()
-	{
-		return rand.nextDouble() <= secondaryChance;
-	}
+    public ChanceOutput() {
+    }
 
-	public boolean hasPrimary()
-	{
-		return !primaryOutput.isEmpty();
-	}
+    public ChanceOutput(ItemStack primary) {
+        primaryOutput = primary;
+    }
 
-	public boolean hasSecondary()
-	{
-		return !secondaryOutput.isEmpty();
-	}
+    @Override
+    public void load(NBTTagCompound nbtTags) {
+        primaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("primaryOutput"));
+        secondaryOutput = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("secondaryOutput"));
+        secondaryChance = nbtTags.getDouble("secondaryChance");
+    }
 
-	public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex, boolean doEmit)
-	{
-		if(hasPrimary())
-		{
-			if(inventory.get(primaryIndex).isEmpty())
-			{
-				if(doEmit)
-				{
-					inventory.set(primaryIndex, primaryOutput.copy());
-				}
-			} 
-			else if(inventory.get(primaryIndex).isItemEqual(primaryOutput) && inventory.get(primaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(primaryIndex).getMaxStackSize())
-			{
-				if(doEmit)
-				{
-					inventory.get(primaryIndex).grow(primaryOutput.getCount());
-				}
-			}
-			else {
-				return false;
-			}
-		}
-		
-		if(hasSecondary() && (!doEmit || checkSecondary()))
-		{
-			if(inventory.get(secondaryIndex).isEmpty())
-			{
-				if(doEmit)
-				{
-					inventory.set(secondaryIndex, secondaryOutput.copy());
-				}
-				
-				return true;
-			} 
-			else if(inventory.get(secondaryIndex).isItemEqual(secondaryOutput) && inventory.get(secondaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(secondaryIndex).getMaxStackSize())
-			{
-				if(doEmit)
-				{
-					inventory.get(secondaryIndex).grow(secondaryOutput.getCount());
-				}
-				
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
+    public boolean checkSecondary() {
+        return rand.nextDouble() <= secondaryChance;
+    }
 
-		return true;
-	}
+    public boolean hasPrimary() {
+        return !primaryOutput.isEmpty();
+    }
 
-	@Override
-	public ChanceOutput copy()
-	{
-		return new ChanceOutput(StackUtils.copy(primaryOutput), StackUtils.copy(secondaryOutput), secondaryChance);
-	}
+    public boolean hasSecondary() {
+        return !secondaryOutput.isEmpty();
+    }
+
+    public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex,
+          boolean doEmit) {
+        if (hasPrimary()) {
+            if (inventory.get(primaryIndex).isEmpty()) {
+                if (doEmit) {
+                    inventory.set(primaryIndex, primaryOutput.copy());
+                }
+            } else if (inventory.get(primaryIndex).isItemEqual(primaryOutput)
+                  && inventory.get(primaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(primaryIndex)
+                  .getMaxStackSize()) {
+                if (doEmit) {
+                    inventory.get(primaryIndex).grow(primaryOutput.getCount());
+                }
+            } else {
+                return false;
+            }
+        }
+
+        if (hasSecondary() && (!doEmit || checkSecondary())) {
+            if (inventory.get(secondaryIndex).isEmpty()) {
+                if (doEmit) {
+                    inventory.set(secondaryIndex, secondaryOutput.copy());
+                }
+
+                return true;
+            } else if (inventory.get(secondaryIndex).isItemEqual(secondaryOutput)
+                  && inventory.get(secondaryIndex).getCount() + primaryOutput.getCount() <= inventory
+                  .get(secondaryIndex).getMaxStackSize()) {
+                if (doEmit) {
+                    inventory.get(secondaryIndex).grow(secondaryOutput.getCount());
+                }
+
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public ChanceOutput copy() {
+        return new ChanceOutput(StackUtils.copy(primaryOutput), StackUtils.copy(secondaryOutput), secondaryChance);
+    }
 }

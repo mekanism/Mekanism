@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.List;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
@@ -31,351 +30,294 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class GuiTModIDFilter extends GuiMekanism
-{
-	public TileEntityLogisticalSorter tileEntity;
+public class GuiTModIDFilter extends GuiMekanism {
 
-	public boolean isNew = false;
+    public TileEntityLogisticalSorter tileEntity;
 
-	public TModIDFilter origFilter;
+    public boolean isNew = false;
 
-	public TModIDFilter filter = new TModIDFilter();
+    public TModIDFilter origFilter;
 
-	private GuiTextField modIDText;
+    public TModIDFilter filter = new TModIDFilter();
+    public ItemStack renderStack = ItemStack.EMPTY;
+    public int ticker = 0;
+    public int stackSwitch = 0;
+    public int stackIndex = 0;
+    public List<ItemStack> iterStacks;
+    public String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
+    private GuiTextField modIDText;
 
-	public ItemStack renderStack = ItemStack.EMPTY;
+    public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index) {
+        super(tentity, new ContainerFilter(player.inventory, tentity));
+        tileEntity = tentity;
 
-	public int ticker = 0;
+        origFilter = (TModIDFilter) tileEntity.filters.get(index);
+        filter = ((TModIDFilter) tentity.filters.get(index)).clone();
 
-	public int stackSwitch = 0;
+        updateStackList(filter.modID);
+    }
 
-	public int stackIndex = 0;
+    public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity) {
+        super(tentity, new ContainerFilter(player.inventory, tentity));
+        tileEntity = tentity;
 
-	public List<ItemStack> iterStacks;
+        isNew = true;
+    }
 
-	public String status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
+    @Override
+    public void initGui() {
+        super.initGui();
 
-	public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
-	{
-		super(tentity, new ContainerFilter(player.inventory, tentity));
-		tileEntity = tentity;
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
 
-		origFilter = (TModIDFilter)tileEntity.filters.get(index);
-		filter = ((TModIDFilter)tentity.filters.get(index)).clone();
+        buttonList.clear();
+        buttonList.add(new GuiButton(0, guiWidth + 47, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
+        buttonList.add(new GuiButton(1, guiWidth + 109, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
 
-		updateStackList(filter.modID);
-	}
+        if (isNew) {
+            buttonList.get(1).enabled = false;
+        }
 
-	public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
-	{
-		super(tentity, new ContainerFilter(player.inventory, tentity));
-		tileEntity = tentity;
+        modIDText = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
+        modIDText.setMaxStringLength(TransporterFilter.MAX_LENGTH);
+        modIDText.setFocused(true);
+    }
 
-		isNew = true;
-	}
+    @Override
+    public void keyTyped(char c, int i) throws IOException {
+        if (!modIDText.isFocused() || i == Keyboard.KEY_ESCAPE) {
+            super.keyTyped(c, i);
+        }
 
-	@Override
-	public void initGui()
-	{
-		super.initGui();
+        if (modIDText.isFocused() && i == Keyboard.KEY_RETURN) {
+            setModID();
+            return;
+        }
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
+        if (Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c)
+              || isTextboxKey(c, i)) {
+            modIDText.textboxKeyTyped(c, i);
+        }
+    }
 
-		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 47, guiHeight + 62, 60, 20, LangUtils.localize("gui.save")));
-		buttonList.add(new GuiButton(1, guiWidth + 109, guiHeight + 62, 60, 20, LangUtils.localize("gui.delete")));
+    @Override
+    protected void actionPerformed(GuiButton guibutton) throws IOException {
+        super.actionPerformed(guibutton);
 
-		if(isNew)
-		{
-			buttonList.get(1).enabled = false;
-		}
+        if (guibutton.id == 0) {
+            if (!modIDText.getText().isEmpty()) {
+                setModID();
+            }
 
-		modIDText = new GuiTextField(2, fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
-		modIDText.setMaxStringLength(TransporterFilter.MAX_LENGTH);
-		modIDText.setFocused(true);
-	}
+            if (filter.modID != null && !filter.modID.isEmpty()) {
+                if (isNew) {
+                    Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
+                } else {
+                    Mekanism.packetHandler
+                          .sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
+                }
 
-	@Override
-	public void keyTyped(char c, int i) throws IOException
-	{
-		if(!modIDText.isFocused() || i == Keyboard.KEY_ESCAPE)
-		{
-			super.keyTyped(c, i);
-		}
+                Mekanism.packetHandler.sendToServer(
+                      new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+            } else {
+                status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.noKey");
+                ticker = 20;
+            }
+        } else if (guibutton.id == 1) {
+            Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
+            Mekanism.packetHandler.sendToServer(
+                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+        }
+    }
 
-		if(modIDText.isFocused() && i == Keyboard.KEY_RETURN)
-		{
-			setModID();
-			return;
-		}
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        int xAxis = (mouseX - (width - xSize) / 2);
+        int yAxis = (mouseY - (height - ySize) / 2);
 
-		if(Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || isTextboxKey(c, i))
-		{
-			modIDText.textboxKeyTyped(c, i);
-		}
-	}
+        fontRenderer.drawString(
+              (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils
+                    .localize("gui.modIDFilter"), 43, 6, 0x404040);
+        fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+        renderScaledText(LangUtils.localize("gui.id") + ": " + filter.modID, 35, 32, 0x00CD00, 107);
+        fontRenderer.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
 
-	@Override
-	protected void actionPerformed(GuiButton guibutton) throws IOException
-	{
-		super.actionPerformed(guibutton);
+        if (!renderStack.isEmpty()) {
+            try {
+                GlStateManager.pushMatrix();
+                RenderHelper.enableGUIStandardItemLighting();
+                itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
+                RenderHelper.disableStandardItemLighting();
+                GlStateManager.popMatrix();
+            } catch (Exception e) {
+            }
+        }
 
-		if(guibutton.id == 0)
-		{
-			if(!modIDText.getText().isEmpty())
-			{
-				setModID();
-			}
+        if (filter.color != null) {
+            GlStateManager.pushMatrix();
+            GL11.glColor4f(1, 1, 1, 1);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-			if(filter.modID != null && !filter.modID.isEmpty())
-			{
-				if(isNew)
-				{
-					Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
-				}
-				else {
-					Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
-				}
+            mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+            drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
-				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
-			}
-			else {
-				status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.noKey");
-				ticker = 20;
-			}
-		}
-		else if(guibutton.id == 1)
-		{
-			Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-			Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
-		}
-	}
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.popMatrix();
+        }
 
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+            drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
+        }
 
-		fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
-		fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		renderScaledText(LangUtils.localize("gui.id") + ": " + filter.modID, 35, 32, 0x00CD00, 107);
-		fontRenderer.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
+        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
+            if (filter.color != null) {
+                drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
+            } else {
+                drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
+            }
+        }
 
-		if(!renderStack.isEmpty())
-		{
-			try {
-				GlStateManager.pushMatrix();
-				RenderHelper.enableGUIStandardItemLighting();
-				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
-				RenderHelper.disableStandardItemLighting();
-				GlStateManager.popMatrix();
-			} catch(Exception e) {}
-		}
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
 
-		if(filter.color != null)
-		{
-			GlStateManager.pushMatrix();
-			GL11.glColor4f(1, 1, 1, 1);
-			GL11.glEnable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTModIDFilter.png"));
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			drawTexturedRectFromIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+        int xAxis = (mouseX - (width - xSize) / 2);
+        int yAxis = (mouseY - (height - ySize) / 2);
 
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GlStateManager.popMatrix();
-		}
-		
-		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
-		{
-			drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);
-		}
+        if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
+            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
+        } else {
+            drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
+        }
 
-		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
-		{
-			if(filter.color != null)
-			{
-				drawHoveringText(filter.color.getColoredName(), xAxis, yAxis);
-			}
-			else {
-				drawHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
-			}
-		}
+        if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
+            drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 0, 12, 12);
+        } else {
+            drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
+        }
 
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
+        if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+            drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 0, 11, 11);
+        } else {
+            drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 11, 11, 11);
+        }
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTModIDFilter.png"));
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        modIDText.drawTextBox();
 
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    }
 
-		if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
-		{
-			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
-		}
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
 
-		if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
-		{
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 0, 12, 12);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
-		}
-		
-		if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
-		{
-			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 0, 11, 11);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 11, guiHeight + 64, 199, 11, 11, 11);
-		}
+        modIDText.updateCursorCounter();
 
-		modIDText.drawTextBox();
-		
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-	}
+        if (ticker > 0) {
+            ticker--;
+        } else {
+            status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
+        }
 
-	@Override
-	public void updateScreen()
-	{
-		super.updateScreen();
+        if (stackSwitch > 0) {
+            stackSwitch--;
+        }
 
-		modIDText.updateCursorCounter();
+        if (stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0) {
+            stackSwitch = 20;
 
-		if(ticker > 0)
-		{
-			ticker--;
-		}
-		else {
-			status = EnumColor.DARK_GREEN + LangUtils.localize("gui.allOK");
-		}
+            if (stackIndex == -1 || stackIndex == iterStacks.size() - 1) {
+                stackIndex = 0;
+            } else if (stackIndex < iterStacks.size() - 1) {
+                stackIndex++;
+            }
 
-		if(stackSwitch > 0)
-		{
-			stackSwitch--;
-		}
+            renderStack = iterStacks.get(stackIndex);
+        } else if (iterStacks != null && iterStacks.size() == 0) {
+            renderStack = ItemStack.EMPTY;
+        }
+    }
 
-		if(stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0)
-		{
-			stackSwitch = 20;
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        super.mouseClicked(mouseX, mouseY, button);
 
-			if(stackIndex == -1 || stackIndex == iterStacks.size()-1)
-			{
-				stackIndex = 0;
-			}
-			else if(stackIndex < iterStacks.size()-1)
-			{
-				stackIndex++;
-			}
+        modIDText.mouseClicked(mouseX, mouseY, button);
 
-			renderStack = iterStacks.get(stackIndex);
-		}
-		else if(iterStacks != null && iterStacks.size() == 0)
-		{
-			renderStack = ItemStack.EMPTY;
-		}
-	}
+        int xAxis = (mouseX - (width - xSize) / 2);
+        int yAxis = (mouseY - (height - ySize) / 2);
 
-	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
-	{
-		super.mouseClicked(mouseX, mouseY, button);
-
-		modIDText.mouseClicked(mouseX, mouseY, button);
-
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
-
-		if(button == 0)
-		{
-			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
-			{
+        if (button == 0) {
+            if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
-			}
+                Mekanism.packetHandler.sendToServer(
+                      new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0,
+                            0));
+            }
 
-			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
-			{
+            if (xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				setModID();
-			}
-			
-			if(xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75)
-			{
-				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-				filter.allowDefault = !filter.allowDefault;
-			}
-		}
+                setModID();
+            }
 
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
-		{
-			button = 2;
-		}
+            if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+                filter.allowDefault = !filter.allowDefault;
+            }
+        }
 
-		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
-		{
-			SoundHandler.playSound(MekanismSounds.DING);
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0) {
+            button = 2;
+        }
 
-			if(button == 0)
-			{
-				filter.color = TransporterUtils.increment(filter.color);
-			}
-			else if(button == 1)
-			{
-				filter.color = TransporterUtils.decrement(filter.color);
-			}
-			else if(button == 2)
-			{
-				filter.color = null;
-			}
-		}
-	}
+        if (xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60) {
+            SoundHandler.playSound(MekanismSounds.DING);
 
-	private void updateStackList(String modName)
-	{
-		iterStacks = OreDictCache.getModIDStacks(modName, false);
+            if (button == 0) {
+                filter.color = TransporterUtils.increment(filter.color);
+            } else if (button == 1) {
+                filter.color = TransporterUtils.decrement(filter.color);
+            } else if (button == 2) {
+                filter.color = null;
+            }
+        }
+    }
 
-		stackSwitch = 0;
-		stackIndex = -1;
-	}
+    private void updateStackList(String modName) {
+        iterStacks = OreDictCache.getModIDStacks(modName, false);
 
-	private void setModID()
-	{
-		String modName = modIDText.getText();
+        stackSwitch = 0;
+        stackIndex = -1;
+    }
 
-		if(modName == null || modName.isEmpty())
-		{
-			status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.noID");
-			return;
-		}
-		else if(modName.equals(filter.modID))
-		{
-			status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.sameID");
-			return;
-		}
+    private void setModID() {
+        String modName = modIDText.getText();
 
-		updateStackList(modName);
+        if (modName == null || modName.isEmpty()) {
+            status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.noID");
+            return;
+        } else if (modName.equals(filter.modID)) {
+            status = EnumColor.DARK_RED + LangUtils.localize("gui.modIDFilter.sameID");
+            return;
+        }
 
-		filter.modID = modName;
-		modIDText.setText("");
-	}
+        updateStackList(modName);
+
+        filter.modID = modName;
+        modIDText.setText("");
+    }
 }

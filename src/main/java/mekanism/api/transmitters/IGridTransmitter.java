@@ -1,66 +1,67 @@
 package mekanism.api.transmitters;
 
 import java.util.Collection;
-
 import mekanism.api.Coord4D;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter
-{
-	boolean hasTransmitterNetwork();
+public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter {
 
-	/**
-	 * Gets the network currently in use by this transmitter segment.
-	 * @return network this transmitter is using
-	 */
+    boolean hasTransmitterNetwork();
+
+    /**
+     * Gets the network currently in use by this transmitter segment.
+     *
+     * @return network this transmitter is using
+     */
     N getTransmitterNetwork();
 
-	/**
-	 * Sets this transmitter segment's network to a new value.
-	 * @param network - network to set to
-	 */
+    /**
+     * Sets this transmitter segment's network to a new value.
+     *
+     * @param network - network to set to
+     */
     void setTransmitterNetwork(N network);
-	
-	void setRequestsUpdate();
 
-	int getTransmitterNetworkSize();
+    void setRequestsUpdate();
 
-	int getTransmitterNetworkAcceptorSize();
+    int getTransmitterNetworkSize();
 
-	String getTransmitterNetworkNeeded();
+    int getTransmitterNetworkAcceptorSize();
 
-	String getTransmitterNetworkFlow();
+    String getTransmitterNetworkNeeded();
 
-	String getTransmitterNetworkBuffer();
+    String getTransmitterNetworkFlow();
 
-	double getTransmitterNetworkCapacity();
+    String getTransmitterNetworkBuffer();
 
-	int getCapacity();
+    double getTransmitterNetworkCapacity();
 
-	World world();
-	
-	Coord4D coord();
+    int getCapacity();
 
-	Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
+    World world();
 
-	A getAcceptor(EnumFacing side);
+    Coord4D coord();
 
-	boolean isValid();
+    Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
 
-	boolean isOrphan();
+    A getAcceptor(EnumFacing side);
 
-	void setOrphan(boolean orphaned);
+    boolean isValid();
 
-	N createEmptyNetwork();
+    boolean isOrphan();
 
-	N mergeNetworks(Collection<N> toMerge);
+    void setOrphan(boolean orphaned);
 
-	N getExternalNetwork(Coord4D from);
+    N createEmptyNetwork();
 
-	void takeShare();
+    N mergeNetworks(Collection<N> toMerge);
+
+    N getExternalNetwork(Coord4D from);
+
+    void takeShare();
 
     void updateShare();
 
-	Object getBuffer();
+    Object getBuffer();
 }

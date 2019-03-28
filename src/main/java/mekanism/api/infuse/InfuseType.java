@@ -6,43 +6,47 @@ import net.minecraft.util.text.translation.I18n;
 
 /**
  * The types of infuse currently available in Mekanism.
- * @author AidanBrady
  *
+ * @author AidanBrady
  */
-public final class InfuseType
-{
-	/** The name of this infusion. */
-	public String name;
+public final class InfuseType {
 
-	/** This infuse GUI's icon */
-	public ResourceLocation iconResource;
+    /**
+     * The name of this infusion.
+     */
+    public String name;
 
-	/** The texture representing this infuse type. */
-	public TextureAtlasSprite sprite;
+    /**
+     * This infuse GUI's icon
+     */
+    public ResourceLocation iconResource;
 
-	/** The unlocalized name of this type. */
-	public String unlocalizedName;
+    /**
+     * The texture representing this infuse type.
+     */
+    public TextureAtlasSprite sprite;
 
-	public InfuseType(String s, ResourceLocation res)
-	{
-		name = s;
-		iconResource = res;
-	}
-	
-	public void setIcon(TextureAtlasSprite tex)
-	{
-		sprite = tex;
-	}
+    /**
+     * The unlocalized name of this type.
+     */
+    public String unlocalizedName;
 
-	public InfuseType setUnlocalizedName(String name)
-	{
-		unlocalizedName = "infuse." + name;
+    public InfuseType(String s, ResourceLocation res) {
+        name = s;
+        iconResource = res;
+    }
 
-		return this;
-	}
+    public void setIcon(TextureAtlasSprite tex) {
+        sprite = tex;
+    }
 
-	public String getLocalizedName()
-	{
-		return I18n.translateToLocal(unlocalizedName);
-	}
+    public InfuseType setUnlocalizedName(String name) {
+        unlocalizedName = "infuse." + name;
+
+        return this;
+    }
+
+    public String getLocalizedName() {
+        return I18n.translateToLocal(unlocalizedName);
+    }
 }

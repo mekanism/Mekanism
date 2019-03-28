@@ -12,54 +12,44 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 /**
- * Block class for handling multiple ore block IDs.
- * 0: Osmium Ore
- * 1: Copper Ore
- * 2: Tin Ore
- * @author AidanBrady
+ * Block class for handling multiple ore block IDs. 0: Osmium Ore 1: Copper Ore 2: Tin Ore
  *
+ * @author AidanBrady
  */
-public class BlockOre extends Block
-{
-	public BlockOre()
-	{
-		super(Material.ROCK);
-		setHardness(3F);
-		setResistance(5F);
-		setCreativeTab(Mekanism.tabMekanism);
-	}
+public class BlockOre extends Block {
 
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new BlockStateOre(this);
-	}
+    public BlockOre() {
+        super(Material.ROCK);
+        setHardness(3F);
+        setResistance(5F);
+        setCreativeTab(Mekanism.tabMekanism);
+    }
 
-	@Deprecated
-	@Override
-	public IBlockState getStateFromMeta(int meta)
-	{
-		return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
-	}
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateOre(this);
+    }
 
-	@Override
-	public int getMetaFromState(IBlockState state)
-	{
-		return state.getValue(BlockStateOre.typeProperty).ordinal();
-	}
+    @Deprecated
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
+    }
 
-	@Override
-	public int damageDropped(IBlockState state)
-	{
-		return getMetaFromState(state);
-	}
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(BlockStateOre.typeProperty).ordinal();
+    }
 
-	@Override
-	public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list)
-	{
-		for(EnumOreType ore : EnumOreType.values())
-		{
-			list.add(new ItemStack(this, 1, ore.ordinal()));
-		}
-	}
+    @Override
+    public int damageDropped(IBlockState state) {
+        return getMetaFromState(state);
+    }
+
+    @Override
+    public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
+        for (EnumOreType ore : EnumOreType.values()) {
+            list.add(new ItemStack(this, 1, ore.ordinal()));
+        }
+    }
 }

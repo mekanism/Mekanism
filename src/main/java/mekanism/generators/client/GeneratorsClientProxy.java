@@ -62,118 +62,111 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GeneratorsClientProxy extends GeneratorsCommonProxy
-{
-	public static final String[] CUSTOM_RENDERS = new String[] {"heat_generator", "solar_generator", "bio_generator", "wind_generator",
-		"gas_generator", "advanced_solar_generator"};
-	
-	private static final IStateMapper generatorMapper = new GeneratorBlockStateMapper();
-	private static final IStateMapper reactorMapper = new ReactorBlockStateMapper();
-	
-	@Override
-	public void registerSpecialTileEntities()
-	{
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedSolarGenerator.class, new RenderAdvancedSolarGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySolarGenerator.class, new RenderSolarGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBioGenerator.class, new RenderBioGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHeatGenerator.class, new RenderHeatGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasGenerator.class, new RenderGasGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindGenerator.class, new RenderWindGenerator());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorController.class, new RenderReactor());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineRotor.class, new RenderTurbineRotor());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineCasing.class, new RenderIndustrialTurbine());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineValve.class, new RenderIndustrialTurbine());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineVent.class, new RenderIndustrialTurbine());
-	}
+public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
-	@Override
-	public void registerItemRenders()
-	{
-		registerItemRender(GeneratorsItems.SolarPanel);
-		registerItemRender(GeneratorsItems.Hohlraum);
-		registerItemRender(GeneratorsItems.TurbineBlade);
-	}
-	
-	@Override
-	public void registerBlockRenders()
-	{
-		ModelLoader.setCustomStateMapper(GeneratorsBlocks.Generator, generatorMapper);
-		ModelLoader.setCustomStateMapper(GeneratorsBlocks.Reactor, reactorMapper);
-		ModelLoader.setCustomStateMapper(GeneratorsBlocks.ReactorGlass, reactorMapper);
-		
-		for(GeneratorType type : GeneratorType.values())
-		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
-		}
-		
-		for(ReactorBlockType type : ReactorBlockType.values())
-		{
-			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
-		}
-	}
-	
-	public void registerItemRender(Item item)
-	{
-		MekanismRenderer.registerItemRender(MekanismGenerators.MODID, item);
-	}
-	
-	@SubscribeEvent
-    public void onModelBake(ModelBakeEvent event)
-    {
-		for(String s : CUSTOM_RENDERS)
-		{
-			ModelResourceLocation model = new ModelResourceLocation(MekanismGenerators.MODID+":" + s, "inventory");
-	        Object obj = event.getModelRegistry().getObject(model);
-	        
-	        if(obj instanceof IBakedModel)
-	        {
-	        	event.getModelRegistry().putObject(model, new GeneratorItemModelFactory((IBakedModel)obj));
-	        }
-		}
+    public static final String[] CUSTOM_RENDERS = new String[]{"heat_generator", "solar_generator", "bio_generator",
+          "wind_generator",
+          "gas_generator", "advanced_solar_generator"};
+
+    private static final IStateMapper generatorMapper = new GeneratorBlockStateMapper();
+    private static final IStateMapper reactorMapper = new ReactorBlockStateMapper();
+
+    @Override
+    public void registerSpecialTileEntities() {
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedSolarGenerator.class,
+              new RenderAdvancedSolarGenerator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySolarGenerator.class, new RenderSolarGenerator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBioGenerator.class, new RenderBioGenerator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHeatGenerator.class, new RenderHeatGenerator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasGenerator.class, new RenderGasGenerator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindGenerator.class, new RenderWindGenerator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorController.class, new RenderReactor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineRotor.class, new RenderTurbineRotor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineCasing.class, new RenderIndustrialTurbine());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineValve.class, new RenderIndustrialTurbine());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineVent.class, new RenderIndustrialTurbine());
     }
-	
-	@Override
-	public void preInit()
-	{
-		MinecraftForge.EVENT_BUS.register(this);
-	}
 
-	@Override
-	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
-	{
-		TileEntity tileEntity = world.getTileEntity(pos);
+    @Override
+    public void registerItemRenders() {
+        registerItemRender(GeneratorsItems.SolarPanel);
+        registerItemRender(GeneratorsItems.Hohlraum);
+        registerItemRender(GeneratorsItems.TurbineBlade);
+    }
 
-		switch(ID)
-		{
-			case 0:
-				return new GuiHeatGenerator(player.inventory, (TileEntityHeatGenerator)tileEntity);
-			case 1:
-				return new GuiSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
-			case 3:
-				return new GuiGasGenerator(player.inventory, (TileEntityGasGenerator)tileEntity);
-			case 4:
-				return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
-			case 5:
-				return new GuiWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
-			case 6:
-				return new GuiIndustrialTurbine(player.inventory, (TileEntityTurbineCasing)tileEntity);
-			case 7:
-				return new GuiTurbineStats(player.inventory, (TileEntityTurbineCasing)tileEntity);
-			case 10:
-				return new GuiReactorController(player.inventory, (TileEntityReactorController)tileEntity);
-			case 11:
-				return new GuiReactorHeat(player.inventory, (TileEntityReactorController)tileEntity);
-			case 12:
-				return new GuiReactorFuel(player.inventory, (TileEntityReactorController)tileEntity);
-			case 13:
-				return new GuiReactorStats(player.inventory, (TileEntityReactorController)tileEntity);
-			case 15:
-				return new GuiReactorLogicAdapter(player.inventory, (TileEntityReactorLogicAdapter)tileEntity);
-		}
-		
-		return null;
-	}
-	
-	@SubscribeEvent
-	public void onStitch(TextureStitchEvent.Pre event) {}
+    @Override
+    public void registerBlockRenders() {
+        ModelLoader.setCustomStateMapper(GeneratorsBlocks.Generator, generatorMapper);
+        ModelLoader.setCustomStateMapper(GeneratorsBlocks.Reactor, reactorMapper);
+        ModelLoader.setCustomStateMapper(GeneratorsBlocks.ReactorGlass, reactorMapper);
+
+        for (GeneratorType type : GeneratorType.values()) {
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta,
+                  new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+        }
+
+        for (ReactorBlockType type : ReactorBlockType.values()) {
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta,
+                  new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+        }
+    }
+
+    public void registerItemRender(Item item) {
+        MekanismRenderer.registerItemRender(MekanismGenerators.MODID, item);
+    }
+
+    @SubscribeEvent
+    public void onModelBake(ModelBakeEvent event) {
+        for (String s : CUSTOM_RENDERS) {
+            ModelResourceLocation model = new ModelResourceLocation(MekanismGenerators.MODID + ":" + s, "inventory");
+            Object obj = event.getModelRegistry().getObject(model);
+
+            if (obj instanceof IBakedModel) {
+                event.getModelRegistry().putObject(model, new GeneratorItemModelFactory((IBakedModel) obj));
+            }
+        }
+    }
+
+    @Override
+    public void preInit() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+
+        switch (ID) {
+            case 0:
+                return new GuiHeatGenerator(player.inventory, (TileEntityHeatGenerator) tileEntity);
+            case 1:
+                return new GuiSolarGenerator(player.inventory, (TileEntitySolarGenerator) tileEntity);
+            case 3:
+                return new GuiGasGenerator(player.inventory, (TileEntityGasGenerator) tileEntity);
+            case 4:
+                return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator) tileEntity);
+            case 5:
+                return new GuiWindGenerator(player.inventory, (TileEntityWindGenerator) tileEntity);
+            case 6:
+                return new GuiIndustrialTurbine(player.inventory, (TileEntityTurbineCasing) tileEntity);
+            case 7:
+                return new GuiTurbineStats(player.inventory, (TileEntityTurbineCasing) tileEntity);
+            case 10:
+                return new GuiReactorController(player.inventory, (TileEntityReactorController) tileEntity);
+            case 11:
+                return new GuiReactorHeat(player.inventory, (TileEntityReactorController) tileEntity);
+            case 12:
+                return new GuiReactorFuel(player.inventory, (TileEntityReactorController) tileEntity);
+            case 13:
+                return new GuiReactorStats(player.inventory, (TileEntityReactorController) tileEntity);
+            case 15:
+                return new GuiReactorLogicAdapter(player.inventory, (TileEntityReactorLogicAdapter) tileEntity);
+        }
+
+        return null;
+    }
+
+    @SubscribeEvent
+    public void onStitch(TextureStitchEvent.Pre event) {
+    }
 }

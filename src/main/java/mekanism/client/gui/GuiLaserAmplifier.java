@@ -1,8 +1,8 @@
 package mekanism.client.gui;
 
 import java.io.IOException;
-
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiAmplifierTab;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiNumberGauge;
@@ -11,7 +11,6 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;
@@ -23,218 +22,202 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiLaserAmplifier extends GuiMekanism
-{
-	public TileEntityLaserAmplifier tileEntity;
+public class GuiLaserAmplifier extends GuiMekanism {
 
-	public GuiTextField minField;
-	public GuiTextField maxField;
-	public GuiTextField timerField;
+    public TileEntityLaserAmplifier tileEntity;
 
-	public GuiLaserAmplifier(InventoryPlayer inventory, TileEntityLaserAmplifier tentity)
-	{
-		super(tentity, new ContainerLaserAmplifier(inventory, tentity));
-		tileEntity = tentity;
+    public GuiTextField minField;
+    public GuiTextField maxField;
+    public GuiTextField timerField;
 
-		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
-		{
-			@Override
-			public TextureAtlasSprite getIcon()
-			{
-				return MekanismRenderer.energyIcon;
-			}
+    public GuiLaserAmplifier(InventoryPlayer inventory, TileEntityLaserAmplifier tentity) {
+        super(tentity, new ContainerLaserAmplifier(inventory, tentity));
+        tileEntity = tentity;
 
-			@Override
-			public double getLevel()
-			{
-				return tileEntity.collectedEnergy;
-			}
+        guiElements.add(new GuiNumberGauge(new INumberInfoHandler() {
+            @Override
+            public TextureAtlasSprite getIcon() {
+                return MekanismRenderer.energyIcon;
+            }
 
-			@Override
-			public double getMaxLevel()
-			{
-				return TileEntityLaserAmplifier.MAX_ENERGY;
-			}
+            @Override
+            public double getLevel() {
+                return tileEntity.collectedEnergy;
+            }
 
-			@Override
-			public String getText(double level)
-			{
-				return LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level, tileEntity.getMaxEnergy());
-			}
-		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
-		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiAmplifierTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-	}
+            @Override
+            public double getMaxLevel() {
+                return TileEntityLaserAmplifier.MAX_ENERGY;
+            }
 
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+            @Override
+            public String getText(double level) {
+                return LangUtils.localize("gui.storing") + ": " + MekanismUtils
+                      .getEnergyDisplay(level, tileEntity.getMaxEnergy());
+            }
+        }, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
+        guiElements
+              .add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+        guiElements.add(new GuiRedstoneControl(this, tileEntity,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+        guiElements
+              .add(new GuiAmplifierTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+    }
 
-		fontRenderer.drawString(tileEntity.getName(), 55, 6, 0x404040);
-		fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        int xAxis = (mouseX - (width - xSize) / 2);
+        int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.time > 0 ? LangUtils.localize("gui.delay") + ": " + tileEntity.time + "t" : LangUtils.localize("gui.noDelay"), 26, 30, 0x404040);
-		fontRenderer.drawString(LangUtils.localize("gui.min") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.minThreshold), 26, 45, 0x404040);
-		fontRenderer.drawString(LangUtils.localize("gui.max") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.maxThreshold), 26, 60, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), 55, 6, 0x404040);
+        fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
+        fontRenderer.drawString(tileEntity.time > 0 ? LangUtils.localize("gui.delay") + ": " + tileEntity.time + "t"
+              : LangUtils.localize("gui.noDelay"), 26, 30, 0x404040);
+        fontRenderer.drawString(
+              LangUtils.localize("gui.min") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.minThreshold), 26, 45,
+              0x404040);
+        fontRenderer.drawString(
+              LangUtils.localize("gui.max") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.maxThreshold), 26, 60,
+              0x404040);
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"));
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
 
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"));
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		minField.drawTextBox();
-		maxField.drawTextBox();
-		timerField.drawTextBox();
-	}
+        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 
-	@Override
-	public void updateScreen()
-	{
-		super.updateScreen();
+        minField.drawTextBox();
+        maxField.drawTextBox();
+        timerField.drawTextBox();
+    }
 
-		minField.updateCursorCounter();
-		maxField.updateCursorCounter();
-		timerField.updateCursorCounter();
-	}
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
 
-	@Override
-	public void mouseClicked(int mouseX, int mouseY, int button) throws IOException
-	{
-		super.mouseClicked(mouseX, mouseY, button);
+        minField.updateCursorCounter();
+        maxField.updateCursorCounter();
+        timerField.updateCursorCounter();
+    }
 
-		minField.mouseClicked(mouseX, mouseY, button);
-		maxField.mouseClicked(mouseX, mouseY, button);
-		timerField.mouseClicked(mouseX, mouseY, button);
-	}
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
+        super.mouseClicked(mouseX, mouseY, button);
 
-	@Override
-	public void keyTyped(char c, int i) throws IOException
-	{
-		if(!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == Keyboard.KEY_ESCAPE)
-		{
-			super.keyTyped(c, i);
-		}
+        minField.mouseClicked(mouseX, mouseY, button);
+        maxField.mouseClicked(mouseX, mouseY, button);
+        timerField.mouseClicked(mouseX, mouseY, button);
+    }
 
-		if(i == Keyboard.KEY_RETURN)
-		{
-			if(minField.isFocused())
-			{
-				setMinThreshold();
-			}
-			if(maxField.isFocused())
-			{
-				setMaxThreshold();
-			}
-			if(timerField.isFocused())
-			{
-				setTime();
-			}
-		}
+    @Override
+    public void keyTyped(char c, int i) throws IOException {
+        if (!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == Keyboard.KEY_ESCAPE) {
+            super.keyTyped(c, i);
+        }
 
-		if(Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i))
-		{
-			minField.textboxKeyTyped(c, i);
-			maxField.textboxKeyTyped(c, i);
-			timerField.textboxKeyTyped(c, i);
-		}
-	}
+        if (i == Keyboard.KEY_RETURN) {
+            if (minField.isFocused()) {
+                setMinThreshold();
+            }
+            if (maxField.isFocused()) {
+                setMaxThreshold();
+            }
+            if (timerField.isFocused()) {
+                setTime();
+            }
+        }
 
-	private void setMinThreshold()
-	{
-		if(!minField.getText().isEmpty())
-		{
-			double toUse;
+        if (Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i)) {
+            minField.textboxKeyTyped(c, i);
+            maxField.textboxKeyTyped(c, i);
+            timerField.textboxKeyTyped(c, i);
+        }
+    }
 
-			try {
-				toUse = Math.max(0, Double.parseDouble(minField.getText()));
-			} catch(Exception e) {
-				minField.setText("");
-				return;
-			}
+    private void setMinThreshold() {
+        if (!minField.getText().isEmpty()) {
+            double toUse;
 
-			TileNetworkList data = TileNetworkList.withContents(0, toUse);
+            try {
+                toUse = Math.max(0, Double.parseDouble(minField.getText()));
+            } catch (Exception e) {
+                minField.setText("");
+                return;
+            }
 
-			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            TileNetworkList data = TileNetworkList.withContents(0, toUse);
 
-			minField.setText("");
-		}
-	}
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
-	private void setMaxThreshold()
-	{
-		if(!maxField.getText().isEmpty())
-		{
-			double toUse;
+            minField.setText("");
+        }
+    }
 
-			try {
-				toUse = Math.max(0, Double.parseDouble(maxField.getText()));
-			} catch(Exception e) {
-				maxField.setText("");
-				return;
-			}
+    private void setMaxThreshold() {
+        if (!maxField.getText().isEmpty()) {
+            double toUse;
 
-			TileNetworkList data = TileNetworkList.withContents(1, toUse);
+            try {
+                toUse = Math.max(0, Double.parseDouble(maxField.getText()));
+            } catch (Exception e) {
+                maxField.setText("");
+                return;
+            }
 
-			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            TileNetworkList data = TileNetworkList.withContents(1, toUse);
 
-			maxField.setText("");
-		}
-	}
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
-	private void setTime()
-	{
-		if(!timerField.getText().isEmpty())
-		{
-			int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
+            maxField.setText("");
+        }
+    }
 
-			TileNetworkList data = TileNetworkList.withContents(2, toUse);
+    private void setTime() {
+        if (!timerField.getText().isEmpty()) {
+            int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
 
-			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+            TileNetworkList data = TileNetworkList.withContents(2, toUse);
 
-			timerField.setText("");
-		}
-	}
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
-	@Override
-	public void initGui()
-	{
-		super.initGui();
+            timerField.setText("");
+        }
+    }
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
+    @Override
+    public void initGui() {
+        super.initGui();
 
-		String prevTime = timerField != null ? timerField.getText() : "";
+        int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
 
-		timerField = new GuiTextField(0, fontRenderer, guiWidth + 96, guiHeight + 28, 36, 11);
-		timerField.setMaxStringLength(4);
-		timerField.setText(prevTime);
+        String prevTime = timerField != null ? timerField.getText() : "";
 
-		String prevMin = minField != null ? minField.getText() : "";
-		minField = new GuiTextField(1, fontRenderer, guiWidth + 96, guiHeight + 43, 72, 11);
-		minField.setMaxStringLength(10);
-		minField.setText(prevMin);
+        timerField = new GuiTextField(0, fontRenderer, guiWidth + 96, guiHeight + 28, 36, 11);
+        timerField.setMaxStringLength(4);
+        timerField.setText(prevTime);
 
-		String prevMax = maxField != null ? maxField.getText() : "";
+        String prevMin = minField != null ? minField.getText() : "";
+        minField = new GuiTextField(1, fontRenderer, guiWidth + 96, guiHeight + 43, 72, 11);
+        minField.setMaxStringLength(10);
+        minField.setText(prevMin);
 
-		maxField = new GuiTextField(2, fontRenderer, guiWidth + 96, guiHeight + 58, 72, 11);
-		maxField.setMaxStringLength(10);
-		maxField.setText(prevMax);
-	}
+        String prevMax = maxField != null ? maxField.getText() : "";
+
+        maxField = new GuiTextField(2, fontRenderer, guiWidth + 96, guiHeight + 58, 72, 11);
+        maxField.setMaxStringLength(10);
+        maxField.setText(prevMax);
+    }
 }

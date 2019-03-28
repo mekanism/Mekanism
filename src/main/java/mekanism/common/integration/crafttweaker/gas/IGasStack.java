@@ -12,8 +12,8 @@ import stanhebben.zenscript.annotations.ZenOperator;
 @ZenClass("mod.mekanism.gas.IGasStack")
 @ModOnly("mtlib")
 @ZenRegister
-public interface IGasStack extends IIngredient
-{
+public interface IGasStack extends IIngredient {
+
     @ZenGetter("definition")
     IGasDefinition getDefinition();
 

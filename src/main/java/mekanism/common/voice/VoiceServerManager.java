@@ -5,108 +5,99 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
-
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 
-public class VoiceServerManager
-{
-	public Set<VoiceConnection> connections = new HashSet<>();
+public class VoiceServerManager {
 
-	public ServerSocket serverSocket;
+    public Set<VoiceConnection> connections = new HashSet<>();
 
-	public boolean running;
+    public ServerSocket serverSocket;
 
-	public boolean foundLocal = false;
+    public boolean running;
 
-	public Thread listenThread;
+    public boolean foundLocal = false;
 
-	public void start()
-	{
-		Mekanism.logger.info("VoiceServer: Starting up server...");
+    public Thread listenThread;
 
-		try {
-			running = true;
-			serverSocket = new ServerSocket(MekanismConfig.current().general.VOICE_PORT.val());
-			(listenThread = new ListenThread()).start();
-		} catch(Exception e) {}
-	}
+    public void start() {
+        Mekanism.logger.info("VoiceServer: Starting up server...");
 
-	public void stop()
-	{
-		try {
-			Mekanism.logger.info("VoiceServer: Shutting down server...");
+        try {
+            running = true;
+            serverSocket = new ServerSocket(MekanismConfig.current().general.VOICE_PORT.val());
+            (listenThread = new ListenThread()).start();
+        } catch (Exception e) {
+        }
+    }
 
-			try {
-				listenThread.interrupt();
-			} catch(Exception e) {}
+    public void stop() {
+        try {
+            Mekanism.logger.info("VoiceServer: Shutting down server...");
 
-			foundLocal = false;
+            try {
+                listenThread.interrupt();
+            } catch (Exception e) {
+            }
 
-			try {
-				serverSocket.close();
-				serverSocket = null;
-			} catch(Exception e) {}
-		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while shutting down server.");
-			e.printStackTrace();
-		}
+            foundLocal = false;
 
-		running = false;
-	}
+            try {
+                serverSocket.close();
+                serverSocket = null;
+            } catch (Exception e) {
+            }
+        } catch (Exception e) {
+            Mekanism.logger.error("VoiceServer: Error while shutting down server.");
+            e.printStackTrace();
+        }
 
-	public void sendToPlayers(short byteCount, byte[] audioData, VoiceConnection connection)
-	{
-		if(connection.getPlayer() == null)
-		{
-			return;
-		}
+        running = false;
+    }
 
-		int channel = connection.getCurrentChannel();
+    public void sendToPlayers(short byteCount, byte[] audioData, VoiceConnection connection) {
+        if (connection.getPlayer() == null) {
+            return;
+        }
 
-		if(channel == 0)
-		{
-			return;
-		}
+        int channel = connection.getCurrentChannel();
 
-		for(VoiceConnection iterConn : connections)
-		{
-			if(iterConn.getPlayer() == null || iterConn == connection || !iterConn.canListen(channel))
-			{
-				continue;
-			}
+        if (channel == 0) {
+            return;
+        }
 
-			iterConn.sendToPlayer(byteCount, audioData, connection);
-		}
-	}
+        for (VoiceConnection iterConn : connections) {
+            if (iterConn.getPlayer() == null || iterConn == connection || !iterConn.canListen(channel)) {
+                continue;
+            }
 
-	public class ListenThread extends Thread
-	{
-		public ListenThread()
-		{
-			setDaemon(true);
-			setName("VoiceServer Listen Thread");
-		}
+            iterConn.sendToPlayer(byteCount, audioData, connection);
+        }
+    }
 
-		@Override
-		public void run()
-		{
-			while(running)
-			{
-				try {
-					Socket s = serverSocket.accept();
-					VoiceConnection connection = new VoiceConnection(s);
-					connection.start();
-					connections.add(connection);
+    public class ListenThread extends Thread {
 
-					Mekanism.logger.info("VoiceServer: Accepted new connection.");
-				} catch(SocketException | NullPointerException e) {
-				}
-				catch(Exception e) {
-					Mekanism.logger.error("VoiceServer: Error while accepting connection.");
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+        public ListenThread() {
+            setDaemon(true);
+            setName("VoiceServer Listen Thread");
+        }
+
+        @Override
+        public void run() {
+            while (running) {
+                try {
+                    Socket s = serverSocket.accept();
+                    VoiceConnection connection = new VoiceConnection(s);
+                    connection.start();
+                    connections.add(connection);
+
+                    Mekanism.logger.info("VoiceServer: Accepted new connection.");
+                } catch (SocketException | NullPointerException e) {
+                } catch (Exception e) {
+                    Mekanism.logger.error("VoiceServer: Error while accepting connection.");
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

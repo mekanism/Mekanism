@@ -1,13 +1,12 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -29,364 +28,320 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile
-{
-	private static final int[] SLOTS = {0};
-	public double energyUsage = 100;
-	
-	public double temperature;
-	public double heatToAbsorb = 0;
-	
-	/** Whether or not this machine is in it's active state. */
-	public boolean isActive;
+public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements IHeatTransfer, IComputerIntegration,
+      IRedstoneControl, ISecurityTile {
 
-	/** The client's current active state. */
-	public boolean clientActive;
+    private static final int[] SLOTS = {0};
+    private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature",
+          "setEnergyUsage"};
+    public double energyUsage = 100;
+    public double temperature;
+    public double heatToAbsorb = 0;
+    /**
+     * Whether or not this machine is in it's active state.
+     */
+    public boolean isActive;
+    /**
+     * The client's current active state.
+     */
+    public boolean clientActive;
+    /**
+     * How many ticks must pass until this block's active state can sync with the client.
+     */
+    public int updateDelay;
+    public float soundScale = 1;
+    public double lastEnvironmentLoss;
+    public RedstoneControl controlType = RedstoneControl.DISABLED;
+    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-	/** How many ticks must pass until this block's active state can sync with the client. */
-	public int updateDelay;
-	
-	public float soundScale = 1;
-	
-	public double lastEnvironmentLoss;
-	
-	public RedstoneControl controlType = RedstoneControl.DISABLED;
-	
-	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
-	
-	public TileEntityResistiveHeater()
-	{
-		super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.baseEnergy);
-		inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
-	}
-	
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
-		
-		if(world.isRemote && updateDelay > 0)
-		{
-			updateDelay--;
+    public TileEntityResistiveHeater() {
+        super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.baseEnergy);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+    }
 
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-		
-		if(!world.isRemote)
-		{
-			boolean packet = false;
-			
-			if(updateDelay > 0)
-			{
-				updateDelay--;
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
 
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					packet = true;
-				}
-			}
-			
-			ChargeUtils.discharge(0, this);
-			
-			double toUse = 0;
-			
-			if(MekanismUtils.canFunction(this))
-			{
-				toUse = Math.min(getEnergy(), energyUsage);
-				heatToAbsorb += toUse/ MekanismConfig.current().general.energyPerHeat.val();
-				setEnergy(getEnergy() - toUse);
-			}
-			
-			setActive(toUse > 0);
-			
-			double[] loss = simulateHeat();
-			applyTemperatureChange();
-			
-			lastEnvironmentLoss = loss[1];
-			
-			float newSoundScale = (float)Math.max(0, (toUse/1E5));
-			
-			if(Math.abs(newSoundScale-soundScale) > 0.01)
-			{
-				packet = true;
-			}
-			
-			soundScale = newSoundScale;
-			
-			if(packet)
-			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
-			}
-		}
-	}
+        if (world.isRemote && updateDelay > 0) {
+            updateDelay--;
 
-	@Override
-	public boolean sideIsConsumer(EnumFacing side)
-	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
-	}
+            if (updateDelay == 0 && clientActive != isActive) {
+                isActive = clientActive;
+                MekanismUtils.updateBlock(world, getPos());
+            }
+        }
 
-	@Override
-	public boolean canSetFacing(int side)
-	{
-		return side != 0 && side != 1;
-	}
-	
-	@Override
-	public float getVolume()
-	{
-		return super.getVolume()*Math.max(0.001F, soundScale);
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
+        if (!world.isRemote) {
+            boolean packet = false;
 
-		energyUsage = nbtTags.getDouble("energyUsage");
-		temperature = nbtTags.getDouble("temperature");
-		clientActive = isActive = nbtTags.getBoolean("isActive");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-		
-		maxEnergy = energyUsage * 400;
-	}
+            if (updateDelay > 0) {
+                updateDelay--;
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
+                if (updateDelay == 0 && clientActive != isActive) {
+                    packet = true;
+                }
+            }
 
-		nbtTags.setDouble("energyUsage", energyUsage);
-		nbtTags.setDouble("temperature", temperature);
-		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("controlType", controlType.ordinal());
-		
-		return nbtTags;
-	}
-	
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
-			maxEnergy = energyUsage * 400;
-			
-			return;
-		}
-		
-		super.handlePacketData(dataStream);
-		
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			energyUsage = dataStream.readDouble();
-			temperature = dataStream.readDouble();
-			clientActive = dataStream.readBoolean();
-			maxEnergy = dataStream.readDouble();
-			soundScale = dataStream.readFloat();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-			
-			lastEnvironmentLoss = dataStream.readDouble();
-			
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-	}
+            ChargeUtils.discharge(0, this);
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		super.getNetworkedData(data);
-		
-		data.add(energyUsage);
-		data.add(temperature);
-		data.add(isActive);
-		data.add(maxEnergy);
-		data.add(soundScale);
-		data.add(controlType.ordinal());
-		
-		data.add(lastEnvironmentLoss);
-		
-		return data;
-	}
+            double toUse = 0;
 
-	@Override
-	public double getTemp() 
-	{
-		return temperature;
-	}
+            if (MekanismUtils.canFunction(this)) {
+                toUse = Math.min(getEnergy(), energyUsage);
+                heatToAbsorb += toUse / MekanismConfig.current().general.energyPerHeat.val();
+                setEnergy(getEnergy() - toUse);
+            }
 
-	@Override
-	public double getInverseConductionCoefficient() 
-	{
-		return 5;
-	}
+            setActive(toUse > 0);
 
-	@Override
-	public double getInsulationCoefficient(EnumFacing side)
-	{
-		return 1000;
-	}
+            double[] loss = simulateHeat();
+            applyTemperatureChange();
 
-	@Override
-	public void transferHeatTo(double heat)
-	{
-		heatToAbsorb += heat;
-	}
+            lastEnvironmentLoss = loss[1];
 
-	@Override
-	public double[] simulateHeat() 
-	{
-		return HeatUtils.simulate(this);
-	}
+            float newSoundScale = (float) Math.max(0, (toUse / 1E5));
 
-	@Override
-	public double applyTemperatureChange() 
-	{
-		temperature += heatToAbsorb;
-		heatToAbsorb = 0;
-		
-		return temperature;
-	}
+            if (Math.abs(newSoundScale - soundScale) > 0.01) {
+                packet = true;
+            }
 
-	@Override
-	public boolean canConnectHeat(EnumFacing side)
-	{
-		return true;
-	}
+            soundScale = newSoundScale;
 
-	@Override
-	public IHeatTransfer getAdjacent(EnumFacing side)
-	{
-		TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-		
-		if(CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()))
-		{
-			return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side)
-	{
-		return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
-	}
+            if (packet) {
+                Mekanism.packetHandler.sendToReceivers(
+                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                      new Range4D(Coord4D.get(this)));
+            }
+        }
+    }
 
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side)
-	{
-		if(capability == Capabilities.HEAT_TRANSFER_CAPABILITY)
-		{
-			return (T)this;
-		}
-		
-		return super.getCapability(capability, side);
-	}
-	
-	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
+    @Override
+    public boolean sideIsConsumer(EnumFacing side) {
+        return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
+    }
 
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+    @Override
+    public boolean canSetFacing(int side) {
+        return side != 0 && side != 1;
+    }
 
-			updateDelay = 10;
-			clientActive = active;
-		}
-	}
+    @Override
+    public float getVolume() {
+        return super.getVolume() * Math.max(0.001F, soundScale);
+    }
 
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
-	
-	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags) {
+        super.readFromNBT(nbtTags);
 
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
-	
-	private static final String[] methods = new String[] {"getEnergy", "getMaxEnergy", "getTemperature", "setEnergyUsage"};
+        energyUsage = nbtTags.getDouble("energyUsage");
+        temperature = nbtTags.getDouble("temperature");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
-	@Override
-	public String[] getMethods()
-	{
-		return methods;
-	}
+        maxEnergy = energyUsage * 400;
+    }
 
-	@Override
-	public Object[] invoke(int method, Object[] arguments) throws Exception
-	{
-		switch(method)
-		{
-			case 0:
-				return new Object[] {getEnergy()};
-			case 1:
-				return new Object[] {getMaxEnergy()};
-			case 2:
-				return new Object[] {temperature};
-			case 3:
-				if(arguments.length == 1)
-				{
-					if(arguments[0] instanceof Double)
-					{
-						energyUsage = (Double)arguments[0];
-						return new Object[] {"Set energy usage."};
-					}
-				}
-				
-				return new Object[] {"Invalid parameters."};
-			default:
-				throw new NoSuchMethodException();
-		}
-	}
-	
-	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        super.writeToNBT(nbtTags);
 
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-	}
+        nbtTags.setDouble("energyUsage", energyUsage);
+        nbtTags.setDouble("temperature", temperature);
+        nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("controlType", controlType.ordinal());
 
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
-	}
+        return nbtTags;
+    }
 
-	@Override
-	public int[] getSlotsForFace(EnumFacing side)
-	{
-		return sideIsConsumer(side) ? InventoryUtils.EMPTY : SLOTS;
-	}
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
+            maxEnergy = energyUsage * 400;
+
+            return;
+        }
+
+        super.handlePacketData(dataStream);
+
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            energyUsage = dataStream.readDouble();
+            temperature = dataStream.readDouble();
+            clientActive = dataStream.readBoolean();
+            maxEnergy = dataStream.readDouble();
+            soundScale = dataStream.readFloat();
+            controlType = RedstoneControl.values()[dataStream.readInt()];
+
+            lastEnvironmentLoss = dataStream.readDouble();
+
+            if (updateDelay == 0 && clientActive != isActive) {
+                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
+                isActive = clientActive;
+                MekanismUtils.updateBlock(world, getPos());
+            }
+        }
+    }
+
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
+
+        data.add(energyUsage);
+        data.add(temperature);
+        data.add(isActive);
+        data.add(maxEnergy);
+        data.add(soundScale);
+        data.add(controlType.ordinal());
+
+        data.add(lastEnvironmentLoss);
+
+        return data;
+    }
+
+    @Override
+    public double getTemp() {
+        return temperature;
+    }
+
+    @Override
+    public double getInverseConductionCoefficient() {
+        return 5;
+    }
+
+    @Override
+    public double getInsulationCoefficient(EnumFacing side) {
+        return 1000;
+    }
+
+    @Override
+    public void transferHeatTo(double heat) {
+        heatToAbsorb += heat;
+    }
+
+    @Override
+    public double[] simulateHeat() {
+        return HeatUtils.simulate(this);
+    }
+
+    @Override
+    public double applyTemperatureChange() {
+        temperature += heatToAbsorb;
+        heatToAbsorb = 0;
+
+        return temperature;
+    }
+
+    @Override
+    public boolean canConnectHeat(EnumFacing side) {
+        return true;
+    }
+
+    @Override
+    public IHeatTransfer getAdjacent(EnumFacing side) {
+        TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
+
+        if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
+            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+            return (T) this;
+        }
+
+        return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean getActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        isActive = active;
+
+        if (clientActive != active && updateDelay == 0) {
+            Mekanism.packetHandler
+                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                        new Range4D(Coord4D.get(this)));
+
+            updateDelay = 10;
+            clientActive = active;
+        }
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return false;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return true;
+    }
+
+    @Override
+    public String[] getMethods() {
+        return methods;
+    }
+
+    @Override
+    public Object[] invoke(int method, Object[] arguments) throws Exception {
+        switch (method) {
+            case 0:
+                return new Object[]{getEnergy()};
+            case 1:
+                return new Object[]{getMaxEnergy()};
+            case 2:
+                return new Object[]{temperature};
+            case 3:
+                if (arguments.length == 1) {
+                    if (arguments[0] instanceof Double) {
+                        energyUsage = (Double) arguments[0];
+                        return new Object[]{"Set energy usage."};
+                    }
+                }
+
+                return new Object[]{"Invalid parameters."};
+            default:
+                throw new NoSuchMethodException();
+        }
+    }
+
+    @Override
+    public RedstoneControl getControlType() {
+        return controlType;
+    }
+
+    @Override
+    public void setControlType(RedstoneControl type) {
+        controlType = type;
+    }
+
+    @Override
+    public boolean canPulse() {
+        return false;
+    }
+
+    @Override
+    public TileComponentSecurity getSecurity() {
+        return securityComponent;
+    }
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side) {
+        return sideIsConsumer(side) ? InventoryUtils.EMPTY : SLOTS;
+    }
 }

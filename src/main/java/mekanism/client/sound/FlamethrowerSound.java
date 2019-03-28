@@ -7,58 +7,51 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class FlamethrowerSound extends PlayerSound
-{
-	public boolean inUse;
+public class FlamethrowerSound extends PlayerSound {
 
-	public ResourceLocation onSound;
-	public ResourceLocation offSound;
+    public boolean inUse;
 
-	public FlamethrowerSound(EntityPlayer player)
-	{
-		super(player, new ResourceLocation("mekanism", "item.flamethrower.idle"));
-		
-		onSound = new ResourceLocation("mekanism", "item.flamethrower.active");
-		offSound = new ResourceLocation("mekanism", "item.flamethrower.idle");
-		inUse = ClientTickHandler.isFlamethrowerOn(player);
-		soundLocation = inUse ? onSound : offSound;
-		
-		setFadeIn(0);
-		setFadeOut(0);
-	}
+    public ResourceLocation onSound;
+    public ResourceLocation offSound;
 
-	@Override
-	public boolean isDonePlaying()
-	{
-		return donePlaying;
-	}
+    public FlamethrowerSound(EntityPlayer player) {
+        super(player, new ResourceLocation("mekanism", "item.flamethrower.idle"));
 
-	@Override
-	public boolean shouldPlaySound()
-	{
-		return true;
-	}
+        onSound = new ResourceLocation("mekanism", "item.flamethrower.active");
+        offSound = new ResourceLocation("mekanism", "item.flamethrower.idle");
+        inUse = ClientTickHandler.isFlamethrowerOn(player);
+        soundLocation = inUse ? onSound : offSound;
 
-	@Override
-	public float getVolume()
-	{
-		return super.getVolume() * (inUse ? 2 : 1);
-	}
+        setFadeIn(0);
+        setFadeOut(0);
+    }
 
-	@Override
-	public void update()
-	{
-		if(!ClientTickHandler.hasFlamethrower(player))
-		{
-			donePlaying = true;
-			return;
-		}
-		
-		if(inUse != ClientTickHandler.isFlamethrowerOn(player))
-		{
-			inUse = ClientTickHandler.isFlamethrowerOn(player);
-			soundLocation = inUse ? onSound : offSound;
-			donePlaying = true;
-		}
-	}
+    @Override
+    public boolean isDonePlaying() {
+        return donePlaying;
+    }
+
+    @Override
+    public boolean shouldPlaySound() {
+        return true;
+    }
+
+    @Override
+    public float getVolume() {
+        return super.getVolume() * (inUse ? 2 : 1);
+    }
+
+    @Override
+    public void update() {
+        if (!ClientTickHandler.hasFlamethrower(player)) {
+            donePlaying = true;
+            return;
+        }
+
+        if (inUse != ClientTickHandler.isFlamethrowerOn(player)) {
+            inUse = ClientTickHandler.isFlamethrowerOn(player);
+            soundLocation = inUse ? onSound : offSound;
+            donePlaying = true;
+        }
+    }
 }

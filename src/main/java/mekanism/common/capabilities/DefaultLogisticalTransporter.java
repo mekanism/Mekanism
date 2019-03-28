@@ -1,7 +1,6 @@
 package mekanism.common.capabilities;
 
 import java.util.Collection;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -20,217 +19,185 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 03/05/16.
  */
-public class DefaultLogisticalTransporter implements ILogisticalTransporter
-{
+public class DefaultLogisticalTransporter implements ILogisticalTransporter {
+
+    public static void register() {
+        CapabilityManager.INSTANCE
+              .register(ILogisticalTransporter.class, new NullStorage<>(), DefaultLogisticalTransporter::new);
+    }
+
     @Override
-    public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min)
-    {
+    public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         return TransitResponse.EMPTY;
     }
 
     @Override
-    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min)
-    {
+    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color,
+          boolean doEmit, int min) {
         return TransitResponse.EMPTY;
     }
 
     @Override
-    public void entityEntering(TransporterStack stack, int progress)
-    {
+    public void entityEntering(TransporterStack stack, int progress) {
 
     }
 
     @Override
-    public EnumColor getColor()
-    {
+    public EnumColor getColor() {
         return null;
     }
 
     @Override
-    public void setColor(EnumColor c)
-    {
+    public void setColor(EnumColor c) {
 
     }
 
     @Override
-    public boolean canEmitTo(TileEntity tileEntity, EnumFacing side)
-    {
+    public boolean canEmitTo(TileEntity tileEntity, EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side)
-    {
+    public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side) {
         return false;
     }
 
     @Override
-    public double getCost()
-    {
+    public double getCost() {
         return 0;
     }
 
     @Override
-    public boolean canConnectMutual(EnumFacing side)
-    {
+    public boolean canConnectMutual(EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean canConnect(EnumFacing side)
-    {
+    public boolean canConnect(EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean hasTransmitterNetwork()
-    {
+    public boolean hasTransmitterNetwork() {
         return false;
     }
 
     @Override
-    public InventoryNetwork getTransmitterNetwork()
-    {
+    public InventoryNetwork getTransmitterNetwork() {
         return null;
     }
 
     @Override
-    public void setTransmitterNetwork(InventoryNetwork network)
-    {
+    public void setTransmitterNetwork(InventoryNetwork network) {
 
     }
 
     @Override
-    public int getTransmitterNetworkSize()
-    {
+    public int getTransmitterNetworkSize() {
         return 0;
     }
 
     @Override
-    public int getTransmitterNetworkAcceptorSize()
-    {
+    public int getTransmitterNetworkAcceptorSize() {
         return 0;
     }
 
     @Override
-    public String getTransmitterNetworkNeeded()
-    {
+    public String getTransmitterNetworkNeeded() {
         return null;
     }
 
     @Override
-    public String getTransmitterNetworkFlow()
-    {
+    public String getTransmitterNetworkFlow() {
         return null;
     }
 
     @Override
-    public String getTransmitterNetworkBuffer()
-    {
+    public String getTransmitterNetworkBuffer() {
         return null;
     }
 
     @Override
-    public double getTransmitterNetworkCapacity()
-    {
+    public double getTransmitterNetworkCapacity() {
         return 0;
     }
 
     @Override
-    public int getCapacity()
-    {
+    public int getCapacity() {
         return 0;
     }
 
     @Override
-    public World world()
-    {
+    public World world() {
         return null;
     }
 
     @Override
-    public Coord4D coord()
-    {
+    public Coord4D coord() {
         return null;
     }
 
     @Override
-    public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side)
-    {
+    public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side) {
         return null;
     }
 
     @Override
-    public TileEntity getAcceptor(EnumFacing side)
-    {
+    public TileEntity getAcceptor(EnumFacing side) {
         return null;
     }
 
     @Override
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return false;
     }
 
     @Override
-    public boolean isOrphan()
-    {
+    public boolean isOrphan() {
         return false;
     }
 
     @Override
-    public void setOrphan(boolean orphaned)
-    {
+    public void setOrphan(boolean orphaned) {
 
     }
 
     @Override
-    public InventoryNetwork createEmptyNetwork()
-    {
+    public InventoryNetwork createEmptyNetwork() {
         return null;
     }
 
     @Override
-    public InventoryNetwork mergeNetworks(Collection<InventoryNetwork> toMerge)
-    {
+    public InventoryNetwork mergeNetworks(Collection<InventoryNetwork> toMerge) {
         return null;
     }
 
     @Override
-    public InventoryNetwork getExternalNetwork(Coord4D from)
-    {
+    public InventoryNetwork getExternalNetwork(Coord4D from) {
         return null;
     }
 
     @Override
-    public void takeShare()
-    {
+    public void takeShare() {
 
     }
 
     @Override
-    public void updateShare()
-    {
+    public void updateShare() {
 
     }
 
     @Override
-    public Object getBuffer()
-    {
-        return null;
-    }
-    
-    @Override
-    public void setRequestsUpdate() {}
-
-    @Override
-    public TransmissionType getTransmissionType()
-    {
+    public Object getBuffer() {
         return null;
     }
 
-    public static void register()
-    {
-        CapabilityManager.INSTANCE.register(ILogisticalTransporter.class, new NullStorage<>(), DefaultLogisticalTransporter::new);
+    @Override
+    public void setRequestsUpdate() {
+    }
+
+    @Override
+    public TransmissionType getTransmissionType() {
+        return null;
     }
 }

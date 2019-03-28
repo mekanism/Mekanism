@@ -10,27 +10,26 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityJetpackSmokeFX extends ParticleSmokeNormal
-{
-	private static Minecraft mc = FMLClientHandler.instance().getClient();
+public class EntityJetpackSmokeFX extends ParticleSmokeNormal {
 
-	public EntityJetpackSmokeFX(World world, double posX, double posY, double posZ, double velX, double velY, double velZ) 
-	{
-		super(world, posX, posY, posZ, velX, velY, velZ, 1.0F);
-	}
+    private static Minecraft mc = FMLClientHandler.instance().getClient();
 
-	@Override
-	public int getBrightnessForRender(float p_70013_1_) 
-	{
-		return 190 + (int)(20F * (1.0F - mc.gameSettings.gammaSetting));
-	}
+    public EntityJetpackSmokeFX(World world, double posX, double posY, double posZ, double velX, double velY,
+          double velZ) {
+        super(world, posX, posY, posZ, velX, velY, velZ, 1.0F);
+    }
 
-	@Override
-	public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_)
-	{
-		if(particleAge > 0)
-		{
-			super.renderParticle(worldRendererIn, entityIn, partialTicks, p_180434_4_, p_180434_5_, p_180434_6_, p_180434_7_, p_180434_8_);
-		}
-	}
+    @Override
+    public int getBrightnessForRender(float p_70013_1_) {
+        return 190 + (int) (20F * (1.0F - mc.gameSettings.gammaSetting));
+    }
+
+    @Override
+    public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_,
+          float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
+        if (particleAge > 0) {
+            super.renderParticle(worldRendererIn, entityIn, partialTicks, p_180434_4_, p_180434_5_, p_180434_6_,
+                  p_180434_7_, p_180434_8_);
+        }
+    }
 }

@@ -12,21 +12,22 @@ import mekanism.common.transmitters.grid.InventoryNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-public interface ILogisticalTransporter extends IGridTransmitter<TileEntity, InventoryNetwork>, IBlockableConnection
-{
-	TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min);
+public interface ILogisticalTransporter extends IGridTransmitter<TileEntity, InventoryNetwork>, IBlockableConnection {
 
-	TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min);
+    TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min);
 
-	void entityEntering(TransporterStack stack, int progress);
+    TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color,
+          boolean doEmit, int min);
 
-	EnumColor getColor();
+    void entityEntering(TransporterStack stack, int progress);
 
-	void setColor(EnumColor c);
+    EnumColor getColor();
 
-	boolean canEmitTo(TileEntity tileEntity, EnumFacing side);
+    void setColor(EnumColor c);
 
-	boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side);
+    boolean canEmitTo(TileEntity tileEntity, EnumFacing side);
 
-	double getCost();
+    boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side);
+
+    double getCost();
 }

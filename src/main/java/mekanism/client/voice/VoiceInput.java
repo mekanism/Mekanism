@@ -4,99 +4,91 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
-
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class VoiceInput extends Thread
-{
-	private VoiceClient voiceClient;
+public class VoiceInput extends Thread {
 
-	private DataLine.Info microphone;
+    private VoiceClient voiceClient;
 
-	private TargetDataLine targetLine;
+    private DataLine.Info microphone;
 
-	public VoiceInput(VoiceClient client)
-	{
-		voiceClient = client;
-		microphone = new DataLine.Info(TargetDataLine.class, voiceClient.format, 2200);
+    private TargetDataLine targetLine;
 
-		setDaemon(true);
-		setName("VoiceServer Client Input Thread");
-	}
+    public VoiceInput(VoiceClient client) {
+        voiceClient = client;
+        microphone = new DataLine.Info(TargetDataLine.class, voiceClient.format, 2200);
 
-	@Override
-	public void run()
-	{
-		try {
-			if(!AudioSystem.isLineSupported(microphone))
-			{
-				Mekanism.logger.info("No audio system available.");
-				return;
-			}
-			targetLine = ((TargetDataLine)AudioSystem.getLine(microphone));
-			targetLine.open(voiceClient.format, 2200);
-			targetLine.start();
-			AudioInputStream audioInput = new AudioInputStream(targetLine);
+        setDaemon(true);
+        setName("VoiceServer Client Input Thread");
+    }
 
-			boolean doFlush = false;
+    @Override
+    public void run() {
+        try {
+            if (!AudioSystem.isLineSupported(microphone)) {
+                Mekanism.logger.info("No audio system available.");
+                return;
+            }
+            targetLine = ((TargetDataLine) AudioSystem.getLine(microphone));
+            targetLine.open(voiceClient.format, 2200);
+            targetLine.start();
+            AudioInputStream audioInput = new AudioInputStream(targetLine);
 
-			while(voiceClient.running)
-			{
-				if(MekanismKeyHandler.voiceKey.isPressed())
-				{
-					targetLine.flush();
+            boolean doFlush = false;
 
-					while(voiceClient.running && MekanismKeyHandler.voiceKey.isPressed())
-					{
-						try {
-							int availableBytes = audioInput.available();
-							byte[] audioData = new byte[availableBytes > 2200 ? 2200 : availableBytes];
-							int bytesRead = audioInput.read(audioData, 0, audioData.length);
+            while (voiceClient.running) {
+                if (MekanismKeyHandler.voiceKey.isPressed()) {
+                    targetLine.flush();
 
-							if(bytesRead > 0)
-							{
-								voiceClient.output.writeShort(audioData.length);
-								voiceClient.output.write(audioData);
-							}
-						} catch(Exception e) {}
-					}
+                    while (voiceClient.running && MekanismKeyHandler.voiceKey.isPressed()) {
+                        try {
+                            int availableBytes = audioInput.available();
+                            byte[] audioData = new byte[availableBytes > 2200 ? 2200 : availableBytes];
+                            int bytesRead = audioInput.read(audioData, 0, audioData.length);
 
-					try {
-						Thread.sleep(200L);
-					} catch(Exception e) {}
+                            if (bytesRead > 0) {
+                                voiceClient.output.writeShort(audioData.length);
+                                voiceClient.output.write(audioData);
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
 
-					doFlush = true;
-				}
-				else if(doFlush)
-				{
-					try {
-						voiceClient.output.flush();
-					} catch(Exception e) {}
+                    try {
+                        Thread.sleep(200L);
+                    } catch (Exception e) {
+                    }
 
-					doFlush = false;
-				}
+                    doFlush = true;
+                } else if (doFlush) {
+                    try {
+                        voiceClient.output.flush();
+                    } catch (Exception e) {
+                    }
 
-				try {
-					Thread.sleep(20L);
-				} catch(Exception e) {}
-			}
+                    doFlush = false;
+                }
 
-			audioInput.close();
-		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while running client input thread.", e);
-		}
-	}
+                try {
+                    Thread.sleep(20L);
+                } catch (Exception e) {
+                }
+            }
 
-	public void close()
-	{
-		if(targetLine != null)
-		{
-			targetLine.flush();
-			targetLine.close();
-		}
-	}
+            audioInput.close();
+        } catch (Exception e) {
+            Mekanism.logger.error("VoiceServer: Error while running client input thread.", e);
+        }
+    }
+
+    public void close() {
+        if (targetLine != null) {
+            targetLine.flush();
+            targetLine.close();
+        }
+    }
 }
