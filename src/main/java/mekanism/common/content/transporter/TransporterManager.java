@@ -180,14 +180,14 @@ public class TransporterManager {
         }
 
         // Now for each of the items in the request, simulate the insert, using the state from all the in-flight
-        // items to ensure we have an accurate model of what will happen in future
-        // TODO: Investigate why TransitRequest has multiple items possible and get rid of this loop
+        // items to ensure we have an accurate model of what will happen in future. We try each stack in the
+        // request; it might be possible to not send the first item, but the second could work, etc.
         for (Map.Entry<ItemStack, Integer> requestEntry : request.itemMap.entrySet()) {
             ItemStack leftovers = simulateInsert(handler, invCopy, side, requestEntry.getKey().copy());
 
-            // If leftovers is unchanged from the simulation, there's no room at all
+            // If leftovers is unchanged from the simulation, there's no room at all; move on to the next stack
             if (ItemStack.areItemStacksEqual(leftovers, requestEntry.getKey())) {
-                return TransitResponse.EMPTY;
+                continue;
             }
 
             // Otherwise, construct the appropriately size stack to send and return that
