@@ -376,7 +376,7 @@ public class GuiDigitalMinerConfig extends GuiMekanismTile<TileEntityDigitalMine
               .drawString("I: " + (tileEntity.inverse ? LangUtils.localize("gui.on") : LangUtils.localize("gui.off")),
                     11, 131, 0x00CD00);
 
-        fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
+        fontRenderer.drawString("Radi: " + tileEntity.getRadius(), 11, 58, 0x00CD00);
 
         fontRenderer.drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
 

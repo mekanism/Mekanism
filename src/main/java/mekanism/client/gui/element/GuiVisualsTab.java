@@ -42,7 +42,7 @@ public class GuiVisualsTab extends GuiTileEntityElement<TileEntityDigitalMiner> 
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            if (tileEntity.radius <= 64) {
+            if (tileEntity.getRadius() <= 64) {
                 displayTooltip(
                       LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
                       xAxis, yAxis);
