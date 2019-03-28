@@ -53,7 +53,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 
     @Override
     public boolean upgrade(BaseTier upgradeTier) {
-        if(upgradeTier != BaseTier.BASIC) {
+        if (upgradeTier != BaseTier.BASIC) {
             return false;
         }
 

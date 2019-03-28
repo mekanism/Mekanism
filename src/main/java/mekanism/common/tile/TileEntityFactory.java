@@ -365,7 +365,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
-        if(type.getFuelType() == MachineFuelType.CHANCE) {
+        if (type.getFuelType() == MachineFuelType.CHANCE) {
             SideData data = configComponent.getOutputs(TransmissionType.ITEM).get(2);
             data.availableSlots = addToArray(data.availableSlots, 4);
             ejectorComponent.trackers.put(TransmissionType.ITEM, Arrays.copyOf(ejectorComponent.trackers.get(TransmissionType.ITEM), data.availableSlots.length));
@@ -479,7 +479,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return true;
         } else if (tier == FactoryTier.ADVANCED && slotID >= 10 && slotID <= 14) {
             return true;
-        } else if(recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == 4) {
+        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE && slotID == 4) {
             return true;
         } else
             return tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18;
@@ -573,7 +573,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             cachedRecipe[process] = recipe;
 
             return recipe != null && recipe.canOperate(inventory, inputSlot, 4, outputSlot);
-        } else if(recipeType.getFuelType() == MachineFuelType.CHANCE) {
+        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE) {
             if (cachedRecipe[process] instanceof ChanceMachineRecipe &&
                     ((ChanceMachineRecipe) cachedRecipe[process]).inputMatches(inventory, inputSlot)) {
                 return ((ChanceMachineRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, outputSlot, 4);
@@ -636,7 +636,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             DoubleMachineRecipe<?> recipe = (DoubleMachineRecipe<?>) cachedRecipe[process];
 
             recipe.operate(inventory, inputSlot, 4, outputSlot);
-        } else if(recipeType.getFuelType() == MachineFuelType.CHANCE
+        } else if (recipeType.getFuelType() == MachineFuelType.CHANCE
               && cachedRecipe[process] instanceof ChanceMachineRecipe) {
             ChanceMachineRecipe<?> recipe = (ChanceMachineRecipe<?>) cachedRecipe[process];
 

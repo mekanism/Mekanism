@@ -153,7 +153,7 @@ public interface IFactory {
                 return getRecipe(slotStack, gasType);
             } else if (fuelType == MachineFuelType.DOUBLE) {
                 return getRecipe(slotStack, extraStack);
-            } else if(fuelType == MachineFuelType.CHANCE) {
+            } else if (fuelType == MachineFuelType.CHANCE) {
                 return getChanceRecipe(slotStack);
             } else if (this == INFUSING) {
                 if (infuse.type != null) {
