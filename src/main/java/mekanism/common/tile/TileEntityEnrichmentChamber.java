@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.Map;
-
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -11,23 +10,21 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<EnrichmentRecipe>
-{
-	public TileEntityEnrichmentChamber()
-	{
-		super("enrichment", "EnrichmentChamber", BlockStateMachine.MachineType.ENRICHMENT_CHAMBER.baseEnergy, MekanismConfig.current().usage.enrichmentChamberUsage.val(), 200);
-	}
+public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<EnrichmentRecipe> {
 
-	@Override
-	public Map<ItemStackInput, EnrichmentRecipe> getRecipes()
-	{
-		return Recipe.ENRICHMENT_CHAMBER.get();
-	}
+    public TileEntityEnrichmentChamber() {
+        super("enrichment", "EnrichmentChamber", BlockStateMachine.MachineType.ENRICHMENT_CHAMBER.baseEnergy,
+              MekanismConfig.current().usage.enrichmentChamberUsage.val(), 200);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getVolume()
-	{
-		return 0.3F*super.getVolume();
-	}
+    @Override
+    public Map<ItemStackInput, EnrichmentRecipe> getRecipes() {
+        return Recipe.ENRICHMENT_CHAMBER.get();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public float getVolume() {
+        return 0.3F * super.getVolume();
+    }
 }

@@ -10,22 +10,19 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 19/05/16.
  */
-public class DefaultConfigurable implements IConfigurable
-{
-    @Override
-    public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side)
-    {
-        return EnumActionResult.PASS;
-    }
+public class DefaultConfigurable implements IConfigurable {
 
-    @Override
-    public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side)
-    {
-        return EnumActionResult.PASS;
-    }
-
-    public static void register()
-    {
+    public static void register() {
         CapabilityManager.INSTANCE.register(IConfigurable.class, new NullStorage<>(), DefaultConfigurable.class);
+    }
+
+    @Override
+    public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
+        return EnumActionResult.PASS;
+    }
+
+    @Override
+    public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
+        return EnumActionResult.PASS;
     }
 }

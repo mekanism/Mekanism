@@ -8,24 +8,22 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockStateCardboardBox extends BlockStateContainer
-{
-	public static PropertyBool storageProperty = PropertyBool.create("storage");
+public class BlockStateCardboardBox extends BlockStateContainer {
 
-	public BlockStateCardboardBox(BlockCardboardBox block)
-	{
-		super(block, storageProperty);
-	}
+    public static PropertyBool storageProperty = PropertyBool.create("storage");
 
-	public static class CardboardBoxStateMapper extends StateMapperBase
-	{
-		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
-		{
-			String property = "storage=" + state.getValue(storageProperty);
-			
-			ResourceLocation baseLocation = new ResourceLocation("mekanism", "CardboardBox");
-			return new ModelResourceLocation(baseLocation, property);
-		}
-	}
+    public BlockStateCardboardBox(BlockCardboardBox block) {
+        super(block, storageProperty);
+    }
+
+    public static class CardboardBoxStateMapper extends StateMapperBase {
+
+        @Override
+        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+            String property = "storage=" + state.getValue(storageProperty);
+
+            ResourceLocation baseLocation = new ResourceLocation("mekanism", "CardboardBox");
+            return new ModelResourceLocation(baseLocation, property);
+        }
+    }
 }

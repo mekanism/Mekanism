@@ -8,49 +8,42 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerRobitMain extends Container
-{
-	private EntityRobit robit;
+public class ContainerRobitMain extends Container {
 
-	public ContainerRobitMain(InventoryPlayer inventory, EntityRobit entity)
-	{
-		robit = entity;
-		addSlotToContainer(new SlotDischarge(entity, 27, 153, 17));
+    private EntityRobit robit;
 
-		robit.openInventory(inventory.player);
+    public ContainerRobitMain(InventoryPlayer inventory, EntityRobit entity) {
+        robit = entity;
+        addSlotToContainer(new SlotDischarge(entity, 27, 153, 17));
 
-		int slotY;
+        robit.openInventory(inventory.player);
 
-		for(slotY = 0; slotY < 3; slotY++)
-		{
-			for(int slotX = 0; slotX < 9; slotX++)
-			{
-				addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-			}
-		}
+        int slotY;
 
-		for(slotY = 0; slotY < 9; slotY++)
-		{
-			addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-		}
-	}
+        for (slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
+            }
+        }
 
-	@Override
-	public void onContainerClosed(EntityPlayer entityplayer)
-	{
-		super.onContainerClosed(entityplayer);
-		robit.closeInventory(entityplayer);
-	}
+        for (slotY = 0; slotY < 9; slotY++) {
+            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
+        }
+    }
 
-	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
-	{
-		return !robit.isDead;
-	}
+    @Override
+    public void onContainerClosed(EntityPlayer entityplayer) {
+        super.onContainerClosed(entityplayer);
+        robit.closeInventory(entityplayer);
+    }
 
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
-	{
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public boolean canInteractWith(EntityPlayer entityplayer) {
+        return !robit.isDead;
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+        return ItemStack.EMPTY;
+    }
 }

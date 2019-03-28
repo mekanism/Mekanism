@@ -5,33 +5,29 @@ import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public abstract class DoubleMachineRecipe<RECIPE extends DoubleMachineRecipe<RECIPE>> extends MachineRecipe<DoubleMachineInput, ItemStackOutput, RECIPE>
-{
-	public DoubleMachineRecipe(DoubleMachineInput input, ItemStackOutput output)
-	{
-		super(input, output);
-	}
+public abstract class DoubleMachineRecipe<RECIPE extends DoubleMachineRecipe<RECIPE>> extends
+      MachineRecipe<DoubleMachineInput, ItemStackOutput, RECIPE> {
 
-	public DoubleMachineRecipe(ItemStack input, ItemStack extra, ItemStack output)
-	{
-		this(new DoubleMachineInput(input, extra), new ItemStackOutput(output));
-	}
+    public DoubleMachineRecipe(DoubleMachineInput input, ItemStackOutput output) {
+        super(input, output);
+    }
 
-	public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex)
-	{
-		return getInput().useItem(inventory, inputIndex, false) && getInput().useExtra(inventory, extraIndex, false);
-	}
+    public DoubleMachineRecipe(ItemStack input, ItemStack extra, ItemStack output) {
+        this(new DoubleMachineInput(input, extra), new ItemStackOutput(output));
+    }
 
-	public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex)
-	{
-		return inputMatches(inventory, inputIndex, extraIndex) && getOutput().applyOutputs(inventory, outputIndex, false);
-	}
+    public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex) {
+        return getInput().useItem(inventory, inputIndex, false) && getInput().useExtra(inventory, extraIndex, false);
+    }
 
-	public void operate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex)
-	{
-		if(getInput().useItem(inventory, inputIndex, true) && getInput().useExtra(inventory, extraIndex, true))
-		{
-			getOutput().applyOutputs(inventory, outputIndex, true);
-		}
-	}
+    public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex) {
+        return inputMatches(inventory, inputIndex, extraIndex) && getOutput()
+              .applyOutputs(inventory, outputIndex, false);
+    }
+
+    public void operate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex) {
+        if (getInput().useItem(inventory, inputIndex, true) && getInput().useExtra(inventory, extraIndex, true)) {
+            getOutput().applyOutputs(inventory, outputIndex, true);
+        }
+    }
 }

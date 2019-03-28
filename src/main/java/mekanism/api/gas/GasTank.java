@@ -4,255 +4,231 @@ import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * An optional way of managing and/or storing gasses. Would be very useful in TileEntity and Entity gas storage.
- * @author aidancbrady
  *
+ * @author aidancbrady
  */
-public class GasTank implements GasTankInfo
-{
-	public GasStack stored;
+public class GasTank implements GasTankInfo {
 
-	private int maxGas;
+    public GasStack stored;
 
-	private GasTank() {}
+    private int maxGas;
 
-	/**
-	 * Creates a tank with a defined capacity.
-	 * @param max - the maximum amount of gas this GasTank can hold
-	 */
-	public GasTank(int max)
-	{
-		maxGas = max;
-	}
+    private GasTank() {
+    }
 
-	/**
-	 * Sets this tank's GasStack value to a new value. Will cap the amount to this GasTank's capacity.
-	 * @param stack - value to set this tank's GasStack value to
-	 */
-	public void setGas(GasStack stack)
-	{
-		stored = stack;
+    /**
+     * Creates a tank with a defined capacity.
+     *
+     * @param max - the maximum amount of gas this GasTank can hold
+     */
+    public GasTank(int max) {
+        maxGas = max;
+    }
 
-		if(stored != null)
-		{
-			stored.amount = Math.min(getMaxGas(), stored.amount);
-			if (stored.amount <= 0){
-				stored = null;
-			}
-		}
-	}
+    /**
+     * Returns the tank stored in the defined tag compound, or null if it doesn't exist.
+     *
+     * @param nbtTags - tag compound to read from
+     * @return tank stored in the tag compound
+     */
+    public static GasTank readFromNBT(NBTTagCompound nbtTags) {
+        if (nbtTags == null || nbtTags.hasNoTags()) {
+            return null;
+        }
 
-	/**
-	 * Draws a specified amount of gas out of this tank.
-	 * @param amount - amount to draw
-	 * @param doDraw - if the gas should actually be removed from this tank
-	 * @return gas taken from this GasTank as a GasStack value
-	 */
-	public GasStack draw(int amount, boolean doDraw)
-	{
-		if(stored == null || amount <= 0)
-		{
-			return null;
-		}
+        GasTank tank = new GasTank();
+        tank.read(nbtTags);
 
-		GasStack ret = new GasStack(stored.getGas(), Math.min(getStored(), amount));
+        return tank;
+    }
 
-		if(ret.amount > 0)
-		{
-			if(doDraw)
-			{
-				stored.amount -= ret.amount;
+    /**
+     * Draws a specified amount of gas out of this tank.
+     *
+     * @param amount - amount to draw
+     * @param doDraw - if the gas should actually be removed from this tank
+     * @return gas taken from this GasTank as a GasStack value
+     */
+    public GasStack draw(int amount, boolean doDraw) {
+        if (stored == null || amount <= 0) {
+            return null;
+        }
 
-				if(stored.amount <= 0)
-				{
-					stored = null;
-				}
-			}
+        GasStack ret = new GasStack(stored.getGas(), Math.min(getStored(), amount));
 
-			return ret;
-		}
+        if (ret.amount > 0) {
+            if (doDraw) {
+                stored.amount -= ret.amount;
 
-		return null;
-	}
+                if (stored.amount <= 0) {
+                    stored = null;
+                }
+            }
 
-	/**
-	 * Adds a specified amount of gas to this tank.
-	 * @param amount - the GasStack for this tank to receive
-	 * @param doReceive - if the gas should actually be added to this tank
-	 * @return the amount of gas accepted by this tank
-	 */
-	public int receive(GasStack amount, boolean doReceive)
-	{
-		if(amount == null || (stored != null && !stored.isGasEqual(amount)))
-		{
-			return 0;
-		}
+            return ret;
+        }
 
-		int toFill = Math.min(getMaxGas()-getStored(), amount.amount);
+        return null;
+    }
 
-		if(doReceive)
-		{
-			if(stored == null)
-			{
-				stored = amount.copy().withAmount(getStored()+toFill);
-			}
-			else {
-				stored.amount = Math.min(getMaxGas(), getStored()+amount.amount);
-			}
-		}
+    /**
+     * Adds a specified amount of gas to this tank.
+     *
+     * @param amount - the GasStack for this tank to receive
+     * @param doReceive - if the gas should actually be added to this tank
+     * @return the amount of gas accepted by this tank
+     */
+    public int receive(GasStack amount, boolean doReceive) {
+        if (amount == null || (stored != null && !stored.isGasEqual(amount))) {
+            return 0;
+        }
 
-		return toFill;
-	}
+        int toFill = Math.min(getMaxGas() - getStored(), amount.amount);
 
-	/**
-	 * If this GasTank can receive the specified type of gas. Will return false if this tank does not need anymore gas.
-	 * @param gas - gas to check
-	 * @return if this GasTank can accept the defined gas
-	 */
-	public boolean canReceive(Gas gas)
-	{
-		if(getNeeded() == 0 || stored != null && (gas != null && gas != stored.getGas()))
-		{
-			return false;
-		}
+        if (doReceive) {
+            if (stored == null) {
+                stored = amount.copy().withAmount(getStored() + toFill);
+            } else {
+                stored.amount = Math.min(getMaxGas(), getStored() + amount.amount);
+            }
+        }
 
-		return true;
-	}
+        return toFill;
+    }
 
-	/**
-	 * If this GasTank can receive the specified type of gas. Will return TRUE if this tank does not need anymore gas.
-	 * @param gas - gas to check
-	 * @return if this GasTank can accept the defined gas
-	 */
-	public boolean canReceiveType(Gas gas)
-	{
-		if(stored != null && (gas != null && gas != stored.getGas()))
-		{
-			return false;
-		}
+    /**
+     * If this GasTank can receive the specified type of gas. Will return false if this tank does not need anymore gas.
+     *
+     * @param gas - gas to check
+     * @return if this GasTank can accept the defined gas
+     */
+    public boolean canReceive(Gas gas) {
+        return getNeeded() != 0 && (stored == null || (gas == null || gas == stored.getGas()));
 
-		return true;
-	}
+    }
 
-	/**
-	 * If this GasTank can be drawn of the specified type of gas. Will return false if this tank does not contain any gas.
-	 * @param gas - gas to check
-	 * @return if this GasTank can be drawn of the defined gas
-	 */
-	public boolean canDraw(Gas gas)
-	{
-		if(stored == null || (gas != null && gas != stored.getGas()))
-		{
-			return false;
-		}
+    /**
+     * If this GasTank can receive the specified type of gas. Will return TRUE if this tank does not need anymore gas.
+     *
+     * @param gas - gas to check
+     * @return if this GasTank can accept the defined gas
+     */
+    public boolean canReceiveType(Gas gas) {
+        return stored == null || (gas == null || gas == stored.getGas());
 
-		return true;
-	}
+    }
 
-	/**
-	 * Gets the amount of gas needed by this GasTank.
-	 * @return Amount of gas needed
-	 */
-	public int getNeeded()
-	{
-		return getMaxGas()-getStored();
-	}
+    /**
+     * If this GasTank can be drawn of the specified type of gas. Will return false if this tank does not contain any
+     * gas.
+     *
+     * @param gas - gas to check
+     * @return if this GasTank can be drawn of the defined gas
+     */
+    public boolean canDraw(Gas gas) {
+        return stored != null && (gas == null || gas == stored.getGas());
 
-	/**
-	 * Gets the maximum amount of gas this tank can hold.
-	 * @return - max gas
-	 */
-	public int getMaxGas()
-	{
-		return maxGas;
-	}
+    }
 
-	/**
-	 * Sets the maximum amount of gas this tank can hold
-	 */
-	public void setMaxGas(int capacity)
-	{
-		maxGas = capacity;
-	}
+    /**
+     * Gets the amount of gas needed by this GasTank.
+     *
+     * @return Amount of gas needed
+     */
+    public int getNeeded() {
+        return getMaxGas() - getStored();
+    }
 
-	/**
-	 * Gets the GasStack held by this GasTank.
-	 * @return - GasStakc held by this tank
-	 */
-	public GasStack getGas()
-	{
-		return stored;
-	}
-	
-	/**
-	 * Gets the type of gas currently stored in this GasTank.
-	 * @return gas type contained
-	 */
-	public Gas getGasType()
-	{
-		return stored != null ? stored.getGas() : null;
-	}
+    /**
+     * Gets the maximum amount of gas this tank can hold.
+     *
+     * @return - max gas
+     */
+    public int getMaxGas() {
+        return maxGas;
+    }
 
-	/**
-	 * Gets the amount of gas stored by this GasTank.
-	 * @return amount of gas stored
-	 */
-	public int getStored()
-	{
-		return stored != null ? stored.amount : 0;
-	}
+    /**
+     * Sets the maximum amount of gas this tank can hold
+     */
+    public void setMaxGas(int capacity) {
+        maxGas = capacity;
+    }
 
-	/**
-	 * Writes this tank to a defined tag compound.
-	 * @param nbtTags - tag compound to write to
-	 * @return tag compound with this tank's data
-	 */
-	public NBTTagCompound write(NBTTagCompound nbtTags)
-	{
-		if(stored != null && stored.getGas() != null && stored.amount > 0)
-		{
-			nbtTags.setTag("stored", stored.write(new NBTTagCompound()));
-		}
+    /**
+     * Gets the GasStack held by this GasTank.
+     *
+     * @return - GasStakc held by this tank
+     */
+    public GasStack getGas() {
+        return stored;
+    }
 
-		nbtTags.setInteger("maxGas", maxGas);
+    /**
+     * Sets this tank's GasStack value to a new value. Will cap the amount to this GasTank's capacity.
+     *
+     * @param stack - value to set this tank's GasStack value to
+     */
+    public void setGas(GasStack stack) {
+        stored = stack;
 
-		return nbtTags;
-	}
+        if (stored != null) {
+            stored.amount = Math.min(getMaxGas(), stored.amount);
+            if (stored.amount <= 0) {
+                stored = null;
+            }
+        }
+    }
 
-	/**
-	 * Reads this tank's data from a defined tag compound.
-	 * @param nbtTags - tag compound to read from
-	 */
-	public void read(NBTTagCompound nbtTags)
-	{
-		if(nbtTags.hasKey("stored"))
-		{
-			stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
-			if (stored.amount <= 0){
-				stored = null;//fix any old data that may be borked
-			}
-		}
+    /**
+     * Gets the type of gas currently stored in this GasTank.
+     *
+     * @return gas type contained
+     */
+    public Gas getGasType() {
+        return stored != null ? stored.getGas() : null;
+    }
 
-		if(nbtTags.hasKey("maxGas") && nbtTags.getInteger("maxGas") != 0)
-		{
-			maxGas = nbtTags.getInteger("maxGas");
-		}
-	}
+    /**
+     * Gets the amount of gas stored by this GasTank.
+     *
+     * @return amount of gas stored
+     */
+    public int getStored() {
+        return stored != null ? stored.amount : 0;
+    }
 
-	/**
-	 * Returns the tank stored in the defined tag compound, or null if it doesn't exist.
-	 * @param nbtTags - tag compound to read from
-	 * @return tank stored in the tag compound
-	 */
-	public static GasTank readFromNBT(NBTTagCompound nbtTags)
-	{
-		if(nbtTags == null || nbtTags.hasNoTags())
-		{
-			return null;
-		}
+    /**
+     * Writes this tank to a defined tag compound.
+     *
+     * @param nbtTags - tag compound to write to
+     * @return tag compound with this tank's data
+     */
+    public NBTTagCompound write(NBTTagCompound nbtTags) {
+        if (stored != null && stored.getGas() != null && stored.amount > 0) {
+            nbtTags.setTag("stored", stored.write(new NBTTagCompound()));
+        }
 
-		GasTank tank = new GasTank();
-		tank.read(nbtTags);
+        nbtTags.setInteger("maxGas", maxGas);
 
-		return tank;
-	}
+        return nbtTags;
+    }
+
+    /**
+     * Reads this tank's data from a defined tag compound.
+     *
+     * @param nbtTags - tag compound to read from
+     */
+    public void read(NBTTagCompound nbtTags) {
+        if (nbtTags.hasKey("stored")) {
+            stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
+            if (stored.amount <= 0) {
+                stored = null;//fix any old data that may be borked
+            }
+        }
+
+        if (nbtTags.hasKey("maxGas") && nbtTags.getInteger("maxGas") != 0) {
+            maxGas = nbtTags.getInteger("maxGas");
+        }
+    }
 }

@@ -8,56 +8,48 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
-{
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-	
-	@Override
-	public void apply(SynchronizedMatrixData data) 
-	{
-		data.inventory = inventory;
-	}
+public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
 
-	@Override
-	public void sync(SynchronizedMatrixData data) 
-	{
-		inventory = data.inventory;
-	}
+    public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
-	@Override
-	public void load(NBTTagCompound nbtTags) 
-	{
-		NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
-		inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+    @Override
+    public void apply(SynchronizedMatrixData data) {
+        data.inventory = inventory;
+    }
 
-		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
-		{
-			NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
-			byte slotID = tagCompound.getByte("Slot");
+    @Override
+    public void sync(SynchronizedMatrixData data) {
+        inventory = data.inventory;
+    }
 
-			if(slotID >= 0 && slotID < 2)
-			{
-				inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
-			}
-		}
-	}
+    @Override
+    public void load(NBTTagCompound nbtTags) {
+        NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
+        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
-	@Override
-	public void save(NBTTagCompound nbtTags) 
-	{
-		NBTTagList tagList = new NBTTagList();
+        for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
+            NBTTagCompound tagCompound = (NBTTagCompound) tagList.getCompoundTagAt(tagCount);
+            byte slotID = tagCompound.getByte("Slot");
 
-		for(int slotCount = 0; slotCount < 2; slotCount++)
-		{
-			if(!inventory.get(slotCount).isEmpty())
-			{
-				NBTTagCompound tagCompound = new NBTTagCompound();
-				tagCompound.setByte("Slot", (byte)slotCount);
-				inventory.get(slotCount).writeToNBT(tagCompound);
-				tagList.appendTag(tagCompound);
-			}
-		}
+            if (slotID >= 0 && slotID < 2) {
+                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+            }
+        }
+    }
 
-		nbtTags.setTag("Items", tagList);
-	}
+    @Override
+    public void save(NBTTagCompound nbtTags) {
+        NBTTagList tagList = new NBTTagList();
+
+        for (int slotCount = 0; slotCount < 2; slotCount++) {
+            if (!inventory.get(slotCount).isEmpty()) {
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte("Slot", (byte) slotCount);
+                inventory.get(slotCount).writeToNBT(tagCompound);
+                tagList.appendTag(tagCompound);
+            }
+        }
+
+        nbtTags.setTag("Items", tagList);
+    }
 }

@@ -7,7 +7,6 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.TEFixer;
-import mekanism.generators.common.block.states.BlockStateGenerator;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
@@ -47,120 +46,115 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Common proxy for the Mekanism Generators module.
- * @author AidanBrady
  *
+ * @author AidanBrady
  */
-public class GeneratorsCommonProxy implements IGuiProvider
-{
+public class GeneratorsCommonProxy implements IGuiProvider {
 
-	private static void registerTileEntity(Class<?extends TileEntity> clazz, String name){
-		GameRegistry.registerTileEntity(clazz, new ResourceLocation(MekanismGenerators.MODID, name));
-	}
+    private static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
+        GameRegistry.registerTileEntity(clazz, new ResourceLocation(MekanismGenerators.MODID, name));
+    }
 
-	/**
-	 * Register normal tile entities
-	 */
-	public void registerRegularTileEntities()
-	{
-		registerTileEntity(TileEntityAdvancedSolarGenerator.class, "advanced_solar_generator");
-		registerTileEntity(TileEntityBioGenerator.class, "bio_generator");
-		registerTileEntity(TileEntityElectromagneticCoil.class, "electromagnetic_coil");
-		registerTileEntity(TileEntityGasGenerator.class, "gas_generator");
-		registerTileEntity(TileEntityHeatGenerator.class, "heat_generator");
-		registerTileEntity(TileEntityReactorController.class, "reactor_controller");
-		registerTileEntity(TileEntityReactorFrame.class, "reactor_frame");
-		registerTileEntity(TileEntityReactorGlass.class, "reactor_glass");
-		registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "reactor_laser_focus");
-		registerTileEntity(TileEntityReactorLogicAdapter.class, "reactor_logic_adapter");
-		registerTileEntity(TileEntityReactorPort.class, "reactor_port");
-		registerTileEntity(TileEntityRotationalComplex.class, "rotational_complex");
-		registerTileEntity(TileEntitySaturatingCondenser.class, "saturating_condenser");
-		registerTileEntity(TileEntitySolarGenerator.class, "solar_generator");
-		registerTileEntity(TileEntityTurbineCasing.class, "turbine_casing");
-		registerTileEntity(TileEntityTurbineRotor.class, "turbine_rod");
-		registerTileEntity(TileEntityTurbineValve.class, "turbine_valve");
-		registerTileEntity(TileEntityTurbineVent.class, "turbine_vent");
-		registerTileEntity(TileEntityWindGenerator.class, "wind_turbine");
+    /**
+     * Register normal tile entities
+     */
+    public void registerRegularTileEntities() {
+        registerTileEntity(TileEntityAdvancedSolarGenerator.class, "advanced_solar_generator");
+        registerTileEntity(TileEntityBioGenerator.class, "bio_generator");
+        registerTileEntity(TileEntityElectromagneticCoil.class, "electromagnetic_coil");
+        registerTileEntity(TileEntityGasGenerator.class, "gas_generator");
+        registerTileEntity(TileEntityHeatGenerator.class, "heat_generator");
+        registerTileEntity(TileEntityReactorController.class, "reactor_controller");
+        registerTileEntity(TileEntityReactorFrame.class, "reactor_frame");
+        registerTileEntity(TileEntityReactorGlass.class, "reactor_glass");
+        registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "reactor_laser_focus");
+        registerTileEntity(TileEntityReactorLogicAdapter.class, "reactor_logic_adapter");
+        registerTileEntity(TileEntityReactorPort.class, "reactor_port");
+        registerTileEntity(TileEntityRotationalComplex.class, "rotational_complex");
+        registerTileEntity(TileEntitySaturatingCondenser.class, "saturating_condenser");
+        registerTileEntity(TileEntitySolarGenerator.class, "solar_generator");
+        registerTileEntity(TileEntityTurbineCasing.class, "turbine_casing");
+        registerTileEntity(TileEntityTurbineRotor.class, "turbine_rod");
+        registerTileEntity(TileEntityTurbineValve.class, "turbine_valve");
+        registerTileEntity(TileEntityTurbineVent.class, "turbine_vent");
+        registerTileEntity(TileEntityWindGenerator.class, "wind_turbine");
 
-		//Fix old names to be domain specific
-		ModFixs fixes = FMLCommonHandler.instance().getDataFixer().init(MekanismGenerators.MODID, 1);
-		fixes.registerFix(FixTypes.BLOCK_ENTITY, new TEFixer.Generators());
-	}
+        //Fix old names to be domain specific
+        ModFixs fixes = FMLCommonHandler.instance().getDataFixer().init(MekanismGenerators.MODID, 1);
+        fixes.registerFix(FixTypes.BLOCK_ENTITY, new TEFixer.Generators());
+    }
 
-	/**
-	 * Register tile entities that have special models. Overwritten in client to register TESRs.
-	 */
-	public void registerSpecialTileEntities()
-	{	}
+    /**
+     * Register tile entities that have special models. Overwritten in client to register TESRs.
+     */
+    public void registerSpecialTileEntities() {
+    }
 
-	/**
-	 * Register and load client-only item render information.
-	 */
-	public void registerItemRenders() {}
-	
-	/**
-	 * Register and load client-only block render information.
-	 */
-	public void registerBlockRenders() {}
-	
-	public void preInit() {}
+    /**
+     * Register and load client-only item render information.
+     */
+    public void registerItemRenders() {
+    }
 
-	/**
-	 * Set and load the mod's common configuration properties.
-	 */
-	public void loadConfiguration()
-	{
-		MekanismConfig.local().generators.load(Mekanism.configuration);
-		setGasGeneratorMaxEnergy();
+    /**
+     * Register and load client-only block render information.
+     */
+    public void registerBlockRenders() {
+    }
 
-		if(Mekanism.configuration.hasChanged())
-		{
-			Mekanism.configuration.save();
-		}
-	}
+    public void preInit() {
+    }
 
-	protected void setGasGeneratorMaxEnergy()
-	{
-		GeneratorType.GAS_GENERATOR.maxEnergy = MekanismConfig.local().general.FROM_H2.val()*100;
-	}
+    /**
+     * Set and load the mod's common configuration properties.
+     */
+    public void loadConfiguration() {
+        MekanismConfig.local().generators.load(Mekanism.configuration);
+        setGasGeneratorMaxEnergy();
 
-	@Override
-	public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
-	{
-		return null;
-	}
+        if (Mekanism.configuration.hasChanged()) {
+            Mekanism.configuration.save();
+        }
+    }
 
-	@Override
-	public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos)
-	{
-		TileEntity tileEntity = world.getTileEntity(pos);
+    protected void setGasGeneratorMaxEnergy() {
+        GeneratorType.GAS_GENERATOR.maxEnergy = MekanismConfig.local().general.FROM_H2.val() * 100;
+    }
 
-		switch(ID)
-		{
-			case 0:
-				return new ContainerHeatGenerator(player.inventory, (TileEntityHeatGenerator)tileEntity);
-			case 1:
-				return new ContainerSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
-			case 3:
-				return new ContainerGasGenerator(player.inventory, (TileEntityGasGenerator)tileEntity);
-			case 4:
-				return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
-			case 5:
-				return new ContainerWindGenerator(player.inventory, (TileEntityWindGenerator)tileEntity);
-			case 6:
-				return new ContainerFilter(player.inventory, (TileEntityTurbineCasing)tileEntity);
-			case 7:
-				return new ContainerNull(player, (TileEntityTurbineCasing)tileEntity);
-			case 10:
-				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
-			case 11:
-			case 12:
-			case 13:
-				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
-			case 15:
-				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
-		}
-		
-		return null;
-	}
+    @Override
+    public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+        return null;
+    }
+
+    @Override
+    public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+
+        switch (ID) {
+            case 0:
+                return new ContainerHeatGenerator(player.inventory, (TileEntityHeatGenerator) tileEntity);
+            case 1:
+                return new ContainerSolarGenerator(player.inventory, (TileEntitySolarGenerator) tileEntity);
+            case 3:
+                return new ContainerGasGenerator(player.inventory, (TileEntityGasGenerator) tileEntity);
+            case 4:
+                return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator) tileEntity);
+            case 5:
+                return new ContainerWindGenerator(player.inventory, (TileEntityWindGenerator) tileEntity);
+            case 6:
+                return new ContainerFilter(player.inventory, (TileEntityTurbineCasing) tileEntity);
+            case 7:
+                return new ContainerNull(player, (TileEntityTurbineCasing) tileEntity);
+            case 10:
+                return new ContainerReactorController(player.inventory, (TileEntityReactorController) tileEntity);
+            case 11:
+            case 12:
+            case 13:
+                return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
+            case 15:
+                return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
+        }
+
+        return null;
+    }
 }

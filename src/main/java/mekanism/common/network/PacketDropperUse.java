@@ -12,67 +12,62 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMessage>
-{
-	@Override
-	public IMessage onMessage(DropperUseMessage message, MessageContext context) 
-	{
-		EntityPlayer player = PacketHandler.getPlayer(context);
-		
-		PacketHandler.handlePacket(() ->
+public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMessage> {
+
+    @Override
+    public IMessage onMessage(DropperUseMessage message, MessageContext context) {
+        EntityPlayer player = PacketHandler.getPlayer(context);
+
+        PacketHandler.handlePacket(() ->
         {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
 
-            if(tileEntity instanceof ITankManager)
-            {
+            if (tileEntity instanceof ITankManager) {
                 try {
-                    Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
+                    Object tank = ((ITankManager) tileEntity).getTanks()[message.tankId];
 
-                    if(tank != null)
-                    {
+                    if (tank != null) {
                         DropperHandler.useDropper(player, tank, message.mouseButton);
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }, player);
-		
-		return null;
-	}
-	
-	public static class DropperUseMessage implements IMessage
-	{
-		public Coord4D coord4D;
-		
-		public int mouseButton;
-		public int tankId;
-		
-		public DropperUseMessage() {}
-	
-		public DropperUseMessage(Coord4D coord, int button, int id)
-		{
-			coord4D = coord;
-			mouseButton = button;
-			tankId = id;
-		}
-	
-		@Override
-		public void toBytes(ByteBuf dataStream)
-		{
-			coord4D.write(dataStream);
-			
-			dataStream.writeInt(mouseButton);
-			dataStream.writeInt(tankId);
-		}
-	
-		@Override
-		public void fromBytes(ByteBuf dataStream)
-		{
-			coord4D = Coord4D.read(dataStream);
-			
-			mouseButton = dataStream.readInt();
-			tankId = dataStream.readInt();
-		}
-	}
+
+        return null;
+    }
+
+    public static class DropperUseMessage implements IMessage {
+
+        public Coord4D coord4D;
+
+        public int mouseButton;
+        public int tankId;
+
+        public DropperUseMessage() {
+        }
+
+        public DropperUseMessage(Coord4D coord, int button, int id) {
+            coord4D = coord;
+            mouseButton = button;
+            tankId = id;
+        }
+
+        @Override
+        public void toBytes(ByteBuf dataStream) {
+            coord4D.write(dataStream);
+
+            dataStream.writeInt(mouseButton);
+            dataStream.writeInt(tankId);
+        }
+
+        @Override
+        public void fromBytes(ByteBuf dataStream) {
+            coord4D = Coord4D.read(dataStream);
+
+            mouseButton = dataStream.readInt();
+            tankId = dataStream.readInt();
+        }
+    }
 }

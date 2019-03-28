@@ -1,10 +1,10 @@
 package mekanism.api.transmitters;
 
-public interface INetworkDataHandler
-{
-	String getNeededInfo();
+public interface INetworkDataHandler {
 
-	String getStoredInfo();
+    String getNeededInfo();
 
-	String getFlowInfo();
+    String getStoredInfo();
+
+    String getFlowInfo();
 }

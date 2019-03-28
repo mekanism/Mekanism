@@ -4,15 +4,15 @@ package mekanism.common.base;
 
 //import mekanism.common.recipe.ShapedMekanismRecipe;
 
-public interface IBlockType
-{
-	String getBlockName();
-	
+public interface IBlockType {
+
+    String getBlockName();
+
 //	public Collection<ShapedMekanismRecipe> getRecipes();
 //
 //	public void addRecipes(Collection<ShapedMekanismRecipe> recipes);
 //
 //	public void addRecipe(ShapedMekanismRecipe recipe);
-	
-	boolean isEnabled();
+
+    boolean isEnabled();
 }

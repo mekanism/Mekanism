@@ -18,21 +18,23 @@ import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 
 @InterfaceList({
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
-	@Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
-	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
+      @Interface(iface = "cofh.redstoneflux.api.IEnergyProvider", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+      @Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
+      @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
 })
-public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData, ISecurityTile
-{
-	int[] getBoundSlots(BlockPos location, EnumFacing side);
+public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, ISidedInventory, IEnergySink,
+      IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver, IEnergyProvider, IComputerIntegration,
+      ISpecialConfigData, ISecurityTile {
 
-	boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack);
+    int[] getBoundSlots(BlockPos location, EnumFacing side);
 
-	boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing side);
-	
-	boolean canBoundReceiveEnergy(BlockPos location, EnumFacing side);
+    boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack);
 
-	void onPower();
+    boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing side);
 
-	void onNoPower();
+    boolean canBoundReceiveEnergy(BlockPos location, EnumFacing side);
+
+    void onPower();
+
+    void onNoPower();
 }

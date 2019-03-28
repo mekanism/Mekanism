@@ -8,30 +8,27 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GasMaskSound extends PlayerSound
-{
-	public GasMaskSound(EntityPlayer player)
-	{
-		super(player, new ResourceLocation("mekanism", "item.gasMask"));
-		
-		setFadeIn(10);
-		setFadeOut(5);
-	}
+public class GasMaskSound extends PlayerSound {
 
-	@Override
-	public boolean isDonePlaying()
-	{
-		return donePlaying;
-	}
+    public GasMaskSound(EntityPlayer player) {
+        super(player, new ResourceLocation("mekanism", "item.gasMask"));
 
-	@Override
-	public boolean shouldPlaySound()
-	{
-		return hasGasMask(player) && ClientTickHandler.isGasMaskOn(player);
-	}
+        setFadeIn(10);
+        setFadeOut(5);
+    }
 
-	private boolean hasGasMask(EntityPlayer player)
-	{
-		return !player.inventory.armorInventory.get(3).isEmpty() && player.inventory.armorInventory.get(3).getItem() instanceof ItemGasMask;
-	}
+    @Override
+    public boolean isDonePlaying() {
+        return donePlaying;
+    }
+
+    @Override
+    public boolean shouldPlaySound() {
+        return hasGasMask(player) && ClientTickHandler.isGasMaskOn(player);
+    }
+
+    private boolean hasGasMask(EntityPlayer player) {
+        return !player.inventory.armorInventory.get(3).isEmpty() && player.inventory.armorInventory.get(3)
+              .getItem() instanceof ItemGasMask;
+    }
 }

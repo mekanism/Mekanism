@@ -1,85 +1,77 @@
 package mekanism.common.config;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 /**
  * Created by Thiakil on 15/03/2019.
  */
 @ParametersAreNonnullByDefault
-public class IntOption extends Option<IntOption>
-{
-	private int value;
-	private final int defaultValue;
-	private boolean hasRange = false;
-	private int min;
-	private int max;
+public class IntOption extends Option<IntOption> {
 
-	IntOption(BaseConfig owner, String category, String key, int defaultValue, @Nullable String comment)
-	{
-		super(owner, category, key, comment);
-		this.defaultValue = defaultValue;
-		this.value = defaultValue;
-	}
+    private final int defaultValue;
+    private int value;
+    private boolean hasRange = false;
+    private int min;
+    private int max;
 
-	IntOption(BaseConfig owner, String category, String key, int defaultValue){
-		this(owner, category, key, defaultValue, null);
-	}
+    IntOption(BaseConfig owner, String category, String key, int defaultValue, @Nullable String comment) {
+        super(owner, category, key, comment);
+        this.defaultValue = defaultValue;
+        this.value = defaultValue;
+    }
 
-	IntOption(BaseConfig owner, String category, String key){
-		this(owner, category, key, 0, null);
-	}
+    IntOption(BaseConfig owner, String category, String key, int defaultValue) {
+        this(owner, category, key, defaultValue, null);
+    }
 
-	IntOption(BaseConfig owner, String category, String key, int defaultValue, @Nullable String comment, int min, int max)
-	{
-		this(owner, category, key, defaultValue, comment);
-		this.hasRange = true;
-		this.min = min;
-		this.max = max;
-	}
+    IntOption(BaseConfig owner, String category, String key) {
+        this(owner, category, key, 0, null);
+    }
 
-	public int val()
-	{
-		return value;
-	}
+    IntOption(BaseConfig owner, String category, String key, int defaultValue, @Nullable String comment, int min,
+          int max) {
+        this(owner, category, key, defaultValue, comment);
+        this.hasRange = true;
+        this.min = min;
+        this.max = max;
+    }
 
-	public void set(int value)
-	{
-		this.value = value;
-	}
+    public int val() {
+        return value;
+    }
 
-	@SuppressWarnings("Duplicates")//types are different
-	@Override
-	protected void load(Configuration config)
-	{
-		Property prop;
+    public void set(int value) {
+        this.value = value;
+    }
 
-		if (hasRange)
-		{
-			prop = config.get(this.category, this.key, this.defaultValue, this.comment, this.min, this.max);
-		} else {
-			prop = config.get(this.category, this.key, this.defaultValue, this.comment);
-		}
+    @SuppressWarnings("Duplicates")//types are different
+    @Override
+    protected void load(Configuration config) {
+        Property prop;
 
-		prop.setRequiresMcRestart(this.requiresGameRestart);
-		prop.setRequiresWorldRestart(this.requiresWorldRestart);
+        if (hasRange) {
+            prop = config.get(this.category, this.key, this.defaultValue, this.comment, this.min, this.max);
+        } else {
+            prop = config.get(this.category, this.key, this.defaultValue, this.comment);
+        }
 
-		this.value = prop.getInt();
-	}
+        prop.setRequiresMcRestart(this.requiresGameRestart);
+        prop.setRequiresWorldRestart(this.requiresWorldRestart);
 
-	@Override
-	protected void write(ByteBuf buf)
-	{
-		buf.writeInt(this.value);
-	}
+        this.value = prop.getInt();
+    }
 
-	@Override
-	protected void read(ByteBuf buf)
-	{
-		this.value = buf.readInt();
-	}
+    @Override
+    protected void write(ByteBuf buf) {
+        buf.writeInt(this.value);
+    }
+
+    @Override
+    protected void read(ByteBuf buf) {
+        this.value = buf.readInt();
+    }
 }

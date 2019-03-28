@@ -12,147 +12,120 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-@ChestContainer(isLargeChest=true)
-public class ContainerPersonalChest extends Container
-{
-	private TileEntityPersonalChest tileEntity;
-	private IInventory itemInventory;
-	private boolean isBlock;
+@ChestContainer(isLargeChest = true)
+public class ContainerPersonalChest extends Container {
 
-	public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity, IInventory inv, boolean b)
-	{
-		tileEntity = tentity;
-		itemInventory = inv;
-		isBlock = b;
+    private TileEntityPersonalChest tileEntity;
+    private IInventory itemInventory;
+    private boolean isBlock;
 
-		if(isBlock)
-		{
-			tileEntity.open(inventory.player);
-			tileEntity.openInventory(inventory.player);
-		}
-		else {
-			itemInventory.openInventory(inventory.player);
-		}
+    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tentity, IInventory inv,
+          boolean b) {
+        tileEntity = tentity;
+        itemInventory = inv;
+        isBlock = b;
 
-		for(int slotY = 0; slotY < 6; slotY++)
-		{
-			for(int slotX = 0; slotX < 9; slotX++)
-			{
-				addSlotToContainer(new SlotPersonalChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
-			}
-		}
+        if (isBlock) {
+            tileEntity.open(inventory.player);
+            tileEntity.openInventory(inventory.player);
+        } else {
+            itemInventory.openInventory(inventory.player);
+        }
 
-		int slotX;
+        for (int slotY = 0; slotY < 6; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                addSlotToContainer(new SlotPersonalChest(getInv(), slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
+            }
+        }
 
-		for(slotX = 0; slotX < 3; ++slotX)
-		{
-			for(int slotY = 0; slotY < 9; ++slotY)
-			{
-				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
-			}
-		}
+        int slotX;
 
-		for(slotX = 0; slotX < 9; ++slotX)
-		{
-			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
-		}
-	}
+        for (slotX = 0; slotX < 3; ++slotX) {
+            for (int slotY = 0; slotY < 9; ++slotY) {
+                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
+            }
+        }
 
-	public IInventory getInv()
-	{
-		if(isBlock)
-		{
-			return tileEntity;
-		}
-		else {
-			return itemInventory;
-		}
-	}
+        for (slotX = 0; slotX < 9; ++slotX) {
+            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
+        }
+    }
 
-	@Override
-	public void onContainerClosed(EntityPlayer entityplayer)
-	{
-		super.onContainerClosed(entityplayer);
+    public IInventory getInv() {
+        if (isBlock) {
+            return tileEntity;
+        } else {
+            return itemInventory;
+        }
+    }
 
-		if(isBlock)
-		{
-			tileEntity.close(entityplayer);
-			tileEntity.closeInventory(entityplayer);
-		}
-		else {
-			itemInventory.closeInventory(entityplayer);
-		}
-	}
+    @Override
+    public void onContainerClosed(EntityPlayer entityplayer) {
+        super.onContainerClosed(entityplayer);
 
-	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
-	{
-		if(isBlock)
-		{
-			return tileEntity.isUsableByPlayer(entityplayer);
-		}
+        if (isBlock) {
+            tileEntity.close(entityplayer);
+            tileEntity.closeInventory(entityplayer);
+        } else {
+            itemInventory.closeInventory(entityplayer);
+        }
+    }
 
-		return true;
-	}
+    @Override
+    public boolean canInteractWith(EntityPlayer entityplayer) {
+        if (isBlock) {
+            return tileEntity.isUsableByPlayer(entityplayer);
+        }
 
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
-	{
-		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = inventorySlots.get(slotID);
+        return true;
+    }
 
-		if(currentSlot != null && currentSlot.getHasStack())
-		{
-			ItemStack slotStack = currentSlot.getStack();
-			stack = slotStack.copy();
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+        ItemStack stack = ItemStack.EMPTY;
+        Slot currentSlot = inventorySlots.get(slotID);
 
-			if(slotID < 54)
-			{
-				if(!mergeItemStack(slotStack, 54, inventorySlots.size(), true))
-				{
-					return ItemStack.EMPTY;
-				}
-			}
-			else if(!mergeItemStack(slotStack, 0, 54, false))
-			{
-				return ItemStack.EMPTY;
-			}
+        if (currentSlot != null && currentSlot.getHasStack()) {
+            ItemStack slotStack = currentSlot.getStack();
+            stack = slotStack.copy();
 
-			if(slotStack.getCount() == 0)
-			{
-				currentSlot.putStack(ItemStack.EMPTY);
-			}
-			else {
-				currentSlot.onSlotChanged();
-			}
+            if (slotID < 54) {
+                if (!mergeItemStack(slotStack, 54, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!mergeItemStack(slotStack, 0, 54, false)) {
+                return ItemStack.EMPTY;
+            }
 
-			if(slotStack.getCount() == stack.getCount())
-			{
-				return ItemStack.EMPTY;
-			}
+            if (slotStack.getCount() == 0) {
+                currentSlot.putStack(ItemStack.EMPTY);
+            } else {
+                currentSlot.onSlotChanged();
+            }
 
-			currentSlot.onTake(player, slotStack);
-		}
+            if (slotStack.getCount() == stack.getCount()) {
+                return ItemStack.EMPTY;
+            }
 
-		return stack;
-	}
+            currentSlot.onTake(player, slotStack);
+        }
 
-	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player)
-	{
-		int hotbarSlotId = slotId-81;
+        return stack;
+    }
 
-		//Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
-		if(!isBlock && hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId)
-		{
-			ItemStack itemStack = player.inventory.getStackInSlot(hotbarSlotId);
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
+        int hotbarSlotId = slotId - 81;
 
-			if(!itemStack.isEmpty() && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST)
-			{
-				return ItemStack.EMPTY;
-			}
-		}
+        //Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
+        if (!isBlock && hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId) {
+            ItemStack itemStack = player.inventory.getStackInSlot(hotbarSlotId);
 
-		return super.slotClick(slotId, dragType, clickType, player);
-	}
+            if (!itemStack.isEmpty() && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        return super.slotClick(slotId, dragType, clickType, player);
+    }
 }

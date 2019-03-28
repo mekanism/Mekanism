@@ -6,111 +6,95 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class PlayerSound extends MekSound implements IResettableSound
-{
-	public EntityPlayer player;
+public abstract class PlayerSound extends MekSound implements IResettableSound {
 
-	boolean beginFadeOut;
-	
-	boolean donePlaying = true;
-	
-	int ticks = 0;
-	
-	int fadeIn;
-	
-	int fadeOut;
-	
-	float baseVolume = 0.3F;
+    public EntityPlayer player;
 
-	public PlayerSound(EntityPlayer p, ResourceLocation location)
-	{
-		super(location, 0.3F, 1, true, 0, (float)p.posX, (float)p.posY, (float)p.posZ, AttenuationType.LINEAR);
-		player = p;
-	}
+    boolean beginFadeOut;
 
-	@Override
-	public float getXPosF()
-	{
-		return (float)player.posX;
-	}
+    boolean donePlaying = true;
 
-	@Override
-	public float getYPosF()
-	{
-		return (float)player.posY;
-	}
+    int ticks = 0;
 
-	@Override
-	public float getZPosF()
-	{
-		return (float)player.posZ;
-	}
+    int fadeIn;
 
-	public PlayerSound setFadeIn(int fade) 
-	{
-		fadeIn = Math.max(0, fade);
-		return this;
-	}
+    int fadeOut;
 
-	public PlayerSound setFadeOut(int fade) 
-	{
-		fadeOut = Math.max(0, fade);
-		return this;
-	}
+    float baseVolume = 0.3F;
 
-	public float getFadeInMultiplier()
-	{
-		return ticks >= fadeIn ? 1 : (ticks / (float)fadeIn);
-	}
+    public PlayerSound(EntityPlayer p, ResourceLocation location) {
+        super(location, 0.3F, 1, true, 0, (float) p.posX, (float) p.posY, (float) p.posZ, AttenuationType.LINEAR);
+        player = p;
+    }
 
-	public float getFadeOutMultiplier() 
-	{
-		return ticks >= fadeOut ? 0 : ((fadeOut - ticks) / (float)fadeOut);
-	}
+    @Override
+    public float getXPosF() {
+        return (float) player.posX;
+    }
 
-	@Override
-	public void update()
-	{
-		if(!beginFadeOut)
-		{
-			if(ticks < fadeIn)
-			{
-				ticks++;
-			}
-			
-			if(!shouldPlaySound())
-			{
-				beginFadeOut = true;
-				ticks = 0;
-			}
-		} 
-		else {
-			ticks++;
-		}
-		
-		float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
-		volume = baseVolume * multiplier;
+    @Override
+    public float getYPosF() {
+        return (float) player.posY;
+    }
 
-		if(multiplier <= 0)
-		{
-			donePlaying = true;
-		}
-	}
+    @Override
+    public float getZPosF() {
+        return (float) player.posZ;
+    }
 
-	@Override
-	public boolean isDonePlaying()
-	{
-		return donePlaying;
-	}
+    public PlayerSound setFadeIn(int fade) {
+        fadeIn = Math.max(0, fade);
+        return this;
+    }
 
-	public abstract boolean shouldPlaySound();
+    public PlayerSound setFadeOut(int fade) {
+        fadeOut = Math.max(0, fade);
+        return this;
+    }
 
-	@Override
-	public void reset()
-	{
-		donePlaying = false;
-		beginFadeOut = false;
-		volume = baseVolume;
-		ticks = 0;
-	}
+    public float getFadeInMultiplier() {
+        return ticks >= fadeIn ? 1 : (ticks / (float) fadeIn);
+    }
+
+    public float getFadeOutMultiplier() {
+        return ticks >= fadeOut ? 0 : ((fadeOut - ticks) / (float) fadeOut);
+    }
+
+    @Override
+    public void update() {
+        if (!beginFadeOut) {
+            if (ticks < fadeIn) {
+                ticks++;
+            }
+
+            if (!shouldPlaySound()) {
+                beginFadeOut = true;
+                ticks = 0;
+            }
+        } else {
+            ticks++;
+        }
+
+        float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
+        volume = baseVolume * multiplier;
+
+        if (multiplier <= 0) {
+            donePlaying = true;
+        }
+    }
+
+    @Override
+    public boolean isDonePlaying() {
+        return donePlaying;
+    }
+
+    public abstract boolean shouldPlaySound();
+
+    @Override
+    public void reset() {
+        donePlaying = false;
+        beginFadeOut = false;
+        volume = baseVolume;
+        ticks = 0;
+    }
 }

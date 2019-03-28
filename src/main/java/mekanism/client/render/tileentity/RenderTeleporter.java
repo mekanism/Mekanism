@@ -1,7 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
@@ -15,112 +14,101 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
-
 import org.lwjgl.opengl.GL11;
 
-public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter>
-{
-	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
+public class RenderTeleporter extends TileEntitySpecialRenderer<TileEntityTeleporter> {
 
-	@Override
-	public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha)
-	{
-		if(tileEntity.shouldRender)
-		{
-			push();
+    private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
 
-			GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
+    @Override
+    public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick,
+          int destroyStage, float alpha) {
+        if (tileEntity.shouldRender) {
+            push();
 
-			bindTexture(MekanismRenderer.getBlocksTexture());
-			GlStateManager.translate((float)x, (float)y, (float)z);
+            GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2),
+                  0.75F);
 
-			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
-			int type = 0;
+            bindTexture(MekanismRenderer.getBlocksTexture());
+            GlStateManager.translate((float) x, (float) y, (float) z);
 
-			IBlockState s = obj.getBlockState(tileEntity.getWorld());
+            Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
+            int type = 0;
 
-			if(s.getBlock() == MekanismBlocks.BasicBlock && s.getBlock().getMetaFromState(s) == 7)
-			{
-				type = 1;
-			}
+            IBlockState s = obj.getBlockState(tileEntity.getWorld());
 
-			int display = getOverlayDisplay(type).display;
-			GL11.glCallList(display);
-			
-			MekanismRenderer.resetColor();
+            if (s.getBlock() == MekanismBlocks.BasicBlock && s.getBlock().getMetaFromState(s) == 7) {
+                type = 1;
+            }
 
-			pop();
-		}
-	}
+            int display = getOverlayDisplay(type).display;
+            GL11.glCallList(display);
 
-	private void pop()
-	{
-		GL11.glPopAttrib();
-		MekanismRenderer.glowOff();
-		MekanismRenderer.blendOff();
-		GlStateManager.popMatrix();
-	}
+            MekanismRenderer.resetColor();
 
-	private void push()
-	{
-		GlStateManager.pushMatrix();
-		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_LIGHTING);
-		MekanismRenderer.glowOn();
-		MekanismRenderer.blendOn();
-	}
+            pop();
+        }
+    }
 
-	private DisplayInteger getOverlayDisplay(Integer type)
-	{
-		if(cachedOverlays.containsKey(type))
-		{
-			return cachedOverlays.get(type);
-		}
+    private void pop() {
+        GL11.glPopAttrib();
+        MekanismRenderer.glowOff();
+        MekanismRenderer.blendOff();
+        GlStateManager.popMatrix();
+    }
 
-		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.STONE;
-		toReturn.setTexture(MekanismFluids.Oxygen.getSprite());
+    private void push() {
+        GlStateManager.pushMatrix();
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        MekanismRenderer.glowOn();
+        MekanismRenderer.blendOn();
+    }
 
-		DisplayInteger display = DisplayInteger.createAndStart();
+    private DisplayInteger getOverlayDisplay(Integer type) {
+        if (cachedOverlays.containsKey(type)) {
+            return cachedOverlays.get(type);
+        }
 
-		if(cachedOverlays.containsKey(type))
-		{
-			cachedOverlays.get(type);
-		}
-		else {
-			cachedOverlays.put(type, display);
-		}
+        Model3D toReturn = new Model3D();
+        toReturn.baseBlock = Blocks.STONE;
+        toReturn.setTexture(MekanismFluids.Oxygen.getSprite());
 
-		switch(type)
-		{
-			case 0:
-			{
-				toReturn.minY = 1;
-				toReturn.maxY = 3;
+        DisplayInteger display = DisplayInteger.createAndStart();
 
-				toReturn.minX = 0.46;
-				toReturn.minZ = 0;
-				toReturn.maxX = 0.54;
-				toReturn.maxZ = 1;
-				break;
-			}
-			case 1:
-			{
-				toReturn.minY = 1;
-				toReturn.maxY = 3;
+        if (cachedOverlays.containsKey(type)) {
+            cachedOverlays.get(type);
+        } else {
+            cachedOverlays.put(type, display);
+        }
 
-				toReturn.minX = 0;
-				toReturn.minZ = 0.46;
-				toReturn.maxX = 1;
-				toReturn.maxZ = 0.54;
-				break;
-			}
-		}
+        switch (type) {
+            case 0: {
+                toReturn.minY = 1;
+                toReturn.maxY = 3;
 
-		MekanismRenderer.renderObject(toReturn);
-		DisplayInteger.endList();
+                toReturn.minX = 0.46;
+                toReturn.minZ = 0;
+                toReturn.maxX = 0.54;
+                toReturn.maxZ = 1;
+                break;
+            }
+            case 1: {
+                toReturn.minY = 1;
+                toReturn.maxY = 3;
 
-		return display;
-	}
+                toReturn.minX = 0;
+                toReturn.minZ = 0.46;
+                toReturn.maxX = 1;
+                toReturn.maxZ = 0.54;
+                break;
+            }
+        }
+
+        MekanismRenderer.renderObject(toReturn);
+        DisplayInteger.endList();
+
+        return display;
+    }
 }

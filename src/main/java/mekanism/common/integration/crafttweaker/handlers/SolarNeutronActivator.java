@@ -5,6 +5,8 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -13,89 +15,82 @@ import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @ZenClass("mods.mekanism.solarneutronactivator")
 @ModOnly("mtlib")
 @ZenRegister
-public class SolarNeutronActivator
-{
+public class SolarNeutronActivator {
+
     public static final String NAME = "Mekanism Solar Neutron Activator";
 
     @ZenMethod
-    public static void addRecipe(IGasStack gasInput, IGasStack gasOutput)
-    {
-        if (gasInput == null || gasOutput == null)
-        {
+    public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
+        if (gasInput == null || gasOutput == null) {
             LogHelper.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
         }
 
         SolarNeutronRecipe recipe = new SolarNeutronRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS
+              .add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get(), recipe));
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient gasInput, @Optional IIngredient gasOutput)
-    {
-        if (gasInput == null)
-        {
+    public static void removeRecipe(IIngredient gasInput, @Optional IIngredient gasOutput) {
+        if (gasInput == null) {
             LogHelper.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
         }
 
-        if (gasOutput == null)
+        if (gasOutput == null) {
             gasOutput = IngredientAny.INSTANCE;
+        }
 
-        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get(), gasInput, gasOutput));
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new Remove(NAME, RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get(), gasInput, gasOutput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe<GasInput, SolarNeutronRecipe>
-    {
+    private static class Remove extends RemoveMekanismRecipe<GasInput, SolarNeutronRecipe> {
+
         private IIngredient gasInput;
         private IIngredient gasOutput;
 
-        public Remove(String name, Map<GasInput, SolarNeutronRecipe> map, IIngredient gasInput, IIngredient gasOutput)
-        {
+        public Remove(String name, Map<GasInput, SolarNeutronRecipe> map, IIngredient gasInput, IIngredient gasOutput) {
             super(name, map);
             this.gasInput = gasInput;
             this.gasOutput = gasOutput;
         }
 
         @Override
-        public void addRecipes()
-        {
+        public void addRecipes() {
             Map<GasInput, SolarNeutronRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<GasInput, SolarNeutronRecipe> entry : RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get().entrySet())
-            {
+            for (Map.Entry<GasInput, SolarNeutronRecipe> entry : RecipeHandler.Recipe.SOLAR_NEUTRON_ACTIVATOR.get()
+                  .entrySet()) {
                 IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
                 IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);
 
-                if (!GasHelper.matches(gasInput, inputGas))
+                if (!GasHelper.matches(gasInput, inputGas)) {
                     continue;
-                if (!GasHelper.matches(gasOutput, outputGas))
+                }
+                if (!GasHelper.matches(gasOutput, outputGas)) {
                     continue;
+                }
 
                 recipesToRemove.put(entry.getKey(), entry.getValue());
             }
 
-            if (!recipesToRemove.isEmpty())
-            {
+            if (!recipesToRemove.isEmpty()) {
                 recipes.putAll(recipesToRemove);
-            }
-            else
-            {
-                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(), gasOutput.toString()));
+            } else {
+                LogHelper.logInfo(
+                      String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasInput.toString(),
+                            gasOutput.toString()));
             }
         }
     }

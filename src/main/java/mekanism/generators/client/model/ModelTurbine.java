@@ -4,10 +4,10 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class ModelTurbine extends ModelBase 
-{
-	private static float BLADE_ROTATE = 0.418879F;
-	
+public class ModelTurbine extends ModelBase {
+
+    private static float BLADE_ROTATE = 0.418879F;
+
     public ModelRenderer rod;
     public ModelRenderer extension_north;
     public ModelRenderer blade_north;
@@ -18,8 +18,7 @@ public class ModelTurbine extends ModelBase
     public ModelRenderer blade_east;
     public ModelRenderer blade_west;
 
-    public ModelTurbine() 
-    {
+    public ModelTurbine() {
         textureWidth = 64;
         textureHeight = 64;
         extension_south = new ModelRenderer(this, 0, 0);
@@ -59,53 +58,51 @@ public class ModelTurbine extends ModelBase
         setRotateAngle(blade_west, BLADE_ROTATE, 0.0F, 0.0F);
     }
 
-    public void render(float size, int index) 
-    {
-    	GlStateManager.pushMatrix();
-    	
-    	GlStateManager.rotate(index*5, 0.0F, 1.0F, 0.0F);
-    	
-    	float scale = index*0.5F;
-    	float widthDiv = 16;
-    	
+    public void render(float size, int index) {
+        GlStateManager.pushMatrix();
+
+        GlStateManager.rotate(index * 5, 0.0F, 1.0F, 0.0F);
+
+        float scale = index * 0.5F;
+        float widthDiv = 16;
+
         extension_south.render(size);
         extension_west.render(size);
         extension_east.render(size);
         extension_north.render(size);
-        
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.25F, 0.0F, 0.0F);
-        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale/widthDiv);
+        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale / widthDiv);
         GlStateManager.translate(0.25F, 0.0F, 0.0F);
         blade_west.render(size);
         GlStateManager.popMatrix();
-        
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.25F, 0.0F, 0.0F);
-        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale/widthDiv);
+        GlStateManager.scale(1.0F + scale, 1.0F, 1.0F + scale / widthDiv);
         GlStateManager.translate(-0.25F, 0.0F, 0.0F);
         blade_east.render(size);
         GlStateManager.popMatrix();
-        
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, -0.25F);
-        GlStateManager.scale(1.0F + scale/widthDiv, 1.0F, 1.0F + scale);
+        GlStateManager.scale(1.0F + scale / widthDiv, 1.0F, 1.0F + scale);
         GlStateManager.translate(0.0F, 0.0F, 0.25F);
         blade_north.render(size);
         GlStateManager.popMatrix();
-        
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 0.25F);
-        GlStateManager.scale(1.0F + scale/widthDiv, 1.0F, 1.0F + scale);
+        GlStateManager.scale(1.0F + scale / widthDiv, 1.0F, 1.0F + scale);
         GlStateManager.translate(0.0F, 0.0F, -0.25F);
         blade_south.render(size);
         GlStateManager.popMatrix();
-        
+
         GlStateManager.popMatrix();
     }
 
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) 
-    {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

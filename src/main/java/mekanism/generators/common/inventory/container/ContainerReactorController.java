@@ -12,130 +12,103 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerReactorController extends Container
-{
-	private TileEntityReactorController tileEntity;
+public class ContainerReactorController extends Container {
 
-	public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController tentity)
-	{
-		tileEntity = tentity;
-		addSlotToContainer(new SlotReactor(tentity, 0, 80, 39));
-		int slotX;
+    private TileEntityReactorController tileEntity;
 
-		for(slotX = 0; slotX < 3; slotX++)
-		{
-			for(int slotY = 0; slotY < 9; slotY++)
-			{
-				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
-			}
-		}
+    public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController tentity) {
+        tileEntity = tentity;
+        addSlotToContainer(new SlotReactor(tentity, 0, 80, 39));
+        int slotX;
 
-		for(slotX = 0; slotX < 9; slotX++)
-		{
-			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
-		}
+        for (slotX = 0; slotX < 3; slotX++) {
+            for (int slotY = 0; slotY < 9; slotY++) {
+                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
+            }
+        }
 
-		tileEntity.openInventory(inventory.player);
-		tileEntity.open(inventory.player);
-	}
+        for (slotX = 0; slotX < 9; slotX++) {
+            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
+        }
 
-	@Override
-	public void onContainerClosed(EntityPlayer entityplayer)
-	{
-		super.onContainerClosed(entityplayer);
+        tileEntity.openInventory(inventory.player);
+        tileEntity.open(inventory.player);
+    }
 
-		tileEntity.closeInventory(entityplayer);
-		tileEntity.close(entityplayer);
-	}
+    @Override
+    public void onContainerClosed(EntityPlayer entityplayer) {
+        super.onContainerClosed(entityplayer);
 
-	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
-	{
-		return tileEntity.isUsableByPlayer(entityplayer);
-	}
+        tileEntity.closeInventory(entityplayer);
+        tileEntity.close(entityplayer);
+    }
 
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
-	{
-		ItemStack stack = ItemStack.EMPTY;
-		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+    @Override
+    public boolean canInteractWith(EntityPlayer entityplayer) {
+        return tileEntity.isUsableByPlayer(entityplayer);
+    }
 
-		if(currentSlot != null && currentSlot.getHasStack())
-		{
-			ItemStack slotStack = currentSlot.getStack();
-			stack = slotStack.copy();
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+        ItemStack stack = ItemStack.EMPTY;
+        Slot currentSlot = (Slot) inventorySlots.get(slotID);
 
-			if(slotStack.getItem() instanceof ItemHohlraum)
-			{
-				if(slotID != 0)
-				{
-					if(!mergeItemStack(slotStack, 0, 1, false))
-					{
-						return ItemStack.EMPTY;
-					}
-				}
-				else if(slotID == 0)
-				{
-					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), false))
-					{
-						return ItemStack.EMPTY;
-					}
-				}
-			}
-			else {
-				if(slotID >= 1 && slotID <= 27)
-				{
-					if(!mergeItemStack(slotStack, 28, inventorySlots.size(), false))
-					{
-						return ItemStack.EMPTY;
-					}
-				}
-				else if(slotID > 27)
-				{
-					if(!mergeItemStack(slotStack, 1, 27, false))
-					{
-						return ItemStack.EMPTY;
-					}
-				}
-				else {
-					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
-					{
-						return ItemStack.EMPTY;
-					}
-				}
-			}
+        if (currentSlot != null && currentSlot.getHasStack()) {
+            ItemStack slotStack = currentSlot.getStack();
+            stack = slotStack.copy();
 
-			if(slotStack.getCount() == 0)
-			{
-				currentSlot.putStack(ItemStack.EMPTY);
-			}
-			else {
-				currentSlot.onSlotChanged();
-			}
+            if (slotStack.getItem() instanceof ItemHohlraum) {
+                if (slotID != 0) {
+                    if (!mergeItemStack(slotStack, 0, 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (slotID == 0) {
+                    if (!mergeItemStack(slotStack, 1, inventorySlots.size(), false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            } else {
+                if (slotID >= 1 && slotID <= 27) {
+                    if (!mergeItemStack(slotStack, 28, inventorySlots.size(), false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if (slotID > 27) {
+                    if (!mergeItemStack(slotStack, 1, 27, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
+                    if (!mergeItemStack(slotStack, 1, inventorySlots.size(), true)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            }
 
-			if(slotStack.getCount() == stack.getCount())
-			{
-				return ItemStack.EMPTY;
-			}
+            if (slotStack.getCount() == 0) {
+                currentSlot.putStack(ItemStack.EMPTY);
+            } else {
+                currentSlot.onSlotChanged();
+            }
 
-			currentSlot.onTake(player, slotStack);
-		}
+            if (slotStack.getCount() == stack.getCount()) {
+                return ItemStack.EMPTY;
+            }
 
-		return stack;
-	}
-	
-	public class SlotReactor extends Slot
-	{
-		public SlotReactor(IInventory inventory, int index, int x, int y)
-		{
-			super(inventory, index, x, y);
-		}
+            currentSlot.onTake(player, slotStack);
+        }
 
-		@Override
-	    @SideOnly(Side.CLIENT)
-	    public boolean isEnabled()
-	    {
-	        return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorld(), tileEntity.getPos());
-	    }
-	}
+        return stack;
+    }
+
+    public class SlotReactor extends Slot {
+
+        public SlotReactor(IInventory inventory, int index, int x, int y) {
+            super(inventory, index, x, y);
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public boolean isEnabled() {
+            return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorld(), tileEntity.getPos());
+        }
+    }
 }

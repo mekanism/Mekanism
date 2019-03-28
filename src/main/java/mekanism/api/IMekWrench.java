@@ -6,15 +6,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 
-public interface IMekWrench
-{
-	boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos);
+public interface IMekWrench {
 
-	/* easier compat with BC */
-	default boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace)
-	{
-		return canUseWrench(stack, player, rayTrace.getBlockPos() != null ? rayTrace.getBlockPos() : BlockPos.ORIGIN);
-	}
+    boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos);
 
-	default void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace){}
+    /* easier compat with BC */
+    default boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace) {
+        return canUseWrench(stack, player, rayTrace.getBlockPos() != null ? rayTrace.getBlockPos() : BlockPos.ORIGIN);
+    }
+
+    default void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {
+    }
 }

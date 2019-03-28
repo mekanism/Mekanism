@@ -5,6 +5,8 @@ import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IngredientAny;
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.crafttweaker.gas.CraftTweakerGasStack;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
@@ -13,59 +15,52 @@ import mekanism.common.integration.crafttweaker.util.AddMekanismRecipe;
 import mekanism.common.integration.crafttweaker.util.RemoveMekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
-import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @ZenClass("mods.mekanism.chemical.washer")
 @ModOnly("mtlib")
 @ZenRegister
-public class ChemicalWasher
-{
+public class ChemicalWasher {
+
     public static final String NAME = "Mekanism Chemical Washer";
 
     @ZenMethod
-    public static void addRecipe(IGasStack gasInput, IGasStack gasOutput)
-    {
-        if (gasInput == null || gasOutput == null)
-        {
+    public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
+        if (gasInput == null || gasOutput == null) {
             LogHelper.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
         }
 
         WasherRecipe recipe = new WasherRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput));
 
-        CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), recipe));
+        CrafttweakerIntegration.LATE_ADDITIONS
+              .add(new AddMekanismRecipe<>(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), recipe));
     }
 
     @ZenMethod
-    public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient gasInput)
-    {
-        if (gasOutput == null)
-        {
+    public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient gasInput) {
+        if (gasOutput == null) {
             LogHelper.logError(String.format("Required parameters missing for %s Recipe.", NAME));
             return;
         }
 
-        if (gasInput == null)
+        if (gasInput == null) {
             gasInput = IngredientAny.INSTANCE;
+        }
 
-        CrafttweakerIntegration.LATE_REMOVALS.add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), gasOutput, gasInput));
+        CrafttweakerIntegration.LATE_REMOVALS
+              .add(new Remove(NAME, RecipeHandler.Recipe.CHEMICAL_WASHER.get(), gasOutput, gasInput));
     }
 
-    private static class Remove extends RemoveMekanismRecipe<GasInput, WasherRecipe>
-    {
+    private static class Remove extends RemoveMekanismRecipe<GasInput, WasherRecipe> {
+
         private IIngredient gasOutput;
         private IIngredient gasInput;
 
-        public Remove(String name, Map<GasInput, WasherRecipe> map, IIngredient gasOutput, IIngredient gasInput)
-        {
+        public Remove(String name, Map<GasInput, WasherRecipe> map, IIngredient gasOutput, IIngredient gasInput) {
             super(name, map);
 
             this.gasOutput = gasOutput;
@@ -73,30 +68,29 @@ public class ChemicalWasher
         }
 
         @Override
-        public void addRecipes()
-        {
+        public void addRecipes() {
             Map<GasInput, WasherRecipe> recipesToRemove = new HashMap<>();
 
-            for (Map.Entry<GasInput, WasherRecipe> entry : RecipeHandler.Recipe.CHEMICAL_WASHER.get().entrySet())
-            {
+            for (Map.Entry<GasInput, WasherRecipe> entry : RecipeHandler.Recipe.CHEMICAL_WASHER.get().entrySet()) {
                 IGasStack inputGas = new CraftTweakerGasStack(entry.getKey().ingredient);
                 IGasStack outputGas = new CraftTweakerGasStack(entry.getValue().recipeOutput.output);
 
-                if (!GasHelper.matches(gasInput, inputGas))
+                if (!GasHelper.matches(gasInput, inputGas)) {
                     continue;
-                if (!GasHelper.matches(gasOutput, outputGas))
+                }
+                if (!GasHelper.matches(gasOutput, outputGas)) {
                     continue;
+                }
 
                 recipesToRemove.put(entry.getKey(), entry.getValue());
             }
 
-            if (!recipesToRemove.isEmpty())
-            {
+            if (!recipesToRemove.isEmpty()) {
                 recipes.putAll(recipesToRemove);
-            }
-            else
-            {
-                LogHelper.logInfo(String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(), gasInput.toString()));
+            } else {
+                LogHelper.logInfo(
+                      String.format("No %s recipe found for %s and %s. Command ignored!", NAME, gasOutput.toString(),
+                            gasInput.toString()));
             }
         }
     }

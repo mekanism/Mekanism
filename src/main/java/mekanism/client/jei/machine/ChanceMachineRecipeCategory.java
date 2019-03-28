@@ -1,5 +1,6 @@
 package mekanism.client.jei.machine;
 
+import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiProgress;
@@ -22,80 +23,74 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
+public class ChanceMachineRecipeCategory extends BaseRecipeCategory {
 
-public class ChanceMachineRecipeCategory extends BaseRecipeCategory
-{
-	private final IDrawable background;
+    private final IDrawable background;
 
-	@Nullable
-	private ChanceMachineRecipe tempRecipe;
-	
-	public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress)
-	{
-		super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress);
+    @Nullable
+    private ChanceMachineRecipe tempRecipe;
 
-		background = guiHelper.createDrawable(new ResourceLocation(guiTexture), 28, 16, 144, 54);
-	}
-	
-	@Override
-	public void addGuiElements()
-	{
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 16));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 52).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 111, 30));
+    public ChanceMachineRecipeCategory(IGuiHelper helper, String name, String unlocalized, ProgressBar progress) {
+        super(helper, "mekanism:gui/GuiBasicMachine.png", name, unlocalized, progress);
 
-		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
-			@Override
-			public double getLevel()
-			{
-				return 1F;
-			}
-		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
-		guiElements.add(new GuiProgress(new IProgressInfoHandler()
-		{
-			@Override
-			public double getProgress()
-			{
-				return (double)timer.getValue() / 20F;
-			}
-		}, progressBar, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 77, 37));
-	}
+        background = guiHelper.createDrawable(new ResourceLocation(guiTexture), 28, 16, 144, 54);
+    }
 
-	@Override
-	public IDrawable getBackground()
-	{
-		return background;
-	}
+    @Override
+    public void addGuiElements() {
+        guiElements
+              .add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55,
+                    16));
+        guiElements
+              .add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55,
+                    52).with(SlotOverlay.POWER));
+        guiElements
+              .add(new GuiSlot(SlotType.OUTPUT_WIDE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()),
+                    111, 30));
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
-	{
-		if(!(recipeWrapper instanceof ChanceMachineRecipeWrapper))
-		{
-			return;
-		}
+        guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+            @Override
+            public double getLevel() {
+                return 1F;
+            }
+        }, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
+        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return (double) timer.getValue() / 20F;
+            }
+        }, progressBar, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 77, 37));
+    }
 
-		tempRecipe = ((ChanceMachineRecipeWrapper)recipeWrapper).getRecipe();
-		
-		IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-		
-		itemStacks.init(0, true, 27, 0);
-		itemStacks.init(1, false, 87, 18);
-		itemStacks.init(2, false, 103, 18);
+    @Override
+    public IDrawable getBackground() {
+        return background;
+    }
 
-		itemStacks.set(0, ((ItemStackInput)tempRecipe.recipeInput).ingredient);
-		
-		ChanceOutput output = (ChanceOutput)tempRecipe.getOutput();
-		
-		if(output.hasPrimary())
-		{
-			itemStacks.set(1, output.primaryOutput);
-		}
-		
-		if(output.hasSecondary())
-		{
-			itemStacks.set(2, output.secondaryOutput);
-		}
-	}
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients) {
+        if (!(recipeWrapper instanceof ChanceMachineRecipeWrapper)) {
+            return;
+        }
+
+        tempRecipe = ((ChanceMachineRecipeWrapper) recipeWrapper).getRecipe();
+
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
+
+        itemStacks.init(0, true, 27, 0);
+        itemStacks.init(1, false, 87, 18);
+        itemStacks.init(2, false, 103, 18);
+
+        itemStacks.set(0, ((ItemStackInput) tempRecipe.recipeInput).ingredient);
+
+        ChanceOutput output = (ChanceOutput) tempRecipe.getOutput();
+
+        if (output.hasPrimary()) {
+            itemStacks.set(1, output.primaryOutput);
+        }
+
+        if (output.hasSecondary()) {
+            itemStacks.set(2, output.secondaryOutput);
+        }
+    }
 }

@@ -7,34 +7,29 @@ import mekanism.common.recipe.outputs.GasOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, DissolutionRecipe>
-{
-	public DissolutionRecipe(ItemStackInput input, GasOutput output)
-	{
-		super(input, output);
-	}
+public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, DissolutionRecipe> {
 
-	public DissolutionRecipe(ItemStack input, GasStack output)
-	{
-		this(new ItemStackInput(input), new GasOutput(output));
-	}
+    public DissolutionRecipe(ItemStackInput input, GasOutput output) {
+        super(input, output);
+    }
 
-	public boolean canOperate(NonNullList<ItemStack> inventory, GasTank outputTank)
-	{
-		return getInput().useItemStackFromInventory(inventory, 1, false) && getOutput().applyOutputs(outputTank, false, 1);
-	}
+    public DissolutionRecipe(ItemStack input, GasStack output) {
+        this(new ItemStackInput(input), new GasOutput(output));
+    }
 
-	public void operate(NonNullList<ItemStack> inventory, GasTank outputTank)
-	{
-		if(getInput().useItemStackFromInventory(inventory, 1, true))
-		{
-			getOutput().applyOutputs(outputTank, true, 1);
-		}
-	}
+    public boolean canOperate(NonNullList<ItemStack> inventory, GasTank outputTank) {
+        return getInput().useItemStackFromInventory(inventory, 1, false) && getOutput()
+              .applyOutputs(outputTank, false, 1);
+    }
 
-	@Override
-	public DissolutionRecipe copy()
-	{
-		return new DissolutionRecipe(getInput().copy(), getOutput().copy());
-	}
+    public void operate(NonNullList<ItemStack> inventory, GasTank outputTank) {
+        if (getInput().useItemStackFromInventory(inventory, 1, true)) {
+            getOutput().applyOutputs(outputTank, true, 1);
+        }
+    }
+
+    @Override
+    public DissolutionRecipe copy() {
+        return new DissolutionRecipe(getInput().copy(), getOutput().copy());
+    }
 }
