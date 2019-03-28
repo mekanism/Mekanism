@@ -45,7 +45,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 
-    public int pullDelay = 0;
+    private int delay = 0;
+    private int delayCount = 0;
 
     public TileEntityLogisticalTransporter() {
         transmitterDelegate = new TransporterImpl(this);
@@ -116,29 +117,37 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     public void pullItems() {
-        if (pullDelay == 0) {
-            boolean did = false;
+        // If a delay has been imposed, wait a bit
+        if (delay > 0) {
+            delay--;
+            return;
+        }
 
-            for (EnumFacing side : getConnections(ConnectionType.PULL)) {
-                TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-                TransitRequest request = TransitRequest.getTopStacks(tile, side, tier.pullAmount);
+        // Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again
+        // in 3 ticks
+        delay = 3;
 
-                if (!request.isEmpty()) {
-                    TransitResponse response = TransporterUtils
-                          .insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+        // Attempt to pull
+        for (EnumFacing side : getConnections(ConnectionType.PULL)) {
+            TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
+            TransitRequest request = TransitRequest.getTopStacks(tile, side, tier.pullAmount);
 
-                    if (!response.isEmpty()) {
-                        did = true;
-                        response.getInvStack(tile, side.getOpposite()).use(response.stack.getCount());
-                    }
+            // There's a stack available to insert into the network...
+            if (!request.isEmpty()) {
+                TransitResponse response = TransporterUtils
+                      .insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+
+                // If the insert succeeded, remove the inserted count and try again for another 10 ticks
+                if (!response.isEmpty()) {
+                    response.getInvStack(tile, side.getOpposite()).use(response.stack.getCount());
+                    delay = 10;
+                } else {
+                    // Insert failed; increment the backoff and calculate delay. Note that we cap retries
+                    // at a max of 40 ticks (2 seocnds), which would be 4 consecutive retries
+                    delayCount++;
+                    delay = Math.min(40, (int) Math.exp(delayCount));
                 }
             }
-
-            if (did) {
-                pullDelay = 10;
-            }
-        } else {
-            pullDelay--;
         }
     }
 
