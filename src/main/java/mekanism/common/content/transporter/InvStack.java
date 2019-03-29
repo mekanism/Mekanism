@@ -22,7 +22,10 @@ import net.minecraftforge.items.IItemHandler;
 public final class InvStack {
 
     /** The TileEntity owning the container this InvStack belongs to. */
-    private TileEntity tileEntity;
+    private final TileEntity tileEntity;
+    
+    /** The side of the inventory we are accessing with this InvStack. */
+    private final EnumFacing side;
 
     /**
      * A map associating the slot IDs in consideration to the amount of items in those slots we care
@@ -36,9 +39,6 @@ public final class InvStack {
 
     /** The total amount of items tracked by this InvStack. */
     private int itemCount;
-
-    /** The side of the inventory we are accessing with this InvStack. */
-    public EnumFacing side;
 
     public InvStack(TileEntity inv, EnumFacing facing) {
         tileEntity = inv;
@@ -92,6 +92,13 @@ public final class InvStack {
         if (!InventoryUtils.isItemHandler(tileEntity, side)) {
             Mekanism.logger
                     .warn("An InvStack was wrapped around a non-IItemHandler inventory. This should not happen!");
+            
+            if (tileEntity == null) {
+                Mekanism.logger.warn(" - null tile");
+            } else {
+                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
+            }
+            
             return;
         }
 

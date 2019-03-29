@@ -27,6 +27,13 @@ public class StackSearcher {
         if (!InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
             Mekanism.logger
                     .warn("A StackSearcher was wrapped around a non-IItemHandler inventory. This should not happen!");
+            
+            if (tileEntity == null) {
+                Mekanism.logger.warn(" - null tile");
+            } else {
+                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
+            }
+            
             return null;
         }
         
@@ -49,6 +56,13 @@ public class StackSearcher {
         if (!InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
             Mekanism.logger
                     .warn("A StackSearcher was wrapped around a non-IItemHandler inventory. This should not happen!");
+            
+            if (tileEntity == null) {
+                Mekanism.logger.warn(" - null tile");
+            } else {
+                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
+            }
+            
             return null;
         }
 

@@ -50,6 +50,13 @@ public class TransitRequest {
         if (!InventoryUtils.isItemHandler(tile, side.getOpposite())) {
             Mekanism.logger.warn(
                     "A TransitRequest was built with a non-IItemHandler origin inventory. This should not happen!");
+            
+            if (tile == null) {
+                Mekanism.logger.warn(" - null tile");
+            } else {
+                Mekanism.logger.warn(" - details: " + tile + " " + tile.getPos());
+            }
+
             return ret;
         }
 

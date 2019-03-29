@@ -3,7 +3,6 @@ package mekanism.common.util;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.InvStack;
@@ -43,8 +42,6 @@ public final class InventoryUtils {
             ItemStack toInsert = origInsert.copy();
             
             if (!isItemHandler(tile, side.getOpposite())) {
-                Mekanism.logger
-                        .warn("A transporter attempted to place an item in a non-IItemHandler inventory. This should not happen!");
                 return TransitResponse.EMPTY;
             }
 
@@ -84,8 +81,6 @@ public final class InventoryUtils {
         InvStack ret = new InvStack(tile, side.getOpposite());
         
         if (!isItemHandler(tile, side.getOpposite())) {
-            Mekanism.logger
-                    .warn("A defined item pull was attempted from a non-IItemHandler inventory. This should not happen!");
             return null;
         }
 
@@ -95,7 +90,7 @@ public final class InventoryUtils {
             ItemStack stack = inventory.extractItem(i, max, true);
 
             if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
-                int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
+                int current = ret.getStack().getCount();
 
                 if (current + stack.getCount() <= max) {
                     ret.appendStack(i, stack.copy());
@@ -136,8 +131,6 @@ public final class InventoryUtils {
         }
         
         if (!isItemHandler(tileEntity, side.getOpposite())) {
-            Mekanism.logger
-                    .warn("A transporter attempted to place an item in a non-IItemHandler inventory. This should not happen!");
             return false;
         }
 
