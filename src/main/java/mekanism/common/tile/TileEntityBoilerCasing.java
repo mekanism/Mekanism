@@ -7,8 +7,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
-import mekanism.common.Mekanism;
 import mekanism.api.TileNetworkList;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
@@ -16,6 +16,7 @@ import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -30,6 +31,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer {
+
+    protected static final int[] INV_SLOTS = {0,1};
 
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering
@@ -51,7 +54,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     public TileEntityBoilerCasing(String name) {
         super(name);
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(INV_SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override
@@ -356,5 +359,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     @Override
     public String getName() {
         return LangUtils.localize("gui.thermoelectricBoiler");
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
     }
 }

@@ -28,7 +28,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -48,6 +47,10 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper,
       IGasHandler, ITubeConnection, IUpgradeInfoHandler, ITankManager {
+
+    private static final int[] GAS_SLOTS = {0, 1};
+    private static final int[] LIQUID_SLOTS = {2, 3};
+    private static final int[] ENERGY_SLOT = {4};
 
     public static final int MAX_FLUID = 10000;
     public GasTank gasTank = new GasTank(MAX_FLUID);
@@ -363,12 +366,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         if (side == MekanismUtils.getLeft(facing)) {
             //Gas
-            return new int[]{0, 1};
+            return GAS_SLOTS;
         } else if (side == MekanismUtils.getRight(facing)) {
             //Fluid
-            return new int[]{2, 3};
+            return LIQUID_SLOTS;
         }
-        return InventoryUtils.EMPTY;
+        return ENERGY_SLOT;
     }
 
     @Override
@@ -379,6 +382,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         } else if (slot == 2) {
             //Fluid
             return FluidContainerUtils.isFluidContainer(stack);
+        } else if (slot == 4) {
+            return ChargeUtils.canBeDischarged(stack);
         }
         return false;
     }

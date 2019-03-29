@@ -13,12 +13,12 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IMekWrench;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -150,9 +150,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             } else if (getState(stack) == ConfiguratorMode.EMPTY) //Empty
             {
                 if (tile instanceof TileEntityContainerBlock) {
-                    IInventory inv = (IInventory) tile;
-
                     if (SecurityUtils.canAccess(player, tile)) {
+                        //TODO: Switch this to an IItemHandler
+                        // It isn't a simple switch to IItemHandlerModifiable as then it makes the empty mode only work
+                        // when it is done on a side configured to work as an IItemHandler.
+                        IInventory inv = (IInventory) tile;
                         for (int i = 0; i < inv.getSizeInventory(); i++) {
                             ItemStack slotStack = inv.getStackInSlot(i);
 

@@ -3,17 +3,18 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.Random;
 import javax.annotation.Nonnull;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.TileNetworkList;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -90,5 +91,11 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             TileUtils.readTankData(data, collectedGas);
         }
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
     }
 }

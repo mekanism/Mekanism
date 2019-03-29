@@ -8,7 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityOperationalMachine extends TileEntityMachine {
+public abstract class TileEntityOperationalMachine extends TileEntityMachine {
 
     public int operatingTicks;
 
@@ -16,7 +16,7 @@ public class TileEntityOperationalMachine extends TileEntityMachine {
 
     public int ticksRequired;
 
-    public TileEntityOperationalMachine(String sound, String name, double maxEnergy, double baseEnergyUsage,
+    protected TileEntityOperationalMachine(String sound, String name, double maxEnergy, double baseEnergyUsage,
           int upgradeSlot, int baseTicksRequired) {
         super(sound, name, maxEnergy, baseEnergyUsage, upgradeSlot);
 

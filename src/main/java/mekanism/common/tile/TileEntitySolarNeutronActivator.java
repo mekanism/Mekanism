@@ -49,6 +49,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
       IUpgradeTile, IUpgradeInfoHandler {
 
     public static final int MAX_GAS = 10000;
+    private static final int[] INPUT_SLOT = {0};
+    private static final int[] OUTPUT_SLOT = {1};
+
     public GasTank inputTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
 
@@ -360,7 +363,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return side == facing ? new int[]{1} : new int[]{0};
+        return side == facing ? OUTPUT_SLOT : INPUT_SLOT;
     }
 
     @Override

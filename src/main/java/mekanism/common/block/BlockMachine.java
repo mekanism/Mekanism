@@ -43,6 +43,7 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -62,7 +63,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -219,7 +219,7 @@ public abstract class BlockMachine extends BlockContainer {
                 for (EnumFacing dir : EnumFacing.VALUES) {
                     TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(world);
 
-                    if (tile instanceof IInventory) {
+                    if (InventoryUtils.isItemHandler(tile, dir)) {
                         tileEntity.setFacing((short) dir.getOpposite().ordinal());
                         break;
                     }
@@ -382,7 +382,7 @@ public abstract class BlockMachine extends BlockContainer {
                                     for (EnumFacing dir : EnumFacing.VALUES) {
                                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
-                                        if (tile instanceof IInventory) {
+                                        if (InventoryUtils.isItemHandler(tile, dir)) {
                                             change = dir.getOpposite().ordinal();
                                             break;
                                         }
@@ -713,7 +713,7 @@ public abstract class BlockMachine extends BlockContainer {
                     for (EnumFacing dir : EnumFacing.VALUES) {
                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
-                        if (tile instanceof IInventory) {
+                        if (InventoryUtils.isItemHandler(tile, dir)) {
                             sorter.setFacing((short) dir.getOpposite().ordinal());
                             return;
                         }

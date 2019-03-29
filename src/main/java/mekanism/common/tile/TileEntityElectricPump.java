@@ -60,6 +60,10 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank,
       IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile {
 
+    private static final int[] UPSLOTS = {0};
+    private static final int[] DOWNSLOTS = {1};
+    private static final int[] SIDESLOTS = {2};
+
     private static final String[] methods = new String[]{"reset"};
     /**
      * This pump's tank
@@ -334,15 +338,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
-        if (slotID == 1) {
-            return false;
-        } else if (slotID == 0) {
+        if (slotID == 0) {
+            //Only allow empty fluid containers
             return FluidContainerUtils.isFluidContainer(itemstack) && FluidUtil.getFluidContained(itemstack) == null;
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
-
-        return true;
+        return false;
     }
 
     @Override
@@ -369,11 +371,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         if (side == EnumFacing.UP) {
-            return new int[]{0};
+            return UPSLOTS;
         } else if (side == EnumFacing.DOWN) {
-            return new int[]{1};
+            return DOWNSLOTS;
         } else {
-            return new int[]{2};
+            return SIDESLOTS;
         }
     }
 

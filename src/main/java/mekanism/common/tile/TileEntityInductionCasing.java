@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
@@ -15,10 +15,12 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
@@ -26,6 +28,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements
       IStrictEnergyStorage, IComputerIntegration {
+
+    protected static final int[] CHARGE_SLOT = {0};
+    protected static final int[] DISCHARGE_SLOT = {1};
 
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput",
           "getTransferCap"};
@@ -207,5 +212,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             return (T) this;
         }
         return super.getCapability(capability, facing);
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
     }
 }

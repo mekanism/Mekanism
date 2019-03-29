@@ -3,6 +3,7 @@ package mekanism.generators.common.tile.reactor;
 import javax.annotation.Nonnull;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -37,5 +38,11 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
     }
 }

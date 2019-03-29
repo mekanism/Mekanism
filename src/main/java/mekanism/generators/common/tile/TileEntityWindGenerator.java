@@ -14,6 +14,8 @@ import net.minecraft.util.NonNullList;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
+    private static final int[] SLOTS = {0};
+
     public static final float SPEED = 32F;
     public static final float SPEED_SCALED = 256F / SPEED;
     static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
@@ -25,7 +27,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public TileEntityWindGenerator() {
         super("wind", "WindGenerator", 200000, (generators.windGenerationMax) * 2);
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override
@@ -186,7 +188,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return new int[]{0};
+        return SLOTS;
     }
 
     @Override

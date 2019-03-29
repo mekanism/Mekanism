@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.BaseTier;
@@ -12,7 +13,6 @@ import mekanism.common.Tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -44,6 +44,9 @@ import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IConfigurable,
       ITierUpgradeable {
+
+    private static final int[] UPSLOTS = {1};
+    private static final int[] DOWNSLOTS = {0};
 
     public final int MAX_DELAY = 10;
     public boolean isActive;
@@ -499,9 +502,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         if (side == EnumFacing.UP) {
-            return new int[]{1};
+            return UPSLOTS;
         } else if (side == EnumFacing.DOWN) {
-            return new int[]{0};
+            return DOWNSLOTS;
         }
 
         return InventoryUtils.EMPTY;

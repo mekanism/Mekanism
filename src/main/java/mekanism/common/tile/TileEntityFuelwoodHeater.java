@@ -185,6 +185,11 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     }
 
     @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
+        return TileEntityFurnace.getItemBurnTime(stack) > 0;
+    }
+
+    @Override
     public boolean getActive() {
         return isActive;
     }

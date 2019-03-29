@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -77,6 +78,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
 
+    private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
+
     public static int[] EJECT_INV;
     public final double BASE_ENERGY_USAGE = usage.digitalMinerUsage;
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
@@ -122,8 +125,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     public boolean clientRendering = false;
 
-    private final int[] inventorySlots;
-
     private Set<ChunkPos> chunkSet;
 
     /**
@@ -131,7 +132,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
      */
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 28);
+    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, INV_SLOTS.length);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter",
@@ -139,11 +140,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     public TileEntityDigitalMiner() {
         super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
-        inventory = NonNullList.withSize(29, ItemStack.EMPTY);
-        inventorySlots = new int[inventory.size()];
-        for (int i = 0; i < inventorySlots.length; i++) {
-            inventorySlots[i] = i;
-        }
+        inventory = NonNullList.withSize(INV_SLOTS.length + 1, ItemStack.EMPTY);
         radius = 10;
 
         upgradeComponent.setSupported(Upgrade.ANCHOR);
@@ -970,10 +967,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == facing.getOpposite()) {
-            return inventorySlots;
-        }
-        return InventoryUtils.EMPTY;
+        //Allow for automation via the top (as that is where it can auto pull from)
+        return side == EnumFacing.UP ||  side == facing.getOpposite() ? INV_SLOTS : InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
+        return slotID != 27 || ChargeUtils.canBeDischarged(stack);
     }
 
     public TileEntity getEjectTile() {

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -71,27 +70,6 @@ public final class InvStack {
                 int toUse = Math.min(amount, stack.getCount());
                 handler.extractItem(slotIDs.get(i), toUse, false);
                 amount -= toUse;
-
-                if (amount == 0) {
-                    return;
-                }
-            }
-        } else if (tileEntity instanceof IInventory) {
-            IInventory inventory = InventoryUtils.checkChestInv((IInventory) tileEntity);
-
-            for (int i = 0; i < slotIDs.size(); i++) {
-                ItemStack stack = itemStacks.get(i);
-
-                if (inventory.getStackInSlot(slotIDs.get(i)).getCount() == stack.getCount()
-                      && stack.getCount() <= amount) {
-                    inventory.setInventorySlotContents(slotIDs.get(i), ItemStack.EMPTY);
-                    amount -= stack.getCount();
-                } else {
-                    ItemStack ret = stack.copy();
-                    ret.setCount(inventory.getStackInSlot(slotIDs.get(i)).getCount() - amount);
-                    inventory.setInventorySlotContents(slotIDs.get(i), ret);
-                    amount -= stack.getCount();
-                }
 
                 if (amount == 0) {
                     return;

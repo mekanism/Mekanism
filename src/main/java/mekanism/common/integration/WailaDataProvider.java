@@ -77,6 +77,7 @@ public class WailaDataProvider implements IWailaDataProvider {
             TileEntityBoundingBlock bound = (TileEntityBoundingBlock) tile;
             Coord4D coord = new Coord4D(bound.getPos(), tile.getWorld());
 
+            //TODO: Switch to IItemHandler though there is no good way to get the name of an IItemHandler
             if (bound.receivedCoords && coord.getTileEntity(tile.getWorld()) instanceof IInventory) {
                 currenttip.set(0, EnumColor.WHITE + ((IInventory) coord.getTileEntity(tile.getWorld())).getName());
             }

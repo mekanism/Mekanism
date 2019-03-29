@@ -3,11 +3,12 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -17,6 +18,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,6 +29,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements
       IFluidContainerManager {
+
+    protected static final int[] SLOTS = {0,1};
 
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering
@@ -47,7 +51,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     public TileEntityDynamicTank(String name) {
         super(name);
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override
@@ -254,5 +258,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         }
 
         structure.editMode = mode;
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
     }
 }

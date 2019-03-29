@@ -11,26 +11,12 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class FluidContainerUtils {
 
     public static boolean isFluidContainer(ItemStack stack) {
         return !stack.isEmpty() && stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
-    }
-
-    public static boolean isEmpty(ItemStack stack) {
-        IFluidHandlerItem handler = FluidUtil.getFluidHandler(stack);
-        if (handler != null) {
-            for (IFluidTankProperties internalTank : handler.getTankProperties()) {
-                FluidStack contents = internalTank.getContents();
-                if (contents != null && contents.amount > 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public static FluidStack extractFluid(FluidTank tileTank, TileEntityContainerBlock tile, int slotID) {

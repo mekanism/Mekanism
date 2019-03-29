@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
@@ -7,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -102,5 +104,11 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
     @Override
     public boolean lightUpdate() {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
     }
 }

@@ -4,11 +4,11 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.config.MekanismConfig.usage;
@@ -30,6 +30,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl,
       ISecurityTile, IBoundingBlock {
 
+    private static final int[] SLOTS = {0};
+
     public boolean isActive;
 
     public boolean clientActive;
@@ -45,7 +47,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     public TileEntitySeismicVibrator() {
         super("SeismicVibrator", BlockStateMachine.MachineType.SEISMIC_VIBRATOR.baseEnergy);
 
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(SLOTS .length, ItemStack.EMPTY);
     }
 
     @Override
@@ -226,11 +228,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return new int[]{0};
+        return SLOTS;
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        return ChargeUtils.canBeCharged(stack);
+        return ChargeUtils.canBeDischarged(stack);
     }
 }

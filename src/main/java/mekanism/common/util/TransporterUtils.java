@@ -13,8 +13,6 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -29,25 +27,13 @@ public final class TransporterUtils {
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
         }
-
-        //Don't let the bin accept from all sides
-        if (!(tile instanceof TileEntityBin) && InventoryUtils.isItemHandler(tile, side.getOpposite())) {
-            return true;
-        } else if (tile instanceof IInventory) {
-            IInventory inventory = (IInventory) tile;
-
-            if (inventory.getSizeInventory() > 0) {
-                if (!(inventory instanceof ISidedInventory)) {
-                    return true;
-                }
-
-                int[] slots = ((ISidedInventory) inventory).getSlotsForFace(side.getOpposite());
-
-                return slots.length > 0;
+        if (tile instanceof TileEntityBin) {
+            //Special handling for bins that allows them to only be inserted into from the top
+            if (side != EnumFacing.UP) {
+                return false;
             }
         }
-
-        return false;
+        return InventoryUtils.isItemHandler(tile, side.getOpposite());
     }
 
     public static TransitResponse insert(TileEntity outputter, ILogisticalTransporter transporter,

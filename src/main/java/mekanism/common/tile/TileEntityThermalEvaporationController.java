@@ -35,6 +35,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,6 +46,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public static final int MAX_OUTPUT = 10000;
     public static final int MAX_SOLARS = 4;
     public static final int MAX_HEIGHT = 18;
+    private static final int[] SLOTS = {0,1,2,3};
 
     public FluidTank inputTank = new FluidTank(0);
     public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
@@ -84,7 +86,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public TileEntityThermalEvaporationController() {
         super("ThermalEvaporationController");
 
-        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override
@@ -613,15 +615,15 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return getController() == null ? InventoryUtils.EMPTY : new int[]{0, 1, 2, 3};
+        return getController() == null ? InventoryUtils.EMPTY : SLOTS;
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         if (slot == 0) {
-            return FluidContainerUtils.isFluidContainer(stack) && !FluidContainerUtils.isEmpty(stack);
+            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack) != null;
         } else if (slot == 2) {
-            return FluidContainerUtils.isFluidContainer(stack) && FluidContainerUtils.isEmpty(stack);
+            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack) == null;
         }
         return false;
     }

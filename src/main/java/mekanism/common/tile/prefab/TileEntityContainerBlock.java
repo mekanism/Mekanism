@@ -5,7 +5,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ItemHandlerWrapper;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -211,9 +210,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
     @Nonnull
     @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return InventoryUtils.EMPTY;
-    }
+    public abstract int[] getSlotsForFace(@Nonnull EnumFacing side);
 
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {

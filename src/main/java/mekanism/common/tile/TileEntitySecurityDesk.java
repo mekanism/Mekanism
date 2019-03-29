@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.api.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
@@ -18,9 +18,11 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -28,6 +30,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock {
+
+    private static final int[] SLOTS = {0,1};
 
     public UUID ownerUUID;
     public String clientOwner;
@@ -37,7 +41,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
     public TileEntitySecurityDesk() {
         super("SecurityDesk");
 
-        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override
@@ -269,5 +273,14 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        //Even though there are inventory slots make this return none as
+        // accessible by automation, as then people could lock items to other
+        // people unintentionally
+        return InventoryUtils.EMPTY;
     }
 }

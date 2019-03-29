@@ -102,7 +102,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? new int[]{0, 1}
+        return (!world.isRemote && structure != null) || (world.isRemote && clientHasStructure) ? SLOTS
               : InventoryUtils.EMPTY;
     }
 

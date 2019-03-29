@@ -31,6 +31,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements IHeatTransfer, IComputerIntegration,
       IRedstoneControl, ISecurityTile {
 
+    private static final int[] SLOTS = {0};
+
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature",
           "setEnergyUsage"};
     public double energyUsage = 100;
@@ -55,7 +57,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
     public TileEntityResistiveHeater() {
         super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.baseEnergy);
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
     @Override
@@ -338,11 +340,11 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return new int[]{0};
+        return SLOTS;
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
-        return ChargeUtils.canBeCharged(stack);
+        return ChargeUtils.canBeDischarged(stack);
     }
 }
