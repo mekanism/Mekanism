@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.content.transporter.TransitRequest.HashedItem;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
@@ -182,18 +184,19 @@ public class TransporterManager {
         // Now for each of the items in the request, simulate the insert, using the state from all the in-flight
         // items to ensure we have an accurate model of what will happen in future. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
-        for (Map.Entry<ItemStack, Integer> requestEntry : request.itemMap.entrySet()) {
-            ItemStack leftovers = simulateInsert(handler, invCopy, side, requestEntry.getKey().copy());
+        for (Map.Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap().entrySet()) {
+            // Create a sending ItemStack with the hashed item type and total item count within the request
+            ItemStack toSend = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
+            ItemStack leftovers = simulateInsert(handler, invCopy, side, toSend.copy());
 
             // If leftovers is unchanged from the simulation, there's no room at all; move on to the next stack
-            if (ItemStack.areItemStacksEqual(leftovers, requestEntry.getKey())) {
+            if (ItemStack.areItemStacksEqual(leftovers, toSend)) {
                 continue;
             }
 
             // Otherwise, construct the appropriately size stack to send and return that
-            ItemStack stackToSend = requestEntry.getKey().copy();
-            stackToSend.setCount(requestEntry.getKey().getCount() - leftovers.getCount());
-            return new TransitResponse(requestEntry.getValue(), stackToSend);
+            toSend.setCount(toSend.getCount() - leftovers.getCount());
+            return new TransitResponse(toSend, requestEntry.getValue().getRight());
         }
 
         return TransitResponse.EMPTY;

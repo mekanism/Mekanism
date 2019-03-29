@@ -371,8 +371,8 @@ public class Pos3D extends Vec3d {
     public boolean equals(Object obj) {
         return obj instanceof Vec3d &&
               ((Vec3d) obj).x == x &&
-              ((Vec3d) obj).x == y &&
-              ((Vec3d) obj).x == z;
+              ((Vec3d) obj).y == y &&
+              ((Vec3d) obj).z == z;
     }
 
     @Override

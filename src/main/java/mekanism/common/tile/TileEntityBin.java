@@ -238,7 +238,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
                               .insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0);
 
                         if (!response.isEmpty()) {
-                            bottomStack.shrink(response.stack.getCount());
+                            bottomStack.shrink(response.getStack().getCount());
                             setInventorySlotContents(0, bottomStack);
                         }
                     } else {
@@ -247,7 +247,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
                                     false);
 
                         if (!response.isEmpty()) {
-                            bottomStack.shrink(response.stack.getCount());
+                            bottomStack.shrink(response.getStack().getCount());
                             setInventorySlotContents(0, bottomStack);
                         }
                     }

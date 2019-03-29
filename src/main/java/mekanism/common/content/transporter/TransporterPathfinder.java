@@ -43,7 +43,7 @@ public final class TransporterPathfinder {
             DestChecker checker = new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, EnumFacing dir, TileEntity tile) {
-                    return InventoryUtils.canInsert(tile, stack.color, entry.response.stack, dir, false);
+                    return InventoryUtils.canInsert(tile, stack.color, entry.response.getStack(), dir, false);
                 }
             };
 
@@ -80,7 +80,7 @@ public final class TransporterPathfinder {
 
     public static Destination getPath(DestChecker checker, EnumSet<EnumFacing> sides, ILogisticalTransporter start,
           Coord4D dest, TransporterStack stack, TransitResponse response, int min) {
-        if (response.stack.getCount() >= min) {
+        if (response.getStack().getCount() >= min) {
             List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
 
             if (test != null && checkPath(start.world(), test, stack)) {

@@ -115,7 +115,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                             TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
 
                             if (!response.isEmpty()) {
-                                invStack.use(response.stack.getCount());
+                                invStack.use(response.getStack().getCount());
                                 back.markDirty();
                                 setActive(true);
                                 sentItems = true;
@@ -128,11 +128,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
                 if (!sentItems && autoEject) {
                     TransitRequest request = TransitRequest
-                          .getTopStacks(back, facing.getOpposite(), 64, new StrictFilterFinder());
+                          .buildInventoryMap(back, facing.getOpposite(), 64, new StrictFilterFinder());
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
 
                     if (!response.isEmpty()) {
-                        response.getInvStack(back, facing).use(response.stack.getCount());
+                        response.getInvStack(back, facing).use(response.getStack().getCount());
                         back.markDirty();
                         setActive(true);
                     }

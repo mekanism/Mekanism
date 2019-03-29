@@ -172,14 +172,14 @@ public class TileComponentEjector implements ITileComponent {
                           TransitRequest.getFromStack(stack.copy()), outputColor, true, 0);
 
                     if (!response.isEmpty()) {
-                        stack.shrink(response.stack.getCount());
+                        stack.shrink(response.getStack().getCount());
                     }
                 } else {
                     TransitResponse response = InventoryUtils
                           .putStackInInventory(tile, TransitRequest.getFromStack(stack.copy()), side, false);
 
                     if (!response.isEmpty()) {
-                        stack.shrink(response.stack.getCount());
+                        stack.shrink(response.getStack().getCount());
                     }
                 }
 

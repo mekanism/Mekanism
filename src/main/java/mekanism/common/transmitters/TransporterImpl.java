@@ -247,7 +247,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         TransitResponse response = stack.recalculatePath(request, this, min);
 
         if (!response.isEmpty()) {
-            stack.itemStack = response.stack;
+            stack.itemStack = response.getStack();
 
             if (doEmit) {
                 transit.add(stack);
@@ -280,7 +280,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         TransitResponse response = stack.recalculateRRPath(request, outputter, this, min);
 
         if (!response.isEmpty()) {
-            stack.itemStack = response.stack;
+            stack.itemStack = response.getStack();
 
             if (doEmit) {
                 transit.add(stack);
