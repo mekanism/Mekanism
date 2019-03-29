@@ -28,8 +28,10 @@ public final class TransporterUtils {
             return false;
         }
         if (tile instanceof TileEntityBin) {
-            //Special handling for bins that allows them to only be inserted into from the top
-            if (side != EnumFacing.UP) {
+            //Special handling to allow bins to only be connected to from the top and bottom by logistical transporters
+            //TODO: Strip this out when making the capability pass and only actually give the capabilities from the top
+            // and bottom. For the bottom one maybe even only give it "read only" access.
+            if (side != EnumFacing.DOWN && side != EnumFacing.UP) {
                 return false;
             }
         }
