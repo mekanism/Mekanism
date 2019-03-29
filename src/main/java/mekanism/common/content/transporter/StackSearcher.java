@@ -24,16 +24,7 @@ public class StackSearcher {
     }
 
     public InvStack takeTopStack(Finder id) {
-        if (!InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
-            Mekanism.logger
-                    .warn("A StackSearcher was wrapped around a non-IItemHandler inventory. This should not happen!");
-            
-            if (tileEntity == null) {
-                Mekanism.logger.warn(" - null tile");
-            } else {
-                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
-            }
-            
+        if (!InventoryUtils.assertItemHandler("StackSearcher", tileEntity, side.getOpposite())) {
             return null;
         }
         
@@ -53,16 +44,7 @@ public class StackSearcher {
     public InvStack takeDefinedItem(ItemStack type, int min, int max) {
         InvStack ret = new InvStack(tileEntity, side.getOpposite());
         
-        if (!InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
-            Mekanism.logger
-                    .warn("A StackSearcher was wrapped around a non-IItemHandler inventory. This should not happen!");
-            
-            if (tileEntity == null) {
-                Mekanism.logger.warn(" - null tile");
-            } else {
-                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
-            }
-            
+        if (!InventoryUtils.assertItemHandler("StackSearcher", tileEntity, side.getOpposite())) {
             return null;
         }
 

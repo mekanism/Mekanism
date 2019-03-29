@@ -93,16 +93,7 @@ public final class InvStack {
      * @param amount - the amount of items to remove
      */
     public void use(int amount) {
-        if (!InventoryUtils.isItemHandler(tileEntity, side)) {
-            Mekanism.logger
-                    .warn("An InvStack was wrapped around a non-IItemHandler inventory. This should not happen!");
-            
-            if (tileEntity == null) {
-                Mekanism.logger.warn(" - null tile");
-            } else {
-                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
-            }
-            
+        if (!InventoryUtils.assertItemHandler("InvStack", tileEntity, side)) {
             return;
         }
 
