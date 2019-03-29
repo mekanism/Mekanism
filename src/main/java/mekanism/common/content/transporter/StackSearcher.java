@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -23,15 +24,19 @@ public class StackSearcher {
     }
 
     public InvStack takeTopStack(Finder id) {
-        if (InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
-            IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
+        if (!InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
+            Mekanism.logger
+                    .warn("A StackSearcher was wrapped around a non-IItemHandler inventory. This should not happen!");
+            return null;
+        }
+        
+        IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
 
-            for (i = i - 1; i >= 0; i--) {
-                ItemStack stack = inventory.extractItem(i, 64, true);
+        for (i = i - 1; i >= 0; i--) {
+            ItemStack stack = inventory.extractItem(i, 64, true);
 
-                if (!stack.isEmpty() && id.modifies(stack)) {
-                    return new InvStack(tileEntity, i, stack, side.getOpposite());
-                }
+            if (!stack.isEmpty() && id.modifies(stack)) {
+                return new InvStack(tileEntity, i, stack, side.getOpposite());
             }
         }
 
@@ -40,27 +45,31 @@ public class StackSearcher {
 
     public InvStack takeDefinedItem(ItemStack type, int min, int max) {
         InvStack ret = new InvStack(tileEntity, side.getOpposite());
+        
+        if (!InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
+            Mekanism.logger
+                    .warn("A StackSearcher was wrapped around a non-IItemHandler inventory. This should not happen!");
+            return null;
+        }
 
-        if (InventoryUtils.isItemHandler(tileEntity, side.getOpposite())) {
-            IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
+        IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
 
-            for (i = i - 1; i >= 0; i--) {
-                ItemStack stack = inventory.extractItem(i, max, true);
+        for (i = i - 1; i >= 0; i--) {
+            ItemStack stack = inventory.extractItem(i, max, true);
 
-                if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
-                    int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
+            if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
+                int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
 
-                    if (current + stack.getCount() <= max) {
-                        ret.appendStack(i, stack.copy());
-                    } else {
-                        ItemStack copy = stack.copy();
-                        copy.setCount(max - current);
-                        ret.appendStack(i, copy);
-                    }
+                if (current + stack.getCount() <= max) {
+                    ret.appendStack(i, stack.copy());
+                } else {
+                    ItemStack copy = stack.copy();
+                    copy.setCount(max - current);
+                    ret.appendStack(i, copy);
+                }
 
-                    if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
-                        return ret;
-                    }
+                if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
+                    return ret;
                 }
             }
         }

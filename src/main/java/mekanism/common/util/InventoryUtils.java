@@ -1,11 +1,13 @@
 package mekanism.common.util;
 
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
-import mekanism.common.content.transporter.TransitRequest.HashedItem;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -14,7 +16,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class InventoryUtils {
 
@@ -40,20 +41,24 @@ public final class InventoryUtils {
               .entrySet()) {
             ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
             ItemStack toInsert = origInsert.copy();
+            
+            if (!isItemHandler(tile, side.getOpposite())) {
+                Mekanism.logger
+                        .warn("A transporter attempted to place an item in a non-IItemHandler inventory. This should not happen!");
+                return TransitResponse.EMPTY;
+            }
 
-            if (isItemHandler(tile, side.getOpposite())) {
-                IItemHandler inventory = getItemHandler(tile, side.getOpposite());
+            IItemHandler inventory = getItemHandler(tile, side.getOpposite());
 
-                for (int i = 0; i < inventory.getSlots(); i++) {
-                    // Check validation
-                    if (inventory.isItemValid(i, toInsert)) {
-                        // Do insert
-                        toInsert = inventory.insertItem(i, toInsert, false);
+            for (int i = 0; i < inventory.getSlots(); i++) {
+                // Check validation
+                if (inventory.isItemValid(i, toInsert)) {
+                    // Do insert
+                    toInsert = inventory.insertItem(i, toInsert, false);
 
-                        // If empty, end
-                        if (toInsert.isEmpty()) {
-                            return new TransitResponse(origInsert, requestEntry.getValue().getRight());
-                        }
+                    // If empty, end
+                    if (toInsert.isEmpty()) {
+                        return new TransitResponse(origInsert, requestEntry.getValue().getRight());
                     }
                 }
             }
@@ -77,27 +82,31 @@ public final class InventoryUtils {
 
     public static InvStack takeDefinedItem(TileEntity tile, EnumFacing side, ItemStack type, int min, int max) {
         InvStack ret = new InvStack(tile, side.getOpposite());
+        
+        if (!isItemHandler(tile, side.getOpposite())) {
+            Mekanism.logger
+                    .warn("A defined item pull was attempted from a non-IItemHandler inventory. This should not happen!");
+            return null;
+        }
 
-        if (isItemHandler(tile, side.getOpposite())) {
-            IItemHandler inventory = getItemHandler(tile, side.getOpposite());
+        IItemHandler inventory = getItemHandler(tile, side.getOpposite());
 
-            for (int i = inventory.getSlots() - 1; i >= 0; i--) {
-                ItemStack stack = inventory.extractItem(i, max, true);
+        for (int i = inventory.getSlots() - 1; i >= 0; i--) {
+            ItemStack stack = inventory.extractItem(i, max, true);
 
-                if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
-                    int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
+            if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
+                int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
 
-                    if (current + stack.getCount() <= max) {
-                        ret.appendStack(i, stack.copy());
-                    } else {
-                        ItemStack copy = stack.copy();
-                        copy.setCount(max - current);
-                        ret.appendStack(i, copy);
-                    }
+                if (current + stack.getCount() <= max) {
+                    ret.appendStack(i, stack.copy());
+                } else {
+                    ItemStack copy = stack.copy();
+                    copy.setCount(max - current);
+                    ret.appendStack(i, copy);
+                }
 
-                    if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
-                        return ret;
-                    }
+                if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
+                    return ret;
                 }
             }
         }
@@ -125,19 +134,23 @@ public final class InventoryUtils {
                 return false;
             }
         }
+        
+        if (!isItemHandler(tileEntity, side.getOpposite())) {
+            Mekanism.logger
+                    .warn("A transporter attempted to place an item in a non-IItemHandler inventory. This should not happen!");
+            return false;
+        }
 
-        if (isItemHandler(tileEntity, side.getOpposite())) {
-            IItemHandler inventory = getItemHandler(tileEntity, side.getOpposite());
+        IItemHandler inventory = getItemHandler(tileEntity, side.getOpposite());
 
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                // Check validation
-                if (inventory.isItemValid(i, itemStack)) {
-                    // Simulate insert
-                    ItemStack rejects = inventory.insertItem(i, itemStack, true);
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            // Check validation
+            if (inventory.isItemValid(i, itemStack)) {
+                // Simulate insert
+                ItemStack rejects = inventory.insertItem(i, itemStack, true);
 
-                    if (TransporterManager.didEmit(itemStack, rejects)) {
-                        return true;
-                    }
+                if (TransporterManager.didEmit(itemStack, rejects)) {
+                    return true;
                 }
             }
         }
