@@ -53,6 +53,10 @@ public final class InvStack {
         tileEntity = inv;
         side = facing;
         itemMap = idMap;
+        
+        for(Map.Entry<Integer, Integer> entry : idMap.entrySet()) {
+            appendStack(entry.getKey(), StackUtils.size(stack, entry.getValue()));
+        }
     }
 
     /**
