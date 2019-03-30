@@ -49,7 +49,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityMachine;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
@@ -406,7 +405,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                         continue;
                     }
 
-                    Pair<ItemStack, ItemStack> evened = StackUtils.even(inventory.get(invID1.ID), inventory.get(invID2.ID));
+                    Pair<ItemStack, ItemStack> evened = StackUtils
+                          .even(inventory.get(invID1.ID), inventory.get(invID2.ID));
                     inventory.set(invID1.ID, evened.getLeft());
                     inventory.set(invID2.ID, evened.getRight());
 
@@ -927,7 +927,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
               .isCapabilityDisabled(capability, side);
     }
 

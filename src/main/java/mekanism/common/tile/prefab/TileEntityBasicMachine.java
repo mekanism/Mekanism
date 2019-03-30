@@ -92,7 +92,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
               .isCapabilityDisabled(capability, side);
     }
 }

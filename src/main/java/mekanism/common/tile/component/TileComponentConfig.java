@@ -6,17 +6,22 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.SideData.IOState;
 import mekanism.common.base.ITileComponent;
-import mekanism.api.TileNetworkList;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileComponentConfig implements ITileComponent {
 
@@ -76,6 +81,24 @@ public class TileComponentConfig implements ITileComponent {
         }
         EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
         return getConfig(type).get(translatedFacings[sideToTest.ordinal()]) == dataIndex;
+    }
+
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side, EnumFacing tileDirection) {
+        TransmissionType type = null;
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            type = TransmissionType.ITEM;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            type = TransmissionType.GAS;
+        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+            type = TransmissionType.HEAT;
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            type = TransmissionType.FLUID;
+        }
+        //Energy is handled by the TileEntityElectricBlock anyways in the super clauses so no need to bother with it
+        if (type != null) {
+            return supports(type) && hasSideForData(type, tileDirection, 0, side);
+        }
+        return false;
     }
 
     public void setCanEject(TransmissionType type, boolean eject) {

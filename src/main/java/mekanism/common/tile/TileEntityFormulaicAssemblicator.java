@@ -24,7 +24,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -705,7 +704,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
               .isCapabilityDisabled(capability, side);
     }
 }

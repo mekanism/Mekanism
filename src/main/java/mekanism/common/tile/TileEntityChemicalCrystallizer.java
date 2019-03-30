@@ -26,7 +26,6 @@ import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -237,7 +236,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
               .isCapabilityDisabled(capability, side);
     }
 

@@ -648,7 +648,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
               .isCapabilityDisabled(capability, side);
     }
 
