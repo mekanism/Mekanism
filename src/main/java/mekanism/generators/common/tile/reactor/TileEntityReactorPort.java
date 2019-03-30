@@ -44,6 +44,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler,
       ITubeConnection, IHeatTransfer, IConfigurable {
@@ -361,6 +362,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return getReactor() != null && getReactor().isFormed() ? new int[]{0} : InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Allow inserting
+            return false;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

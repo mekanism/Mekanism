@@ -25,9 +25,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock {
 
@@ -282,5 +284,14 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
         // accessible by automation, as then people could lock items to other
         // people unintentionally
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //For the same reason as the getSlotsForFace does not give any slots, don't expose this here
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

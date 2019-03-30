@@ -4,12 +4,10 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration {
@@ -181,12 +179,6 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Nonnull
-    @Override
-    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        return InventoryUtils.EMPTY;
     }
 
     public enum ReactorLogic {

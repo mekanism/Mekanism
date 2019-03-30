@@ -31,6 +31,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl,
       IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration, ISecurityTile {
@@ -369,6 +370,14 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     public enum RedstoneOutput {

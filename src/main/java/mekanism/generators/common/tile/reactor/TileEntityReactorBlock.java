@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.util.InventoryUtils;
 import mekanism.generators.common.FusionReactor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -107,6 +108,12 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
                 found.formMultiblock(false);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
     }
 
     @Override
