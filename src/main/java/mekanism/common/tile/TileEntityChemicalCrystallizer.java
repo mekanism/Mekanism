@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -16,7 +17,6 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
@@ -26,6 +26,7 @@ import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -213,6 +214,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
               || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
@@ -220,12 +224,21 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return (T) this;
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+              .isCapabilityDisabled(capability, side);
     }
 
     @Override

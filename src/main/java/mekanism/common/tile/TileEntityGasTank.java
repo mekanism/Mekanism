@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -20,7 +21,6 @@ import mekanism.common.Tier.GasTankTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -29,6 +29,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -242,6 +243,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
               || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || super.hasCapability(capability, side);
@@ -249,12 +253,21 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY
               || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
             return (T) this;
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+              .isCapabilityDisabled(capability, side);
     }
 
     @Override

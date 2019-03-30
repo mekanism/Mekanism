@@ -619,6 +619,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
               || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
@@ -628,6 +631,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return (T) this;
@@ -638,6 +644,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return CapabilityUtils.isCapabilityDisabled(capability, side, this) || super
+              .isCapabilityDisabled(capability, side);
     }
 
     @Override
