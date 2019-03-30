@@ -32,6 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -39,6 +40,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState,
       ITankManager {
@@ -609,7 +611,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return new Object[]{inputTank, outputTank};
     }
 
-    //TODO: Move getSlotsForFace and isItemValidForSlot to Valve
+    //TODO: Move getSlotsForFace, isItemValidForSlot, and isCapabilityDisabled to Valve
     //NOTE: For now it has to be in the controller as it uses the old multiblock structure so the valve's don't actually
     //have an inventory, which causes a crash trying to insert into them
     @Nonnull
@@ -626,5 +628,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack) == null;
         }
         return false;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return false;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

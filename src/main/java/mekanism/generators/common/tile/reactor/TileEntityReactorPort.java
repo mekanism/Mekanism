@@ -37,6 +37,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -430,5 +431,15 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
         return EnumActionResult.PASS;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        //TODO: Decide if we want the port to be able to accept Hohlraum as well as the controller
+        if (isStrictEnergy(capability)|| capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            //Allow interacting with power given it is disabled in TileEntityReactorBlock
+            return false;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

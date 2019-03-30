@@ -44,6 +44,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 @InterfaceList({
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
@@ -496,5 +497,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return ChargeUtils.canBeDischarged(stack);
         }
         return false;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return false;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

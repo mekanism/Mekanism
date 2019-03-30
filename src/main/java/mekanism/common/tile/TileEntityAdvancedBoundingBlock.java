@@ -431,7 +431,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return super.hasCapability(capability, facing);
         }
 
-        return inv.hasCapability(capability, facing);
+        return inv.hasOffsetCapability(capability, facing, pos.subtract(mainPos));
     }
 
     @Override
@@ -445,6 +445,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return super.getCapability(capability, facing);
         }
 
-        return inv.getCapability(capability, facing);
+        return inv.getOffsetCapability(capability, facing, pos.subtract(mainPos));
     }
 }

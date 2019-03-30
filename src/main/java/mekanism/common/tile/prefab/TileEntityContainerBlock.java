@@ -5,6 +5,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ItemHandlerWrapper;
 import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -24,7 +25,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory,
-      ISustainedInventory, ITickable {
+      ISustainedInventory, ITickable, IToggleableCapability {
 
     /**
      * The inventory slot itemstacks used by this block.
@@ -285,19 +286,25 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     }
 
     @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (facing == null) {
-                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(nullHandler);
-            }
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemManager.getWrapper(this, facing));
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
         }
 
         return super.getCapability(capability, facing);
+    }
+
+    protected IItemHandler getItemHandler(EnumFacing side) {
+        return side == null ? nullHandler : itemManager.getWrapper(this, side);
     }
 }

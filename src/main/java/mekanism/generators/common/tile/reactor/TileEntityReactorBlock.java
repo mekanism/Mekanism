@@ -2,12 +2,16 @@ package mekanism.generators.common.tile.reactor;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.generators.common.FusionReactor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
 
@@ -104,6 +108,16 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
                 found.formMultiblock(false);
             }
         }
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        } else if (isStrictEnergy(capability)|| capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     public class ControllerFinder {

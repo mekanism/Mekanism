@@ -10,7 +10,6 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.tileentity.TileEntity;
@@ -26,14 +25,6 @@ public final class TransporterUtils {
     public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side) {
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
-        }
-        if (tile instanceof TileEntityBin) {
-            //Special handling to allow bins to only be connected to from the top and bottom by logistical transporters
-            //TODO: Strip this out when making the capability pass and only actually give the capabilities from the top
-            // and bottom. For the bottom one maybe even only give it "read only" access.
-            if (side != EnumFacing.DOWN && side != EnumFacing.UP) {
-                return false;
-            }
         }
         return InventoryUtils.isItemHandler(tile, side.getOpposite());
     }

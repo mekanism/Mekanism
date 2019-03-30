@@ -66,14 +66,17 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
@@ -968,7 +971,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         //Allow for automation via the top (as that is where it can auto pull from)
-        return side == EnumFacing.UP ||  side == facing.getOpposite() ? INV_SLOTS : InventoryUtils.EMPTY;
+        return side == EnumFacing.UP || side == facing.getOpposite() ? INV_SLOTS : InventoryUtils.EMPTY;
     }
 
     @Override
@@ -1308,6 +1311,77 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean hasOffsetCapability(@Nonnull Capability<?> capability, EnumFacing side, Vec3i offset) {
+        if (isOffsetCapabilityDisabled(capability, side, offset)) {
+            return false;
+        }
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            return true;
+        }
+        return hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getOffsetCapability(@Nonnull Capability<T> capability, EnumFacing side, Vec3i offset) {
+        if (isOffsetCapabilityDisabled(capability, side, offset)) {
+            return null;
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
+        } else if (isStrictEnergy(capability)) {
+            return (T) this;
+        } else if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
+        } else if (isTesla(capability, side)) {
+            return (T) getTeslaEnergyWrapper(side);
+        }
+        return getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side, Vec3i offset) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Input
+            if (offset.equals(new Vec3i(0, 1, 0))) {
+                //If input then disable if wrong face of input
+                return side != EnumFacing.UP;
+            }
+            //Output
+            EnumFacing back = facing.getOpposite();
+            if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
+                //If output then disable if wrong face of output
+                return side != back;
+            }
+            return true;
+        }
+        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            EnumFacing left = MekanismUtils.getLeft(facing);
+            EnumFacing right = MekanismUtils.getRight(facing);
+            if (offset.equals(new Vec3i(left.getXOffset(), 0, left.getZOffset()))) {
+                //Disable if left power port but wrong side of the port
+                return side != left;
+            } else if (offset.equals(new Vec3i(right.getXOffset(), 0, right.getZOffset()))) {
+                //Disable if right power port but wrong side of the port
+                return side != right;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        //Return some capabilities as disabled, and handle them with offset capabilities instead
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
