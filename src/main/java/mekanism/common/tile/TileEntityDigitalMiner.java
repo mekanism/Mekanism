@@ -1314,7 +1314,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean hasOffsetCapability(@Nonnull Capability<?> capability, EnumFacing side, Vec3i offset) {
+    public boolean hasOffsetCapability(@Nonnull Capability<?> capability, EnumFacing side, @Nonnull Vec3i offset) {
         if (isOffsetCapabilityDisabled(capability, side, offset)) {
             return false;
         }
@@ -1327,7 +1327,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public <T> T getOffsetCapability(@Nonnull Capability<T> capability, EnumFacing side, Vec3i offset) {
+    public <T> T getOffsetCapability(@Nonnull Capability<T> capability, EnumFacing side, @Nonnull Vec3i offset) {
         if (isOffsetCapabilityDisabled(capability, side, offset)) {
             return null;
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -1343,7 +1343,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side, Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side,
+          @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Input
             if (offset.equals(new Vec3i(0, 1, 0))) {
