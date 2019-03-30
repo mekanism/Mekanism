@@ -375,10 +375,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
-            return !isCapabilityDisabled(capability, side);
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
         }
-        return super.hasCapability(capability, side);
+        return isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side) || super
+              .hasCapability(capability, side);
     }
 
     @Override
@@ -395,13 +396,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
         return super.getCapability(capability, side);
     }
 
-    protected  <T> boolean isStrictEnergy(@Nonnull Capability<T> capability) {
+    protected boolean isStrictEnergy(@Nonnull Capability capability) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
               || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY ||
               capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY;
     }
 
-    protected <T> boolean isTesla(@Nonnull Capability<T> capability, EnumFacing side) {
+    protected boolean isTesla(@Nonnull Capability capability, EnumFacing side) {
         return capability == Capabilities.TESLA_HOLDER_CAPABILITY
               || (capability == Capabilities.TESLA_CONSUMER_CAPABILITY && sideIsConsumer(side))
               || (capability == Capabilities.TESLA_PRODUCER_CAPABILITY && sideIsOutput(side));
@@ -413,5 +414,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
     protected TeslaIntegration getTeslaEnergyWrapper(EnumFacing side) {
         return teslaManager.getWrapper(this, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            return !sideIsConsumer(side) && !sideIsOutput(side);
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

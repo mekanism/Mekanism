@@ -1359,6 +1359,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             return true;
         }
         if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            if (offset.equals(Vec3i.NULL_VECTOR)) {
+                //Disable if it is the bottom port but wrong side of it
+                return side != EnumFacing.DOWN;
+            }
             EnumFacing left = MekanismUtils.getLeft(facing);
             EnumFacing right = MekanismUtils.getRight(facing);
             if (offset.equals(new Vec3i(left.getXOffset(), 0, left.getZOffset()))) {

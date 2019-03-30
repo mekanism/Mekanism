@@ -341,6 +341,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             //Allow inserting
             return false;
         }
+        //TODO: Decide if we want the port to be able to accept Hohlraum as well as the controller
         return super.isCapabilityDisabled(capability, side);
     }
 }

@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
@@ -113,8 +112,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        } else if (isStrictEnergy(capability)|| capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
