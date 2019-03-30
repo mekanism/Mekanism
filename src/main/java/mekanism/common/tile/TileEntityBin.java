@@ -664,6 +664,11 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
             return 1;
         }
 
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return slot == 0;
+        }
+
         @Nonnull
         @Override
         public ItemStack getStackInSlot(int slot) {
