@@ -123,7 +123,7 @@ public class TransitRequest {
 
         /** slot ID to item count map - this details how many items we will be pulling from each slot */
         private Map<Integer, Integer> idMap = new HashMap<>();
-        private ItemStack toSend;
+        private ItemStack toSend = ItemStack.EMPTY;
 
         private TransitResponse() {}
 
