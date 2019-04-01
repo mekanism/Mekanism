@@ -1,11 +1,13 @@
 package mekanism.common.util;
 
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
-import mekanism.common.content.transporter.TransitRequest.HashedItem;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -14,11 +16,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class InventoryUtils {
 
-    public static final int[] EMPTY = new int[]{};
+    public static final int[] EMPTY = new int[] {};
 
     public static int[] getIntRange(int start, int end) {
         int[] ret = new int[1 + end - start];
@@ -31,36 +32,38 @@ public final class InventoryUtils {
     }
 
     public static TransitResponse putStackInInventory(TileEntity tile, TransitRequest request, EnumFacing side,
-          boolean force) {
+            boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(request.getSingleStack());
         }
 
         for (Map.Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap()
-              .entrySet()) {
+                .entrySet()) {
             ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
             ItemStack toInsert = origInsert.copy();
 
-            if (isItemHandler(tile, side.getOpposite())) {
-                IItemHandler inventory = getItemHandler(tile, side.getOpposite());
+            if (!isItemHandler(tile, side.getOpposite())) {
+                return TransitResponse.EMPTY;
+            }
 
-                for (int i = 0; i < inventory.getSlots(); i++) {
-                    // Check validation
-                    if (inventory.isItemValid(i, toInsert)) {
-                        // Do insert
-                        toInsert = inventory.insertItem(i, toInsert, false);
+            IItemHandler inventory = getItemHandler(tile, side.getOpposite());
 
-                        // If empty, end
-                        if (toInsert.isEmpty()) {
-                            return new TransitResponse(origInsert, requestEntry.getValue().getRight());
-                        }
+            for (int i = 0; i < inventory.getSlots(); i++) {
+                // Check validation
+                if (inventory.isItemValid(i, toInsert)) {
+                    // Do insert
+                    toInsert = inventory.insertItem(i, toInsert, false);
+
+                    // If empty, end
+                    if (toInsert.isEmpty()) {
+                        return new TransitResponse(origInsert, requestEntry.getValue().getRight());
                     }
                 }
             }
 
             if (TransporterManager.didEmit(origInsert, toInsert)) {
                 return new TransitResponse(TransporterManager.getToUse(origInsert, toInsert),
-                      requestEntry.getValue().getRight());
+                        requestEntry.getValue().getRight());
             }
         }
 
@@ -78,26 +81,28 @@ public final class InventoryUtils {
     public static InvStack takeDefinedItem(TileEntity tile, EnumFacing side, ItemStack type, int min, int max) {
         InvStack ret = new InvStack(tile, side.getOpposite());
 
-        if (isItemHandler(tile, side.getOpposite())) {
-            IItemHandler inventory = getItemHandler(tile, side.getOpposite());
+        if (!isItemHandler(tile, side.getOpposite())) {
+            return null;
+        }
 
-            for (int i = inventory.getSlots() - 1; i >= 0; i--) {
-                ItemStack stack = inventory.extractItem(i, max, true);
+        IItemHandler inventory = getItemHandler(tile, side.getOpposite());
 
-                if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
-                    int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
+        for (int i = inventory.getSlots() - 1; i >= 0; i--) {
+            ItemStack stack = inventory.extractItem(i, max, true);
 
-                    if (current + stack.getCount() <= max) {
-                        ret.appendStack(i, stack.copy());
-                    } else {
-                        ItemStack copy = stack.copy();
-                        copy.setCount(max - current);
-                        ret.appendStack(i, copy);
-                    }
+            if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
+                int current = ret.getStack().getCount();
 
-                    if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
-                        return ret;
-                    }
+                if (current + stack.getCount() <= max) {
+                    ret.appendStack(i, stack.copy());
+                } else {
+                    ItemStack copy = stack.copy();
+                    copy.setCount(max - current);
+                    ret.appendStack(i, copy);
+                }
+
+                if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
+                    return ret;
                 }
             }
         }
@@ -110,7 +115,7 @@ public final class InventoryUtils {
     }
 
     public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, EnumFacing side,
-          boolean force) {
+            boolean force) {
         if (force && tileEntity instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tileEntity).canSendHome(itemStack);
         }
@@ -119,30 +124,49 @@ public final class InventoryUtils {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
             EnumFacing tileSide = config.getOrientation();
             EnumColor configColor =
-                  config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
+                    config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
 
             if (config.getEjector().hasStrictInput() && configColor != null && configColor != color) {
                 return false;
             }
         }
 
-        if (isItemHandler(tileEntity, side.getOpposite())) {
-            IItemHandler inventory = getItemHandler(tileEntity, side.getOpposite());
+        if (!isItemHandler(tileEntity, side.getOpposite())) {
+            return false;
+        }
 
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                // Check validation
-                if (inventory.isItemValid(i, itemStack)) {
-                    // Simulate insert
-                    ItemStack rejects = inventory.insertItem(i, itemStack, true);
+        IItemHandler inventory = getItemHandler(tileEntity, side.getOpposite());
 
-                    if (TransporterManager.didEmit(itemStack, rejects)) {
-                        return true;
-                    }
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            // Check validation
+            if (inventory.isItemValid(i, itemStack)) {
+                // Simulate insert
+                ItemStack rejects = inventory.insertItem(i, itemStack, true);
+
+                if (TransporterManager.didEmit(itemStack, rejects)) {
+                    return true;
                 }
             }
         }
 
         return false;
+    }
+
+    public static boolean assertItemHandler(String desc, TileEntity tileEntity, EnumFacing side) {
+        if (!isItemHandler(tileEntity, side)) {
+            Mekanism.logger
+                    .warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!");
+
+            if (tileEntity == null) {
+                Mekanism.logger.warn(" - null tile");
+            } else {
+                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     public static boolean isItemHandler(TileEntity tile, EnumFacing side) {
@@ -156,8 +180,8 @@ public final class InventoryUtils {
     /* TODO From CCLib -- go back to that version when we're using dependencies again */
     public static boolean canStack(ItemStack stack1, ItemStack stack2) {
         return stack1.isEmpty() || stack2.isEmpty()
-              || (stack1.getItem() == stack2.getItem()
-              && (!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage())
-              && ItemStack.areItemStackTagsEqual(stack2, stack1)) && stack1.isStackable();
+                || (stack1.getItem() == stack2.getItem()
+                        && (!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage())
+                        && ItemStack.areItemStackTagsEqual(stack2, stack1)) && stack1.isStackable();
     }
 }
