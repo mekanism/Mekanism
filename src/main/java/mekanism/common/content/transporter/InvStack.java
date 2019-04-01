@@ -23,7 +23,7 @@ public final class InvStack {
 
     /** The TileEntity owning the container this InvStack belongs to. */
     private final TileEntity tileEntity;
-    
+
     /** The side of the inventory we are accessing with this InvStack. */
     private final EnumFacing side;
 
@@ -53,8 +53,8 @@ public final class InvStack {
         tileEntity = inv;
         side = facing;
         itemMap = idMap;
-        
-        for(Map.Entry<Integer, Integer> entry : idMap.entrySet()) {
+
+        for (Map.Entry<Integer, Integer> entry : idMap.entrySet()) {
             appendStack(entry.getKey(), StackUtils.size(stack, entry.getValue()));
         }
     }
@@ -101,7 +101,17 @@ public final class InvStack {
 
         for (Map.Entry<Integer, Integer> entry : itemMap.entrySet()) {
             int toUse = Math.min(amount, entry.getValue());
-            handler.extractItem(entry.getKey(), toUse, false);
+            ItemStack ret = handler.extractItem(entry.getKey(), toUse, false);
+            boolean stackable = InventoryUtils.areItemsStackable(itemType.getStack(), ret);
+
+            if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
+                Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count")
+                        + " does not line up with InvStack's prediction.");
+
+                Mekanism.logger.warn("InvStack item: " + itemType.getStack() + ", ret: " + ret);
+                Mekanism.logger.warn("Tile: " + tileEntity + " " + tileEntity.getPos());
+            }
+
             amount -= toUse;
 
             if (amount == 0) {

@@ -3,7 +3,6 @@ package mekanism.common.content.transporter;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
-import mekanism.common.Mekanism;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -47,16 +46,7 @@ public class TransitRequest {
         // so we can keep track of how many of each item type we have in this inventory mapping
         Map<HashedItem, Integer> itemCountMap = new HashMap<>();
 
-        if (!InventoryUtils.isItemHandler(tile, side.getOpposite())) {
-            Mekanism.logger.warn(
-                    "A TransitRequest was built with a non-IItemHandler origin inventory. This should not happen!");
-            
-            if (tile == null) {
-                Mekanism.logger.warn(" - null tile");
-            } else {
-                Mekanism.logger.warn(" - details: " + tile + " " + tile.getPos());
-            }
-
+        if (!InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite())) {
             return ret;
         }
 
