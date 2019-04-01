@@ -3,18 +3,17 @@ package mekanism.common.tile.prefab;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -39,7 +38,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends
       TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler,
-      ITubeConnection, ISustainedData {
+      ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive",
           "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
@@ -306,11 +305,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return false;
-    }
-
-    @Override
     public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
         return 0;
     }
@@ -338,15 +332,17 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return (T) this;
         }
 

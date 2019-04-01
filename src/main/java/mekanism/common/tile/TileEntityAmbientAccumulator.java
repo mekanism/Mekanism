@@ -9,7 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
@@ -19,9 +19,10 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection {
+public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler {
 
     public static Random gasRand = new Random();
     public GasTank collectedGas = new GasTank(1000);
@@ -76,11 +77,6 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return true;
-    }
-
-    @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         TileUtils.addTankData(data, collectedGas);
         return data;
@@ -97,5 +93,20 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    //Gas capability is never disabled here
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return (T) this;
+        }
+
+        return super.getCapability(capability, side);
     }
 }

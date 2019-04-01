@@ -10,11 +10,11 @@ import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -25,7 +25,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig.general;
@@ -62,8 +61,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration,
-      ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection,
-      IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile {
+      ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, IComputerIntegration,
+      ISecurityTile, IChunkLoader, IUpgradeTile {
 
     private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
     private static final String[] methods = new String[]{"setFrequency"};
@@ -613,17 +612,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState != IOState.OFF;
-    }
-
-    @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
               || super.hasCapability(capability, side);
@@ -634,8 +627,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
         if (isCapabilityDisabled(capability, side)) {
             return null;
         }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return (T) this;
         }
 
@@ -648,8 +640,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super
-              .isCapabilityDisabled(capability, side);
+        if (configComponent.isCapabilityDisabled(capability, side, facing)) {
+            return true;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            //TODO: Figure out if checking ioState even needed
+            return !hasFrequency()
+                  || configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OFF;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

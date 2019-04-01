@@ -55,11 +55,6 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return true;
-    }
-
-    @Override
     public boolean isValidGas(Gas gas) {
         return Recipe.PURIFICATION_CHAMBER.containsRecipe(gas);
     }

@@ -11,7 +11,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.MekanismFluids;
 import mekanism.common.OreDictCache;
 import mekanism.common.Tier.GasTankTier;
@@ -71,14 +70,7 @@ public final class GasUtils {
             return false;
         }
 
-        if (CapabilityUtils.hasCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite())) {
-            ITubeConnection connection = CapabilityUtils
-                  .getCapability(tile, Capabilities.TUBE_CONNECTION_CAPABILITY, side.getOpposite());
-
-            return connection.canTubeConnect(side.getOpposite());
-        }
-
-        return false;
+        return CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
     }
 
     /**

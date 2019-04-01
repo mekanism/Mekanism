@@ -12,7 +12,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -29,7 +28,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
@@ -45,8 +43,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection,
-      IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable, IComputerIntegration {
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, IRedstoneControl,
+      ISideConfiguration, ISecurityTile, ITierUpgradeable, IComputerIntegration {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -246,18 +244,14 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (isCapabilityDisabled(capability, side)) {
             return null;
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return (T) this;
         }
 
@@ -347,11 +341,6 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     @Override
     public boolean canSetFacing(int side) {
         return side != 0 && side != 1;
-    }
-
-    @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return true;
     }
 
     public int getRedstoneLevel() {

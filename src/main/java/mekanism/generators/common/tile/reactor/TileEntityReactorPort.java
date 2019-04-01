@@ -13,7 +13,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -47,7 +46,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler,
-      ITubeConnection, IHeatTransfer, IConfigurable {
+      IHeatTransfer, IConfigurable {
 
     public boolean fluidEject;
 
@@ -200,14 +199,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return getReactor() != null;
-    }
-
-    @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
               || capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
@@ -215,8 +211,10 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
               || capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return (T) this;
         }
@@ -369,6 +367,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Allow inserting
             return false;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return getReactor() == null;
         }
         return super.isCapabilityDisabled(capability, side);
     }

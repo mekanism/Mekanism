@@ -12,7 +12,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -45,8 +44,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl,
-      IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager, ISecurityTile,
-      IUpgradeTile, IUpgradeInfoHandler {
+      IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, ISecurityTile, IUpgradeTile,
+      IUpgradeInfoHandler {
 
     public static final int MAX_GAS = 10000;
     private static final int[] INPUT_SLOT = {0};
@@ -111,7 +110,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
             // traffic from previous implementation that send the update every 10 ticks.
             if (world.getTotalWorldTime() % 20 == 0) {
                 Mekanism.packetHandler
-                      .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                      .sendToReceivers(
+                            new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                             new Range4D(Coord4D.get(this)));
             }
         }
@@ -245,25 +245,30 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return side == facing || side == EnumFacing.DOWN;
-    }
-
-    @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return (T) this;
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return side != facing && side != EnumFacing.DOWN;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

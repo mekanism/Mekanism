@@ -183,12 +183,8 @@ public interface IFactory {
             return false;
         }
 
-        public boolean canTubeConnect(EnumFacing side) {
-            if (fuelType == MachineFuelType.ADVANCED) {
-                return getTile().canTubeConnect(side);
-            }
-
-            return false;
+        public boolean supportsGas() {
+            return fuelType == MachineFuelType.ADVANCED;
         }
 
         public boolean isValidGas(Gas gas) {

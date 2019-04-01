@@ -69,11 +69,6 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
-    }
-
-    @Override
     public boolean isValidGas(Gas gas) {
         return Recipe.CHEMICAL_INJECTION_CHAMBER.containsRecipe(gas);
     }

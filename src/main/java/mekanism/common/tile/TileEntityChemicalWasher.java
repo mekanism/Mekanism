@@ -4,20 +4,19 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
@@ -47,8 +46,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, ITubeConnection,
-      IFluidHandlerWrapper, ISustainedData, IUpgradeInfoHandler, ITankManager {
+public class TileEntityChemicalWasher extends TileEntityMachine implements IGasHandler, IFluidHandlerWrapper,
+      ISustainedData, IUpgradeInfoHandler, ITankManager {
 
     public static final int MAX_GAS = 10000;
     public static final int MAX_FLUID = 10000;
@@ -200,11 +199,6 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return getTank(side) != null;
-    }
-
-    @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         if (getTank(side) == inputTank) {
             return getTank(side).canReceive(type) && RecipeHandler.Recipe.CHEMICAL_WASHER.containsRecipe(type);
@@ -283,23 +277,32 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return (T) this;
-        }
-
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return (T) new FluidHandlerWrapper(this, side);
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return getTank(side) == null;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

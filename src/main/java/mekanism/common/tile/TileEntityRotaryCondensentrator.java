@@ -13,7 +13,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -46,7 +45,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper,
-      IGasHandler, ITubeConnection, IUpgradeInfoHandler, ITankManager {
+      IGasHandler, IUpgradeInfoHandler, ITankManager {
 
     private static final int[] GAS_SLOTS = {0, 1};
     private static final int[] LIQUID_SLOTS = {2, 3};
@@ -230,11 +229,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return side == MekanismUtils.getLeft(facing);
-    }
-
-    @Override
     public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
         return gasTank.receive(stack, doTransfer);
     }
@@ -262,23 +256,32 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return (T) this;
-        }
-
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return (T) new FluidHandlerWrapper(this, side);
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return side != MekanismUtils.getLeft(facing);
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

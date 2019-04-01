@@ -11,7 +11,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
@@ -39,7 +38,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine implements IGasHandler,
-      ITubeConnection, ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess {
+      ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess {
 
     public static final int MAX_GAS = 10000;
 
@@ -176,11 +175,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
-    }
-
-    @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && inputTank.canReceive(type) &&
               RecipeHandler.Recipe.CHEMICAL_CRYSTALLIZER.containsRecipe(type);
@@ -217,7 +211,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
     }
 
@@ -226,8 +219,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         if (isCapabilityDisabled(capability, side)) {
             return null;
         }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || capability == Capabilities.CONFIG_CARD_CAPABILITY) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return (T) this;
         }
 

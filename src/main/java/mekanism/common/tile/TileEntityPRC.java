@@ -5,12 +5,12 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
@@ -18,7 +18,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
@@ -50,7 +49,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityPRC extends
       TileEntityBasicMachine<PressurizedInput, PressurizedOutput, PressurizedRecipe> implements IFluidHandlerWrapper,
-      IGasHandler, ITubeConnection, ISustainedData, ITankManager {
+      IGasHandler, ISustainedData, ITankManager {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
           "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
@@ -351,11 +350,6 @@ public class TileEntityPRC extends
         return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(2) && outputGasTank.canDraw(type);
     }
 
-    @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(1, 2);
-    }
-
     @Nonnull
     @Override
     public GasTankInfo[] getTankInfo() {
@@ -364,23 +358,30 @@ public class TileEntityPRC extends
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return (T) this;
-        }
-
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return (T) new FluidHandlerWrapper(this, side);
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
+              .isCapabilityDisabled(capability, side);
     }
 
     @Override

@@ -5,6 +5,7 @@ import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
+@Deprecated
 public class DefaultTubeConnection implements ITubeConnection {
 
     public static void register() {

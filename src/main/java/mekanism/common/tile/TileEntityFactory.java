@@ -15,7 +15,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.transmitters.TransmissionType;
@@ -69,7 +68,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration,
-      IGasHandler, ITubeConnection, ISpecialConfigData, ITierUpgradeable, ISustainedData {
+      IGasHandler, ISpecialConfigData, ITierUpgradeable, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate",
           "getMaxEnergy", "getEnergyNeeded"};
@@ -875,15 +874,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        if (recipeType.canTubeConnect(side)) {
-            return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
-        }
-
-        return false;
-    }
-
-    @Override
     public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
         return null;
     }
@@ -905,7 +895,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return false;
         }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
               || super.hasCapability(capability, side);
@@ -916,8 +905,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         if (isCapabilityDisabled(capability, side)) {
             return null;
         }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || capability == Capabilities.CONFIG_CARD_CAPABILITY
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
@@ -927,8 +915,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super
-              .isCapabilityDisabled(capability, side);
+        if (configComponent.isCapabilityDisabled(capability, side, facing)) {
+            return true;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return !recipeType.supportsGas();
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

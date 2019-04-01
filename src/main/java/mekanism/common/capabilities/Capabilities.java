@@ -54,6 +54,9 @@ public class Capabilities {
     @CapabilityInject(IAlloyInteraction.class)
     public static Capability<IAlloyInteraction> ALLOY_INTERACTION_CAPABILITY = null;
 
+    //Kept in for compatibility with any mods that may try to reference it.
+    // However, nothing in Mekanism uses this anymore
+    @Deprecated
     @CapabilityInject(ITubeConnection.class)
     public static Capability<ITubeConnection> TUBE_CONNECTION_CAPABILITY = null;
 

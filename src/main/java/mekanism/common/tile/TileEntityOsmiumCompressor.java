@@ -40,9 +40,4 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return gasTank.canReceive(type) && isValidGas(type);
     }
-
-    @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return true;
-    }
 }

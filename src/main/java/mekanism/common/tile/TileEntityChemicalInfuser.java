@@ -3,20 +3,19 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.usage;
@@ -38,8 +37,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ITubeConnection,
-      IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile {
+public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, IRedstoneControl,
+      ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile {
 
     public static final int MAX_GAS = 10000;
     public GasTank leftTank = new GasTank(MAX_GAS);
@@ -199,11 +198,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == facing;
-    }
-
-    @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return (getTank(side) != null && getTank(side) != centerTank) && getTank(side).canReceive(type);
     }
@@ -233,19 +227,29 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return (T) this;
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing) && side != facing;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
