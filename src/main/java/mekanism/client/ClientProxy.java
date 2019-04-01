@@ -208,6 +208,7 @@ import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -1000,21 +1001,25 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker) {
-        Minecraft.getMinecraft().player
-              .sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"),
-                    true);
-        if (client.enableMultiblockFormationParticles) {
-            new SparkleAnimation(tileEntity, checker).run();
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 100) {
+            player.sendStatusMessage(
+                  new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
+            if (client.enableMultiblockFormationParticles) {
+                new SparkleAnimation(tileEntity, checker).run();
+            }
         }
     }
 
     @Override
     public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity) {
-        Minecraft.getMinecraft().player
-              .sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"),
-                    true);
-        if (client.enableMultiblockFormationParticles) {
-            new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 100) {
+            player.sendStatusMessage(
+                  new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
+            if (client.enableMultiblockFormationParticles) {
+                new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
+            }
         }
     }
 
