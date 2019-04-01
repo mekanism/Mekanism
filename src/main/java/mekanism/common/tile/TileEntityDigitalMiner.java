@@ -298,7 +298,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                         response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
                     }
                     if (!response.isEmpty()) {
-                        response.getInvStack(this, facing.getOpposite()).use();
+                        response.getInvStack(ejectTile, facing.getOpposite()).use();
                     }
 
                     delayTicks = 10;
