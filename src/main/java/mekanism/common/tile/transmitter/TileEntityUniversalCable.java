@@ -50,9 +50,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public double lastWrite = 0;
 
     public EnergyStack buffer = new EnergyStack(0);
-    private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(getClass(),
+    private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager<>(getClass(),
           TeslaCableIntegration.class);
-    private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(getClass(),
+    private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(),
           ForgeEnergyCableIntegration.class);
 
     @Override

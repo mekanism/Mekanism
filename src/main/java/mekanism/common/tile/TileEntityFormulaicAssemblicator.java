@@ -696,7 +696,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
             return null;
         }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return (T) this;
+            return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

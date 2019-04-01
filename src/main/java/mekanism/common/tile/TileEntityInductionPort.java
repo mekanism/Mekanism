@@ -475,7 +475,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         }
 
         if (capability == CapabilityEnergy.ENERGY) {
-            return (T) forgeEnergyManager.getWrapper(this, facing);
+            return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
         }
 
         return super.getCapability(capability, facing);

@@ -204,7 +204,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return (T) this;
+            return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, facing);
     }

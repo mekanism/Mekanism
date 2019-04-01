@@ -31,7 +31,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -370,7 +369,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             return null;
         }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return (T) this;
+            return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

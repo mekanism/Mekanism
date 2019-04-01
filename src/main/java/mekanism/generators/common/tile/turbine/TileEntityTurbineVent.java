@@ -98,7 +98,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                return (T) new FluidHandlerWrapper(this, side);
+                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
             }
         }
 

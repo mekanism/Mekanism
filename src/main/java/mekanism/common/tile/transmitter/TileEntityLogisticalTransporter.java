@@ -435,7 +435,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
-            return (T) getTransmitter();
+            return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.cast(getTransmitter());
         }
 
         return super.getCapability(capability, side);

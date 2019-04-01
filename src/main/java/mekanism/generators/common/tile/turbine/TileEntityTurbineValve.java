@@ -425,7 +425,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
 
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                return (T) new FluidHandlerWrapper(this, side);
+                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
             }
 
             if (capability == Capabilities.TESLA_HOLDER_CAPABILITY
@@ -434,7 +434,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
 
             if (capability == CapabilityEnergy.ENERGY) {
-                return (T) forgeEnergyManager.getWrapper(this, facing);
+                return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
             }
         }
 

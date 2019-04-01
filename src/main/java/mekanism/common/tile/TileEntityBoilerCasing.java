@@ -342,6 +342,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return null;
     }
 
+    //TODO: Decide if heat capability should be moved to valve only
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
@@ -350,7 +351,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

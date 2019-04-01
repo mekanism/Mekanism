@@ -185,9 +185,9 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.GRID_TRANSMITTER_CAPABILITY) {
-            return (T) getTransmitter();
+            return Capabilities.GRID_TRANSMITTER_CAPABILITY.cast(getTransmitter());
         } else if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {
-            return (T) this;
+            return Capabilities.ALLOY_INTERACTION_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

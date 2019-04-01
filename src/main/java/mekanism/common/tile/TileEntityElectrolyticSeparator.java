@@ -489,9 +489,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (T) new FluidHandlerWrapper(this, side);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);

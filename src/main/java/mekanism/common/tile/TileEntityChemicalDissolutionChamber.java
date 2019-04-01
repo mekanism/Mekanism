@@ -277,7 +277,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         if (isCapabilityDisabled(capability, side)) {
             return null;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

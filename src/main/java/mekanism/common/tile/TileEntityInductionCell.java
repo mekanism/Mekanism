@@ -99,7 +99,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, net.minecraft.util.EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
-            return (T) this;
+            return Capabilities.ENERGY_STORAGE_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, facing);
     }

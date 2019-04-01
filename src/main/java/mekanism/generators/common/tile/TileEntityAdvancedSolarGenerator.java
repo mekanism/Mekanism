@@ -61,7 +61,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY) {
-            return (T) this;
+            return Capabilities.EVAPORATION_SOLAR_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

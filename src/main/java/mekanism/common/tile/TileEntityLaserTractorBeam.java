@@ -220,7 +220,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
-            return (T) this;
+            return Capabilities.LASER_RECEPTOR_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

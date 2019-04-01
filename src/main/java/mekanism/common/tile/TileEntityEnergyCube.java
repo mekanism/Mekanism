@@ -316,7 +316,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         //Special isCapabilityDisabled override not needed here as it already gets handled in TileEntityElectricBlock
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return (T) this;
+            return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);
