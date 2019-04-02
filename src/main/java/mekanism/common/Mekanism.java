@@ -358,7 +358,7 @@ public class Mekanism {
             RecipeHandler
                   .addEnrichmentChamberRecipe(new ItemStack(Blocks.REDSTONE_ORE), new ItemStack(Items.REDSTONE, 12));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.OBSIDIAN),
-                  new ItemStack(MekanismItems.OtherDust, 2, 6));
+                  new ItemStack(MekanismItems.OtherDust, 4, 6));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.COAL, 1, 0),
                   new ItemStack(MekanismItems.CompressedCarbon));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.COAL, 1, 1),

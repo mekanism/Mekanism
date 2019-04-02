@@ -271,15 +271,11 @@ public final class OreDictManager {
             RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(MekanismFluids.Lithium, 100));
         }
 
-        for (ItemStack ore : OreDictionary.getOres("obsidian")) {
+        for (ItemStack ore : OreDictionary.getOres("dustObsidian")) {
             RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 4), new ItemStack(Blocks.COBBLESTONE),
                   new ItemStack(Blocks.OBSIDIAN));
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, StackUtils.size(ore, 1),
                   new ItemStack(MekanismItems.OtherDust, 1, 5));
-        }
-
-        for (ItemStack ore : OreDictionary.getOres("obsidian")) {
-            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 4, 6));
         }
 
         for (ItemStack ore : OreDictionary.getOres("dustDiamond")) {
