@@ -6,6 +6,7 @@ import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig.client;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
@@ -67,7 +68,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
               transporter.getPos().getZ() + 0.5);
         entityItem.world = transporter.getWorld();
 
-        for (TransporterStack stack : transporter.getTransmitter().transit.clone()) {
+        for (TransporterStack stack : transporter.getTransmitter().getTransit()) {
             if (stack != null) {
                 GL11.glPushMatrix();
                 entityItem.setItem(stack.itemStack);
