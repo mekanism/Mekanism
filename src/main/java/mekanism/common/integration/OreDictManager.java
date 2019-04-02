@@ -76,7 +76,6 @@ public final class OreDictManager {
 
         for (ItemStack ore : OreDictionary.getOres("dustRefinedObsidian")) {
             RecipeHandler.addOsmiumCompressorRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Ingot, 1, 0));
-            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 6));
             RecipeHandler
                   .addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.CompressedObsidian));
 
@@ -192,7 +191,7 @@ public final class OreDictManager {
         }
 
         for (ItemStack ore : OreDictionary.getOres("ingotRefinedObsidian")) {
-            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 6));
+            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 5));
         }
 
         for (ItemStack ore : OreDictionary.getOres("ingotOsmium")) {
@@ -272,11 +271,15 @@ public final class OreDictManager {
             RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(ore, 1), new GasStack(MekanismFluids.Lithium, 100));
         }
 
-        for (ItemStack ore : OreDictionary.getOres("dustObsidian")) {
+        for (ItemStack ore : OreDictionary.getOres("obsidian")) {
             RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 4), new ItemStack(Blocks.COBBLESTONE),
                   new ItemStack(Blocks.OBSIDIAN));
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, StackUtils.size(ore, 1),
                   new ItemStack(MekanismItems.OtherDust, 1, 5));
+        }
+
+        for (ItemStack ore : OreDictionary.getOres("obsidian")) {
+            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 4, 6));
         }
 
         for (ItemStack ore : OreDictionary.getOres("dustDiamond")) {
