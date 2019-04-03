@@ -76,7 +76,6 @@ public final class OreDictManager {
 
         for (ItemStack ore : OreDictionary.getOres("dustRefinedObsidian")) {
             RecipeHandler.addOsmiumCompressorRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Ingot, 1, 0));
-            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 6));
             RecipeHandler
                   .addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.CompressedObsidian));
 
@@ -192,7 +191,7 @@ public final class OreDictManager {
         }
 
         for (ItemStack ore : OreDictionary.getOres("ingotRefinedObsidian")) {
-            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 6));
+            RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 1, 5));
         }
 
         for (ItemStack ore : OreDictionary.getOres("ingotOsmium")) {
