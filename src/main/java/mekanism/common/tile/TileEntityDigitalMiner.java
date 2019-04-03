@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -81,7 +81,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
 
-    private static final int[] INV_SLOTS = IntStream.range(0, 27).toArray();
+    private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
     public static int[] EJECT_INV;
     public final double BASE_ENERGY_USAGE = usage.digitalMinerUsage;
@@ -985,54 +985,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public int[] getBoundSlots(BlockPos location, EnumFacing side) {
-        EnumFacing dir = facing.getOpposite();
-
-        BlockPos pull = getPos().up();
-        BlockPos eject = pull.offset(dir);
-
-        if ((location.equals(eject) && side == dir) || (location.equals(pull) && side == EnumFacing.UP)) {
-            if (EJECT_INV == null) {
-                EJECT_INV = new int[27];
-
-                for (int i = 0; i < EJECT_INV.length; i++) {
-                    EJECT_INV[i] = i;
-                }
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (side == EnumFacing.UP) {
+            if (slotID == 27) {
+                return ChargeUtils.canBeDischarged(itemstack);
+            } else {
+                return !itemstack.isEmpty() && isReplaceStack(itemstack);
             }
-
-            return EJECT_INV;
-        }
-
-        return InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack) {
-        EnumFacing side = facing.getOpposite();
-
-        BlockPos pull = getPos().up();
-        BlockPos eject = pull.offset(side);
-
-        if (location.equals(eject)) {
-            return false;
-        } else if (location.equals(pull)) {
-            return !itemstack.isEmpty() && isReplaceStack(itemstack);
         }
 
         return false;
     }
 
     @Override
-    public boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing dir) {
-        EnumFacing side = facing.getOpposite();
-
-        BlockPos pull = getPos().up();
-        BlockPos eject = pull.offset(side);
-
-        if (location.equals(eject)) {
-            return itemstack.isEmpty() || !isReplaceStack(itemstack);
-        } else if (location.equals(pull)) {
-            return false;
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (side == facing.getOpposite()) {
+            if (slotID == 27) {
+                return !ChargeUtils.canBeDischarged(itemstack);
+            } else {
+                return itemstack.isEmpty() || !isReplaceStack(itemstack);
+            }
         }
 
         return false;

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -24,7 +25,6 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
 
@@ -453,7 +453,9 @@ public final class TransporterPathfinder {
                     neighbors[direction.ordinal()] = neighbor;
                     TileEntity neighborEntity = neighbor.getTileEntity(worldObj);
                     neighborEntities[direction.ordinal()] = neighborEntity;
-                    if (currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction)) {
+                    if ((currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction)) ||
+                        (neighbor.equals(finalNode) && destChecker
+                          .isValid(transportStack, direction, neighborEntities[direction.ordinal()]))) {
                         directionsToCheck.add(direction);
                     }
                 }

@@ -124,17 +124,17 @@ public final class ChargeUtils {
      * @return if the ItemStack can be discharged
      */
     public static boolean canBeDischarged(ItemStack itemstack) {
-        return (MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem && ((IElectricItem) itemstack
-              .getItem()).canProvideEnergy(itemstack)) ||
-              (itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem) itemstack.getItem())
-                    .canSend(itemstack)) ||
-              (MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem
-                    && ((IEnergyContainerItem) itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
-              (MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)
-                    && itemstack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null).takePower(1, true) > 0) ||
-              (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null) && itemstack
-                    .getCapability(CapabilityEnergy.ENERGY, null).canExtract()) ||
-              itemstack.getItem() == Items.REDSTONE;
+        return MekanismUtils.useIC2() && ElectricItem.manager.discharge(itemstack, 1, 0, true, true, true) > 0
+                || (itemstack.getItem() instanceof IEnergizedItem
+                        && ((IEnergizedItem) itemstack.getItem()).canSend(itemstack)
+                        && ((IEnergizedItem) itemstack.getItem()).getEnergy(itemstack) > 0)
+                || (MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem
+                        && ((IEnergyContainerItem) itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0)
+                || (MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)
+                        && itemstack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null).takePower(1, true) > 0)
+                || (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null)
+                        && itemstack.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(1, true) > 0)
+                || itemstack.getItem() == Items.REDSTONE;
     }
 
     /**
@@ -144,15 +144,17 @@ public final class ChargeUtils {
      * @return if the ItemStack can be discharged
      */
     public static boolean canBeCharged(ItemStack itemstack) {
-        return (MekanismUtils.useIC2() && ElectricItem.manager.getTier(itemstack) > 0) ||
-              (itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem) itemstack.getItem())
-                    .canReceive(itemstack)) ||
-              (MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem
-                    && ((IEnergyContainerItem) itemstack.getItem()).receiveEnergy(itemstack, 1, true) != 0) ||
-              (MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null)
-                    && itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null).givePower(1, true) > 0) ||
-              (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null) && itemstack
-                    .getCapability(CapabilityEnergy.ENERGY, null).canReceive());
+        return (MekanismUtils.useIC2() && ElectricItem.manager.charge(itemstack, 1, 0, true, true) > 0)
+                || (itemstack.getItem() instanceof IEnergizedItem
+                        && ((IEnergizedItem) itemstack.getItem()).canReceive(itemstack)
+                        && ((IEnergizedItem) itemstack.getItem())
+                                .getMaxEnergy(itemstack) < ((IEnergizedItem) itemstack.getItem()).getEnergy(itemstack))
+                || (MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem
+                        && ((IEnergyContainerItem) itemstack.getItem()).receiveEnergy(itemstack, 1, true) > 0)
+                || (MekanismUtils.useTesla() && itemstack.hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null)
+                        && itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null).givePower(1, true) > 0)
+                || (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null)
+                        && itemstack.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(1, true) > 0);
     }
 
     /**
