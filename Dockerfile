@@ -10,5 +10,5 @@ COPY gradle/ /tmp/gradle/
 COPY build.gradle gradle.properties gradle* /tmp/
 RUN (cd /tmp && ./gradlew setupCiWorkspace build)
 
-RUN mkdir /mekanica
-COPY . /mekanica
+RUN mkdir /mekanism
+COPY . /mekanism

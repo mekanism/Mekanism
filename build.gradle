@@ -86,9 +86,9 @@ repositories {
     }
 }
 
-group = "mekanica"
+group = "mekanism"
 version = "${minecraft_version}-${version}"
-archivesBaseName = "mekanica-all"
+archivesBaseName = "mekanism-all"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -153,7 +153,7 @@ jar {
 }
 
 task coreJar(type: Jar) {
-    archiveName = "mekanica-${project.version}.jar"
+    archiveName = "mekanism-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "core"
 
@@ -172,7 +172,7 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    archiveName = "mekanica-tools-${project.version}.jar"
+    archiveName = "mekanism-tools-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "tools"
 
@@ -187,7 +187,7 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    archiveName = "mekanica-generators-${project.version}.jar"
+    archiveName = "mekanism-generators-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "generators"
 
@@ -203,7 +203,7 @@ task generatorsJar(type: Jar) {
 
 task apiJar(type: Jar) {
     classifier "api"
-    baseName "mekanica"
+    baseName "mekanism"
     dependsOn "sourceMainJava"
     include 'mekanism/api/**'
     from sourceSets.main.java.srcDirs
