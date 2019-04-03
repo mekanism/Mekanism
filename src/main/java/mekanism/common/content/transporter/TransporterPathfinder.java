@@ -37,7 +37,7 @@ public final class TransporterPathfinder {
             return paths;
         }
 
-        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack.color);
+        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack);
 
         for (AcceptorData entry : acceptors) {
             DestChecker checker = new DestChecker() {

@@ -81,7 +81,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
 
-    private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
+    private static final int[] INV_SLOTS = IntStream.range(0, 27).toArray();
 
     public static int[] EJECT_INV;
     public final double BASE_ENERGY_USAGE = usage.digitalMinerUsage;
