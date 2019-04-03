@@ -385,18 +385,18 @@ entity.Robit.name=Robit
 entity.BabySkeleton.name=Bébé squelette
 
 # Config Gui
-mekanism.configgui.ctgy.general=Paramètres généraux de Mekanica
+mekanism.configgui.ctgy.general=Paramètres généraux de Mekanism
 mekanism.configgui.ctgy.machines=Paramètres des machines
 mekanism.configgui.ctgy.tier=Paramètres de niveau
 mekanism.configgui.ctgy.usage=Paramètres d'utilisation
 mekanism.configgui.ctgy.client=Paramètres client 
 
 # Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=Paramètres générales de Mekanica et de tous ses modules
+mekanism.configgui.ctgy.general.tooltip=Paramètres générales de Mekanism et de tous ses modules
 mekanism.configgui.ctgy.machines.tooltip=paramètres d'activation ou de désactivation de machinerie spécifique
-mekanism.configgui.ctgy.tier.tooltip=Paramètres de niveau Mekanica et de leur valeur correspondantes
+mekanism.configgui.ctgy.tier.tooltip=Paramètres de niveau Mekanism et de leur valeur correspondantes
 mekanism.configgui.ctgy.usage.tooltip=Paramètres de la machinerie et de leur utilisation énergétique
-mekanism.configgui.ctgy.client.tooltip=Paramètres spécifiques au client de Mekanica et de tous ses modules
+mekanism.configgui.ctgy.client.tooltip=Paramètres spécifiques au client de Mekanism et de tous ses modules
 
 # Gui text
 gui.condensentrating=Condensation
@@ -878,7 +878,7 @@ reactor.depleted=Carburant insuffisant
 reactor.depleted.desc=Le réacteur manque de carburant pour maintenir la réaction
 
 # Creative tab
-itemGroup.tabMekanism=Mekanica
+itemGroup.tabMekanism=Mekanism
 
 ##############
 # GENERATORS

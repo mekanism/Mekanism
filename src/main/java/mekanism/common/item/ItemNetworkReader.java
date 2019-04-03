@@ -151,7 +151,7 @@ public class ItemNetworkReader extends ItemEnergized {
             if (player.isSneaking() && MekanismAPI.debug) {
                 String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
                 player.sendMessage(new TextComponentString(
-                      EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanica Debug]" + EnumColor.GREY
+                      EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY
                             + " ----------"));
 
                 for (String s : strings) {

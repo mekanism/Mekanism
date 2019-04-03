@@ -965,7 +965,7 @@ reactor.depleted=Zbyt mało paliwa
 reactor.depleted.desc=Reaktor ma niewystarczającą ilość paliwa w celu utrzymania reakcji
 
 # Creative tab
-itemGroup.tabMekanism=Mekanica
+itemGroup.tabMekanism=Mekanism
 
 ##############
 # GENERATORS

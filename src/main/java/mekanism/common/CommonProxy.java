@@ -167,7 +167,7 @@ public class CommonProxy implements IGuiProvider {
                     "Enables recipes using Control Circuits to use OreDict'd Control Circuits from other mods.")
               .getBoolean();
         general.logPackets = Mekanism.configuration
-              .get(Configuration.CATEGORY_GENERAL, "LogPackets", false, "Log Mekanica packet names. Debug setting.")
+              .get(Configuration.CATEGORY_GENERAL, "LogPackets", false, "Log Mekanism packet names. Debug setting.")
               .getBoolean();
         general.dynamicTankEasterEgg = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false, "Audible sparkles.").getBoolean();
@@ -176,7 +176,7 @@ public class CommonProxy implements IGuiProvider {
                     "Allows vanilla spawners to be moved with a Cardboard Box.").getBoolean();
         general.enableWorldRegeneration = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "EnableWorldRegeneration", false,
-                    "Allows chunks to retrogen Mekanica ore blocks.").getBoolean();
+                    "Allows chunks to retrogen Mekanism ore blocks.").getBoolean();
         general.spawnBabySkeletons = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "SpawnBabySkeletons", true,
                     "Enable the spawning of baby skeletons. Think baby zombies but skeletons.")
@@ -218,7 +218,7 @@ public class CommonProxy implements IGuiProvider {
               .get(Configuration.CATEGORY_GENERAL, "SaltVeinSize", 6, "Max number of blocks in a salt vein.", 1,
                     Integer.MAX_VALUE).getInt();
         general.userWorldGenVersion = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "WorldRegenVersion", 0,
-              "Change this value to cause Mekanica to regen its ore in all loaded chunks.")
+              "Change this value to cause Mekanism to regen its ore in all loaded chunks.")
               .getInt();
         general.FROM_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToEU", 10D,
               "Conversion multiplier from EU to Joules (EU * JoulesToEU = Joules)").getDouble();
@@ -347,7 +347,7 @@ public class CommonProxy implements IGuiProvider {
               .getBoolean();
 
         String s = Mekanism.configuration
-              .get(Configuration.CATEGORY_GENERAL, "EnergyType", "RF", "Displayed energy type in Mekanica GUIs.",
+              .get(Configuration.CATEGORY_GENERAL, "EnergyType", "RF", "Displayed energy type in Mekanism GUIs.",
                     new String[]{"J", "RF", "EU", "T"})
               .getString().trim().toLowerCase();
 
@@ -368,7 +368,7 @@ public class CommonProxy implements IGuiProvider {
 
         s = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "Temperature Units", "K",
-                    "Displayed temperature unit in Mekanica GUIs.", new String[]{"K", "C", "R", "F"})
+                    "Displayed temperature unit in Mekanism GUIs.", new String[]{"K", "C", "R", "F"})
               .getString();
 
         if (s != null) {

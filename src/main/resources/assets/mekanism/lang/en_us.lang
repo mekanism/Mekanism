@@ -417,11 +417,11 @@ mekanism.configgui.ctgy.usage=Usage Settings
 mekanism.configgui.ctgy.client=Client Settings
 
 # Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanica and all its modules
+mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
 mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
-mekanism.configgui.ctgy.tier.tooltip=Settings regarding Mekanica tiers and their corresponding values
+mekanism.configgui.ctgy.tier.tooltip=Settings regarding Mekanism tiers and their corresponding values
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
-mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanica and all its modules
+mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 
 # Gui text
 gui.condensentrating=Condensentrating
@@ -842,7 +842,7 @@ tooltip.Crusher=A machine used to crush ingots into their dust counterparts, as 
 tooltip.DigitalMiner=A highly-advanced, filter-based, auto-miner that can mine whatever block you tell it to within a 32 block (max) radius.
 tooltip.MetallurgicInfuser=A machine used to infuse various materials into (generally) metals to create metal alloys and other compounds.
 tooltip.PurificationChamber=An advanced machine capable of processing ores into three clumps, serving as the initial stage of 300% ore processing.
-tooltip.EnergizedSmelter=A simple machine that serves as a Mekanica-based furnace that runs off of energy.
+tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based furnace that runs off of energy.
 tooltip.Teleporter=A machine capable of teleporting players to various locations defined by another teleporter.
 tooltip.ElectricPump=An advanced, upgradeable pump, capable of extracting any type of fluid.
 tooltip.PersonalChest=A 54-slot chest that can be opened anywhere- even from your own inventory.
@@ -978,7 +978,7 @@ reactor.depleted=Insufficient Fuel
 reactor.depleted.desc=The reactor has insufficient fuel to sustain a reaction
 
 # Creative tab
-itemGroup.tabMekanism=Mekanica
+itemGroup.tabMekanism=Mekanism
 
 ############
 # GENERATORS
@@ -1035,7 +1035,7 @@ mekanism.configgui.ctgy.generators.generators=Generator Settings
 mekanism.configgui.ctgy.generators.generation=Generation Settings
 
 # Config Tooltips
-mekanism.configgui.ctgy.generators.general.tooltip=Settings regarding MekanicaGenerators' general configuration
+mekanism.configgui.ctgy.generators.general.tooltip=Settings regarding MekanismGenerators' general configuration
 mekanism.configgui.ctgy.generators.generators.tooltip=Settings regarding enabling and disabling of specific generators
 mekanism.configgui.ctgy.generators.generation.tooltip=Settings regarding the energy usage of generators
 
@@ -1128,9 +1128,9 @@ mekanism.configgui.ctgy.tools.armor=Armor Balance
 mekanism.configgui.ctgy.tools.tools=Tools Balance
 
 # Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanicaTools' general configuration
-mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanicaTools armor sets
-mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanicaTools tool sets
+mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
+mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
+mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
 
 # Commands
 cmd.mek.usage=

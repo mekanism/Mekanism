@@ -409,7 +409,7 @@ entity.Robit.name=ロビット
 entity.BabySkeleton.name=ベビースケルトン
 
 # Config Gui
-mekanism.configgui.ctgy.general=Mekanica 基本設定
+mekanism.configgui.ctgy.general=Mekanism 基本設定
 mekanism.configgui.ctgy.machines=マシンの設定
 mekanism.configgui.ctgy.tier=ランクの設定
 mekanism.configgui.ctgy.usage=エネルギー使用率の設定

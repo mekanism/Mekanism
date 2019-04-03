@@ -1,8 +1,8 @@
 [
   {
     "modid": "mekanismtools",
-    "name": "Mekanica: Tools",
-    "description": "Tools module for Mekanica",
+    "name": "Mekanism: Tools",
+    "description": "Tools module for Mekanism",
     "version": "${version}",
     "mcversion": "${mc_version}",
     "authorList": [

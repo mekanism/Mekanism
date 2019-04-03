@@ -196,7 +196,7 @@ import org.apache.logging.log4j.Logger;
 public class Mekanism {
 
     public static final String MODID = "mekanism";
-    public static final String MOD_NAME = "Mekanica";
+    public static final String MOD_NAME = "Mekanism";
     public static final String LOG_TAG = '[' + MOD_NAME + ']';
     public static final PlayerState playerState = new PlayerState();
     public static final Set<String> freeRunnerOn = new HashSet<>();

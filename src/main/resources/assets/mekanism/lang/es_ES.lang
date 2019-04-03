@@ -836,15 +836,15 @@ mekanism.configgui.ctgy.client=Client Settings
 
 # Config Tooltips
 
-mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanica and all its modules
+mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
 
 mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
 
-mekanism.configgui.ctgy.tier.tooltip=Settings regarding Mekanica tiers and their corresponding values
+mekanism.configgui.ctgy.tier.tooltip=Settings regarding Mekanism tiers and their corresponding values
 
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
 
-mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanica and all its modules
+mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 
 
 
@@ -1686,7 +1686,7 @@ tooltip.MetallurgicInfuser=A machine used to infuse various materials into (gene
 
 tooltip.PurificationChamber=An advanced machine capable of processing ores into three clumps, serving as the initial stage of 300% ore processing.
 
-tooltip.EnergizedSmelter=A simple machine that serves as a Mekanica-based furnace that runs off of energy.
+tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based furnace that runs off of energy.
 
 tooltip.Teleporter=A machine capable of teleporting players to various locations defined by another teleporter.
 
@@ -1958,7 +1958,7 @@ reactor.depleted.desc=The reactor has insufficient fuel to sustain a reaction
 
 # Creative tab
 
-itemGroup.tabMekanism=Mekanica
+itemGroup.tabMekanism=Mekanism
 
 
 
@@ -2072,7 +2072,7 @@ mekanism.configgui.ctgy.generators.generation=Generation Settings
 
 # Config Tooltips
 
-mekanism.configgui.ctgy.generators.general.tooltip=Settings regarding MekanicaGenerators' general configuration
+mekanism.configgui.ctgy.generators.general.tooltip=Settings regarding MekanismGenerators' general configuration
 
 mekanism.configgui.ctgy.generators.generators.tooltip=Settings regarding enabling and disabling of specific generators
 
@@ -2258,11 +2258,11 @@ mekanism.configgui.ctgy.tools.tools=Tools Balance
 
 # Config Tooltips
 
-mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanicaTools' general configuration
+mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
 
-mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanicaTools armor sets
+mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
 
-mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanicaTools tool sets
+mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
 
 
 

@@ -1,7 +1,7 @@
 [
   {
     "modid": "mekanism",
-    "name": "Mekanica",
+    "name": "Mekanism",
     "description": "Tools and Machines; an active fork of Mekanism",
     "version": "${version}",
     "mcversion": "${mc_version}",

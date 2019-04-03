@@ -104,7 +104,7 @@ public class MekanismTools implements IModule {
         proxy.loadConfiguration();
 
         //Finalization
-        Mekanism.logger.info("Loaded 'Mekanica: Tools' module.");
+        Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }
 
     public void addItems() {

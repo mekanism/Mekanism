@@ -19,7 +19,7 @@ assignees: ''
 
 #### Version (make sure you are on the latest version before reporting):
 **Forge:** 
-**Mekanica:** 
+**Mekanism:** 
 **Other relevant version:** 
 
 #### If a (crash)log is relevant for this issue, link it here: (_It's almost always relevant_)

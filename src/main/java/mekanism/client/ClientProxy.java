@@ -279,7 +279,7 @@ public class ClientProxy extends CommonProxy {
               .getBoolean();
         client.baseSoundVolume = (float) Mekanism.configuration
               .get(Configuration.CATEGORY_CLIENT, "SoundVolume", 1D,
-                    "Adjust Mekanica sounds' base volume. < 1 is softer, higher is louder.").getDouble();
+                    "Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.").getDouble();
         client.machineEffects = Mekanism.configuration
               .get(Configuration.CATEGORY_CLIENT, "MachineEffects", true, "Show particles when machines active.")
               .getBoolean();

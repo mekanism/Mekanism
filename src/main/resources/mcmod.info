@@ -1,7 +1,7 @@
 [
   {
     "modid": "mekanism",
-    "name": "Mekanica",
+    "name": "Mekanism",
     "description": "Tools and Machines; an active fork of Mekanism",
     "version": "${version}",
     "mcversion": "${mc_version}",
@@ -30,8 +30,8 @@
   },
   {
     "modid": "mekanismgenerators",
-    "name": "Mekanica: Generators",
-    "description": "Generators module for Mekanica",
+    "name": "Mekanism: Generators",
+    "description": "Generators module for Mekanism",
     "version": "${version}",
     "mcversion": "${mc_version}",
     "authorList": [
@@ -49,8 +49,8 @@
   },
   {
     "modid": "mekanismtools",
-    "name": "Mekanica: Tools",
-    "description": "Tools module for Mekanica",
+    "name": "Mekanism: Tools",
+    "description": "Tools module for Mekanism",
     "version": "${version}",
     "mcversion": "${mc_version}",
     "authorList": [

@@ -388,18 +388,18 @@ entity.Robit.name=Robit
 entity.BabySkeleton.name=Baby-Skelett
 
 # Config Gui
-mekanism.configgui.ctgy.general=Mekanica: Generelle Einstellungen
+mekanism.configgui.ctgy.general=Mekanism: Generelle Einstellungen
 mekanism.configgui.ctgy.machines=Maschineneinstellungen
 mekanism.configgui.ctgy.tier=Stufeneintellungen
 mekanism.configgui.ctgy.usage=Nutzungseinstellungen
 mekanism.configgui.ctgy.client=Client-Einstellungen
 
 # Config Tooltips
-mekanism.configgui.ctgy.general.tooltip=Generelle Einstellungen bezüglich Mekanica und all seinen Modulen
+mekanism.configgui.ctgy.general.tooltip=Generelle Einstellungen bezüglich Mekanism und all seinen Modulen
 mekanism.configgui.ctgy.machines.tooltip=Einstellungen bezüglich dem (De-)Aktivieren bestimmter Maschinerie
-mekanism.configgui.ctgy.tier.tooltip=Einstellugen bezüglich der Upgrade-Stufen in Mekanica und ihren Werten
+mekanism.configgui.ctgy.tier.tooltip=Einstellugen bezüglich der Upgrade-Stufen in Mekanism und ihren Werten
 mekanism.configgui.ctgy.usage.tooltip=Einstellungen bezüglich Maschinerie und ihren Energieverbauch
-mekanism.configgui.ctgy.client.tooltip=Client-spezifische Einstellungen bezüglich Mekanica und seinen Modulen
+mekanism.configgui.ctgy.client.tooltip=Client-spezifische Einstellungen bezüglich Mekanism und seinen Modulen
 
 # Gui text
 gui.condensentrating=Kondensentrieren
@@ -795,7 +795,7 @@ tooltip.Crusher=Eine Maschine, genutzt, um Barren in ihre entsprechenden !nStäu
 tooltip.DigitalMiner=Ein äußerst fortschrittlicher, Filter-basierter !nAuto-Minierer, der alles abbauen kann, was du willst, !ninnerhalb eines Radius von 32 Blöcken (max).
 tooltip.MetallurgicInfuser=Eine Maschine, genutzt, um verschiedene Materialien !n(generell) in Metalle einzuflößen, um Legierungen !nund andere Komponenten zu kreieren.
 tooltip.PurificationChamber=Eine fortgeschrittene Maschine, fähig, Erze zu !ndrei Klumpen zu verarbeiten, was im Anfangsstadium !n300% an Erzverarbeitung bietet.
-tooltip.EnergizedSmelter=Eine einfache Maschine, die einen Mekanica-basierten !nOfen bietet, der mit Energie läuft.
+tooltip.EnergizedSmelter=Eine einfache Maschine, die einen Mekanism-basierten !nOfen bietet, der mit Energie läuft.
 tooltip.Teleporter=Eine Maschine, fähig, Spieler zu verschiedenen Orten, !ndefiniert durch andere Teleporter, zu teleportieren.
 tooltip.ElectricPump=Eine fortgeschrittene Pumpe, fähig, !nganze Lavaseen auszupumpen.
 tooltip.PersonalChest=Eine 54-Slot-Truhe, die von überall aus geöffnet werden kann - sogar von deinem eigenen Inventar aus.
@@ -929,7 +929,7 @@ reactor.depleted=Nicht genug Treibstoff
 reactor.depleted.desc=Der Reaktor hat nicht genügend Treibstoff, um eine Reaktion instandzuhalten
 
 # Creative tab
-itemGroup.tabMekanism=Mekanica
+itemGroup.tabMekanism=Mekanism
 
 #############
 # GENERATORS

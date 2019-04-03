@@ -930,7 +930,7 @@ reactor.depleted=Nedostatek Paliva
 reactor.depleted.desc=Reaktor má nedostatek paliva k udržení reakce
 
 # Creative tab
-itemGroup.tabMekanism=Mekanica
+itemGroup.tabMekanism=Mekanism
 
 #############
 # GENERATORS
