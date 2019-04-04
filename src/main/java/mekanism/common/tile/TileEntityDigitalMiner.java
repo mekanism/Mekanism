@@ -595,7 +595,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
         numPowering = nbtTags.getInteger("numPowering");

@@ -131,7 +131,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
     }
 
     @Nonnull

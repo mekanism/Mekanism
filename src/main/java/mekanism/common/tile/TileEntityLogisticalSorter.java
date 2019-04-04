@@ -267,50 +267,43 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
             int type = dataStream.readInt();
 
             if (type == 0) {
-                clientActive = dataStream.readBoolean();
-                controlType = RedstoneControl.values()[dataStream.readInt()];
-
-                int c = dataStream.readInt();
-
-                if (c != -1) {
-                    color = TransporterUtils.colors.get(c);
-                } else {
-                    color = null;
-                }
-
-                autoEject = dataStream.readBoolean();
-                roundRobin = dataStream.readBoolean();
-
-                filters.clear();
-
-                int amount = dataStream.readInt();
-
-                for (int i = 0; i < amount; i++) {
-                    filters.add(TransporterFilter.readFromPacket(dataStream));
-                }
+                readState(dataStream);
+                readFilters(dataStream);
             } else if (type == 1) {
-                clientActive = dataStream.readBoolean();
-                controlType = RedstoneControl.values()[dataStream.readInt()];
-
-                int c = dataStream.readInt();
-
-                if (c != -1) {
-                    color = TransporterUtils.colors.get(c);
-                } else {
-                    color = null;
-                }
-
-                autoEject = dataStream.readBoolean();
-                roundRobin = dataStream.readBoolean();
+                readState(dataStream);
             } else if (type == 2) {
-                filters.clear();
-
-                int amount = dataStream.readInt();
-
-                for (int i = 0; i < amount; i++) {
-                    filters.add(TransporterFilter.readFromPacket(dataStream));
-                }
+                readFilters(dataStream);
             }
+            if (clientActive != isActive) {
+                isActive = clientActive;
+                MekanismUtils.updateBlock(world, getPos());
+            }
+        }
+    }
+
+    private void readState(ByteBuf dataStream) {
+        clientActive = dataStream.readBoolean();
+        controlType = RedstoneControl.values()[dataStream.readInt()];
+
+        int c = dataStream.readInt();
+
+        if (c != -1) {
+            color = TransporterUtils.colors.get(c);
+        } else {
+            color = null;
+        }
+
+        autoEject = dataStream.readBoolean();
+        roundRobin = dataStream.readBoolean();
+    }
+
+    private void readFilters(ByteBuf dataStream) {
+        filters.clear();
+
+        int amount = dataStream.readInt();
+
+        for (int i = 0; i < amount; i++) {
+            filters.add(TransporterFilter.readFromPacket(dataStream));
         }
     }
 

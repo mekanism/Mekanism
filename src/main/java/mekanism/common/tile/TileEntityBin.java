@@ -291,7 +291,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
         cacheCount = nbtTags.getInteger("itemCount");
         tier = BinTier.values()[nbtTags.getInteger("tier")];
 
@@ -323,7 +323,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            isActive = dataStream.readBoolean();
+            clientActive = isActive = dataStream.readBoolean();
             clientAmount = dataStream.readInt();
             tier = BinTier.values()[dataStream.readInt()];
 
