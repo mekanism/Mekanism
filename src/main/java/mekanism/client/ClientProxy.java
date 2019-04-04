@@ -1006,7 +1006,7 @@ public class ClientProxy extends CommonProxy {
             player.sendStatusMessage(
                   new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
             if (client.enableMultiblockFormationParticles) {
-                new SparkleAnimation(tileEntity, checker).run();
+                new SparkleAnimation(tileEntity, 8, checker).run();
             }
         }
     }
@@ -1018,7 +1018,7 @@ public class ClientProxy extends CommonProxy {
             player.sendStatusMessage(
                   new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
             if (client.enableMultiblockFormationParticles) {
-                new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
+                new SparkleAnimation(tileEntity, 8, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
             }
         }
     }
