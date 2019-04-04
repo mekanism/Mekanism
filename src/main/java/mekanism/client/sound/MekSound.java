@@ -168,11 +168,11 @@ public class MekSound implements ISound {
     }
 
     @Override
-    public SoundEventAccessor createAccessor(SoundHandler handler) {
+    public SoundEventAccessor createAccessor(net.minecraft.client.audio.SoundHandler handler) {
         soundEvent = handler.getAccessor(soundLocation);
 
         if (soundEvent == null) {
-            sound = SoundHandler.MISSING_SOUND;
+            sound = net.minecraft.client.audio.SoundHandler.MISSING_SOUND;
         } else {
             sound = soundEvent.cloneEntry();
         }
