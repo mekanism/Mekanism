@@ -373,7 +373,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
     }
 
-    //can be optimised a lot to be linear
     public void sortInventory() {
         if (sorting) {
             int[] inputSlots;
