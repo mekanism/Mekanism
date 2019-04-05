@@ -1132,19 +1132,18 @@ public class Mekanism {
         event.blacklistWildcard(Blocks.IRON_DOOR);
 
         //Extra Utils 2
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("extrautils2", "machine")));
+        event.blacklistWildcard(new ResourceLocation("extrautils2", "machine"));
 
         //ImmEng multiblocks
-        String ie = "immersiveengineering";
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(ie, "metal_device0")));
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(ie, "metal_device1")));
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(ie, "wooden_device0")));
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(ie, "wooden_device1")));
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(ie, "connector")));
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(ie, "metal_multiblock")));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_device0"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_device1"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "wooden_device0"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "wooden_device1"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "connector"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_multiblock"));
 
         //IC2
-        event.blacklistWildcard(ForgeRegistries.BLOCKS.getValue(new ResourceLocation("ic2", "te")));
+        event.blacklistWildcard(new ResourceLocation("ic2", "te"));
 
         event.blacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
         event.blacklistMod("colossalchests");

@@ -7,7 +7,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.util.BlockInfo;
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 
@@ -79,8 +81,16 @@ public class MekanismAPI {
 
     public static class BoxBlacklistEvent extends Event {
 
+        public void blacklist(@Nonnull ResourceLocation blockLocation, int meta) {
+            blacklist(ForgeRegistries.BLOCKS.getValue(blockLocation), meta);
+        }
+
         public void blacklist(@Nullable Block block, int meta) {
             addBoxBlacklist(block, meta);
+        }
+
+        public void blacklistWildcard(@Nonnull ResourceLocation blockLocation) {
+            blacklistWildcard(ForgeRegistries.BLOCKS.getValue(blockLocation));
         }
 
         public void blacklistWildcard(@Nullable Block block) {
