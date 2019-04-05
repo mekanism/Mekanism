@@ -24,6 +24,7 @@ import mekanism.common.integration.computer.OCDriver;
 import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.MachineInput;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -249,8 +250,11 @@ public final class MekanismHooks {
 
             if (crystalSeed.isPresent()) {
                 NonNullList<ItemStack> seeds = NonNullList.create();
-                crystalSeed.get().getSubItems(CreativeTabs.SEARCH,
-                      seeds);//there appears to be no way to get this via api, so fall back to unloc names
+                //there appears to be no way to get this via api, so fall back to unloc names
+                crystalSeed.get().getSubItems(CreativeTabs.SEARCH, seeds);
+                //Crystal seeds use a meta AND NBT to determine growth state, so we need to ignore the NBT, and use the meta which should be fixed on what stage it's at
+                MachineInput.addCustomItemMatcher(crystalSeed.get().getClass(),
+                      (def, test) -> def.getItem() == test.getItem() && def.getMetadata() == test.getMetadata());
                 for (ItemStack stack : seeds) {
                     String unloc = crystalSeed.get().getTranslationKey(stack);
                     if (unloc.endsWith("certus") && pureCertus.isPresent()) {
