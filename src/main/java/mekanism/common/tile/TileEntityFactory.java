@@ -499,6 +499,22 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     @Override
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (slotID == 1) {
+            return ChargeUtils.canBeDischarged(itemstack);
+        } else if (isInputSlot(slotID)) {
+            return inputProducesOutput(itemstack, inventory.get(tier.processes + slotID));
+        }
+        //TODO: Only allow inserting into extra slot if it can go in
+        return super.canInsertItem(slotID, itemstack, side);
+    }
+
+    private boolean isInputSlot(int slotID) {
+        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7
+              : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE && slotID <= 11);
+    }
+
+    @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (tier == FactoryTier.BASIC) {
             if (slotID >= 8 && slotID <= 10) {
