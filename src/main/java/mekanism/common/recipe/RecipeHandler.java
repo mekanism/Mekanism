@@ -591,6 +591,8 @@ public final class RecipeHandler {
 
     public static class Recipe<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> {
 
+        private static List<Recipe> values = new ArrayList<>();
+
         public static final Recipe<ItemStackInput, ItemStackOutput, SmeltingRecipe>
               ENERGIZED_SMELTER = new Recipe<>(MachineType.ENERGIZED_SMELTER.blockName, ItemStackInput.class,
               ItemStackOutput.class, SmeltingRecipe.class);
@@ -648,7 +650,6 @@ public final class RecipeHandler {
         public static final Recipe<GasInput, GasOutput, SolarNeutronRecipe>
               SOLAR_NEUTRON_ACTIVATOR = new Recipe<>(MachineType.SOLAR_NEUTRON_ACTIVATOR.blockName, GasInput.class,
               GasOutput.class, SolarNeutronRecipe.class);
-        private static List<Recipe> values = new ArrayList<>();
 
         static {
             values = ImmutableList.copyOf(values);
