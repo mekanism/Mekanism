@@ -113,6 +113,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Common proxy for the Mekanism mod.
@@ -715,9 +716,9 @@ public class CommonProxy implements IGuiProvider {
 
     public void onConfigSync(boolean fromPacket) {
         if (general.cardboardSpawners) {
-            MekanismAPI.removeBoxBlacklist(Blocks.MOB_SPAWNER, 0);
+            MekanismAPI.removeBoxBlacklist(Blocks.MOB_SPAWNER, OreDictionary.WILDCARD_VALUE);
         } else {
-            MekanismAPI.addBoxBlacklist(Blocks.MOB_SPAWNER, 0);
+            MekanismAPI.addBoxBlacklist(Blocks.MOB_SPAWNER, OreDictionary.WILDCARD_VALUE);
         }
 
         BlockStateMachine.MachineType.updateAllUsages();

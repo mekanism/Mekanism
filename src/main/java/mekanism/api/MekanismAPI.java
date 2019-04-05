@@ -1,7 +1,10 @@
 package mekanism.api;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.util.BlockInfo;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -16,23 +19,27 @@ public class MekanismAPI {
     public static boolean debug = false;
     //Add a BlockInfo value here if you don't want a certain block to be picked up by cardboard boxes
     private static Set<BlockInfo> cardboardBoxIgnore = new HashSet<>();
+    //Ignore all mod blocks
+    private static Set<String> cardboardBoxModIgnore = new HashSet<>();
     private static MekanismRecipeHelper helper = null;
 
-    public static boolean isBlockCompatible(Block block, int meta) {
-        for (BlockInfo i : cardboardBoxIgnore) {
-            if (i.block == block && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta)) {
-                return false;
-            }
+    public static boolean isBlockCompatible(@Nonnull Block block, int meta) {
+        if (cardboardBoxModIgnore.contains(Objects.requireNonNull(block.getRegistryName()).getNamespace())) {
+            return false;
         }
 
-        return true;
+        return cardboardBoxIgnore.stream()
+              .noneMatch(i -> i.block == block && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta));
     }
 
-    public static void addBoxBlacklist(Block block, int meta) {
-        cardboardBoxIgnore.add(new BlockInfo(block, meta));
+    public static void addBoxBlacklist(@Nullable Block block, int meta) {
+        //Allow block to be null but don't do anything if it is
+        if (block != null) {
+            cardboardBoxIgnore.add(new BlockInfo(block, meta));
+        }
     }
 
-    public static void removeBoxBlacklist(Block block, int meta) {
+    public static void removeBoxBlacklist(@Nonnull Block block, int meta) {
         cardboardBoxIgnore.remove(new BlockInfo(block, meta));
     }
 
@@ -58,7 +65,42 @@ public class MekanismAPI {
         return helper;
     }
 
+    public static void addBoxBlacklistMod(@Nonnull String modid) {
+        cardboardBoxModIgnore.add(modid);
+    }
+
+    public static void removeBoxBlacklistMod(@Nonnull String modid) {
+        cardboardBoxModIgnore.remove(modid);
+    }
+
+    public static Set<String> getBoxModIgnore() {
+        return cardboardBoxModIgnore;
+    }
+
     public static class BoxBlacklistEvent extends Event {
 
+        public void blacklist(@Nullable Block block, int meta) {
+            addBoxBlacklist(block, meta);
+        }
+
+        public void blacklistWildcard(@Nullable Block block) {
+            addBoxBlacklist(block, OreDictionary.WILDCARD_VALUE);
+        }
+
+        public void blacklistMod(@Nonnull String modid) {
+            addBoxBlacklistMod(modid);
+        }
+
+        public void removeBlacklist(@Nonnull Block block, int meta) {
+            removeBoxBlacklist(block, meta);
+        }
+
+        public void removeWildcardBlacklist(@Nonnull Block block) {
+            removeBoxBlacklist(block, OreDictionary.WILDCARD_VALUE);
+        }
+
+        public void removeModBlacklist(@Nonnull String modid) {
+            removeBoxBlacklistMod(modid);
+        }
     }
 }

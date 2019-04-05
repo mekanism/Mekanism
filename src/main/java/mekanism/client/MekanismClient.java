@@ -41,6 +41,7 @@ public class MekanismClient extends Mekanism {
         TransmitterModel.clearCache();
 
         MekanismAPI.getBoxIgnore().clear();
+        MekanismAPI.getBoxModIgnore().clear();
         MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 
         Mekanism.playerState.clear();
