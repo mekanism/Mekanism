@@ -1,7 +1,6 @@
 package mekanism.common.integration;
 
 import ic2.api.recipe.Recipes;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
@@ -12,6 +11,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
+import mekanism.common.OreDictCache;
 import mekanism.common.Resource;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.recipe.RecipeHandler;
@@ -31,9 +31,6 @@ import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictManager {
-
-    private static final List<String> minorCompat = Arrays
-          .asList("Nickel", "Aluminum", "Uranium", "Draconium", "Platinum", "Iridium");
 
     public static void init() {
         addLogRecipes();
@@ -132,7 +129,16 @@ public final class OreDictManager {
             }
         }
 
-        minorCompat.forEach(OreDictManager::addStandardOredictMetal);
+        List<String> oreDictStacks = OreDictCache.getOreDictKeys("ore*");
+        oreDictStacks.forEach(OreDictManager::addStandardOredictMetal);
+
+        for (ItemStack ore : OreDictionary.getOres("orePhosphorite")) {
+            try {
+                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1),
+                      StackUtils.size(OreDictionary.getOres("dustPhosphorus").get(0), 2));
+            } catch (Exception ignored) {
+            }
+        }
 
         for (ItemStack ore : OreDictionary.getOres("oreYellorite")) {
             try {
@@ -277,9 +283,10 @@ public final class OreDictManager {
         }
     }
 
-    public static void addStandardOredictMetal(String suffix) {
+    public static void addStandardOredictMetal(String oreDictEntry) {
+        String suffix = oreDictEntry.replaceFirst("ore", "");
         NonNullList<ItemStack> dusts = OreDictionary.getOres("dust" + suffix);
-        NonNullList<ItemStack> ores = OreDictionary.getOres("ore" + suffix);
+        NonNullList<ItemStack> ores = OreDictionary.getOres(oreDictEntry);
         if (dusts.size() > 0) {
             for (ItemStack ore : ores) {
                 RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(dusts.get(0), 2));

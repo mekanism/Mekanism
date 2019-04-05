@@ -53,7 +53,6 @@ public final class MekanismHooks {
     public static final String TESLA_MOD_ID = "tesla";
     public static final String MCMULTIPART_MOD_ID = "mcmultipart";
     public static final String REDSTONEFLUX_MOD_ID = "redstoneflux";
-    public static final String METALLURGY_MOD_ID = "metallurgy";
     public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
     public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
     public static final String WAILA_MOD_ID = "Waila";
@@ -66,7 +65,6 @@ public final class MekanismHooks {
     public boolean TeslaLoaded = false;
     public boolean MCMPLoaded = false;
     public boolean RFLoaded = false;
-    public boolean MetallurgyLoaded = false;
     public boolean CyclicLoaded = false;
 
     public void hook() {
@@ -93,11 +91,6 @@ public final class MekanismHooks {
         }
         if (Loader.isModLoaded(REDSTONEFLUX_MOD_ID)) {
             RFLoaded = true;
-        }
-        if (Loader.isModLoaded(METALLURGY_MOD_ID)) {
-            MetallurgyLoaded = true;
-            addMetallurgy();
-            Mekanism.logger.info("Hooked into Metallurgy successfully.");
         }
         if (Loader.isModLoaded(CYCLIC_MOD_ID)) {
             CyclicLoaded = true;
@@ -208,50 +201,6 @@ public final class MekanismHooks {
         registerCyclicCombinerOreRecipe("dustDiamond", 3, end_stone, "end_diamond_ore");
         registerCyclicCombinerOreRecipe("dustGold", 8, end_stone, "end_gold_ore");
         registerCyclicCombinerOreRecipe("dustIron", 8, end_stone, "end_iron_ore");
-    }
-
-    private void addMetallurgy() {
-        OreDictManager.addStandardOredictMetal("Adamantine");
-        OreDictManager.addStandardOredictMetal("Alduorite");
-        OreDictManager.addStandardOredictMetal("Angmallen");
-        OreDictManager.addStandardOredictMetal("AstralSilver");
-        OreDictManager.addStandardOredictMetal("Atlarus");
-        OreDictManager.addStandardOredictMetal("Amordrine");
-        OreDictManager.addStandardOredictMetal("BlackSteel");
-        OreDictManager.addStandardOredictMetal("Brass");
-        OreDictManager.addStandardOredictMetal("Bronze");
-        OreDictManager.addStandardOredictMetal("Carmot");
-        OreDictManager.addStandardOredictMetal("Celenegil");
-        OreDictManager.addStandardOredictMetal("Ceruclase");
-        OreDictManager.addStandardOredictMetal("DamascusSteel");
-        OreDictManager.addStandardOredictMetal("DeepIron");
-        OreDictManager.addStandardOredictMetal("Desichalkos");
-        OreDictManager.addStandardOredictMetal("Electrum");
-        OreDictManager.addStandardOredictMetal("Eximite");
-        OreDictManager.addStandardOredictMetal("Haderoth");
-        OreDictManager.addStandardOredictMetal("Hepatizon");
-        OreDictManager.addStandardOredictMetal("Ignatius");
-        OreDictManager.addStandardOredictMetal("Infuscolium");
-        OreDictManager.addStandardOredictMetal("Inolashite");
-        OreDictManager.addStandardOredictMetal("Kalendrite");
-        OreDictManager.addStandardOredictMetal("Lemurite");
-        OreDictManager.addStandardOredictMetal("Manganese");
-        OreDictManager.addStandardOredictMetal("Meutoite");
-        OreDictManager.addStandardOredictMetal("Midasium");
-        OreDictManager.addStandardOredictMetal("Mithril");
-        OreDictManager.addStandardOredictMetal("Orichalcum");
-        OreDictManager.addStandardOredictMetal("Oureclase");
-        OreDictManager.addStandardOredictMetal("Prometheum");
-        OreDictManager.addStandardOredictMetal("Quicksilver");
-        OreDictManager.addStandardOredictMetal("Rubracium");
-        OreDictManager.addStandardOredictMetal("Sanguinite");
-        OreDictManager.addStandardOredictMetal("ShadowIron");
-        OreDictManager.addStandardOredictMetal("ShadowSteel");
-        OreDictManager.addStandardOredictMetal("Tartarite");
-        OreDictManager.addStandardOredictMetal("Vulcanite");
-        OreDictManager.addStandardOredictMetal("Vyroxeres");
-        OreDictManager.addStandardOredictMetal("Zinc");
-
     }
 
     public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy) {

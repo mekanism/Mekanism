@@ -40,11 +40,7 @@ public final class OreDictCache {
         return ret;
     }
 
-    public static List<ItemStack> getOreDictStacks(String oreName, boolean forceBlock) {
-        if (oreDictStacks.get(oreName) != null) {
-            return oreDictStacks.get(oreName);
-        }
-
+    public static List<String> getOreDictKeys(String oreName) {
         List<String> keys = new ArrayList<>();
 
         for (String s : OreDictionary.getOreNames()) {
@@ -68,6 +64,15 @@ public final class OreDictCache {
                 }
             }
         }
+        return keys;
+    }
+
+    public static List<ItemStack> getOreDictStacks(String oreName, boolean forceBlock) {
+        if (oreDictStacks.get(oreName) != null) {
+            return oreDictStacks.get(oreName);
+        }
+
+        List<String> keys = getOreDictKeys(oreName);
 
         List<ItemStack> stacks = new ArrayList<>();
 
