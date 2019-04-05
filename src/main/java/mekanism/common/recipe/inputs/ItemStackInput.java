@@ -68,7 +68,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput> {
 
     @Override
     public boolean testEquality(ItemStackInput other) {
-        return StackUtils.equalsWildcardWithNBT(ingredient, other.ingredient);
+        return MachineInput.inputItemMatches(ingredient, other.ingredient);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
             return !other.isValid();
         }
 
-        return StackUtils.equalsWildcardWithNBT(itemStack, other.itemStack) && gasType.getID() == other.gasType.getID();
+        return MachineInput.inputItemMatches(itemStack, other.itemStack) && gasType.getID() == other.gasType.getID();
     }
 
     @Override
