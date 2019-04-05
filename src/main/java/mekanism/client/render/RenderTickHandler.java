@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
 import java.util.Random;
+import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
@@ -121,8 +122,8 @@ public class RenderTickHandler {
 
                 // Traverse a copy of jetpack state and do animations
                 // TODO: This means we're making a full copy of the state per render....might need to revisit
-                for (String s : Mekanism.playerState.getActiveJetpacks()) {
-                    EntityPlayer p = mc.world.getPlayerEntityByName(s);
+                for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
+                    EntityPlayer p = mc.world.getPlayerEntityByUUID(uuid);
 
                     if (p == null) {
                         continue;
@@ -168,8 +169,8 @@ public class RenderTickHandler {
                 // Traverse a copy of gasmask state and do animations
                 // TODO: This means we're making a full copy of the state per render....might need to revisit
                 if (world.getWorldTime() % 4 == 0) {
-                    for (String s : Mekanism.playerState.getActiveGasmasks()) {
-                        EntityPlayer p = mc.world.getPlayerEntityByName(s);
+                    for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
+                        EntityPlayer p = mc.world.getPlayerEntityByUUID(uuid);
 
                         if (p == null || !p.isInWater()) {
                             continue;
