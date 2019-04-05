@@ -1,8 +1,6 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -57,7 +55,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -65,7 +62,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration,
       IGasHandler, ISpecialConfigData, ITierUpgradeable, ISustainedData {
@@ -379,43 +375,38 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     //can be optimised a lot to be linear
     public void sortInventory() {
         if (sorting) {
-            boolean didOp = false;
-
-            int[] inputSlots = null;
-
-            List<InvID> invStacks = new ArrayList<>();
-
+            int[] inputSlots;
             if (tier == FactoryTier.BASIC) {
                 inputSlots = new int[]{5, 6, 7};
             } else if (tier == FactoryTier.ADVANCED) {
                 inputSlots = new int[]{5, 6, 7, 8, 9};
             } else if (tier == FactoryTier.ELITE) {
                 inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
+            } else {
+                //If something went wrong finding the tier don't sort it
+                return;
             }
 
-            for (int id : inputSlots) {
-                invStacks.add(InvID.get(id, inventory));
-            }
-
-            for (InvID invID1 : invStacks) {
-                for (InvID invID2 : invStacks) {
-                    if (invID1.ID == invID2.ID || StackUtils.diffIgnoreEmpty(invID1.stack, invID2.stack)
-                          || Math.abs(invID1.size() - invID2.size()) < 2) {
+            for (int i = 0; i < inputSlots.length; i++) {
+                int slotID = inputSlots[i];
+                ItemStack stack = inventory.get(slotID);
+                int count = stack.getCount();
+                for (int j = i + 1; j < inputSlots.length; j++) {
+                    int checkSlotID = inputSlots[j];
+                    ItemStack checkStack = inventory.get(checkSlotID);
+                    if (StackUtils.diffIgnoreEmpty(stack, checkStack) || Math.abs(count - checkStack.getCount()) < 2) {
                         continue;
                     }
+                    //TODO: Check if the output slots allow for this input
 
-                    Pair<ItemStack, ItemStack> evened = StackUtils
-                          .even(inventory.get(invID1.ID), inventory.get(invID2.ID));
-                    inventory.set(invID1.ID, evened.getLeft());
-                    inventory.set(invID2.ID, evened.getRight());
+                    //Balance the two slots
+                    int total = count + checkStack.getCount();
+                    ItemStack newStack = stack.isEmpty() ? checkStack : stack;
+                    inventory.set(slotID, StackUtils.size(newStack, (total + 1) / 2));
+                    inventory.set(checkSlotID, StackUtils.size(newStack, total / 2));
 
-                    didOp = true;
-                    break;
-                }
-
-                if (didOp) {
                     markDirty();
-                    break;
+                    return;
                 }
             }
         }
@@ -972,28 +963,5 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     public void readSustainedData(ItemStack itemStack) {
         infuseStored.readSustainedData(itemStack);
         GasUtils.readSustainedData(gasTank, itemStack);
-    }
-
-    public static class InvID {
-
-        public ItemStack stack;
-        public int ID;
-
-        public InvID(ItemStack s, int i) {
-            stack = s;
-            ID = i;
-        }
-
-        public static InvID get(int id, NonNullList<ItemStack> inv) {
-            return new InvID(inv.get(id), id);
-        }
-
-        public int size() {
-            return !stack.isEmpty() ? stack.getCount() : 0;
-        }
-
-        public Item item() {
-            return !stack.isEmpty() ? stack.getItem() : null;
-        }
     }
 }

@@ -8,10 +8,13 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -30,27 +33,27 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
         if (tileEntity.tier == FactoryTier.BASIC) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new Slot(tileEntity, 5 + i, 55 + (i * 38), 13));
+                addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 55 + (i * 38), 13, i));
             }
 
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new SlotOutput(tileEntity, tileEntity.tier.processes + 5 + i, 55 + (i * 38), 57));
+                addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 55 + (i * 38), 57));
             }
         } else if (tileEntity.tier == FactoryTier.ADVANCED) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new Slot(tileEntity, 5 + i, 35 + (i * 26), 13));
+                addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 35 + (i * 26), 13, i));
             }
 
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new SlotOutput(tileEntity, tileEntity.tier.processes + 5 + i, 35 + (i * 26), 57));
+                addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 35 + (i * 26), 57));
             }
         } else if (tileEntity.tier == FactoryTier.ELITE) {
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new Slot(tileEntity, 5 + i, 29 + (i * 19), 13));
+                addSlotToContainer(new FactoryInputSlot(tileEntity, getInputSlotIndex(i), 29 + (i * 19), 13, i));
             }
 
             for (int i = 0; i < tileEntity.tier.processes; i++) {
-                addSlotToContainer(new SlotOutput(tileEntity, tileEntity.tier.processes + 5 + i, 29 + (i * 19), 57));
+                addSlotToContainer(new SlotOutput(tileEntity, getOutputSlotIndex(i), 29 + (i * 19), 57));
             }
         }
     }
@@ -86,46 +89,30 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
             } else if (tileEntity.getRecipeType()
                   .getAnyRecipe(slotStack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(),
                         tileEntity.infuseStored) != null) {
-                if (!isInputSlot(slotID)) {
-                    if (!mergeItemStack(slotStack, 4, 4 + tileEntity.tier.processes, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
+                if (isInputSlot(slotID)) {
                     if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
+                } else if (!mergeItemStack(slotStack, 4, 4 + tileEntity.tier.processes, false)) {
+                    return ItemStack.EMPTY;
                 }
             } else if (ChargeUtils.canBeDischarged(slotStack)) {
-                if (slotID != 0) {
-                    if (!mergeItemStack(slotStack, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
+                if (slotID == 0) {
                     if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
+                } else if (!mergeItemStack(slotStack, 0, 1, false)) {
+                    return ItemStack.EMPTY;
                 }
             } else if (tileEntity.getRecipeType().getItemGas(slotStack) != null) {
-                if (slotID >= tileEntity.inventory.size() - 1) {
-                    if (!mergeItemStack(slotStack, 3, 4, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-                    if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+                if (transferExtraSlot(slotID, slotStack)) {
+                    return ItemStack.EMPTY;
                 }
             } else if (tileEntity.getRecipeType() == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null
                   && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry
                   .getObject(slotStack).type)) {
-                if (slotID >= tileEntity.inventory.size() - 1) {
-                    if (!mergeItemStack(slotStack, 3, 4, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-                    if (!mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+                if (transferExtraSlot(slotID, slotStack)) {
+                    return ItemStack.EMPTY;
                 }
             } else {
                 int slotEnd = tileEntity.inventory.size() - 1;
@@ -138,10 +125,8 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     if (!mergeItemStack(slotStack, slotEnd, (slotEnd + 26), false)) {
                         return ItemStack.EMPTY;
                     }
-                } else {
-                    if (!mergeItemStack(slotStack, slotEnd, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+                } else if (!mergeItemStack(slotStack, slotEnd, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
                 }
             }
 
@@ -161,6 +146,13 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
         return stack;
     }
 
+    private boolean transferExtraSlot(int slotID, ItemStack slotStack) {
+        if (slotID >= tileEntity.inventory.size() - 1) {
+            return !mergeItemStack(slotStack, 3, 4, false);
+        }
+        return !mergeItemStack(slotStack, tileEntity.inventory.size() - 1, inventorySlots.size(), true);
+    }
+
     public boolean isProperMachine(ItemStack itemStack) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemBlockMachine) {
             return Arrays.stream(RecipeType.values()).findFirst().filter(type -> itemStack.isItemEqual(type.getStack()))
@@ -176,5 +168,42 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
 
     public boolean isOutputSlot(int slot) {
         return slot >= 4 + tileEntity.tier.processes && slot < 4 + tileEntity.tier.processes * 2;
+    }
+
+    private int getOutputSlotIndex(int processNumber) {
+        return tileEntity.tier.processes + getInputSlotIndex(processNumber);
+    }
+
+    private int getInputSlotIndex(int processNumber) {
+        return 5 + processNumber;
+    }
+
+    private class FactoryInputSlot extends Slot {
+
+        /**
+         * The index of the processes slot. 0 <= processNumber < tileEntity.tier.processes For matching the input to
+         * output slot
+         */
+        private final int processNumber;
+
+        private FactoryInputSlot(IInventory inventoryIn, int index, int xPosition, int yPosition, int processNumber) {
+            super(inventoryIn, index, xPosition, yPosition);
+            this.processNumber = processNumber;
+        }
+
+        @Override
+        public boolean isItemValid(ItemStack stack) {
+            ItemStack outputSlotStack = tileEntity.inventory.get(getOutputSlotIndex(this.processNumber));
+            if (outputSlotStack.isEmpty()) {
+                return super.isItemValid(stack);
+            }
+            MachineRecipe matchingRecipe = tileEntity.getRecipeType()
+                  .getAnyRecipe(stack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(),
+                        tileEntity.infuseStored);
+            if (matchingRecipe.recipeOutput instanceof ItemStackOutput) {
+                return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, stack);
+            }
+            return super.isItemValid(stack);
+        }
     }
 }
