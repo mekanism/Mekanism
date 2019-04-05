@@ -201,7 +201,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                   .getAnyRecipe(stack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(),
                         tileEntity.infuseStored);
             if (matchingRecipe.recipeOutput instanceof ItemStackOutput) {
-                return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, stack);
+                return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, outputSlotStack);
             }
             return super.isItemValid(stack);
         }
