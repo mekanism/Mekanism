@@ -42,6 +42,7 @@ import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -391,13 +392,20 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 int slotID = inputSlots[i];
                 ItemStack stack = inventory.get(slotID);
                 int count = stack.getCount();
+                ItemStack output = inventory.get(tier.processes + slotID);
                 for (int j = i + 1; j < inputSlots.length; j++) {
                     int checkSlotID = inputSlots[j];
                     ItemStack checkStack = inventory.get(checkSlotID);
                     if (StackUtils.diffIgnoreEmpty(stack, checkStack) || Math.abs(count - checkStack.getCount()) < 2) {
                         continue;
                     }
-                    //TODO: Check if the output slots allow for this input
+                    //Output/Input will not match
+                    // Only check if the input spot is empty otherwise assume it works
+                    if (stack.isEmpty() && !inputProducesOutput(checkStack, output) ||
+                          checkStack.isEmpty() && !inputProducesOutput(stack,
+                                inventory.get(tier.processes + checkSlotID))) {
+                        continue;
+                    }
 
                     //Balance the two slots
                     int total = count + checkStack.getCount();
@@ -410,6 +418,24 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 }
             }
         }
+    }
+
+    private boolean inputProducesOutput(ItemStack input, ItemStack output) {
+        if (output.isEmpty()) {
+            return true;
+        }
+        //TODO: At some point it might be worth caching the machine recipe it found,
+        // but as it only checks when slots are empty it is unlikely to make that large a performance boost
+        // for the added logic complexity of keeping track of it.
+        // The case it would help the most is if you have something in the first slot and every other slot is empty
+        // and nothing is valid for it so it keeps on trying each slot, then caching the recipe and just comparing
+        // the output to the output would yield even better performance.
+        MachineRecipe matchingRecipe = getRecipeType()
+              .getAnyRecipe(input, inventory.get(4), gasTank.getGasType(), infuseStored);
+        if (matchingRecipe.recipeOutput instanceof ItemStackOutput) {
+            return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, output);
+        }
+        return true;
     }
 
     public double getSecondaryEnergyPerTick(RecipeType type) {
