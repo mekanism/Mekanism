@@ -1106,35 +1106,47 @@ public class Mekanism {
 
     @SubscribeEvent
     public void onBlacklistUpdate(BoxBlacklistEvent event) {
-        MekanismAPI.addBoxBlacklist(MekanismBlocks.CardboardBox, OreDictionary.WILDCARD_VALUE);
+        event.blacklistWildcard(MekanismBlocks.CardboardBox);
 
         // Mekanism multiblock structures
-        MekanismAPI.addBoxBlacklist(MekanismBlocks.BoundingBlock, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(MekanismBlocks.BasicBlock2, 9);   // Security Desk
-        MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock, 4);  // Digital Miner
-        MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock2, 9); // Seismic Vibrator
-        MekanismAPI.addBoxBlacklist(MekanismBlocks.MachineBlock3, 1); // Solar Neutron Activator
+        event.blacklistWildcard(MekanismBlocks.BoundingBlock);
+        event.blacklist(MekanismBlocks.BasicBlock2, 9);   // Security Desk
+        event.blacklist(MekanismBlocks.MachineBlock, 4);  // Digital Miner
+        event.blacklist(MekanismBlocks.MachineBlock2, 9); // Seismic Vibrator
+        event.blacklist(MekanismBlocks.MachineBlock3, 1); // Solar Neutron Activator
 
         // Minecraft unobtainable
-        MekanismAPI.addBoxBlacklist(Blocks.BEDROCK, 0);
-        MekanismAPI.addBoxBlacklist(Blocks.PORTAL, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.END_PORTAL_FRAME, OreDictionary.WILDCARD_VALUE);
+        event.blacklist(Blocks.BEDROCK, 0);
+        event.blacklistWildcard(Blocks.PORTAL);
+        event.blacklistWildcard(Blocks.END_PORTAL);
+        event.blacklistWildcard(Blocks.END_PORTAL_FRAME);
 
         // Minecraft multiblock structures
-        MekanismAPI.addBoxBlacklist(Blocks.BED, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.OAK_DOOR, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.SPRUCE_DOOR, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.BIRCH_DOOR, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.JUNGLE_DOOR, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.ACACIA_DOOR, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.DARK_OAK_DOOR, OreDictionary.WILDCARD_VALUE);
-        MekanismAPI.addBoxBlacklist(Blocks.IRON_DOOR, OreDictionary.WILDCARD_VALUE);
+        event.blacklistWildcard(Blocks.BED);
+        event.blacklistWildcard(Blocks.OAK_DOOR);
+        event.blacklistWildcard(Blocks.SPRUCE_DOOR);
+        event.blacklistWildcard(Blocks.BIRCH_DOOR);
+        event.blacklistWildcard(Blocks.JUNGLE_DOOR);
+        event.blacklistWildcard(Blocks.ACACIA_DOOR);
+        event.blacklistWildcard(Blocks.DARK_OAK_DOOR);
+        event.blacklistWildcard(Blocks.IRON_DOOR);
 
-        Block xuMachine = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("extrautils2", "machine"));
-        if (xuMachine != null) {
-            MekanismAPI.addBoxBlacklist(xuMachine, OreDictionary.WILDCARD_VALUE);
-        }
+        //Extra Utils 2
+        event.blacklistWildcard(new ResourceLocation("extrautils2", "machine"));
+
+        //ImmEng multiblocks
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_device0"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_device1"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "wooden_device0"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "wooden_device1"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "connector"));
+        event.blacklistWildcard(new ResourceLocation("immersiveengineering", "metal_multiblock"));
+
+        //IC2
+        event.blacklistWildcard(new ResourceLocation("ic2", "te"));
+
+        event.blacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
+        event.blacklistMod("colossalchests");
 
         BoxBlacklistParser.load();
     }
