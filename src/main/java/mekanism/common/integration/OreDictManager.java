@@ -26,6 +26,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -131,31 +132,7 @@ public final class OreDictManager {
             }
         }
 
-        for (String s : minorCompat) {
-            for (ItemStack ore : OreDictionary.getOres("ore" + s)) {
-                try {
-                    RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1),
-                          StackUtils.size(OreDictionary.getOres("dust" + s).get(0), 2));
-                } catch (Exception ignored) {
-                }
-            }
-
-            for (ItemStack ore : OreDictionary.getOres("ingot" + s)) {
-                try {
-                    RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1),
-                          StackUtils.size(OreDictionary.getOres("dust" + s).get(0), 1));
-                } catch (Exception ignored) {
-                }
-            }
-
-            for (ItemStack ore : OreDictionary.getOres("dust" + s)) {
-                try {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), new ItemStack(Blocks.COBBLESTONE),
-                          StackUtils.size(OreDictionary.getOres("ore" + s).get(0), 1));
-                } catch (Exception ignored) {
-                }
-            }
-        }
+        minorCompat.forEach(OreDictManager::addStandardOredictMetal);
 
         for (ItemStack ore : OreDictionary.getOres("oreYellorite")) {
             try {
@@ -297,6 +274,27 @@ public final class OreDictManager {
                 }
             }
         } catch (Exception ignored) {
+        }
+    }
+
+    public static void addStandardOredictMetal(String suffix) {
+        NonNullList<ItemStack> dusts = OreDictionary.getOres("dust" + suffix);
+        NonNullList<ItemStack> ores = OreDictionary.getOres("ore" + suffix);
+        if (dusts.size() > 0) {
+            for (ItemStack ore : ores) {
+                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), StackUtils.size(dusts.get(0), 2));
+            }
+
+            for (ItemStack ore : OreDictionary.getOres("ingot" + suffix)) {
+                RecipeHandler.addCrusherRecipe(StackUtils.size(ore, 1), StackUtils.size(dusts.get(0), 1));
+            }
+        }
+
+        if (ores.size() > 0) {
+            for (ItemStack ore : dusts) {
+                RecipeHandler.addCombinerRecipe(StackUtils.size(ore, 8), new ItemStack(Blocks.COBBLESTONE),
+                      StackUtils.size(ores.get(0), 1));
+            }
         }
     }
 

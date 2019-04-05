@@ -23,7 +23,8 @@
       "galaticraft api",
       "metallurgy",
       "crafttweaker",
-      "cofhcore"
+      "cofhcore",
+      "cyclicmagic"
     ],
     "requiredMods": [
       "forge@[14.23.2.2639,)"
