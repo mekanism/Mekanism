@@ -30,7 +30,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
@@ -56,8 +55,10 @@ public final class MekanismHooks {
     public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
     public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
     public static final String WAILA_MOD_ID = "Waila";
+    public static final String TOP_MOD_ID = "theoneprobe";
     public static final String BUILDCRAFT_MOD_ID = "BuildCraft";
     public static final String CYCLIC_MOD_ID = "cyclicmagic";
+    public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
 
     public boolean IC2Loaded = false;
     public boolean CCLoaded = false;
@@ -66,22 +67,21 @@ public final class MekanismHooks {
     public boolean MCMPLoaded = false;
     public boolean RFLoaded = false;
     public boolean CyclicLoaded = false;
+    public boolean CraftTweakerLoaded = false;
+    public boolean OCLoaded = false;
 
-    public void hook() {
+    public void hookPreInit() {
         if (Loader.isModLoaded(IC2_MOD_ID)) {
             IC2Loaded = true;
-            hookIC2Recipes();
-            Mekanism.logger.info("Hooked into IC2 successfully.");
         }
         if (Loader.isModLoaded(COMPUTERCRAFT_MOD_ID)) {
             CCLoaded = true;
-            loadCCPeripheralProviders();
-            Mekanism.logger.info("Hooked into Computer Craft successfully.");
         }
         if (Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID)) {
             AE2Loaded = true;
-            registerAE2Recipes();
-            Mekanism.logger.info("Hooked into AE2 successfully.");
+        }
+        if (Loader.isModLoaded(OPENCOMPUTERS_MOD_ID)) {
+            OCLoaded = true;
         }
         if (Loader.isModLoaded(TESLA_MOD_ID)) {
             TeslaLoaded = true;
@@ -94,11 +94,35 @@ public final class MekanismHooks {
         }
         if (Loader.isModLoaded(CYCLIC_MOD_ID)) {
             CyclicLoaded = true;
-            registerCyclicRecipes();
-            Mekanism.logger.info("Hooked into Cyclic successfully.");
+        }
+        if (Loader.isModLoaded(CRAFTTWEAKER_MOD_ID)) {
+            CraftTweakerLoaded = true;
+        }
+    }
+
+    public void hookInit() {
+        //Integrate with Waila
+        FMLInterModComms
+              .sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
+
+        //Register TOP handler
+        FMLInterModComms
+              .sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
+        if (OCLoaded) {
+            loadOCDrivers();
+        }
+        if (AE2Loaded) {
+            registerAE2P2P();
+        }
+    }
+
+    public void hookPostInit() {
+        if (CCLoaded) {
+            loadCCPeripheralProviders();
+            Mekanism.logger.info("Hooked into Computer Craft successfully.");
         }
 
-        if (Loader.isModLoaded("crafttweaker")) {
+        if (CraftTweakerLoaded) {
             CrafttweakerIntegration.registerCommands();
             CrafttweakerIntegration.applyRecipeChanges();
         }
@@ -106,8 +130,23 @@ public final class MekanismHooks {
         Wrenches.initialise();
     }
 
+    public void hookRecipes() {
+        if (IC2Loaded) {
+            hookIC2Recipes();
+            Mekanism.logger.info("Hooked into IC2 successfully.");
+        }
+        if (AE2Loaded) {
+            registerAE2Recipes();
+            Mekanism.logger.info("Hooked into AE2 successfully.");
+        }
+        if (CyclicLoaded) {
+            registerCyclicRecipes();
+            Mekanism.logger.info("Hooked into Cyclic successfully.");
+        }
+    }
+
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void hookIC2Recipes() {
+    private void hookIC2Recipes() {
         for (MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes()) {
             if (!entry.getInput().getInputs().isEmpty()) {
                 if (!RecipeHandler.Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0))) {
@@ -152,7 +191,7 @@ public final class MekanismHooks {
     }
 
     @Method(modid = COMPUTERCRAFT_MOD_ID)
-    public void loadCCPeripheralProviders() {
+    private void loadCCPeripheralProviders() {
         try {
             ComputerCraftAPI.registerPeripheralProvider(new CCPeripheral.CCPeripheralProvider());
         } catch (Exception ignored) {
@@ -160,7 +199,7 @@ public final class MekanismHooks {
     }
 
     @Method(modid = OPENCOMPUTERS_MOD_ID)
-    public void loadOCDrivers() {
+    private void loadOCDrivers() {
         try {
             Driver.add(new OCDriver());
         } catch (Exception ignored) {
@@ -203,17 +242,7 @@ public final class MekanismHooks {
         registerCyclicCombinerOreRecipe("dustIron", 8, end_stone, "end_iron_ore");
     }
 
-    public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy) {
-        NBTTagCompound nbtTags = new NBTTagCompound();
-
-        nbtTags.setInteger("energy", energy);
-        nbtTags.setTag("input", input.writeToNBT(new NBTTagCompound()));
-        nbtTags.setTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
-
-        FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
-    }
-
-    public void registerAE2P2P() {
+    private void registerAE2P2P() {
         for (TransmitterType type : TransmitterType.values()) {
             if (type.getTransmission().equals(TransmissionType.ITEM)) {
                 FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item",
@@ -228,7 +257,7 @@ public final class MekanismHooks {
         }
     }
 
-    public void registerAE2Recipes() {
+    private void registerAE2Recipes() {
         try {
             IItems itemApi = AEApi.instance().definitions().items();
             IMaterials materialsApi = AEApi.instance().definitions().materials();

@@ -327,6 +327,7 @@ public class Mekanism {
         event.getRegistry().register(new BinRecipe());
         addRecipes();
         OreDictManager.init();
+        hooks.hookRecipes();
     }
 
     /**
@@ -952,6 +953,8 @@ public class Mekanism {
                     .setTranslationKey("obsidian"));
 
         Capabilities.registerCapabilities();
+
+        hooks.hookPreInit();
     }
 
     @EventHandler
@@ -994,22 +997,7 @@ public class Mekanism {
         //Load this module
         registerTileEntities();
 
-        //Integrate with Waila
-        FMLInterModComms.sendMessage(MekanismHooks.WAILA_MOD_ID, "register",
-              "mekanism.common.integration.WailaDataProvider.register");
-
-        //Register TOP handler
-        FMLInterModComms
-              .sendFunctionMessage("theoneprobe", "getTheOneProbe", "mekanism.common.integration.TOPProvider");
-
-        //Integrate with OpenComputers
-        if (Loader.isModLoaded(MekanismHooks.OPENCOMPUTERS_MOD_ID)) {
-            hooks.loadOCDrivers();
-        }
-
-        if (Loader.isModLoaded(MekanismHooks.APPLIED_ENERGISTICS_2_MOD_ID)) {
-            hooks.registerAE2P2P();
-        }
+        hooks.hookInit();
 
         //Packet registrations
         packetHandler.initialize();
@@ -1037,7 +1025,7 @@ public class Mekanism {
             Recipe.ENERGIZED_SMELTER.put(recipe);
         }
 
-        hooks.hook();
+        hooks.hookPostInit();
 
         MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 
