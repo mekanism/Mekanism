@@ -1,6 +1,8 @@
 package mekanism.client;
 
+import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.config.MekanismConfig.general;
 import net.minecraft.tileentity.TileEntity;
@@ -16,16 +18,27 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class SparkleAnimation {
 
     private TileEntity tile;
-    private int radius;
+    private BlockPos corner1;
+    private BlockPos corner2;
     private INodeChecker nodeChecker;
 
-    public SparkleAnimation(TileEntity tileEntity, int radius, INodeChecker checker) {
+    public SparkleAnimation(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
         this.tile = tileEntity;
-        this.radius = radius;
+        this.corner1 = corner1;
+        this.corner2 = corner2;
         this.nodeChecker = checker;
     }
 
+    public SparkleAnimation(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+        this.tile = tileEntity;
+        this.corner1 = new BlockPos(renderLoc.getX(), renderLoc.getY() - 1, renderLoc.getZ());
+        this.corner2 = new BlockPos(renderLoc.getX() + length, renderLoc.getY() + height - 2, renderLoc.getZ() + width - 1);
+        this.nodeChecker = checker;
+    }
+
+
     public void run() {
+        long start = System.nanoTime();
         if (general.dynamicTankEasterEgg) {
             tile.getWorld()
                   .playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(),
@@ -33,42 +46,41 @@ public class SparkleAnimation {
         }
 
         // Using the provided radius, get an iterable over all the positions within the radius
-        BlockPos center = tile.getPos();
-        Iterable<MutableBlockPos> itr = BlockPos.getAllInBoxMutable(center.getX() - radius, center.getY() + radius,
-            center.getY() - radius, center.getY() + radius,
-            center.getZ() - radius, center.getY() + radius);
+        Iterator<MutableBlockPos> itr = BlockPos.getAllInBoxMutable(corner1, corner2).iterator();
 
-        new Thread(() ->
-        {
-            World world = tile.getWorld();
-            ThreadLocalRandom random = ThreadLocalRandom.current();
+        World world = tile.getWorld();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int sparkles = 0;
 
-            for (MutableBlockPos pos : itr) {
-                TileEntity t = world.getTileEntity(pos);
-                if (!nodeChecker.isNode(t)) {
-                    continue;
-                }
-
-                for (int i = 0; i < 6; i++) {
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
-                          pos.getY() + -.01, pos.getZ() + random.nextDouble(), 0, 0, 0);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
-                          pos.getY() + 1.01, pos.getZ() + random.nextDouble(), 0, 0, 0);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
-                          pos.getY() + random.nextDouble(), pos.getZ() + -.01, 0, 0, 0);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
-                          pos.getY() + random.nextDouble(), pos.getZ() + 1.01, 0, 0, 0);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + -.01,
-                          pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0, 0);
-                    world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 1.01,
-                          pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0, 0);
-                }
+        while (itr.hasNext()) {
+            BlockPos pos = itr.next();
+            if (world.isAirBlock(pos)) {
+                continue;
             }
-        }).start();
+
+            TileEntity t = world.getTileEntity(pos);
+            if (t == null || !nodeChecker.isNode(t)) {
+                continue;
+            }
+
+            for (int i = 0; i < 2; i++) {
+                sparkles++;
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
+                      pos.getY() + random.nextDouble(), pos.getZ() + -.01, 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
+                      pos.getY() + random.nextDouble(), pos.getZ() + 1.01, 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + -.01,
+                      pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 1.01,
+                      pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0, 0);
+            }
+        }
+
+        long elapsed = System.nanoTime() - start;
+        Mekanism.logger.info("Generated {} sparkles in {} ms", sparkles, elapsed / 1000000d);
     }
 
     public interface INodeChecker {
-
         boolean isNode(TileEntity tile);
     }
 }

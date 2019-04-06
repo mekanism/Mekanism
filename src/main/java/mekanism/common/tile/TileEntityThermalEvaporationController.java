@@ -26,12 +26,15 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -501,7 +504,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 MekanismUtils.updateBlock(world, getPos());
 
                 if (structured) {
-                    Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityThermalEvaporationBlock);
+                    // Calculate the two corners of the evap tower using the render location as basis (which is the
+                    // lowest rightmost corner inside the tower, relative to the controller).
+                    BlockPos corner1 = getRenderLocation().getPos().offset(facing).offset(facing.rotateYCCW()).down();
+                    BlockPos corner2 = corner1.offset(facing.getOpposite(), 3).offset(facing.rotateYCCW().getOpposite(), 3).up(height-1);
+                    // Use the corners to spin up the sparkle
+                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2,
+                          tile -> tile instanceof  TileEntityThermalEvaporationBlock);
                 }
 
                 clientStructured = structured;
