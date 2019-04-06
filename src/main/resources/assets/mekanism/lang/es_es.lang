@@ -6,7 +6,7 @@
 
 
 
-# Items
+# Items / Objetos
 
 tile.ObsidianTNT.name=TNT de Obsidiana
 
@@ -104,7 +104,7 @@ item.CraftingFormula.name=Formula de Crafteo
 
 
 
-# Control Circuits
+# Control Circuits / Circuitos
 
 item.BasicControlCircuit.name=C. Circuito Basico
 
@@ -116,37 +116,37 @@ item.UltimateControlCircuit.name=Ultimate Ultimate
 
 
 
-# Gas Tank
+# Gas Tank / Tanques de Gas
 
-tile.GasTankBasic.name=Basic Gas Tank
+tile.GasTankBasic.name=Tanque de Gas Basico 
 
-tile.GasTankAdvanced.name=Advanced Gas Tank
+tile.GasTankAdvanced.name=Tanque de Gas Avanzado
 
-tile.GasTankElite.name=Elite Gas Tank
+tile.GasTankElite.name=Tanque de Gas Elite
 
-tile.GasTankUltimate.name=Ultimate Gas Tank
+tile.GasTankUltimate.name=Tanque de Gas Ultimate
 
-tile.GasTankCreative.name=Creative Gas Tank
-
-
-
-# Fluid Tank (part of MachineBlock2, naming handled differently)
-
-tile.FluidTankBasic.name=Basic Fluid Tank
-
-tile.FluidTankAdvanced.name=Advanced Fluid Tank
-
-tile.FluidTankElite.name=Elite Fluid Tank
-
-tile.FluidTankUltimate.name=Ultimate Fluid Tank
-
-tile.FluidTankCreative.name=Creative Fluid Tank
+tile.GasTankCreative.name=Tanque de Gas Creativo
 
 
 
-# Cardboard Box
+# Fluid Tank / Tanques de Fluidos
 
-tile.CardboardBox.name=Cardboard Box
+tile.FluidTankBasic.name=Tanque de Fluidos Basico
+
+tile.FluidTankAdvanced.name=Tanque de Fluidos Avanzado
+
+tile.FluidTankElite.name=Tanque de Fluidos Elite
+
+tile.FluidTankUltimate.name=Tanque de Fluidos Ultimate
+
+tile.FluidTankCreative.name=Tanque de Fluidos Creativo
+
+
+
+# Cardboard Box / Caja de Carton
+
+tile.CardboardBox.name=Caja de Carton
 
 
 
@@ -158,157 +158,157 @@ tile.BoundingBlock.name=Bounding Block
 
 # Salt
 
-tile.SaltBlock.name=Salt Block
+tile.SaltBlock.name=Bloque de Sal
 
 
 
 # Basic Block
 
-tile.BasicBlock.OsmiumBlock.name=Osmium Block
+tile.BasicBlock.OsmiumBlock.name=Bloque de Osmio
 
-tile.BasicBlock.BronzeBlock.name=Bronze Block
+tile.BasicBlock.BronzeBlock.name=Bloque de Bronce
 
-tile.BasicBlock.RefinedObsidian.name=Refined Obsidian
+tile.BasicBlock.RefinedObsidian.name=Obsidiana Refinada
 
-tile.BasicBlock.CharcoalBlock.name=Charcoal Block
+tile.BasicBlock.CharcoalBlock.name=Bloque de Carbon
 
-tile.BasicBlock.RefinedGlowstone.name=Refined Glowstone
+tile.BasicBlock.RefinedGlowstone.name=Piedra Luminosa Refinada
 
-tile.BasicBlock.SteelBlock.name=Steel Block
+tile.BasicBlock.SteelBlock.name=Bloque de Acero
 
-tile.BasicBlock.BinBasic.name=Basic Bin
+tile.BasicBlock.BinBasic.name=Compartimiento Basico
 
-tile.BasicBlock.BinAdvanced.name=Advanced Bin
+tile.BasicBlock.BinAdvanced.name=Compartimiento Avanzado
 
-tile.BasicBlock.BinElite.name=Elite Bin
+tile.BasicBlock.BinElite.name=Compartimiento Elite
 
-tile.BasicBlock.BinUltimate.name=Ultimate Bin
+tile.BasicBlock.BinUltimate.name=Compartimiento Ultimate
 
-tile.BasicBlock.BinCreative.name=Creative Bin
+tile.BasicBlock.BinCreative.name=Compartimiento Creativo
 
-tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
+tile.BasicBlock.TeleporterFrame.name=Modulo de Teletransportador
 
-tile.BasicBlock.SteelCasing.name=Steel Casing
+tile.BasicBlock.SteelCasing.name=Carcasa de Acero
 
-tile.BasicBlock.DynamicTank.name=Dynamic Tank
+tile.BasicBlock.DynamicTank.name=Tanque Dinamico
 
-tile.BasicBlock.StructuralGlass.name=Structural Glass
+tile.BasicBlock.StructuralGlass.name=Vidrio Estructural
 
-tile.BasicBlock.DynamicValve.name=Dynamic Valve
+tile.BasicBlock.DynamicValve.name=Valvula de T. Dinamico
 
-tile.BasicBlock.CopperBlock.name=Copper Block
+tile.BasicBlock.CopperBlock.name=Bloque de Cobre
 
-tile.BasicBlock.TinBlock.name=Tin Block
+tile.BasicBlock.TinBlock.name=Bloque de Estaño
 
-tile.BasicBlock.ThermalEvaporationController.name=Thermal Evaporation Controller
+tile.BasicBlock.ThermalEvaporationController.name=Controlador de Evaporador Termico
 
-tile.BasicBlock.ThermalEvaporationValve.name=Thermal Evaporation Valve
+tile.BasicBlock.ThermalEvaporationValve.name=Valvula de Eva. Termico
 
 
 
 # Basic Block 2 (second ID iteration)
 
-tile.BasicBlock2.ThermalEvaporationBlock.name=Thermal Evaporation Block
+tile.BasicBlock2.ThermalEvaporationBlock.name=Bloque de Eva. Termico
 
-tile.BasicBlock2.InductionCasing.name=Induction Casing
+tile.BasicBlock2.InductionCasing.name=Carcasa de B.Induccion
 
-tile.BasicBlock2.InductionPort.name=Induction Port
+tile.BasicBlock2.InductionPort.name=Pueto de B. Induccion
 
-tile.BasicBlock2.InductionCellBasic.name=Basic Induction Cell
+tile.BasicBlock2.InductionCellBasic.name=Celula de Ind. Basica
 
-tile.BasicBlock2.InductionCellAdvanced.name=Advanced Induction Cell
+tile.BasicBlock2.InductionCellAdvanced.name=Celula de Ind. Avanzada
 
-tile.BasicBlock2.InductionCellElite.name=Elite Induction Cell
+tile.BasicBlock2.InductionCellElite.name=Celula de Ind. Elite
 
-tile.BasicBlock2.InductionCellUltimate.name=Ultimate Induction Cell
+tile.BasicBlock2.InductionCellUltimate.name=Celula de Ind. Ultimate
 
-tile.BasicBlock2.InductionProviderBasic.name=Basic Induction Provider
+tile.BasicBlock2.InductionProviderBasic.name=Provedor de Ind. Basico
 
-tile.BasicBlock2.InductionProviderAdvanced.name=Advanced Induction Provider
+tile.BasicBlock2.InductionProviderAdvanced.name=Provedor de Ind. Avanzada
 
-tile.BasicBlock2.InductionProviderElite.name=Elite Induction Provider
+tile.BasicBlock2.InductionProviderElite.name=Provedor de Ind. Elite
 
-tile.BasicBlock2.InductionProviderUltimate.name=Ultimate Induction Provider
+tile.BasicBlock2.InductionProviderUltimate.name=Provedor de Ind. Ultimate
 
-tile.BasicBlock2.SuperheatingElement.name=Superheating Element
+tile.BasicBlock2.SuperheatingElement.name=Modulo de Supercalentador
 
-tile.BasicBlock2.PressureDisperser.name=Pressure Disperser
+tile.BasicBlock2.PressureDisperser.name=Disipador de Presion
 
-tile.BasicBlock2.BoilerCasing.name=Boiler Casing
+tile.BasicBlock2.BoilerCasing.name=Carcasa de Caldera
 
-tile.BasicBlock2.BoilerValve.name=Boiler Valve
+tile.BasicBlock2.BoilerValve.name=Valvula de Cardera
 
-tile.BasicBlock2.SecurityDesk.name=Security Desk
+tile.BasicBlock2.SecurityDesk.name=Mesa de Seguridad
 
 
 
 # Machine Block
 
-tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
+tile.MachineBlock.EnrichmentChamber.name=Camara de Enriquecimiento
 
-tile.MachineBlock.OsmiumCompressor.name=Osmium Compressor
+tile.MachineBlock.OsmiumCompressor.name=Compresor de Osmio
 
-tile.MachineBlock.Combiner.name=Combiner
+tile.MachineBlock.Combiner.name=Combinador
 
-tile.MachineBlock.Crusher.name=Crusher
+tile.MachineBlock.Crusher.name=Trituradora
 
-tile.MachineBlock.Factory.name=Factory
+tile.MachineBlock.Factory.name=Fabrica
 
-tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
+tile.MachineBlock.MetallurgicInfuser.name=Infusor Metalurgico
 
-tile.MachineBlock.PurificationChamber.name=Purification Chamber
+tile.MachineBlock.PurificationChamber.name=Camara de Purificacion
 
-tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
+tile.MachineBlock.EnergizedSmelter.name=Horno Electrico
 
-tile.MachineBlock.Teleporter.name=Teleporter
+tile.MachineBlock.Teleporter.name=Teletransportador
 
-tile.MachineBlock.ElectricPump.name=Electric Pump
+tile.MachineBlock.ElectricPump.name=Bomba Electrica
 
-tile.MachineBlock.PersonalChest.name=Personal Chest
+tile.MachineBlock.PersonalChest.name=Cofre Personal
 
-tile.MachineBlock.Chargepad.name=Chargepad
+tile.MachineBlock.Chargepad.name=Panel de Carga
 
-tile.MachineBlock.LogisticalSorter.name=Logistical Sorter
+tile.MachineBlock.LogisticalSorter.name=Clasificador
 
-tile.MachineBlock.DigitalMiner.name=Digital Miner
+tile.MachineBlock.DigitalMiner.name=Minera Digital
 
 
 
 # Machine Block 2 (second ID iteration)
 
-tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
+tile.MachineBlock2.RotaryCondensentrator.name=Condensador Giratorio
 
-tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
+tile.MachineBlock2.ChemicalOxidizer.name=Oxidador Quimico
 
-tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
+tile.MachineBlock2.ChemicalInfuser.name=Infusor Quimico
 
-tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
+tile.MachineBlock2.ChemicalCombiner.name=Combinador Quimico
 
-tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
+tile.MachineBlock2.ChemicalInjectionChamber.name=Injector Quimico
 
-tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
+tile.MachineBlock2.ElectrolyticSeparator.name=Separador de Electrolitos
 
-tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
+tile.MachineBlock2.PrecisionSawmill.name=Aserradero de Precison
 
-tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Camara de Disorcion quimica
 
-tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
+tile.MachineBlock2.ChemicalWasher.name=Lavadora Quimica
 
-tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
+tile.MachineBlock2.ChemicalCrystallizer.name=Cristalizador Quimico
 
-tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
+tile.MachineBlock2.SeismicVibrator.name=Vibrador Sismico
 
-tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
+tile.MachineBlock2.PressurizedReactionChamber.name=Camara de Reacion de Presion
 
-tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.PressurizedReactionChamber.short.name=CRP
 
-tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+tile.MachineBlock2.FluidicPlenisher.name=Plenador de Fluidos
 
 tile.MachineBlock2.Laser.name=Laser
 
-tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
+tile.MachineBlock2.LaserAmplifier.name=Amplificador Laser
 
-tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
+tile.MachineBlock2.LaserTractorBeam.name=Haz de Tractor Laser
 
 
 
@@ -330,19 +330,19 @@ tile.MachineBlock3.FuelwoodHeater.name=Fuelwood Heater
 
 # Plastic
 
-tile.PlasticBlock.name=Plastic Block
+tile.PlasticBlock.name=Bloque de Plastico
 
-tile.SlickPlasticBlock.name=Slick Plastic Block
+tile.SlickPlasticBlock.name=Bloque de Plastico Manchado
 
-tile.GlowPlasticBlock.name=Plastic Glow Block
+tile.GlowPlasticBlock.name=Bloque de Plastico Luminoso
 
-tile.ReinforcedPlasticBlock.name=Reinforced Plastic Block
+tile.ReinforcedPlasticBlock.name=Bloque de Plastico Reforzado
 
-tile.RoadPlasticBlock.name=Plastic Road
+tile.RoadPlasticBlock.name=Vara de Plastico
 
 
 
-tile.PlasticFence.name=Plastic Barrier
+tile.PlasticFence.name=Valla de Plastico
 
 
 
@@ -350,465 +350,464 @@ tile.PlasticFence.name=Plastic Barrier
 
 infuse.carbon=Carbon
 
-infuse.tin=Tin
+infuse.tin=Estaño
 
-infuse.diamond=Diamond
+infuse.diamond=Diamante
 
 infuse.redstone=Redstone
 
-infuse.fungi=Fungi
+infuse.fungi=Hongos
 
-infuse.obsidian=Obsidian
+infuse.obsidian=Obsidiana
 
-infuse.bio=Biomass
+infuse.bio=Biomasa
 
 
 
 # Ore Block
 
-tile.OreBlock.OsmiumOre.name=Osmium Ore
+tile.OreBlock.OsmiumOre.name=Mena de Osmio
 
-tile.OreBlock.CopperOre.name=Copper Ore
+tile.OreBlock.CopperOre.name=Mena de Cobre
 
-tile.OreBlock.TinOre.name=Tin Ore
+tile.OreBlock.TinOre.name=Mena de Estaño
 
 
 
 # Transmitters
 
-tile.Transmitter.BasicPressurizedTube.name=Basic Pressurized Tube
+tile.Transmitter.BasicPressurizedTube.name=Tuberia de Gas Basica
 
-tile.Transmitter.AdvancedPressurizedTube.name=Advanced Pressurized Tube
+tile.Transmitter.AdvancedPressurizedTube.name=Tuberia de Gas Avanzada 
 
-tile.Transmitter.ElitePressurizedTube.name=Elite Pressurized Tube
+tile.Transmitter.ElitePressurizedTube.name=Tuberia de Gas Elite
 
-tile.Transmitter.UltimatePressurizedTube.name=Ultimate Pressurized Tube
+tile.Transmitter.UltimatePressurizedTube.name=Tuberia de Gas Ultimate
 
-tile.Transmitter.BasicUniversalCable.name=Basic Universal Cable
+tile.Transmitter.BasicUniversalCable.name=Cable Electrico Basico
 
-tile.Transmitter.AdvancedUniversalCable.name=Advanced Universal Cable
+tile.Transmitter.AdvancedUniversalCable.name=Cable Electrico Avanzado
 
-tile.Transmitter.EliteUniversalCable.name=Elite Universal Cable
+tile.Transmitter.EliteUniversalCable.name=Cable Electrico Elite
 
-tile.Transmitter.UltimateUniversalCable.name=Ultimate Universal Cable
+tile.Transmitter.UltimateUniversalCable.name=Cable Electrico Ultimate
 
-tile.Transmitter.BasicMechanicalPipe.name=Basic Mechanical Pipe
+tile.Transmitter.BasicMechanicalPipe.name=Tuberia de Fluidos Basica
 
-tile.Transmitter.AdvancedMechanicalPipe.name=Advanced Mechanical Pipe
+tile.Transmitter.AdvancedMechanicalPipe.name=Tuberia de Fluidos Avanzada
 
-tile.Transmitter.EliteMechanicalPipe.name=Elite Mechanical Pipe
+tile.Transmitter.EliteMechanicalPipe.name=Tuberia de Fluidos Elite
 
-tile.Transmitter.UltimateMechanicalPipe.name=Ultimate Mechanical Pipe
+tile.Transmitter.UltimateMechanicalPipe.name=Tuberia de Fluidos Ultimate
 
-tile.Transmitter.BasicLogisticalTransporter.name=Basic Logistical Transporter
+tile.Transmitter.BasicLogisticalTransporter.name=Tuberia de Obj. Basica
 
-tile.Transmitter.AdvancedLogisticalTransporter.name=Advanced Logistical Transporter
+tile.Transmitter.AdvancedLogisticalTransporter.name=Tuberia de Obj. Avanzada
 
-tile.Transmitter.EliteLogisticalTransporter.name=Elite Logistical Transporter
+tile.Transmitter.EliteLogisticalTransporter.name=Tuberia de Obj. Elite
 
-tile.Transmitter.UltimateLogisticalTransporter.name=Ultimate Logistical Transporter
+tile.Transmitter.UltimateLogisticalTransporter.name=Tuberia de Obj. Ultimae
 
-tile.Transmitter.RestrictiveTransporter.name=Restrictive Transporter
+tile.Transmitter.RestrictiveTransporter.name=Tuberia de Obj. Restrictiva
 
-tile.Transmitter.DiversionTransporter.name=Diversion Transporter
+tile.Transmitter.DiversionTransporter.name=Tuberia de Obj. de Desviacion
 
-tile.Transmitter.BasicThermodynamicConductor.name=Basic Thermodynamic Conductor
+tile.Transmitter.BasicThermodynamicConductor.name=Conductor Termodinamico Basico
 
-tile.Transmitter.AdvancedThermodynamicConductor.name=Advanced Thermodynamic Conductor
+tile.Transmitter.AdvancedThermodynamicConductor.name=Conductor Termodinamico Avanzado
 
-tile.Transmitter.EliteThermodynamicConductor.name=Elite Thermodynamic Conductor
+tile.Transmitter.EliteThermodynamicConductor.name=Conductor Termodinamico Elite
 
-tile.Transmitter.UltimateThermodynamicConductor.name=Ultimate Thermodynamic Conductor
+tile.Transmitter.UltimateThermodynamicConductor.name=Conductor Termodinamico Ultimate
 
 
 
 # Glow Panel
 
-tile.GlowPanel.name=Glow Panel
+tile.GlowPanel.name=Panel Luminoso
 
 
 
 # Energy Cubes
 
-tile.EnergyCubeBasic.name=Basic Energy Cube
+tile.EnergyCubeBasic.name=Cubo de Energia Basico
 
-tile.EnergyCubeAdvanced.name=Advanced Energy Cube
+tile.EnergyCubeAdvanced.name=Cubo de Energia Avanzado
 
-tile.EnergyCubeElite.name=Elite Energy Cube
+tile.EnergyCubeElite.name=Cubo de Energia Elite
 
-tile.EnergyCubeUltimate.name=Ultimate Energy Cube
+tile.EnergyCubeUltimate.name=Cubo de Energia Ultimate
 
-tile.EnergyCubeCreative.name=Creative Energy Cube
+tile.EnergyCubeCreative.name=Cubo de Energia Creativo
 
 
 
 # Tier Installers
 
-item.basicTierInstaller.name=Basic Tier Installer
+item.basicTierInstaller.name=Actualizador Basico
 
-item.advancedTierInstaller.name=Advanced Tier Installer
+item.advancedTierInstaller.name=Actualizador Avanzado
 
-item.eliteTierInstaller.name=Elite Tier Installer
+item.eliteTierInstaller.name=Actualizador Elite
 
-item.ultimateTierInstaller.name=Ultimate Tier Installer
+item.ultimateTierInstaller.name=Actualizador Ultimate
 
 
 
 # Dust
 
-item.ironDust.name=Iron Dust
+item.ironDust.name=Polvo de Hierro
 
-item.goldDust.name=Gold Dust
+item.goldDust.name=Polvo de Oro
 
-item.osmiumDust.name=Osmium Dust
+item.osmiumDust.name=Polvo de Osmio
 
-item.obsidianDust.name=Obsidian Dust
+item.obsidianDust.name=Polvo de Obsidiana
 
-item.refinedobsidianDust.name=Refined Obsidian Dust
+item.refinedobsidianDust.name=Polvo de Obs. Refinado
 
-item.diamondDust.name=Diamond Dust
+item.diamondDust.name=Polvo de Diamante
 
-item.steelDust.name=Steel Dust
+item.steelDust.name=Polvo de Acero
 
-item.copperDust.name=Copper Dust
+item.copperDust.name=Polvo de Cobre
 
-item.tinDust.name=Tin Dust
+item.tinDust.name=Polvo de Estaño
 
-item.silverDust.name=Silver Dust
+item.silverDust.name=Polvo de Plata
 
-item.leadDust.name=Lead Dust
+item.leadDust.name=Polvo de Plomo
 
-item.sulfurDust.name=Sulfur Dust
+item.sulfurDust.name=Surfuro en Polvo
 
-item.lithiumDust.name=Lithium Dust
+item.lithiumDust.name=Litio en Polvo
 
 
 
 # Clumps
 
-item.ironClump.name=Iron Clump
+item.ironClump.name=Masa de Hierro
 
-item.goldClump.name=Gold Clump
+item.goldClump.name=Masa de Oro
 
-item.osmiumClump.name=Osmium Clump
+item.osmiumClump.name=Masa de Osmio
 
-item.copperClump.name=Copper Clump
+item.copperClump.name=Masa de Cobre
 
-item.tinClump.name=Tin Clump
+item.tinClump.name=Masa de Estaño
 
-item.silverClump.name=Silver Clump
+item.silverClump.name=Masa de Plata
 
-item.leadClump.name=Lead Clump
+item.leadClump.name=Masa de Plomo
 
 
 
 # Shards
 
-item.ironShard.name=Iron Shard
+item.ironShard.name=Fragmentos de Hierro
 
-item.goldShard.name=Gold Shard
+item.goldShard.name=Fragmentos de Oro
 
-item.osmiumShard.name=Osmium Shard
+item.osmiumShard.name=Fragmentos de Osmio
 
-item.copperShard.name=Copper Shard
+item.copperShard.name=Fragmentos de Cobre
 
-item.tinShard.name=Tin Shard
+item.tinShard.name=Fragmentos de Estaño
 
-item.silverShard.name=Silver Shard
+item.silverShard.name=Fragmentos de Plata
 
-item.leadShard.name=Lead Shard
+item.leadShard.name=Fragmentos de Plomo
 
 
 
 # Crystals
 
-item.ironCrystal.name=Iron Crystal
+item.ironCrystal.name=Hierro Cristalizado
 
-item.goldCrystal.name=Gold Crystal
+item.goldCrystal.name=Oro Cristalizado
 
-item.osmiumCrystal.name=Osmium Crystal
+item.osmiumCrystal.name=Osmio Cristalizado
 
-item.copperCrystal.name=Copper Crystal
+item.copperCrystal.name=Cobre Cristalizado
 
-item.tinCrystal.name=Tin Crystal
+item.tinCrystal.name=Estaño Cristalizado
 
-item.silverCrystal.name=Silver Crystal
+item.silverCrystal.name=Plata Cristalizada
 
-item.leadCrystal.name=Lead Crystal
+item.leadCrystal.name=Plomo Cristalizado
 
 
 
 # Dirty Dust
 
-item.dirtyIronDust.name=Dirty Iron Dust
+item.dirtyIronDust.name=Polvo de Hierro Mezquino
 
-item.dirtyGoldDust.name=Dirty Gold Dust
+item.dirtyGoldDust.name=Polvo de Oro Mezquino
 
-item.dirtyOsmiumDust.name=Dirty Osmium Dust
+item.dirtyOsmiumDust.name=Polvo de Osmio Mezquino
 
-item.dirtyCopperDust.name=Dirty Copper Dust
+item.dirtyCopperDust.name=Polvo de Cobre Mezquino
 
-item.dirtyTinDust.name=Dirty Tin Dust
+item.dirtyTinDust.name=Polvo de Estaño Mezquino
 
-item.dirtySilverDust.name=Dirty Silver Dust
+item.dirtySilverDust.name=Polvo de Plata Mezquino
 
-item.dirtyLeadDust.name=Dirty Lead Dust
+item.dirtyLeadDust.name=Polvo de Plomo Mezquino
 
 
 
 # Ingots
 
-item.obsidianIngot.name=Refined Obsidian Ingot
+item.obsidianIngot.name=Lingote de Obsidiana Refinada
 
-item.osmiumIngot.name=Osmium Ingot
+item.osmiumIngot.name=Lingote de Osmio
 
-item.bronzeIngot.name=Bronze Ingot
+item.bronzeIngot.name=Lingote de Bronce
 
-item.glowstoneIngot.name=Glowstone Ingot
+item.glowstoneIngot.name=Lingote de Piedra Luminosa
 
-item.steelIngot.name=Steel Ingot
+item.steelIngot.name=Lingote de Acero
 
-item.copperIngot.name=Copper Ingot
+item.copperIngot.name=Lingote de Cobre
 
-item.tinIngot.name=Tin Ingot
+item.tinIngot.name=Lingote de Estaño
 
 
 
 # Nuggets
 
-item.obsidianNugget.name=Refined Obsidian Nugget
+item.obsidianNugget.name=Pepitas de Obsidiana
 
-item.osmiumNugget.name=Osmium Nugget
+item.osmiumNugget.name=Pepitas de Osmio
 
-item.bronzeNugget.name=Bronze Nugget
+item.bronzeNugget.name=Pepitas de Bronce
 
-item.glowstoneNugget.name=Glowstone Nugget
+item.glowstoneNugget.name=Pepitas de Piedra Luminosa
 
-item.steelNugget.name=Steel Nugget
+item.steelNugget.name=Pepitas de Acero
 
-item.copperNugget.name=Copper Nugget
+item.copperNugget.name=Pepitas de Cobre
 
-item.tinNugget.name=Tin Nugget
+item.tinNugget.name=Pepitas de Estaño
 
 
 
 # Gasses
 
-gas.hydrogen=Hydrogen
+gas.hydrogen=Hidrogeno
 
-gas.oxygen=Oxygen
+gas.oxygen=Oxigeno
 
-gas.water=Water Vapor
+gas.water=Vapor de Agua
 
-gas.chlorine=Chlorine
+gas.chlorine=Cloro
 
-gas.sulfurdioxide=Sulfur Dioxide
+gas.sulfurdioxide=Dioxido Sulfurico
 
-gas.sulfurtrioxide=Sulfur Trioxide
+gas.sulfurtrioxide=Trioxido Sulfurico
 
-gas.sulfuricacid=Sulfuric Acid
+gas.sulfuricacid=Acido Sulfurico
 
-gas.hydrogenchloride=Hydrogen Chloride
+gas.hydrogenchloride=Cloro Hidrogenisado
 
-gas.liquidosmium=Liquid Osmium
+gas.liquidosmium=Osmio Loquido
 
-gas.ethene=Ethylene
+gas.ethene=Etileno
 
-gas.sodium=Sodium
+gas.sodium=Sodio
 
-gas.brine=Gaseous Brine
+gas.brine=Gas de Salmuera
 
-gas.deuterium=Deuterium
+gas.deuterium=Deuterio
 
-gas.tritium=Tritium
+gas.tritium=Tritio
 
-gas.lithium=Lithium
+gas.lithium=Litio
 
-gas.fusionfuel=D-T Fuel
-
-
-
-gas.iron=Iron Slurry
-
-gas.gold=Gold Slurry
-
-gas.osmium=Osmium Slurry
-
-gas.copper=Copper Slurry
-
-gas.tin=Tin Slurry
-
-gas.silver=Silver Slurry
-
-gas.obsidian=Obsidian Slurry
-
-gas.lead=Lead Slurry
+gas.fusionfuel=Combustible de D.T
 
 
 
-gas.cleanIron=Clean Iron Slurry
+gas.iron=Lechada de Hierro
 
-gas.cleanGold=Clean Gold Slurry
+gas.gold=Lechada de Oro
 
-gas.cleanOsmium=Clean Osmium Slurry
+gas.osmium=Lechada de Osmio
 
-gas.cleanCopper=Clean Copper Slurry
+gas.copper=Lechada de Cobre
 
-gas.cleanTin=Clean Tin Slurry
+gas.tin=Lechada de Estaño
 
-gas.cleanSilver=Clean Silver Slurry
+gas.silver=Lechada de Plata
 
-gas.cleanObsidian=Clean Obsidian Slurry
+gas.obsidian=Lechada de Obsidiana
 
-gas.cleanLead=Clean Lead Slurry
+gas.lead=Lechada de Plomo
+
+
+gas.cleanIron=Lechada de Hierro Pura
+
+gas.cleanGold=Lechada de Oro Pura
+
+gas.cleanOsmium=Lechada de Osmio Pura
+
+gas.cleanCopper=Lechada de Cobre Pura
+
+gas.cleanTin=Lechada de Estaño Pura
+
+gas.cleanSilver=Lechada de Plata Pura
+
+gas.cleanObsidian=Lechada de Obsidiana Pura
+
+gas.cleanLead=Lechada de Plomo Pura
 
 
 
 # BC Fuel Gases
 
-gas.fuel=Vaporized Fuel
+gas.fuel=Combustible Vaporizado
 
-gas.oil=Vaporized Oil
+gas.oil=Aceite Vaporizado
 
 
 
 # Fluids
 
-fluid.liquidhydrogen=Liquid Hydrogen
+fluid.liquidhydrogen=Hidrogeno Liquido
 
-fluid.liquidoxygen=Liquid Oxygen
+fluid.liquidoxygen=Oxigeno Liquido
 
-fluid.liquidchlorine=Liquid Chlorine
+fluid.liquidchlorine=Cloro Liquido
 
-fluid.liquidsulfurdioxide=Liquid Sulfur Dioxide
+fluid.liquidsulfurdioxide=Dioxido sulfuro Liquido
 
-fluid.liquidsulfurtrioxide=Liquid Sulfur Trioxide
+fluid.liquidsulfurtrioxide=Trioxido de Sulfuro Liquido
 
-fluid.sulfuricacid=Sulfuric Acid
+fluid.sulfuricacid=Acido Sulfurico Liquido
 
-fluid.liquidhydrogenchloride=Liquid Hydrogen Chloride
+fluid.liquidhydrogenchloride=Cloro Hidrogenizado Liquido
 
-fluid.brine=Brine
+fluid.brine=Salmuera Liquida
 
-fluid.liquidethene=Liquid Ethylene
+fluid.liquidethene=Etileno Liquido
 
-fluid.liquidsodium=Liquid Sodium
+fluid.liquidsodium=Sodio Liquido
 
-fluid.heavywater=Heavy Water
+fluid.heavywater=Agua Pesada Liquida
 
-fluid.liquidlithium=Liquid Lithium
+fluid.liquidlithium=Litio Liquido
 
-fluid.liquiddeuterium=Liquid Deuterium
+fluid.liquiddeuterium=Deuterio Liquido
 
-fluid.liquidtritium=Liquid Tritium
+fluid.liquidtritium=Tritio Liquido
 
-fluid.liquidfusionfuel=Liquid D-T Fuel
+fluid.liquidfusionfuel=Combustible D.T Liquido
 
-fluid.steam=Steam
+fluid.steam=Equilibrio Vapor liquido
 
 
 
 # OreGas names
 
-oregas.iron=Iron Ore
+oregas.iron=Mena de Hierro
 
-oregas.gold=Gold Ore
+oregas.gold=Mena de Oro
 
-oregas.osmium=Osmium Ore
+oregas.osmium=Mena de Osmio
 
-oregas.copper=Copper Ore
+oregas.copper=Mena de Cobre
 
-oregas.tin=Tin Ore
+oregas.tin=Mena de Estaño
 
-oregas.silver=Silver Ore
+oregas.silver=Mena de Plata
 
-oregas.obsidian=Obsidian Ore
+oregas.obsidian=Mena de Obsidiana
 
-oregas.lead=Lead Ore
+oregas.lead=Mena de Plomo
 
 
 
 # Tier names
 
-tier.Basic=Basic
+tier.Basic=Basico
 
-tier.Advanced=Advanced
+tier.Advanced=Avanzado
 
 tier.Elite=Elite
 
 tier.Ultimate=Ultimate
 
-tier.Creative=Creative
+tier.Creative=Creativo
 
 
 
 # Transmission types
 
-transmission.Energy=Energy
+transmission.Energy=Energia
 
-transmission.Fluids=Fluids
+transmission.Fluids=Fluidos
 
 transmission.Gases=Gases
 
-transmission.Items=Items
+transmission.Items=Objetos
 
-transmission.Heat=Heat
+transmission.Heat=Calor
 
 
 
 # Update handler text
 
-update.consider=Consider updating to version
+update.consider=Considere Actualizar la version
 
-update.newFeatures=New features
+update.newFeatures=Nuevas funciones
 
-update.visit=Visit
+update.visit=Visita
 
-update.toDownload=to download
+update.toDownload=para descargar
 
-update.devBuild=Using developer build
+update.devBuild=Usando una version en desarrollo
 
-update.outdated=Using outdated version on one or more modules
+update.outdated=usando uno o dos modulos desactualizados
 
 
 
 # Upgrades
 
-upgrade.energy=Energy
+upgrade.energy=Energia
 
-upgrade.energy.desc=Increases energy efficiency and capacity of machinery.
+upgrade.energy.desc=Mejora la eficiencia y capacidad energetica.
 
-upgrade.speed=Speed
+upgrade.speed=Velocidad
 
-upgrade.speed.desc=Increases speed of machinery.
+upgrade.speed.desc=Aumenta la velocidad de la maquina.
 
-upgrade.filter=Filter
+upgrade.filter=Filtro
 
-upgrade.filter.desc=A filter that separates heavy water from regular water.
+upgrade.filter.desc=Un filtro sirve para convertir el agua, en Agua pesada.
 
 upgrade.gas=Gas
 
-upgrade.gas.desc=Increases the efficiency of gas-using machinery.
+upgrade.gas.desc=Mejora la eficiencia con a la hora de usar Gases en las maquinas.
 
-upgrade.muffling=Muffling
+upgrade.muffling=Sonora
 
-upgrade.muffling.desc=Reduces noise generated by machinery.
+upgrade.muffling.desc=Reduce el ruido emitido por las maquinas
 
-upgrade.anchor=Anchor
+upgrade.anchor=Area
 
-upgrade.anchor.desc=Keeps a machine's chunk loaded.
+upgrade.anchor.desc=Mantiene el area cargada (Chunk) para el funcionamiento de la maquina
 
 
 
 # Key description text
 
-key.mode=Item Mode Switch
+key.mode=Cambiar modo de Objetos
 
-key.armorMode=Armor Mode Switch
+key.armorMode=Cambiar modo de Percheras
 
-key.feetMode=Feet Mode Switch
+key.feetMode=Cambiar modo de Zapatos
 
-key.voice=Voice
+key.voice=Voz
 
 
 
@@ -816,527 +815,527 @@ key.voice=Voice
 
 entity.Robit.name=Robit
 
-entity.BabySkeleton.name=Baby Skeleton
+entity.BabySkeleton.name=Bebe Esqueleto
 
 
 
 # Config Gui
 
-mekanism.configgui.ctgy.general=General Settings
+mekanism.configgui.ctgy.general=Configuraciones Generales
 
-mekanism.configgui.ctgy.machines=Machine Settings
+mekanism.configgui.ctgy.machines=Configuraciones de Maquinas
 
-mekanism.configgui.ctgy.tier=Tier Settings
+mekanism.configgui.ctgy.tier=Configuraciones de Tipo (Tiers)
 
-mekanism.configgui.ctgy.usage=Usage Settings
+mekanism.configgui.ctgy.usage=Configuraciones de Consumo energetico
 
-mekanism.configgui.ctgy.client=Client Settings
+mekanism.configgui.ctgy.client=Configuraciones de cliente (Usuario)
 
 
 
 # Config Tooltips
 
-mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
+mekanism.configgui.ctgy.general.tooltip=Configuraciones: Generales de Mekanism y todos sus modulos
 
-mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
+mekanism.configgui.ctgy.machines.tooltip=Configuraciones: Desactivar o Activar maquinas e objetos.
 
-mekanism.configgui.ctgy.tier.tooltip=Settings regarding Mekanism tiers and their corresponding values
+mekanism.configgui.ctgy.tier.tooltip=Configuraciones: Las mejoras y sus valores.
 
-mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
+mekanism.configgui.ctgy.usage.tooltip=Configuraciones: Uso energetico de las maquinas.
 
-mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
+mekanism.configgui.ctgy.client.tooltip=Configuraciones: Cambios especificos de usuario (No para servidores) de Mekanism y todos sus modos.
 
 
 
-# Gui text
+# Gui text / Textos de Interfaz
 
-gui.condensentrating=Condensentrating
+gui.condensentrating=Condensante
 
-gui.decondensentrating=Decondensentrating
+gui.decondensentrating=Descondensante
 
-gui.power=Power
+gui.power=Energia
 
-gui.confirm=Confirm
+gui.confirm=Confirmar
 
-gui.open=Open
+gui.open=Abrir
 
-gui.allOK=All OK
+gui.allOK=Listo
 
-gui.none=None
+gui.none=Nada
 
-gui.new=New
+gui.new=Nuevo
 
-gui.edit=Edit
+gui.edit=Editar
 
-gui.save=Save
+gui.save=Guardar
 
-gui.output=Output
+gui.output=Salida
 
-gui.delete=Delete
+gui.delete=Borrar
 
-gui.status=Status
+gui.status=Estado
 
-gui.autoEject=Auto-eject
+gui.autoEject=Sacar automatico
 
-gui.itemstack=ItemStack
+gui.itemstack=Pila de objetos
 
 gui.oredict=OreDict
 
 gui.material=Material
 
-gui.out=Out
+gui.out=Afuera
 
-gui.noFluid=No fluid
+gui.noFluid=Sin fluido
 
-gui.empty=Empty
+gui.empty=Vacio
 
-gui.volume=Volume
+gui.volume=Volumen
 
-gui.start=Start
+gui.start=Iniciar
 
-gui.stop=Stop
+gui.stop=Detener
 
-gui.config=Config
+gui.config=Configurar
 
-gui.teleport=Teleport
+gui.teleport=Teletransportar
 
-gui.eject=Eject
+gui.eject=Sacar
 
-gui.input=Input
+gui.input=Entrada
 
-gui.strictInput=Strict Input
+gui.strictInput=Entrada Espec.
 
-gui.slots=Slots
+gui.slots=Ranuras
 
-gui.state=State
+gui.state=Estado
 
-gui.on=On
+gui.on=Encendida
 
-gui.off=Off
+gui.off=Apagada
 
-gui.filters=Filters
+gui.filters=Filtros
 
-gui.filter=Filter
+gui.filter=Filtro
 
-gui.idle=Idle
+gui.idle=Reposo
 
-gui.data=Data
+gui.data=Datos
 
-gui.newFilter=New Filter
+gui.newFilter=Nuevo Filtro
 
-gui.energy=Energy
+gui.energy=Energia
 
 gui.gas=Gas
 
-gui.dumping=Dumping
+gui.dumping=Desechando
 
-gui.dumping_excess=Dumping Excess
+gui.dumping_excess=Desechando Exceso
 
 gui.modID=Mod ID
 
-gui.key=Key
+gui.key=Boton
 
 gui.id=ID
 
-gui.finished=Finished
+gui.finished=Terminado
 
-gui.well=All is well!
+gui.well=Todo en orden!
 
-gui.upgrade=Upgrade
+gui.upgrade=Actualizar
 
-gui.infinite=Infinite
+gui.infinite=Infinito
 
 gui.min=Min
 
 gui.max=Max
 
-gui.delay=Delay
+gui.delay=Retardo
 
-gui.noDelay=No Delay
+gui.noDelay=Sin retardo
 
-gui.fuel=Fuel
+gui.fuel=Combustible
 
-gui.heat=Heat
+gui.heat=Calor
 
-gui.formed=Formed
+gui.formed=Armado
 
-gui.incomplete=Incomplete
+gui.incomplete=Incompleto
 
-gui.inductionMatrix=Induction Matrix
+gui.inductionMatrix=Matriz de Induccion
 
-gui.matrixStats=Matrix Statistics
+gui.matrixStats=Estadisticas de Matriz
 
-gui.turbineStats=Turbine Statistics
+gui.turbineStats=Estadisticas de Turbina
 
-gui.boilerStats=Boiler Statistics
+gui.boilerStats=Estadisticas de la Caldera
 
-gui.main=Main
+gui.main=Principal
 
-gui.outputting=Outputting
+gui.outputting=Expulsando
 
-gui.receiving=Receiving
+gui.receiving=Recibiendo
 
-gui.dimensions=Dimensions
+gui.dimensions=Tamaño
 
-gui.constituents=Constituents
+gui.constituents=Compuestos
 
-gui.cells=cells
+gui.cells=celulas
 
-gui.providers=providers
+gui.providers=proveedores
 
-gui.structure=Structure
+gui.structure=Estructura
 
-gui.dynamicTank=Dynamic Tank
+gui.dynamicTank=Tanque Dinamico
 
-gui.industrialTurbine=Industrial Turbine
+gui.industrialTurbine=Turbina Industrial
 
-gui.thermoelectricBoiler=Thermoelectric Boiler
+gui.thermoelectricBoiler=Caldera Termoelectrica
 
-gui.visuals=Visuals
+gui.visuals=Graficos
 
-mekanism.gui.visuals.toobig=Radius too big to display visuals
+mekanism.gui.visuals.toobig=Radio demasiado grande para mostrarse!
 
-gui.noEject=Can't Eject
+gui.noEject=No se puede expulsar
 
-gui.undefined=Undefined
+gui.undefined=Indefinido
 
-gui.owner=Owner
+gui.owner=Dueño
 
-gui.public=Public
+gui.public=Publica
 
-gui.private=Private
+gui.private=Privada
 
-gui.add=Add
+gui.add=Agregar
 
-gui.set=Set
+gui.set=Conjunto
 
-gui.freq=Freq
+gui.freq=Frequencia
 
-gui.security=Security
+gui.security=Seguridad
 
-gui.index=Index
+gui.index=Indice
 
-gui.producing=Producing
+gui.producing=Produciendo
 
-gui.maxOutput=Max Output
+gui.maxOutput=Max. Salida
 
-gui.storing=Storing
+gui.storing=Almacenando
 
-gui.skyBlocked=Sky blocked
+gui.skyBlocked=Luz bloqueada!
 
-gui.noWind=No wind
+gui.noWind=Viento bloqueado!
 
-gui.using=Using
+gui.using=Usando
 
-gui.needed=Needed
+gui.needed=Requiere
 
-mekanism.gui.bufferfree=Free Buffer
+mekanism.gui.bufferfree=Flujo libre
 
-mekanism.gui.insufficientbuffer=Insufficient energy buffer!
+mekanism.gui.insufficientbuffer=Flujo de energia insuficiente
 
-gui.noRecipe=No recipe
+gui.noRecipe=No hay receta
 
-gui.conflict=Conflict
+gui.conflict=Conflicto
 
-gui.height=Height
+gui.height=Altura
 
-gui.mult=Mult
+gui.mult=Cantidad
 
 gui.chunk=Chunk
 
-gui.vibrating=Vibrating
+gui.vibrating=Vibracion
 
-gui.abundancy=Abundancy
+gui.abundancy=Abundancia
 
-gui.nextItem=Next Item
+gui.nextItem=Obj. Siguiente
 
-gui.lastItem=Last Item
+gui.lastItem=Ultimo Objeto
 
-gui.oreDictCompat=Compatible OreDict Key
+gui.oreDictCompat=Compatible con OreDirect
 
-gui.toggleCooling=Toggle Cooling Measurements
+gui.toggleCooling=Mediciones de Enfriamiento
 
-gui.coolingMeasurements=Active cooling
+gui.coolingMeasurements=Activar Enfriamiento
 
-gui.redstoneOutputMode=Redstone mode
+gui.redstoneOutputMode=Señal de Redstone activada
 
-gui.moveUp=Move Up
+gui.moveUp=Mover arriba
 
-gui.moveDown=Move Down
+gui.moveDown=Mover abajo
 
-gui.flowRate=Flow rate
+gui.flowRate=Tasa de flujo
 
-gui.maxFlow=Max flow
+gui.maxFlow=Flujo Maximo
 
-gui.tankVolume=Tank Volume
+gui.tankVolume=Tamaño de Tanque
 
-gui.steamFlow=Steam Flow
+gui.steamFlow=Flujo de vapor
 
-gui.production=Production
+gui.production=Produccion
 
-gui.blades=Blades
+gui.blades=Aspas
 
-gui.coils=Coils
+gui.coils=Bobinas
 
-gui.dispersers=Dispersers
+gui.dispersers=Dispensadores
 
-gui.vents=Vents
+gui.vents=Ventilaciones
 
-gui.maxProduction=Max Production
+gui.maxProduction=Producc. Maxima
 
-gui.limiting=Limiting
+gui.limiting=Limitando
 
-gui.steamInput=Steam Input
+gui.steamInput=Entrada de vapor
 
-gui.capacity=Capacity
+gui.capacity=Capacidad
 
-gui.unit=Unit
+gui.unit=Unidad
 
-gui.temp=Temp
+gui.temp=Temperatura
 
-gui.usage=Usage
+gui.usage=Uso
 
-gui.transferred=Transferred
+gui.transferred=Transferido
 
-gui.dissipated=Dissipated
+gui.dissipated=Disipado
 
-gui.boilRate=Boil Rate
+gui.boilRate=Tasa de Ebullicion
 
-gui.maxBoil=Max Boil
+gui.maxBoil=Ebullicion Maxima
 
-gui.maxWater=Max Water
+gui.maxWater=Agua al maximo
 
-gui.maxSteam=Max Steam
+gui.maxSteam=Vapor al maximo
 
-gui.heatTransfer=Heat Transfer
+gui.heatTransfer=Flujo de vapor
 
-gui.superheaters=Superheaters
+gui.superheaters=Supercalentador
 
-gui.boilCapacity=Boil Capacity
+gui.boilCapacity=Capacidad de Ebullicion
 
-gui.encodeFormula=Encode Formula
+gui.encodeFormula=Formula codificada
 
-gui.autoModeToggle=Auto-Mode
+gui.autoModeToggle=Modo auto.
 
-gui.craftSingle=Craft Single Item
+gui.craftSingle=Fabricar un objeto
 
-gui.craftAvailable=Craft Available Items
+gui.craftAvailable=Fabricar objetos disponibles
 
-gui.fillEmpty=Fill/Empty Grid
+gui.fillEmpty=Llenar/Vaciar rejilla
 
-gui.noOwner=No Owner
+gui.noOwner=Sin dueño
 
-gui.securityOverride=Security Override
+gui.securityOverride=Seguridad anulada
 
-gui.remove=Remove
+gui.remove=Remover
 
-gui.trustedPlayers=Trusted Players
+gui.trustedPlayers=Jugadores admitidos
 
-gui.publicMode=Public Mode
+gui.publicMode=Modo Publico
 
-gui.privateMode=Private Mode
+gui.privateMode=Modo Privado
 
-gui.trustedMode=Trusted Mode
+gui.trustedMode=Modo de admitidos
 
-gui.securityOffline=Security Offline
+gui.securityOffline=Seguridad Desactivada.
 
-gui.noAccessDesc=You don't have access.
+gui.noAccessDesc=Acceso Denegado
 
-gui.overridden=Overridden
+gui.overridden=Anulado.
 
-gui.nowOwn=You now own this item.
+gui.nowOwn=Ahora eres dueño de este objeto.
 
-gui.frequency=Frequency
+gui.frequency=Frequencia
 
-gui.mode=Mode
+gui.mode=Modo
 
-gui.burnRate=Burn Rate
+gui.burnRate=Tasa de combustion
 
-gui.entityDetection=Entity Detection
+gui.entityDetection=Deteccion de entidades
 
-gui.energyContents=Energy Contents
+gui.energyContents=Energia Contenida
 
-gui.redstoneOutput=Redstone Output
+gui.redstoneOutput=Salidad de RedStone
 
-gui.maxWaterOutput=Max Water Output
+gui.maxWaterOutput=Max. salida de agua
 
-gui.stockControl=Stock Control
+gui.stockControl=Control de almacenaje
 
-gui.allowDefault=Allow Default
+gui.allowDefault=Permitir por defecto
 
-gui.sizeMode=Size Mode
+gui.sizeMode=Modo: Tamaño
 
 
 
-gui.reactor.injectionRate=Injection Rate
+gui.reactor.injectionRate=Tasa de injeccion
 
 
 
-gui.upgrades=Upgrades
+gui.upgrades=Mejoras
 
-gui.upgrades.supported=Supported
+gui.upgrades.supported=Compatibles
 
-gui.upgrades.noSelection=No selection
+gui.upgrades.noSelection=Nada seleccionado
 
-gui.upgrades.amount=Amount
+gui.upgrades.amount=Cantidad
 
 gui.upgrades.max=Max
 
-gui.upgrades.effect=Effect
+gui.upgrades.effect=Efecto
 
 
 
-gui.chemicalInfuser.short=C. Infuser
+gui.chemicalInfuser.short=Infusor Quimico
 
-gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
+gui.chemicalDissolutionChamber.short=Camara de Disorsion Quimica
 
-gui.thermalEvaporationController.short=Thermal E. Controller
-
-
-
-gui.dictionary.noKey=No key.
+gui.thermalEvaporationController.short=Control de Evaporador Termi.
 
 
 
-gui.configuration=Configuration
-
-gui.configuration.side=Side Config
-
-gui.configuration.transporter=Transporter Config
-
-gui.configuration.strictInput=Strict Input
+gui.dictionary.noKey=Sin entrada
 
 
 
-gui.rotaryCondensentrator.toggleOperation=Toggle operation
+gui.configuration=Configuracion
+
+gui.configuration.side=Configurar lados
+
+gui.configuration.transporter=Configurar transporte
+
+gui.configuration.strictInput=Entrada Especifica
 
 
 
-gui.factory.secondaryEnergy=Secondary energy
+gui.rotaryCondensentrator.toggleOperation=Cambiar modo
 
-gui.factory.autoSort=Auto-sort
+
+
+gui.factory.secondaryEnergy=Energia secundaria
+
+gui.factory.autoSort=Auto-Organizar
 
 
 
 # Recipe types
 
-gui.factory.Smelting=Smelting
+gui.factory.Smelting=Fundicion
 
-gui.factory.Enriching=Enriching
+gui.factory.Enriching=Enriquecer
 
-gui.factory.Crushing=Crushing
+gui.factory.Crushing=Triturar
 
-gui.factory.Compressing=Compressing
+gui.factory.Compressing=Comprimir
 
-gui.factory.Combining=Combining
+gui.factory.Combining=Combinar
 
-gui.factory.Purifying=Purifying
+gui.factory.Purifying=Purificar
 
-gui.factory.Injecting=Injecting
+gui.factory.Injecting=Injectar
 
-gui.factory.Infusing=Infusing
-
-
-
-gui.seismicReader.short=S. Reader
-
-gui.seismicReader.solids=Solids
-
-gui.seismicReader.fluids=Fluids
-
-gui.seismicReader.reading=Reading
+gui.factory.Infusing=Infundir
 
 
 
-gui.filterSelect.title=Create New Filter
+gui.seismicReader.short=Lecturas Sismicas
+
+gui.seismicReader.solids=Solidos
+
+gui.seismicReader.fluids=Fluidos
+
+gui.seismicReader.reading=Leyendo..
 
 
 
-gui.oredictFilter=OreDict Filter
-
-gui.oredictFilter.noKey=No key
-
-gui.oredictFilter.sameKey=Same key
+gui.filterSelect.title=Filtrar
 
 
 
-gui.modIDFilter=Mod ID Filter
+gui.oredictFilter=Filtrar OreDirect
 
-gui.modIDFilter.noID=No ID
+gui.oredictFilter.noKey=Sin entrada
 
-gui.modIDFilter.sameID=Same ID
-
-
-
-gui.oredictionificatorFilter=Oredictionificator Filter
+gui.oredictFilter.sameKey=Con Entrada
 
 
 
-gui.itemFilter=Item Filter
+gui.modIDFilter=Filtro por Mod ID
 
-gui.itemFilter.noItem=No item
+gui.modIDFilter.noID=Sin ID
 
-gui.itemFilter.details=ItemStack Details
-
-gui.itemFilter.min=Min
-
-gui.itemFilter.max=Max
+gui.modIDFilter.sameID=Con ID
 
 
 
-gui.materialFilter=Material Filter
-
-gui.materialFilter.details=Using material of
+gui.oredictionificatorFilter=Filtro Oredictionificator 
 
 
 
-gui.portableTeleporter=Portable Teleporter
+gui.itemFilter=Filtrar Objetos
+
+gui.itemFilter.noItem=Sin Obj.
+
+gui.itemFilter.details=Detalle de Pila de objetos
+
+gui.itemFilter.min=Min.
+
+gui.itemFilter.max=Max.
+
+
+
+gui.materialFilter=Filtrar Materiales
+
+gui.materialFilter.details=Usando materiales de
+
+
+
+gui.portableTeleporter=Transportador Portatil
 
 
 
 gui.robit=Robit
 
-gui.robit.smelting=Robit Smelting
+gui.robit.smelting=Robit: Fundir
 
-gui.robit.inventory=Robit Inventory
+gui.robit.inventory=Robit: Inventario
 
-gui.robit.crafting=Robit Crafting
+gui.robit.crafting=Robit: Fabricar
 
-gui.robit.greeting=Hi, I'm
+gui.robit.greeting=Hola! Yo soy 
 
-gui.robit.toggleFollow=Toggle 'follow' mode
+gui.robit.toggleFollow=Cambiar a modo: Seguir
 
-gui.robit.rename=Rename this Robit
+gui.robit.rename=Renombrar Robit
 
-gui.robit.teleport=Teleport back home
+gui.robit.teleport=Teletransportar a Casa
 
-gui.robit.togglePickup=Toggle 'drop pickup' mode
+gui.robit.togglePickup=Cambiar al modo: Recolectar
 
-gui.robit.following=Following
+gui.robit.following=Siguiendo
 
-gui.robit.dropPickup=Drop pickup
+gui.robit.dropPickup=Recogiendo
 
-gui.robit.owner=Owner
-
-
-
-gui.password.setPassword=Set password
-
-gui.password.enterPassword=Enter password
-
-gui.password.fieldsEmpty=Field(s) empty
-
-gui.password.notMatching=Not matching
-
-gui.password.identical=Identical
-
-gui.password.invalid=Invalid
-
-gui.password=Password
+gui.robit.owner=Adueñado
 
 
 
-gui.logisticalSorter.default=Default
+gui.password.setPassword=Seleccionar Contraseña
+
+gui.password.enterPassword=Ingresar Contraseña
+
+gui.password.fieldsEmpty=Campo(s) vacios
+
+gui.password.notMatching=No coinciden
+
+gui.password.identical=Identica
+
+gui.password.invalid=Invalida
+
+gui.password=Contraseña
+
+
+
+gui.logisticalSorter.default=Por defecto
 
 gui.logisticalSorter.auto=Auto
 
@@ -1344,21 +1343,21 @@ gui.logisticalSorter.roundRobin=Round-robin
 
 
 
-gui.teleporter.notReady=Not ready
+gui.teleporter.notReady=No lista!
 
-gui.teleporter.ready=Ready
+gui.teleporter.ready=Lista!
 
-gui.teleporter.noFrame=No frame
+gui.teleporter.noFrame=No hay modulo
 
-gui.teleporter.noLink=No link
+gui.teleporter.noLink=Sin coneccion
 
-gui.teleporter.exceeds=Links > 2
+gui.teleporter.exceeds=Coneciones > 2
 
-gui.teleporter.needsEnergy=Needs energy
+gui.teleporter.needsEnergy=Necesita Energia
 
-gui.teleporter.noAccess=You don't have access to this Teleporter.
+gui.teleporter.noAccess=No tienes acceso a este Teletransportador.
 
-gui.teleporter.noFreq=No frequency
+gui.teleporter.noFreq=Sin frecuencia
 
 
 
