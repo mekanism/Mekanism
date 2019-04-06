@@ -120,7 +120,7 @@ public class ClientTickHandler {
 
     public static boolean isFreeRunnerOn(EntityPlayer player) {
         if (player != mc.player) {
-            return Mekanism.freeRunnerOn.contains(player.getName());
+            return Mekanism.freeRunnerOn.contains(player.getUniqueID());
         }
 
         ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
@@ -129,8 +129,7 @@ public class ClientTickHandler {
             ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
 
             /*freeRunners.getEnergy(stack) > 0 && */
-            return freeRunners.getMode(stack)
-                  == ItemFreeRunners.FreeRunnerMode.NORMAL;
+            return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
         }
 
         return false;
@@ -204,16 +203,16 @@ public class ClientTickHandler {
                 initHoliday = true;
             }
 
-            if (Mekanism.freeRunnerOn.contains(mc.player.getName()) != isFreeRunnerOn(mc.player)) {
+            if (Mekanism.freeRunnerOn.contains(mc.player.getUniqueID()) != isFreeRunnerOn(mc.player)) {
                 if (isFreeRunnerOn(mc.player) && mc.currentScreen == null) {
-                    Mekanism.freeRunnerOn.add(mc.player.getName());
+                    Mekanism.freeRunnerOn.add(mc.player.getUniqueID());
                 } else {
-                    Mekanism.freeRunnerOn.remove(mc.player.getName());
+                    Mekanism.freeRunnerOn.remove(mc.player.getUniqueID());
                 }
 
                 Mekanism.packetHandler.sendToServer(
                       new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.UPDATE,
-                            mc.player.getName(), isFreeRunnerOn(mc.player)));
+                            mc.player.getUniqueID(), isFreeRunnerOn(mc.player)));
             }
 
             ItemStack bootStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
@@ -228,9 +227,9 @@ public class ClientTickHandler {
 
             // Update player's state for various items; this also automatically notifies server if something changed and
             // kicks off sounds as necessary
-            Mekanism.playerState.setJetpackState(mc.player.getName(), isJetpackActive(mc.player), true);
-            Mekanism.playerState.setGasmaskState(mc.player.getName(), isGasMaskOn(mc.player), true);
-            Mekanism.playerState.setFlamethrowerState(mc.player.getName(), isFlamethrowerOn(mc.player), true);
+            Mekanism.playerState.setJetpackState(mc.player.getUniqueID(), isJetpackActive(mc.player), true);
+            Mekanism.playerState.setGasmaskState(mc.player.getUniqueID(), isGasMaskOn(mc.player), true);
+            Mekanism.playerState.setFlamethrowerState(mc.player.getUniqueID(), isFlamethrowerOn(mc.player), true);
 
             for (Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator();
                   iter.hasNext(); ) {

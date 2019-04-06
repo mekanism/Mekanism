@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemFlamethrower;
@@ -18,10 +19,9 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
     public IMessage onMessage(FlamethrowerDataMessage message, MessageContext context) {
         // Queue up the processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(
-              () -> {
+        PacketHandler.handlePacket(() -> {
                   if (message.packetType == FlamethrowerPacket.UPDATE) {
-                      Mekanism.playerState.setFlamethrowerState(message.username, message.value, false);
+                      Mekanism.playerState.setFlamethrowerState(message.uuid, message.value, false);
 
                       // If we got this packet on the server, resend out to all clients in same dimension
                       // TODO: Why is this a dimensional thing?!
@@ -49,18 +49,17 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
         public FlamethrowerPacket packetType;
 
         public EnumHand currentHand;
-        public String username;
+        public UUID uuid;
         public boolean value;
 
         public FlamethrowerDataMessage() {
         }
 
-        public FlamethrowerDataMessage(
-              FlamethrowerPacket type, EnumHand hand, String name, boolean state) {
+        public FlamethrowerDataMessage(FlamethrowerPacket type, EnumHand hand, UUID uuid, boolean state) {
             packetType = type;
 
             if (type == FlamethrowerPacket.UPDATE) {
-                username = name;
+                this.uuid = uuid;
                 value = state;
             } else if (type == FlamethrowerPacket.MODE) {
                 currentHand = hand;
@@ -72,7 +71,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             dataStream.writeInt(packetType.ordinal());
 
             if (packetType == FlamethrowerPacket.UPDATE) {
-                PacketHandler.writeString(dataStream, username);
+                PacketHandler.writeUUID(dataStream, uuid);
                 dataStream.writeBoolean(value);
             } else {
                 dataStream.writeInt(currentHand.ordinal());
@@ -84,7 +83,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             packetType = FlamethrowerPacket.values()[dataStream.readInt()];
 
             if (packetType == FlamethrowerPacket.UPDATE) {
-                username = PacketHandler.readString(dataStream);
+                uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();
             } else if (packetType == FlamethrowerPacket.MODE) {
                 currentHand = EnumHand.values()[dataStream.readInt()];

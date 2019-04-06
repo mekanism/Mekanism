@@ -3,6 +3,8 @@ package mekanism.common;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Range4D;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketBoxBlacklist;
@@ -312,5 +314,15 @@ public class PacketHandler {
                 }
             }
         }
+    }
+
+    @Nonnull
+    public static UUID readUUID(ByteBuf dataStream) {
+        return new UUID(dataStream.readLong(), dataStream.readLong());
+    }
+
+    public static void writeUUID(ByteBuf dataStream, UUID uuid) {
+        dataStream.writeLong(uuid.getMostSignificantBits());
+        dataStream.writeLong(uuid.getLeastSignificantBits());
     }
 }

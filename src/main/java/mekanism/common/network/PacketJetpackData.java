@@ -3,6 +3,7 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
@@ -21,10 +22,9 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
     public IMessage onMessage(JetpackDataMessage message, MessageContext context) {
         // Queue up the processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
-        PacketHandler.handlePacket(
-              () -> {
+        PacketHandler.handlePacket(() -> {
                   if (message.packetType == JetpackPacket.UPDATE) {
-                      Mekanism.playerState.setJetpackState(message.username, message.value, false);
+                      Mekanism.playerState.setJetpackState(message.uuid, message.value, false);
 
                       // If we got this packet on the server, propagate it out to all players in the same
                       // dimension
@@ -61,9 +61,9 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
         protected JetpackPacket packetType;
 
-        protected Set<String> activeJetpacks;
+        protected Set<UUID> activeJetpacks;
 
-        protected String username;
+        protected UUID uuid;
         protected boolean value;
 
         public JetpackDataMessage() {
@@ -79,14 +79,14 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
             return m;
         }
 
-        public static JetpackDataMessage UPDATE(String name, boolean state) {
+        public static JetpackDataMessage UPDATE(UUID uuid, boolean state) {
             JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.UPDATE);
-            m.username = name;
+            m.uuid = uuid;
             m.value = state;
             return m;
         }
 
-        public static JetpackDataMessage FULL(Set<String> activeNames) {
+        public static JetpackDataMessage FULL(Set<UUID> activeNames) {
             JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.FULL);
             m.activeJetpacks = activeNames;
             return m;
@@ -99,12 +99,12 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
             if (packetType == JetpackPacket.MODE) {
                 dataStream.writeBoolean(value);
             } else if (packetType == JetpackPacket.UPDATE) {
-                PacketHandler.writeString(dataStream, username);
+                PacketHandler.writeUUID(dataStream, uuid);
                 dataStream.writeBoolean(value);
             } else if (packetType == JetpackPacket.FULL) {
                 dataStream.writeInt(activeJetpacks.size());
-                for (String username : activeJetpacks) {
-                    PacketHandler.writeString(dataStream, username);
+                for (UUID uuid : activeJetpacks) {
+                    PacketHandler.writeUUID(dataStream, uuid);
                 }
             }
         }
@@ -116,14 +116,14 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
             if (packetType == JetpackPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == JetpackPacket.UPDATE) {
-                username = PacketHandler.readString(dataStream);
+                uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();
             } else if (packetType == JetpackPacket.FULL) {
                 activeJetpacks = new HashSet<>();
 
                 int amount = dataStream.readInt();
                 for (int i = 0; i < amount; i++) {
-                    activeJetpacks.add(PacketHandler.readString(dataStream));
+                    activeJetpacks.add(PacketHandler.readUUID(dataStream));
                 }
             }
         }

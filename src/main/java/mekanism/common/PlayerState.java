@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketFlamethrowerData.FlamethrowerDataMessage;
@@ -13,9 +14,9 @@ import net.minecraft.world.World;
 
 public class PlayerState {
 
-    private Set<String> activeJetpacks = new HashSet<>();
-    private Set<String> activeGasmasks = new HashSet<>();
-    private Set<String> activeFlamethrowers = new HashSet<>();
+    private Set<UUID> activeJetpacks = new HashSet<>();
+    private Set<UUID> activeGasmasks = new HashSet<>();
+    private Set<UUID> activeFlamethrowers = new HashSet<>();
 
     private World world;
 
@@ -26,9 +27,9 @@ public class PlayerState {
     }
 
     public void clearPlayer(EntityPlayer p) {
-        activeJetpacks.remove(p.getName());
-        activeGasmasks.remove(p.getName());
-        activeFlamethrowers.remove(p.getName());
+        activeJetpacks.remove(p.getUniqueID());
+        activeGasmasks.remove(p.getUniqueID());
+        activeFlamethrowers.remove(p.getUniqueID());
     }
 
     public void init(World world) {
@@ -41,28 +42,28 @@ public class PlayerState {
     //
     // ----------------------
 
-    public void setJetpackState(String playerId, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeJetpacks.contains(playerId);
+    public void setJetpackState(UUID uuid, boolean isActive, boolean isLocal) {
+        boolean alreadyActive = activeJetpacks.contains(uuid);
         boolean changed = (alreadyActive != isActive);
 
         if (alreadyActive && !isActive) {
             // On -> off
-            activeJetpacks.remove(playerId);
+            activeJetpacks.remove(uuid);
         } else if (!alreadyActive && isActive) {
             // Off -> on
-            activeJetpacks.add(playerId);
+            activeJetpacks.add(uuid);
         }
 
         // If something changed and we're in a remote world, take appropriate action
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(PacketJetpackData.JetpackDataMessage.UPDATE(playerId, isActive));
+                Mekanism.packetHandler.sendToServer(PacketJetpackData.JetpackDataMessage.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now flying
             if (isActive && MekanismConfig.client.enablePlayerSounds) {
-                SoundHandler.startSound(world.getPlayerEntityByName(playerId), "jetpack");
+                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "jetpack");
             }
         }
     }
@@ -71,12 +72,12 @@ public class PlayerState {
         return activeJetpacks.contains(p.getName());
     }
 
-    public Set<String> getActiveJetpacks() {
+    public Set<UUID> getActiveJetpacks() {
         return activeJetpacks;
     }
 
-    public void setActiveJetpacks(Set<String> newActiveJetpacks) {
-        for (String activeUser : newActiveJetpacks) {
+    public void setActiveJetpacks(Set<UUID> newActiveJetpacks) {
+        for (UUID activeUser : newActiveJetpacks) {
             setJetpackState(activeUser, true, false);
         }
     }
@@ -87,14 +88,14 @@ public class PlayerState {
     //
     // ----------------------
 
-    public void setGasmaskState(String playerId, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeGasmasks.contains(playerId);
+    public void setGasmaskState(UUID uuid, boolean isActive, boolean isLocal) {
+        boolean alreadyActive = activeGasmasks.contains(uuid);
         boolean changed = (alreadyActive != isActive);
 
         if (alreadyActive && !isActive) {
-            activeGasmasks.remove(playerId); // On -> off
+            activeGasmasks.remove(uuid); // On -> off
         } else if (!alreadyActive && isActive) {
-            activeGasmasks.add(playerId); // Off -> on
+            activeGasmasks.add(uuid); // Off -> on
         }
 
         // If something changed and we're in a remote world, take appropriate action
@@ -102,26 +103,26 @@ public class PlayerState {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 Mekanism.packetHandler
-                      .sendToServer(PacketScubaTankData.ScubaTankDataMessage.UPDATE(playerId, isActive));
+                      .sendToServer(PacketScubaTankData.ScubaTankDataMessage.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a gasmask
             if (isActive && MekanismConfig.client.enablePlayerSounds) {
-                SoundHandler.startSound(world.getPlayerEntityByName(playerId), "gasmask");
+                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "gasmask");
             }
         }
     }
 
     public boolean isGasmaskOn(EntityPlayer p) {
-        return activeGasmasks.contains(p.getName());
+        return activeGasmasks.contains(p.getUniqueID());
     }
 
-    public Set<String> getActiveGasmasks() {
+    public Set<UUID> getActiveGasmasks() {
         return activeGasmasks;
     }
 
-    public void setActiveGasmasks(Set<String> newActiveGasmasks) {
-        for (String activeUser : newActiveGasmasks) {
+    public void setActiveGasmasks(Set<UUID> newActiveGasmasks) {
+        for (UUID activeUser : newActiveGasmasks) {
             setGasmaskState(activeUser, true, false);
         }
     }
@@ -132,14 +133,14 @@ public class PlayerState {
     //
     // ----------------------
 
-    public void setFlamethrowerState(String playerId, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeFlamethrowers.contains(playerId);
+    public void setFlamethrowerState(UUID uuid, boolean isActive, boolean isLocal) {
+        boolean alreadyActive = activeFlamethrowers.contains(uuid);
         boolean changed = (alreadyActive != isActive);
 
         if (alreadyActive && !isActive) {
-            activeFlamethrowers.remove(playerId); // On -> off
+            activeFlamethrowers.remove(uuid); // On -> off
         } else if (!alreadyActive && isActive) {
-            activeFlamethrowers.add(playerId); // Off -> on
+            activeFlamethrowers.add(uuid); // Off -> on
         }
 
         // If something changed and we're in a remote world, take appropriate action
@@ -147,18 +148,18 @@ public class PlayerState {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, null,
-                      playerId, isActive));
+                      uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a flamethrower
             if (isActive && MekanismConfig.client.enablePlayerSounds) {
-                SoundHandler.startSound(world.getPlayerEntityByName(playerId), "flamethrower");
+                SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "flamethrower");
             }
         }
     }
 
     public boolean isFlamethrowerOn(EntityPlayer p) {
-        return activeFlamethrowers.contains(p.getName());
+        return activeFlamethrowers.contains(p.getUniqueID());
     }
 
 }

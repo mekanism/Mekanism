@@ -43,13 +43,13 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
         Mekanism.playerState.clearPlayer(event.player);
-        Mekanism.freeRunnerOn.remove(event.player.getName());
+        Mekanism.freeRunnerOn.remove(event.player.getUniqueID());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         Mekanism.playerState.clearPlayer(event.player);
-        Mekanism.freeRunnerOn.remove(event.player.getName());
+        Mekanism.freeRunnerOn.remove(event.player.getUniqueID());
 
         if (!event.player.world.isRemote) {
             Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()),
