@@ -172,7 +172,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return false;
         }
 
-        return inv.canBoundInsert(getPos(), i, itemstack);
+        return inv.isItemValidForSlot(i, itemstack);
     }
 
     @Override
@@ -202,12 +202,17 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return InventoryUtils.EMPTY;
         }
 
-        return inv.getBoundSlots(getPos(), side);
+        return inv.getSlotsForFace(side);
     }
 
     @Override
     public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
-        return isItemValidForSlot(i, itemstack);
+        IAdvancedBoundingBlock inv = getInv();
+        if (inv == null) {
+            return false;
+        }
+        
+        return inv.canInsertItem(i, itemstack, side);
     }
 
     @Override
@@ -217,7 +222,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return false;
         }
 
-        return inv.canBoundExtract(getPos(), i, itemstack, side);
+        return inv.canExtractItem(i, itemstack, side);
     }
 
     @Override
