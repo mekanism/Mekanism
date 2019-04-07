@@ -271,8 +271,8 @@ public class Gas {
                 int tint = getTint();
                 //Fluids use ARGB so make sure that we are not using a fully transparent tint.
                 // This fixes issues with some mods rendering our fluids as invisible
-                if ((tint >> 24 & 0xFF) == 0) {
-                    tint = 0xFF << 24 | tint;
+                if ((tint & 0xFF000000) == 0) {
+                    tint = 0xFF000000 | tint;
                 }
                 fluid = new Fluid(name, getIcon(), getIcon(), tint);
                 FluidRegistry.registerFluid(fluid);
