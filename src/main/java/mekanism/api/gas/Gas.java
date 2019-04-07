@@ -54,7 +54,7 @@ public class Gas {
      */
     public Gas(String s, int t) {
         this(s, "mekanism:blocks/liquid/liquid");
-        tint = t;
+        setTint(t);
     }
 
     /**
@@ -65,7 +65,7 @@ public class Gas {
         iconLocation = f.getStill();
         fluid = f;
         from_fluid = true;
-        tint = f.getColor() & 0xFFFFFF;
+        setTint(f.getColor() & 0xFFFFFF);
     }
 
     /**
@@ -268,7 +268,13 @@ public class Gas {
     public Gas registerFluid(String name) {
         if (fluid == null) {
             if (FluidRegistry.getFluid(name) == null) {
-                fluid = new Fluid(name, getIcon(), getIcon(), getTint());
+                int tint = getTint();
+                //Fluids use ARGB so make sure that we are not using a fully transparent tint.
+                // This fixes issues with some mods rendering our fluids as invisible
+                if ((tint & 0xFF000000) == 0) {
+                    tint = 0xFF000000 | tint;
+                }
+                fluid = new Fluid(name, getIcon(), getIcon(), tint);
                 FluidRegistry.registerFluid(fluid);
             } else {
                 fluid = FluidRegistry.getFluid(name);
