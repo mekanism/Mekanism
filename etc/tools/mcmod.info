@@ -6,10 +6,13 @@
     "version": "${version}",
     "mcversion": "${mc_version}",
     "authorList": [
+      "aidancbrady",
+      "thommy101",
+      "thiakil",
       "pupnewfster",
       "dizzyd"
     ],
-    "credits": "aidancbrady, thommy101, thiakil, unpairedbracket, CyanideX and many others",
+    "credits": "unpairedbracket, CyanideX and many others",
     "useDependencyInformation": true,
     "dependencies": [
       "mekanism@[${version}]"
