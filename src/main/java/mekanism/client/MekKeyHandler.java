@@ -1,37 +1,38 @@
 package mekanism.client;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 public abstract class MekKeyHandler {
 
-    public KeyBinding[] keyBindings;
-    public boolean[] keyDown;
-    public boolean[] repeatings;
-    public boolean isDummy;
+    /**
+     * KeyBinding instances
+     */
+    private KeyBinding[] keyBindings;
+
+    /**
+     * Track which keys have been seen as pressed currently
+     */
+    private BitSet keyDown;
+
+    /**
+     * Whether keys send repeated KeyDown pseudo-messages
+     */
+    private BitSet repeatings;
 
     /**
      * Pass an array of keybindings and a repeat flag for each one
      *
      * @param bindings Bindings to set
-     * @param rep Repeat flags for bindings
      */
-    public MekKeyHandler(KeyBinding[] bindings, boolean[] rep) {
-        keyBindings = bindings;
-        repeatings = rep;
-        keyDown = new boolean[keyBindings.length];
-    }
-
-    /**
-     * Register the keys into the system. You will do your own keyboard management elsewhere. No events will fire if you
-     * use this method
-     *
-     * @param bindings Bindings to set
-     */
-    public MekKeyHandler(KeyBinding[] bindings) {
-        keyBindings = bindings;
-        isDummy = true;
+    public MekKeyHandler(Builder bindings) {
+        keyBindings = bindings.getBindings();
+        repeatings = bindings.getRepeatFlags();
+        keyDown = new BitSet();
     }
 
     public static boolean getIsKeyPressed(KeyBinding keyBinding) {
@@ -51,15 +52,16 @@ public abstract class MekKeyHandler {
         for (int i = 0; i < keyBindings.length; i++) {
             KeyBinding keyBinding = keyBindings[i];
             boolean state = keyBinding.isPressed();
+            boolean lastState = keyDown.get(i);
 
-            if (state != keyDown[i] || (state && repeatings[i])) {
+            if (state != lastState || (state && repeatings.get(i))) {
                 if (state) {
-                    keyDown(keyBinding, state == keyDown[i]);
+                    keyDown(keyBinding, state == lastState);
                 } else {
                     keyUp(keyBinding);
                 }
 
-                keyDown[i] = state;
+                keyDown.set(i, state);
             }
         }
     }
@@ -67,4 +69,29 @@ public abstract class MekKeyHandler {
     public abstract void keyDown(KeyBinding kb, boolean isRepeat);
 
     public abstract void keyUp(KeyBinding kb);
+
+    protected static class Builder {
+        private List<KeyBinding> bindings = new ArrayList<>(4);
+        private BitSet repeatFlags = new BitSet();
+
+        /**
+         * Add a keybinding to the list
+         *
+         * @param k the KeyBinding to add
+         * @param repeatFlag true if keyDown pseudo-events continue to be sent while key is held
+         */
+        protected Builder addBinding(KeyBinding k, boolean repeatFlag) {
+            repeatFlags.set(bindings.size(), repeatFlag);
+            bindings.add(k);
+            return this;
+        }
+
+        protected BitSet getRepeatFlags() {
+            return repeatFlags;
+        }
+
+        protected KeyBinding[] getBindings() {
+            return bindings.toArray(new KeyBinding[0]);
+        }
+    }
 }

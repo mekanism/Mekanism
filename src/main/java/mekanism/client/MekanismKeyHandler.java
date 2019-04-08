@@ -54,9 +54,15 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
     public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
 
+    private static Builder BINDINGS = new Builder()
+        .addBinding(modeSwitchKey, false)
+        .addBinding(armorModeSwitchKey, false)
+        .addBinding(freeRunnerModeSwitchKey, false)
+        .addBinding(voiceKey, true)
+          ;
+
     public MekanismKeyHandler() {
-        super(new KeyBinding[]{modeSwitchKey, armorModeSwitchKey, freeRunnerModeSwitchKey, voiceKey},
-              new boolean[]{false, false, false, true});
+        super(BINDINGS);
 
         ClientRegistry.registerKeyBinding(modeSwitchKey);
         ClientRegistry.registerKeyBinding(armorModeSwitchKey);
