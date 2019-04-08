@@ -54,7 +54,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
     public MekanismKeyHandler() {
         super(new KeyBinding[]{modeSwitchKey, armorModeSwitchKey, freeRunnerModeSwitchKey},
-              new boolean[]{false, false, true});
+              new boolean[]{false, false, false});
 
         ClientRegistry.registerKeyBinding(modeSwitchKey);
         ClientRegistry.registerKeyBinding(armorModeSwitchKey);
