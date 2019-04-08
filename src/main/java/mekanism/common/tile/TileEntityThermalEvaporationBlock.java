@@ -81,6 +81,16 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 
     public void updateController() {
         if (!(this instanceof TileEntityThermalEvaporationController)) {
+            for (EnumFacing side : EnumFacing.values()){
+                BlockPos checkPos = pos.offset(side);
+                TileEntity check;
+                if (world.isBlockLoaded(checkPos) && (check = world.getTileEntity(checkPos)) instanceof TileEntityThermalEvaporationBlock) {
+                    if (check instanceof TileEntityThermalEvaporationController){
+                        ((TileEntityThermalEvaporationController) check).refresh();
+                        return;
+                    }
+                }
+            }
             TileEntityThermalEvaporationController found = new ControllerFinder().find();
 
             if (found != null) {
