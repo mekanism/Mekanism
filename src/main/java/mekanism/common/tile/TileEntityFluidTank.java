@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.BaseTier;
@@ -17,7 +18,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -51,6 +51,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable,
       IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile, ITierUpgradeable {
@@ -422,6 +423,9 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.CONFIGURABLE_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
               || super.hasCapability(capability, side);
@@ -429,15 +433,23 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.cast(this);
-        }
-
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return side != EnumFacing.DOWN && side != EnumFacing.UP;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

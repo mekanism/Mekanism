@@ -7,13 +7,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -34,12 +34,14 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl,
       ISpecialConfigData, ISustainedData, ISecurityTile {
 
     public static final int MAX_LENGTH = 24;
+    private static final int[] SLOTS = {0, 1};
     public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
     public HashList<OredictionificatorFilter> filters = new HashList<>();
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -139,13 +141,10 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
-            return new int[]{0};
-        } else if (side == MekanismUtils.getRight(facing)) {
-            return new int[]{1};
-        } else {
-            return InventoryUtils.EMPTY;
+        if (side != facing) {
+            return SLOTS;
         }
+        return InventoryUtils.EMPTY;
     }
 
     @Override
@@ -372,6 +371,9 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
               || super.hasCapability(capability, side);
@@ -379,12 +381,22 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return side == facing;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

@@ -501,6 +501,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     @Nonnull
     @Override
     public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        //This is legacy for the sided inventory stuff, using IItemHandler returns a
+        // BinItemHandler that does not use this method
         if (side == EnumFacing.UP) {
             return UPSLOTS;
         } else if (side == EnumFacing.DOWN) {
