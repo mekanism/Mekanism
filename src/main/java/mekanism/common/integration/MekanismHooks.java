@@ -25,15 +25,19 @@ import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.MachineInput;
+import mekanism.common.util.StackUtils;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -49,10 +53,14 @@ public final class MekanismHooks {
     public static final String TESLA_MOD_ID = "tesla";
     public static final String MCMULTIPART_MOD_ID = "mcmultipart";
     public static final String REDSTONEFLUX_MOD_ID = "redstoneflux";
+    public static final String METALLURGY_MOD_ID = "metallurgy";
     public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
     public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
     public static final String WAILA_MOD_ID = "Waila";
+    public static final String TOP_MOD_ID = "theoneprobe";
     public static final String BUILDCRAFT_MOD_ID = "BuildCraft";
+    public static final String CYCLIC_MOD_ID = "cyclicmagic";
+    public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
 
     public boolean IC2Loaded = false;
     public boolean CCLoaded = false;
@@ -60,8 +68,12 @@ public final class MekanismHooks {
     public boolean TeslaLoaded = false;
     public boolean MCMPLoaded = false;
     public boolean RFLoaded = false;
+    public boolean MetallurgyLoaded = false;
+    public boolean CyclicLoaded = false;
+    public boolean CraftTweakerLoaded = false;
+    public boolean OCLoaded = false;
 
-    public void hook() {
+    public void hookPreInit() {
         if (Loader.isModLoaded(IC2_MOD_ID)) {
             IC2Loaded = true;
         }
@@ -70,6 +82,9 @@ public final class MekanismHooks {
         }
         if (Loader.isModLoaded(APPLIED_ENERGISTICS_2_MOD_ID)) {
             AE2Loaded = true;
+        }
+        if (Loader.isModLoaded(OPENCOMPUTERS_MOD_ID)) {
+            OCLoaded = true;
         }
         if (Loader.isModLoaded(TESLA_MOD_ID)) {
             TeslaLoaded = true;
@@ -80,21 +95,57 @@ public final class MekanismHooks {
         if (Loader.isModLoaded(REDSTONEFLUX_MOD_ID)) {
             RFLoaded = true;
         }
+        if (Loader.isModLoaded(CYCLIC_MOD_ID)) {
+            CyclicLoaded = true;
+        }
+        if (Loader.isModLoaded(METALLURGY_MOD_ID)) {
+            MetallurgyLoaded = true;
+        }
+        if (Loader.isModLoaded(CRAFTTWEAKER_MOD_ID)) {
+            CraftTweakerLoaded = true;
+        }
+    }
 
+    public void hookInit() {
+        //Integrate with Waila
+        FMLInterModComms
+              .sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
+
+        //Register TOP handler
+        FMLInterModComms
+              .sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
+        if (OCLoaded) {
+            loadOCDrivers();
+        }
+        if (AE2Loaded) {
+            registerAE2P2P();
+        }
+    }
+
+    public void hookPostInit() {
         if (IC2Loaded) {
             hookIC2Recipes();
             Mekanism.logger.info("Hooked into IC2 successfully.");
         }
-
-        if (CCLoaded) {
-            loadCCPeripheralProviders();
-        }
-
         if (AE2Loaded) {
             registerAE2Recipes();
+            Mekanism.logger.info("Hooked into AE2 successfully.");
+        }
+        if (CCLoaded) {
+            loadCCPeripheralProviders();
+            Mekanism.logger.info("Hooked into Computer Craft successfully.");
+        }
+        if (CyclicLoaded) {
+            registerCyclicRecipes();
+            Mekanism.logger.info("Hooked into Cyclic successfully.");
+        }
+        if (MetallurgyLoaded) {
+            addMetallurgy();
+            Mekanism.logger.info("Hooked into Metallurgy successfully.");
         }
 
-        if (Loader.isModLoaded("crafttweaker")) {
+        if (CraftTweakerLoaded) {
+            //CraftTweaker must be ran after all other recipe changes
             CrafttweakerIntegration.registerCommands();
             CrafttweakerIntegration.applyRecipeChanges();
         }
@@ -103,7 +154,7 @@ public final class MekanismHooks {
     }
 
     @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void hookIC2Recipes() {
+    private void hookIC2Recipes() {
         for (MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes()) {
             if (!entry.getInput().getInputs().isEmpty()) {
                 if (!RecipeHandler.Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0))) {
@@ -148,7 +199,7 @@ public final class MekanismHooks {
     }
 
     @Method(modid = COMPUTERCRAFT_MOD_ID)
-    public void loadCCPeripheralProviders() {
+    private void loadCCPeripheralProviders() {
         try {
             ComputerCraftAPI.registerPeripheralProvider(new CCPeripheral.CCPeripheralProvider());
         } catch (Exception ignored) {
@@ -156,24 +207,50 @@ public final class MekanismHooks {
     }
 
     @Method(modid = OPENCOMPUTERS_MOD_ID)
-    public void loadOCDrivers() {
+    private void loadOCDrivers() {
         try {
             Driver.add(new OCDriver());
         } catch (Exception ignored) {
         }
     }
 
-    public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy) {
-        NBTTagCompound nbtTags = new NBTTagCompound();
-
-        nbtTags.setInteger("energy", energy);
-        nbtTags.setTag("input", input.writeToNBT(new NBTTagCompound()));
-        nbtTags.setTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
-
-        FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
+    private void registerCyclicCombinerOreRecipe(String ore, int quantity, ItemStack extra, String outputName) {
+        Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
+        if (outputItem != null) {
+            for (ItemStack stack : OreDictionary.getOres(ore)) {
+                RecipeHandler.addCombinerRecipe(StackUtils.size(stack, quantity), extra, new ItemStack(outputItem));
+            }
+        }
     }
 
-    public void registerAE2P2P() {
+    private void registerCyclicCombinerRecipe(ItemStack input, ItemStack extra, String outputName) {
+        Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(CYCLIC_MOD_ID, outputName));
+        if (outputItem != null) {
+            RecipeHandler.addCombinerRecipe(input, extra, new ItemStack(outputItem));
+        }
+    }
+
+    private void registerCyclicRecipes() {
+        ItemStack netherrack = new ItemStack(Item.getItemFromBlock(Blocks.NETHERRACK));
+        registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), netherrack, "nether_redstone_ore");
+        registerCyclicCombinerOreRecipe("dustIron", 8, netherrack, "nether_iron_ore");
+        registerCyclicCombinerOreRecipe("dustGold", 8, netherrack, "nether_gold_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), netherrack, "nether_coal_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.DYE, 5, 4), netherrack, "nether_lapis_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), netherrack, "nether_emerald_ore");
+        registerCyclicCombinerOreRecipe("dustDiamond", 3, netherrack, "nether_diamond_ore");
+
+        ItemStack end_stone = new ItemStack(Item.getItemFromBlock(Blocks.END_STONE));
+        registerCyclicCombinerRecipe(new ItemStack(Items.REDSTONE, 3), end_stone, "end_redstone_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.COAL, 3), end_stone, "end_coal_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.DYE, 5, 4), end_stone, "end_lapis_ore");
+        registerCyclicCombinerRecipe(new ItemStack(Items.EMERALD, 3), end_stone, "end_emerald_ore");
+        registerCyclicCombinerOreRecipe("dustDiamond", 3, end_stone, "end_diamond_ore");
+        registerCyclicCombinerOreRecipe("dustGold", 8, end_stone, "end_gold_ore");
+        registerCyclicCombinerOreRecipe("dustIron", 8, end_stone, "end_iron_ore");
+    }
+
+    private void registerAE2P2P() {
         for (TransmitterType type : TransmitterType.values()) {
             if (type.getTransmission().equals(TransmissionType.ITEM)) {
                 FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item",
@@ -188,7 +265,7 @@ public final class MekanismHooks {
         }
     }
 
-    public void registerAE2Recipes() {
+    private void registerAE2Recipes() {
         try {
             IItems itemApi = AEApi.instance().definitions().items();
             IMaterials materialsApi = AEApi.instance().definitions().materials();
@@ -272,5 +349,48 @@ public final class MekanismHooks {
         } catch (IncompatibleClassChangeError e) {
             Mekanism.logger.error("AE2 api has changed unexpectedly", e);
         }
+    }
+
+    private void addMetallurgy() {
+        OreDictManager.addStandardOredictMetal("Adamantine");
+        OreDictManager.addStandardOredictMetal("Alduorite");
+        OreDictManager.addStandardOredictMetal("Angmallen");
+        OreDictManager.addStandardOredictMetal("AstralSilver");
+        OreDictManager.addStandardOredictMetal("Atlarus");
+        OreDictManager.addStandardOredictMetal("Amordrine");
+        OreDictManager.addStandardOredictMetal("BlackSteel");
+        OreDictManager.addStandardOredictMetal("Brass");
+        OreDictManager.addStandardOredictMetal("Bronze");
+        OreDictManager.addStandardOredictMetal("Carmot");
+        OreDictManager.addStandardOredictMetal("Celenegil");
+        OreDictManager.addStandardOredictMetal("Ceruclase");
+        OreDictManager.addStandardOredictMetal("DamascusSteel");
+        OreDictManager.addStandardOredictMetal("DeepIron");
+        OreDictManager.addStandardOredictMetal("Desichalkos");
+        OreDictManager.addStandardOredictMetal("Electrum");
+        OreDictManager.addStandardOredictMetal("Eximite");
+        OreDictManager.addStandardOredictMetal("Haderoth");
+        OreDictManager.addStandardOredictMetal("Hepatizon");
+        OreDictManager.addStandardOredictMetal("Ignatius");
+        OreDictManager.addStandardOredictMetal("Infuscolium");
+        OreDictManager.addStandardOredictMetal("Inolashite");
+        OreDictManager.addStandardOredictMetal("Kalendrite");
+        OreDictManager.addStandardOredictMetal("Lemurite");
+        OreDictManager.addStandardOredictMetal("Manganese");
+        OreDictManager.addStandardOredictMetal("Meutoite");
+        OreDictManager.addStandardOredictMetal("Midasium");
+        OreDictManager.addStandardOredictMetal("Mithril");
+        OreDictManager.addStandardOredictMetal("Orichalcum");
+        OreDictManager.addStandardOredictMetal("Oureclase");
+        OreDictManager.addStandardOredictMetal("Prometheum");
+        OreDictManager.addStandardOredictMetal("Quicksilver");
+        OreDictManager.addStandardOredictMetal("Rubracium");
+        OreDictManager.addStandardOredictMetal("Sanguinite");
+        OreDictManager.addStandardOredictMetal("ShadowIron");
+        OreDictManager.addStandardOredictMetal("ShadowSteel");
+        OreDictManager.addStandardOredictMetal("Tartarite");
+        OreDictManager.addStandardOredictMetal("Vulcanite");
+        OreDictManager.addStandardOredictMetal("Vyroxeres");
+        OreDictManager.addStandardOredictMetal("Zinc");
     }
 }
