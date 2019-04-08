@@ -19,6 +19,7 @@ import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -26,6 +27,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
@@ -257,7 +260,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
             if (formed) {
                 if (getReactor() == null || !getReactor().formed) {
-                    Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityReactorBlock);
+                    BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
+                    Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6,
+                          tile -> tile instanceof TileEntityReactorBlock);
                 }
 
                 if (getReactor() == null) {

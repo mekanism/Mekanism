@@ -146,6 +146,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.multiblock.UpdateProtocol.NodeChecker;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -999,29 +1000,29 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    @Override
-    public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker) {
+    private void doSparkle(TileEntity tileEntity, SparkleAnimation anim) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 100) {
-            player.sendStatusMessage(
-                  new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
+        // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
+        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
             if (client.enableMultiblockFormationParticles) {
-                new SparkleAnimation(tileEntity, checker).run();
+                anim.run();
+            } else {
+                player.sendStatusMessage(
+                      new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
             }
         }
     }
 
     @Override
-    public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 100) {
-            player.sendStatusMessage(
-                  new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
-            if (client.enableMultiblockFormationParticles) {
-                new SparkleAnimation(tileEntity, tile -> MultiblockManager.areEqual(tile, tileEntity)).run();
-            }
-        }
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+        doSparkle(tileEntity, new SparkleAnimation(tileEntity, renderLoc, length, width, height, checker));
     }
+
+
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
+        doSparkle(tileEntity, new SparkleAnimation(tileEntity, corner1, corner2, checker));
+    }
+
 
     @Override
     public void init() {
