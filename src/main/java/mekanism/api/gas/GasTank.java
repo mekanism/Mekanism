@@ -54,7 +54,7 @@ public class GasTank implements GasTankInfo {
             return null;
         }
 
-        GasStack ret = new GasStack(getGas().getGas(), Math.min(getStored(), amount));
+        GasStack ret = new GasStack(stored.getGas(), Math.min(getStored(), amount));
 
         if (ret.amount > 0) {
             if (doDraw) {
@@ -79,7 +79,7 @@ public class GasTank implements GasTankInfo {
      * @return the amount of gas accepted by this tank
      */
     public int receive(GasStack amount, boolean doReceive) {
-        if (amount == null || (stored != null && !(stored.amount != getMaxGas() && stored.isGasEqual(amount)))) {
+        if (amount == null || (stored != null && !stored.isGasEqual(amount))) {
             return 0;
         }
 
@@ -171,6 +171,9 @@ public class GasTank implements GasTankInfo {
 
         if (stored != null) {
             stored.amount = Math.min(getMaxGas(), stored.amount);
+            if (stored.amount <= 0) {
+                stored = null;
+            }
         }
     }
 
@@ -199,7 +202,7 @@ public class GasTank implements GasTankInfo {
      * @return tag compound with this tank's data
      */
     public NBTTagCompound write(NBTTagCompound nbtTags) {
-        if (stored != null && stored.getGas() != null) {
+        if (stored != null && stored.getGas() != null && stored.amount > 0) {
             nbtTags.setTag("stored", stored.write(new NBTTagCompound()));
         }
 
@@ -216,6 +219,10 @@ public class GasTank implements GasTankInfo {
     public void read(NBTTagCompound nbtTags) {
         if (nbtTags.hasKey("stored")) {
             stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
+            if (stored.amount <= 0) {
+                //fix any old data that may be broken
+                stored = null;
+            }
         }
 
         if (nbtTags.hasKey("maxGas") && nbtTags.getInteger("maxGas") != 0) {
