@@ -154,17 +154,17 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
                 iterated.add(checkPos);
                 if (world.isBlockLoaded(checkPos)) {
                     TileEntity te = world.getTileEntity(checkPos);
-                    if (te instanceof TileEntityThermalEvaporationBlock) {
-                        ((TileEntityThermalEvaporationBlock) te).attempted = true;
-                    }
                     if (te instanceof TileEntityThermalEvaporationController) {
                         found = (TileEntityThermalEvaporationController) te;
                         return;
                     }
-                    for (EnumFacing side : EnumFacing.VALUES) {
-                        BlockPos coord = checkPos.offset(side);
-                        if (!iterated.contains(coord)) {
-                            checkQueue.addLast(coord);
+                    if (te instanceof TileEntityThermalEvaporationBlock) {
+                        ((TileEntityThermalEvaporationBlock) te).attempted = true;
+                        for (EnumFacing side : EnumFacing.VALUES) {
+                            BlockPos coord = checkPos.offset(side);
+                            if (!iterated.contains(coord)) {
+                                checkQueue.addLast(coord);
+                            }
                         }
                     }
                 }
