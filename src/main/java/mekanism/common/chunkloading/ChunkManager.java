@@ -1,13 +1,15 @@
 package mekanism.common.chunkloading;
 
+import com.google.common.collect.ListMultimap;
 import java.util.List;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
+import net.minecraftforge.common.ForgeChunkManager.PlayerOrderedLoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
-public class ChunkManager implements LoadingCallback {
+public class ChunkManager implements LoadingCallback, PlayerOrderedLoadingCallback {
 
     @Override
     public void ticketsLoaded(List<Ticket> tickets, World world) {
@@ -23,5 +25,10 @@ public class ChunkManager implements LoadingCallback {
                 ((IChunkLoader) tileEntity).getChunkLoader().forceChunks(ticket);
             }
         }
+    }
+
+    @Override
+    public ListMultimap<String, Ticket> playerTicketsLoaded(ListMultimap<String, Ticket> tickets, World world) {
+        return tickets;
     }
 }
