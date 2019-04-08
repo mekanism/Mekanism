@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 public final class FluidRenderer {
@@ -75,7 +75,7 @@ public final class FluidRenderer {
             maxStages = stage = 1;
         }
 
-        if (data.fluidType.getStill() != null) {
+        if (data.fluidType.getFluid().getStill(data.fluidType) != null) {
             toReturn.minX = 0 + .01;
             toReturn.minY = 0 + .01;
             toReturn.minZ = 0 + .01;
@@ -170,7 +170,7 @@ public final class FluidRenderer {
             }
         }
 
-        if (data.fluidType.getFlowing() != null) {
+        if (data.fluidType.getFluid().getFlowing(data.fluidType) != null) {
             MekanismRenderer.renderObject(toReturn);
         }
 
@@ -208,7 +208,7 @@ public final class FluidRenderer {
         public int length;
         public int width;
 
-        public Fluid fluidType;
+        public FluidStack fluidType;
 
         @Override
         public int hashCode() {
@@ -217,7 +217,8 @@ public final class FluidRenderer {
             code = 31 * code + height;
             code = 31 * code + length;
             code = 31 * code + width;
-            code = 31 * code + fluidType.getName().hashCode();
+            code = 31 * code + fluidType.getFluid().getName().hashCode();
+            code = 31 * code + (fluidType.tag != null ? fluidType.tag.hashCode() : 0);
             return code;
         }
 
@@ -225,7 +226,7 @@ public final class FluidRenderer {
         public boolean equals(Object data) {
             return data instanceof RenderData && ((RenderData) data).height == height &&
                   ((RenderData) data).length == length && ((RenderData) data).width == width
-                  && ((RenderData) data).fluidType == fluidType;
+                  && ((RenderData) data).fluidType.isFluidEqual(fluidType);
         }
     }
 

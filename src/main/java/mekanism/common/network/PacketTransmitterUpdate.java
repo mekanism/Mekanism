@@ -21,9 +21,9 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -218,8 +218,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                 case FLUID:
                     if (fluidStack != null) {
                         dataStream.writeBoolean(true);
-                        PacketHandler.writeString(dataStream, FluidRegistry.getFluidName(fluidStack));
-                        dataStream.writeInt(fluidStack.amount);
+                        PacketHandler.writeNBT(dataStream, fluidStack.writeToNBT(new NBTTagCompound()));
                     } else {
                         dataStream.writeBoolean(false);
                     }
@@ -258,18 +257,15 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                 }
             } else if (packetType == PacketType.FLUID) {
                 if (dataStream.readBoolean()) {
-                    fluidType = FluidRegistry.getFluid(PacketHandler.readString(dataStream));
-                    amount = dataStream.readInt();
+                    fluidStack = FluidStack.loadFluidStackFromNBT(PacketHandler.readNBT(dataStream));
+                    fluidType = fluidStack != null ? fluidStack.getFluid() : null;
                 } else {
                     fluidType = null;
                     amount = 0;
+                    fluidStack = null;
                 }
 
                 didFluidTransfer = dataStream.readBoolean();
-
-                if (fluidType != null) {
-                    fluidStack = new FluidStack(fluidType, amount);
-                }
             }
         }
     }

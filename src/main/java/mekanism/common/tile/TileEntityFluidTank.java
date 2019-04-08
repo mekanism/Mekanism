@@ -6,8 +6,8 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -17,7 +17,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -43,8 +42,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -70,7 +67,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     public int prevAmount;
 
     public int valve;
-    public Fluid valveFluid;
+    public FluidStack valveFluid;
 
     public float prevScale;
 
@@ -312,7 +309,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             editMode = ContainerEditMode.values()[dataStream.readInt()];
 
             if (valve > 0) {
-                valveFluid = FluidRegistry.getFluid(PacketHandler.readString(dataStream));
+                valveFluid = TileUtils.readFluidStack(dataStream);
             } else {
                 valveFluid = null;
             }
@@ -367,7 +364,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         data.add(editMode.ordinal());
 
         if (valve > 0) {
-            data.add(FluidRegistry.getFluidName(valveFluid));
+            TileUtils.addFluidStack(data, valveFluid);
         }
 
         TileUtils.addTankData(data, fluidTank);
@@ -459,7 +456,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 }
 
                 valve = 20;
-                valveFluid = resource.getFluid();
+                valveFluid = new FluidStack(resource, 1);
             }
 
             return filled;

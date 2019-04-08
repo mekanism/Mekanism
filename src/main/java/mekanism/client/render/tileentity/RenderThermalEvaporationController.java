@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -11,7 +11,8 @@ import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -24,7 +25,7 @@ public class RenderThermalEvaporationController extends
     private static final int ALL_LEVELS = LEVELS + 2;
     private static final int RING_INDEX = ALL_LEVELS - 2;
     private static final int CONCAVE_INDEX = ALL_LEVELS - 1;
-    private static HashMap<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<>();
+    private static FluidRenderMap<DisplayInteger[]> cachedCenterFluids = new FluidRenderMap<>();
 
     public static void resetDisplayInts() {
         cachedCenterFluids.clear();
@@ -42,8 +43,8 @@ public class RenderThermalEvaporationController extends
 
                 FluidRenderer.translateToOrigin(tileEntity.getRenderLocation());
                 MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
-                MekanismRenderer.colorFluid(tileEntity.inputTank.getFluid().getFluid());
-                DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid().getFluid());
+                MekanismRenderer.colorFluid(tileEntity.inputTank.getFluid());
+                DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid());
 
                 float levels = Math
                       .min(((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity()), 1);
@@ -100,7 +101,7 @@ public class RenderThermalEvaporationController extends
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    private DisplayInteger[] getListAndRender(Fluid fluid) {
+    private DisplayInteger[] getListAndRender(FluidStack fluid) {
         if (cachedCenterFluids.containsKey(fluid)) {
             return cachedCenterFluids.get(fluid);
         }
@@ -108,12 +109,15 @@ public class RenderThermalEvaporationController extends
         DisplayInteger[] displays = new DisplayInteger[ALL_LEVELS];
 
         Model3D model = new Model3D();
-        model.baseBlock = fluid.getBlock();
+        model.baseBlock = fluid.getFluid().getBlock();
+        if (model.baseBlock == null) {
+            model.baseBlock = FluidRegistry.WATER.getBlock();
+        }
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
 
         MekanismRenderer.colorFluid(fluid);
 
-        if (fluid.getStill() == null) {
+        if (fluid.getFluid().getStill(fluid) == null) {
             DisplayInteger empty = DisplayInteger.createAndStart();
             DisplayInteger.endList();
             Arrays.fill(displays, 0, LEVELS, empty);
