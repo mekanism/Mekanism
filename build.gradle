@@ -124,7 +124,9 @@ dependencies {
     }
     compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
-    compileOnly "appeng:appliedenergistics2:${ae2_version}:api"
+    compileOnly("appeng:appliedenergistics2:${ae2_version}:api") {
+        exclude module: "jei_1.12.2"
+    }
 }
 
 processResources {
