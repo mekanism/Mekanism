@@ -43,14 +43,11 @@ import org.lwjgl.input.Keyboard;
 public class MekanismKeyHandler extends MekKeyHandler {
 
     public static final String keybindCategory = Mekanism.MOD_NAME;
-    public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.mode"),
-          Keyboard.KEY_M, keybindCategory);
-    public static KeyBinding armorModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.armorMode"),
-          Keyboard.KEY_G, keybindCategory);
-    public static KeyBinding voiceKey = new KeyBinding("Mekanism " + LangUtils.localize("key.voice"), Keyboard.KEY_U,
-          keybindCategory);
-    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.feetMode"),
-          Keyboard.KEY_H, keybindCategory);
+    public static KeyBinding modeSwitchKey = new KeyBinding("key.mode", Keyboard.KEY_M, keybindCategory);
+    public static KeyBinding armorModeSwitchKey = new KeyBinding("key.armorMode", Keyboard.KEY_G, keybindCategory);
+    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("key.feetMode", Keyboard.KEY_H, keybindCategory);
+    public static KeyBinding voiceKey = new KeyBinding("key.voice", Keyboard.KEY_U, keybindCategory);
+
     public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
     public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
 
