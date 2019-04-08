@@ -1002,11 +1002,13 @@ public class ClientProxy extends CommonProxy {
 
     private void doSparkle(TileEntity tileEntity, SparkleAnimation anim) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 100) {
-            player.sendStatusMessage(
-                  new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
+        // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
+        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
             if (client.enableMultiblockFormationParticles) {
                 anim.run();
+            } else {
+                player.sendStatusMessage(
+                      new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
             }
         }
     }

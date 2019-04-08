@@ -38,7 +38,6 @@ public class SparkleAnimation {
 
 
     public void run() {
-        long start = System.nanoTime();
         if (general.dynamicTankEasterEgg) {
             tile.getWorld()
                   .playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(),
@@ -50,7 +49,6 @@ public class SparkleAnimation {
 
         World world = tile.getWorld();
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int sparkles = 0;
 
         while (itr.hasNext()) {
             BlockPos pos = itr.next();
@@ -64,7 +62,6 @@ public class SparkleAnimation {
             }
 
             for (int i = 0; i < 2; i++) {
-                sparkles++;
                 world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
                       pos.getY() + random.nextDouble(), pos.getZ() + -.01, 0, 0, 0);
                 world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
@@ -75,9 +72,6 @@ public class SparkleAnimation {
                       pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0, 0);
             }
         }
-
-        long elapsed = System.nanoTime() - start;
-        Mekanism.logger.info("Generated {} sparkles in {} ms", sparkles, elapsed / 1000000d);
     }
 
     public interface INodeChecker {
