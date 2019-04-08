@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class StackUtils {
 
@@ -16,14 +15,6 @@ public final class StackUtils {
             return false;
         }
         return stack1.getItem() != stack2.getItem() || stack1.getItemDamage() != stack2.getItemDamage();
-    }
-
-    //only used in factory
-    //could be inlined at this point probably
-    public static Pair<ItemStack, ItemStack> even(ItemStack stack1, ItemStack stack2) {
-        int count = stack1.getCount() + stack2.getCount();
-        ItemStack stack = stack1.isEmpty() ? stack2 : stack1;
-        return Pair.of(size(stack, (count + 1)/2), size(stack, count/2));
     }
 
     //ignores count

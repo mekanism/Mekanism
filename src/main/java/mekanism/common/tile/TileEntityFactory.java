@@ -1,8 +1,6 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -44,6 +42,7 @@ import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -57,7 +56,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -65,7 +63,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration,
       IGasHandler, ISpecialConfigData, ITierUpgradeable, ISustainedData {
@@ -376,49 +373,68 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
     }
 
-    //can be optimised a lot to be linear
     public void sortInventory() {
         if (sorting) {
-            boolean didOp = false;
-
-            int[] inputSlots = null;
-
-            List<InvID> invStacks = new ArrayList<>();
-
+            int[] inputSlots;
             if (tier == FactoryTier.BASIC) {
                 inputSlots = new int[]{5, 6, 7};
             } else if (tier == FactoryTier.ADVANCED) {
                 inputSlots = new int[]{5, 6, 7, 8, 9};
             } else if (tier == FactoryTier.ELITE) {
                 inputSlots = new int[]{5, 6, 7, 8, 9, 10, 11};
+            } else {
+                //If something went wrong finding the tier don't sort it
+                return;
             }
 
-            for (int id : inputSlots) {
-                invStacks.add(InvID.get(id, inventory));
-            }
-
-            for (InvID invID1 : invStacks) {
-                for (InvID invID2 : invStacks) {
-                    if (invID1.ID == invID2.ID || StackUtils.diffIgnoreEmpty(invID1.stack, invID2.stack)
-                          || Math.abs(invID1.size() - invID2.size()) < 2) {
+            for (int i = 0; i < inputSlots.length; i++) {
+                int slotID = inputSlots[i];
+                ItemStack stack = inventory.get(slotID);
+                int count = stack.getCount();
+                ItemStack output = inventory.get(tier.processes + slotID);
+                for (int j = i + 1; j < inputSlots.length; j++) {
+                    int checkSlotID = inputSlots[j];
+                    ItemStack checkStack = inventory.get(checkSlotID);
+                    if (StackUtils.diffIgnoreEmpty(stack, checkStack) || Math.abs(count - checkStack.getCount()) < 2) {
+                        continue;
+                    }
+                    //Output/Input will not match
+                    // Only check if the input spot is empty otherwise assume it works
+                    if (stack.isEmpty() && !inputProducesOutput(checkStack, output) ||
+                          checkStack.isEmpty() && !inputProducesOutput(stack,
+                                inventory.get(tier.processes + checkSlotID))) {
                         continue;
                     }
 
-                    Pair<ItemStack, ItemStack> evened = StackUtils
-                          .even(inventory.get(invID1.ID), inventory.get(invID2.ID));
-                    inventory.set(invID1.ID, evened.getLeft());
-                    inventory.set(invID2.ID, evened.getRight());
+                    //Balance the two slots
+                    int total = count + checkStack.getCount();
+                    ItemStack newStack = stack.isEmpty() ? checkStack : stack;
+                    inventory.set(slotID, StackUtils.size(newStack, (total + 1) / 2));
+                    inventory.set(checkSlotID, StackUtils.size(newStack, total / 2));
 
-                    didOp = true;
-                    break;
-                }
-
-                if (didOp) {
                     markDirty();
-                    break;
+                    return;
                 }
             }
         }
+    }
+
+    private boolean inputProducesOutput(ItemStack input, ItemStack output) {
+        if (output.isEmpty()) {
+            return true;
+        }
+        //TODO: At some point it might be worth caching the machine recipe it found,
+        // but as it only checks when slots are empty it is unlikely to make that large a performance boost
+        // for the added logic complexity of keeping track of it.
+        // The case it would help the most is if you have something in the first slot and every other slot is empty
+        // and nothing is valid for it so it keeps on trying each slot, then caching the recipe and just comparing
+        // the output to the output would yield even better performance.
+        MachineRecipe matchingRecipe = getRecipeType()
+              .getAnyRecipe(input, inventory.get(4), gasTank.getGasType(), infuseStored);
+        if (matchingRecipe.recipeOutput instanceof ItemStackOutput) {
+            return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, output);
+        }
+        return true;
     }
 
     public double getSecondaryEnergyPerTick(RecipeType type) {
@@ -480,6 +496,22 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             return tier == FactoryTier.ELITE && slotID >= 12 && slotID <= 18;
         }
 
+    }
+
+    @Override
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (slotID == 1) {
+            return ChargeUtils.canBeDischarged(itemstack);
+        } else if (isInputSlot(slotID)) {
+            return inputProducesOutput(itemstack, inventory.get(tier.processes + slotID));
+        }
+        //TODO: Only allow inserting into extra slot if it can go in
+        return super.canInsertItem(slotID, itemstack, side);
+    }
+
+    private boolean isInputSlot(int slotID) {
+        return slotID >= 5 && (tier == FactoryTier.BASIC ? slotID <= 7
+              : tier == FactoryTier.ADVANCED ? slotID <= 9 : tier == FactoryTier.ELITE && slotID <= 11);
     }
 
     @Override
@@ -972,28 +1004,5 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     public void readSustainedData(ItemStack itemStack) {
         infuseStored.readSustainedData(itemStack);
         GasUtils.readSustainedData(gasTank, itemStack);
-    }
-
-    public static class InvID {
-
-        public ItemStack stack;
-        public int ID;
-
-        public InvID(ItemStack s, int i) {
-            stack = s;
-            ID = i;
-        }
-
-        public static InvID get(int id, NonNullList<ItemStack> inv) {
-            return new InvID(inv.get(id), id);
-        }
-
-        public int size() {
-            return !stack.isEmpty() ? stack.getCount() : 0;
-        }
-
-        public Item item() {
-            return !stack.isEmpty() ? stack.getItem() : null;
-        }
     }
 }
