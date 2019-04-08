@@ -7,10 +7,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
@@ -60,6 +60,14 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     public boolean doAutoSync = true;
 
     public List<ITileComponent> components = new ArrayList<>();
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (world.isRemote) {
+            Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+        }
+    }
 
     @Override
     public void update() {
