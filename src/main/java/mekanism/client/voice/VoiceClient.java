@@ -46,8 +46,7 @@ public class VoiceClient extends Thread {
         } catch (ConnectException e) {
             Mekanism.logger.error("VoiceServer: Server's VoiceServer is disabled.");
         } catch (Exception e) {
-            Mekanism.logger.error("VoiceServer: Error while starting client connection.");
-            e.printStackTrace();
+            Mekanism.logger.error("VoiceServer: Error while starting client connection.", e);
         }
     }
 

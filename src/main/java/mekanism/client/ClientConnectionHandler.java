@@ -21,8 +21,7 @@ public class ClientConnectionHandler {
                     MekanismClient.voiceClient = new VoiceClient("127.0.0.1");
                     // Will probably not work when multiple integrateds are running on one computer
                 } catch (Throwable e) {
-                    Mekanism.logger.error("Unable to establish VoiceClient on local connection.");
-                    e.printStackTrace();
+                    Mekanism.logger.error("Unable to establish VoiceClient on local connection.", e);
                 }
             } else {
                 // If the client is connecting to a foreign integrated or dedicated server.
@@ -30,8 +29,7 @@ public class ClientConnectionHandler {
                     MekanismClient.voiceClient = new VoiceClient(
                           ((InetSocketAddress) event.getManager().getRemoteAddress()).getHostString());
                 } catch (Throwable e) {
-                    Mekanism.logger.error("Unable to establish VoiceClient on remote connection.");
-                    e.printStackTrace();
+                    Mekanism.logger.error("Unable to establish VoiceClient on remote connection.", e);
                 }
             }
         }
