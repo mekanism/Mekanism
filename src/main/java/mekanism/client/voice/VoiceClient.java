@@ -60,20 +60,29 @@ public class VoiceClient extends Thread {
         Mekanism.logger.info("VoiceServer: Stopping client connection...");
 
         try {
-            inputThread.interrupt();
-            outputThread.interrupt();
-            inputThread.close();
-            outputThread.close();
-            output.close();
-            input.close();
-            socket.close();
+            if (inputThread != null) {
+                inputThread.interrupt();
+                inputThread.close();
+            }
+            if (outputThread != null) {
+                outputThread.interrupt();
+                outputThread.close();
+            }
+            if (output != null) {
+                output.close();
+            }
+            if (input != null) {
+                input.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
 
             interrupt();
 
             running = false;
         } catch (Exception e) {
-            Mekanism.logger.error("VoiceServer: Error while stopping client connection.");
-            e.printStackTrace();
+            Mekanism.logger.error("VoiceServer: Error while stopping client connection.", e);
         }
     }
 }
