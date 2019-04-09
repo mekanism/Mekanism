@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,7 +23,7 @@ public class VoiceConnection extends Thread {
     private DataInputStream input;
     private boolean open = true;
     private Socket socket;
-    private String username;
+    private UUID uuid;
 
     public VoiceConnection(Socket s) {
         socket = s;
@@ -37,7 +38,7 @@ public class VoiceConnection extends Thread {
             synchronized (Mekanism.voiceManager) {
                 int retryCount = 0;
 
-                while (username == null && retryCount <= 100) {
+                while (uuid == null && retryCount <= 100) {
                     try {
                         List<EntityPlayerMP> l = Collections
                               .synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
@@ -48,10 +49,10 @@ public class VoiceConnection extends Thread {
                             if (!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager
                                   .isFoundLocal()) {
                                 Mekanism.voiceManager.setFoundLocal(true);
-                                username = playerMP.getName();
+                                uuid = playerMP.getUniqueID();
                                 break;
                             } else if (playerIP.equals(socket.getInetAddress().getHostAddress())) {
-                                username = playerMP.getName();
+                                uuid = playerMP.getUniqueID();
                                 break;
                             }
                         }
@@ -62,7 +63,7 @@ public class VoiceConnection extends Thread {
                     }
                 }
 
-                if (username == null) {
+                if (uuid == null) {
                     Mekanism.logger.error("VoiceServer: Unable to trace connection's IP address.");
                     kill();
                     return;
@@ -125,8 +126,7 @@ public class VoiceConnection extends Thread {
 
             output.flush();
         } catch (Exception e) {
-            Mekanism.logger.error("VoiceServer: Error while sending data to player.");
-            e.printStackTrace();
+            Mekanism.logger.error("VoiceServer: Error while sending data to player.", e);
         }
     }
 
@@ -158,6 +158,6 @@ public class VoiceConnection extends Thread {
     }
 
     public EntityPlayerMP getPlayer() {
-        return server.getPlayerList().getPlayerByUsername(username);
+        return server.getPlayerList().getPlayerByUUID(uuid);
     }
 }
