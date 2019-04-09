@@ -137,6 +137,7 @@ import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
@@ -184,7 +185,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
@@ -268,6 +268,10 @@ public class Mekanism {
      * changes.
      */
     public static int baseWorldGenVersion = 0;
+    /**
+     * The VoiceServer manager for walkie talkies
+     */
+    public static VoiceServerManager voiceManager;
     /**
      * The GameProfile used by the dummy Mekanism player
      */
@@ -865,11 +869,18 @@ public class Mekanism {
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
+        if (general.voiceServerEnabled) {
+            voiceManager.start();
+        }
         CommandMek.register(event);
     }
 
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
+        if (general.voiceServerEnabled) {
+            voiceManager.stop();
+        }
+
         //Clear all cache data
         playerState.clear();
         activeVibrators.clear();
@@ -979,6 +990,11 @@ public class Mekanism {
 
         //Register this module's GUI handler in the simple packet protocol
         PacketSimpleGui.handlers.add(0, proxy);
+
+        //Set up VoiceServerManager
+        if (general.voiceServerEnabled) {
+            voiceManager = new VoiceServerManager();
+        }
 
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();

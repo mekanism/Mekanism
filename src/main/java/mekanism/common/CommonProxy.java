@@ -57,7 +57,6 @@ import mekanism.common.inventory.container.robit.ContainerRobitMain;
 import mekanism.common.inventory.container.robit.ContainerRobitRepair;
 import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.multiblock.UpdateProtocol.NodeChecker;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -80,7 +79,6 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -173,6 +171,8 @@ public class CommonProxy implements IGuiProvider {
               .getBoolean();
         general.dynamicTankEasterEgg = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false, "Audible sparkles.").getBoolean();
+        general.voiceServerEnabled = Mekanism.configuration
+              .get(Configuration.CATEGORY_GENERAL, "WalkieTalkieServerEnabled", false).getBoolean();
         general.cardboardSpawners = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "AllowSpawnerBoxPickup", true,
                     "Allows vanilla spawners to be moved with a Cardboard Box.").getBoolean();
@@ -253,6 +253,8 @@ public class CommonProxy implements IGuiProvider {
         general.DISASSEMBLER_USAGE = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "DisassemblerEnergyUsage", 10,
                     "Base Energy (Joules) usage of the Atomic Disassembler.").getInt();
+        general.VOICE_PORT = Mekanism.configuration
+              .get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123, null, 1, 65535).getInt();
         //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
         general.maxUpgradeMultiplier = Mekanism.configuration
               .get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10,
@@ -514,13 +516,15 @@ public class CommonProxy implements IGuiProvider {
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {}
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
+    }
 
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
     public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height,
-          INodeChecker checker) {}
+          INodeChecker checker) {
+    }
 
     @Override
     public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {

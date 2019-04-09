@@ -131,6 +131,7 @@ import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -145,8 +146,6 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.multiblock.UpdateProtocol.NodeChecker;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -182,7 +181,6 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
@@ -1014,7 +1012,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height,
+          INodeChecker checker) {
         doSparkle(tileEntity, new SparkleAnimation(tileEntity, renderLoc, length, width, height, checker));
     }
 
@@ -1080,6 +1079,7 @@ public class ClientProxy extends CommonProxy {
                   * 255);
         }, MekanismItems.Balloon);
 
+        MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
@@ -1088,6 +1088,14 @@ public class ClientProxy extends CommonProxy {
         new MekanismKeyHandler();
 
         HolidayManager.init();
+    }
+
+    @Override
+    public void onConfigSync(boolean fromPacket) {
+        super.onConfigSync(fromPacket);
+        if (fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null) {
+            MekanismClient.voiceClient.start();
+        }
     }
 
     @SubscribeEvent

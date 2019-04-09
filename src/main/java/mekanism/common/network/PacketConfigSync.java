@@ -31,6 +31,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             dataStream.writeBoolean(general.controlCircuitOreDict);
             dataStream.writeBoolean(general.logPackets);
             dataStream.writeBoolean(general.dynamicTankEasterEgg);
+            dataStream.writeBoolean(general.voiceServerEnabled);
             dataStream.writeBoolean(general.cardboardSpawners);
             dataStream.writeBoolean(general.spawnBabySkeletons);
             dataStream.writeInt(general.obsidianTNTDelay);
@@ -48,6 +49,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             dataStream.writeInt(general.ETHENE_BURN_TIME);
             dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
             dataStream.writeDouble(general.DISASSEMBLER_USAGE);
+            dataStream.writeInt(general.VOICE_PORT);
             dataStream.writeInt(general.maxUpgradeMultiplier);
             dataStream.writeInt(general.energyUnit.ordinal());
             dataStream.writeDouble(general.minerSilkMultiplier);
@@ -124,6 +126,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             general.controlCircuitOreDict = dataStream.readBoolean();
             general.logPackets = dataStream.readBoolean();
             general.dynamicTankEasterEgg = dataStream.readBoolean();
+            general.voiceServerEnabled = dataStream.readBoolean();
             general.cardboardSpawners = dataStream.readBoolean();
             general.spawnBabySkeletons = dataStream.readBoolean();
             general.obsidianTNTDelay = dataStream.readInt();
@@ -141,6 +144,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             general.ETHENE_BURN_TIME = dataStream.readInt();
             general.ENERGY_PER_REDSTONE = dataStream.readDouble();
             general.DISASSEMBLER_USAGE = dataStream.readDouble();
+            general.VOICE_PORT = dataStream.readInt();
             general.maxUpgradeMultiplier = dataStream.readInt();
             general.energyUnit = EnergyType.values()[dataStream.readInt()];
             general.minerSilkMultiplier = dataStream.readDouble();

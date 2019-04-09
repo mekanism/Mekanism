@@ -13,6 +13,7 @@ public class MekanismConfig {
         public static boolean controlCircuitOreDict = true;
         public static boolean logPackets = false;
         public static boolean dynamicTankEasterEgg = false;
+        public static boolean voiceServerEnabled = false;
         public static boolean cardboardSpawners = true;
         public static boolean enableWorldRegeneration = true;
         public static boolean spawnBabySkeletons = true;
@@ -27,6 +28,7 @@ public class MekanismConfig {
         public static int saltMaxVeinSize = 6;
         public static int obsidianTNTDelay = 100;
         public static int UPDATE_DELAY = 10;
+        public static int VOICE_PORT = 36123;
         public static int maxUpgradeMultiplier = 10;
         public static int userWorldGenVersion = 0;
         public static double ENERGY_PER_REDSTONE = 10000;
