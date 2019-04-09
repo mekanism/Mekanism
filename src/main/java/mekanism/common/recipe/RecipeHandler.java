@@ -1,5 +1,6 @@
 package mekanism.common.recipe;
 
+import com.google.common.collect.ImmutableList;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -590,7 +591,7 @@ public final class RecipeHandler {
 
     public static class Recipe<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> {
 
-        private static final List<Recipe> values = new ArrayList<>();
+        private static List<Recipe> values = new ArrayList<>();
 
         public static final Recipe<ItemStackInput, ItemStackOutput, SmeltingRecipe> ENERGIZED_SMELTER = new Recipe<>(
               MachineType.ENERGIZED_SMELTER.blockName, "ENERGIZED_SMELTER", ItemStackInput.class, ItemStackOutput.class,
@@ -667,6 +668,10 @@ public final class RecipeHandler {
         public static final Recipe<GasInput, GasOutput, SolarNeutronRecipe> SOLAR_NEUTRON_ACTIVATOR = new Recipe<>(
               MachineType.SOLAR_NEUTRON_ACTIVATOR.blockName, "SOLAR_NEUTRON_ACTIVATOR", GasInput.class, GasOutput.class,
               SolarNeutronRecipe.class);
+
+        static {
+            values = ImmutableList.copyOf(values);
+        }
 
         //TODO: Replace this with Recipe being Iterable
         public static List<Recipe> values() {
