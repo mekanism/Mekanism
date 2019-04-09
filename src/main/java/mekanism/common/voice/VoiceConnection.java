@@ -17,16 +17,12 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class VoiceConnection extends Thread {
 
-    public Socket socket;
-
-    public String username;
-
-    public boolean open = true;
-
-    public DataInputStream input;
-    public DataOutputStream output;
-
-    public MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+    private MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+    private DataOutputStream output;
+    private DataInputStream input;
+    private boolean open = true;
+    private Socket socket;
+    private String username;
 
     public VoiceConnection(Socket s) {
         socket = s;
@@ -43,15 +39,15 @@ public class VoiceConnection extends Thread {
 
                 while (username == null && retryCount <= 100) {
                     try {
-                        List<EntityPlayerMP> l =
-                              Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
+                        List<EntityPlayerMP> l = Collections
+                              .synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
                         for (EntityPlayerMP playerMP : l) {
                             String playerIP = playerMP.getPlayerIP();
 
-                            if (!server.isDedicatedServer() && playerIP.equals("local")
-                                  && !Mekanism.voiceManager.foundLocal) {
-                                Mekanism.voiceManager.foundLocal = true;
+                            if (!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager
+                                  .isFoundLocal()) {
+                                Mekanism.voiceManager.setFoundLocal(true);
                                 username = playerMP.getName();
                                 break;
                             } else if (playerIP.equals(socket.getInetAddress().getHostAddress())) {
@@ -62,7 +58,7 @@ public class VoiceConnection extends Thread {
 
                         retryCount++;
                         Thread.sleep(50);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 }
 
@@ -75,8 +71,7 @@ public class VoiceConnection extends Thread {
                 }
             }
         } catch (Exception e) {
-            Mekanism.logger.error("VoiceServer: Error while starting server-based connection.");
-            e.printStackTrace();
+            Mekanism.logger.error("VoiceServer: Error while starting server-based connection.", e);
             open = false;
         }
 
@@ -102,16 +97,20 @@ public class VoiceConnection extends Thread {
         }).start();
     }
 
-    public void kill() {
+    private void kill() {
         try {
-            input.close();
-            output.close();
-            socket.close();
-
-            Mekanism.voiceManager.connections.remove(this);
+            if (input != null) {
+                input.close();
+            }
+            if (output != null) {
+                output.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
+            Mekanism.voiceManager.removeConnection(this);
         } catch (Exception e) {
-            Mekanism.logger.error("VoiceServer: Error while stopping server-based connection.");
-            e.printStackTrace();
+            Mekanism.logger.error("VoiceServer: Error while stopping server-based connection.", e);
         }
     }
 
@@ -132,30 +131,14 @@ public class VoiceConnection extends Thread {
     }
 
     public boolean canListen(int channel) {
-        for (ItemStack itemStack : getPlayer().inventory.mainInventory) {
-            if (canListen(channel, itemStack)) {
-                return true;
-            }
-        }
-
-        for (ItemStack itemStack : getPlayer().inventory.offHandInventory) {
-            if (canListen(channel, itemStack)) {
-                return true;
-            }
-        }
-
-        return false;
+        return getPlayer().inventory.mainInventory.stream().anyMatch(itemStack -> canListen(channel, itemStack))
+              || getPlayer().inventory.offHandInventory.stream().anyMatch(itemStack -> canListen(channel, itemStack));
     }
 
-    public boolean canListen(int channel, ItemStack itemStack) {
-        if (!itemStack.isEmpty()) {
-            if (itemStack.getItem() instanceof ItemWalkieTalkie) {
-                if (((ItemWalkieTalkie) itemStack.getItem()).getOn(itemStack)) {
-                    if (((ItemWalkieTalkie) itemStack.getItem()).getChannel(itemStack) == channel) {
-                        return true;
-                    }
-                }
-            }
+    private boolean canListen(int channel, ItemStack itemStack) {
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
+            ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
+            return walkieTalkie.getOn(itemStack) && walkieTalkie.getChannel(itemStack) == channel;
         }
 
         return false;
@@ -164,13 +147,10 @@ public class VoiceConnection extends Thread {
     public int getCurrentChannel() {
         ItemStack itemStack = getPlayer().inventory.getCurrentItem();
 
-        if (!itemStack.isEmpty()) {
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
             ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
-
-            if (walkieTalkie != null) {
-                if (walkieTalkie.getOn(itemStack)) {
-                    return walkieTalkie.getChannel(itemStack);
-                }
+            if (walkieTalkie.getOn(itemStack)) {
+                return walkieTalkie.getChannel(itemStack);
             }
         }
 

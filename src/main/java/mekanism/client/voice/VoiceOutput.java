@@ -11,15 +11,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class VoiceOutput extends Thread {
 
-    public VoiceClient voiceClient;
-
-    public DataLine.Info speaker;
-
-    public SourceDataLine sourceLine;
+    private VoiceClient voiceClient;
+    private DataLine.Info speaker;
+    private SourceDataLine sourceLine;
 
     public VoiceOutput(VoiceClient client) {
         voiceClient = client;
-        speaker = new DataLine.Info(SourceDataLine.class, voiceClient.format, 2200);
+        speaker = new DataLine.Info(SourceDataLine.class, voiceClient.getAudioFormat(), 2200);
 
         setDaemon(true);
         setName("VoiceServer Client Output Thread");
@@ -29,23 +27,24 @@ public class VoiceOutput extends Thread {
     public void run() {
         try {
             sourceLine = ((SourceDataLine) AudioSystem.getLine(speaker));
-            sourceLine.open(voiceClient.format, 2200);
+            sourceLine.open(voiceClient.getAudioFormat(), 2200);
             sourceLine.start();
             byte[] audioData = new byte[4096]; //less allocation/gc (if done outside the loop)
             int byteCount;
             int length;
-            while (voiceClient.running) {
+            while (voiceClient.isRunning()) {
                 try {
-                    if (voiceClient.input.available() > 0) {
+                    if (voiceClient.getInputStream().available() > 0) {
                         //Why would we only read signed shorts? negative amount of waiting data doesn't make sense anyway :D
-                        byteCount = voiceClient.input.readUnsignedShort();
-                        while (byteCount > 0 && voiceClient.running) {
+                        byteCount = voiceClient.getInputStream().readUnsignedShort();
+                        while (byteCount > 0 && voiceClient.isRunning()) {
                             length = audioData.length;
                             if (length > byteCount) {
                                 length = byteCount;
                             }
-                            //That one returns the actual read amount of data (we can begin transferring even if input is waiting/incomplete)
-                            length = voiceClient.input.read(audioData, 0, length);
+                            //That one returns the actual read amount of data (we can begin transferring even if input
+                            // is waiting/incomplete)
+                            length = voiceClient.getInputStream().read(audioData, 0, length);
                             if (length < 0) {
                                 throw new EOFException();
                             }
@@ -65,8 +64,7 @@ public class VoiceOutput extends Thread {
                 }
             }
         } catch (Exception e) {
-            Mekanism.logger.error("VoiceServer: Error while running client output thread.");
-            e.printStackTrace();
+            Mekanism.logger.error("VoiceServer: Error while running client output thread.", e);
         }
     }
 

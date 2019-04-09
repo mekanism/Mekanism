@@ -15,19 +15,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class VoiceClient extends Thread {
 
-    public Socket socket;
-
-    public String ip;
-
-    public AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);
-
-    public VoiceInput inputThread;
-    public VoiceOutput outputThread;
-
-    public DataInputStream input;
-    public DataOutputStream output;
-
-    public boolean running;
+    private AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);
+    private VoiceOutput outputThread;
+    private VoiceInput inputThread;
+    private DataOutputStream output;
+    private DataInputStream input;
+    private boolean running;
+    private Socket socket;
+    private String ip;
 
     public VoiceClient(String s) {
         ip = s;
@@ -84,5 +79,21 @@ public class VoiceClient extends Thread {
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while stopping client connection.", e);
         }
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public DataOutputStream getOutputStream() {
+        return output;
+    }
+
+    public DataInputStream getInputStream() {
+        return input;
+    }
+
+    public AudioFormat getAudioFormat() {
+        return format;
     }
 }

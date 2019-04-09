@@ -10,15 +10,11 @@ import mekanism.common.config.MekanismConfig.general;
 
 public class VoiceServerManager {
 
-    public Set<VoiceConnection> connections = new HashSet<>();
-
-    public ServerSocket serverSocket;
-
-    public boolean running;
-
-    public boolean foundLocal = false;
-
-    public Thread listenThread;
+    private Set<VoiceConnection> connections = new HashSet<>();
+    private ServerSocket serverSocket;
+    private Thread listenThread;
+    private boolean foundLocal = false;
+    private boolean running;
 
     public void start() {
         Mekanism.logger.info("VoiceServer: Starting up server...");
@@ -27,7 +23,7 @@ public class VoiceServerManager {
             running = true;
             serverSocket = new ServerSocket(general.VOICE_PORT);
             (listenThread = new ListenThread()).start();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -37,7 +33,7 @@ public class VoiceServerManager {
 
             try {
                 listenThread.interrupt();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
 
             foundLocal = false;
@@ -45,14 +41,25 @@ public class VoiceServerManager {
             try {
                 serverSocket.close();
                 serverSocket = null;
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         } catch (Exception e) {
-            Mekanism.logger.error("VoiceServer: Error while shutting down server.");
-            e.printStackTrace();
+            Mekanism.logger.error("VoiceServer: Error while shutting down server.", e);
         }
 
         running = false;
+    }
+
+    public void removeConnection(VoiceConnection connection) {
+        connections.remove(connection);
+    }
+
+    public boolean isFoundLocal() {
+        return foundLocal;
+    }
+
+    public void setFoundLocal(boolean found) {
+        foundLocal = found;
     }
 
     public void sendToPlayers(short byteCount, byte[] audioData, VoiceConnection connection) {
@@ -67,17 +74,15 @@ public class VoiceServerManager {
         }
 
         for (VoiceConnection iterConn : connections) {
-            if (iterConn.getPlayer() == null || iterConn == connection || !iterConn.canListen(channel)) {
-                continue;
+            if (iterConn.getPlayer() != null && iterConn != connection && iterConn.canListen(channel)) {
+                iterConn.sendToPlayer(byteCount, audioData, connection);
             }
-
-            iterConn.sendToPlayer(byteCount, audioData, connection);
         }
     }
 
-    public class ListenThread extends Thread {
+    private class ListenThread extends Thread {
 
-        public ListenThread() {
+        private ListenThread() {
             setDaemon(true);
             setName("VoiceServer Listen Thread");
         }
@@ -92,10 +97,9 @@ public class VoiceServerManager {
                     connections.add(connection);
 
                     Mekanism.logger.info("VoiceServer: Accepted new connection.");
-                } catch (SocketException | NullPointerException e) {
+                } catch (SocketException | NullPointerException ignored) {
                 } catch (Exception e) {
-                    Mekanism.logger.error("VoiceServer: Error while accepting connection.");
-                    e.printStackTrace();
+                    Mekanism.logger.error("VoiceServer: Error while accepting connection.", e);
                 }
             }
         }
