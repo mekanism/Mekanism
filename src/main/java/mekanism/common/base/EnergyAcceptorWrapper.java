@@ -4,6 +4,7 @@ import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
+import java.util.function.Function;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
@@ -13,11 +14,15 @@ import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
+    private static final Logger LOGGER = LogManager.getLogger("Mekanism EnergyAcceptorWrapper");
     public Coord4D coord;
 
     public static EnergyAcceptorWrapper get(TileEntity tileEntity, EnumFacing side) {
@@ -28,20 +33,17 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         EnergyAcceptorWrapper wrapper = null;
 
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side)) {
-            wrapper = new MekanismAcceptor(
-                  CapabilityUtils.getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side));
-        } else if (MekanismUtils.useTesla() && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
-            wrapper = new TeslaAcceptor(
-                  CapabilityUtils.getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side));
+            wrapper = fromCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side, MekanismAcceptor::new);
         } else if (MekanismUtils.useForge() && CapabilityUtils
               .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
-            wrapper = new ForgeAcceptor(CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side));
+            wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             wrapper = new RFAcceptor((IEnergyReceiver) tileEntity);
+        } else if (MekanismUtils.useTesla() && CapabilityUtils
+              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
+            wrapper = fromCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side, TeslaAcceptor::new);
         } else if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-
             if (tile instanceof IEnergySink) {
                 wrapper = new IC2Acceptor((IEnergySink) tile);
             }
@@ -52,6 +54,21 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         return wrapper;
+    }
+
+    /**
+     * Note: It is assumed that a check for hasCapability was already ran.
+     */
+    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability,
+          EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
+        T acceptor = CapabilityUtils.getCapability(tileEntity, capability, side);
+        if (acceptor != null) {
+            return makeAcceptor.apply(acceptor);
+        } else {
+            LOGGER.error("Tile {} @ {} told us it had {} cap but returned null", tileEntity,
+                  tileEntity.getPos(), capability.getName());
+        }
+        return null;
     }
 
     public abstract boolean needsEnergy(EnumFacing side);
