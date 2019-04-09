@@ -48,6 +48,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMachine implements IFluidHandlerWrapper,
       IComputerIntegration, ISustainedData, IGasHandler, IUpgradeInfoHandler, ITankManager {
@@ -501,6 +502,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return side != facing && side != facing.getOpposite() && side != MekanismUtils.getRight(facing);
         }
         return super.isCapabilityDisabled(capability, side);
     }

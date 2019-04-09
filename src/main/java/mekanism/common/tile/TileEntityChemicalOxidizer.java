@@ -30,6 +30,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine implements ISustainedData, ITankManager,
       IGasHandler {
@@ -201,6 +202,8 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return side != MekanismUtils.getRight(facing);
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return side == facing || side == facing.getOpposite();
         }
         return super.isCapabilityDisabled(capability, side);
     }

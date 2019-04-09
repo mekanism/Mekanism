@@ -34,6 +34,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityMachine implements IGasHandler, ISustainedData,
       ITankManager {
@@ -287,6 +288,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return side == facing || side == facing.getOpposite();
         }
         return super.isCapabilityDisabled(capability, side);
     }

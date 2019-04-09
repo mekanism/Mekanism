@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
@@ -14,7 +15,6 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig.client;
@@ -50,6 +50,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState,
       ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration {
@@ -696,6 +697,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
               || super.hasCapability(capability, side);
@@ -703,12 +707,23 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return side != facing && side != facing.getOpposite();
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     private class StrictFilterFinder extends Finder {
