@@ -1,7 +1,9 @@
 package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableMap;
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -13,8 +15,8 @@ import net.minecraftforge.common.model.IModelState;
 
 public class MekanismOBJModel extends OBJModel {
 
-    public OBJModelType modelType;
-    public ResourceLocation location;
+    private OBJModelType modelType;
+    private ResourceLocation location;
 
     public MekanismOBJModel(OBJModelType type, MaterialLibrary matLib, ResourceLocation modelLocation) {
         super(matLib, modelLocation);
@@ -43,15 +45,19 @@ public class MekanismOBJModel extends OBJModel {
     @Nonnull
     @Override
     public IModel process(@Nonnull ImmutableMap<String, String> customData) {
-        MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib(), location);
-        return ret;
+        return new MekanismOBJModel(modelType, getMatLib(), location);
     }
 
     @Nonnull
     @Override
     public IModel retexture(@Nonnull ImmutableMap<String, String> textures) {
-        MekanismOBJModel ret = new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
-        return ret;
+        return new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
+    }
+
+    @Nonnull
+    @Override
+    public Collection<ResourceLocation> getTextures() {
+        return super.getTextures().stream().filter(r -> !r.getPath().startsWith("#")).collect(Collectors.toList());
     }
 
     public enum OBJModelType {

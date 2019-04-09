@@ -105,6 +105,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static ImmutableMap<String, TextureAtlasSprite> getTexturesForOBJModel(IBakedModel model) {
         try {
             if (f_textures == null) {
@@ -218,6 +219,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
         return quadList;
     }
 
+    @SuppressWarnings("deprecation")
     protected void updateStateVisibilityMap(OBJState state) {
         try {
             if (m_updateStateVisibilityMap == null) {
