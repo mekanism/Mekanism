@@ -92,8 +92,6 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import mekanism.common.util.UnitDisplayUtils.EnergyType;
-import mekanism.common.util.UnitDisplayUtils.TempType;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -403,7 +401,7 @@ public class CommonProxy implements IGuiProvider {
 
         BlockStateMachine.MachineType.updateAllUsages();
 
-        if (general.voiceServerEnabled && Mekanism.voiceManager == null) {
+        if (MekanismConfig.current().general.voiceServerEnabled.val() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();
         }
         if (fromPacket) {

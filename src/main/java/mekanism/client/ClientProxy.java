@@ -1061,7 +1061,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void onConfigSync(boolean fromPacket) {
         super.onConfigSync(fromPacket);
-        if (fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null) {
+        if (fromPacket && MekanismConfig.current().general.voiceServerEnabled.val() && MekanismClient.voiceClient != null) {
             MekanismClient.voiceClient.start();
         }
     }

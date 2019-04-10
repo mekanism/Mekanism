@@ -883,7 +883,7 @@ public class Mekanism {
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
-        if (general.voiceServerEnabled) {
+        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
             voiceManager.start();
         }
         CommandMek.register(event);
@@ -891,7 +891,7 @@ public class Mekanism {
 
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
-        if (general.voiceServerEnabled) {
+        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
             voiceManager.stop();
         }
 
@@ -1006,7 +1006,7 @@ public class Mekanism {
         PacketSimpleGui.handlers.add(0, proxy);
 
         //Set up VoiceServerManager
-        if (general.voiceServerEnabled) {
+        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
             voiceManager = new VoiceServerManager();
         }
 

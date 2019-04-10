@@ -24,6 +24,9 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption dynamicTankEasterEgg = new BooleanOption(this, "general", "DynamicTankEasterEgg", false,
           "Audible sparkles.");
 
+    public final BooleanOption voiceServerEnabled = new BooleanOption(this, "general", "WalkieTalkieServerEnabled",
+          true, "Enables the voice server for Walkie Talkies.");
+
     public final BooleanOption cardboardSpawners = new BooleanOption(this, "general", "AllowSpawnerBoxPickup", true,
           "Allows vanilla spawners to be moved with a Cardboard Box.");
 
@@ -104,6 +107,9 @@ public class GeneralConfig extends BaseConfig {
 
     public final IntOption DISASSEMBLER_USAGE = new IntOption(this, "general", "DisassemblerEnergyUsage", 10,
           "Base Energy (Joules) usage of the Atomic Disassembler. (Gets multiplied by speed factor)");
+
+    public final IntOption VOICE_PORT = new IntOption(this, "general", "VoicePort", 36123,
+          "TCP port for the Voice server to listen on.", 1, 65535);
 
     //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
     public final IntOption maxUpgradeMultiplier = new IntOption(this, "general", "UpgradeModifier", 10,

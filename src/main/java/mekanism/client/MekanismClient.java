@@ -38,7 +38,7 @@ public class MekanismClient extends Mekanism {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
 
-        if (general.voiceServerEnabled) {
+        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
             if (MekanismClient.voiceClient != null) {
                 MekanismClient.voiceClient.disconnect();
                 MekanismClient.voiceClient = null;

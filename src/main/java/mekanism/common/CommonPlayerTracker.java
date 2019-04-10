@@ -9,6 +9,7 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.network.PacketSecurityUpdate.SecurityUpdateMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
@@ -23,8 +24,13 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
+        MinecraftServer server = event.player.getServer();
         if (!event.player.world.isRemote) {
-            Mekanism.packetHandler.sendTo(new ConfigSyncMessage(MekanismConfig.local()), (EntityPlayerMP) event.player);
+            if (server == null || !server.isSinglePlayer()) {
+                Mekanism.packetHandler
+                      .sendTo(new ConfigSyncMessage(MekanismConfig.local()), (EntityPlayerMP) event.player);
+                Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
+            }
             Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP) event.player);
             // TODO: Coalesce all these sync events into a single message
             Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()),
@@ -36,8 +42,6 @@ public class CommonPlayerTracker {
             Mekanism.packetHandler.sendTo(
                   new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null,
                         false), (EntityPlayerMP) event.player);
-
-            Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
         }
     }
 
