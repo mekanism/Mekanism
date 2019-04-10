@@ -131,6 +131,7 @@ import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -1079,6 +1080,7 @@ public class ClientProxy extends CommonProxy {
                   * 255);
         }, MekanismItems.Balloon);
 
+        MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
@@ -1087,6 +1089,14 @@ public class ClientProxy extends CommonProxy {
         new MekanismKeyHandler();
 
         HolidayManager.init();
+    }
+
+    @Override
+    public void onConfigSync(boolean fromPacket) {
+        super.onConfigSync(fromPacket);
+        if (fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null) {
+            MekanismClient.voiceClient.start();
+        }
     }
 
     @SubscribeEvent
