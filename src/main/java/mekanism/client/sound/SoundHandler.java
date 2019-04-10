@@ -73,7 +73,7 @@ public class SoundHandler {
 
     public static void playSound(SoundEvent sound) {
         playSound(PositionedSoundRecord
-              .getMasterRecord(sound, (float) MekanismConfig.current().client.baseSoundVolume.val()));
+              .getRecord(sound, 1.0F, (float) MekanismConfig.current().client.baseSoundVolume.val()));
     }
 
     public static void playSound(ISound sound) {
