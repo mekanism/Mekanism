@@ -1,12 +1,12 @@
 package mekanism.common.config;
 
 import java.util.EnumMap;
-import mekanism.common.Tier;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.config.options.BooleanOption;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.EnumOption;
 import mekanism.common.config.options.IntOption;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
 
@@ -236,5 +236,5 @@ public class GeneralConfig extends BaseConfig {
           "machines", BlockStateMachine.MachineType.class, BlockStateMachine.MachineType::getValidMachines,
           t -> t.blockName);
 
-    public final EnumMap<Tier.BaseTier, TierConfig> tiers = TierConfig.create(this);
+    public final EnumMap<BaseTier, TierConfig> tiers = TierConfig.create(this);
 }

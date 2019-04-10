@@ -12,9 +12,8 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.TransporterTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -48,7 +47,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private final int SYNC_PACKET = 1;
     private final int BATCH_PACKET = 2;
 
-    public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
+    public TransporterTier tier = TransporterTier.BASIC;
 
     private int delay = 0;
     private int delayCount = 0;
@@ -64,7 +63,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.TransporterTier.get(baseTier);
+        tier = TransporterTier.get(baseTier);
     }
 
     @Override

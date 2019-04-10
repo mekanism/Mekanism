@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;

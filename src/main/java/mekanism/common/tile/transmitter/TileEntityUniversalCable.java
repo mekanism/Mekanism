@@ -14,9 +14,8 @@ import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.CableTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -44,7 +43,7 @@ import net.minecraftforge.fml.common.Optional;
 public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements
       IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver {
 
-    public Tier.CableTier tier = CableTier.BASIC;
+    public CableTier tier = CableTier.BASIC;
 
     public double currentPower = 0;
     public double lastWrite = 0;
@@ -62,7 +61,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.CableTier.get(baseTier);
+        tier = CableTier.get(baseTier);
     }
 
     @Override
@@ -205,7 +204,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
         }
 
         if (nbtTags.hasKey("tier")) {
-            tier = Tier.CableTier.values()[nbtTags.getInteger("tier")];
+            tier = CableTier.values()[nbtTags.getInteger("tier")];
         }
     }
 

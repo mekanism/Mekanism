@@ -1,6 +1,6 @@
 package mekanism.common.inventory;
 
-import mekanism.common.Tier.BinTier;
+import mekanism.common.tier.BinTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.util.ItemDataUtils;

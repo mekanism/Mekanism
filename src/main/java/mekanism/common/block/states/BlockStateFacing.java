@@ -1,6 +1,6 @@
 package mekanism.common.block.states;
 
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IFactory.RecipeType;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyBool;

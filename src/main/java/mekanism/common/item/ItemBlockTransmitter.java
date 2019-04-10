@@ -11,13 +11,17 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tier.CableTier;
+import mekanism.common.tier.ConductorTier;
+import mekanism.common.tier.PipeTier;
+import mekanism.common.tier.TransporterTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -80,33 +84,33 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
             if (transmission == TransmissionType.ENERGY) {
                 list.add(
                       EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils
-                            .getEnergyDisplay(Tier.CableTier.get(tier).getCableCapacity()) + "/t");
+                            .getEnergyDisplay(CableTier.get(tier).getCableCapacity()) + "/t");
             } else if (transmission == TransmissionType.FLUID) {
                 list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier
+                      EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + PipeTier
                             .get(tier).getPipeCapacity() + "mB/t");
                 list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier
+                      EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + PipeTier
                             .get(tier).getPipePullAmount() + "mB/t");
             } else if (transmission == TransmissionType.GAS) {
                 list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.TubeTier
+                      EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + TubeTier
                             .get(tier).getTubeCapacity() + "mB/t");
                 list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TubeTier
+                      EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + TubeTier
                             .get(tier).getTubePullAmount() + "mB/t");
             } else if (transmission == TransmissionType.ITEM) {
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (
-                      Tier.TransporterTier.get(tier).getSpeed() / (100 / 20)) + " m/s");
+                      TransporterTier.get(tier).getSpeed() / (100 / 20)) + " m/s");
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY
-                      + Tier.TransporterTier.get(tier).getPullAmount() * 2 + "/s");
+                      + TransporterTier.get(tier).getPullAmount() * 2 + "/s");
             } else if (transmission == TransmissionType.HEAT) {
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY
-                      + Tier.ConductorTier.get(tier).getInverseConduction());
+                      + ConductorTier.get(tier).getInverseConduction());
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY
-                      + Tier.ConductorTier.get(tier).getBaseConductionInsulation());
+                      + ConductorTier.get(tier).getBaseConductionInsulation());
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY
-                      + Tier.ConductorTier.get(tier).getInverseHeatCapacity());
+                      + ConductorTier.get(tier).getInverseHeatCapacity());
             }
 
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings

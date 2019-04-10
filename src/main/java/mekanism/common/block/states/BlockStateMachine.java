@@ -8,12 +8,12 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityChargepad;
@@ -122,11 +122,11 @@ public class BlockStateMachine extends ExtendedBlockState {
         DIGITAL_MINER(MachineBlock.MACHINE_BLOCK_1, 4, "DigitalMiner", 2, TileEntityDigitalMiner.class, true, true,
               true, Plane.HORIZONTAL, true),
         BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "Factory", 11, TileEntityFactory.class, true, false, true,
-              Plane.HORIZONTAL, true, Tier.FactoryTier.BASIC),
+              Plane.HORIZONTAL, true, FactoryTier.BASIC),
         ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "Factory", 11, TileEntityAdvancedFactory.class, true, false,
-              true, Plane.HORIZONTAL, true, Tier.FactoryTier.ADVANCED),
+              true, Plane.HORIZONTAL, true, FactoryTier.ADVANCED),
         ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "Factory", 11, TileEntityEliteFactory.class, true, false, true,
-              Plane.HORIZONTAL, true, Tier.FactoryTier.ELITE),
+              Plane.HORIZONTAL, true, FactoryTier.ELITE),
         METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12,
               TileEntityMetallurgicInfuser.class, true, true, true, Plane.HORIZONTAL, false),
         PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15,
@@ -201,7 +201,7 @@ public class BlockStateMachine extends ExtendedBlockState {
         public boolean supportsUpgrades;
         public Predicate<EnumFacing> facingPredicate;
         public boolean activable;
-        public Tier.FactoryTier factoryTier;
+        public FactoryTier factoryTier;
 
         MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric,
               boolean model, boolean upgrades, Predicate<EnumFacing> predicate, boolean hasActiveTexture) {
@@ -210,7 +210,7 @@ public class BlockStateMachine extends ExtendedBlockState {
 
         MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric,
               boolean model, boolean upgrades, Predicate<EnumFacing> predicate, boolean hasActiveTexture,
-              Tier.FactoryTier factoryTier) {
+              FactoryTier factoryTier) {
             typeBlock = block;
             meta = i;
             blockName = s;

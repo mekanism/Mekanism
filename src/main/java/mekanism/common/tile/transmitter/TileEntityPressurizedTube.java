@@ -10,9 +10,8 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.TubeTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.grid.GasNetwork;
@@ -25,7 +24,7 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork> implements IGasHandler {
 
-    public Tier.TubeTier tier = Tier.TubeTier.BASIC;
+    public TubeTier tier = TubeTier.BASIC;
 
     public float currentScale;
 
@@ -40,7 +39,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.TubeTier.get(baseTier);
+        tier = TubeTier.get(baseTier);
         buffer.setMaxGas(getCapacity());
     }
 

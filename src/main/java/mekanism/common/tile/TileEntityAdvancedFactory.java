@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.Tier.FactoryTier;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;

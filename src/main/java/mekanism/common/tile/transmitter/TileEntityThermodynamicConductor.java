@@ -10,9 +10,8 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.ConductorTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.ConductorTier;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -27,7 +26,7 @@ import net.minecraftforge.common.capabilities.Capability;
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork> implements
       IHeatTransfer {
 
-    public Tier.ConductorTier tier = Tier.ConductorTier.BASIC;
+    public ConductorTier tier = ConductorTier.BASIC;
 
     public double temperature = 0;
     public double clientTemperature = 0;
@@ -40,7 +39,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.ConductorTier.get(baseTier);
+        tier = ConductorTier.get(baseTier);
     }
 
     @Override
@@ -98,7 +97,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
         temperature = nbtTags.getDouble("temperature");
         if (nbtTags.hasKey("tier")) {
-            tier = Tier.ConductorTier.values()[nbtTags.getInteger("tier")];
+            tier = ConductorTier.values()[nbtTags.getInteger("tier")];
         }
     }
 
