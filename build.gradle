@@ -92,6 +92,8 @@ archivesBaseName = "mekanism-all"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+def explodedVersion = mod_version.split("\\.")
+
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     mappings = "${mappings_version}"
@@ -99,7 +101,10 @@ minecraft {
     useDepAts = true
 
     replace '${version}', project.version
+    replace 'new Version(999, 999, 999)', "new Version(${explodedVersion[0]}, ${explodedVersion[1]}, ${explodedVersion[2]})"
     replaceIn "Mekanism.java"
+    replaceIn "MekanismGenerators.java"
+    replaceIn "MekanismTools.java"
 }
 
 dependencies {
