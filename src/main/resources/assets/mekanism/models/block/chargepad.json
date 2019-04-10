@@ -91,10 +91,19 @@
                 "west":  {"uv": [2.25, 4.5, 2.5, 6.5], "texture": "#all"},
                 "east":  {"uv": [0, 4.5, 0.25, 6.5], "texture": "#all"}
             }
+        },
+        {
+            "__comment": "port_ring",
+            "from": [5, 5, 15.001],
+            "to": [11, 11, 16.001],
+            "faces": {
+                "south": {"uv": [2, 2, 14, 14], "texture": "#ring"}
+            }
         }
     ],
     "textures": {
         "all": "mekanism:blocks/models/chargepad",
+        "ring": "mekanism:blocks/models/chargepad_ring",
         "particle": "mekanism:blocks/SteelCasing"
     }
 }
