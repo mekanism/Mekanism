@@ -6,6 +6,7 @@ import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.render.obj.TransmitterModel;
+import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
@@ -21,6 +22,7 @@ public class MekanismClient extends Mekanism {
     public static Map<UUID, SecurityData> clientSecurityMap = new HashMap<>();
     public static Map<UUID, String> clientUUIDMap = new HashMap<>();
 
+    public static VoiceClient voiceClient;
     public static long ticksPassed = 0;
 
     public static void updateKey(KeyBinding key, int type) {
@@ -35,6 +37,13 @@ public class MekanismClient extends Mekanism {
     public static void reset() {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
+
+        if (general.voiceServerEnabled) {
+            if (MekanismClient.voiceClient != null) {
+                MekanismClient.voiceClient.disconnect();
+                MekanismClient.voiceClient = null;
+            }
+        }
 
         ClientTickHandler.tickingSet.clear();
         ClientTickHandler.portableTeleports.clear();

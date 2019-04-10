@@ -1047,6 +1047,7 @@ public class ClientProxy extends CommonProxy {
                   * 255);
         }, MekanismItems.Balloon);
 
+        MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
         MinecraftForge.EVENT_BUS.register(new ClientPlayerTracker());
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
@@ -1055,6 +1056,14 @@ public class ClientProxy extends CommonProxy {
         new MekanismKeyHandler();
 
         HolidayManager.init();
+    }
+
+    @Override
+    public void onConfigSync(boolean fromPacket) {
+        super.onConfigSync(fromPacket);
+        if (fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null) {
+            MekanismClient.voiceClient.start();
+        }
     }
 
     @SubscribeEvent

@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "mekanism:walkietalkie"
+  },
+  "pattern": [
+    "  O",
+    "SCS",
+    " S "
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "S": {
+      "ore": "ingotSteel",
+      "type": "forge:ore_dict"
+    },
+    "C": {
+      "item": "#CIRCUITBASIC"
+    },
+    "O": {
+      "ore": "ingotOsmium",
+      "type": "forge:ore_dict"
+    }
+  }
+}

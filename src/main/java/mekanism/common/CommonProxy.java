@@ -92,6 +92,9 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import mekanism.common.util.UnitDisplayUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.TempType;
+import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -189,13 +192,15 @@ public class CommonProxy implements IGuiProvider {
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {}
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
+    }
 
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
     public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height,
-          INodeChecker checker) {}
+          INodeChecker checker) {
+    }
 
     @Override
     public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos) {
@@ -398,6 +403,9 @@ public class CommonProxy implements IGuiProvider {
 
         BlockStateMachine.MachineType.updateAllUsages();
 
+        if (general.voiceServerEnabled && Mekanism.voiceManager == null) {
+            Mekanism.voiceManager = new VoiceServerManager();
+        }
         if (fromPacket) {
             Mekanism.logger.info("Received config from server.");
         }

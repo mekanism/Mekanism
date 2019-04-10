@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
+import mekanism.common.config.MekanismConfig.general;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -48,6 +49,9 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
               .localize("gui." + (getOn(itemstack) ? "on" : "off")));
         list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(
               itemstack));
+        if (!general.voiceServerEnabled) {
+            list.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.walkie_disabled"));
+        }
     }
 
     @Nonnull

@@ -25,7 +25,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
             data.height = tileEntity.structure.volHeight - 2;
             data.length = tileEntity.structure.volLength;
             data.width = tileEntity.structure.volWidth;
-            data.fluidType = tileEntity.structure.fluidStored.getFluid();
+            data.fluidType = tileEntity.structure.fluidStored;
 
             bindTexture(MekanismRenderer.getBlocksTexture());
 
@@ -35,7 +35,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                 FluidRenderer.translateToOrigin(data.location);
 
                 MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+                MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
 
                 if (tileEntity.structure.fluidStored.getFluid().isGaseous()) {
                     GL11.glColor4f(1F, 1F, 1F, Math.min(1,
@@ -57,7 +57,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer<TileEntityDynam
                     FluidRenderer.translateToOrigin(valveData.location);
 
                     MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
 
                     FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
 
