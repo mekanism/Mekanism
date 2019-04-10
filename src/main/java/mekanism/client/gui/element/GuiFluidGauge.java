@@ -46,7 +46,7 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
         }
 
         FluidStack fluid = infoHandler.getTank().getFluid();
-        return fluid == null ? dummyType.getFluid().getColor() : fluid.getFluid().getColor();
+        return fluid == null ? dummyType.getFluid().getColor() : fluid.getFluid().getColor(fluid);
     }
 
     @Override
