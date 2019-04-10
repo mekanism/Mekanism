@@ -5,12 +5,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.TileNetworkList;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -55,7 +55,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double lastEnvironmentLoss;
 
     public TileEntityHeatGenerator() {
-        super("heat", "HeatGenerator", 160000, generators.heatGeneration * 2);
+        super("heat", "HeatGenerator", 160000, MekanismConfig.current().generators.heatGeneration.val() * 2);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     }
 
@@ -98,7 +98,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
                 setActive(true);
 
                 lavaTank.drain(10, true);
-                transferHeatTo(generators.heatGeneration);
+                transferHeatTo(MekanismConfig.current().generators.heatGeneration.val());
             } else {
                 setActive(false);
             }
@@ -179,10 +179,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         }
 
         if (world.provider.getDimension() == -1) {
-            netherBoost = generators.heatGenerationNether;
+            netherBoost = MekanismConfig.current().generators.heatGenerationNether.val();
         }
 
-        return (generators.heatGenerationLava * lavaBoost) + netherBoost;
+        return (MekanismConfig.current().generators.heatGenerationLava.val() * lavaBoost) + netherBoost;
     }
 
     private boolean isLava(BlockPos pos) {

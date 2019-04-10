@@ -3,7 +3,7 @@ package mekanism.common.inventory.container;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.Tier.FactoryTier;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;

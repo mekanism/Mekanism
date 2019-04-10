@@ -7,7 +7,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -53,7 +53,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem {
 
     @Override
     public int getMaxGas(ItemStack itemstack) {
-        return general.maxFlamethrowerGas;
+        return MekanismConfig.current().general.maxFlamethrowerGas.val();
     }
 
     @Override

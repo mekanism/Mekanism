@@ -41,7 +41,6 @@ import mekanism.client.jei.machine.other.PRCRecipeWrapper;
 import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeWrapper;
 import mekanism.client.jei.machine.other.SolarNeutronRecipeWrapper;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
-import mekanism.common.Tier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -67,6 +66,7 @@ import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.MekanismUtils;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.recipe.IRecipeWrapperFactory;
@@ -326,7 +326,7 @@ public class RecipeRegistryHelper {
 
     private static void registerVanillaSmeltingRecipeCatalyst(IModRegistry registry) {
         registry.addRecipeCatalyst(MachineType.ENERGIZED_SMELTER.getStack(), VanillaRecipeCategoryUid.SMELTING);
-        for (Tier.FactoryTier tier : Tier.FactoryTier.values()) {
+        for (FactoryTier tier : FactoryTier.values()) {
             if (tier.machineType.isEnabled()) {
                 registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING),
                       VanillaRecipeCategoryUid.SMELTING);
@@ -353,7 +353,7 @@ public class RecipeRegistryHelper {
             }
         }
         if (factoryType != null) {
-            for (Tier.FactoryTier tier : Tier.FactoryTier.values()) {
+            for (FactoryTier tier : FactoryTier.values()) {
                 if (tier.machineType.isEnabled()) {
                     registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, factoryType), recipe.getJEICategory());
                 }

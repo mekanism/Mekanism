@@ -9,7 +9,7 @@ import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey.KeyMessage;
 import mekanism.common.security.SecurityData;
@@ -38,7 +38,7 @@ public class MekanismClient extends Mekanism {
         clientSecurityMap.clear();
         clientUUIDMap.clear();
 
-        if (general.voiceServerEnabled) {
+        if (MekanismConfig.current().general.voiceServerEnabled.val()) {
             if (MekanismClient.voiceClient != null) {
                 MekanismClient.voiceClient.disconnect();
                 MekanismClient.voiceClient = null;
@@ -60,12 +60,11 @@ public class MekanismClient extends Mekanism {
 
         SynchronizedBoilerData.clientHotMap.clear();
 
+        MekanismConfig.setSyncedConfig(null);
+        Mekanism.proxy.onConfigSync(false);
+
         for (IModule module : Mekanism.modulesLoaded) {
             module.resetClient();
         }
-
-        Mekanism.proxy.loadConfiguration();
-
-        Mekanism.logger.info("Reloaded config.");
     }
 }

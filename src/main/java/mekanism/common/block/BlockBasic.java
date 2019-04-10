@@ -8,7 +8,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITierItem;
@@ -481,7 +481,7 @@ public abstract class BlockBasic extends Block {
             }
 
             if (!world.isRemote) {
-                if (bin.getItemCount() < bin.tier.storage) {
+                if (bin.getItemCount() < bin.tier.getStorage()) {
                     if (bin.addTicks == 0) {
                         if (!stack.isEmpty()) {
                             ItemStack remain = bin.add(stack);
@@ -492,7 +492,7 @@ public abstract class BlockBasic extends Block {
                         NonNullList<ItemStack> inv = entityplayer.inventory.mainInventory;
 
                         for (int i = 0; i < inv.size(); i++) {
-                            if (bin.getItemCount() == bin.tier.storage) {
+                            if (bin.getItemCount() == bin.tier.getStorage()) {
                                 break;
                             }
 

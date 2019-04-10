@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
@@ -11,7 +12,6 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank;
@@ -44,8 +44,8 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
         String stored = "" + (tileEntity.gasTank.getStored() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite")
               : tileEntity.gasTank.getStored());
         String capacityInfo =
-              stored + " / " + (tileEntity.tier.storage == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite")
-                    : tileEntity.tier.storage);
+              stored + " / " + (tileEntity.tier.getStorage() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite")
+                    : tileEntity.tier.getStorage());
         fontRenderer
               .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
                     6, 0x404040);
@@ -71,7 +71,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
         int displayInt = chooseByMode(tileEntity.dumping, 10, 18, 26);
         drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
         if (tileEntity.gasTank.getGas() != null) {
-            int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.storage) * 72);
+            int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
             drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 10);
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

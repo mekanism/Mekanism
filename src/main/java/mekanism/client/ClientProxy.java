@@ -113,8 +113,8 @@ import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.GasTankTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -130,8 +130,7 @@ import mekanism.common.block.states.BlockStateOre.EnumOreType;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterStateMapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
-import mekanism.common.config.MekanismConfig.client;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -236,7 +235,6 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -268,38 +266,7 @@ public class ClientProxy extends CommonProxy {
     public void loadConfiguration() {
         super.loadConfiguration();
 
-        client.enablePlayerSounds = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "EnablePlayerSounds", true,
-                    "Play sounds for Jetpack/Gas Mask/Flamethrower (all players).").getBoolean();
-        client.enableMachineSounds = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "EnableMachineSounds", true,
-                    "If enabled machines play their sounds while running.").getBoolean();
-        client.holidays = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "Holidays", true, "Christmas/New Years greetings in chat.")
-              .getBoolean();
-        client.baseSoundVolume = (float) Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "SoundVolume", 1D,
-                    "Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.").getDouble();
-        client.machineEffects = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "MachineEffects", true, "Show particles when machines active.")
-              .getBoolean();
-        client.enableAmbientLighting = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "EnableAmbientLighting", true,
-                    "Should active machines produce block light.").getBoolean();
-        client.ambientLightingLevel = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "AmbientLightingLevel", 15,
-                    "How much light to produce if ambient lighting is enabled.", 1, 15).getInt();
-        client.opaqueTransmitters = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "OpaqueTransmitterRender", false,
-                    "If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.")
-              .getBoolean();
-        client.allowConfiguratorModeScroll = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "ConfiguratorModeScroll", true,
-                    "Allow sneak+scroll to change Configurator modes.").getBoolean();
-        client.enableMultiblockFormationParticles = Mekanism.configuration
-              .get(Configuration.CATEGORY_CLIENT, "MultiblockFormParticles", true,
-                    "Set to false to prevent particle spam when loading multiblocks (notification message will still display).")
-              .getBoolean();
+        MekanismConfig.current().client.load(Mekanism.configuration);
 
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
@@ -1003,7 +970,7 @@ public class ClientProxy extends CommonProxy {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
         if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
-            if (client.enableMultiblockFormationParticles) {
+            if (MekanismConfig.current().client.enableMultiblockFormationParticles.val()) {
                 anim.run();
             } else {
                 player.sendStatusMessage(
@@ -1094,7 +1061,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void onConfigSync(boolean fromPacket) {
         super.onConfigSync(fromPacket);
-        if (fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null) {
+        if (fromPacket && MekanismConfig.current().general.voiceServerEnabled.val() && MekanismClient.voiceClient != null) {
             MekanismClient.voiceClient.start();
         }
     }

@@ -12,9 +12,8 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.TransporterTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -48,7 +47,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private final int SYNC_PACKET = 1;
     private final int BATCH_PACKET = 2;
 
-    public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
+    public TransporterTier tier = TransporterTier.BASIC;
 
     private int delay = 0;
     private int delayCount = 0;
@@ -64,7 +63,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.TransporterTier.get(baseTier);
+        tier = TransporterTier.get(baseTier);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         // Attempt to pull
         for (EnumFacing side : getConnections(ConnectionType.PULL)) {
             TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-            TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.pullAmount);
+            TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
 
             // There's a stack available to insert into the network...
             if (!request.isEmpty()) {
@@ -404,7 +403,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     public double getCost() {
-        return (double) TransporterTier.ULTIMATE.speed / (double) tier.speed;
+        return (double) TransporterTier.ULTIMATE.getSpeed() / (double) tier.getSpeed();
     }
 
     @Override

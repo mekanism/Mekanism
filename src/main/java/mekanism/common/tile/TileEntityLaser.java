@@ -5,8 +5,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.state.IBlockState;
@@ -24,7 +23,7 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
     public double diggingProgress;
 
     public TileEntityLaser() {
-        super("machine.laser", "Laser", 2 * usage.laserUsage);
+        super("machine.laser", "Laser", 2 * MekanismConfig.current().usage.laserUsage.val());
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 
@@ -34,7 +33,8 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
 
         if (world.isRemote) {
             if (isActive) {
-                RayTraceResult mop = LaserManager.fireLaserClient(this, facing, usage.laserUsage, world);
+                RayTraceResult mop = LaserManager
+                      .fireLaserClient(this, facing, MekanismConfig.current().usage.laserUsage.val(), world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
 
                 if (hitCoord == null || !hitCoord.equals(digging)) {
@@ -49,19 +49,21 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
 
                     if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager
                           .getReceptor(tileHit, mop.sideHit).canLasersDig())))) {
-                        diggingProgress += usage.laserUsage;
+                        diggingProgress += MekanismConfig.current().usage.laserUsage.val();
 
-                        if (diggingProgress < hardness * general.laserEnergyNeededPerHardness) {
+                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
+                              .val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
                     }
                 }
             }
         } else {
-            if (getEnergy() >= usage.laserUsage) {
+            if (getEnergy() >= MekanismConfig.current().usage.laserUsage.val()) {
                 setActive(true);
 
-                LaserInfo info = LaserManager.fireLaser(this, facing, usage.laserUsage, world);
+                LaserInfo info = LaserManager
+                      .fireLaser(this, facing, MekanismConfig.current().usage.laserUsage.val(), world);
                 Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos, world);
 
                 if (hitCoord == null || !hitCoord.equals(digging)) {
@@ -76,16 +78,17 @@ public class TileEntityLaser extends TileEntityEffectsBlock {
 
                     if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager
                           .getReceptor(tileHit, info.movingPos.sideHit).canLasersDig())))) {
-                        diggingProgress += usage.laserUsage;
+                        diggingProgress += MekanismConfig.current().usage.laserUsage.val();
 
-                        if (diggingProgress >= hardness * general.laserEnergyNeededPerHardness) {
+                        if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
+                              .val()) {
                             LaserManager.breakBlock(hitCoord, true, world, pos);
                             diggingProgress = 0;
                         }
                     }
                 }
 
-                setEnergy(getEnergy() - usage.laserUsage);
+                setEnergy(getEnergy() - MekanismConfig.current().usage.laserUsage.val());
             } else {
                 setActive(false);
                 diggingProgress = 0;

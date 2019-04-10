@@ -4,7 +4,7 @@ import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
@@ -15,7 +15,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 
     public TileEntityOsmiumCompressor() {
         super("compressor", "OsmiumCompressor", BlockStateMachine.MachineType.OSMIUM_COMPRESSOR.baseEnergy,
-              usage.osmiumCompressorUsage, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+              MekanismConfig.current().usage.osmiumCompressorUsage.val(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 
     @Override

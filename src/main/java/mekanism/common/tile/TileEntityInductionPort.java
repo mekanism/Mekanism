@@ -19,7 +19,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
@@ -210,14 +210,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         if (sideIsConsumer(from)) {
             double toAdd = (int) Math
-                  .min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()), maxReceive * general.FROM_RF);
+                  .min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()),
+                        maxReceive * MekanismConfig.current().general.FROM_RF.val());
 
             if (!simulate) {
                 setEnergy(getEnergy() + toAdd);
                 structure.remainingInput -= toAdd;
             }
 
-            return (int) Math.round(Math.min(Integer.MAX_VALUE, toAdd * general.TO_RF));
+            return (int) Math.round(Math.min(Integer.MAX_VALUE, toAdd * MekanismConfig.current().general.TO_RF.val()));
         }
 
         return 0;
@@ -227,14 +228,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         if (sideIsOutput(from)) {
-            double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract * general.FROM_RF));
+            double toSend = Math.min(getEnergy(),
+                  Math.min(getMaxOutput(), maxExtract * MekanismConfig.current().general.FROM_RF.val()));
 
             if (!simulate) {
                 setEnergy(getEnergy() - toSend);
                 structure.remainingOutput -= toSend;
             }
 
-            return (int) Math.round(Math.min(Integer.MAX_VALUE, toSend * general.TO_RF));
+            return (int) Math.round(Math.min(Integer.MAX_VALUE, toSend * MekanismConfig.current().general.TO_RF.val()));
         }
 
         return 0;
@@ -249,13 +251,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
@@ -273,10 +277,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
-        double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()), amount * general.FROM_IC2);
+        double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()),
+              amount * MekanismConfig.current().general.FROM_IC2.val());
         setEnergy(getEnergy() + toUse);
         structure.remainingInput -= toUse;
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
@@ -305,37 +311,40 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getStored() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void setStored(int energy) {
-        setEnergy(energy * general.FROM_IC2);
+        setEnergy(energy * MekanismConfig.current().general.FROM_IC2.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getCapacity() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getOutput() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxOutput() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getDemandedEnergy() {
-        return (getMaxEnergy() - getEnergy()) * general.TO_IC2;
+        return (getMaxEnergy() - getEnergy()) * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOfferedEnergy() {
-        return Math.min(getEnergy(), getMaxOutput()) * general.TO_IC2;
+        return Math.min(getEnergy(), getMaxOutput()) * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
@@ -346,7 +355,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOutputEnergyUnitsPerTick() {
-        return getMaxOutput() * general.TO_IC2;
+        return getMaxOutput() * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
@@ -358,14 +367,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return amount;
         }
 
-        return amount - acceptEnergy(direction, amount * general.FROM_IC2, false) * general.TO_IC2;
+        return amount - acceptEnergy(direction, amount * MekanismConfig.current().general.FROM_IC2.val(), false)
+              * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
         if (structure != null) {
-            double toDraw = Math.min(amount * general.FROM_IC2, getMaxOutput());
+            double toDraw = Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(), getMaxOutput());
             setEnergy(Math.max(getEnergy() - toDraw, 0));
             structure.remainingOutput -= toDraw;
         }

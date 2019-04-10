@@ -3,7 +3,7 @@ package mekanism.common.block.states;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;

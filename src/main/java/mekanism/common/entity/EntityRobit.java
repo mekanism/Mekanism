@@ -15,7 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.integration.MekanismHooks;
@@ -188,34 +188,43 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                       .hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)) {
                     ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
 
-                    long needed = Math.round((MAX_ELECTRICITY - getEnergy()) * general.TO_TESLA);
-                    setEnergy(getEnergy() + producer.takePower(needed, false) * general.FROM_TESLA);
+                    long needed = Math
+                          .round((MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_TESLA.val());
+                    setEnergy(
+                          getEnergy() + producer.takePower(needed, false) * MekanismConfig.current().general.FROM_TESLA
+                                .val());
                 } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                     IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
 
                     if (storage.canExtract()) {
                         int needed = (int) Math
-                              .round(Math.min(Integer.MAX_VALUE, (MAX_ELECTRICITY - getEnergy()) * general.TO_FORGE));
-                        setEnergy(getEnergy() + storage.extractEnergy(needed, false) * general.FROM_FORGE);
+                              .round(Math.min(Integer.MAX_VALUE,
+                                    (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_FORGE.val()));
+                        setEnergy(getEnergy() + storage.extractEnergy(needed, false) * MekanismConfig
+                              .current().general.FROM_FORGE.val());
                     }
                 } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                     IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
 
                     int needed = (int) Math
-                          .round(Math.min(Integer.MAX_VALUE, (MAX_ELECTRICITY - getEnergy()) * general.TO_RF));
-                    setEnergy(getEnergy() + (item.extractEnergy(stack, needed, false) * general.FROM_RF));
+                          .round(Math.min(Integer.MAX_VALUE,
+                                (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_RF.val()));
+                    setEnergy(getEnergy() + (item.extractEnergy(stack, needed, false) * MekanismConfig
+                          .current().general.FROM_RF.val()));
                 } else if (MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem) {
                     IElectricItem item = (IElectricItem) stack.getItem();
 
                     if (item.canProvideEnergy(stack)) {
                         double gain = ElectricItem.manager
-                              .discharge(stack, (MAX_ELECTRICITY - getEnergy()) * general.TO_IC2, 4, true, true, false)
-                              * general.FROM_IC2;
+                              .discharge(stack,
+                                    (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_IC2.val(), 4,
+                                    true, true, false)
+                              * MekanismConfig.current().general.FROM_IC2.val();
                         setEnergy(getEnergy() + gain);
                     }
                 } else if (stack.getItem() == Items.REDSTONE
-                      && getEnergy() + general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY) {
-                    setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
+                      && getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= MAX_ELECTRICITY) {
+                    setEnergy(getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val());
                     stack.shrink(1);
                 }
             }

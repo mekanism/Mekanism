@@ -11,7 +11,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
@@ -141,13 +141,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
-            double toReceive = Math.min(energy * general.FROM_RF, energyNeeded);
+            double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
 
-            return (int) Math.round(toReceive * general.TO_RF);
+            return (int) Math.round(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -158,13 +158,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min((energy * general.FROM_RF), energyRemaining);
+            double toSend = Math.min((energy * MekanismConfig.current().general.FROM_RF.val()), energyRemaining);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
 
-            return (int) Math.round(toSend * general.TO_RF);
+            return (int) Math.round(toSend * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -173,13 +173,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(ItemStack theItem) {
-        return (int) Math.round(getEnergy(theItem) * general.TO_RF);
+        return (int) Math.round(getEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(ItemStack theItem) {
-        return (int) Math.round(getMaxEnergy(theItem) * general.TO_RF);
+        return (int) Math.round(getMaxEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override

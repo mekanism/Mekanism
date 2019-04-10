@@ -8,13 +8,12 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IBlockType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.BlockMachine;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityChargepad;
@@ -123,11 +122,11 @@ public class BlockStateMachine extends ExtendedBlockState {
         DIGITAL_MINER(MachineBlock.MACHINE_BLOCK_1, 4, "DigitalMiner", 2, TileEntityDigitalMiner.class, true, true,
               true, Plane.HORIZONTAL, true),
         BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "Factory", 11, TileEntityFactory.class, true, false, true,
-              Plane.HORIZONTAL, true, Tier.FactoryTier.BASIC),
+              Plane.HORIZONTAL, true, FactoryTier.BASIC),
         ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "Factory", 11, TileEntityAdvancedFactory.class, true, false,
-              true, Plane.HORIZONTAL, true, Tier.FactoryTier.ADVANCED),
+              true, Plane.HORIZONTAL, true, FactoryTier.ADVANCED),
         ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "Factory", 11, TileEntityEliteFactory.class, true, false, true,
-              Plane.HORIZONTAL, true, Tier.FactoryTier.ELITE),
+              Plane.HORIZONTAL, true, FactoryTier.ELITE),
         METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12,
               TileEntityMetallurgicInfuser.class, true, true, true, Plane.HORIZONTAL, false),
         PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15,
@@ -202,7 +201,7 @@ public class BlockStateMachine extends ExtendedBlockState {
         public boolean supportsUpgrades;
         public Predicate<EnumFacing> facingPredicate;
         public boolean activable;
-        public Tier.FactoryTier factoryTier;
+        public FactoryTier factoryTier;
 
         MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric,
               boolean model, boolean upgrades, Predicate<EnumFacing> predicate, boolean hasActiveTexture) {
@@ -211,7 +210,7 @@ public class BlockStateMachine extends ExtendedBlockState {
 
         MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric,
               boolean model, boolean upgrades, Predicate<EnumFacing> predicate, boolean hasActiveTexture,
-              Tier.FactoryTier factoryTier) {
+              FactoryTier factoryTier) {
             typeBlock = block;
             meta = i;
             blockName = s;
@@ -225,16 +224,20 @@ public class BlockStateMachine extends ExtendedBlockState {
             this.factoryTier = factoryTier;
         }
 
-        public static List<MachineType> getValidMachines() {
+        private static final List<MachineType> VALID_MACHINES = new ArrayList<>();
+
+        static {
             List<MachineType> ret = new ArrayList<>();
 
             for (MachineType type : MachineType.values()) {
                 if (type.isValidMachine()) {
-                    ret.add(type);
+                    VALID_MACHINES.add(type);
                 }
             }
+        }
 
-            return ret;
+        public static List<MachineType> getValidMachines() {
+            return VALID_MACHINES;
         }
 
         public static MachineType get(Block block, int meta) {
@@ -272,7 +275,7 @@ public class BlockStateMachine extends ExtendedBlockState {
 
         @Override
         public boolean isEnabled() {
-            return general.machinesManager.isEnabled(blockName);
+            return MekanismConfig.current().general.machinesManager.isEnabled(this);
         }
 
         public boolean isValidMachine() {
@@ -295,25 +298,25 @@ public class BlockStateMachine extends ExtendedBlockState {
         public double getUsage() {
             switch (this) {
                 case ENRICHMENT_CHAMBER:
-                    return usage.enrichmentChamberUsage;
+                    return MekanismConfig.current().usage.enrichmentChamberUsage.val();
                 case OSMIUM_COMPRESSOR:
-                    return usage.osmiumCompressorUsage;
+                    return MekanismConfig.current().usage.osmiumCompressorUsage.val();
                 case COMBINER:
-                    return usage.combinerUsage;
+                    return MekanismConfig.current().usage.combinerUsage.val();
                 case CRUSHER:
-                    return usage.crusherUsage;
+                    return MekanismConfig.current().usage.crusherUsage.val();
                 case DIGITAL_MINER:
-                    return usage.digitalMinerUsage;
+                    return MekanismConfig.current().usage.digitalMinerUsage.val();
                 case METALLURGIC_INFUSER:
-                    return usage.metallurgicInfuserUsage;
+                    return MekanismConfig.current().usage.metallurgicInfuserUsage.val();
                 case PURIFICATION_CHAMBER:
-                    return usage.purificationChamberUsage;
+                    return MekanismConfig.current().usage.purificationChamberUsage.val();
                 case ENERGIZED_SMELTER:
-                    return usage.energizedSmelterUsage;
+                    return MekanismConfig.current().usage.energizedSmelterUsage.val();
                 case TELEPORTER:
                     return 12500;
                 case ELECTRIC_PUMP:
-                    return usage.electricPumpUsage;
+                    return MekanismConfig.current().usage.electricPumpUsage.val();
                 case PERSONAL_CHEST:
                     return 30;
                 case CHARGEPAD:
@@ -321,33 +324,33 @@ public class BlockStateMachine extends ExtendedBlockState {
                 case LOGISTICAL_SORTER:
                     return 0;
                 case ROTARY_CONDENSENTRATOR:
-                    return usage.rotaryCondensentratorUsage;
+                    return MekanismConfig.current().usage.rotaryCondensentratorUsage.val();
                 case CHEMICAL_OXIDIZER:
-                    return usage.oxidationChamberUsage;
+                    return MekanismConfig.current().usage.oxidationChamberUsage.val();
                 case CHEMICAL_INFUSER:
-                    return usage.chemicalInfuserUsage;
+                    return MekanismConfig.current().usage.chemicalInfuserUsage.val();
                 case CHEMICAL_INJECTION_CHAMBER:
-                    return usage.chemicalInjectionChamberUsage;
+                    return MekanismConfig.current().usage.chemicalInjectionChamberUsage.val();
                 case ELECTROLYTIC_SEPARATOR:
-                    return general.FROM_H2 * 2;
+                    return MekanismConfig.current().general.FROM_H2.val() * 2;
                 case PRECISION_SAWMILL:
-                    return usage.precisionSawmillUsage;
+                    return MekanismConfig.current().usage.precisionSawmillUsage.val();
                 case CHEMICAL_DISSOLUTION_CHAMBER:
-                    return usage.chemicalDissolutionChamberUsage;
+                    return MekanismConfig.current().usage.chemicalDissolutionChamberUsage.val();
                 case CHEMICAL_WASHER:
-                    return usage.chemicalWasherUsage;
+                    return MekanismConfig.current().usage.chemicalWasherUsage.val();
                 case CHEMICAL_CRYSTALLIZER:
-                    return usage.chemicalCrystallizerUsage;
+                    return MekanismConfig.current().usage.chemicalCrystallizerUsage.val();
                 case SEISMIC_VIBRATOR:
-                    return usage.seismicVibratorUsage;
+                    return MekanismConfig.current().usage.seismicVibratorUsage.val();
                 case PRESSURIZED_REACTION_CHAMBER:
-                    return usage.pressurizedReactionBaseUsage;
+                    return MekanismConfig.current().usage.pressurizedReactionBaseUsage.val();
                 case FLUID_TANK:
                     return 0;
                 case FLUIDIC_PLENISHER:
-                    return usage.fluidicPlenisherUsage;
+                    return MekanismConfig.current().usage.fluidicPlenisherUsage.val();
                 case LASER:
-                    return usage.laserUsage;
+                    return MekanismConfig.current().usage.laserUsage.val();
                 case LASER_AMPLIFIER:
                     return 0;
                 case LASER_TRACTOR_BEAM:
@@ -361,7 +364,7 @@ public class BlockStateMachine extends ExtendedBlockState {
                 case RESISTIVE_HEATER:
                     return 100;
                 case FORMULAIC_ASSEMBLICATOR:
-                    return usage.formulaicAssemblicatorUsage;
+                    return MekanismConfig.current().usage.formulaicAssemblicatorUsage.val();
                 default:
                     return 0;
 

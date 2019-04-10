@@ -6,7 +6,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
@@ -165,7 +165,7 @@ public class BlockEnergyCube extends BlockContainer {
             list.add(discharged);
             ItemStack charged = new ItemStack(this);
             ((ItemBlockEnergyCube) charged.getItem()).setBaseTier(charged, tier.getBaseTier());
-            ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.maxEnergy);
+            ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.getMaxEnergy());
             list.add(charged);
         }
     }

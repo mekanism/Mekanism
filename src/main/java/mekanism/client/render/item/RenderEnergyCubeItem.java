@@ -7,7 +7,7 @@ import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
-import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
@@ -51,7 +51,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
         double energy = ItemDataUtils.getDouble(stack, "energyStored");
 
-        if (energy / tier.maxEnergy > 0.1) {
+        if (energy / tier.getMaxEnergy() > 0.1) {
             GlStateManager.pushMatrix();
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
 
@@ -63,7 +63,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
             GL11.glColor4f((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F,
-                  (float) (energy / tier.maxEnergy));
+                  (float) (energy / tier.getMaxEnergy()));
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
             GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
             GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);

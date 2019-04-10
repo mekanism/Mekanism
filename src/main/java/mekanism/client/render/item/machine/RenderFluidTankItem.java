@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

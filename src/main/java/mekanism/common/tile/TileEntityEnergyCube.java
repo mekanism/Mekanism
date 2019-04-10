@@ -6,15 +6,15 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -134,7 +134,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             return Integer.MAX_VALUE;
         }
 
-        return tier.output;
+        return tier.getOutput();
     }
 
     @Override
@@ -165,7 +165,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
 
     @Override
     public double getMaxEnergy() {
-        return tier.maxEnergy;
+        return tier.getMaxEnergy();
     }
 
     @Nonnull
@@ -196,7 +196,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             case 0:
                 return new Object[]{getEnergy()};
             case 1:
-                return new Object[]{tier.output};
+                return new Object[]{tier.getOutput()};
             case 2:
                 return new Object[]{getMaxEnergy()};
             case 3:

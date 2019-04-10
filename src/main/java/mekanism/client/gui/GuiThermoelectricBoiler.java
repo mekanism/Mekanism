@@ -8,7 +8,7 @@ import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -50,13 +50,13 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
 
             @Override
             public double getLevel() {
-                double cap = (tileEntity.structure.superheatingElements * general.superheatingHeatTransfer)
-                      / SynchronizedBoilerData.getHeatEnthalpy();
+                double cap = (tileEntity.structure.superheatingElements * MekanismConfig
+                      .current().general.superheatingHeatTransfer.val()) / SynchronizedBoilerData.getHeatEnthalpy();
                 return (double) tileEntity.structure.lastMaxBoil / cap;
             }
         }, resource, 144, 13));
         addGuiElement(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
             String environment = UnitDisplayUtils
                   .getDisplayShort(tileEntity.structure.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");

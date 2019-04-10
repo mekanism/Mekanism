@@ -11,7 +11,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.tesla.TeslaIntegration;
@@ -201,14 +201,18 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         return (int) Math.round(
-              Math.min(Integer.MAX_VALUE, acceptEnergy(from, maxReceive * general.FROM_RF, simulate) * general.TO_RF));
+              Math.min(Integer.MAX_VALUE,
+                    acceptEnergy(from, maxReceive * MekanismConfig.current().general.FROM_RF.val(), simulate)
+                          * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         return (int) Math.round(
-              Math.min(Integer.MAX_VALUE, pullEnergy(from, maxExtract * general.FROM_RF, simulate) * general.TO_RF));
+              Math.min(Integer.MAX_VALUE,
+                    pullEnergy(from, maxExtract * MekanismConfig.current().general.FROM_RF.val(), simulate)
+                          * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
@@ -220,33 +224,36 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getSinkTier() {
-        return !general.blacklistIC2 ? 4 : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? 4 : 0;
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getSourceTier() {
-        return !general.blacklistIC2 ? 4 : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? 4 : 0;
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
-        if (!general.blacklistIC2) {
-            setEnergy(getEnergy() + amount * general.FROM_IC2);
-            return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_IC2));
+        if (!MekanismConfig.current().general.blacklistIC2.val()) {
+            setEnergy(getEnergy() + amount * MekanismConfig.current().general.FROM_IC2.val());
+            return (int) Math
+                  .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
         }
         return 0;
     }
@@ -254,7 +261,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public boolean isTeleporterCompatible(EnumFacing side) {
-        return !general.blacklistIC2 && sideIsOutput(side);
+        return !MekanismConfig.current().general.blacklistIC2.val() && sideIsOutput(side);
     }
 
     @Override
@@ -265,51 +272,57 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing direction) {
-        return !general.blacklistIC2 && sideIsConsumer(direction);
+        return !MekanismConfig.current().general.blacklistIC2.val() && sideIsConsumer(direction);
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing direction) {
-        return !general.blacklistIC2 && sideIsOutput(direction) && receiver instanceof IEnergyConductor;
+        return !MekanismConfig.current().general.blacklistIC2.val() && sideIsOutput(direction)
+              && receiver instanceof IEnergyConductor;
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getStored() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void setStored(int energy) {
-        if (!general.blacklistIC2) {
-            setEnergy(energy * general.FROM_IC2);
+        if (!MekanismConfig.current().general.blacklistIC2.val()) {
+            setEnergy(energy * MekanismConfig.current().general.FROM_IC2.val());
         }
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getCapacity() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getOutput() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxOutput() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getDemandedEnergy() {
-        return !general.blacklistIC2 ? (getMaxEnergy() - getEnergy()) * general.TO_IC2 : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? (getMaxEnergy() - getEnergy()) * MekanismConfig
+              .current().general.TO_IC2.val() : 0;
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOfferedEnergy() {
-        return !general.blacklistIC2 ? Math.min(getEnergy(), getMaxOutput()) * general.TO_IC2 : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? Math.min(getEnergy(), getMaxOutput())
+              * MekanismConfig.current().general.TO_IC2.val() : 0;
     }
 
     @Override
@@ -320,7 +333,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOutputEnergyUnitsPerTick() {
-        return !general.blacklistIC2 ? getMaxOutput() * general.TO_IC2 : 0;
+        return !MekanismConfig.current().general.blacklistIC2.val() ? getMaxOutput() * MekanismConfig
+              .current().general.TO_IC2.val() : 0;
     }
 
     @Override
@@ -329,18 +343,20 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
           double voltage) {// nb: the facing param contains the side relative to the pushing block
         TileEntity tile = getWorld().getTileEntity(getPos().offset(pushDirection.getOpposite()));
 
-        if (general.blacklistIC2 || (CapabilityUtils
+        if (MekanismConfig.current().general.blacklistIC2.val() || (CapabilityUtils
               .hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection))) {
             return amount;
         }
 
-        return amount - acceptEnergy(pushDirection.getOpposite(), amount * general.FROM_IC2, false) * general.TO_IC2;
+        return amount -
+              acceptEnergy(pushDirection.getOpposite(), amount * MekanismConfig.current().general.FROM_IC2.val(), false)
+                    * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
-        setEnergy(Math.max(getEnergy() - (amount * general.FROM_IC2), 0));
+        setEnergy(Math.max(getEnergy() - (amount * MekanismConfig.current().general.FROM_IC2.val()), 0));
     }
 
     @Override

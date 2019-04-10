@@ -3,10 +3,10 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.api.TileNetworkList;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -56,7 +56,7 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
         super.onUpdate();
 
         if (!world.isRemote) {
-            if (!world.isRemote && general.destroyDisabledBlocks) {
+            if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
                 GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
 
                 if (type != null && !type.isEnabled()) {

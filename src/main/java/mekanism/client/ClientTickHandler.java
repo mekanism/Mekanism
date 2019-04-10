@@ -14,8 +14,7 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.client;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -159,12 +158,12 @@ public class ClientTickHandler {
     }
 
     public static void portableTeleport(EntityPlayer player, EnumHand hand, Frequency freq) {
-        if (general.portableTeleporterDelay == 0) {
+        if (MekanismConfig.current().general.portableTeleporterDelay.val() == 0) {
             Mekanism.packetHandler
                   .sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {
-            portableTeleports
-                  .put(player, new TeleportData(hand, freq, mc.world.getWorldTime() + general.portableTeleporterDelay));
+            portableTeleports.put(player, new TeleportData(hand, freq,
+                  mc.world.getWorldTime() + MekanismConfig.current().general.portableTeleporterDelay.val()));
         }
     }
 
@@ -326,7 +325,8 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onMouseEvent(MouseEvent event) {
-        if (client.allowConfiguratorModeScroll && mc.player != null && mc.player.isSneaking()) {
+        if (MekanismConfig.current().client.allowConfiguratorModeScroll.val() && mc.player != null && mc.player
+              .isSneaking()) {
             ItemStack stack = mc.player.getHeldItemMainhand();
             int delta = event.getDwheel();
 

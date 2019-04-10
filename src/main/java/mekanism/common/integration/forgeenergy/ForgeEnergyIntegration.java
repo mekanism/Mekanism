@@ -1,7 +1,7 @@
 package mekanism.common.integration.forgeenergy;
 
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -17,11 +17,11 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     public static double forgeToMek(int forge) {
-        return forge * general.FROM_FORGE;
+        return forge * MekanismConfig.current().general.FROM_FORGE.val();
     }
 
     public static int mekToForge(double mek) {
-        return (int) Math.round(mek * general.TO_FORGE);
+        return (int) Math.round(mek * MekanismConfig.current().general.TO_FORGE.val());
     }
 
     @Override

@@ -3,7 +3,7 @@ package mekanism.common.integration.tesla;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -39,7 +39,8 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
             long toSend = Math.min(power, energyRemaining);
 
             if (!simulated) {
-                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) - toSend * general.FROM_TESLA);
+                getItem().setEnergy(getStack(),
+                      getItem().getEnergy(getStack()) - toSend * MekanismConfig.current().general.FROM_TESLA.val());
             }
 
             return toSend;
@@ -56,7 +57,8 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
             long toReceive = Math.min(power, energyNeeded);
 
             if (!simulated) {
-                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) + toReceive * general.FROM_TESLA);
+                getItem().setEnergy(getStack(),
+                      getItem().getEnergy(getStack()) + toReceive * MekanismConfig.current().general.FROM_TESLA.val());
             }
 
             return toReceive;
@@ -68,12 +70,12 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getStoredPower() {
-        return Math.round(getItem().getEnergy(getStack()) * general.TO_TESLA);
+        return Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getCapacity() {
-        return Math.round(getItem().getEnergy(getStack()) * general.TO_TESLA);
+        return Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val());
     }
 }

@@ -13,7 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
 import mekanism.common.Resource;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -42,7 +42,7 @@ public final class OreDictManager {
             ItemStack plank = StackUtils.size(ore, 1);
             if (!Recipe.PRECISION_SAWMILL.containsRecipe(plank)) {
                 RecipeHandler.addPrecisionSawmillRecipe(plank, new ItemStack(Items.STICK, 6),
-                      new ItemStack(MekanismItems.Sawdust), general.sawdustChancePlank);
+                      new ItemStack(MekanismItems.Sawdust), MekanismConfig.current().general.sawdustChancePlank.val());
             }
         }
 
@@ -324,7 +324,7 @@ public final class OreDictManager {
 
         if (!resultEntry.isEmpty()) {
             RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6),
-                  new ItemStack(MekanismItems.Sawdust), general.sawdustChanceLog);
+                  new ItemStack(MekanismItems.Sawdust), MekanismConfig.current().general.sawdustChanceLog.val());
         }
     }
 

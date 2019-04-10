@@ -8,8 +8,8 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.BinTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITierUpgradeable;
@@ -101,7 +101,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
         }
 
         int count = getItemCount();
-        int remain = tier.storage - count;
+        int remain = tier.getStorage() - count;
 
         if (remain >= itemType.getMaxStackSize()) {
             topStack = ItemStack.EMPTY;
@@ -137,13 +137,13 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
     }
 
     public ItemStack add(ItemStack stack, boolean simulate) {
-        if (isValid(stack) && (tier == BinTier.CREATIVE || getItemCount() != tier.storage)) {
+        if (isValid(stack) && (tier == BinTier.CREATIVE || getItemCount() != tier.getStorage())) {
             if (itemType.isEmpty() && !simulate) {
                 setItemType(stack);
             }
 
             if (tier != BinTier.CREATIVE) {
-                if (getItemCount() + stack.getCount() <= tier.storage) {
+                if (getItemCount() + stack.getCount() <= tier.getStorage()) {
                     if (!simulate) {
                         setItemCount(getItemCount() + stack.getCount());
                     }
@@ -151,10 +151,10 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
                     return ItemStack.EMPTY;
                 } else {
                     ItemStack rejects = stack.copy();
-                    rejects.setCount((getItemCount() + stack.getCount()) - tier.storage);
+                    rejects.setCount((getItemCount() + stack.getCount()) - tier.getStorage());
 
                     if (!simulate) {
-                        setItemCount(tier.storage);
+                        setItemCount(tier.getStorage());
                     }
 
                     return rejects;
@@ -596,7 +596,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 //
 //	@Override
     public int getMaxStoredCount() {
-        return tier.storage;
+        return tier.getStorage();
     }
 
     @Override
@@ -644,7 +644,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
                 return 0;
             }
 
-            return tier.storage;
+            return tier.getStorage();
         }
 
         @Override

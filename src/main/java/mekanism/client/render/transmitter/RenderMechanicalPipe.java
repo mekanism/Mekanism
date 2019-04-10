@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.ColourRGBA;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -38,7 +38,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     @Override
     public void render(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage,
           float alpha) {
-        if (client.opaqueTransmitters) {
+        if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
 

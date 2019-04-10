@@ -3,7 +3,7 @@ package mekanism.client.render.transmitter;
 import mekanism.api.gas.Gas;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -19,7 +19,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
     @Override
     public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick,
           int destroyStage, float alpha) {
-        if (client.opaqueTransmitters || !tube.getTransmitter().hasTransmitterNetwork()
+        if (MekanismConfig.current().client.opaqueTransmitters.val() || !tube.getTransmitter().hasTransmitterNetwork()
               || tube.getTransmitter().getTransmitterNetwork().refGas == null
               || tube.getTransmitter().getTransmitterNetwork().gasScale == 0) {
             return;

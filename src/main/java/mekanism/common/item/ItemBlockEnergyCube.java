@@ -9,20 +9,20 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.integration.ic2.IC2ItemManager;
@@ -82,7 +82,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
         list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
               + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
         list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils
-              .getEnergyDisplay(EnergyCubeTier.values()[getBaseTier(itemstack).ordinal()].maxEnergy));
+              .getEnergyDisplay(EnergyCubeTier.values()[getBaseTier(itemstack).ordinal()].getMaxEnergy()));
 
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
@@ -215,7 +215,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
-        return EnergyCubeTier.values()[getBaseTier(itemStack).ordinal()].maxEnergy;
+        return EnergyCubeTier.values()[getBaseTier(itemStack).ordinal()].getMaxEnergy();
     }
 
     @Override
@@ -238,13 +238,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
-            double toReceive = Math.min(energy * general.FROM_RF, energyNeeded);
+            double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
 
-            return (int) Math.round(toReceive * general.TO_RF);
+            return (int) Math.round(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -255,13 +255,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min((energy * general.FROM_RF), energyRemaining);
+            double toSend = Math.min((energy * MekanismConfig.current().general.FROM_RF.val()), energyRemaining);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
 
-            return (int) Math.round(toSend * general.TO_RF);
+            return (int) Math.round(toSend * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -270,13 +270,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(ItemStack theItem) {
-        return (int) (getEnergy(theItem) * general.TO_RF);
+        return (int) (getEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(ItemStack theItem) {
-        return (int) (getMaxEnergy(theItem) * general.TO_RF);
+        return (int) (getMaxEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
@@ -321,7 +321,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
 
     @Override
     public SecurityMode getSecurity(ItemStack stack) {
-        if (!general.allowProtection) {
+        if (!MekanismConfig.current().general.allowProtection.val()) {
             return SecurityMode.PUBLIC;
         }
 

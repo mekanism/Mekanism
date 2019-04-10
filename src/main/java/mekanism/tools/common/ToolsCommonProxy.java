@@ -1,7 +1,7 @@
 package mekanism.tools.common;
 
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.tools;
+import mekanism.common.config.MekanismConfig;
 
 public class ToolsCommonProxy {
 
@@ -9,10 +9,7 @@ public class ToolsCommonProxy {
      * Set and load the mod's common configuration properties.
      */
     public void loadConfiguration() {
-        tools.armorSpawnRate = Mekanism.configuration
-              .get("tools.general", "MobArmorSpawnRate", 0.03, "The chance that Mekanism Armor can spawn on mobs.",
-                    0.00, 1.00).getDouble(0.03);
-
+        MekanismConfig.current().tools.load(Mekanism.configuration);
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
         }

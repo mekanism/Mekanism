@@ -13,7 +13,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.OreDictCache;
-import mekanism.common.Tier.GasTankTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

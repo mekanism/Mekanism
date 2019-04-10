@@ -1,7 +1,7 @@
 package mekanism.common.block.states;
 
-import mekanism.common.Tier;
 import mekanism.common.block.BlockEnergyCube;
+import mekanism.common.tier.EnergyCubeTier;
 import net.minecraft.block.properties.PropertyEnum;
 
 /**
@@ -9,8 +9,8 @@ import net.minecraft.block.properties.PropertyEnum;
  */
 public class BlockStateEnergyCube extends BlockStateFacing {
 
-    public static final PropertyEnum<Tier.EnergyCubeTier> typeProperty = PropertyEnum
-          .create("tier", Tier.EnergyCubeTier.class);
+    public static final PropertyEnum<EnergyCubeTier> typeProperty = PropertyEnum
+          .create("tier", EnergyCubeTier.class);
 
     public BlockStateEnergyCube(BlockEnergyCube block) {
         super(block, typeProperty);

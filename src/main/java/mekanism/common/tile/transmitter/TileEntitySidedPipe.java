@@ -14,7 +14,7 @@ import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
 import mekanism.api.TileNetworkList;
 import mekanism.common.block.BlockTransmitter;

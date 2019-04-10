@@ -6,8 +6,7 @@ import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
@@ -55,7 +54,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     @Override
     public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick,
           int destroyStage, float alpha) {
-        if (client.opaqueTransmitters) {
+        if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
 
@@ -74,7 +73,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 entityItem.setItem(stack.itemStack);
 
                 float[] pos = TransporterUtils
-                      .getStackPosition(transporter.getTransmitter(), stack, partialTick * transporter.tier.speed);
+                      .getStackPosition(transporter.getTransmitter(), stack, partialTick * transporter.tier.getSpeed());
 
                 GL11.glTranslated(x + pos[0], y + pos[1], z + pos[2]);
                 GL11.glScalef(0.75F, 0.75F, 0.75F);

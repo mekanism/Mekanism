@@ -27,7 +27,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -383,7 +383,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
     @Override
     public double getMaxOutput() {
-        return !hasFrequency() ? 0 : general.quantumEntangloporterEnergyTransfer;
+        return !hasFrequency() ? 0 : MekanismConfig.current().general.quantumEntangloporterEnergyTransfer.val();
     }
 
     @Override
@@ -394,13 +394,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     @Override
     public void setEnergy(double energy) {
         if (hasFrequency()) {
-            frequency.storedEnergy = Math.min(general.quantumEntangloporterEnergyTransfer, energy);
+            frequency.storedEnergy = Math
+                  .min(MekanismConfig.current().general.quantumEntangloporterEnergyTransfer.val(), energy);
         }
     }
 
     @Override
     public double getMaxEnergy() {
-        return !hasFrequency() ? 0 : general.quantumEntangloporterEnergyTransfer;
+        return !hasFrequency() ? 0 : MekanismConfig.current().general.quantumEntangloporterEnergyTransfer.val();
     }
 
     @Override

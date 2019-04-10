@@ -4,13 +4,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.PipeTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -30,7 +29,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork> implements
       IFluidHandlerWrapper {
 
-    public Tier.PipeTier tier = Tier.PipeTier.BASIC;
+    public PipeTier tier = PipeTier.BASIC;
 
     public float currentScale;
 
@@ -47,7 +46,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.PipeTier.get(baseTier);
+        tier = PipeTier.get(baseTier);
         buffer.setCapacity(getCapacity());
     }
 
@@ -126,7 +125,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         super.readFromNBT(nbtTags);
 
         if (nbtTags.hasKey("tier")) {
-            tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
+            tier = PipeTier.values()[nbtTags.getInteger("tier")];
         }
         buffer.setCapacity(getCapacity());
 
@@ -180,7 +179,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public int getCapacity() {
-        return tier.pipeCapacity;
+        return tier.getPipeCapacity();
     }
 
     @Override
@@ -241,7 +240,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     public int getPullAmount() {
-        return tier.pipePullAmount;
+        return tier.getPipePullAmount();
     }
 
     @Override

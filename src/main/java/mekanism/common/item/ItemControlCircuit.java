@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

@@ -2,13 +2,13 @@ package mekanism.common.tile.prefab;
 
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.Tier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.TileEntityFactory;
 import net.minecraft.util.ResourceLocation;
 
@@ -30,8 +30,8 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
     }
 
     @Override
-    public boolean upgrade(Tier.BaseTier upgradeTier) {
-        if (upgradeTier != Tier.BaseTier.BASIC) {
+    public boolean upgrade(BaseTier upgradeTier) {
+        if (upgradeTier != BaseTier.BASIC) {
             return false;
         }
 

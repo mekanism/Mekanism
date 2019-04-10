@@ -13,7 +13,7 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
@@ -21,7 +21,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -59,7 +59,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
     public TileEntityMetallurgicInfuser() {
         super("machine.metalinfuser", "MetallurgicInfuser",
-              BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy, usage.metallurgicInfuserUsage, 0, 200);
+              BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy,
+              MekanismConfig.current().usage.metallurgicInfuserUsage.val(), 0, 200);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 

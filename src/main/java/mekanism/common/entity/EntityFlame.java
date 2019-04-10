@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -170,8 +170,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
                 Coord4D sideCoord = new Coord4D(mop.getBlockPos().offset(mop.sideHit), world);
 
-                if (general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(world) || sideCoord
-                      .isReplaceable(world))) {
+                if (MekanismConfig.current().general.aestheticWorldDamage.val() && !fluid && (
+                      sideCoord.isAirBlock(world) || sideCoord.isReplaceable(world))) {
                     if (mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(mop, world))) {
                         if (mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !world.isRemote) {
                             world.setBlockState(sideCoord.getPos(), Blocks.FIRE.getDefaultState());

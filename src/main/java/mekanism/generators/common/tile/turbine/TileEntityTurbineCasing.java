@@ -7,8 +7,7 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
@@ -62,11 +61,15 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                     double flowRate = 0;
 
                     if (stored > 0 && getEnergy() < structure.getEnergyCapacity()) {
-                        double energyMultiplier = (general.maxEnergyPerSteam / TurbineUpdateProtocol.MAX_BLADES) * Math
-                              .min(structure.blades, structure.coils * generators.turbineBladesPerCoil);
+                        double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val()
+                              / TurbineUpdateProtocol.MAX_BLADES) * Math
+                              .min(structure.blades,
+                                    structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());
                         double rate =
-                              structure.lowerVolume * (structure.getDispersers() * generators.turbineDisperserGasFlow);
-                        rate = Math.min(rate, structure.vents * generators.turbineVentGasFlow);
+                              structure.lowerVolume * (structure.getDispersers() * MekanismConfig
+                                    .current().generators.turbineDisperserGasFlow.val());
+                        rate = Math.min(rate,
+                              structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
 
                         double origRate = rate;
 
@@ -78,7 +81,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
                         structure.fluidStored.amount -= rate;
                         structure.clientFlow = (int) rate;
-                        structure.flowRemaining = Math.min((int) rate, structure.condensers * generators.condenserRate);
+                        structure.flowRemaining = Math.min((int) rate,
+                              structure.condensers * MekanismConfig.current().generators.condenserRate.val());
 
                         if (structure.fluidStored.amount == 0) {
                             structure.fluidStored = null;

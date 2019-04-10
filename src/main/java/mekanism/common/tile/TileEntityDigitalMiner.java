@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
-import io.netty.buffer.ByteBuf;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -26,8 +26,7 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -84,12 +83,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
     public static int[] EJECT_INV;
-    public final double BASE_ENERGY_USAGE = usage.digitalMinerUsage;
+    public final double BASE_ENERGY_USAGE = MekanismConfig.current().usage.digitalMinerUsage.val();
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
     public HashList<MinerFilter> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
-    public double energyUsage = usage.digitalMinerUsage;
+    public double energyUsage = MekanismConfig.current().usage.digitalMinerUsage.val();
 
     private int radius;
 
@@ -323,7 +322,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         double ret = energyUsage;
 
         if (silkTouch) {
-            ret *= general.minerSilkMultiplier;
+            ret *= MekanismConfig.current().general.minerSilkMultiplier.val();
         }
 
         int baseRad = Math.max(radius - 10, 0);
@@ -666,7 +665,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                     reset();
                     break;
                 case 6:
-                    setRadius(Math.min(dataStream.readInt(), general.digitalMinerMaxRadius));
+                    setRadius(
+                          Math.min(dataStream.readInt(), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
                     break;
                 case 7:
                     minY = dataStream.readInt();
@@ -1032,7 +1032,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 return new Object[]{"Invalid parameters."};
             }
 
-            setRadius(Math.min(((Double) arguments[0]).intValue(), general.digitalMinerMaxRadius));
+            setRadius(Math.min(((Double) arguments[0]).intValue(),
+                  MekanismConfig.current().general.digitalMinerMaxRadius.val()));
         } else if (method == 1) {
             if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
                 return new Object[]{"Invalid parameters."};
@@ -1161,7 +1162,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     @Override
     public void setConfigurationData(NBTTagCompound nbtTags) {
-        setRadius(Math.min(nbtTags.getInteger("radius"), general.digitalMinerMaxRadius));
+        setRadius(Math.min(nbtTags.getInteger("radius"), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
         minY = nbtTags.getInteger("minY");
         maxY = nbtTags.getInteger("maxY");
         doEject = nbtTags.getBoolean("doEject");
@@ -1208,7 +1209,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Override
     public void readSustainedData(ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, "hasMinerConfig")) {
-            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), general.digitalMinerMaxRadius));
+            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"),
+                  MekanismConfig.current().general.digitalMinerMaxRadius.val()));
             minY = ItemDataUtils.getInt(itemStack, "minY");
             maxY = ItemDataUtils.getInt(itemStack, "maxY");
             doEject = ItemDataUtils.getBoolean(itemStack, "doEject");

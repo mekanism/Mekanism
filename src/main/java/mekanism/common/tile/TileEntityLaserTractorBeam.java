@@ -4,13 +4,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -74,7 +74,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
                           .getReceptor(tileHit, mop.sideHit).canLasersDig())))) {
                         diggingProgress += lastFired;
 
-                        if (diggingProgress < hardness * general.laserEnergyNeededPerHardness) {
+                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
+                              .val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
                     }
@@ -110,7 +111,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
                           .getReceptor(tileHit, info.movingPos.sideHit).canLasersDig())))) {
                         diggingProgress += firing;
 
-                        if (diggingProgress >= hardness * general.laserEnergyNeededPerHardness) {
+                        if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
+                              .val()) {
                             List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, world, pos);
                             if (drops != null) {
                                 receiveDrops(drops);

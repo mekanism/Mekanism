@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.api.TileNetworkList;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -70,7 +70,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @SideOnly(Side.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
-        if (!MekanismConfig.client.enableMachineSounds || soundEvent == null) {
+        if (!MekanismConfig.current().client.enableMachineSounds.val() || soundEvent == null) {
             return;
         }
 
