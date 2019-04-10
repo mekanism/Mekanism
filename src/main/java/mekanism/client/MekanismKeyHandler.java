@@ -1,6 +1,8 @@
 package mekanism.client;
 
 import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.Collections;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -22,6 +24,7 @@ import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.util.LangUtils;
+import mekanism.common.util.TextComponentGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +33,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -85,22 +89,26 @@ public class MekanismKeyHandler extends MekKeyHandler {
             if (player.isSneaking() && item instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) item;
 
-                int toSet = configurator.getState(toolStack).ordinal() < ConfiguratorMode.values().length - 1 ?
-                      configurator.getState(toolStack).ordinal() + 1 : 0;
-                configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
-                Mekanism.packetHandler
-                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(toSet)));
-                player.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
-                            .localize("tooltip.configureState") + ": " + configurator
-                            .getColor(configurator.getState(toolStack)) + configurator
-                            .getStateDisplay(configurator.getState(toolStack))));
+                ConfiguratorMode configuratorMode = configurator.getState(toolStack);
+                int toSet = (configuratorMode.ordinal() + 1) % ConfiguratorMode.values().length;
+                configuratorMode = ConfiguratorMode.values()[toSet];
+                configurator.setState(toolStack, configuratorMode);
+
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(toSet)));
+
+                player.sendMessage(
+                      new TextComponentGroup(TextFormatting.GRAY)
+                            .string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
+                            .translation("tooltip.configureState")
+                      .string(": ")
+                      .component(configuratorMode.getNameComponent(), configuratorMode.getColor().textFormatting)
+                );
             } else if (player.isSneaking() && item instanceof ItemElectricBow) {
                 ItemElectricBow bow = (ItemElectricBow) item;
 
-                bow.setFireState(toolStack, !bow.getFireState(toolStack));
-                Mekanism.packetHandler.sendToServer(
-                      new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(bow.getFireState(toolStack))));
+                boolean newBowState = !bow.getFireState(toolStack);
+                bow.setFireState(toolStack, newBowState);
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Collections.singletonList(newBowState)));
                 player.sendMessage(new TextComponentString(
                       EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.fireMode")

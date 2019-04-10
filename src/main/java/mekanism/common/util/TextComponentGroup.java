@@ -62,4 +62,10 @@ public class TextComponentGroup extends TextComponentString {
         this.appendSibling(t);
         return this;
     }
+
+    public TextComponentGroup component(ITextComponent component, TextFormatting color) {
+        component.getStyle().setColor(color);
+        this.appendSibling(component);
+        return this;
+    }
 }

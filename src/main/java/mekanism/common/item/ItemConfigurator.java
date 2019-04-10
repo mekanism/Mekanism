@@ -30,6 +30,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.TextComponentGroup;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -43,6 +44,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -280,29 +282,33 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     }
 
     public enum ConfiguratorMode {
-        CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_GASES("configurate", "(" + TransmissionType.GAS.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_ENERGY("configurate", "(" + TransmissionType.ENERGY.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_HEAT("configurate", "(" + TransmissionType.HEAT.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        EMPTY("empty", "", EnumColor.DARK_RED, false),
-        ROTATE("rotate", "", EnumColor.YELLOW, false),
-        WRENCH("wrench", "", EnumColor.PINK, false);
+        CONFIGURATE_ITEMS("configurate", TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_FLUIDS("configurate", TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_GASES("configurate", TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_ENERGY("configurate", TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_HEAT("configurate", TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true),
+        EMPTY("empty", null, EnumColor.DARK_RED, false),
+        ROTATE("rotate", null, EnumColor.YELLOW, false),
+        WRENCH("wrench", null, EnumColor.PINK, false);
 
         private String name;
-        private String info;
+        private final TransmissionType transmissionType;
         private EnumColor color;
         private boolean configurating;
 
-        ConfiguratorMode(String s, String s1, EnumColor c, boolean b) {
+        ConfiguratorMode(String s, TransmissionType s1, EnumColor c, boolean b) {
             name = s;
-            info = s1;
+            transmissionType = s1;
             color = c;
             configurating = b;
         }
 
         public String getName() {
-            return LangUtils.localize("tooltip.configurator." + name) + " " + info;
+            return LangUtils.localize("tooltip.configurator." + name) + " (" + transmissionType.localize() + ")";
+        }
+
+        public ITextComponent getNameComponent() {
+            return new TextComponentGroup().translation("tooltip.configurator." + name).string(" (").translation(transmissionType.getTranslationKey()).string(")");
         }
 
         public EnumColor getColor() {
