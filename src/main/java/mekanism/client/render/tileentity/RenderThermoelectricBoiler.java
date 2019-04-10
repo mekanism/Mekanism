@@ -11,8 +11,8 @@ import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -24,8 +24,8 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
     private static Map<RenderData, DisplayInteger> cachedUpperFluids = new HashMap<>();
     private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 
-    private Fluid STEAM = FluidRegistry.getFluid("steam");
-    private Fluid WATER = FluidRegistry.WATER;
+    private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
+    private FluidStack WATER = new FluidStack(FluidRegistry.WATER, 1);
 
     @Override
     public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick,
@@ -49,7 +49,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     FluidRenderer.translateToOrigin(data.location);
 
                     MekanismRenderer.glowOn(tileEntity.structure.waterStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.waterStored.getFluid());
+                    MekanismRenderer.colorFluid(tileEntity.structure.waterStored);
 
                     if (tileEntity.structure.waterStored.getFluid().isGaseous()) {
                         GL11.glColor4f(1F, 1F, 1F, Math.min(1,
@@ -100,7 +100,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     FluidRenderer.translateToOrigin(data.location);
 
                     MekanismRenderer.glowOn(tileEntity.structure.steamStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.steamStored.getFluid());
+                    MekanismRenderer.colorFluid(tileEntity.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
 

@@ -26,7 +26,7 @@ public class MekanismFluids {
           new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true);
 
     //Internal gases
-    public static final Gas LiquidOsmium = new Gas("liquidosmium", 0x9090A3);
+    public static final Gas LiquidOsmium = new Gas("liquidosmium", 0x52bdca);
     public static final Gas Ethene = new Gas("ethene", 0xEACCF9);
     public static final Gas Sodium = new Gas("sodium", 0xE9FEF4);
     public static final Gas Brine = new Gas("brine", 0xFEEF9C);

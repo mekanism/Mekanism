@@ -1,6 +1,7 @@
 package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
+import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -24,7 +25,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final int stages = 100;
     private static final double height = 0.45;
     private static final double offset = 0.015;
-    private static HashMap<Integer, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<>();
+    private static HashMap<Integer, FluidRenderMap<DisplayInteger[]>> cachedLiquids = new HashMap<>();
 
     public RenderMechanicalPipe() {
         super();
@@ -63,7 +64,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             fluidStack = pipe.getTransmitter().getTransmitterNetwork().buffer;
         } else {
             fluidStack = pipe.getBuffer();
-            fluid = fluidStack == null ? null : pipe.getBuffer().getFluid();
+            fluid = fluidStack == null ? null : fluidStack.getFluid();
         }
 
         float scale = Math.min(pipe.currentScale, 1);
@@ -82,7 +83,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
             for (EnumFacing side : EnumFacing.VALUES) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
-                    DisplayInteger[] displayLists = getListAndRender(side, fluid);
+                    DisplayInteger[] displayLists = getListAndRender(side, fluidStack);
 
                     if (displayLists != null) {
                         if (!gas) {
@@ -105,7 +106,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 }
             }
 
-            DisplayInteger[] displayLists = getListAndRender(null, fluid);
+            DisplayInteger[] displayLists = getListAndRender(null, fluidStack);
 
             if (displayLists != null) {
                 if (!gas) {
@@ -123,7 +124,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
     }
 
-    private DisplayInteger[] getListAndRender(EnumFacing side, Fluid fluid) {
+    private DisplayInteger[] getListAndRender(EnumFacing side, FluidStack fluid) {
         if (fluid == null) {
             return null;
         }
@@ -148,7 +149,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (cachedLiquids.containsKey(sideOrdinal)) {
             cachedLiquids.get(sideOrdinal).put(fluid, displays);
         } else {
-            HashMap<Fluid, DisplayInteger[]> map = new HashMap<>();
+            FluidRenderMap<DisplayInteger[]> map = new FluidRenderMap<>();
             map.put(fluid, displays);
             cachedLiquids.put(sideOrdinal, map);
         }
@@ -239,9 +240,13 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     public boolean renderFluidInOut(BufferBuilder renderer, EnumFacing side, TileEntityMechanicalPipe pipe) {
         if (pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null) {
             bindTexture(MekanismRenderer.getBlocksTexture());
-            TextureAtlasSprite tex = MekanismRenderer
-                  .getFluidTexture(pipe.getTransmitter().getTransmitterNetwork().refFluid, FluidType.STILL);
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
+            TextureAtlasSprite tex;
+            if (fn.buffer != null) {
+                tex = MekanismRenderer.getFluidTexture(fn.buffer, FluidType.STILL);
+            } else {
+                tex = MekanismRenderer.getBaseFluidTexture(fn.refFluid, FluidType.STILL);
+            }
             int color = fn.buffer != null ? fn.buffer.getFluid().getColor(fn.buffer) : fn.refFluid.getColor();
             ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale);
             if (color != 0xFFFFFFFF) {

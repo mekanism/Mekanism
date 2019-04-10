@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
-public class GuiFluidGauge extends GuiGauge<Fluid> {
+public class GuiFluidGauge extends GuiGauge<FluidStack> {
 
     private final IFluidInfoHandler infoHandler;
 
@@ -43,11 +42,11 @@ public class GuiFluidGauge extends GuiGauge<Fluid> {
     @Override
     public int getRenderColor() {
         if (dummy) {
-            return dummyType.getColor();
+            return dummyType.getFluid().getColor();
         }
 
         FluidStack fluid = infoHandler.getTank().getFluid();
-        return fluid == null ? dummyType.getColor() : fluid.getFluid().getColor();
+        return fluid == null ? dummyType.getFluid().getColor() : fluid.getFluid().getColor(fluid);
     }
 
     @Override
@@ -104,13 +103,13 @@ public class GuiFluidGauge extends GuiGauge<Fluid> {
             return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
         }
         FluidStack fluid = infoHandler.getTank().getFluid();
-        return MekanismRenderer.getFluidTexture(fluid == null ? dummyType : fluid.getFluid(), FluidType.STILL);
+        return MekanismRenderer.getFluidTexture(fluid == null ? dummyType : fluid, FluidType.STILL);
     }
 
     @Override
     public String getTooltipText() {
         if (dummy) {
-            return dummyType.getLocalizedName(null);
+            return dummyType.getLocalizedName();
         }
 
         String amountStr = (infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE ? LangUtils

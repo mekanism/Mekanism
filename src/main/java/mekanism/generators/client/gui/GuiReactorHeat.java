@@ -51,7 +51,7 @@ public class GuiReactorHeat extends GuiMekanismTile<TileEntityReactorController>
         addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
-                return MekanismRenderer.getFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
+                return MekanismRenderer.getBaseFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
             }
 
             @Override
@@ -78,7 +78,7 @@ public class GuiReactorHeat extends GuiMekanismTile<TileEntityReactorController>
         addGuiElement(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
-                return MekanismRenderer.getFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
+                return MekanismRenderer.getBaseFluidTexture(FluidRegistry.LAVA, FluidType.STILL);
             }
 
             @Override

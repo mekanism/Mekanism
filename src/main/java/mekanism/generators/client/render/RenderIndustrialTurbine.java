@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntityTurbineCasing> {
 
-    private Fluid STEAM = FluidRegistry.getFluid("steam");
+    private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
 
     @Override
     public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick,
@@ -67,7 +67,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                     FluidRenderer.translateToOrigin(data.location);
 
                     MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
+                    MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
 
                     GL11.glColor4f(1F, 1F, 1F, Math.min(1,
                           ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure
