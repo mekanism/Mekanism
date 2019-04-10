@@ -184,7 +184,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
@@ -229,7 +228,7 @@ public class Mekanism {
     /**
      * Mekanism version number
      */
-    public static Version versionNumber = new Version(9, 4, 13);
+    public static Version versionNumber = new Version(999, 999, 999);
     /**
      * MultiblockManagers for various structrures
      */
