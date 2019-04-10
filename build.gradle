@@ -15,7 +15,12 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.1.0"
     }
+}
+
+plugins {
+    id 'org.ajoberstar.grgit' version '2.3.0'
 }
 
 apply plugin: 'idea'
@@ -30,6 +35,7 @@ idea {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.matthewprenger.cursegradle'
 
 repositories {
     maven {
@@ -87,8 +93,8 @@ repositories {
 }
 
 group = "mekanism"
-version = "${minecraft_version}-${version}"
-archivesBaseName = "mekanism-all"
+version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
+archivesBaseName = "MekanismAll"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -136,13 +142,13 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
-    inputs.property "mc_version", "${minecraft_version}"
+    inputs.property "mc_version", minecraft_version
 
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
 
         // replace version and mcversion
-        expand "version": project.version, "mc_version": "${minecraft_version}"
+        expand "version": project.version, "mc_version": minecraft_version
     }
 
     // copy everything else, thats not the mcmod.info
@@ -160,13 +166,13 @@ jar {
 }
 
 task coreJar(type: Jar) {
-    archiveName = "mekanism-${project.version}.jar"
+    archiveName = "Mekanism-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "core"
 
     from('etc/core') {
         include '*.info'
-        expand 'version': project.version, 'mc_version': "${minecraft_version}", 'mcmp_version': "${mcmp_version}"
+        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -179,13 +185,13 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    archiveName = "mekanism-tools-${project.version}.jar"
+    archiveName = "MekanismTools-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "tools"
 
     from('etc/tools') {
         include '*.info'
-        expand 'version': project.version, 'mc_version': "${minecraft_version}", 'mcmp_version': "${mcmp_version}"
+        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -194,13 +200,13 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    archiveName = "mekanism-generators-${project.version}.jar"
+    archiveName = "MekanismGenerators-${project.version}.jar"
     dependsOn 'reobfJar'
     classifier "generators"
 
     from('etc/generators') {
         include '*.info'
-        expand 'version': project.version, 'mc_version': "${minecraft_version}", 'mcmp_version': "${mcmp_version}"
+        expand 'version':project.version,'mc_version':minecraft_version,'mcmp_version':mcmp_version
     }
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
@@ -210,7 +216,7 @@ task generatorsJar(type: Jar) {
 
 task apiJar(type: Jar) {
     classifier "api"
-    baseName "mekanism"
+    baseName "Mekanism"
     dependsOn "sourceMainJava"
     include 'mekanism/api/**'
     from sourceSets.main.java.srcDirs
@@ -231,3 +237,127 @@ task fullBuild(type: Delete) {
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+
+uploadArchives {
+    if(System.getenv("LOCAL_MAVEN") != null) {
+        repositories {
+            mavenDeployer {
+                repository(url: "file://"+System.getenv("LOCAL_MAVEN"))
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    if (System.getenv("MAVEN_ARTIFACT") != null) {
+                        artifactId = System.getenv("MAVEN_ARTIFACT")
+                    } else {
+                        artifactId = "Mekanism"
+                    }
+                    project {
+                        name "Mekanism"
+                        packaging 'jar'
+                        description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
+                        url 'http://aidancbrady.com/mekanism/'
+                        scm {
+                            url 'https://github.com/mekanism-mod/Mekanism.git'
+                        }
+                        issueManagement {
+                            system 'github'
+                            url 'https://github.com/mekanism-mod/Mekanism/issues'
+                        }
+                        licenses {
+                            license {
+                                name 'MIT'
+                                distribution 'repo'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.curseforge.dependsOn coreJar, toolsJar, generatorsJar, apiJar
+
+if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
+    println "Enabling Curseforge config"
+    curseforge {
+        apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
+
+        def generatedChangelog = "Unable to generate changelog :("
+        def currentCommit = System.getenv("GIT_COMMIT")
+        def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT") ?: System.getenv("GIT_PREVIOUS_COMMIT")
+
+        if (currentCommit != null && prevCommit != null) {
+            generatedChangelog = "<pre>"
+            grgit.log {
+                range(prevCommit, currentCommit)
+            }.reverse().each { commit ->
+                String message = commit.shortMessage
+                if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {//Ignore PRs and Merges
+                    message = message.replaceAll("#(\\d+)", {match->//turn issues/prs into links (github currently supports prs being linked as issues)
+                        return "<a href=\"https://github.com/mekanism-mod/Mekanism/issues/${match[1]}\">${match[0]}</a>"
+                    })
+                    generatedChangelog += "<a href=\"https://github.com/mekanism-mod/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
+                }
+            }
+            generatedChangelog += "</pre>"
+            println "Changelog generated"
+        }
+
+        def releaseNotesFile = project.file("docs/release_${mod_version}.html")
+        if (releaseNotesFile.exists()){
+            def releaseNotes = releaseNotesFile.getText()
+            generatedChangelog = "$releaseNotes<br> $generatedChangelog"
+        }
+
+        //Core
+        project {
+            id = '268560'
+            changelogType = "html"
+            changelog = generatedChangelog
+            // A file can also be set using: changelog = file('changelog.txt')
+            releaseType = 'release'
+            mainArtifact (coreJar){
+                relations {
+                    optionalDependency "mtlib"
+                }
+            }
+            addArtifact apiJar
+            addGameVersion '1.12'
+            addGameVersion '1.12.1'
+            addGameVersion '1.12.2'
+        }
+
+        //Tools
+        project {
+            id = '268567'
+            changelogType = "html"
+            changelog = generatedChangelog
+            releaseType = 'release'
+            mainArtifact(toolsJar){
+                relations {
+                    requiredDependency "mekanism"
+                }
+            }
+            addGameVersion '1.12'
+            addGameVersion '1.12.1'
+            addGameVersion '1.12.2'
+        }
+
+        //Generators
+        project {
+            id = '268566'
+            changelogType = "html"
+            changelog = generatedChangelog
+            releaseType = 'release'
+            mainArtifact(generatorsJar) {
+                relations {
+                    requiredDependency "mekanism"
+                }
+            }
+            addGameVersion '1.12'
+            addGameVersion '1.12.1'
+            addGameVersion '1.12.2'
+        }
+    }
+}
