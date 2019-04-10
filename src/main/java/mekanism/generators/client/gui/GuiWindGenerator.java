@@ -11,7 +11,7 @@ import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -35,7 +35,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
               LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(
-                    tileEntity.getActive() ? generators.windGenerationMin * tileEntity.getCurrentMultiplier() : 0) + "/t",
+                    tileEntity.getActive() ? MekanismConfig.current().generators.windGenerationMin.val() * tileEntity
+                          .getCurrentMultiplier() : 0) + "/t",
               LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput())
                     + "/t"), this, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
@@ -50,7 +51,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
               .drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26,
                     0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.power") + ": " + powerFormat
-                    .format(MekanismUtils.convertToDisplay(generators.windGenerationMin * tileEntity.getCurrentMultiplier())),
+                    .format(MekanismUtils.convertToDisplay(
+                          MekanismConfig.current().generators.windGenerationMin.val() * tileEntity.getCurrentMultiplier())),
               51, 35, 0x00CD00);
         fontRenderer.drawString(
               LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t",

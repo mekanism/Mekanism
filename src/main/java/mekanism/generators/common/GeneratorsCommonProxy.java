@@ -1,11 +1,8 @@
 package mekanism.generators.common;
 
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -104,69 +101,16 @@ public class GeneratorsCommonProxy implements IGuiProvider {
      * Set and load the mod's common configuration properties.
      */
     public void loadConfiguration() {
-        generators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D,
-              "Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .getDouble();
-        generators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D,
-              "Amount of energy in Joules the Bio Generator produces per tick.").getDouble();
-        generators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D,
-              "Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether")
-              .getDouble();
-        generators.heatGenerationLava = Mekanism.configuration
-              .get("generation", "HeatGenerationLava", 5D, "Multiplier of effectiveness of Lava in the Heat Generator.")
-              .getDouble();
-        generators.heatGenerationNether = Mekanism.configuration.get("generation", "HeatGenerationNether", 100D,
-              "Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.")
-              .getDouble();
-        generators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D,
-              "Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .getDouble();
-
-        loadWindConfiguration();
-
-        generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4,
-              "The number of blades on each turbine coil per blade applied.").getInt();
-        generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D,
-              "The rate at which steam is vented into the turbine.").getDouble();
-        generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D,
-              "The rate at which steam is dispersed into the turbine.").getDouble();
-        generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000,
-              "The rate at which steam is condensed in the turbine.").getInt();
-
-        generators.energyPerFusionFuel = Mekanism.configuration.get("generation", "EnergyPerFusionFuel", 5E6D,
-              "Affects the Injection Rate, Max Temp, and Ignition Temp.").getDouble();
-
-        for (GeneratorType type : GeneratorType.getGeneratorsForConfig()) {
-            generators.generatorsManager.setEntry(type.blockName,
-                  Mekanism.configuration.get("generators", type.blockName + "Enabled", true,
-                        "Allow " + type.blockName + " to be used/crafted.").getBoolean());
-        }
+        MekanismConfig.local().generators.load(Mekanism.configuration);
+        setGasGeneratorMaxEnergy();
 
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
         }
     }
 
-    private void loadWindConfiguration() {
-        generators.windGenerationMin = Mekanism.configuration.get("generation", "WindGenerationMin", 60D,
-              "Minimum base generation value of the Wind Generator.").getDouble();
-        generators.windGenerationMax = Mekanism.configuration.get("generation", "WindGenerationMax", 480D,
-              "Maximum base generation value of the Wind Generator.").getDouble();
-
-        //Ensure max > min to avoid division by zero later
-        final int minY = Mekanism.configuration.get("generation", "WindGenerationMinY", 24,
-              "The minimum Y value that affects the Wind Generators Power generation.").getInt();
-        final int maxY = Mekanism.configuration.get("generation", "WindGenerationMaxY", 255,
-              "The maximum Y value that affects the Wind Generators Power generation.").getInt();
-
-        generators.windGenerationMinY = minY;
-        generators.windGenerationMaxY = Math.max(minY + 1, maxY);
-
-        int[] windGenerationBlacklistDims = Mekanism.configuration
-              .get("generation", "WindGenerationDimBlacklist", new int[]{},
-                    "The list of dimension ids that the Wind Generator will not generate power in.").getIntList();
-        generators.windGenerationDimBlacklist = IntStream.of(windGenerationBlacklistDims).boxed().
-              collect(Collectors.toCollection(HashSet::new));
+    protected void setGasGeneratorMaxEnergy() {
+        GeneratorType.GAS_GENERATOR.maxEnergy = MekanismConfig.local().general.FROM_H2.val() * 100;
     }
 
     @Override

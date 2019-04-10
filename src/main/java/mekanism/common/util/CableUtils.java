@@ -13,7 +13,7 @@ import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.ic2.IC2Integration;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
@@ -232,21 +232,25 @@ public final class CableUtils {
               .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite())) {
             ITeslaConsumer consumer = CapabilityUtils
                   .getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite());
-            sent += consumer.givePower(Math.round(currentSending * general.TO_TESLA), false) * general.FROM_TESLA;
+            sent += consumer
+                  .givePower(Math.round(currentSending * MekanismConfig.current().general.TO_TESLA.val()), false)
+                  * MekanismConfig.current().general.FROM_TESLA.val();
         } else if (MekanismUtils.useForge() && CapabilityUtils
               .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
             IEnergyStorage storage = CapabilityUtils
                   .getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite());
             sent += storage
-                  .receiveEnergy((int) Math.round(Math.min(Integer.MAX_VALUE, currentSending * general.TO_FORGE)),
-                        false) * general.FROM_FORGE;
+                  .receiveEnergy((int) Math.round(
+                        Math.min(Integer.MAX_VALUE, currentSending * MekanismConfig.current().general.TO_FORGE.val())),
+                        false) * MekanismConfig.current().general.FROM_FORGE.val();
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             IEnergyReceiver handler = (IEnergyReceiver) tileEntity;
 
             if (handler.canConnectEnergy(side.getOpposite())) {
-                int toSend = Math.min((int) Math.round(currentSending * general.TO_RF), Integer.MAX_VALUE);
+                int toSend = Math.min((int) Math.round(currentSending * MekanismConfig.current().general.TO_RF.val()),
+                      Integer.MAX_VALUE);
                 int used = handler.receiveEnergy(side.getOpposite(), toSend, false);
-                sent += used * general.FROM_RF;
+                sent += used * MekanismConfig.current().general.FROM_RF.val();
             }
         } else if (MekanismUtils.useIC2()) {
             sent += IC2Integration.emitEnergy(from, tileEntity, side, currentSending);

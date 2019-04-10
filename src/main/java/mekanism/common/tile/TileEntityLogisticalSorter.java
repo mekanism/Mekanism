@@ -17,7 +17,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
@@ -448,7 +448,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));
 
-            if (active && client.enableMachineSounds) {
+            if (active && MekanismConfig.current().client.enableMachineSounds.val()) {
                 world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK,
                       SoundCategory.BLOCKS, 0.3F, 1);
             }

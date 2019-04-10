@@ -3,7 +3,7 @@ package mekanism.generators.common.tile;
 import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
@@ -12,8 +12,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
@@ -22,10 +20,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private boolean seesSun;
     private boolean needsRainCheck = true;
-    private float   peakOutput;
+    private float peakOutput;
 
     public TileEntitySolarGenerator() {
-        this("SolarGenerator", 96000, generators.solarGeneration * 2);
+        this("SolarGenerator", 96000, MekanismConfig.current().generators.solarGeneration.val() * 2);
     }
 
     public TileEntitySolarGenerator(String name, double maxEnergy, double output) {
@@ -193,7 +191,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected float getConfiguredMax() {
-        return (float)generators.solarGeneration;
+        return (float) MekanismConfig.current().generators.solarGeneration.val();
     }
 
     @Override

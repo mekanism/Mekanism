@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.MekanismConfig.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
@@ -73,7 +72,8 @@ public class SoundHandler {
     }
 
     public static void playSound(SoundEvent sound) {
-        playSound(PositionedSoundRecord.getMasterRecord(sound, MekanismConfig.client.baseSoundVolume));
+        playSound(PositionedSoundRecord
+              .getMasterRecord(sound, (float) MekanismConfig.current().client.baseSoundVolume.val()));
     }
 
     public static void playSound(ISound sound) {
@@ -86,7 +86,7 @@ public class SoundHandler {
         if (s == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             s = new PositionedSoundRecord(soundLoc, SoundCategory.BLOCKS,
-                  volume * client.baseSoundVolume, 1.0f,
+                  (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
                   true, 0, ISound.AttenuationType.LINEAR,
                   pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
 

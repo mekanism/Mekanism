@@ -99,7 +99,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     public void update() {
         if (world().isRemote) {
             for (TransporterStack stack : transit.values()) {
-                stack.progress = Math.min(100, stack.progress + getTileEntity().tier.speed);
+                stack.progress = Math.min(100, stack.progress + getTileEntity().tier.getSpeed());
             }
         } else {
             if (getTransmitterNetwork() == null) {
@@ -121,7 +121,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                     }
                 }
 
-                stack.progress += getTileEntity().tier.speed;
+                stack.progress += getTileEntity().tier.getSpeed();
 
                 if (stack.progress >= 100) {
                     Coord4D prevSet = null;

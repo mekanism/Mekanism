@@ -39,13 +39,13 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             return 0;
         }
 
-        int neededEnergy = MekanismConfig.usage.teleporterBaseUsage;
+        int neededEnergy = MekanismConfig.current().usage.teleporterBaseUsage.val();
 
         if (entity.world.provider.getDimension() != coords.dimensionId) {
-            neededEnergy += MekanismConfig.usage.teleporterDimensionPenalty;
+            neededEnergy += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
         } else {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
-            neededEnergy += (distance * MekanismConfig.usage.teleporterDistanceUsage);
+            neededEnergy += (distance * MekanismConfig.current().usage.teleporterDistanceUsage.val());
         }
 
         return neededEnergy;

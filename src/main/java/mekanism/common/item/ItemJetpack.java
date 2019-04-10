@@ -11,7 +11,7 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismItems;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
@@ -111,7 +111,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
 
     @Override
     public int getMaxGas(ItemStack itemstack) {
-        return general.maxJetpackGas;
+        return MekanismConfig.current().general.maxJetpackGas.val();
     }
 
     @Override
@@ -205,7 +205,8 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
         if (this == MekanismItems.Jetpack) {
             return new ArmorProperties(0, 0, 0);
         } else if (this == MekanismItems.ArmoredJetpack) {
-            return new ArmorProperties(1, general.armoredJetpackDamageRatio, general.armoredJetpackDamageMax);
+            return new ArmorProperties(1, MekanismConfig.current().general.armoredJetpackDamageRatio.val(),
+                  MekanismConfig.current().general.armoredJetpackDamageMax.val());
         }
 
         return new ArmorProperties(0, 0, 0);

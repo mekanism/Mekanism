@@ -1,6 +1,6 @@
 package mekanism.common.integration.tesla;
 
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.darkhax.tesla.api.ITeslaConsumer;
@@ -23,6 +23,8 @@ public class TeslaCableIntegration implements ITeslaConsumer {
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long givePower(long power, boolean simulated) {
-        return Math.round(tileEntity.acceptEnergy(side, power * general.FROM_TESLA, simulated) * general.TO_TESLA);
+        return Math.round(
+              tileEntity.acceptEnergy(side, power * MekanismConfig.current().general.FROM_TESLA.val(), simulated)
+                    * MekanismConfig.current().general.TO_TESLA.val());
     }
 }

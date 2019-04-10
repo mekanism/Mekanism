@@ -10,7 +10,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
@@ -109,7 +109,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
 
     @Override
     public int getMaxGas(ItemStack itemstack) {
-        return general.maxScubaGas;
+        return MekanismConfig.current().general.maxScubaGas.val();
     }
 
     @Override

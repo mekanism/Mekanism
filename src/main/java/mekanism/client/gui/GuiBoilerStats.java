@@ -5,7 +5,7 @@ import mekanism.client.gui.element.GuiBoilerTab;
 import mekanism.client.gui.element.GuiBoilerTab.BoilerTab;
 import mekanism.client.gui.element.GuiGraph;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -31,7 +31,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiBoilerTab(this, tileEntity, BoilerTab.MAIN, 6, resource));
         addGuiElement(new GuiHeatInfo(() -> {
-            TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
+            TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
             String environment = UnitDisplayUtils
                   .getDisplayShort(tileEntity.structure.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
@@ -40,8 +40,9 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
               data -> LangUtils.localize("gui.boilRate") + ": " + data + " mB/t"));
         addGuiElement(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36,
               data -> LangUtils.localize("gui.maxBoil") + ": " + data + " mB/t"));
-        maxGraph.enableFixedScale((int) ((tileEntity.structure.superheatingElements * general.superheatingHeatTransfer)
-              / SynchronizedBoilerData.getHeatEnthalpy()));
+        maxGraph.enableFixedScale((int) (
+              (tileEntity.structure.superheatingElements * MekanismConfig.current().general.superheatingHeatTransfer
+                    .val()) / SynchronizedBoilerData.getHeatEnthalpy()));
     }
 
     @Override
@@ -58,8 +59,9 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing> {
         fontRenderer
               .drawString(LangUtils.localize("gui.superheaters") + ": " + tileEntity.structure.superheatingElements, 14,
                     58, 0x404040);
-        int boilCapacity = (int) ((tileEntity.structure.superheatingElements * general.superheatingHeatTransfer)
-              / SynchronizedBoilerData.getHeatEnthalpy());
+        int boilCapacity = (int) ((tileEntity.structure.superheatingElements *
+              MekanismConfig.current().general.superheatingHeatTransfer.val()) / SynchronizedBoilerData
+              .getHeatEnthalpy());
         fontRenderer
               .drawString(LangUtils.localize("gui.boilCapacity") + ": " + boilCapacity + " mB/t", 8, 72, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

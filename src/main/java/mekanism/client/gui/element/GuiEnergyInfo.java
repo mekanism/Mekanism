@@ -3,7 +3,7 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -43,7 +43,7 @@ public class GuiEnergyInfo extends GuiElement {
     public void renderForeground(int xAxis, int yAxis) {
         if (inBounds(xAxis, yAxis)) {
             List<String> info = new ArrayList<>(infoHandler.getInfo());
-            info.add(LangUtils.localize("gui.unit") + ": " + general.energyUnit);
+            info.add(LangUtils.localize("gui.unit") + ": " + MekanismConfig.current().general.energyUnit.val());
             displayTooltips(info, xAxis, yAxis);
         }
     }
@@ -55,7 +55,9 @@ public class GuiEnergyInfo extends GuiElement {
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && inBounds(xAxis, yAxis)) {
-            general.energyUnit = EnergyType.values()[(general.energyUnit.ordinal() + 1) % EnergyType.values().length];
+            MekanismConfig.current().general.energyUnit
+                  .set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1)
+                        % EnergyType.values().length]);
         }
     }
 }

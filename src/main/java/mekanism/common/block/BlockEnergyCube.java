@@ -165,7 +165,7 @@ public class BlockEnergyCube extends BlockContainer {
             list.add(discharged);
             ItemStack charged = new ItemStack(this);
             ((ItemBlockEnergyCube) charged.getItem()).setBaseTier(charged, tier.getBaseTier());
-            ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.maxEnergy);
+            ((ItemBlockEnergyCube) charged.getItem()).setEnergy(charged, tier.getMaxEnergy());
             list.add(charged);
         }
     }

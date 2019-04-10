@@ -4,13 +4,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.chunkloading.IChunkLoader;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
@@ -95,8 +95,8 @@ public class TileComponentChunkLoader implements ITileComponent {
     }
 
     public boolean canOperate() {
-        return general.allowChunkloading && ((IUpgradeTile) tileEntity).getComponent().getInstalledTypes()
-              .contains(Upgrade.ANCHOR);
+        return MekanismConfig.current().general.allowChunkloading.val() && ((IUpgradeTile) tileEntity).getComponent()
+              .getInstalledTypes().contains(Upgrade.ANCHOR);
     }
 
     @Override

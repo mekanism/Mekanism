@@ -19,7 +19,6 @@ import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -120,7 +119,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @SideOnly(Side.CLIENT)
     private void updateSound() {
         // If machine sounds are disabled, noop
-        if (!MekanismConfig.client.enableMachineSounds) {
+        if (!MekanismConfig.current().client.enableMachineSounds.val()) {
             return;
         }
 

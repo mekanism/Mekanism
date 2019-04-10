@@ -1,11 +1,11 @@
 package mekanism.common;
 
-import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import mekanism.api.EnumColor;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
@@ -41,24 +41,6 @@ public final class Tier {
         }
 
         initiated = true;
-    }
-
-    public static void loadConfig() {
-        for (ITier tier : tierTypes) {
-            tier.loadConfig();
-        }
-    }
-
-    public static void readConfig(ByteBuf dataStream) {
-        for (ITier tier : tierTypes) {
-            tier.readConfig(dataStream);
-        }
-    }
-
-    public static void writeConfig(ByteBuf dataStream) {
-        for (ITier tier : tierTypes) {
-            tier.writeConfig(dataStream);
-        }
     }
 
     /**
@@ -110,51 +92,42 @@ public final class Tier {
         ULTIMATE(128000000, 51200),
         CREATIVE(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        public double maxEnergy;
-        public double output;
-        private double baseMaxEnergy;
-        private double baseOutput;
+        private double maxEnergy;
+        private double output;
+        private final double baseMaxEnergy;
+        private final double baseOutput;
+        private final BaseTier baseTier;
 
         EnergyCubeTier(double max, double out) {
             baseMaxEnergy = maxEnergy = max;
             baseOutput = output = out;
-        }
-
-        @Override
-        public void loadConfig() {
-            if (this != CREATIVE) {
-                String name = getBaseTier().getSimpleName();
-                maxEnergy = Mekanism.configuration.get("tier", name + "EnergyCubeMaxEnergy", baseMaxEnergy,
-                      "Maximum number of Joules a " + name + " energy cube can store.").getDouble();
-                output = Mekanism.configuration.get("tier", name + "EnergyCubeOutput", baseOutput,
-                      "Output rate in Joules of a " + name + " energy cube.").getDouble();
-            }
-        }
-
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            if (this != CREATIVE) {
-                maxEnergy = dataStream.readDouble();
-                output = dataStream.readDouble();
-            }
-        }
-
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            if (this != CREATIVE) {
-                dataStream.writeDouble(maxEnergy);
-                dataStream.writeDouble(output);
-            }
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
         @Override
         public String getName() {
             return name().toLowerCase(Locale.ROOT);
+        }
+
+        public double getMaxEnergy() {
+            return MekanismConfig.current().general.tiers.get(baseTier).EnergyCubeMaxEnergy.val();
+        }
+
+        public double getOutput() {
+            return MekanismConfig.current().general.tiers.get(baseTier).EnergyCubeOutput.val();
+        }
+
+        public double getBaseMaxEnergy() {
+            return baseMaxEnergy;
+        }
+
+        public double getBaseOutput() {
+            return baseOutput;
         }
     }
 
@@ -164,33 +137,26 @@ public final class Tier {
         ELITE(64E9D),
         ULTIMATE(512E9D);
 
-        public double maxEnergy;
-        private double baseMaxEnergy;
+        private double maxEnergy;
+        private final double baseMaxEnergy;
+        private final BaseTier baseTier;
 
         InductionCellTier(double max) {
             baseMaxEnergy = maxEnergy = max;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            maxEnergy = Mekanism.configuration.get("tier", name + "InductionCellMaxEnergy", baseMaxEnergy,
-                  "Maximum number of Joules a " + name + " induction cell can store.").getDouble();
+        public double getMaxEnergy() {
+            return MekanismConfig.current().general.tiers.get(baseTier).InductionCellMaxEnergy.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            maxEnergy = dataStream.readDouble();
-        }
-
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeDouble(maxEnergy);
+        public double getBaseMaxEnergy() {
+            return baseMaxEnergy;
         }
     }
 
@@ -200,33 +166,26 @@ public final class Tier {
         ELITE(4096000),
         ULTIMATE(32768000);
 
-        public double output;
-        private double baseOutput;
+        private double output;
+        private final double baseOutput;
+        private final BaseTier baseTier;
 
         InductionProviderTier(double out) {
             baseOutput = output = out;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            output = Mekanism.configuration.get("tier", name + "InductionProviderOutput", baseOutput,
-                  "Maximum number of Joules a " + name + " induction provider can output or accept.").getDouble();
+        public double getOutput() {
+            return MekanismConfig.current().general.tiers.get(baseTier).InductionProviderOutput.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            output = dataStream.readDouble();
-        }
-
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeDouble(output);
+        public double getBaseOutput() {
+            return baseOutput;
         }
     }
 
@@ -241,11 +200,13 @@ public final class Tier {
         public final BlockStateMachine.MachineType machineType;
         public int processes;
         public ResourceLocation guiLocation;
+        private final BaseTier baseTier;
 
         FactoryTier(int process, ResourceLocation gui, BlockStateMachine.MachineType machineTypeIn) {
             processes = process;
             guiLocation = gui;
             machineType = machineTypeIn;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         public static FactoryTier getFromName(String tierName) {
@@ -260,7 +221,7 @@ public final class Tier {
         }
 
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
     }
 
@@ -270,11 +231,13 @@ public final class Tier {
         ELITE(64000),
         ULTIMATE(320000);
 
-        public int cableCapacity;
-        private int baseCapacity;
+        private int cableCapacity;
+        private final int baseCapacity;
+        private final BaseTier baseTier;
 
         CableTier(int capacity) {
             baseCapacity = cableCapacity = capacity;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         public static CableTier get(BaseTier tier) {
@@ -289,24 +252,15 @@ public final class Tier {
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            cableCapacity = Mekanism.configuration.get("tier", name + "CableCapacity", baseCapacity,
-                  "Internal buffer in Joules of each " + name + " universal cable.").getInt();
+        public int getCableCapacity() {
+            return MekanismConfig.current().general.tiers.get(baseTier).CableCapacity.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            cableCapacity = dataStream.readInt();
-        }
-
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeInt(cableCapacity);
+        public int getBaseCapacity() {
+            return baseCapacity;
         }
     }
 
@@ -316,14 +270,16 @@ public final class Tier {
         ELITE(16000, 1600),
         ULTIMATE(64000, 6400);
 
-        public int pipeCapacity;
-        public int pipePullAmount;
-        private int baseCapacity;
-        private int basePull;
+        private int pipeCapacity;
+        private int pipePullAmount;
+        private final int baseCapacity;
+        private final int basePull;
+        private final BaseTier baseTier;
 
         PipeTier(int capacity, int pullAmount) {
             baseCapacity = pipeCapacity = capacity;
             basePull = pipePullAmount = pullAmount;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         public static PipeTier get(BaseTier tier) {
@@ -338,28 +294,23 @@ public final class Tier {
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            pipeCapacity = Mekanism.configuration.get("tier", name + "PipeCapacity", baseCapacity,
-                  "Capacity of " + name + " mechanical pipe in mB.").getInt();
-            pipePullAmount = Mekanism.configuration.get("tier", name + "PipePullAmount", basePull,
-                  "Pump rate of " + name + " mechanical pipe in mB/t.").getInt();
+        public int getPipeCapacity() {
+            return MekanismConfig.current().general.tiers.get(baseTier).PipeCapacity.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            pipeCapacity = dataStream.readInt();
-            pipePullAmount = dataStream.readInt();
+        public int getPipePullAmount() {
+            return MekanismConfig.current().general.tiers.get(baseTier).PipePullAmount.val();
         }
 
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeInt(pipeCapacity);
-            dataStream.writeInt(pipePullAmount);
+        public int getBaseCapacity() {
+            return baseCapacity;
+        }
+
+        public int getBasePull() {
+            return basePull;
         }
     }
 
@@ -369,14 +320,16 @@ public final class Tier {
         ELITE(4096, 1024),
         ULTIMATE(16384, 4096);
 
-        public int tubeCapacity;
-        public int tubePullAmount;
-        private int baseCapacity;
-        private int basePull;
+        private int tubeCapacity;
+        private int tubePullAmount;
+        private final int baseCapacity;
+        private final int basePull;
+        private final BaseTier baseTier;
 
         TubeTier(int capacity, int pullAmount) {
             baseCapacity = tubeCapacity = capacity;
             basePull = tubePullAmount = pullAmount;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         public static TubeTier get(BaseTier tier) {
@@ -391,28 +344,23 @@ public final class Tier {
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            tubeCapacity = Mekanism.configuration.get("tier", name + "TubeCapacity", baseCapacity,
-                  "Capacity of " + name + " pressurized tube in mB.").getInt();
-            tubePullAmount = Mekanism.configuration.get("tier", name + "TubePullAmount", basePull,
-                  "Pump rate of " + name + " pressurized tube in mB/t.").getInt();
+        public int getTubeCapacity() {
+            return MekanismConfig.current().general.tiers.get(baseTier).TubeCapacity.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            tubeCapacity = dataStream.readInt();
-            tubePullAmount = dataStream.readInt();
+        public int getTubePullAmount() {
+            return MekanismConfig.current().general.tiers.get(baseTier).TubePullAmount.val();
         }
 
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeInt(tubeCapacity);
-            dataStream.writeInt(tubePullAmount);
+        public int getBaseCapacity() {
+            return baseCapacity;
+        }
+
+        public int getBasePull() {
+            return basePull;
         }
     }
 
@@ -422,14 +370,16 @@ public final class Tier {
         ELITE(32, 20),
         ULTIMATE(64, 50);
 
-        public int pullAmount;
-        public int speed;
-        private int basePull;
-        private int baseSpeed;
+        private int pullAmount;
+        private int speed;
+        private final int basePull;
+        private final int baseSpeed;
+        private final BaseTier baseTier;
 
         TransporterTier(int pull, int s) {
             basePull = pullAmount = pull;
             baseSpeed = speed = s;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         public static TransporterTier get(BaseTier tier) {
@@ -444,28 +394,23 @@ public final class Tier {
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            pullAmount = Mekanism.configuration.get("tier", name + "TransporterPullAmount", basePull,
-                  "Item throughput rate of " + name + " logistical transporter in items/s.").getInt();
-            speed = Mekanism.configuration.get("tier", name + "TransporterSpeed", baseSpeed,
-                  "Five times travel speed of " + name + " logistical transporter.").getInt();
+        public int getPullAmount() {
+            return MekanismConfig.current().general.tiers.get(baseTier).TransporterPullAmount.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            pullAmount = dataStream.readInt();
-            speed = dataStream.readInt();
+        public int getSpeed() {
+            return MekanismConfig.current().general.tiers.get(baseTier).TransporterSpeed.val();
         }
 
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeInt(pullAmount);
-            dataStream.writeInt(speed);
+        public int getBasePull() {
+            return basePull;
+        }
+
+        public int getBaseSpeed() {
+            return baseSpeed;
         }
     }
 
@@ -475,13 +420,14 @@ public final class Tier {
         ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
         ULTIMATE(5, 1, 100000, new ColourRGBA(0.2, 0.2, 0.2, 1));
 
-        public double inverseConduction;
-        public double inverseHeatCapacity;
-        public double inverseConductionInsulation;
-        public ColourRGBA baseColour;
-        private double baseConduction;
-        private double baseHeatCapacity;
-        private double baseConductionInsulation;
+        private double inverseConduction;
+        private double inverseHeatCapacity;
+        private double inverseConductionInsulation;
+        private ColourRGBA baseColour;
+        private final double baseConduction;
+        private final double baseHeatCapacity;
+        private final double baseConductionInsulation;
+        private final BaseTier baseTier;
 
         ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour) {
             baseConduction = inverseConduction = inversek;
@@ -489,6 +435,7 @@ public final class Tier {
             baseConductionInsulation = inverseConductionInsulation = insulationInversek;
 
             baseColour = colour;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         public static ConductorTier get(BaseTier tier) {
@@ -503,33 +450,35 @@ public final class Tier {
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            inverseConduction = Mekanism.configuration.get("tier", name + "ConductorInverseConduction", baseConduction,
-                  "Conduction value of " + name + " thermodynamic conductor.").getDouble();
-            inverseHeatCapacity = Mekanism.configuration.get("tier", name + "ConductorHeatCapacity", baseHeatCapacity,
-                  "Heat capacity of " + name + " thermodynamic conductor.").getDouble();
-            inverseConductionInsulation = Mekanism.configuration
-                  .get("tier", name + "ConductorConductionInsulation", baseConductionInsulation,
-                        "Insulation value of " + name + " thermodynamic conductor.").getDouble();
+        public double getInverseConduction() {
+            return MekanismConfig.current().general.tiers.get(baseTier).ConductorInverseConduction.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            inverseConduction = dataStream.readDouble();
-            inverseHeatCapacity = dataStream.readDouble();
-            inverseConductionInsulation = dataStream.readDouble();
+        public double getInverseConductionInsulation() {
+            return MekanismConfig.current().general.tiers.get(baseTier).ConductorConductionInsulation.val();
         }
 
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeDouble(inverseConduction);
-            dataStream.writeDouble(inverseHeatCapacity);
-            dataStream.writeDouble(inverseConductionInsulation);
+        public double getInverseHeatCapacity() {
+            return MekanismConfig.current().general.tiers.get(baseTier).ConductorHeatCapacity.val();
+        }
+
+        public ColourRGBA getBaseColour() {
+            return baseColour;
+        }
+
+        public double getBaseConduction() {
+            return baseConduction;
+        }
+
+        public double getBaseHeatCapacity() {
+            return baseHeatCapacity;
+        }
+
+        public double getBaseConductionInsulation() {
+            return baseConductionInsulation;
         }
     }
 
@@ -540,40 +489,37 @@ public final class Tier {
         ULTIMATE(112000, 3200),
         CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
-        public int storage;
-        public int output;
-        private int baseStorage;
-        private int baseOutput;
+        private int storage;
+        private int output;
+        private final int baseStorage;
+        private final int baseOutput;
+        private final BaseTier baseTier;
 
         FluidTankTier(int s, int o) {
             baseStorage = storage = s;
             baseOutput = output = o;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            storage = Mekanism.configuration.get("tier", name + "FluidTankStorage", baseStorage,
-                  "Storage size of " + name + " gas tank in mB.").getInt();
-            output = Mekanism.configuration.get("tier", name + "FluidTankOutput", baseOutput,
-                  "Output rate of " + name + " gas tank in mB.").getInt();
+        public int getStorage() {
+            return MekanismConfig.current().general.tiers.get(baseTier).FluidTankStorage.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            storage = dataStream.readInt();
-            output = dataStream.readInt();
+        public int getOutput() {
+            return MekanismConfig.current().general.tiers.get(baseTier).FluidTankOutput.val();
         }
 
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeInt(storage);
-            dataStream.writeInt(output);
+        public int getBaseStorage() {
+            return baseStorage;
+        }
+
+        public int getBaseOutput() {
+            return baseOutput;
         }
     }
 
@@ -584,45 +530,42 @@ public final class Tier {
         ULTIMATE(512000, 2056),
         CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
-        public int storage;
-        public int output;
-        private int baseStorage;
-        private int baseOutput;
+        private int storage;
+        private int output;
+        private final int baseStorage;
+        private final int baseOutput;
+        private final BaseTier baseTier;
 
         GasTankTier(int s, int o) {
             baseStorage = storage = s;
             baseOutput = output = o;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
-        }
-
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            storage = Mekanism.configuration.get("tier", name + "GasTankStorage", baseStorage,
-                  "Storage size of " + name + " gas tank in mB.").getInt();
-            output = Mekanism.configuration.get("tier", name + "GasTankOutput", baseOutput,
-                  "Output rate of " + name + " gas tank in mB.").getInt();
-        }
-
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            storage = dataStream.readInt();
-            output = dataStream.readInt();
-        }
-
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeInt(storage);
-            dataStream.writeInt(output);
+            return baseTier;
         }
 
         @Override
         public String getName() {
             return name().toLowerCase(Locale.ROOT);
+        }
+
+        public int getStorage() {
+            return MekanismConfig.current().general.tiers.get(baseTier).GasTankStorage.val();
+        }
+
+        public int getOutput() {
+            return MekanismConfig.current().general.tiers.get(baseTier).GasTankOutput.val();
+        }
+
+        public int getBaseStorage() {
+            return baseStorage;
+        }
+
+        public int getBaseOutput() {
+            return baseOutput;
         }
     }
 
@@ -633,44 +576,31 @@ public final class Tier {
         ULTIMATE(262144),
         CREATIVE(Integer.MAX_VALUE);
 
-        public int storage;
-        private int baseStorage;
+        private int storage;
+        private final int baseStorage;
+        private final BaseTier baseTier;
 
         BinTier(int s) {
             baseStorage = storage = s;
+            baseTier = BaseTier.values()[ordinal()];
         }
 
         @Override
         public BaseTier getBaseTier() {
-            return BaseTier.values()[ordinal()];
+            return baseTier;
         }
 
-        @Override
-        public void loadConfig() {
-            String name = getBaseTier().getSimpleName();
-            storage = Mekanism.configuration.get("tier", name + "BinStorage", baseStorage,
-                  "The number of items a " + name + " bin can store.").getInt();
+        public int getStorage() {
+            return MekanismConfig.current().general.tiers.get(baseTier).BinStorage.val();
         }
 
-        @Override
-        public void readConfig(ByteBuf dataStream) {
-            storage = dataStream.readInt();
-        }
-
-        @Override
-        public void writeConfig(ByteBuf dataStream) {
-            dataStream.writeInt(storage);
+        public int getBaseStorage() {
+            return baseStorage;
         }
     }
 
     public interface ITier {
 
         BaseTier getBaseTier();
-
-        void loadConfig();
-
-        void readConfig(ByteBuf dataStream);
-
-        void writeConfig(ByteBuf dataStream);
     }
 }

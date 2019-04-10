@@ -19,7 +19,7 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -84,7 +84,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     public TileEntityFluidTank() {
         super("FluidTank");
 
-        fluidTank = new FluidTank(tier.storage);
+        fluidTank = new FluidTank(tier.getStorage());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     }
 
@@ -95,7 +95,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         }
 
         tier = FluidTankTier.values()[upgradeTier.ordinal()];
-        fluidTank.setCapacity(tier.storage);
+        fluidTank.setCapacity(tier.getStorage());
 
         Mekanism.packetHandler
               .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
@@ -193,7 +193,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
                 IFluidHandler handler = CapabilityUtils
                       .getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(),
-                      Math.min(tier.output, fluidTank.getFluidAmount()));
+                      Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, true), tier != FluidTankTier.CREATIVE);
             }
         }
@@ -293,7 +293,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
 
         if (nbtTags.hasKey("fluidTank")) {
-            fluidTank.setCapacity(tier.storage);
+            fluidTank.setCapacity(tier.getStorage());
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
         }
     }
@@ -306,7 +306,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             FluidTankTier prevTier = tier;
 
             tier = FluidTankTier.values()[dataStream.readInt()];
-            fluidTank.setCapacity(tier.storage);
+            fluidTank.setCapacity(tier.getStorage());
 
             clientActive = dataStream.readBoolean();
             valve = dataStream.readInt();
@@ -321,7 +321,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
             TileUtils.readTankData(dataStream, fluidTank);
 
             if (prevTier != tier || (updateDelay == 0 && clientActive != isActive)) {
-                updateDelay = general.UPDATE_DELAY;
+                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());
             }

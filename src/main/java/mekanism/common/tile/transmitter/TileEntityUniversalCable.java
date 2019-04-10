@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.TileNetworkList;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -17,11 +18,10 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
 import mekanism.common.integration.tesla.TeslaCableIntegration;
@@ -82,7 +82,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
             if (!sides.isEmpty()) {
                 TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(getPos(), getWorld());
-                double canDraw = tier.cableCapacity;
+                double canDraw = tier.getCableCapacity();
 
                 for (EnumFacing side : sides) {
                     if (connectedOutputters[side.ordinal()] != null) {
@@ -107,50 +107,58 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                             ITeslaProducer producer = CapabilityUtils
                                   .getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
                             double toDraw = producer
-                                  .takePower(Math.round(Math.min(Integer.MAX_VALUE, canDraw * general.TO_TESLA)), true)
-                                  * general.FROM_TESLA;
+                                  .takePower(Math.round(Math.min(Integer.MAX_VALUE,
+                                        canDraw * MekanismConfig.current().general.TO_TESLA.val())), true)
+                                  * MekanismConfig.current().general.FROM_TESLA.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
 
-                            producer.takePower(Math.round(toDraw * general.TO_TESLA), false);
+                            producer.takePower(Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()),
+                                  false);
                         } else if (MekanismUtils.useForge() && CapabilityUtils
                               .hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) {
                             IEnergyStorage storage = CapabilityUtils
                                   .getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite());
-                            double toDraw = storage.extractEnergy((int) Math.round(canDraw * general.TO_FORGE), true)
-                                  * general.FROM_FORGE;
+                            double toDraw = storage.extractEnergy(
+                                  (int) Math.round(canDraw * MekanismConfig.current().general.TO_FORGE.val()), true)
+                                  * MekanismConfig.current().general.FROM_FORGE.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
 
-                            storage.extractEnergy((int) Math.round(toDraw * general.TO_TESLA), false);
+                            storage.extractEnergy(
+                                  (int) Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
                         } else if (MekanismUtils.useRF() && outputter instanceof IEnergyProvider) {
                             double toDraw = ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
-                                  (int) Math.round(Math.min(Integer.MAX_VALUE, canDraw * general.TO_RF)), true)
-                                  * general.FROM_RF;
+                                  (int) Math.round(Math.min(Integer.MAX_VALUE,
+                                        canDraw * MekanismConfig.current().general.TO_RF.val())), true)
+                                  * MekanismConfig.current().general.FROM_RF.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
 
                             ((IEnergyProvider) outputter)
-                                  .extractEnergy(side.getOpposite(), (int) Math.round(toDraw * general.TO_RF), false);
+                                  .extractEnergy(side.getOpposite(),
+                                        (int) Math.round(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
 
                             if (tile instanceof IEnergySource) {
                                 double received = Math
-                                      .min(((IEnergySource) tile).getOfferedEnergy() * general.FROM_IC2, canDraw);
+                                      .min(((IEnergySource) tile).getOfferedEnergy() * MekanismConfig
+                                            .current().general.FROM_IC2.val(), canDraw);
                                 double toDraw = received;
 
                                 if (received > 0) {
                                     toDraw -= takeEnergy(received, true);
                                 }
 
-                                ((IEnergySource) tile).drawEnergy(toDraw * general.TO_IC2);
+                                ((IEnergySource) tile)
+                                      .drawEnergy(toDraw * MekanismConfig.current().general.TO_IC2.val());
                             }
                         }
                     }
@@ -249,7 +257,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         return maxReceive - (int) Math
-              .round(Math.min(Integer.MAX_VALUE, takeEnergy(maxReceive * general.FROM_RF, !simulate) * general.TO_RF));
+              .round(Math.min(Integer.MAX_VALUE,
+                    takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) * MekanismConfig
+                          .current().general.TO_RF.val()));
     }
 
     @Override
@@ -261,18 +271,20 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
     public int getCapacity() {
-        return tier.cableCapacity;
+        return tier.getCableCapacity();
     }
 
     @Override

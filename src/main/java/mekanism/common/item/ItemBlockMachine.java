@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
@@ -31,10 +32,9 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITierItem;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -183,7 +183,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                     list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
                 }
 
-                int cap = FluidTankTier.values()[getBaseTier(itemstack).ordinal()].storage;
+                int cap = FluidTankTier.values()[getBaseTier(itemstack).ordinal()].getStorage();
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + (
                       cap == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : cap + " mB"));
             }
@@ -315,7 +315,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             if (tileEntity instanceof TileEntityFluidTank) {
                 TileEntityFluidTank tile = (TileEntityFluidTank) tileEntity;
                 tile.tier = FluidTankTier.values()[getBaseTier(stack).ordinal()];
-                tile.fluidTank.setCapacity(tile.tier.storage);
+                tile.fluidTank.setCapacity(tile.tier.getStorage());
             }
 
             if (tileEntity instanceof ISecurityTile) {
@@ -657,13 +657,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     public int receiveEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
-            double toReceive = Math.min(energy * general.FROM_RF, energyNeeded);
+            double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
 
-            return (int) Math.round(toReceive * general.TO_RF);
+            return (int) Math.round(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -674,13 +674,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min((energy * general.FROM_RF), energyRemaining);
+            double toSend = Math.min((energy * MekanismConfig.current().general.FROM_RF.val()), energyRemaining);
 
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
 
-            return (int) Math.round(toSend * general.TO_RF);
+            return (int) Math.round(toSend * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -689,13 +689,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(ItemStack theItem) {
-        return (int) (getEnergy(theItem) * general.TO_RF);
+        return (int) (getEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(ItemStack theItem) {
-        return (int) (getMaxEnergy(theItem) * general.TO_RF);
+        return (int) (getMaxEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
@@ -711,7 +711,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
     @Override
     public int getCapacity(ItemStack container) {
-        return FluidTankTier.values()[getBaseTier(container).ordinal()].storage;
+        return FluidTankTier.values()[getBaseTier(container).ordinal()].getStorage();
     }
 
     @Override
@@ -805,7 +805,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
     @Override
     public SecurityMode getSecurity(ItemStack stack) {
-        if (!general.allowProtection) {
+        if (!MekanismConfig.current().general.allowProtection.val()) {
             return SecurityMode.PUBLIC;
         }
 

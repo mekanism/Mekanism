@@ -15,7 +15,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.state.IBlockState;
@@ -188,7 +188,7 @@ public class TransmitterModel extends OBJBakedModelBase {
             boolean sideIconOverride = connection != null && getIconStatus(side, connection) > 0;
 
             if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
-                int opaqueVal = client.opaqueTransmitters ? 1 : 0;
+                int opaqueVal = MekanismConfig.current().client.opaqueTransmitters.val() ? 1 : 0;
 
                 if (prop != null && prop.color != null) {
                     return (!sideIconOverride && f.getMaterialName().contains("Center"))
@@ -204,15 +204,13 @@ public class TransmitterModel extends OBJBakedModelBase {
                             continue;
                         }
 
-                        if (!s.contains("Center") && !s.contains("Centre") && (client.opaqueTransmitters == s
-                              .contains("Opaque"))) {
+                        if (!s.contains("Center") && !s.contains("Centre") && (
+                              MekanismConfig.current().client.opaqueTransmitters.val() == s.contains("Opaque"))) {
                             return textureMap.get(s);
                         }
                     }
-                } else {
-                    if (client.opaqueTransmitters) {
-                        return textureMap.get(f.getMaterialName() + "_Opaque");
-                    }
+                } else if (MekanismConfig.current().client.opaqueTransmitters.val()) {
+                    return textureMap.get(f.getMaterialName() + "_Opaque");
                 }
             }
         }

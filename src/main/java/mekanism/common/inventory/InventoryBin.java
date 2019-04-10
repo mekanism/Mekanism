@@ -84,7 +84,7 @@ public class InventoryBin {
     }
 
     public int getMaxStorage() {
-        return getTier().storage;
+        return getTier().getStorage();
     }
 
     public BinTier getTier() {

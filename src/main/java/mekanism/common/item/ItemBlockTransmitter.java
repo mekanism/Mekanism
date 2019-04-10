@@ -6,6 +6,7 @@ import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -13,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITierItem;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
@@ -80,33 +80,33 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
             if (transmission == TransmissionType.ENERGY) {
                 list.add(
                       EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils
-                            .getEnergyDisplay(Tier.CableTier.get(tier).cableCapacity) + "/t");
+                            .getEnergyDisplay(Tier.CableTier.get(tier).getCableCapacity()) + "/t");
             } else if (transmission == TransmissionType.FLUID) {
                 list.add(
                       EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier
-                            .get(tier).pipeCapacity + "mB/t");
+                            .get(tier).getPipeCapacity() + "mB/t");
                 list.add(
                       EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier
-                            .get(tier).pipePullAmount + "mB/t");
+                            .get(tier).getPipePullAmount() + "mB/t");
             } else if (transmission == TransmissionType.GAS) {
                 list.add(
                       EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.TubeTier
-                            .get(tier).tubeCapacity + "mB/t");
+                            .get(tier).getTubeCapacity() + "mB/t");
                 list.add(
                       EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TubeTier
-                            .get(tier).tubePullAmount + "mB/t");
+                            .get(tier).getTubePullAmount() + "mB/t");
             } else if (transmission == TransmissionType.ITEM) {
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (
-                      Tier.TransporterTier.get(tier).speed / (100 / 20)) + " m/s");
+                      Tier.TransporterTier.get(tier).getSpeed() / (100 / 20)) + " m/s");
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY
-                      + Tier.TransporterTier.get(tier).pullAmount * 2 + "/s");
+                      + Tier.TransporterTier.get(tier).getPullAmount() * 2 + "/s");
             } else if (transmission == TransmissionType.HEAT) {
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY
-                      + Tier.ConductorTier.get(tier).inverseConduction);
+                      + Tier.ConductorTier.get(tier).getInverseConduction());
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY
-                      + Tier.ConductorTier.get(tier).inverseConductionInsulation);
+                      + Tier.ConductorTier.get(tier).getBaseConductionInsulation());
                 list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY
-                      + Tier.ConductorTier.get(tier).inverseHeatCapacity);
+                      + Tier.ConductorTier.get(tier).getInverseHeatCapacity());
             }
 
             list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings

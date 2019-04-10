@@ -135,7 +135,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         // Attempt to pull
         for (EnumFacing side : getConnections(ConnectionType.PULL)) {
             TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-            TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.pullAmount);
+            TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
 
             // There's a stack available to insert into the network...
             if (!request.isEmpty()) {
@@ -404,7 +404,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     public double getCost() {
-        return (double) TransporterTier.ULTIMATE.speed / (double) tier.speed;
+        return (double) TransporterTier.ULTIMATE.getSpeed() / (double) tier.getSpeed();
     }
 
     @Override

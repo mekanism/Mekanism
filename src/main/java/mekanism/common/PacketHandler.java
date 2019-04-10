@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Range4D;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync;
@@ -170,7 +170,7 @@ public class PacketHandler {
     }
 
     public static void log(String log) {
-        if (general.logPackets) {
+        if (MekanismConfig.current().general.logPackets.val()) {
             Mekanism.logger.info(log);
         }
     }

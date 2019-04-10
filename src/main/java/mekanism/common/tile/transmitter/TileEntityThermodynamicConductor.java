@@ -6,13 +6,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.ConductorTier;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -151,7 +151,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     public ColourRGBA getBaseColour() {
-        return tier.baseColour;
+        return tier.getBaseColour();
     }
 
     @Override
@@ -161,12 +161,12 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public double getInverseConductionCoefficient() {
-        return tier.inverseConduction;
+        return tier.getInverseConduction();
     }
 
     @Override
     public double getInsulationCoefficient(EnumFacing side) {
-        return tier.inverseConductionInsulation;
+        return tier.getInverseConductionInsulation();
     }
 
     @Override
@@ -181,7 +181,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public double applyTemperatureChange() {
-        temperature += tier.inverseHeatCapacity * heatToAbsorb;
+        temperature += tier.getInverseHeatCapacity() * heatToAbsorb;
         heatToAbsorb = 0;
 
         if (Math.abs(temperature - clientTemperature) > (temperature / 20)) {

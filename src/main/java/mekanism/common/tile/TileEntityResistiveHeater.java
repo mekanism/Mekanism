@@ -10,7 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -90,7 +90,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
             if (MekanismUtils.canFunction(this)) {
                 toUse = Math.min(getEnergy(), energyUsage);
-                heatToAbsorb += toUse / general.energyPerHeat;
+                heatToAbsorb += toUse / MekanismConfig.current().general.energyPerHeat.val();
                 setEnergy(getEnergy() - toUse);
             }
 
@@ -174,7 +174,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             lastEnvironmentLoss = dataStream.readDouble();
 
             if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = general.UPDATE_DELAY;
+                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());
             }

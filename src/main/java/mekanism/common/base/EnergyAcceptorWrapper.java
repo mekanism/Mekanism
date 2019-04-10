@@ -7,7 +7,7 @@ import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
@@ -104,11 +104,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public int toRF(double joules) {
-            return (int) Math.round(joules * general.TO_RF);
+            return (int) Math.round(joules * MekanismConfig.current().general.TO_RF.val());
         }
 
         public double fromRF(int rf) {
-            return rf * general.FROM_RF;
+            return rf * MekanismConfig.current().general.FROM_RF.val();
         }
     }
 
@@ -139,11 +139,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public double toEU(double joules) {
-            return joules * general.TO_IC2;
+            return joules * MekanismConfig.current().general.TO_IC2.val();
         }
 
         public double fromEU(double eu) {
-            return eu * general.FROM_IC2;
+            return eu * MekanismConfig.current().general.FROM_IC2.val();
         }
     }
 
@@ -171,11 +171,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public long toTesla(double joules) {
-            return Math.round(joules * general.TO_TESLA);
+            return Math.round(joules * MekanismConfig.current().general.TO_TESLA.val());
         }
 
         public double fromTesla(double tesla) {
-            return tesla * general.FROM_TESLA;
+            return tesla * MekanismConfig.current().general.FROM_TESLA.val();
         }
     }
 
@@ -203,11 +203,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public int toForge(double joules) {
-            return (int) Math.round(joules * general.TO_FORGE);
+            return (int) Math.round(joules * MekanismConfig.current().general.TO_FORGE.val());
         }
 
         public double fromForge(double forge) {
-            return forge * general.FROM_FORGE;
+            return forge * MekanismConfig.current().general.FROM_FORGE.val();
         }
     }
 }

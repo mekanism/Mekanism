@@ -8,6 +8,7 @@ import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.render.obj.TransmitterModel;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.network.PacketKey.KeyMessage;
 import mekanism.common.security.SecurityData;
@@ -50,12 +51,11 @@ public class MekanismClient extends Mekanism {
 
         SynchronizedBoilerData.clientHotMap.clear();
 
+        MekanismConfig.setSyncedConfig(null);
+        Mekanism.proxy.onConfigSync(false);
+
         for (IModule module : Mekanism.modulesLoaded) {
             module.resetClient();
         }
-
-        Mekanism.proxy.loadConfiguration();
-
-        Mekanism.logger.info("Reloaded config.");
     }
 }

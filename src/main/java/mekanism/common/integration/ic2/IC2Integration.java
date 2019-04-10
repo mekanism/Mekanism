@@ -5,7 +5,7 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -38,10 +38,11 @@ public class IC2Integration {
         IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
 
         if (tile instanceof IEnergySink && ((IEnergySink) tile).acceptsEnergyFrom(from, side.getOpposite())) {
-            double toSend = Math.min(currentSending * general.TO_IC2,
+            double toSend = Math.min(currentSending * MekanismConfig.current().general.TO_IC2.val(),
                   EnergyNet.instance.getPowerFromTier(((IEnergySink) tile).getSinkTier()));
             toSend = Math.min(Math.min(toSend, ((IEnergySink) tile).getDemandedEnergy()), Integer.MAX_VALUE);
-            return (toSend - (((IEnergySink) tile).injectEnergy(side.getOpposite(), toSend, 0))) * general.FROM_IC2;
+            return (toSend - (((IEnergySink) tile).injectEnergy(side.getOpposite(), toSend, 0))) * MekanismConfig
+                  .current().general.FROM_IC2.val();
         }
 
         return 0;

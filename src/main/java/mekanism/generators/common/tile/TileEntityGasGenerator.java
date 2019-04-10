@@ -13,7 +13,7 @@ import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -44,7 +44,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public int clientUsed;
 
     public TileEntityGasGenerator() {
-        super("gas", "GasGenerator", general.FROM_H2 * 100, general.FROM_H2 * 2);
+        super("gas", "GasGenerator", MekanismConfig.current().general.FROM_H2.val() * 100,
+              MekanismConfig.current().general.FROM_H2.val() * 2);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         fuelTank = new GasTank(MAX_GAS);
     }
@@ -94,7 +95,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
                 int toUse = getToUse();
 
-                output = Math.max(general.FROM_H2 * 2, generationRate * getToUse() * 2);
+                output = Math.max(MekanismConfig.current().general.FROM_H2.val() * 2, generationRate * getToUse() * 2);
 
                 int total = burnTicks + fuelTank.getStored() * maxBurnTicks;
                 total -= toUse;
@@ -122,7 +123,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         burnTicks = 0;
         maxBurnTicks = 0;
         generationRate = 0;
-        output = general.FROM_H2 * 2;
+        output = MekanismConfig.current().general.FROM_H2.val() * 2;
     }
 
     public int getToUse() {

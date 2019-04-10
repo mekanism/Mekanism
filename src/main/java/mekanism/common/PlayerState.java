@@ -62,7 +62,7 @@ public class PlayerState {
             }
 
             // Start a sound playing if the person is now flying
-            if (isActive && MekanismConfig.client.enablePlayerSounds) {
+            if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
                 SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "jetpack");
             }
         }
@@ -107,7 +107,7 @@ public class PlayerState {
             }
 
             // Start a sound playing if the person is now using a gasmask
-            if (isActive && MekanismConfig.client.enablePlayerSounds) {
+            if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
                 SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "gasmask");
             }
         }
@@ -152,7 +152,7 @@ public class PlayerState {
             }
 
             // Start a sound playing if the person is now using a flamethrower
-            if (isActive && MekanismConfig.client.enablePlayerSounds) {
+            if (isActive && MekanismConfig.current().client.enablePlayerSounds.val()) {
                 SoundHandler.startSound(world.getPlayerEntityByUUID(uuid), "flamethrower");
             }
         }

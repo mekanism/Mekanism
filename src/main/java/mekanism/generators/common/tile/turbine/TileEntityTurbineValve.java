@@ -15,8 +15,7 @@ import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.generators;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
@@ -155,13 +154,14 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         if (sideIsOutput(from)) {
-            double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract * general.FROM_RF));
+            double toSend = Math.min(getEnergy(),
+                  Math.min(getMaxOutput(), maxExtract * MekanismConfig.current().general.FROM_RF.val()));
 
             if (!simulate) {
                 setEnergy(getEnergy() - toSend);
             }
 
-            return (int) Math.round(Math.min(Integer.MAX_VALUE, toSend * general.TO_RF));
+            return (int) Math.round(Math.min(Integer.MAX_VALUE, toSend * MekanismConfig.current().general.TO_RF.val()));
         }
 
         return 0;
@@ -176,13 +176,15 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_RF));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_RF.val()));
     }
 
     @Override
@@ -229,25 +231,28 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getStored() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getEnergy() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void setStored(int energy) {
-        setEnergy(energy * general.FROM_IC2);
+        setEnergy(energy * MekanismConfig.current().general.FROM_IC2.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getCapacity() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getOutput() {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE, getMaxOutput() * general.TO_IC2));
+        return (int) Math
+              .round(Math.min(Integer.MAX_VALUE, getMaxOutput() * MekanismConfig.current().general.TO_IC2.val()));
     }
 
     @Override
@@ -259,7 +264,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOfferedEnergy() {
-        return Math.min(getEnergy(), getMaxOutput()) * general.TO_IC2;
+        return Math.min(getEnergy(), getMaxOutput()) * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
@@ -270,7 +275,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public double getOutputEnergyUnitsPerTick() {
-        return getMaxOutput() * general.TO_IC2;
+        return getMaxOutput() * MekanismConfig.current().general.TO_IC2.val();
     }
 
     @Override
@@ -283,7 +288,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
         if (structure != null) {
-            double toDraw = Math.min(amount * general.FROM_IC2, getMaxOutput());
+            double toDraw = Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(), getMaxOutput());
             setEnergy(Math.max(getEnergy() - toDraw, 0));
         }
     }
@@ -389,8 +394,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                     return new Object[]{structure.clientFlow};
                 case 3:
                     double rate =
-                          structure.lowerVolume * (structure.clientDispersers * generators.turbineDisperserGasFlow);
-                    rate = Math.min(rate, structure.vents * generators.turbineVentGasFlow);
+                          structure.lowerVolume * (structure.clientDispersers * MekanismConfig
+                                .current().generators.turbineDisperserGasFlow.val());
+                    rate = Math
+                          .min(rate, structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
                     return new Object[]{rate};
                 case 4:
                     return new Object[]{structure.lastSteamInput};

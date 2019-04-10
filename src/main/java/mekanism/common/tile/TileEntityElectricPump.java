@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
@@ -20,10 +21,8 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -77,7 +76,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     /**
      * How much energy this machine consumes per-tick.
      */
-    public double BASE_ENERGY_PER_TICK = usage.electricPumpUsage;
+    public double BASE_ENERGY_PER_TICK = MekanismConfig.current().usage.electricPumpUsage.val();
     public double energyPerTick = BASE_ENERGY_PER_TICK;
     /**
      * How many ticks it takes to run an operation.
@@ -214,7 +213,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
             for (EnumFacing orientation : EnumFacing.VALUES) {
                 Coord4D side = wrapper.offset(orientation);
 
-                if (Coord4D.get(this).distanceTo(side) <= general.maxPumpRange) {
+                if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.current().general.maxPumpRange.val()) {
                     fluid = MekanismUtils.getFluid(world, side, hasFilter());
 
                     if (fluid != null && (activeType == null || fluid.getFluid() == activeType) && (
@@ -247,7 +246,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
     private boolean shouldTake(FluidStack fluid, Coord4D coord) {
         if (fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == MekanismFluids.HeavyWater) {
-            return general.pumpWaterSources;
+            return MekanismConfig.current().general.pumpWaterSources.val();
         }
 
         return true;

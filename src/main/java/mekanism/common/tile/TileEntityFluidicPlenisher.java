@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -17,11 +18,9 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -64,7 +63,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     /**
      * How much energy this machine consumes per-tick.
      */
-    public double BASE_ENERGY_PER_TICK = usage.fluidicPlenisherUsage;
+    public double BASE_ENERGY_PER_TICK = MekanismConfig.current().usage.fluidicPlenisherUsage.val();
     public double energyPerTick = BASE_ENERGY_PER_TICK;
     /**
      * How many ticks it takes to run an operation.
@@ -131,7 +130,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     private void doPlenish() {
-        if (usedNodes.size() >= general.maxPlenisherNodes) {
+        if (usedNodes.size() >= MekanismConfig.current().general.maxPlenisherNodes.val()) {
             finishedCalc = true;
             return;
         }

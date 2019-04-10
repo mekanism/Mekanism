@@ -14,7 +14,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.client;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -66,7 +66,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                 }
             }
 
-            if (client.opaqueTransmitters || message.coord4D == null) {
+            if (MekanismConfig.current().client.opaqueTransmitters.val() || message.coord4D == null) {
                 return;
             }
 

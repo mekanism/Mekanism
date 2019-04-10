@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.IAlloyInteraction;
 import mekanism.common.MekanismItems;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.general;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ public class ItemAlloy extends ItemMekanism {
         TileEntity tile = world.getTileEntity(pos);
         ItemStack stack = player.getHeldItem(hand);
 
-        if (general.allowTransmitterAlloyUpgrade && CapabilityUtils
+        if (MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val() && CapabilityUtils
               .hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side)) {
             if (!world.isRemote) {
                 IAlloyInteraction interaction = CapabilityUtils

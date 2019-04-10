@@ -19,7 +19,7 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig.usage;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.WasherRecipe;
@@ -64,7 +64,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
 
     public TileEntityChemicalWasher() {
         super("machine.washer", "ChemicalWasher", BlockStateMachine.MachineType.CHEMICAL_WASHER.baseEnergy,
-              usage.chemicalWasherUsage, 4);
+              MekanismConfig.current().usage.chemicalWasherUsage.val(), 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 

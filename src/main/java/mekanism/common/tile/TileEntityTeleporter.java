@@ -10,13 +10,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -398,13 +398,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     }
 
     public int calculateEnergyCost(Entity entity, Coord4D coords) {
-        int energyCost = MekanismConfig.usage.teleporterBaseUsage;
+        int energyCost = MekanismConfig.current().usage.teleporterBaseUsage.val();
 
         if (entity.world.provider.getDimension() != coords.dimensionId) {
-            energyCost += MekanismConfig.usage.teleporterDimensionPenalty;
+            energyCost += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
         } else {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
-            energyCost += (distance * MekanismConfig.usage.teleporterDistanceUsage);
+            energyCost += (distance * MekanismConfig.current().usage.teleporterDistanceUsage.val());
         }
 
         return energyCost;
