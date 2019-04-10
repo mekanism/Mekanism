@@ -85,8 +85,6 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
                     model3D.minX = 0.1875;
                     model3D.maxX = 0.8215;
-                    model3D.minY = 0.4375;
-                    model3D.maxY = 0.4375 + ((float) i / stages) * 0.4375;
                     break;
                 }
                 case SOUTH: {
@@ -95,8 +93,6 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
                     model3D.minX = 0.1875;
                     model3D.maxX = 0.8215;
-                    model3D.minY = 0.4375;
-                    model3D.maxY = 0.4375 + ((float) i / stages) * 0.4375;
                     break;
                 }
                 case WEST: {
@@ -105,8 +101,6 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
                     model3D.minZ = 0.1875;
                     model3D.maxZ = 0.8215;
-                    model3D.minY = 0.4375;
-                    model3D.maxY = 0.4375 + ((float) i / stages) * 0.4375;
                     break;
                 }
                 case EAST: {
@@ -115,11 +109,12 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
 
                     model3D.minZ = 0.1875;
                     model3D.maxZ = 0.8215;
-                    model3D.minY = 0.4375;
-                    model3D.maxY = 0.4375 + ((float) i / stages) * 0.4375;
                     break;
                 }
             }
+
+            model3D.minY = 0.4375 + 0.001;  //prevent z fighting at low fuel levels
+            model3D.maxY = 0.4375 + ((float) i / stages) * 0.4375 + 0.001;
 
             MekanismRenderer.renderObject(model3D);
             DisplayInteger.endList();
