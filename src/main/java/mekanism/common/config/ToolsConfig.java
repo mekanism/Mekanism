@@ -50,7 +50,8 @@ public class ToolsConfig extends BaseConfig {
               int enchantabilityDefault, float toughnessDefault) {
             final String category = "tools.armor-balance." + toolKey;
             final String protectionCategory = category + ".protection";
-            this.durability = new IntOption(owner, category, "durability", durabilityDefault);
+            this.durability = new IntOption(owner, category, "durability", durabilityDefault,
+                  "Base durability of " + toolKey + " armor.");
             String protectionComment = "Protection value of " + toolKey;
             this.feetProtection = new IntOption(owner, protectionCategory, "feet", feetProtectionDefault,
                   protectionComment + " boots.");
