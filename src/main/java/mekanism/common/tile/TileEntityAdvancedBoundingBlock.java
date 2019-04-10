@@ -211,7 +211,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-        
+
         return inv.canInsertItem(i, itemstack, side);
     }
 
@@ -336,23 +336,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     public IAdvancedBoundingBlock getInv() {
-        if (!receivedCoords) {
+        if (!receivedCoords || !world.isBlockLoaded(mainPos)) {
             return null;
         }
 
         // Return the inventory/main tile; note that it's possible, esp. when chunks are
         // loading that the inventory/main tile has not yet loaded and thus is null.
         TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
-        if (tile instanceof  IAdvancedBoundingBlock) {
-            return (IAdvancedBoundingBlock) tile;
-        } else if (tile != null) {
+        if (tile == null) {
+            return null;
+        }
+        if (!(tile instanceof IAdvancedBoundingBlock)) {
             // On the off chance that another block got placed there (which seems only likely with corruption,
             // go ahead and log what we found.
-            Mekanism.logger.warn("getInv() references a position that does not implement IAdvancedBoundingBlock: {}\n" +
-                  "\tFound instead: {}\nPlease report this to the maintainer of Mekanism!", mainPos, tile);
+            Mekanism.logger.error("Found tile {} instead of an IAdvancedBoundingBlock, at {}. Multiblock cannot function", tile, mainPos);
+            //world.setBlockToAir(mainPos);
+            return null;
         }
 
-        return null;
+        return (IAdvancedBoundingBlock) tile;
     }
 
     @Override
