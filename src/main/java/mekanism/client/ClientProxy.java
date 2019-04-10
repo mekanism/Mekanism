@@ -145,8 +145,6 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.multiblock.UpdateProtocol.NodeChecker;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -182,7 +180,6 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
@@ -222,6 +219,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -1014,7 +1012,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height,
+          INodeChecker checker) {
         doSparkle(tileEntity, new SparkleAnimation(tileEntity, renderLoc, length, width, height, checker));
     }
 
@@ -1208,7 +1207,19 @@ public class ClientProxy extends CommonProxy {
         if (player == null || player.world.isRemote) {
             Minecraft.getMinecraft().addScheduledTask(runnable);
         } else {
-            ((WorldServer) player.world).addScheduledTask(runnable); //singleplayer
+            //Single player
+            if (player.world instanceof WorldServer) {
+                ((WorldServer) player.world).addScheduledTask(runnable);
+            } else {
+                MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+                if (server != null) {
+                    server.addScheduledTask(runnable);
+                } else {
+                    Mekanism.logger.error(
+                          "Packet handler wanted to set a scheduled task, but we couldn't find a way to set one.");
+                    Mekanism.logger.error("Player = {}, World = {}", player, player.world);
+                }
+            }
         }
     }
 
