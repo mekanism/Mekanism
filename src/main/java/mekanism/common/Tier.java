@@ -1,7 +1,5 @@
 package mekanism.common;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import mekanism.api.EnumColor;
 import mekanism.common.block.states.BlockStateMachine;
@@ -16,32 +14,6 @@ import net.minecraft.util.ResourceLocation;
  * @author aidancbrady
  */
 public final class Tier {
-
-    private static List<ITier> tierTypes = new ArrayList<>();
-
-    private static boolean initiated = false;
-
-    public static void init() {
-        if (initiated) {
-            return;
-        }
-
-        for (Class<?> c : Tier.class.getDeclaredClasses()) {
-            if (c.isEnum()) {
-                try {
-                    for (Object obj : c.getEnumConstants()) {
-                        if (obj instanceof ITier) {
-                            tierTypes.add((ITier) obj);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        initiated = true;
-    }
 
     /**
      * The default tiers used in Mekanism.
@@ -92,15 +64,13 @@ public final class Tier {
         ULTIMATE(128000000, 51200),
         CREATIVE(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        private double maxEnergy;
-        private double output;
         private final double baseMaxEnergy;
         private final double baseOutput;
         private final BaseTier baseTier;
 
         EnergyCubeTier(double max, double out) {
-            baseMaxEnergy = maxEnergy = max;
-            baseOutput = output = out;
+            baseMaxEnergy = max;
+            baseOutput = out;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -137,12 +107,11 @@ public final class Tier {
         ELITE(64E9D),
         ULTIMATE(512E9D);
 
-        private double maxEnergy;
         private final double baseMaxEnergy;
         private final BaseTier baseTier;
 
         InductionCellTier(double max) {
-            baseMaxEnergy = maxEnergy = max;
+            baseMaxEnergy = max;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -166,12 +135,11 @@ public final class Tier {
         ELITE(4096000),
         ULTIMATE(32768000);
 
-        private double output;
         private final double baseOutput;
         private final BaseTier baseTier;
 
         InductionProviderTier(double out) {
-            baseOutput = output = out;
+            baseOutput = out;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -189,7 +157,7 @@ public final class Tier {
         }
     }
 
-    public enum FactoryTier {
+    public enum FactoryTier implements ITier {
         BASIC(3, new ResourceLocation("mekanism", "gui/factory/GuiBasicFactory.png"),
               BlockStateMachine.MachineType.BASIC_FACTORY),
         ADVANCED(5, new ResourceLocation("mekanism", "gui/factory/GuiAdvancedFactory.png"),
@@ -209,17 +177,7 @@ public final class Tier {
             baseTier = BaseTier.values()[ordinal()];
         }
 
-        public static FactoryTier getFromName(String tierName) {
-            for (FactoryTier tier : values()) {
-                if (tierName.contains(tier.getBaseTier().getSimpleName())) {
-                    return tier;
-                }
-            }
-
-            Mekanism.logger.error("Invalid tier identifier when retrieving with name.");
-            return BASIC;
-        }
-
+        @Override
         public BaseTier getBaseTier() {
             return baseTier;
         }
@@ -231,12 +189,11 @@ public final class Tier {
         ELITE(64000),
         ULTIMATE(320000);
 
-        private int cableCapacity;
         private final int baseCapacity;
         private final BaseTier baseTier;
 
         CableTier(int capacity) {
-            baseCapacity = cableCapacity = capacity;
+            baseCapacity = capacity;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -270,15 +227,13 @@ public final class Tier {
         ELITE(16000, 1600),
         ULTIMATE(64000, 6400);
 
-        private int pipeCapacity;
-        private int pipePullAmount;
         private final int baseCapacity;
         private final int basePull;
         private final BaseTier baseTier;
 
         PipeTier(int capacity, int pullAmount) {
-            baseCapacity = pipeCapacity = capacity;
-            basePull = pipePullAmount = pullAmount;
+            baseCapacity = capacity;
+            basePull = pullAmount;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -320,15 +275,13 @@ public final class Tier {
         ELITE(4096, 1024),
         ULTIMATE(16384, 4096);
 
-        private int tubeCapacity;
-        private int tubePullAmount;
         private final int baseCapacity;
         private final int basePull;
         private final BaseTier baseTier;
 
         TubeTier(int capacity, int pullAmount) {
-            baseCapacity = tubeCapacity = capacity;
-            basePull = tubePullAmount = pullAmount;
+            baseCapacity = capacity;
+            basePull = pullAmount;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -370,15 +323,13 @@ public final class Tier {
         ELITE(32, 20),
         ULTIMATE(64, 50);
 
-        private int pullAmount;
-        private int speed;
         private final int basePull;
         private final int baseSpeed;
         private final BaseTier baseTier;
 
         TransporterTier(int pull, int s) {
-            basePull = pullAmount = pull;
-            baseSpeed = speed = s;
+            basePull = pull;
+            baseSpeed = s;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -420,9 +371,6 @@ public final class Tier {
         ELITE(5, 1, 8000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
         ULTIMATE(5, 1, 100000, new ColourRGBA(0.2, 0.2, 0.2, 1));
 
-        private double inverseConduction;
-        private double inverseHeatCapacity;
-        private double inverseConductionInsulation;
         private ColourRGBA baseColour;
         private final double baseConduction;
         private final double baseHeatCapacity;
@@ -430,9 +378,9 @@ public final class Tier {
         private final BaseTier baseTier;
 
         ConductorTier(double inversek, double inverseC, double insulationInversek, ColourRGBA colour) {
-            baseConduction = inverseConduction = inversek;
-            baseHeatCapacity = inverseHeatCapacity = inverseC;
-            baseConductionInsulation = inverseConductionInsulation = insulationInversek;
+            baseConduction = inversek;
+            baseHeatCapacity = inverseC;
+            baseConductionInsulation = insulationInversek;
 
             baseColour = colour;
             baseTier = BaseTier.values()[ordinal()];
@@ -489,15 +437,13 @@ public final class Tier {
         ULTIMATE(112000, 3200),
         CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
-        private int storage;
-        private int output;
         private final int baseStorage;
         private final int baseOutput;
         private final BaseTier baseTier;
 
         FluidTankTier(int s, int o) {
-            baseStorage = storage = s;
-            baseOutput = output = o;
+            baseStorage = s;
+            baseOutput = o;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -530,15 +476,13 @@ public final class Tier {
         ULTIMATE(512000, 2056),
         CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
 
-        private int storage;
-        private int output;
         private final int baseStorage;
         private final int baseOutput;
         private final BaseTier baseTier;
 
         GasTankTier(int s, int o) {
-            baseStorage = storage = s;
-            baseOutput = output = o;
+            baseStorage = s;
+            baseOutput = o;
             baseTier = BaseTier.values()[ordinal()];
         }
 
@@ -576,12 +520,11 @@ public final class Tier {
         ULTIMATE(262144),
         CREATIVE(Integer.MAX_VALUE);
 
-        private int storage;
         private final int baseStorage;
         private final BaseTier baseTier;
 
         BinTier(int s) {
-            baseStorage = storage = s;
+            baseStorage = s;
             baseTier = BaseTier.values()[ordinal()];
         }
 

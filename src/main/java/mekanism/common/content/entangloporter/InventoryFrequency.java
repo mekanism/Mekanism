@@ -21,9 +21,6 @@ public class InventoryFrequency extends Frequency {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
 
-    public static final int FLUID_TANK_SIZE = Tier.FluidTankTier.ULTIMATE.getOutput();
-    public static final int GAS_TANK_SIZE = Tier.GasTankTier.ULTIMATE.getOutput();
-
     public double storedEnergy;
     public FluidTank storedFluid;
     public GasTank storedGas;
@@ -33,8 +30,8 @@ public class InventoryFrequency extends Frequency {
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
 
-        storedFluid = new FluidTank(FLUID_TANK_SIZE);
-        storedGas = new GasTank(GAS_TANK_SIZE);
+        storedFluid = new FluidTank(Tier.FluidTankTier.ULTIMATE.getOutput());
+        storedGas = new GasTank(Tier.GasTankTier.ULTIMATE.getOutput());
     }
 
     public InventoryFrequency(NBTTagCompound nbtTags) {
@@ -79,8 +76,8 @@ public class InventoryFrequency extends Frequency {
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
 
-        storedFluid = new FluidTank(FLUID_TANK_SIZE);
-        storedGas = new GasTank(GAS_TANK_SIZE);
+        storedFluid = new FluidTank(Tier.FluidTankTier.ULTIMATE.getOutput());
+        storedGas = new GasTank(Tier.GasTankTier.ULTIMATE.getOutput());
 
         storedEnergy = nbtTags.getDouble("storedEnergy");
 
@@ -136,8 +133,8 @@ public class InventoryFrequency extends Frequency {
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
 
-        storedFluid = new FluidTank(FLUID_TANK_SIZE);
-        storedGas = new GasTank(GAS_TANK_SIZE);
+        storedFluid = new FluidTank(Tier.FluidTankTier.ULTIMATE.getOutput());
+        storedGas = new GasTank(Tier.GasTankTier.ULTIMATE.getOutput());
 
         storedEnergy = dataStream.readDouble();
 

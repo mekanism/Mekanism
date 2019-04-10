@@ -7,8 +7,8 @@ import mekanism.common.config.options.BooleanOption;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.EnumOption;
 import mekanism.common.config.options.IntOption;
-import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
+import mekanism.common.util.UnitDisplayUtils.TempType;
 
 /**
  * Created by Thiakil on 15/03/2019.
@@ -205,10 +205,10 @@ public class GeneralConfig extends BaseConfig {
           "Disables Forge Energy (FE,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).");
 
     public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType",
-          UnitDisplayUtils.EnergyType.RF, "Displayed energy type in Mekanism GUIs.");
+          EnergyType.RF, "Displayed energy type in Mekanism GUIs.");
 
-    public EnumOption<UnitDisplayUtils.TempType> tempUnit = new EnumOption<>(this, "general", "Temperature Units",
-          UnitDisplayUtils.TempType.K, "Displayed temperature unit in Mekanism GUIs.");
+    public EnumOption<TempType> tempUnit = new EnumOption<>(this, "general", "Temperature Units",
+          TempType.K, "Displayed temperature unit in Mekanism GUIs.");
 
     public final IntOption laserRange = new IntOption(this, "general", "LaserRange", 64,
           "How far (in blocks) a laser can travel.");

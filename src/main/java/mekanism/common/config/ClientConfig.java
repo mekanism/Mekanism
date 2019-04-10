@@ -26,7 +26,7 @@ public class ClientConfig extends BaseConfig {
           "Show particles when machines active.");
 
     public final BooleanOption enableAmbientLighting = new BooleanOption(this, "client", "EnableAmbientLighting", true,
-          "Should active machines produce block light. Causes chunk redraws!");
+          "Should active machines produce block light.");
 
     public final IntOption ambientLightingLevel = new IntOption(this, "client", "AmbientLightingLevel", 15,
           "How much light to produce if ambient lighting is enabled.", 1, 15);
