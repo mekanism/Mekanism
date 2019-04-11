@@ -216,12 +216,11 @@ public class ClientTickHandler {
 
             ItemStack bootStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && isFreeRunnerOn(mc.player)) {
+            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && isFreeRunnerOn(mc.player)
+                  && !mc.player.isSneaking()) {
                 mc.player.stepHeight = 1.002F;
-            } else {
-                if (mc.player.stepHeight == 1.002F) {
-                    mc.player.stepHeight = 0.6F;
-                }
+            } else if (mc.player.stepHeight == 1.002F) {
+                mc.player.stepHeight = 0.6F;
             }
 
             // Update player's state for various items; this also automatically notifies server if something changed and
