@@ -323,8 +323,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addArtifact apiJar
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
             addGameVersion '1.12.2'
         }
 
@@ -339,8 +337,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
             addGameVersion '1.12.2'
         }
 
@@ -355,8 +351,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
             addGameVersion '1.12.2'
         }
     }
