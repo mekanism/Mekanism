@@ -17,7 +17,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -82,7 +82,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     public TileComponentUpgrade upgradeComponent;
 
     public TileEntityTeleporter() {
-        super("Teleporter", BlockStateMachine.MachineType.TELEPORTER.baseEnergy);
+        super("Teleporter", MachineType.TELEPORTER.baseEnergy);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
         securityComponent = new TileComponentSecurity(this);

@@ -9,7 +9,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.security.ISecurityItem;
 import net.minecraft.inventory.InventoryCrafting;
@@ -56,9 +56,9 @@ public class RecipeUtils {
     }
 
     private static boolean isFactory(ItemStack stack) {
-        return BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.BASIC_FACTORY
-              || BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ADVANCED_FACTORY
-              || BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELITE_FACTORY;
+        return MachineType.get(stack) == MachineType.BASIC_FACTORY
+              || MachineType.get(stack) == MachineType.ADVANCED_FACTORY
+              || MachineType.get(stack) == MachineType.ELITE_FACTORY;
     }
 
     public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn) {
@@ -183,15 +183,14 @@ public class RecipeUtils {
             }
         }
 
-        if (BlockStateMachine.MachineType.get(toReturn) != null && BlockStateMachine.MachineType
-              .get(toReturn).supportsUpgrades) {
+        if (MachineType.get(toReturn) != null && MachineType.get(toReturn).supportsUpgrades) {
             Map<Upgrade, Integer> upgrades = new HashMap<>();
 
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
 
-                if (!itemstack.isEmpty() && BlockStateMachine.MachineType.get(itemstack) != null
-                      && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades) {
+                if (!itemstack.isEmpty() && MachineType.get(itemstack) != null && MachineType
+                      .get(itemstack).supportsUpgrades) {
                     Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
 
                     for (Map.Entry<Upgrade, Integer> entry : stackMap.entrySet()) {

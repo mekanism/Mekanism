@@ -1,7 +1,7 @@
 package mekanism.common.config;
 
 import java.util.EnumMap;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.options.BooleanOption;
 import mekanism.common.config.options.DoubleOption;
 import mekanism.common.config.options.EnumOption;
@@ -232,9 +232,8 @@ public class GeneralConfig extends BaseConfig {
           "Chance of producing sawdust per operation in the precision sawmill when turning logs into planks.")
           .setRequiresGameRestart(true);
 
-    public final TypeConfigManager<BlockStateMachine.MachineType> machinesManager = new TypeConfigManager<>(this,
-          "machines", BlockStateMachine.MachineType.class, BlockStateMachine.MachineType::getValidMachines,
-          t -> t.blockName);
+    public final TypeConfigManager<MachineType> machinesManager = new TypeConfigManager<>(this,
+          "machines", MachineType.class, MachineType::getValidMachines, t -> t.blockName);
 
     public final EnumMap<BaseTier, TierConfig> tiers = TierConfig.create(this);
 }

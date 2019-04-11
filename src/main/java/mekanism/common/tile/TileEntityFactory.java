@@ -22,15 +22,12 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.FactoryTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.MachineFuelType;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -43,6 +40,8 @@ import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
@@ -127,7 +126,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     private RecipeType recipeType = RecipeType.SMELTING;
 
     public TileEntityFactory() {
-        this(FactoryTier.BASIC, BlockStateMachine.MachineType.BASIC_FACTORY);
+        this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
               TransmissionType.GAS);

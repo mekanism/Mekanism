@@ -4,7 +4,7 @@ import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -17,7 +17,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> {
 
     public TileEntityPurificationChamber() {
-        super("purification", "PurificationChamber", BlockStateMachine.MachineType.PURIFICATION_CHAMBER.baseEnergy,
+        super("purification", "PurificationChamber", MachineType.PURIFICATION_CHAMBER.baseEnergy,
               MekanismConfig.current().usage.purificationChamberUsage.val(), BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
     }
 

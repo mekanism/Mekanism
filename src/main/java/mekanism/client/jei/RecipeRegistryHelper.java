@@ -326,12 +326,8 @@ public class RecipeRegistryHelper {
 
     private static void registerVanillaSmeltingRecipeCatalyst(IModRegistry registry) {
         registry.addRecipeCatalyst(MachineType.ENERGIZED_SMELTER.getStack(), VanillaRecipeCategoryUid.SMELTING);
-        for (FactoryTier tier : FactoryTier.values()) {
-            if (tier.machineType.isEnabled()) {
-                registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING),
-                      VanillaRecipeCategoryUid.SMELTING);
-            }
-        }
+        FactoryTier.forEnabled(tier -> registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING),
+              VanillaRecipeCategoryUid.SMELTING));
     }
 
     private static <T> void addRecipes(IModRegistry registry, Recipe type, Class<T> recipeClass,
@@ -353,11 +349,9 @@ public class RecipeRegistryHelper {
             }
         }
         if (factoryType != null) {
-            for (FactoryTier tier : FactoryTier.values()) {
-                if (tier.machineType.isEnabled()) {
-                    registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, factoryType), recipe.getJEICategory());
-                }
-            }
+            RecipeType finalFactoryType = factoryType;
+            FactoryTier.forEnabled(tier -> registry
+                  .addRecipeCatalyst(MekanismUtils.getFactory(tier, finalFactoryType), recipe.getJEICategory()));
         }
     }
 }

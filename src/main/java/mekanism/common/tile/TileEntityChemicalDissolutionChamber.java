@@ -13,7 +13,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
@@ -54,7 +54,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     public TileEntityChemicalDissolutionChamber() {
         super("machine.dissolution", "ChemicalDissolutionChamber",
-              BlockStateMachine.MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy,
+              MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy,
               MekanismConfig.current().usage.chemicalDissolutionChamberUsage.val(), 4);
 
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);

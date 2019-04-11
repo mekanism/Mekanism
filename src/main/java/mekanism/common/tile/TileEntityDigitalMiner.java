@@ -23,7 +23,7 @@ import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -141,7 +141,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
           "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     public TileEntityDigitalMiner() {
-        super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
+        super("DigitalMiner", MachineType.DIGITAL_MINER.baseEnergy);
         inventory = NonNullList.withSize(INV_SLOTS.length + 1, ItemStack.EMPTY);
         radius = 10;
 

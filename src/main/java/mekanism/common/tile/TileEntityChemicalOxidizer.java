@@ -11,7 +11,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
@@ -42,7 +42,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     public OxidationRecipe cachedRecipe;
 
     public TileEntityChemicalOxidizer() {
-        super("machine.oxidizer", "ChemicalOxidizer", BlockStateMachine.MachineType.CHEMICAL_OXIDIZER.baseEnergy,
+        super("machine.oxidizer", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy,
               MekanismConfig.current().usage.rotaryCondensentratorUsage.val(), 3, 100);
 
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);

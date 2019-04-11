@@ -18,7 +18,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemUpgrade;
@@ -58,8 +58,8 @@ public class TileEntityPRC extends
     public GasTank outputGasTank = new GasTank(10000);
 
     public TileEntityPRC() {
-        super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName,
-              BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy,
+        super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER.blockName,
+              MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy,
               MekanismConfig.current().usage.pressurizedReactionBaseUsage.val(),
               3, 100, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
 

@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -44,7 +44,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySeismicVibrator() {
-        super("SeismicVibrator", BlockStateMachine.MachineType.SEISMIC_VIBRATOR.baseEnergy);
+        super("SeismicVibrator", MachineType.SEISMIC_VIBRATOR.baseEnergy);
 
         inventory = NonNullList.withSize(SLOTS .length, ItemStack.EMPTY);
     }

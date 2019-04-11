@@ -14,7 +14,7 @@ import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -51,7 +51,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityOredictionificator() {
-        super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.blockName);
+        super(MachineType.OREDICTIONIFICATOR.blockName);
 
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;

@@ -7,7 +7,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -20,8 +20,7 @@ import net.minecraft.util.EnumFacing;
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> {
 
     public TileEntityChemicalInjectionChamber() {
-        super("injection", "ChemicalInjectionChamber",
-              BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy,
+        super("injection", "ChemicalInjectionChamber", MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy,
               MekanismConfig.current().usage.chemicalInjectionChamberUsage.val(),
               BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
 

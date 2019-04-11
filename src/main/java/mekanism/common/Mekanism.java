@@ -26,9 +26,8 @@ import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IModule;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.ChunkManager;
@@ -64,6 +63,7 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.security.SecurityFrequency;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -357,8 +357,7 @@ public class Mekanism {
               new ItemStack(MekanismItems.Ingot, 1, 6), 0.0F);
 
         //Enrichment Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.ENRICHMENT_CHAMBER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.ENRICHMENT_CHAMBER)) {
             RecipeHandler
                   .addEnrichmentChamberRecipe(new ItemStack(Blocks.REDSTONE_ORE), new ItemStack(Items.REDSTONE, 12));
             RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.OBSIDIAN),
@@ -405,7 +404,7 @@ public class Mekanism {
         }
 
         //Combiner recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(BlockStateMachine.MachineType.COMBINER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.COMBINER)) {
             RecipeHandler.addCombinerRecipe(new ItemStack(Items.REDSTONE, 16), new ItemStack(Blocks.COBBLESTONE),
                   new ItemStack(Blocks.REDSTONE_ORE));
             RecipeHandler.addCombinerRecipe(new ItemStack(Items.DYE, 16, 4), new ItemStack(Blocks.COBBLESTONE),
@@ -421,14 +420,13 @@ public class Mekanism {
         }
 
         //Osmium Compressor Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.OSMIUM_COMPRESSOR)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.OSMIUM_COMPRESSOR)) {
             RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.GLOWSTONE_DUST),
                   new ItemStack(MekanismItems.Ingot, 1, 3));
         }
 
         //Crusher Recipes
-        if (MekanismConfig.current().general.machinesManager.isEnabled(BlockStateMachine.MachineType.CRUSHER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CRUSHER)) {
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.DIAMOND), new ItemStack(MekanismItems.OtherDust, 1, 0));
             RecipeHandler.addCrusherRecipe(new ItemStack(Items.IRON_INGOT),
                   new ItemStack(MekanismItems.Dust, 1, Resource.IRON.ordinal()));
@@ -473,14 +471,12 @@ public class Mekanism {
         }
 
         //Purification Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.PURIFICATION_CHAMBER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.PURIFICATION_CHAMBER)) {
             RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT));
         }
 
         //Chemical Injection Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_INJECTION_CHAMBER)) {
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.DIRT), MekanismFluids.Water,
                   new ItemStack(Blocks.CLAY));
             RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.HARDENED_CLAY), MekanismFluids.Water,
@@ -493,8 +489,7 @@ public class Mekanism {
         }
 
         //Precision Sawmill Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.PRECISION_SAWMILL)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.PRECISION_SAWMILL)) {
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.LADDER, 3), new ItemStack(Items.STICK, 7));
             RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.TORCH, 4), new ItemStack(Items.STICK),
                   new ItemStack(Items.COAL), 1);
@@ -550,8 +545,7 @@ public class Mekanism {
         }
 
         //Metallurgic Infuser Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.METALLURGIC_INFUSER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.METALLURGIC_INFUSER)) {
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(Items.IRON_INGOT),
                   new ItemStack(MekanismItems.EnrichedIron));
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10,
@@ -577,8 +571,7 @@ public class Mekanism {
         }
 
         //Chemical Infuser Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.CHEMICAL_INFUSER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_INFUSER)) {
             RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.Oxygen, 1),
                   new GasStack(MekanismFluids.SulfurDioxide, 2), new GasStack(MekanismFluids.SulfurTrioxide, 2));
             RecipeHandler.addChemicalInfuserRecipe(new GasStack(MekanismFluids.SulfurTrioxide, 1),
@@ -590,8 +583,7 @@ public class Mekanism {
         }
 
         //Electrolytic Separator Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.ELECTROLYTIC_SEPARATOR)) {
             RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2),
                   2 * MekanismConfig.current().general.FROM_H2.val(),
                   new GasStack(MekanismFluids.Hydrogen, 2), new GasStack(MekanismFluids.Oxygen, 1));
@@ -611,8 +603,7 @@ public class Mekanism {
               FluidRegistry.getFluidStack("liquidlithium", 1));
 
         //Chemical Crystallizer Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.CHEMICAL_CRYSTALLIZER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_CRYSTALLIZER)) {
             RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.Lithium, 100),
                   new ItemStack(MekanismItems.OtherDust, 1, 4));
             RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(MekanismFluids.Brine, 15),
@@ -624,8 +615,7 @@ public class Mekanism {
             if (gas instanceof OreGas && !((OreGas) gas).isClean()) {
                 OreGas oreGas = (OreGas) gas;
 
-                if (MekanismConfig.current().general.machinesManager
-                      .isEnabled(BlockStateMachine.MachineType.CHEMICAL_WASHER)) {
+                if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.CHEMICAL_WASHER)) {
                     RecipeHandler
                           .addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
                 }
@@ -633,7 +623,7 @@ public class Mekanism {
                 //do the crystallizer only if it's one of ours!
                 Resource gasResource = Resource.getFromName(oreGas.getName());
                 if (gasResource != null && MekanismConfig.current().general.machinesManager
-                      .isEnabled(BlockStateMachine.MachineType.CHEMICAL_CRYSTALLIZER)) {
+                      .isEnabled(MachineType.CHEMICAL_CRYSTALLIZER)) {
                     RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200),
                           new ItemStack(MekanismItems.Crystal, 1, gasResource.ordinal()));
                 }
@@ -641,8 +631,7 @@ public class Mekanism {
         }
 
         //Pressurized Reaction Chamber Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.PRESSURIZED_REACTION_CHAMBER)) {
             RecipeHandler.addPRCRecipe(
                   new ItemStack(MekanismItems.BioFuel, 2), new FluidStack(FluidRegistry.WATER, 10),
                   new GasStack(MekanismFluids.Hydrogen, 100),
@@ -667,8 +656,7 @@ public class Mekanism {
         }
 
         //Solar Neutron Activator Recipes
-        if (MekanismConfig.current().general.machinesManager
-              .isEnabled(BlockStateMachine.MachineType.SOLAR_NEUTRON_ACTIVATOR)) {
+        if (MekanismConfig.current().general.machinesManager.isEnabled(MachineType.SOLAR_NEUTRON_ACTIVATOR)) {
             RecipeHandler.addSolarNeutronRecipe(new GasStack(MekanismFluids.Lithium, 1),
                   new GasStack(MekanismFluids.Tritium, 1));
         }

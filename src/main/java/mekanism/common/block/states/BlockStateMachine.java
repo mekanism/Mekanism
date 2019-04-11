@@ -3,6 +3,7 @@ package mekanism.common.block.states;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
@@ -227,13 +228,7 @@ public class BlockStateMachine extends ExtendedBlockState {
         private static final List<MachineType> VALID_MACHINES = new ArrayList<>();
 
         static {
-            List<MachineType> ret = new ArrayList<>();
-
-            for (MachineType type : MachineType.values()) {
-                if (type.isValidMachine()) {
-                    VALID_MACHINES.add(type);
-                }
-            }
+            Arrays.stream(MachineType.values()).filter(MachineType::isValidMachine).forEach(VALID_MACHINES::add);
         }
 
         public static List<MachineType> getValidMachines() {

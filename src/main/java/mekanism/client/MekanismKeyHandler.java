@@ -5,7 +5,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -106,7 +106,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             } else if (player.isSneaking() && item instanceof ItemBlockMachine) {
                 ItemBlockMachine machine = (ItemBlockMachine) item;
 
-                if (BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.FLUID_TANK) {
+                if (MachineType.get(toolStack) == MachineType.FLUID_TANK) {
                     machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
                     Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND,
                           Lists.newArrayList(machine.getBucketMode(toolStack))));

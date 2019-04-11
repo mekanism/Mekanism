@@ -8,7 +8,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityEffectsBlock;
@@ -35,7 +35,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     public Random random = new Random();
 
     public TileEntityChargepad() {
-        super("machine.chargepad", "Chargepad", BlockStateMachine.MachineType.CHARGEPAD.baseEnergy);
+        super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 

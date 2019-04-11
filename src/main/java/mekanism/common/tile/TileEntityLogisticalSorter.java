@@ -15,7 +15,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.Finder;
@@ -71,7 +71,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
           "addOreFilter", "removeOreFilter"};
 
     public TileEntityLogisticalSorter() {
-        super("LogisticalSorter", BlockStateMachine.MachineType.LOGISTICAL_SORTER.baseEnergy);
+        super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.baseEnergy);
         inventory = NonNullList.withSize(1, ItemStack.EMPTY);
         doAutoSync = false;
     }

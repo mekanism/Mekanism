@@ -19,7 +19,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.recipe.RecipeHandler;
@@ -93,7 +93,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     public TileEntityElectrolyticSeparator() {
         super("machine.electrolyticseparator", "ElectrolyticSeparator",
-              BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy, 0, 4);
+              MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy, 0, 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 
@@ -524,7 +524,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
         if (upgrade == Upgrade.ENERGY) {
             maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-            energyPerTick = BlockStateMachine.MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
+            energyPerTick = MachineType.ELECTROLYTIC_SEPARATOR.getUsage();
             setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }

@@ -13,13 +13,12 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -27,6 +26,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -58,8 +58,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public TileComponentConfig configComponent;
 
     public TileEntityMetallurgicInfuser() {
-        super("machine.metalinfuser", "MetallurgicInfuser",
-              BlockStateMachine.MachineType.METALLURGIC_INFUSER.baseEnergy,
+        super("machine.metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy,
               MekanismConfig.current().usage.metallurgicInfuserUsage.val(), 0, 200);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
