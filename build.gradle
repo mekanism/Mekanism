@@ -319,7 +319,19 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             releaseType = 'release'
             mainArtifact (coreJar){
                 relations {
-                    optionalDependency "mtlib"
+                    optionalDependency "jei"
+                    optionalDependency "crafttweaker"
+                    optionalDependency "industrial-craft"
+                    optionalDependency "mcmultipart"
+                    optionalDependency "tesla"
+                    optionalDependency "cc-tweaked"
+                    optionalDependency "the-one-probe"
+                    optionalDependency "hwyla"
+                    optionalDependency "applied-energistics-2"
+                    optionalDependency "redstone-flux"
+                    optionalDependency "metallurgy-4-reforged"
+                    optionalDependency "opencomputers"
+                    optionalDependency "cyclic"
                 }
             }
             addArtifact apiJar
