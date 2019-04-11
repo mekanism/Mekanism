@@ -55,8 +55,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState,
       ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration {
 
-    public final int MAX_DELAY = 10;
-    public final double ENERGY_PER_ITEM = 5;
     public HashList<TransporterFilter> filters = new HashList<>();
     public RedstoneControl controlType = RedstoneControl.DISABLED;
     public EnumColor color;
