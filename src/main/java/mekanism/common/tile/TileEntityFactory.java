@@ -592,9 +592,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         int process = getOperation(inputSlot);
 
         if (recipeType.getFuelType() == MachineFuelType.ADVANCED) {
-            if (cachedRecipe[process] instanceof AdvancedMachineRecipe
-                  && ((AdvancedMachineRecipe) cachedRecipe[process])
-                  .inputMatches(inventory, inputSlot, gasTank, secondaryEnergyThisTick)) {
+            if (cachedRecipe[process] instanceof AdvancedMachineRecipe &&
+                  ((AdvancedMachineRecipe) cachedRecipe[process])
+                        .inputMatches(inventory, inputSlot, gasTank, secondaryEnergyThisTick)) {
                 return ((AdvancedMachineRecipe) cachedRecipe[process])
                       .canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
             }
@@ -606,8 +606,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                   .canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 
         } else if (recipeType.getFuelType() == MachineFuelType.DOUBLE) {
-            if (cachedRecipe[process] instanceof DoubleMachineRecipe && ((DoubleMachineRecipe) cachedRecipe[process])
-                  .inputMatches(inventory, inputSlot, 4)) {
+            if (cachedRecipe[process] instanceof DoubleMachineRecipe &&
+                  ((DoubleMachineRecipe) cachedRecipe[process]).inputMatches(inventory, inputSlot, 4)) {
                 return ((DoubleMachineRecipe) cachedRecipe[process]).canOperate(inventory, inputSlot, 4, outputSlot);
             }
             DoubleMachineRecipe<?> recipe = recipeType.getRecipe(inventory.get(inputSlot), inventory.get(4));
@@ -626,9 +626,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         }
 
         if (recipeType == RecipeType.INFUSING) {
-            if (cachedRecipe[process] instanceof MetallurgicInfuserRecipe
-                  && ((MetallurgicInfuserRecipe) cachedRecipe[process])
-                  .inputMatches(inventory, inputSlot, infuseStored)) {
+            if (cachedRecipe[process] instanceof MetallurgicInfuserRecipe &&
+                  ((MetallurgicInfuserRecipe) cachedRecipe[process]).inputMatches(inventory, inputSlot, infuseStored)) {
                 return ((MetallurgicInfuserRecipe) cachedRecipe[process])
                       .canOperate(inventory, inputSlot, outputSlot, infuseStored);
             }
