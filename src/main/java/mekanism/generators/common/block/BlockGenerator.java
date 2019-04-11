@@ -32,6 +32,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -39,10 +40,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -320,15 +318,7 @@ public abstract class BlockGenerator extends BlockContainer {
             int amount = ((TileEntityTurbineRotor) tileEntity).getHousedBlades();
 
             if (amount > 0) {
-                float motion = 0.7F;
-                double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-                double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-                double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-                EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                      pos.getZ() + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
-
-                world.spawnEntity(entityItem);
+                spawnAsEntity(world, pos, new ItemStack(GeneratorsItems.TurbineBlade, amount));
             }
         }
 
@@ -359,8 +349,7 @@ public abstract class BlockGenerator extends BlockContainer {
                         wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
 
                         if (entityplayer.isSneaking()) {
-                            dismantleBlock(state, world, pos, false);
-
+                            MekanismUtils.dismantleBlock(this, state, world, pos);
                             return true;
                         }
 
@@ -440,11 +429,6 @@ public abstract class BlockGenerator extends BlockContainer {
     }
 
     @Override
-    public int quantityDropped(Random random) {
-        return 0;
-    }
-
-    @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         int metadata = state.getBlock().getMetaFromState(state);
 
@@ -453,12 +437,6 @@ public abstract class BlockGenerator extends BlockContainer {
         }
 
         return GeneratorType.get(getGeneratorBlock(), metadata).create();
-    }
-
-    @Nonnull
-    @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return Items.AIR;
     }
 
     @Nonnull
@@ -509,29 +487,38 @@ public abstract class BlockGenerator extends BlockContainer {
         }
     }
 
+    /**
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
+     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
+     * TileEntity, ItemStack)}.
+     *
+     * @author Forge
+     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
+     */
     @Override
     public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
           @Nonnull EntityPlayer player, boolean willHarvest) {
-        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-
-            world.spawnEntity(entityItem);
-        }
-
-        return world.setBlockToAir(pos);
+        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
     @Nonnull
     @Override
     public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
           @Nonnull BlockPos pos, EntityPlayer player) {
+        return getDropItem(state, world, pos);
+    }
+
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state,
+          int fortune) {
+        drops.add(getDropItem(state, world, pos));
+    }
+
+    private ItemStack getDropItem(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
+        if (tileEntity == null) {
+            return ItemStack.EMPTY;
+        }
         ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
         if (itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock)) {
@@ -578,24 +565,31 @@ public abstract class BlockGenerator extends BlockContainer {
         return itemStack;
     }
 
-    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
-        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
-
+    /**
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
+     * boolean)}.
+     *
+     * @author Forge
+     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
+     */
+    @Override
+    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
+          @Nonnull IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
+        MekanismUtils.harvestBlockPatched(this, getDropItem(state, world, pos), world, player, pos, te);
         world.setBlockToAir(pos);
+    }
 
-        if (!returnBlock) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, itemStack);
-
-            world.spawnEntity(entityItem);
-        }
-
-        return itemStack;
+    /**
+     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
+     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
+     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
+     *
+     * @return false
+     */
+    @Override
+    @Deprecated
+    protected boolean canSilkHarvest() {
+        return false;
     }
 
     @Override

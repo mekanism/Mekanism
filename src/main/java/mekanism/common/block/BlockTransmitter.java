@@ -2,13 +2,11 @@ package mekanism.common.block;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter;
@@ -16,6 +14,7 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -29,6 +28,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -256,7 +256,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
             RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), facing, pos);
             if (wrenchHandler.canUseWrench(player, hand, stack, raytrace) && player.isSneaking()) {
                 if (!world.isRemote) {
-                    dismantleBlock(state, world, pos, false);
+                    MekanismUtils.dismantleBlock(this, state, world, pos);
                 }
 
                 return true;
@@ -267,13 +267,11 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     }
 
     @Nonnull
-    @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        ItemStack itemStack = ItemStack.EMPTY;
+    private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
         TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
         if (tileEntity != null) {
-            itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.getTransmitterType().ordinal());
+            ItemStack itemStack = new ItemStack(MekanismBlocks.Transmitter, 1,
+                  tileEntity.getTransmitterType().ordinal());
 
             if (!itemStack.hasTagCompound()) {
                 itemStack.setTagCompound(new NBTTagCompound());
@@ -281,9 +279,17 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
             ITierItem tierItem = (ITierItem) itemStack.getItem();
             tierItem.setBaseTier(itemStack, tileEntity.getBaseTier());
+            return itemStack;
         }
 
-        return itemStack;
+        return ItemStack.EMPTY;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        return getDropItem(world, pos);
     }
 
     public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
@@ -394,27 +400,45 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         return false;
     }
 
-    @Override
-    public int quantityDropped(Random random) {
-        return 0;
-    }
-
+    /**
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
+     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
+     * TileEntity, ItemStack)}.
+     *
+     * @author Forge
+     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
+     */
     @Override
     public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
           @Nonnull EntityPlayer player, boolean willHarvest) {
-        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
 
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+    /**
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
+     * boolean)}.
+     *
+     * @author Forge
+     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
+     */
+    @Override
+    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
+          @Nonnull IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
+        super.harvestBlock(world, player, pos, state, te, stack);
+        world.setBlockToAir(pos);
+    }
 
-            world.spawnEntity(entityItem);
-        }
-
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
+    /**
+     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
+     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
+     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
+     *
+     * @return false
+     */
+    @Override
+    @Deprecated
+    protected boolean canSilkHarvest() {
+        return false;
     }
 
     @Override

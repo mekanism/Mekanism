@@ -19,9 +19,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
 import mekanism.common.SideData;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.FactoryTier;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory;
@@ -38,6 +35,9 @@ import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.FactoryTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -45,6 +45,7 @@ import mekanism.common.tile.component.SideConfig;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
@@ -57,6 +58,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -68,6 +70,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.UsernameCache;
@@ -1125,6 +1128,34 @@ public final class MekanismUtils {
     public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
         return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn)
               .getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+    }
+
+    /**
+     * Dismantles a block, dropping it and removing it from the world.
+     */
+    public static void dismantleBlock(Block block, IBlockState state, World world, BlockPos pos) {
+        block.dropBlockAsItem(world, pos, state, 0);
+        world.setBlockToAir(pos);
+    }
+
+    /**
+     * Vanilla {@link BlockContainer#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)}
+     * except that is supports a custom {@link ItemStack} from <code>getDropItem()</code>-like things.
+     *
+     * Use only for {@link BlockContainer}s.
+     */
+    @SuppressWarnings("ConstantConditions")
+    public static void harvestBlockPatched(Block block, ItemStack itemstack, World world, EntityPlayer player,
+          BlockPos pos, TileEntity te)
+    {
+        player.addStat(StatList.getBlockStats(block));
+        player.addExhaustion(0.005F);
+        if (world.isRemote) {
+            return;
+        }
+
+        itemstack.setStackDisplayName(((IWorldNameable)te).getName());
+        Block.spawnAsEntity(world, pos, itemstack);
     }
 
     /**

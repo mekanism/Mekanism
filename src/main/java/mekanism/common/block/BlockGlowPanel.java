@@ -13,17 +13,18 @@ import mekanism.common.tile.TileEntityGlowPanel;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -134,36 +135,8 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 
         if (tileEntity != null && !world.isRemote && !canStay(world, pos)) {
-            float motion = 0.7F;
-            double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, stack);
-
-            world.spawnEntity(entityItem);
+            dropBlockAsItem(world, pos, world.getBlockState(pos), 0);
             world.setBlockToAir(pos);
-        }
-    }
-
-    @Override
-    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-
-        if (tileEntity != null && !tileEntity.getWorld().isRemote && !canStay(world, pos)) {
-            float motion = 0.7F;
-            double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
-            EntityItem entityItem = new EntityItem(tileEntity.getWorld(), pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, stack);
-
-            tileEntity.getWorld().spawnEntity(entityItem);
-            tileEntity.getWorld().setBlockToAir(pos);
         }
     }
 
@@ -190,35 +163,64 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
         return 15;
     }
 
-    @Override
-    public int quantityDropped(Random random) {
-        return 0;
+    @Nonnull
+    private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
+        TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
+        return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
     }
 
     @Nonnull
     @Override
     public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
           @Nonnull BlockPos pos, EntityPlayer player) {
-        TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
-        return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
+        return getDropItem(world, pos);
     }
 
     @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state,
+          int fortune) {
+        drops.add(getDropItem(world, pos));
+    }
+
+    /**
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
+     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
+     * TileEntity, ItemStack)}.
+     *
+     * @author Forge
+     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
+     */
+    @Override
     public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
           @Nonnull EntityPlayer player, boolean willHarvest) {
-        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
 
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+    /**
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
+     * boolean)}.
+     *
+     * @author Forge
+     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
+     */
+    @Override
+    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
+          @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
+        super.harvestBlock(world, player, pos, state, te, stack);
+        world.setBlockToAir(pos);
+    }
 
-            world.spawnEntity(entityItem);
-        }
-
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
+    /**
+     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
+     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
+     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
+     *
+     * @return false
+     */
+    @Override
+    @Deprecated
+    protected boolean canSilkHarvest() {
+        return false;
     }
 
     @Override

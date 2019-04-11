@@ -27,6 +27,7 @@ import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.base.IModule;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -986,6 +987,7 @@ public class Mekanism {
 
         //Register to receive subscribed events
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(BlockBounding.class);
 
         //Register this module's GUI handler in the simple packet protocol
         PacketSimpleGui.handlers.add(0, proxy);
