@@ -362,7 +362,10 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
         if (type.getFuelType() == MachineFuelType.CHANCE) {
             SideData data = configComponent.getOutputs(TransmissionType.ITEM).get(2);
-            data.availableSlots = addToArray(data.availableSlots, 4);
+            //Append the "extra" slot to the available slots
+            data.availableSlots = Arrays.copyOf(data.availableSlots, data.availableSlots.length + 1);
+            data.availableSlots[data.availableSlots.length - 1] = 4;
+
             ejectorComponent.trackers.put(TransmissionType.ITEM,
                   Arrays.copyOf(ejectorComponent.trackers.get(TransmissionType.ITEM), data.availableSlots.length));
         }
@@ -1029,20 +1032,5 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     public void readSustainedData(ItemStack itemStack) {
         infuseStored.readSustainedData(itemStack);
         GasUtils.readSustainedData(gasTank, itemStack);
-    }
-
-    private int[] addToArray(int[] arr, int... toAdd) {
-        int[] newArr = new int[arr.length + toAdd.length];
-        int i = 0;
-        while(i < arr.length) {
-            newArr[i] = arr[i];
-            i++;
-        }
-        i = 0;
-        while(i < toAdd.length) {
-            newArr[i + arr.length] = toAdd[i];
-            i++;
-        }
-        return newArr;
     }
 }
