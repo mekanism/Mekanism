@@ -12,7 +12,7 @@ import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.prefab.TileEntityBasicMachine;
+import mekanism.common.tile.prefab.TileEntityUpgradeableMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +22,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends
-      TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE> {
+      TileEntityUpgradeableMachine<ItemStackInput, ChanceOutput, RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
           "getMaxEnergy", "getEnergyNeeded"};
@@ -45,6 +45,17 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+    }
+
+    @Override
+    protected void upgradeInventory(TileEntityFactory factory) {
+        //Chance Machine
+        factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{4, 8, 9, 10};
+
+        factory.inventory.set(5, inventory.get(0));
+        factory.inventory.set(1, inventory.get(1));
+        factory.inventory.set(5 + 3, inventory.get(2));
+        factory.inventory.set(0, inventory.get(3));
     }
 
     @Override
@@ -103,7 +114,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 
     @Override
     public void operate(RECIPE recipe) {
-        recipe.operate(inventory);
+        recipe.operate(inventory, 0, 2, 4);
 
         markDirty();
         ejectorComponent.outputItems();
