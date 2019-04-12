@@ -86,11 +86,10 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
 
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound))) {
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler()
+                  .isSoundPlaying(activeSound))) {
                 activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), getInitialVolume(), getPos());
             }
-
-            Mekanism.logger.info("Fully muffled: {}", isFullyMuffled());
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
             playSoundCooldown = 20;
@@ -210,7 +209,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
             return false;
         }
 
-        IUpgradeTile tile = (IUpgradeTile)this;
+        IUpgradeTile tile = (IUpgradeTile) this;
         if (tile.getComponent().supports(Upgrade.MUFFLING)) {
             return tile.getComponent().getUpgrades(Upgrade.MUFFLING) == Upgrade.MUFFLING.getMax();
         }
