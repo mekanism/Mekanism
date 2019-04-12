@@ -312,6 +312,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public boolean canConnect(EnumFacing side) {
+        if(connectionTypes[side.ordinal()] == ConnectionType.NONE) {
+            return false;
+        }
         if (!redstoneSet) {
             if (redstoneReactive) {
                 redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
@@ -439,6 +442,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     protected void onModeChange(EnumFacing side) {
         markDirtyAcceptor(side);
+        if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
+            markDirtyTransmitters();
+        }
         markDirty();
     }
 
@@ -534,11 +540,19 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             } else {
                 EnumFacing hitSide = sideHit(hit.subHit + 1);
 
+                if(hitSide == null && connectionTypes[side.ordinal()] == ConnectionType.NONE) {
+                    hitSide = side;
+                }
+
                 if (hitSide != null) {
                     connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
                     sendDesc = true;
 
                     onModeChange(EnumFacing.byIndex(hitSide.ordinal()));
+
+                    refreshConnections();
+                    notifyTileChange();
+
                     player.sendMessage(
                           new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ")
                                 .translation(connectionTypes[hitSide.ordinal()].translationKey()));
