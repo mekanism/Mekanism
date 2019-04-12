@@ -3,11 +3,11 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryright",
+      "sides": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryside",
       "front": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryfront",
       "south": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryback",
-      "west": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryright",
-      "east": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryleft",
+      "west": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryside",
+      "east": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryside",
       "up": "mekanism:blocks/factory/basic/sawing/basicsawingfactorytop",
       "down": "mekanism:blocks/factory/basic/BasicFactoryBottom"
     }
@@ -24,8 +24,8 @@
         "textures": {
           "front": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryfronton",
           "south": "mekanism:blocks/factory/basic/sawing/basicsawingfactorybackon",
-          "west": "mekanism:blocks/factory/basic/sawing/basicsawingfactoryrighton",
-          "east": "mekanism:blocks/factory/basic/sawing/basicsawingfactorylefton",
+          "west": "mekanism:blocks/factory/basic/sawing/basicsawingfactorysideon",
+          "east": "mekanism:blocks/factory/basic/sawing/basicsawingfactorysideon",
           "up": "mekanism:blocks/factory/basic/sawing/basicsawingfactorytopon"
         }
       },

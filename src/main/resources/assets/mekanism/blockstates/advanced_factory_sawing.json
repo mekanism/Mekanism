@@ -3,11 +3,11 @@
   "defaults": {
     "model": "mekanism:machine",
     "textures": {
-      "sides": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryright",
+      "sides": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryside",
       "front": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryfront",
       "south": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryback",
-      "west": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryright",
-      "east": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryleft",
+      "west": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryside",
+      "east": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryside",
       "up": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorytop",
       "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
     }
@@ -24,8 +24,8 @@
         "textures": {
           "front": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryfronton",
           "south": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorybackon",
-          "west": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryrighton",
-          "east": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorylefton",
+          "west": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorysideon",
+          "east": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorysideon",
           "up": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorytopon"
         }
       },
