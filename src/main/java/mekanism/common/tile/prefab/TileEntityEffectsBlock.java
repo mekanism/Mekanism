@@ -7,7 +7,9 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -82,10 +84,17 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
                 return;
             }
 
-            if (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound)) {
+            // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
+            // play it
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound))) {
                 activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), getInitialVolume(), getPos());
-                playSoundCooldown = 20;
             }
+
+            Mekanism.logger.info("Fully muffled: {}", isFullyMuffled());
+            // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
+            // we don't want to try again
+            playSoundCooldown = 20;
+
         } else {
             // Determine how long the machine has been stopped (ala lighting changes). Don't try and stop the sound
             // unless machine has been stopped at least half-a-second, so that machines which are rapidly flipping on/off
@@ -194,5 +203,18 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         nbtTags.setBoolean("isActive", isActive);
 
         return nbtTags;
+    }
+
+    private boolean isFullyMuffled() {
+        if (!(this instanceof IUpgradeTile)) {
+            return false;
+        }
+
+        IUpgradeTile tile = (IUpgradeTile)this;
+        if (tile.getComponent().supports(Upgrade.MUFFLING)) {
+            return tile.getComponent().getUpgrades(Upgrade.MUFFLING) == Upgrade.MUFFLING.getMax();
+        }
+
+        return false;
     }
 }
