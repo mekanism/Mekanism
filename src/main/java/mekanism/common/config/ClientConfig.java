@@ -40,7 +40,7 @@ public class ClientConfig extends BaseConfig {
     public final BooleanOption enableMultiblockFormationParticles = new BooleanOption(this, "client",
           "MultiblockFormParticles",
           true,
-          "Set to false to prevent particle spam when loading multiblocks (notification message will still display).");
+          "Set to false to prevent particle spam when loading multiblocks (notification message will display instead).");
 
     public final BooleanOption alignHUDLeft = new BooleanOption(this, "client", "AlignHUDLeft",
           true, "Align HUD with left (if true) or right (if false)");
