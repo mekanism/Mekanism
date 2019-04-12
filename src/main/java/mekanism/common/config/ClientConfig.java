@@ -42,6 +42,9 @@ public class ClientConfig extends BaseConfig {
           true,
           "Set to false to prevent particle spam when loading multiblocks (notification message will still display).");
 
+    public final BooleanOption alignHUDLeft = new BooleanOption(this, "client", "AlignHUDLeft",
+          true, "Align HUD with left (if true) or right (if false)");
+
     @Override
     public void write(ByteBuf config) {
         throw new UnsupportedOperationException("Client config shouldn't be synced");
