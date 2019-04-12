@@ -168,6 +168,18 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
+    public boolean isValidTransmitter(TileEntity tileEntity) {
+        if (!super.isValidTransmitter(tileEntity)) {
+            return false;
+        }
+        if (!(tileEntity instanceof TileEntityMechanicalPipe)) {
+            return true;
+        }
+        TileEntityMechanicalPipe te = (TileEntityMechanicalPipe)tileEntity;
+        return this.buffer.getFluid() == null || te.buffer.getFluid() == null || this.buffer.getFluid().isFluidEqual(te.buffer.getFluid());
+    }
+
+    @Override
     public FluidNetwork createNewNetwork() {
         return new FluidNetwork();
     }

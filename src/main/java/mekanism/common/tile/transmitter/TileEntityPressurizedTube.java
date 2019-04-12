@@ -170,6 +170,18 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
+    public boolean isValidTransmitter(TileEntity tileEntity) {
+        if (!super.isValidTransmitter(tileEntity)) {
+            return false;
+        }
+        if (this.buffer.stored == null || !(tileEntity instanceof TileEntityPressurizedTube)) {
+            return true;
+        }
+        TileEntityPressurizedTube te = (TileEntityPressurizedTube)tileEntity;
+        return te.buffer.stored == null || this.buffer.stored.isGasEqual(te.buffer.stored);
+    }
+
+    @Override
     public GasNetwork createNewNetwork() {
         return new GasNetwork();
     }
