@@ -670,8 +670,11 @@ public class ClientProxy extends CommonProxy {
 
                 if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
                       || type == MachineType.ELITE_FACTORY) {
-                    RecipeType recipe = RecipeType.values()[((ItemBlockMachine) stack.getItem()).getRecipeType(stack)];
-                    resource = "mekanism:" + type.getName() + "_" + recipe.getName();
+                    int recipeType = ((ItemBlockMachine) stack.getItem()).getRecipeType(stack);
+                    if (recipeType < RecipeType.values().length) {
+                        RecipeType recipe = RecipeType.values()[recipeType];
+                        resource = "mekanism:" + type.getName() + "_" + recipe.getName();
+                    }
                 }
 
                 return machineResources.get(resource);
