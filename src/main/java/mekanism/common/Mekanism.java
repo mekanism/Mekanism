@@ -190,7 +190,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Mekanism.MODID, useMetadata = true, guiFactory = "mekanism.client.gui.ConfigGuiFactory",
-      acceptedMinecraftVersions = "[1.12,1.13)")
+      acceptedMinecraftVersions = "[1.12,1.13)", version = "${version}")
 @Mod.EventBusSubscriber()
 public class Mekanism {
 
