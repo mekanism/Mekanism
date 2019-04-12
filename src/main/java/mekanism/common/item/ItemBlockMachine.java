@@ -144,19 +144,21 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
         if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
               || type == MachineType.ELITE_FACTORY) {
-            BaseTier tier = type == MachineType.BASIC_FACTORY ? BaseTier.BASIC
-                  : (type == MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
+            BaseTier tier = type.factoryTier.getBaseTier();
 
-            if (I18n.canTranslate(
-                  "tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getTranslationKey()
-                        + "Factory")) {
-                return LangUtils.localize(
-                      "tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getTranslationKey()
-                            + "Factory");
+            int recipeType = getRecipeType(itemstack);
+            if (recipeType < RecipeType.values().length) {
+
+                String langKey =
+                      "tile." + tier.getSimpleName() + RecipeType.values()[recipeType].getTranslationKey()
+                            + "Factory";
+                if (I18n.canTranslate(langKey)) {
+                    return LangUtils.localize(langKey);
+                }
+
+                return tier.getLocalizedName() + " " + RecipeType.values()[recipeType].getLocalizedName()
+                      + " " + super.getItemStackDisplayName(itemstack);
             }
-
-            return tier.getLocalizedName() + " " + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName()
-                  + " " + super.getItemStackDisplayName(itemstack);
         } else if (type == MachineType.FLUID_TANK) {
             return LangUtils.localize("tile.FluidTank" + getBaseTier(itemstack).getSimpleName() + ".name");
         }
