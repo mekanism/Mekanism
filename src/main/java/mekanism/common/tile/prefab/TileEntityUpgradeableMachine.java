@@ -3,7 +3,7 @@ package mekanism.common.tile.prefab;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IFactory;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
@@ -39,7 +39,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 
         TileEntityFactory factory = (TileEntityFactory) world.getTileEntity(getPos());
-        IFactory.RecipeType type = IFactory.RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
+        RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
 
         //Basic
         factory.facing = facing;
