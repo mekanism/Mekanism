@@ -303,6 +303,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
         return prevTransferAmount + "/t";
     }
 
+    @Override
+    public boolean isCompatibleWith(GasNetwork other) {
+        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer== null || this.buffer.isGasEqual(other.buffer));
+    }
+
     public static class GasTransferEvent extends Event {
 
         public final GasNetwork gasNetwork;

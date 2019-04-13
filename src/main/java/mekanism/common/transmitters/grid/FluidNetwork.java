@@ -309,6 +309,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork> {
         return prevTransferAmount + " mB/t";
     }
 
+    @Override
+    public boolean isCompatibleWith(FluidNetwork other) {
+        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer== null || this.buffer.isFluidEqual(other.buffer));
+    }
+
     public static class FluidTransferEvent extends Event {
 
         public final FluidNetwork fluidNetwork;

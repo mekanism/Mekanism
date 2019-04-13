@@ -142,4 +142,9 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N>> implement
     public TransmissionType getTransmissionType() {
         return null;
     }
+
+    @Override
+    public boolean isCompatibleWith(IGridTransmitter<A, N> other) {
+        return false;
+    }
 }

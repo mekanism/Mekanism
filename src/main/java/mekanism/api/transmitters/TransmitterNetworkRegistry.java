@@ -233,7 +233,7 @@ public class TransmitterNetworkRegistry {
             if (orphanTransmitters.containsKey(from)) {
                 IGridTransmitter<A, N> transmitter = orphanTransmitters.get(from);
 
-                if (transmitter.isValid() && transmitter.isOrphan()) {
+                if (transmitter.isValid() && transmitter.isOrphan() && (connectedTransmitters.isEmpty() || connectedTransmitters.stream().anyMatch(existing->existing.isCompatibleWith(transmitter)))) {
                     connectedTransmitters.add(transmitter);
                     transmitter.setOrphan(false);
 
@@ -257,7 +257,9 @@ public class TransmitterNetworkRegistry {
         public void addNetworkToIterated(Coord4D from) {
             N net = startPoint.getExternalNetwork(from);
             if (net != null) {
-                networksFound.add(net);
+                if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {
+                    networksFound.add(net);
+                }
             }
         }
     }

@@ -61,6 +61,14 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmit
     }
 
     @Override
+    public boolean isCompatibleWith(IGridTransmitter<A, N> other) {
+        if (other instanceof TransmitterImpl) {
+            return containingTile.isValidTransmitter(((TransmitterImpl) other).containingTile);
+        }
+        return true;//allow non-Transmitter impls to connect?
+    }
+
+    @Override
     public A getAcceptor(EnumFacing side) {
         return getTileEntity().getCachedAcceptor(side);
     }

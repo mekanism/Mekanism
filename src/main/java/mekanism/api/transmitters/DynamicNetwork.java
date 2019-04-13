@@ -342,6 +342,10 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         updateQueue.add(new DelayQueue(player));
     }
 
+    public boolean isCompatibleWith(N other) {
+        return true;
+    }
+
     public static class TransmittersAddedEvent extends Event {
 
         public DynamicNetwork<?, ?> network;

@@ -3,6 +3,7 @@ package mekanism.common.capabilities;
 import java.util.Collection;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
@@ -199,5 +200,10 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     @Override
     public TransmissionType getTransmissionType() {
         return null;
+    }
+
+    @Override
+    public boolean isCompatibleWith(IGridTransmitter<TileEntity, InventoryNetwork> other) {
+        return false;
     }
 }

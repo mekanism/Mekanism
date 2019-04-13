@@ -64,4 +64,6 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
     void updateShare();
 
     Object getBuffer();
+
+    boolean isCompatibleWith(IGridTransmitter<A,N> other);
 }
