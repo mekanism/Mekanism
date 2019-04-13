@@ -25,7 +25,7 @@ public class GeneralConfig extends BaseConfig {
           "Audible sparkles.");
 
     public final BooleanOption voiceServerEnabled = new BooleanOption(this, "general", "WalkieTalkieServerEnabled",
-          true, "Enables the voice server for Walkie Talkies.");
+          false, "Enables the voice server for Walkie Talkies.");
 
     public final BooleanOption cardboardSpawners = new BooleanOption(this, "general", "AllowSpawnerBoxPickup", true,
           "Allows vanilla spawners to be moved with a Cardboard Box.");
