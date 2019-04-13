@@ -77,7 +77,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 structure = getNewStructure();
             }
 
-            if (structure != null && clientHasStructure && isRendering) {
+            if (structure != null && structure.renderLocation != null && clientHasStructure && isRendering) {
                 if (!prevStructure) {
                     Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength,
                           structure.volWidth, structure.volHeight, tile -> MultiblockManager.areEqual(this, tile));
