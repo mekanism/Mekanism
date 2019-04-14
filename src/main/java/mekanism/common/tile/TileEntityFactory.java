@@ -414,9 +414,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                     }
                     //Output/Input will not match
                     // Only check if the input spot is empty otherwise assume it works
-                    if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output) ||
+                    if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output, true) ||
                           checkStack.isEmpty() && !inputProducesOutput(slotID, stack,
-                                inventory.get(tier.processes + checkSlotID))) {
+                                inventory.get(tier.processes + checkSlotID), true)) {
                         continue;
                     }
 
@@ -440,9 +440,10 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
      * @param slotID Slot ID to grab the cached recipe of.
      * @param fallbackInput Used if the cached recipe is null or to validate the cached recipe is not out of date.
      * @param output The output we want.
+     * @param updateCache True to make the cached recipe get updated if it is out of date.
      * @return True if the recipe produces the given output.
      */
-    private boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output) {
+    private boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
         if (output.isEmpty()) {
             return true;
         }
@@ -451,8 +452,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         MachineRecipe cached = cachedRecipe[process];
         ItemStack extra = inventory.get(4);
         if (cached == null) {
-            cached = cachedRecipe[process] = recipeType
+            cached = recipeType
                   .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+            if (updateCache) {
+                cachedRecipe[process] = cached;
+            }
         } else {
             ItemStack recipeInput = ItemStack.EMPTY;
             boolean secondaryMatch = true;
@@ -483,6 +487,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             if (recipeInput.isEmpty() || !secondaryMatch || !ItemStack.areItemsEqual(recipeInput, fallbackInput)) {
                 cached = cachedRecipe[process] = recipeType
                       .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+                if (updateCache) {
+                    cachedRecipe[process] = cached;
+                }
             }
         }
         //If there is no recipe found
@@ -569,7 +576,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (isInputSlot(slotID)) {
-            return inputProducesOutput(slotID, itemstack, inventory.get(tier.processes + slotID));
+            return inputProducesOutput(slotID, itemstack, inventory.get(tier.processes + slotID), false);
         }
         //TODO: Only allow inserting into extra slot if it can go in
         return super.canInsertItem(slotID, itemstack, side);
