@@ -34,7 +34,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
+import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.inputs.InfusionInput;
+import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
@@ -411,8 +414,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                     }
                     //Output/Input will not match
                     // Only check if the input spot is empty otherwise assume it works
-                    if (stack.isEmpty() && !inputProducesOutput(checkStack, output) ||
-                          checkStack.isEmpty() && !inputProducesOutput(stack,
+                    if (stack.isEmpty() && !inputProducesOutput(checkSlotID, checkStack, output) ||
+                          checkStack.isEmpty() && !inputProducesOutput(slotID, stack,
                                 inventory.get(tier.processes + checkSlotID))) {
                         continue;
                     }
@@ -430,20 +433,68 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         }
     }
 
-    private boolean inputProducesOutput(ItemStack input, ItemStack output) {
+    /**
+     * Checks if the cached recipe (or recipe for current factory if the cache is out of date) can produce a specific
+     * output.
+     *
+     * @param slotID Slot ID to grab the cached recipe of.
+     * @param fallbackInput Used if the cached recipe is null or to validate the cached recipe is not out of date.
+     * @param output The output we want.
+     * @return True if the recipe produces the given output.
+     */
+    private boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output) {
         if (output.isEmpty()) {
             return true;
         }
-        //TODO: At some point it might be worth caching the machine recipe it found,
-        // but as it only checks when slots are empty it is unlikely to make that large a performance boost
-        // for the added logic complexity of keeping track of it.
-        // The case it would help the most is if you have something in the first slot and every other slot is empty
-        // and nothing is valid for it so it keeps on trying each slot, then caching the recipe and just comparing
-        // the output to the output would yield even better performance.
-        MachineRecipe matchingRecipe = getRecipeType()
-              .getAnyRecipe(input, inventory.get(4), gasTank.getGasType(), infuseStored);
-        if (matchingRecipe.recipeOutput instanceof ItemStackOutput) {
-            return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, output);
+        int process = getOperation(slotID);
+        //cached recipe may be invalid
+        MachineRecipe cached = cachedRecipe[process];
+        if (cached == null) {
+            cached = cachedRecipe[process] = recipeType
+                  .getAnyRecipe(fallbackInput, inventory.get(4), gasTank.getGasType(), infuseStored);
+        } else {
+            ItemStack recipeInput = ItemStack.EMPTY;
+            boolean secondaryMatch = true;
+            if (cached.recipeInput instanceof ItemStackInput) {
+                recipeInput = ((ItemStackInput) cached.recipeInput).ingredient;
+            } else if (cached.recipeInput instanceof AdvancedMachineInput) {
+                AdvancedMachineInput advancedInput = (AdvancedMachineInput) cached.recipeInput;
+                recipeInput = advancedInput.itemStack;
+            } else if (cached.recipeInput instanceof DoubleMachineInput) {
+                DoubleMachineInput doubleMachineInput = (DoubleMachineInput) cached.recipeInput;
+                recipeInput = doubleMachineInput.itemStack;
+            }/*else if (cached.recipeInput instanceof PressurizedInput) {
+                PressurizedInput pressurizedInput = (PressurizedInput) cached.recipeInput;
+                recipeInput = pressurizedInput.getSolid();
+                secondaryMatch =
+                      pressurizedInput.getGas() == null || pressurizedInput.getGas().isGasEqual(gasTank.getGas());
+                //TODO: Handle fluid for secondary matching if we ever have a PRC factory
+                pressurizedInput.getFluid();
+            }*/ else if (cached.recipeInput instanceof InfusionInput) {
+                InfusionInput infusionInput = (InfusionInput) cached.recipeInput;
+                recipeInput = infusionInput.inputStack;
+                secondaryMatch = infusionInput.infuse.type == infuseStored.type;
+            }
+            //If there is no cached item input or it doesn't match our fallback
+            // then it is an out of date cache so we compare against the new one
+            // and update the cache while we are at it
+            if (recipeInput.isEmpty() || !secondaryMatch || !ItemStack.areItemsEqual(recipeInput, fallbackInput)) {
+                cached = cachedRecipe[process] = recipeType
+                      .getAnyRecipe(fallbackInput, inventory.get(4), gasTank.getGasType(), infuseStored);
+            }
+        }
+        //If there is no recipe found
+        if (cached != null) {
+            ItemStack recipeOutput = ItemStack.EMPTY;
+            if (cached.recipeOutput instanceof ItemStackOutput) {
+                recipeOutput = ((ItemStackOutput) cached.recipeOutput).output;
+            }/* else if (cached.recipeOutput instanceof PressurizedOutput) {
+                //TODO: uncomment if we add a PRC factory
+                recipeOutput = ((PressurizedOutput) cached.recipeOutput).getItemOutput();
+            }*/
+            if (!recipeOutput.isEmpty()) {
+                return ItemStack.areItemsEqual(recipeOutput, output);
+            }
         }
         return true;
     }
@@ -516,7 +567,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         } else if (isInputSlot(slotID)) {
-            return inputProducesOutput(itemstack, inventory.get(tier.processes + slotID));
+            return inputProducesOutput(slotID, itemstack, inventory.get(tier.processes + slotID));
         }
         //TODO: Only allow inserting into extra slot if it can go in
         return super.canInsertItem(slotID, itemstack, side);
