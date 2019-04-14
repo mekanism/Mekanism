@@ -449,9 +449,10 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         int process = getOperation(slotID);
         //cached recipe may be invalid
         MachineRecipe cached = cachedRecipe[process];
+        ItemStack extra = inventory.get(4);
         if (cached == null) {
             cached = cachedRecipe[process] = recipeType
-                  .getAnyRecipe(fallbackInput, inventory.get(4), gasTank.getGasType(), infuseStored);
+                  .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
         } else {
             ItemStack recipeInput = ItemStack.EMPTY;
             boolean secondaryMatch = true;
@@ -460,27 +461,28 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             } else if (cached.recipeInput instanceof AdvancedMachineInput) {
                 AdvancedMachineInput advancedInput = (AdvancedMachineInput) cached.recipeInput;
                 recipeInput = advancedInput.itemStack;
+                secondaryMatch = gasTank.getGasType() == null || advancedInput.gasType == gasTank.getGasType();
             } else if (cached.recipeInput instanceof DoubleMachineInput) {
                 DoubleMachineInput doubleMachineInput = (DoubleMachineInput) cached.recipeInput;
                 recipeInput = doubleMachineInput.itemStack;
+                secondaryMatch = extra.isEmpty() || ItemStack.areItemsEqual(doubleMachineInput.extraStack, extra);
             }/*else if (cached.recipeInput instanceof PressurizedInput) {
                 PressurizedInput pressurizedInput = (PressurizedInput) cached.recipeInput;
                 recipeInput = pressurizedInput.getSolid();
-                secondaryMatch =
-                      pressurizedInput.getGas() == null || pressurizedInput.getGas().isGasEqual(gasTank.getGas());
+                secondaryMatch = gasTank.getGas() == null || gasTank.getGas().isGasEqual(pressurizedInput.getGas());
                 //TODO: Handle fluid for secondary matching if we ever have a PRC factory
                 pressurizedInput.getFluid();
             }*/ else if (cached.recipeInput instanceof InfusionInput) {
                 InfusionInput infusionInput = (InfusionInput) cached.recipeInput;
                 recipeInput = infusionInput.inputStack;
-                secondaryMatch = infusionInput.infuse.type == infuseStored.type;
+                secondaryMatch = infuseStored.amount == 0 || infuseStored.type == infusionInput.infuse.type;
             }
             //If there is no cached item input or it doesn't match our fallback
             // then it is an out of date cache so we compare against the new one
             // and update the cache while we are at it
             if (recipeInput.isEmpty() || !secondaryMatch || !ItemStack.areItemsEqual(recipeInput, fallbackInput)) {
                 cached = cachedRecipe[process] = recipeType
-                      .getAnyRecipe(fallbackInput, inventory.get(4), gasTank.getGasType(), infuseStored);
+                      .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
             }
         }
         //If there is no recipe found
