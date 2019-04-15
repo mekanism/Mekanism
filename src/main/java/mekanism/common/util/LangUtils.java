@@ -7,7 +7,11 @@ import net.minecraftforge.fluids.FluidStack;
 public final class LangUtils {
 
     public static String transOnOff(boolean b) {
-        return LangUtils.localize("gui." + (b ? "on" : "off"));
+        return LangUtils.localize(transOnOffKey(b));
+    }
+
+    public static String transOnOffKey(boolean b) {
+        return "gui." + (b ? "on" : "off");
     }
 
     public static String transYesNo(boolean b) {
