@@ -346,6 +346,10 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         return true;
     }
 
+    public boolean compatibleWithBuffer(Object buffer) {
+        return true;
+    }
+
     public static class TransmittersAddedEvent extends Event {
 
         public DynamicNetwork<?, ?> network;

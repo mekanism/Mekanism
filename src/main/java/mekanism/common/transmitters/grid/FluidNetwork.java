@@ -311,7 +311,18 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork> {
 
     @Override
     public boolean isCompatibleWith(FluidNetwork other) {
-        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer== null || this.buffer.isFluidEqual(other.buffer));
+        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer == null || this.buffer
+              .isFluidEqual(other.buffer));
+    }
+
+    @Override
+    public boolean compatibleWithBuffer(Object buffer) {
+        if (buffer instanceof FluidStack) {
+            return super.compatibleWithBuffer(buffer) && (this.buffer == null || this.buffer
+                  .isFluidEqual((FluidStack) buffer));
+        }
+        //Only allow it otherwise if it is null/empty as then it may actually be an instanceof and that failed
+        return super.compatibleWithBuffer(buffer) && buffer == null;
     }
 
     public static class FluidTransferEvent extends Event {
