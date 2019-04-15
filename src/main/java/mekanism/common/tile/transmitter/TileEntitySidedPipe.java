@@ -10,13 +10,12 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
-import mekanism.api.TileNetworkList;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -25,6 +24,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -60,13 +60,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public byte currentTransmitterConnections = 0x00;
 
     public boolean sendDesc = false;
-    public boolean redstonePowered = false;
+    private boolean redstonePowered = false;
 
-    public boolean redstoneReactive = false;
+    private boolean redstoneReactive = false;
 
     public boolean forceUpdate = true;
 
-    public boolean redstoneSet = false;
+    private boolean redstoneSet = false;
 
     public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
           ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
@@ -312,18 +312,20 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public boolean canConnect(EnumFacing side) {
-        if (!redstoneSet) {
-            if (redstoneReactive) {
-                redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
-            } else {
-                redstonePowered = false;
+        if (handlesRedstone()) {
+            if (!redstoneSet) {
+                if (redstoneReactive) {
+                    redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+                } else {
+                    redstonePowered = false;
+                }
+
+                redstoneSet = true;
             }
 
-            redstoneSet = true;
-        }
-
-        if (handlesRedstone() && redstoneReactive && redstonePowered) {
-            return false;
+            if (redstoneReactive && redstonePowered) {
+                return false;
+            }
         }
 
         if (Mekanism.hooks.MCMPLoaded) {
@@ -401,13 +403,20 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     public void refreshConnections() {
-        if (redstoneReactive) {
-            redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
-        } else {
-            redstonePowered = false;
-        }
+        if (handlesRedstone()) {
+            boolean previouslyPowered = redstonePowered;
+            if (redstoneReactive) {
+                redstonePowered = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+            } else {
+                redstonePowered = false;
+            }
+            //If the redstone mode changed properly update the connection to other transmitters/networks
+            if (previouslyPowered != redstonePowered) {
+                markDirtyTransmitters();
+            }
 
-        redstoneSet = true;
+            redstoneSet = true;
+        }
 
         if (!getWorld().isRemote) {
             byte possibleTransmitters = getPossibleTransmitterConnections();
@@ -487,16 +496,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     public void onNeighborBlockChange(EnumFacing side) {
-        if (handlesRedstone()) {
-            boolean prevPowered = redstonePowered;
-            refreshConnections();
-
-            if (prevPowered != redstonePowered) {
-                markDirtyTransmitters();
-            }
-        } else {
-            refreshConnections();
-        }
+        refreshConnections();
     }
 
     public void onPartChanged(IMultipart part) {
@@ -632,8 +632,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY
-              ||
-              capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
+              || capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
