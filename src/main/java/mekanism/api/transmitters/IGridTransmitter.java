@@ -5,7 +5,7 @@ import mekanism.api.Coord4D;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter {
+public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK>> extends ITransmitter {
 
     boolean hasTransmitterNetwork();
 
@@ -14,14 +14,14 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
      *
      * @return network this transmitter is using
      */
-    N getTransmitterNetwork();
+    NETWORK getTransmitterNetwork();
 
     /**
      * Sets this transmitter segment's network to a new value.
      *
      * @param network - network to set to
      */
-    void setTransmitterNetwork(N network);
+    void setTransmitterNetwork(NETWORK network);
 
     void setRequestsUpdate();
 
@@ -45,7 +45,7 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 
     Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
 
-    A getAcceptor(EnumFacing side);
+    ACCEPTOR getAcceptor(EnumFacing side);
 
     boolean isValid();
 
@@ -53,11 +53,11 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 
     void setOrphan(boolean orphaned);
 
-    N createEmptyNetwork();
+    NETWORK createEmptyNetwork();
 
-    N mergeNetworks(Collection<N> toMerge);
+    NETWORK mergeNetworks(Collection<NETWORK> toMerge);
 
-    N getExternalNetwork(Coord4D from);
+    NETWORK getExternalNetwork(Coord4D from);
 
     void takeShare();
 
@@ -65,5 +65,5 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 
     Object getBuffer();
 
-    boolean isCompatibleWith(IGridTransmitter<A,N> other);
+    boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK> other);
 }

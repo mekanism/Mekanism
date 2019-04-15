@@ -12,11 +12,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmitter<A, N> {
+public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK>> extends Transmitter<ACCEPTOR, NETWORK> {
 
-    public TileEntityTransmitter<A, N> containingTile;
+    public TileEntityTransmitter<ACCEPTOR, NETWORK> containingTile;
 
-    public TransmitterImpl(TileEntityTransmitter<A, N> multiPart) {
+    public TransmitterImpl(TileEntityTransmitter<ACCEPTOR, NETWORK> multiPart) {
         setTileEntity(multiPart);
     }
 
@@ -61,7 +61,7 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmit
     }
 
     @Override
-    public boolean isCompatibleWith(IGridTransmitter<A, N> other) {
+    public boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK> other) {
         if (other instanceof TransmitterImpl) {
             return containingTile.isValidTransmitter(((TransmitterImpl) other).containingTile);
         }
@@ -69,7 +69,7 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmit
     }
 
     @Override
-    public A getAcceptor(EnumFacing side) {
+    public ACCEPTOR getAcceptor(EnumFacing side) {
         return getTileEntity().getCachedAcceptor(side);
     }
 
@@ -86,12 +86,12 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmit
     }
 
     @Override
-    public N createEmptyNetwork() {
+    public NETWORK createEmptyNetwork() {
         return getTileEntity().createNewNetwork();
     }
 
     @Override
-    public N getExternalNetwork(Coord4D from) {
+    public NETWORK getExternalNetwork(Coord4D from) {
         TileEntity tile = from.getTileEntity(world());
 
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
@@ -99,7 +99,7 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmit
                   .getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
             if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType())) {
-                return ((IGridTransmitter<A, N>) transmitter).getTransmitterNetwork();
+                return ((IGridTransmitter<ACCEPTOR, NETWORK>) transmitter).getTransmitterNetwork();
             }
         }
 
@@ -122,7 +122,7 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmit
     }
 
     @Override
-    public N mergeNetworks(Collection<N> toMerge) {
+    public NETWORK mergeNetworks(Collection<NETWORK> toMerge) {
         return getTileEntity().createNetworkByMerging(toMerge);
     }
 
@@ -136,11 +136,11 @@ public class TransmitterImpl<A, N extends DynamicNetwork<A, N>> extends Transmit
         containingTile.sendDesc = true;
     }
 
-    public TileEntityTransmitter<A, N> getTileEntity() {
+    public TileEntityTransmitter<ACCEPTOR, NETWORK> getTileEntity() {
         return containingTile;
     }
 
-    public void setTileEntity(TileEntityTransmitter<A, N> containingPart) {
+    public void setTileEntity(TileEntityTransmitter<ACCEPTOR, NETWORK> containingPart) {
         this.containingTile = containingPart;
     }
 }

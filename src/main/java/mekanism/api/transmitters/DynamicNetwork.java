@@ -22,15 +22,15 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements IClientTicker, INetworkDataHandler {
+public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK>> implements IClientTicker, INetworkDataHandler {
 
-    public LinkedHashSet<IGridTransmitter<A, N>> transmitters = Sets.newLinkedHashSet();
-    public LinkedHashSet<IGridTransmitter<A, N>> transmittersToAdd = Sets.newLinkedHashSet();
-    public LinkedHashSet<IGridTransmitter<A, N>> transmittersAdded = Sets.newLinkedHashSet();
+    public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK>> transmitters = Sets.newLinkedHashSet();
+    public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK>> transmittersToAdd = Sets.newLinkedHashSet();
+    public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK>> transmittersAdded = Sets.newLinkedHashSet();
 
-    public HashMap<Coord4D, A> possibleAcceptors = new HashMap<>();
+    public HashMap<Coord4D, ACCEPTOR> possibleAcceptors = new HashMap<>();
     public HashMap<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
-    public HashMap<IGridTransmitter<A, N>, EnumSet<EnumFacing>> changedAcceptors = Maps.newHashMap();
+    public HashMap<IGridTransmitter<ACCEPTOR, NETWORK>, EnumSet<EnumFacing>> changedAcceptors = Maps.newHashMap();
     protected Range4D packetRange = null;
     protected int capacity = 0;
     protected double meanCapacity = 0;
@@ -40,13 +40,13 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
     protected World world = null;
     private Set<DelayQueue> updateQueue = new LinkedHashSet<>();
 
-    public void addNewTransmitters(Collection<IGridTransmitter<A, N>> newTransmitters) {
+    public void addNewTransmitters(Collection<IGridTransmitter<ACCEPTOR, NETWORK>> newTransmitters) {
         transmittersToAdd.addAll(newTransmitters);
     }
 
     public void commit() {
         if (!transmittersToAdd.isEmpty()) {
-            for (IGridTransmitter<A, N> transmitter : transmittersToAdd) {
+            for (IGridTransmitter<ACCEPTOR, NETWORK> transmitter : transmittersToAdd) {
                 if (transmitter.isValid()) {
                     if (world == null) {
                         world = transmitter.world();
@@ -56,7 +56,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
                         updateTransmitterOnSide(transmitter, side);
                     }
 
-                    transmitter.setTransmitterNetwork((N) this);
+                    transmitter.setTransmitterNetwork((NETWORK) this);
                     absorbBuffer(transmitter);
                     transmitters.add(transmitter);
                 }
@@ -69,8 +69,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         }
 
         if (!changedAcceptors.isEmpty()) {
-            for (Entry<IGridTransmitter<A, N>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet()) {
-                IGridTransmitter<A, N> transmitter = entry.getKey();
+            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet()) {
+                IGridTransmitter<ACCEPTOR, NETWORK> transmitter = entry.getKey();
 
                 if (transmitter.isValid()) {
                     EnumSet<EnumFacing> directionsChanged = entry.getValue();
@@ -85,8 +85,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         }
     }
 
-    public void updateTransmitterOnSide(IGridTransmitter<A, N> transmitter, EnumFacing side) {
-        A acceptor = transmitter.getAcceptor(side);
+    public void updateTransmitterOnSide(IGridTransmitter<ACCEPTOR, NETWORK> transmitter, EnumFacing side) {
+        ACCEPTOR acceptor = transmitter.getAcceptor(side);
         Coord4D acceptorCoord = transmitter.coord().offset(side);
         EnumSet<EnumFacing> directions = acceptorDirections.get(acceptorCoord);
 
@@ -114,7 +114,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
     }
 
-    public abstract void absorbBuffer(IGridTransmitter<A, N> transmitter);
+    public abstract void absorbBuffer(IGridTransmitter<ACCEPTOR, NETWORK> transmitter);
 
     public abstract void clampBuffer();
 
@@ -126,12 +126,12 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         clampBuffer();
 
         //Update all shares
-        for (IGridTransmitter<A, N> transmitter : transmitters) {
+        for (IGridTransmitter<ACCEPTOR, NETWORK> transmitter : transmitters) {
             transmitter.updateShare();
         }
 
         //Now invalidate the transmitters
-        for (IGridTransmitter<A, N> transmitter : transmitters) {
+        for (IGridTransmitter<ACCEPTOR, NETWORK> transmitter : transmitters) {
             invalidateTransmitter(transmitter);
         }
 
@@ -139,7 +139,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         deregister();
     }
 
-    public void invalidateTransmitter(IGridTransmitter<A, N> transmitter) {
+    public void invalidateTransmitter(IGridTransmitter<ACCEPTOR, NETWORK> transmitter) {
         if (!world.isRemote && transmitter.isValid()) {
             transmitter.takeShare();
             transmitter.setTransmitterNetwork(null);
@@ -147,7 +147,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         }
     }
 
-    public void acceptorChanged(IGridTransmitter<A, N> transmitter, EnumFacing side) {
+    public void acceptorChanged(IGridTransmitter<ACCEPTOR, NETWORK> transmitter, EnumFacing side) {
         EnumSet<EnumFacing> directions = changedAcceptors.get(transmitter);
 
         if (directions != null) {
@@ -159,9 +159,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         TransmitterNetworkRegistry.registerChangedNetwork(this);
     }
 
-    public void adoptTransmittersAndAcceptorsFrom(N net) {
-        for (IGridTransmitter<A, N> transmitter : net.transmitters) {
-            transmitter.setTransmitterNetwork((N) this);
+    public void adoptTransmittersAndAcceptorsFrom(NETWORK net) {
+        for (IGridTransmitter<ACCEPTOR, NETWORK> transmitter : net.transmitters) {
+            transmitter.setTransmitterNetwork((NETWORK) this);
             transmitters.add(transmitter);
             transmittersAdded.add(transmitter);
         }
@@ -196,7 +196,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
             return null;
         }
 
-        IGridTransmitter<A, N> initTransmitter = transmitters.iterator().next();
+        IGridTransmitter<ACCEPTOR, NETWORK> initTransmitter = transmitters.iterator().next();
         Coord4D initCoord = initTransmitter.coord();
 
         int minX = initCoord.x;
@@ -285,7 +285,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         return world;
     }
 
-    public abstract Set<Pair<Coord4D, A>> getAcceptors(Object data);
+    public abstract Set<Pair<Coord4D, ACCEPTOR>> getAcceptors(Object data);
 
     public void tick() {
         onUpdate();
@@ -333,7 +333,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
     public void clientTick() {
     }
 
-    public void queueClientUpdate(Collection<IGridTransmitter<A, N>> newTransmitters) {
+    public void queueClientUpdate(Collection<IGridTransmitter<ACCEPTOR, NETWORK>> newTransmitters) {
         transmittersAdded.addAll(newTransmitters);
         updateDelay = 5;
     }
@@ -342,7 +342,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
         updateQueue.add(new DelayQueue(player));
     }
 
-    public boolean isCompatibleWith(N other) {
+    public boolean isCompatibleWith(NETWORK other) {
         return true;
     }
 
