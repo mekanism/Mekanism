@@ -3,6 +3,7 @@ package mekanism.common.base;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.InfuseStorage;
@@ -43,6 +44,15 @@ public interface IFactory {
      * @return RecipeType ordinal
      */
     int getRecipeType(ItemStack itemStack);
+
+    /**
+     * Gets the recipe type this Factory currently has.
+     *
+     * @param itemStack - stack to check
+     * @return RecipeType or null if it has invalid NBT
+     */
+    @Nullable
+    RecipeType getRecipeTypeOrNull(ItemStack itemStack);
 
     /**
      * Sets the recipe type of this Smelting Factory to a new value.

@@ -111,8 +111,6 @@ import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -144,6 +142,8 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
@@ -175,7 +175,6 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
-import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
@@ -670,9 +669,8 @@ public class ClientProxy extends CommonProxy {
 
                 if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
                       || type == MachineType.ELITE_FACTORY) {
-                    int recipeType = ((ItemBlockMachine) stack.getItem()).getRecipeType(stack);
-                    if (recipeType < RecipeType.values().length) {
-                        RecipeType recipe = RecipeType.values()[recipeType];
+                    RecipeType recipe = ((ItemBlockMachine) stack.getItem()).getRecipeTypeOrNull(stack);
+                    if (recipe != null) {
                         resource = "mekanism:" + type.getName() + "_" + recipe.getName();
                     }
                 }
