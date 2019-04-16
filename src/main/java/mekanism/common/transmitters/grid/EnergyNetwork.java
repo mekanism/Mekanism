@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork> {
+public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> {
 
     public double clientEnergyScale = 0;
     public EnergyStack buffer = new EnergyStack(0);
@@ -56,8 +56,8 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> transmitter) {
-        EnergyStack energy = (EnergyStack) transmitter.getBuffer();
+    public void absorbBuffer(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> transmitter) {
+        EnergyStack energy = transmitter.getBuffer();
         buffer.amount += energy.amount;
         energy.amount = 0;
     }
@@ -78,7 +78,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         int numCables = transmitters.size();
         double reciprocalSum = 0;
 
-        for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> cable : transmitters) {
+        for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> cable : transmitters) {
             reciprocalSum += 1.0 / (double) cable.getCapacity();
         }
 

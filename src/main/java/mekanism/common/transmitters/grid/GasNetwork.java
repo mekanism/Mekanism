@@ -29,7 +29,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *
  * @author aidancbrady
  */
-public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
+public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> {
 
     public int transferDelay = 0;
 
@@ -89,7 +89,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork> transmitter) {
+    public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
         Object b = transmitter.getBuffer();
 
         if (!(b instanceof GasStack) || ((GasStack) b).getGas() == null || ((GasStack) b).amount == 0) {
@@ -310,13 +310,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
     }
 
     @Override
-    public boolean compatibleWithBuffer(Object buffer) {
-        if (buffer instanceof GasStack) {
-            return super.compatibleWithBuffer(buffer) && (this.buffer == null || this.buffer
-                  .isGasEqual((GasStack) buffer));
-        }
-        //Only allow it otherwise if it is null/empty as then it may actually be an instanceof and that failed
-        return super.compatibleWithBuffer(buffer) && buffer == null;
+    public boolean compatibleWithBuffer(GasStack buffer) {
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || this.buffer.isGasEqual(buffer));
     }
 
     public static class GasTransferEvent extends Event {

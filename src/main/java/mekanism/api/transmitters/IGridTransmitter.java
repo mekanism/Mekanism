@@ -5,7 +5,7 @@ import mekanism.api.Coord4D;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK>> extends ITransmitter {
+public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends ITransmitter {
 
     boolean hasTransmitterNetwork();
 
@@ -63,7 +63,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     void updateShare();
 
-    Object getBuffer();
+    BUFFER getBuffer();
 
-    boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK> other);
+    boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other);
 }

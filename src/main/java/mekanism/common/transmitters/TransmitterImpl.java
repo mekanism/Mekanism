@@ -12,11 +12,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK>> extends Transmitter<ACCEPTOR, NETWORK> {
+public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends Transmitter<ACCEPTOR, NETWORK, BUFFER> {
 
-    public TileEntityTransmitter<ACCEPTOR, NETWORK> containingTile;
+    public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> containingTile;
 
-    public TransmitterImpl(TileEntityTransmitter<ACCEPTOR, NETWORK> multiPart) {
+    public TransmitterImpl(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> multiPart) {
         setTileEntity(multiPart);
     }
 
@@ -61,7 +61,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     }
 
     @Override
-    public boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK> other) {
+    public boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other) {
         if (other instanceof TransmitterImpl) {
             return containingTile.isValidTransmitter(((TransmitterImpl) other).containingTile);
         }
@@ -99,7 +99,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
                   .getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
 
             if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType())) {
-                return ((IGridTransmitter<ACCEPTOR, NETWORK>) transmitter).getTransmitterNetwork();
+                return ((IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
             }
         }
 
@@ -117,7 +117,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     }
 
     @Override
-    public Object getBuffer() {
+    public BUFFER getBuffer() {
         return getTileEntity().getBuffer();
     }
 
@@ -136,11 +136,11 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
         containingTile.sendDesc = true;
     }
 
-    public TileEntityTransmitter<ACCEPTOR, NETWORK> getTileEntity() {
+    public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> getTileEntity() {
         return containingTile;
     }
 
-    public void setTileEntity(TileEntityTransmitter<ACCEPTOR, NETWORK> containingPart) {
+    public void setTileEntity(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> containingPart) {
         this.containingTile = containingPart;
     }
 }

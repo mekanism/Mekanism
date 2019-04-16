@@ -20,10 +20,10 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
-public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> extends TileEntitySidedPipe implements
+public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends TileEntitySidedPipe implements
       IAlloyInteraction {
 
-    public TransmitterImpl<A, N> transmitterDelegate;
+    public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public boolean unloaded = true;
 
@@ -35,7 +35,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
         transmitterDelegate = new TransmitterImpl<>(this);
     }
 
-    public TransmitterImpl<A, N> getTransmitter() {
+    public TransmitterImpl<A, N, BUFFER> getTransmitter() {
         return transmitterDelegate;
     }
 
@@ -169,7 +169,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
 
     public abstract int getCapacity();
 
-    public abstract Object getBuffer();
+    public abstract BUFFER getBuffer();
 
     public abstract void takeShare();
 

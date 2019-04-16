@@ -13,7 +13,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 /**
  * Created by ben on 03/05/16.
  */
-public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N>> implements IGridTransmitter<A, N> {
+public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> implements IGridTransmitter<A, N, BUFFER> {
 
     public static void register() {
         CapabilityManager.INSTANCE.register(IGridTransmitter.class, new NullStorage<>(), DefaultGridTransmitter::new);
@@ -130,7 +130,7 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N>> implement
     }
 
     @Override
-    public Object getBuffer() {
+    public BUFFER getBuffer() {
         return null;
     }
 
@@ -144,7 +144,7 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N>> implement
     }
 
     @Override
-    public boolean isCompatibleWith(IGridTransmitter<A, N> other) {
+    public boolean isCompatibleWith(IGridTransmitter<A, N, BUFFER> other) {
         return false;
     }
 }

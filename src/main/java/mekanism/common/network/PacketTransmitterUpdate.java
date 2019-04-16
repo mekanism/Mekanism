@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.HashSet;
 import mekanism.api.Coord4D;
+import mekanism.api.energy.EnergyStack;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -79,7 +80,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
                     if (transmitter.hasTransmitterNetwork()
                           && transmitter.getTransmissionType() == TransmissionType.ENERGY) {
-                        ((IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork>) transmitter)
+                        ((IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack>) transmitter)
                               .getTransmitterNetwork().clientEnergyScale = message.power;
                     }
                 }
@@ -92,7 +93,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
                     if (transmitter.hasTransmitterNetwork()
                           && transmitter.getTransmissionType() == TransmissionType.GAS) {
-                        GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork>) transmitter)
+                        GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork, GasStack>) transmitter)
                               .getTransmitterNetwork();
 
                         if (message.gasType != null) {
@@ -112,7 +113,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
                     if (transmitter.hasTransmitterNetwork()
                           && transmitter.getTransmissionType() == TransmissionType.FLUID) {
-                        FluidNetwork net = ((IGridTransmitter<IFluidHandler, FluidNetwork>) transmitter)
+                        FluidNetwork net = ((IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack>) transmitter)
                               .getTransmitterNetwork();
 
                         if (message.fluidType != null) {

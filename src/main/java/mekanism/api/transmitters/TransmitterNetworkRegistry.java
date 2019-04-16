@@ -130,10 +130,10 @@ public class TransmitterNetworkRegistry {
         orphanTransmitters.clear();
     }
 
-    public <A, N extends DynamicNetwork<A, N>> DynamicNetwork<A, N> getNetworkFromOrphan(
-          IGridTransmitter<A, N> startOrphan) {
+    public <A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> DynamicNetwork<A, N, BUFFER> getNetworkFromOrphan(
+          IGridTransmitter<A, N, BUFFER> startOrphan) {
         if (startOrphan.isValid() && startOrphan.isOrphan()) {
-            OrphanPathFinder<A, N> finder = new OrphanPathFinder<>(startOrphan);
+            OrphanPathFinder<A, N, BUFFER> finder = new OrphanPathFinder<>(startOrphan);
             finder.start();
             N network;
 
@@ -197,18 +197,18 @@ public class TransmitterNetworkRegistry {
         return strings;
     }
 
-    public class OrphanPathFinder<A, N extends DynamicNetwork<A, N>> {
+    public class OrphanPathFinder<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> {
 
-        public IGridTransmitter<A, N> startPoint;
+        public IGridTransmitter<A, N, BUFFER> startPoint;
 
         public HashSet<Coord4D> iterated = Sets.newHashSet();
 
-        public HashSet<IGridTransmitter<A, N>> connectedTransmitters = Sets.newHashSet();
+        public HashSet<IGridTransmitter<A, N, BUFFER>> connectedTransmitters = Sets.newHashSet();
         public HashSet<N> networksFound = Sets.newHashSet();
 
         private Deque<Coord4D> queue = new LinkedList<>();
 
-        public OrphanPathFinder(IGridTransmitter<A, N> start) {
+        public OrphanPathFinder(IGridTransmitter<A, N, BUFFER> start) {
             startPoint = start;
         }
 
@@ -231,7 +231,7 @@ public class TransmitterNetworkRegistry {
             iterated.add(from);
 
             if (orphanTransmitters.containsKey(from)) {
-                IGridTransmitter<A, N> transmitter = orphanTransmitters.get(from);
+                IGridTransmitter<A, N, BUFFER> transmitter = orphanTransmitters.get(from);
 
                 if (transmitter.isValid() && transmitter.isOrphan() && (connectedTransmitters.isEmpty()
                       || connectedTransmitters.stream().anyMatch(existing -> existing.isCompatibleWith(transmitter)))) {

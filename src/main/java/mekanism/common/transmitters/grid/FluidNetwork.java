@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork> {
+public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> {
 
     public int transferDelay = 0;
 
@@ -73,14 +73,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork> {
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork> transmitter) {
-        Object b = transmitter.getBuffer();
+    public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+        FluidStack fluid = transmitter.getBuffer();
 
-        if (!(b instanceof FluidStack) || ((FluidStack) b).getFluid() == null || ((FluidStack) b).amount == 0) {
+        if (fluid == null || fluid.getFluid() == null || fluid.amount == 0) {
             return;
         }
-
-        FluidStack fluid = (FluidStack) b;
 
         if (buffer == null || buffer.getFluid() == null || buffer.amount == 0) {
             buffer = fluid.copy();
@@ -108,7 +106,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork> {
         int numCables = transmitters.size();
         double sum = 0;
 
-        for (IGridTransmitter<IFluidHandler, FluidNetwork> pipe : transmitters) {
+        for (IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> pipe : transmitters) {
             sum += pipe.getCapacity();
         }
 
@@ -316,13 +314,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork> {
     }
 
     @Override
-    public boolean compatibleWithBuffer(Object buffer) {
-        if (buffer instanceof FluidStack) {
-            return super.compatibleWithBuffer(buffer) && (this.buffer == null || this.buffer
-                  .isFluidEqual((FluidStack) buffer));
-        }
-        //Only allow it otherwise if it is null/empty as then it may actually be an instanceof and that failed
-        return super.compatibleWithBuffer(buffer) && buffer == null;
+    public boolean compatibleWithBuffer(FluidStack buffer) {
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || this.buffer.isFluidEqual(buffer));
     }
 
     public static class FluidTransferEvent extends Event {

@@ -189,7 +189,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public Object getBuffer() {
+    public Void getBuffer() {
         return null;
     }
 
@@ -203,7 +203,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public boolean isCompatibleWith(IGridTransmitter<TileEntity, InventoryNetwork> other) {
+    public boolean isCompatibleWith(IGridTransmitter<TileEntity, InventoryNetwork, Void> other) {
         return false;
     }
 }
