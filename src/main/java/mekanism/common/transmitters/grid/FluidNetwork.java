@@ -315,7 +315,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public boolean compatibleWithBuffer(FluidStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer == null || this.buffer.isFluidEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer.isFluidEqual(buffer));
     }
 
     public static class FluidTransferEvent extends Event {

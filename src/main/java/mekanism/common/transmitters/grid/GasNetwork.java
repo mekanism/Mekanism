@@ -90,13 +90,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
-        Object b = transmitter.getBuffer();
+        GasStack gas = transmitter.getBuffer();
 
-        if (!(b instanceof GasStack) || ((GasStack) b).getGas() == null || ((GasStack) b).amount == 0) {
+        if (gas == null || gas.getGas() == null || gas.amount == 0) {
             return;
         }
-
-        GasStack gas = (GasStack) b;
 
         if (buffer == null || buffer.getGas() == null || buffer.amount == 0) {
             buffer = gas.copy();
@@ -311,7 +309,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public boolean compatibleWithBuffer(GasStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer == null || this.buffer.isGasEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer.isGasEqual(buffer));
     }
 
     public static class GasTransferEvent extends Event {
