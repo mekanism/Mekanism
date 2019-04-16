@@ -14,6 +14,7 @@ import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ITieredTile;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.base.ITileNetwork;
 import mekanism.api.TileNetworkList;
@@ -52,7 +53,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection,
-      IConfigurable, ITransmitter, ITickable {
+      IConfigurable, ITransmitter, ITickable, ITieredTile {
 
     public int delayTicks;
 
@@ -120,6 +121,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public BaseTier getBaseTier() {
         return BaseTier.BASIC;
+    }
+
+    @Override
+    public BaseTier getTier() {
+        return getBaseTier();
     }
 
     public void setBaseTier(BaseTier baseTier) {

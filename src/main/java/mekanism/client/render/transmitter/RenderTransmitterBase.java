@@ -1,10 +1,11 @@
 package mekanism.client.render.transmitter;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -22,6 +23,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.lwjgl.opengl.GL11;
 
@@ -47,15 +49,12 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
 
     public static HashMap<String, IBakedModel> buildModelMap(OBJModel objModel) {
         HashMap<String, IBakedModel> modelParts = new HashMap<>();
-
-        if (!objModel.getMatLib().getGroups().keySet().isEmpty()) {
-            for (String key : objModel.getMatLib().getGroups().keySet()) {
-                String k = key;
-
+        Set<String> keys = objModel.getMatLib().getGroups().keySet();
+        if (!keys.isEmpty()) {
+            for (String key : keys) {
                 if (!modelParts.containsKey(key)) {
-                    modelParts.put(k, objModel
-                          .bake(new OBJModel.OBJState(ImmutableList.of(k), false), Attributes.DEFAULT_BAKED_FORMAT,
-                                textureGetterFlipV));
+                    modelParts.put(key, objModel.bake(new OBJState(ImmutableList.of(key), false),
+                          Attributes.DEFAULT_BAKED_FORMAT, textureGetterFlipV));
                 }
             }
         }
