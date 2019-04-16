@@ -65,5 +65,7 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     BUFFER getBuffer();
 
-    boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other);
+    default boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other){
+        return true;
+    }
 }
