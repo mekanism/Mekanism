@@ -488,6 +488,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public void onLoad() {
         onWorldJoin();
+        if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
+            //Mark the transmitters as invalidated if they do not match what we have stored/calculated
+            markDirtyTransmitters();
+        }
         super.onLoad();
     }
 
