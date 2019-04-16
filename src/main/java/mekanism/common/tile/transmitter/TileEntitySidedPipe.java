@@ -412,7 +412,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             }
             //If the redstone mode changed properly update the connection to other transmitters/networks
             if (previouslyPowered != redstonePowered) {
-                markDirtyTransmitters();
+                notifyTileChange();
             }
 
             redstoneSet = true;
@@ -490,7 +490,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         onWorldJoin();
         if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
             //Mark the transmitters as invalidated if they do not match what we have stored/calculated
-            markDirtyTransmitters();
+            refreshConnections();
         }
         super.onLoad();
     }
