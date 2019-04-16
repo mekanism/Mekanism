@@ -1,4 +1,8 @@
 {
+	"textures": {
+		"all": "#frame",
+		"particle": "#frame"
+	},
 	"elements": [
 		{
 			"name": "RightGlass",
