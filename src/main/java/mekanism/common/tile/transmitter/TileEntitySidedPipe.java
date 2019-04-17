@@ -415,7 +415,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             }
             //If the redstone mode changed properly update the connection to other transmitters/networks
             if (previouslyPowered != redstonePowered) {
-                notifyTileChange();
+                //Has to be markDirtyTransmitters instead of notify tile change
+                // or it will not properly tell the neighboring connections that
+                // it is no longer valid
+                markDirtyTransmitters();
             }
 
             redstoneSet = true;
