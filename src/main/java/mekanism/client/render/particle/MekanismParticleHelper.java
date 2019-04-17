@@ -1,5 +1,6 @@
 package mekanism.client.render.particle;
 
+import mekanism.api.EnumColor;
 import mekanism.common.base.ITieredTile;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.state.IBlockState;
@@ -15,13 +16,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class MekanismParticleHelper {
+
     //From net.minecraft.client.particle.ParticleManager
     public static boolean addBlockHitEffects(World world, BlockPos pos, EnumFacing side, ParticleManager manager) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-        if (!(tile instanceof ITieredTile)) {
-            return false;
-        }
+        EnumColor color = null;
         IBlockState iblockstate = world.getBlockState(pos);
+        //Makes it so transmitters don't need to change their tier
+        iblockstate = iblockstate.getBlock().getActualState(iblockstate, world, pos);
+        if (tile instanceof ITieredTile) {
+            color = ((ITieredTile) tile).getTier().getColor();
+        }
 
         if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE) {
             int i = pos.getX();
@@ -59,10 +64,8 @@ public class MekanismParticleHelper {
                 d0 = (double) i + axisalignedbb.maxX + 0.10000000149011612D;
             }
 
-            manager.addEffect(
-                  (new TieredParticleDigging(world, d0, d1, d2, iblockstate, ((ITieredTile) tile).getTier()))
-                        .setBlockPos(pos)
-                        .multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
+            manager.addEffect(new TieredParticleDigging(world, d0, d1, d2, 0, 0, 0, iblockstate, color)
+                  .setBlockPos(pos).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
         }
         return true;
     }
