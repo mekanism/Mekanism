@@ -175,8 +175,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (!(tileEntity instanceof TileEntityMechanicalPipe)) {
             return true;
         }
-        FluidStack buffer = getBuffer();
-        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tileEntity).getBuffer();
+        FluidStack buffer = getBufferWithFallback();
+        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tileEntity).getBufferWithFallback();
         return buffer == null || otherBuffer == null || buffer.isFluidEqual(otherBuffer);
     }
 
@@ -195,13 +195,10 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         return tier.getPipeCapacity();
     }
 
+    @Nullable
     @Override
     public FluidStack getBuffer() {
-        //If we don't have a buffer try falling back to the network's buffer
-        if (buffer.getFluid() == null && getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().buffer;
-        }
-        return buffer.getFluid();
+        return buffer == null ? null : buffer.getFluid();
     }
 
     @Override

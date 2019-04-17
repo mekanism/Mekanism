@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -53,6 +54,11 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 
     public static double round(double d) {
         return Math.round(d * 10000) / 10000;
+    }
+
+    @Nullable
+    public EnergyStack getBuffer() {
+        return buffer;
     }
 
     @Override

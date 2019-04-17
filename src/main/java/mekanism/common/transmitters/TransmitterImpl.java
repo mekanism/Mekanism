@@ -1,6 +1,7 @@
 package mekanism.common.transmitters;
 
 import java.util.Collection;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -121,9 +122,16 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
         containingTile.updateShare();
     }
 
+    @Nullable
     @Override
     public BUFFER getBuffer() {
         return getTileEntity().getBuffer();
+    }
+
+    @Nullable
+    @Override
+    public BUFFER getBufferWithFallback() {
+        return getTileEntity().getBufferWithFallback();
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -178,8 +179,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!(tileEntity instanceof TileEntityPressurizedTube)) {
             return true;
         }
-        GasStack buffer = getBuffer();
-        GasStack otherBuffer = ((TileEntityPressurizedTube) tileEntity).getBuffer();
+        GasStack buffer = getBufferWithFallback();
+        GasStack otherBuffer = ((TileEntityPressurizedTube) tileEntity).getBufferWithFallback();
         return buffer == null || otherBuffer == null || buffer.isGasEqual(otherBuffer);
     }
 
@@ -198,13 +199,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         return tier.getTubeCapacity();
     }
 
+    @Nullable
     @Override
     public GasStack getBuffer() {
-        //If we don't have a buffer try falling back to the network's buffer
-        if (buffer.getGas() == null && getTransmitter().hasTransmitterNetwork()) {
-            return getTransmitter().getTransmitterNetwork().buffer;
-        }
-        return buffer.getGas();
+        return buffer == null ? null : buffer.getGas();
     }
 
     @Override

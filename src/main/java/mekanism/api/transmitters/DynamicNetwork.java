@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range4D;
@@ -22,7 +23,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler {
+public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements
+      IClientTicker, INetworkDataHandler {
 
     public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = Sets.newLinkedHashSet();
     public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = Sets.newLinkedHashSet();
@@ -30,7 +32,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public HashMap<Coord4D, ACCEPTOR> possibleAcceptors = new HashMap<>();
     public HashMap<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
-    public HashMap<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = Maps.newHashMap();
+    public HashMap<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = Maps
+          .newHashMap();
     protected Range4D packetRange = null;
     protected int capacity = 0;
     protected double meanCapacity = 0;
@@ -69,7 +72,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
 
         if (!changedAcceptors.isEmpty()) {
-            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> entry : changedAcceptors.entrySet()) {
+            for (Entry<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> entry : changedAcceptors
+                  .entrySet()) {
                 IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter = entry.getKey();
 
                 if (transmitter.isValid()) {
@@ -112,6 +116,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             }
         }
 
+    }
+
+    @Nullable
+    public BUFFER getBuffer() {
+        return null;
     }
 
     public abstract void absorbBuffer(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);
@@ -161,7 +170,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public void adoptTransmittersAndAcceptorsFrom(NETWORK net) {
         for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : net.transmitters) {
-            transmitter.setTransmitterNetwork((NETWORK)this);
+            transmitter.setTransmitterNetwork((NETWORK) this);
             transmitters.add(transmitter);
             transmittersAdded.add(transmitter);
         }

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -176,7 +177,18 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     public abstract int getCapacity();
 
+    @Nullable
     public abstract BUFFER getBuffer();
+
+    @Nullable
+    public BUFFER getBufferWithFallback() {
+        BUFFER buffer = getBuffer();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer == null && getTransmitter().hasTransmitterNetwork()) {
+            return getTransmitter().getTransmitterNetwork().getBuffer();
+        }
+        return buffer;
+    }
 
     public abstract void takeShare();
 

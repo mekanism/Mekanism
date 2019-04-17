@@ -1,6 +1,7 @@
 package mekanism.api.transmitters;
 
 import java.util.Collection;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -63,7 +64,25 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     void updateShare();
 
+    /**
+     * @return The transmitter's buffer.
+     */
+    @Nullable
     BUFFER getBuffer();
+
+    /**
+     * If the transmitter does not have a buffer this will try to fallback on the network's buffer.
+     * @return The transmitter's buffer, or if null the network's buffer.
+     */
+    @Nullable
+    default BUFFER getBufferWithFallback() {
+        BUFFER buffer = getBuffer();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer == null && hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getBuffer();
+        }
+        return buffer;
+    }
 
     default boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other){
         return true;

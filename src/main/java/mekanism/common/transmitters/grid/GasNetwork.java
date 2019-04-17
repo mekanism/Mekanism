@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -86,6 +87,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         gasScale = getScale();
 
         register();
+    }
+
+    @Nullable
+    public GasStack getBuffer() {
+        return buffer;
     }
 
     @Override
