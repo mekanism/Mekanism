@@ -26,8 +26,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public boolean unloaded = true;
-
     public boolean dataRequest = false;
+    public boolean delayedRefresh = false;
 
     private N lastClientNetwork = null;
 
@@ -57,6 +57,13 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public void update() {
         super.update();
+
+        if (delayedRefresh) {
+            //Gets run the tick after the variable has been set. This is enough
+            // time to ensure that the transmitter has been registered.
+            delayedRefresh = false;
+            refreshConnections();
+        }
 
         if (getWorld().isRemote) {
             if (!dataRequest) {

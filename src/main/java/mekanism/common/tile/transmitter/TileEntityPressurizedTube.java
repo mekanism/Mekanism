@@ -10,10 +10,10 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.TubeTier;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -22,7 +22,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
+public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements
+      IGasHandler {
 
     public TubeTier tier = TubeTier.BASIC;
 
@@ -174,11 +175,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         if (!super.isValidTransmitter(tileEntity)) {
             return false;
         }
-        if (this.buffer.stored == null || !(tileEntity instanceof TileEntityPressurizedTube)) {
+        if (!(tileEntity instanceof TileEntityPressurizedTube)) {
             return true;
         }
-        TileEntityPressurizedTube te = (TileEntityPressurizedTube)tileEntity;
-        return te.buffer.stored == null || this.buffer.stored.isGasEqual(te.buffer.stored);
+        GasStack buffer = getBuffer();
+        GasStack otherBuffer = ((TileEntityPressurizedTube) tileEntity).getBuffer();
+        return buffer == null || otherBuffer == null || buffer.isGasEqual(otherBuffer);
     }
 
     @Override
@@ -198,7 +200,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public GasStack getBuffer() {
-        return buffer == null ? null : buffer.getGas();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer.getGas() == null && getTransmitter().hasTransmitterNetwork()) {
+            return getTransmitter().getTransmitterNetwork().buffer;
+        }
+        return buffer.getGas();
     }
 
     @Override

@@ -101,9 +101,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             } else if (delayTicks < 5) {
                 delayTicks++;
             }
-        }
-
-        if (!getWorld().isRemote) {
+        } else  {
             if (forceUpdate) {
                 refreshConnections();
                 forceUpdate = false;
@@ -148,8 +146,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                       .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
                       && TransmissionType.checkTransmissionType(CapabilityUtils
                             .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
-                      getTransmitterType().getTransmission())
-                      && isValidTransmitter(tileEntity)) {
+                      getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)) {
                     connections |= 1 << side.ordinal();
                 }
             }
@@ -196,8 +193,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                   .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
                   && TransmissionType.checkTransmissionType(CapabilityUtils
                         .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
-                  getTransmitterType().getTransmission())
-                  && isValidTransmitter(tileEntity);
+                  getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity);
         }
 
         return false;

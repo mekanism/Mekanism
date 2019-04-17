@@ -69,6 +69,11 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     }
 
     @Override
+    public void connectionFailed() {
+        containingTile.delayedRefresh = true;
+    }
+
+    @Override
     public ACCEPTOR getAcceptor(EnumFacing side) {
         return getTileEntity().getCachedAcceptor(side);
     }

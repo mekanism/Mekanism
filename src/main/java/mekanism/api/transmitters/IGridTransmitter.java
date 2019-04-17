@@ -68,4 +68,17 @@ public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     default boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other){
         return true;
     }
+
+    /**
+     * Gets called on an orphan if at least one attempted network fails to connect
+     * due to having connected to another network that is incompatible with the
+     * next attempted ones.
+     *
+     * This is primarily used for if extra handling needs to be done, such as
+     * refreshing the connections visually on a minor delay so that it has
+     * time to have the buffer no longer be null and properly compare the
+     * connection.
+     */
+    default void connectionFailed() {
+    }
 }

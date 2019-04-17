@@ -6,12 +6,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
@@ -175,8 +175,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (!(tileEntity instanceof TileEntityMechanicalPipe)) {
             return true;
         }
-        TileEntityMechanicalPipe te = (TileEntityMechanicalPipe)tileEntity;
-        return this.buffer.getFluid() == null || te.buffer.getFluid() == null || this.buffer.getFluid().isFluidEqual(te.buffer.getFluid());
+        FluidStack buffer = getBuffer();
+        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tileEntity).getBuffer();
+        return buffer == null || otherBuffer == null || buffer.isFluidEqual(otherBuffer);
     }
 
     @Override
@@ -196,7 +197,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public FluidStack getBuffer() {
-        return buffer == null ? null : buffer.getFluid();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer.getFluid() == null && getTransmitter().hasTransmitterNetwork()) {
+            return getTransmitter().getTransmitterNetwork().buffer;
+        }
+        return buffer.getFluid();
     }
 
     @Override
