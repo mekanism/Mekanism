@@ -288,9 +288,10 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
         tier = FluidTankTier.values()[nbtTags.getInteger("tier")];
         clientActive = isActive = nbtTags.getBoolean("isActive");
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
+        //Needs to be outside the hasKey check because this is just based on the tier which is known information
+        fluidTank.setCapacity(tier.getStorage());
 
         if (nbtTags.hasKey("fluidTank")) {
-            fluidTank.setCapacity(tier.getStorage());
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
         }
     }
