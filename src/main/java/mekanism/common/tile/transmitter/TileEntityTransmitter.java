@@ -21,8 +21,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
-public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends TileEntitySidedPipe implements
-      IAlloyInteraction {
+public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends
+      TileEntitySidedPipe implements IAlloyInteraction {
 
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
@@ -110,6 +110,68 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
         if (getTransmitter().hasTransmitterNetwork()) {
             getTransmitter().getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
+        }
+    }
+
+    protected boolean canHaveIncompatibleNetworks() {
+        return false;
+    }
+
+    @Override
+    protected void recheckConnections(byte newlyEnabledTransmitters) {
+        if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
+            //We only need to check if we can have incompatible networks and if we actually have a network
+            for (EnumFacing side : EnumFacing.values()) {
+                if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
+                    //Recheck the side that is now enabled, as we manually merge this
+                    // cannot be simplified to a first match is good enough
+                    recheckConnectionPrechecked(side);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void recheckConnection(EnumFacing side) {
+        if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
+            //We only need to check if we can have incompatible networks and if we actually have a network
+            recheckConnectionPrechecked(side);
+        }
+    }
+
+    private void recheckConnectionPrechecked(EnumFacing side) {
+        N network = getTransmitter().getTransmitterNetwork();
+        TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
+        if (tileEntity instanceof TileEntityTransmitter) {
+            TileEntityTransmitter other = (TileEntityTransmitter) tileEntity;
+            //The other one should always have the same incompatible networks state as us
+            // But just in case it doesn't just check the boolean
+            if (other.canHaveIncompatibleNetworks() && other.getTransmitter().hasTransmitterNetwork()) {
+                N otherNetwork = (N) other.getTransmitter().getTransmitterNetwork();
+                if (network != otherNetwork && network.isCompatibleWith(otherNetwork)) {
+                    //We have two networks that are now compatible and they are not the same source network
+                    // The most common cause they would be same source network is that they would merge
+                    // from the first pipe checking when it attempts to reconnect, and then the second
+                    // pipe still is going to be checking the connection.
+                    //
+                    // We continue to return false for this case so that it is able to check if there
+                    // are more sides that pipe can now connect to where it previously could not
+                    //
+                    // Manually merge the networks.
+                    // This code is not in network registry as there is special handling needed to ensure
+                    // it visually updates properly. There also were above checks that get us to a certain
+                    // point where we can make some assumptions about the networks and if it is actually
+                    // valid to merge them when otherwise people may try to merge things when they shouldn't
+                    // be merged causing unexpected bugs.
+                    network.adoptTransmittersAndAcceptorsFrom(otherNetwork);
+                    //Unregister the other network
+                    otherNetwork.deregister();
+                    //Commit the changes of the new network
+                    network.commit();
+
+                    //TODO: Update the visuals of the network
+                }
+            }
         }
     }
 

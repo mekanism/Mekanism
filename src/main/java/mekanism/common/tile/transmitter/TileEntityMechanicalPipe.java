@@ -191,6 +191,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
+    protected boolean canHaveIncompatibleNetworks() {
+        return true;
+    }
+
+    @Override
     public int getCapacity() {
         return tier.getPipeCapacity();
     }

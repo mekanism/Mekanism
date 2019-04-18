@@ -195,6 +195,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
+    protected boolean canHaveIncompatibleNetworks() {
+        return true;
+    }
+
+    @Override
     public int getCapacity() {
         return tier.getTubeCapacity();
     }
