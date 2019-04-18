@@ -155,9 +155,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             {
                 if (tile instanceof TileEntityContainerBlock) {
                     if (SecurityUtils.canAccess(player, tile)) {
-                        //TODO: Switch this to an IItemHandler
-                        // It isn't a simple switch to IItemHandlerModifiable as then it makes the empty mode only work
-                        // when it is done on a side configured to work as an IItemHandler.
+                        //TODO: Switch this to items being handled by TECB, energy handled here (via lambdas?)
                         IInventory inv = (IInventory) tile;
                         for (int i = 0; i < inv.getSizeInventory(); i++) {
                             ItemStack slotStack = inv.getStackInSlot(i);

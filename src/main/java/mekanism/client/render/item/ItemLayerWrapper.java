@@ -61,11 +61,12 @@ public class ItemLayerWrapper implements IBakedModel {
         return internal.getParticleTexture();
     }
 
-    //TODO: Is this needed
-    /*@Nonnull
-    public ItemCameraTransforms getItemCameraTransforms() {
+    @Nonnull
+    @Deprecated
+    @Override
+    public net.minecraft.client.renderer.block.model.ItemCameraTransforms getItemCameraTransforms() {
         return internal.getItemCameraTransforms();
-    }*/
+    }
 
     @Nonnull
     @Override

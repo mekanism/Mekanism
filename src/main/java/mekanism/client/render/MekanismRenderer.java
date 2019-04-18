@@ -18,6 +18,7 @@ import mekanism.client.render.tileentity.RenderThermalEvaporationController;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.common.base.IMetaItem;
+import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -56,7 +57,7 @@ public class MekanismRenderer {
     public static float GAS_RENDER_BASE = 0.2F;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new HashMap<>();
     public static int[] directionMap = new int[]{3, 0, 1, 2};
-    public static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
+    public static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();//todo generics magic
     public static TextureAtlasSprite missingIcon;
     private static float lightmapLastX;
     private static float lightmapLastY;
@@ -332,6 +333,23 @@ public class MekanismRenderer {
 
     public static ResourceLocation getBlocksTexture() {
         return TextureMap.LOCATION_BLOCKS_TEXTURE;
+    }
+
+    public static void glRotateForFacing(TileEntityBasicBlock tileEntity) {
+        switch (tileEntity.facing) /*TODO: switch the enum*/ {
+            case NORTH:
+                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
+                break;
+            case SOUTH:
+                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
+                break;
+            case WEST:
+                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
+                break;
+            case EAST:
+                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
+                break;
+        }
     }
 
     @SubscribeEvent

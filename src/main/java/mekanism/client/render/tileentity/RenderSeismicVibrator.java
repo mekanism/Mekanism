@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelSeismicVibrator;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -22,20 +23,7 @@ public class RenderSeismicVibrator extends TileEntitySpecialRenderer<TileEntityS
 
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
 
-        switch (tileEntity.facing.ordinal()) /*TODO: switch the enum*/ {
-            case 2:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
-                break;
-            case 3:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-                break;
-            case 4:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
-                break;
-            case 5:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
-                break;
-        }
+        MekanismRenderer.glRotateForFacing(tileEntity);
 
         float actualRate = (float) Math.sin((tileEntity.clientPiston + (tileEntity.isActive ? partialTick : 0)) / 5F);
 

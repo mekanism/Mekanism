@@ -88,13 +88,17 @@ public class SoundHandler {
             s = new PositionedSoundRecord(soundLoc, SoundCategory.BLOCKS,
                   (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
                   true, 0, ISound.AttenuationType.LINEAR,
-                  pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+                  pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f){
+                @Override
+                public float getVolume() {
+                    if (this.sound == null){
+                        this.createAccessor(Minecraft.getMinecraft().getSoundHandler());
+                    }
+                    return super.getVolume();
+                }
+            };
 
-            // Force the underlying sound to get initialized
-            // TODO: Understand what this is doing exactly
-            s.createAccessor(Minecraft.getMinecraft().getSoundHandler());
-
-            // Start the sound
+           // Start the sound
             playSound(s);
 
             // N.B. By the time playSound returns, our expectation is that our wrapping-detector handler has fired

@@ -187,7 +187,6 @@ public final class InventoryUtils {
         return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
     }
 
-    /* TODO From CCLib -- go back to that version when we're using dependencies again */
     public static boolean canStack(ItemStack stack1, ItemStack stack2) {
         return stack1.isEmpty() || stack2.isEmpty()
                 || (stack1.getItem() == stack2.getItem()

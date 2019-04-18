@@ -11,7 +11,6 @@ public abstract class ContainerMekanism<TILE extends TileEntityContainerBlock> e
 
     protected TILE tileEntity;
 
-    //TODO: Change InventoryPlayer to IInventory?
     protected ContainerMekanism(TILE tile, InventoryPlayer inventory) {
         this.tileEntity = tile;
         if (shouldAddSlots()) {

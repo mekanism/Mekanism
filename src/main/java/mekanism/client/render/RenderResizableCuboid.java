@@ -555,8 +555,6 @@ public class RenderResizableCuboid {
 
     /**
      * A way to automatically generate the different positions given the same arguments.
-     *
-     * @param rotation TODO
      */
     private List<RenderInfo> getRenderInfos(float[] uv, double sizeU, double sizeV, double textureSizeU,
           double textureSizeV, double textureOffsetU, double textureOffsetV) {

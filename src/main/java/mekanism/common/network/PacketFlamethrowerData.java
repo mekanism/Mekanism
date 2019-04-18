@@ -25,6 +25,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
                       // If we got this packet on the server, resend out to all clients in same dimension
                       // TODO: Why is this a dimensional thing?!
+                      // because we dont send a packet when a player starts tracking another player (net.minecraftforge.event.entity.player.PlayerEvent.StartTracking)
                       if (!player.world.isRemote) {
                           Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
                       }

@@ -63,7 +63,7 @@ public abstract class MekanismItemStackRenderer extends TileEntityItemStackRende
         GlStateManager.enableLight(1);
         GlStateManager.enableColorMaterial();
         GlStateManager.colorMaterial(1032, 5634);
-        GlStateManager.enableCull();//TODO: This line was not in generators does it matter
+        GlStateManager.enableCull();
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GlStateManager.popMatrix();
 
