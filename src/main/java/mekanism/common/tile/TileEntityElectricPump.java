@@ -455,7 +455,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (method == 0) {
             reset();
             return new Object[]{"Pump calculation reset."};

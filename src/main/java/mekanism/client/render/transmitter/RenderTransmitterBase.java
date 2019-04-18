@@ -39,10 +39,10 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         if (contentsModel == null) {
             try {
                 contentsModel = (OBJModel) OBJLoader.INSTANCE.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
-                contentsMap = buildModelMap(contentsModel);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
+            contentsMap = buildModelMap(contentsModel);
         }
     }
 

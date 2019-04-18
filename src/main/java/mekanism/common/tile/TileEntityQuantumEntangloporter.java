@@ -593,7 +593,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (method == 0) {
             if (!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean)) {
                 return new Object[]{"Invalid parameters."};

@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
+import mekanism.common.Mekanism;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -202,8 +203,8 @@ public class FrequencyManager {
                 freq.read(dataStream);
                 ret.add(freq);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
         return ret;
     }
@@ -237,7 +238,7 @@ public class FrequencyManager {
         @Override
         public void readFromNBT(@Nonnull NBTTagCompound nbtTags) {
             try {
-                String frequencyClass = nbtTags.getString("frequencyClass");
+                String frequencyClass = nbtTags.getString("frequencyClass");//todo fix this using a classname from nbt!
                 if (nbtTags.hasKey("ownerUUID")) {
                     loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
                 }
@@ -249,8 +250,8 @@ public class FrequencyManager {
                     Frequency freq = (Frequency) c.newInstance(compound);
                     loadedFrequencies.add(freq);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (ReflectiveOperationException e) {
+                Mekanism.logger.error("Couldn't load frequency data", e);
             }
         }
 

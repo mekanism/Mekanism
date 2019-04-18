@@ -40,7 +40,6 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
         PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
-
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
                     DigitalMinerGuiMessage.openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player, message.coord4D, message.index);
                 }
@@ -55,7 +54,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
                     }
                     player.openContainer.windowId = message.windowId;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
             }
         }, player);
