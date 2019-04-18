@@ -474,9 +474,17 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         }
     }
 
+    /**
+     * Only call this from server side
+     * @param newlyEnabledTransmitters The transmitters that are now enabled and were not before.
+     */
     protected void recheckConnections(byte newlyEnabledTransmitters) {
     }
 
+    /**
+     * Only call this from server side
+     * @param side The side that a transmitter is now enabled on after having been disabled.
+     */
     protected void recheckConnection(EnumFacing side) {
     }
 

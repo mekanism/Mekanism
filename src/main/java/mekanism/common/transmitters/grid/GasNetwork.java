@@ -52,33 +52,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     public GasNetwork(Collection<GasNetwork> networks) {
         for (GasNetwork net : networks) {
             if (net != null) {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-                    if (net.refGas != null && net.gasScale > gasScale) {
-                        gasScale = net.gasScale;
-                        refGas = net.refGas;
-                        buffer = net.buffer;
-
-                        net.gasScale = 0;
-                        net.refGas = null;
-                        net.buffer = null;
-                    }
-                } else {
-                    if (net.buffer != null) {
-                        if (buffer == null) {
-                            buffer = net.buffer.copy();
-                        } else {
-                            if (buffer.isGasEqual(net.buffer)) {
-                                buffer.amount += net.buffer.amount;
-                            } else if (net.buffer.amount > buffer.amount) {
-                                buffer = net.buffer.copy();
-                            }
-
-                        }
-
-                        net.buffer = null;
-                    }
-                }
-
                 adoptTransmittersAndAcceptorsFrom(net);
                 net.deregister();
             }
@@ -87,6 +60,36 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         gasScale = getScale();
 
         register();
+    }
+
+    @Override
+    public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            if (net.refGas != null && net.gasScale > gasScale) {
+                gasScale = net.gasScale;
+                refGas = net.refGas;
+                buffer = net.buffer;
+
+                net.gasScale = 0;
+                net.refGas = null;
+                net.buffer = null;
+            }
+        } else {
+            if (net.buffer != null) {
+                if (buffer == null) {
+                    buffer = net.buffer.copy();
+                } else {
+                    if (buffer.isGasEqual(net.buffer)) {
+                        buffer.amount += net.buffer.amount;
+                    } else if (net.buffer.amount > buffer.amount) {
+                        buffer = net.buffer.copy();
+                    }
+
+                }
+                net.buffer = null;
+            }
+        }
+        super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
     @Nullable
@@ -315,7 +318,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public boolean compatibleWithBuffer(GasStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer.isGasEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer
+              .isGasEqual(buffer));
     }
 
     public static class GasTransferEvent extends Event {

@@ -2,7 +2,9 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -121,12 +123,16 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     protected void recheckConnections(byte newlyEnabledTransmitters) {
         if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
             //We only need to check if we can have incompatible networks and if we actually have a network
+            boolean networkUpdated = false;
             for (EnumFacing side : EnumFacing.values()) {
                 if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
                     //Recheck the side that is now enabled, as we manually merge this
                     // cannot be simplified to a first match is good enough
-                    recheckConnectionPrechecked(side);
+                    networkUpdated |= recheckConnectionPrechecked(side);
                 }
+            }
+            if (networkUpdated) {
+                refreshNetwork();
             }
         }
     }
@@ -135,11 +141,32 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     protected void recheckConnection(EnumFacing side) {
         if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
             //We only need to check if we can have incompatible networks and if we actually have a network
-            recheckConnectionPrechecked(side);
+            if (recheckConnectionPrechecked(side)) {
+                refreshNetwork();
+            }
         }
     }
 
-    private void recheckConnectionPrechecked(EnumFacing side) {
+    private void refreshNetwork() {
+        //Queue an update for all the transmitters in the network just in case something went wrong
+        // and to update the rendering of them
+        N network = getTransmitter().getTransmitterNetwork();
+        network.queueClientUpdate(network.transmitters);
+        //Copy values into a set so that we don't risk a CME
+        Set<IGridTransmitter<A, N, BUFFER>> transmitters = new HashSet<>(network.transmitters);
+        //TODO: Make some better way of refreshing the connections, given we only need to refresh
+        // connections to ourself anyways
+        // The best way to do this is probably by making a method that updates the values for
+        // the valid transmitters manually if the network is the same object.
+        for (IGridTransmitter<A, N, BUFFER> transmitter : transmitters) {
+            if (transmitter instanceof TransmitterImpl) {
+                //Refresh the connections because otherwise sometimes they need to wait for a block update
+                ((TransmitterImpl<A, N, BUFFER>) transmitter).containingTile.refreshConnections();
+            }
+        }
+    }
+
+    private boolean recheckConnectionPrechecked(EnumFacing side) {
         N network = getTransmitter().getTransmitterNetwork();
         TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
         if (tileEntity instanceof TileEntityTransmitter) {
@@ -153,10 +180,14 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                     // The most common cause they would be same source network is that they would merge
                     // from the first pipe checking when it attempts to reconnect, and then the second
                     // pipe still is going to be checking the connection.
-                    //
-                    // We continue to return false for this case so that it is able to check if there
-                    // are more sides that pipe can now connect to where it previously could not
-                    //
+
+                    if (getBufferWithFallback() == null) {
+                        //If we don't have any use them as primary network
+                        N tempNetwork = network;
+                        network = otherNetwork;
+                        otherNetwork = tempNetwork;
+                    }
+
                     // Manually merge the networks.
                     // This code is not in network registry as there is special handling needed to ensure
                     // it visually updates properly. There also were above checks that get us to a certain
@@ -169,10 +200,16 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                     //Commit the changes of the new network
                     network.commit();
 
-                    //TODO: Update the visuals of the network
+                    //We did not have these as part of the update because they got directly added
+                    // This means that we have to update the capacity/buffer and queue client updates
+                    // ourselves
+                    network.updateCapacity();
+                    network.clampBuffer();
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     public abstract A getCachedAcceptor(EnumFacing side);

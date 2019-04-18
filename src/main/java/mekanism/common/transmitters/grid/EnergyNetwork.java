@@ -35,21 +35,25 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     public EnergyNetwork(Collection<EnergyNetwork> networks) {
         for (EnergyNetwork net : networks) {
             if (net != null) {
-                if (net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale) {
-                    clientEnergyScale = net.clientEnergyScale;
-                    jouleBufferLastTick = net.jouleBufferLastTick;
-                    joulesTransmitted = net.joulesTransmitted;
-                    lastPowerScale = net.lastPowerScale;
-                }
-
-                buffer.amount += net.buffer.amount;
-
                 adoptTransmittersAndAcceptorsFrom(net);
                 net.deregister();
             }
         }
 
         register();
+    }
+
+    @Override
+    public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
+        if (net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale) {
+            clientEnergyScale = net.clientEnergyScale;
+            jouleBufferLastTick = net.jouleBufferLastTick;
+            joulesTransmitted = net.joulesTransmitted;
+            lastPowerScale = net.lastPowerScale;
+        }
+
+        buffer.amount += net.buffer.amount;
+        super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
     public static double round(double d) {

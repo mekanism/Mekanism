@@ -48,21 +48,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     public FluidNetwork(Collection<FluidNetwork> networks) {
         for (FluidNetwork net : networks) {
             if (net != null) {
-                if (net.buffer != null) {
-                    if (buffer == null) {
-                        buffer = net.buffer.copy();
-                    } else {
-                        if (buffer.getFluid() == net.buffer.getFluid()) {
-                            buffer.amount += net.buffer.amount;
-                        } else if (net.buffer.amount > buffer.amount) {
-                            buffer = net.buffer.copy();
-                        }
-
-                    }
-
-                    net.buffer = null;
-                }
-
                 adoptTransmittersAndAcceptorsFrom(net);
                 net.deregister();
             }
@@ -71,6 +56,25 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         fluidScale = getScale();
 
         register();
+    }
+
+    @Override
+    public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
+        if (net.buffer != null) {
+            if (buffer == null) {
+                buffer = net.buffer.copy();
+            } else {
+                if (buffer.getFluid() == net.buffer.getFluid()) {
+                    buffer.amount += net.buffer.amount;
+                } else if (net.buffer.amount > buffer.amount) {
+                    buffer = net.buffer.copy();
+                }
+
+            }
+
+            net.buffer = null;
+        }
+        super.adoptTransmittersAndAcceptorsFrom(net);
     }
 
     @Nullable
