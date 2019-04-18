@@ -85,11 +85,15 @@ public class SoundHandler {
         if (s == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             s = new PositionedSoundRecord(soundLoc, SoundCategory.BLOCKS, (float) (volume * MekanismConfig.current().client.baseSoundVolume.val()), 1.0f,
-                  true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-
-            // Force the underlying sound to get initialized
-            // TODO: Understand what this is doing exactly
-            s.createAccessor(Minecraft.getMinecraft().getSoundHandler());
+                  true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f) {
+                @Override
+                public float getVolume() {
+                    if (this.sound == null) {
+                        this.createAccessor(Minecraft.getMinecraft().getSoundHandler());
+                    }
+                    return super.getVolume();
+                }
+            };
 
             // Start the sound
             playSound(s);

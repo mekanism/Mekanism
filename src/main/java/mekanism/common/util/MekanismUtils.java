@@ -980,6 +980,7 @@ public final class MekanismUtils {
         return Item.getIdFromItem(itemStack.getItem());
     }
 
+    @Deprecated//todo remove this
     public static boolean classExists(String className) {
         if (classesFound.containsKey(className)) {
             return classesFound.get(className) != null;
@@ -994,6 +995,7 @@ public final class MekanismUtils {
         return found != null;
     }
 
+    @Deprecated//todo remove this
     public static boolean existsAndInstance(Object obj, String className) {
         Class<?> theClass;
         if (classesFound.containsKey(className)) {

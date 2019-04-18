@@ -22,20 +22,7 @@ public class RenderQuantumEntangloporter extends TileEntitySpecialRenderer<TileE
 
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "QuantumEntangloporter.png"));
 
-        switch (tileEntity.facing.ordinal()) {
-            case 2:
-                GlStateManager.rotate(0, 0.0F, 1.0F, 0.0F);
-                break;
-            case 3:
-                GlStateManager.rotate(180, 0.0F, 1.0F, 0.0F);
-                break;
-            case 4:
-                GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
-                break;
-            case 5:
-                GlStateManager.rotate(270, 0.0F, 1.0F, 0.0F);
-                break;
-        }
+        MekanismRenderer.glRotateForFacing(tileEntity);
 
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         model.render(0.0625F, rendererDispatcher.renderEngine, false);
