@@ -1,8 +1,9 @@
 package mekanism.common.block.states;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
@@ -59,7 +60,7 @@ public class BlockStateBasic extends ExtendedBlockState {
 
         public PropertyEnum<BasicBlockType> getProperty() {
             if (predicatedProperty == null) {
-                predicatedProperty = PropertyEnum.create("type", BasicBlockType.class, new BasicBlockPredicate(this));
+                predicatedProperty = PropertyEnum.create("type", BasicBlockType.class, it->Objects.requireNonNull(it).blockType==this);
             }
             return predicatedProperty;
         }
@@ -71,44 +72,44 @@ public class BlockStateBasic extends ExtendedBlockState {
                 case BASIC_BLOCK_2:
                     return MekanismBlocks.BasicBlock2;
                 default:
-                    return null;
+                    throw new IllegalStateException();
             }
         }
     }
 
     public enum BasicBlockType implements IStringSerializable {
-        OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false, Predicates.alwaysFalse(), false, false, true),
-        BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false, Predicates.alwaysFalse(), false, false, true),
-        REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, "RefinedObsidian", null, false, Predicates.alwaysFalse(), false, false, true),
-        COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false, Predicates.alwaysFalse(), false, false, false),
-        REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, "RefinedGlowstone", null, false, Predicates.alwaysFalse(), false, false, true),
-        STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false, Predicates.alwaysFalse(), false, false, true),
-        BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin.class, true, Plane.HORIZONTAL, true, true, false, true),
-        TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, true, Predicates.alwaysFalse(), false, false, false),
-        STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true, Predicates.alwaysFalse(), false, false, false),
-        DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank.class, true, Predicates.alwaysFalse(), false, false, false),
-        STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass.class, true, Predicates.alwaysFalse(), false, false, false),
-        DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve.class, true, Predicates.alwaysFalse(), false, false, false),
-        COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, Predicates.alwaysFalse(), false, false, true),
-        TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, Predicates.alwaysFalse(), false, false, true),
-        THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController.class, true, Plane.HORIZONTAL, true, false, false),
-        THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve.class, true, Predicates.alwaysFalse(), false, false, false),
-        THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock.class, true, Predicates.alwaysFalse(), false, false, false),
-        INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing.class, true, Predicates.alwaysFalse(), false, false, false),
-        INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort.class, true, Predicates.alwaysFalse(), true, false, false),
-        INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell.class, true, Predicates.alwaysFalse(), false, true, false),
-        INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", TileEntityInductionProvider.class, true, Predicates.alwaysFalse(), false, true, false),
-        SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", TileEntitySuperheatingElement.class, true, Predicates.alwaysFalse(), false, false, false),
-        PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser", TileEntityPressureDisperser.class, true, Predicates.alwaysFalse(), false, false, false),
-        BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing.class, true, Predicates.alwaysFalse(), false, false, false),
-        BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve.class, true, Predicates.alwaysFalse(), false, false, false),
-        SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk.class, true, Plane.HORIZONTAL, false, false, false);
+        OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, "OsmiumBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
+        BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, "BronzeBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
+        REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, "RefinedObsidian", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
+        COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, "CharcoalBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, false),
+        REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, "RefinedGlowstone", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
+        STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, "SteelBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
+        BIN(BasicBlock.BASIC_BLOCK_1, 6, "Bin", TileEntityBin::new, true, Plane.HORIZONTAL, true, true, false, true),
+        TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, "TeleporterFrame", null, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, "SteelCasing", null, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, "DynamicTank", TileEntityDynamicTank::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        STRUCTURAL_GLASS(BasicBlock.BASIC_BLOCK_1, 10, "StructuralGlass", TileEntityStructuralGlass::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, "DynamicValve", TileEntityDynamicValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, "CopperBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
+        TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, "TinBlock", null, false, BlockStateUtils.NO_ROTATION, false, false, true),
+        THERMAL_EVAPORATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, "ThermalEvaporationController", TileEntityThermalEvaporationController::new, true, Plane.HORIZONTAL, true, false, false),
+        THERMAL_EVAPORATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, "ThermalEvaporationValve", TileEntityThermalEvaporationValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        THERMAL_EVAPORATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, "ThermalEvaporationBlock", TileEntityThermalEvaporationBlock::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        INDUCTION_CASING(BasicBlock.BASIC_BLOCK_2, 1, "InductionCasing", TileEntityInductionCasing::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        INDUCTION_PORT(BasicBlock.BASIC_BLOCK_2, 2, "InductionPort", TileEntityInductionPort::new, true, BlockStateUtils.NO_ROTATION, true, false, false),
+        INDUCTION_CELL(BasicBlock.BASIC_BLOCK_2, 3, "InductionCell", TileEntityInductionCell::new, true, BlockStateUtils.NO_ROTATION, false, true, false),
+        INDUCTION_PROVIDER(BasicBlock.BASIC_BLOCK_2, 4, "InductionProvider", TileEntityInductionProvider::new, true, BlockStateUtils.NO_ROTATION, false, true, false),
+        SUPERHEATING_ELEMENT(BasicBlock.BASIC_BLOCK_2, 5, "SuperheatingElement", TileEntitySuperheatingElement::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        PRESSURE_DISPERSER(BasicBlock.BASIC_BLOCK_2, 6, "PressureDisperser", TileEntityPressureDisperser::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        BOILER_CASING(BasicBlock.BASIC_BLOCK_2, 7, "BoilerCasing", TileEntityBoilerCasing::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        BOILER_VALVE(BasicBlock.BASIC_BLOCK_2, 8, "BoilerValve", TileEntityBoilerValve::new, true, BlockStateUtils.NO_ROTATION, false, false, false),
+        SECURITY_DESK(BasicBlock.BASIC_BLOCK_2, 9, "SecurityDesk", TileEntitySecurityDesk::new, true, Plane.HORIZONTAL, false, false, false);
 
+        @Nonnull
         public BasicBlock blockType;
         public int meta;
         public String name;
-        public Class<? extends TileEntity> tileEntityClass;
-        public boolean isElectric;
+        public Supplier<TileEntity> tileEntitySupplier;
         public boolean hasDescription;
         public Predicate<EnumFacing> facingPredicate;
         public boolean activable;
@@ -116,12 +117,12 @@ public class BlockStateBasic extends ExtendedBlockState {
         public boolean isBeaconBase;
         public boolean hasRedstoneOutput = false;
 
-        BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
-              boolean activeState, boolean t, boolean beaconBase) {
+        BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc,
+              Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase) {
             blockType = block;
             meta = metadata;
             name = s;
-            tileEntityClass = tileClass;
+            tileEntitySupplier = tileClass;
             hasDescription = hasDesc;
             facingPredicate = facingAllowed;
             activable = activeState;
@@ -129,12 +130,12 @@ public class BlockStateBasic extends ExtendedBlockState {
             isBeaconBase = beaconBase;
         }
 
-        BasicBlockType(BasicBlock block, int metadata, String s, Class<? extends TileEntity> tileClass, boolean hasDesc, Predicate<EnumFacing> facingAllowed,
-              boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput) {
+        BasicBlockType(@Nonnull BasicBlock block, int metadata, String s, Supplier<TileEntity> tileClass, boolean hasDesc,
+              Predicate<EnumFacing> facingAllowed, boolean activeState, boolean t, boolean beaconBase, boolean hasRedstoneOutput) {
             blockType = block;
             meta = metadata;
             name = s;
-            tileEntityClass = tileClass;
+            tileEntitySupplier = tileClass;
             hasDescription = hasDesc;
             facingPredicate = facingAllowed;
             activable = activeState;
@@ -183,12 +184,7 @@ public class BlockStateBasic extends ExtendedBlockState {
         }
 
         public TileEntity create() {
-            try {
-                return tileEntityClass.newInstance();
-            } catch (Exception e) {
-                Mekanism.logger.error("Unable to indirectly create tile entity.", e);
-                return null;
-            }
+            return this.tileEntitySupplier != null ? this.tileEntitySupplier.get() : null;
         }
 
         @Override
@@ -205,29 +201,15 @@ public class BlockStateBasic extends ExtendedBlockState {
         }
 
         public boolean canRotateTo(EnumFacing side) {
-            return facingPredicate.apply(side);
+            return facingPredicate.test(side);
         }
 
         public boolean hasRotations() {
-            return !facingPredicate.equals(Predicates.alwaysFalse());
+            return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
         }
 
         public boolean hasActiveTexture() {
             return activable;
-        }
-    }
-
-    public static class BasicBlockPredicate implements Predicate<BasicBlockType> {
-
-        public BasicBlock basicBlock;
-
-        public BasicBlockPredicate(BasicBlock type) {
-            basicBlock = type;
-        }
-
-        @Override
-        public boolean apply(BasicBlockType input) {
-            return input.blockType == basicBlock;
         }
     }
 
