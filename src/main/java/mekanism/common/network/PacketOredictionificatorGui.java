@@ -58,7 +58,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
 
                         player.openContainer.windowId = message.windowId;
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Mekanism.logger.error("FIXME: Packet handling error", e);
                     }
                 }
             }

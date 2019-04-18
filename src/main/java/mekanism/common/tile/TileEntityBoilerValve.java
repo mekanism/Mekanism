@@ -142,7 +142,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (method == 0) {
             return new Object[]{structure != null};
         } else {

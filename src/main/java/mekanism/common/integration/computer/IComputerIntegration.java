@@ -9,5 +9,5 @@ public interface IComputerIntegration extends IInventory {
 
     String[] getMethods();
 
-    Object[] invoke(int method, Object[] args) throws Exception;
+    Object[] invoke(int method, Object[] args) throws NoSuchMethodException;
 }

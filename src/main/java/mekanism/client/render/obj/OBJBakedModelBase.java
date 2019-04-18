@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -114,8 +115,8 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
             }
 
             return (ImmutableMap<String, TextureAtlasSprite>) f_textures.get(model);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ReflectiveOperationException|ClassCastException e) {
+            Mekanism.logger.error("Could not get private field textures", e);
         }
 
         return null;
@@ -229,8 +230,8 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
             }
 
             m_updateStateVisibilityMap.invoke(this, state);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ReflectiveOperationException|ClassCastException e) {
+            Mekanism.logger.error("Could not get private field updateStateVisibilityMap", e);
         }
     }
 

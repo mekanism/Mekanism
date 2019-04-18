@@ -78,7 +78,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
 
             return new GlowPanelModel(existingModel, objModel, state, format, builder.build(), new HashMap<>());
         } catch (Exception e) {
-            e.printStackTrace();
+            Mekanism.logger.error("Failed to load OBJ", e);
         }
 
         return null;

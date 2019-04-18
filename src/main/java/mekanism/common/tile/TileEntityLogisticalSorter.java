@@ -579,7 +579,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (arguments.length > 0) {
             if (method == 0) {
                 if (!(arguments[0] instanceof String)) {

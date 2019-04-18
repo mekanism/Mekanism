@@ -442,7 +442,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (method == 0) {
             activeNodes.clear();
             usedNodes.clear();

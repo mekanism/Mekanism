@@ -189,8 +189,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
             try {
                 return tileEntityClass.newInstance();
             } catch (Exception e) {
-                Mekanism.logger.error("Unable to indirectly create tile entity.");
-                e.printStackTrace();
+                Mekanism.logger.error("Unable to indirectly create tile entity.", e);
                 return null;
             }
         }

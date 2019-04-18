@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITankManager.DropperHandler;
@@ -30,7 +31,7 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
                         DropperHandler.useDropper(player, tank, message.mouseButton);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
             }
         }, player);

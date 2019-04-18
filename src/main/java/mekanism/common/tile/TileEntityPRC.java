@@ -249,7 +249,7 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         switch (method) {
             case 0:
                 return new Object[]{getEnergy()};

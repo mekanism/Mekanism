@@ -60,7 +60,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 
                         player.openContainer.windowId = message.windowId;
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Mekanism.logger.error("FIXME: Packet handling error", e);
                     }
                 }
             }

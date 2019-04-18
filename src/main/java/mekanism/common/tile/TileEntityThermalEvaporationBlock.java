@@ -120,7 +120,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
     }
 
     @Override
-    public Object[] invoke(int method, Object[] args) throws Exception {
+    public Object[] invoke(int method, Object[] args) throws NoSuchMethodException {
         TileEntityThermalEvaporationController controller = getController();
 
         if (controller == null) {

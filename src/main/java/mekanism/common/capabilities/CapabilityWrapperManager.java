@@ -22,8 +22,8 @@ public class CapabilityWrapperManager<IMPL, WRAPPER> {
                 WRAPPER wrapper = wrapperClass.getConstructor(typeClass, EnumFacing.class).newInstance(impl, facing);
                 wrappers.put(facing, wrapper);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
 
         return wrappers.get(facing);

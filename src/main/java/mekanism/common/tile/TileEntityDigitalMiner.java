@@ -1049,7 +1049,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) {
+    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
         if (method == 0) {
             if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
                 return new Object[]{"Invalid parameters."};

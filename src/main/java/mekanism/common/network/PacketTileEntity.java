@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
 import mekanism.api.TileNetworkList;
@@ -38,7 +39,7 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
                 try {
                     network.handlePacketData(message.storedBuffer);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
 
                 message.storedBuffer.release();
