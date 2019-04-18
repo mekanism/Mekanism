@@ -75,8 +75,6 @@ public class BlockStateMachine extends ExtendedBlockState {
     public static final PropertyBool activeProperty = PropertyBool.create("active");
     public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
     public static final PropertyEnum<RecipeType> recipeProperty = PropertyEnum.create("recipe", RecipeType.class);
-    public static final Predicate<EnumFacing> ALL_FACINGS = enumFacing -> true;
-    public static final Predicate<EnumFacing> NO_ROTATION = enumFacing -> false;
 
     public BlockStateMachine(BlockMachine block, PropertyEnum<?> typeProperty) {
         super(block, new IProperty[]{BlockStateFacing.facingProperty, typeProperty, activeProperty, tierProperty,
@@ -136,7 +134,7 @@ public class BlockStateMachine extends ExtendedBlockState {
         ENERGIZED_SMELTER(MachineBlock.MACHINE_BLOCK_1, 10, "EnergizedSmelter", 16, TileEntityEnergizedSmelter.class,
               true, false, true, Plane.HORIZONTAL, true),
         TELEPORTER(MachineBlock.MACHINE_BLOCK_1, 11, "Teleporter", 13, TileEntityTeleporter.class, true, false, false,
-              NO_ROTATION, false),
+              BlockStateUtils.NO_ROTATION, false),
         ELECTRIC_PUMP(MachineBlock.MACHINE_BLOCK_1, 12, "ElectricPump", 17, TileEntityElectricPump.class, true, true,
               false, Plane.HORIZONTAL, false),
         PERSONAL_CHEST(MachineBlock.MACHINE_BLOCK_1, 13, "PersonalChest", -1, TileEntityPersonalChest.class, true, true,
@@ -144,7 +142,7 @@ public class BlockStateMachine extends ExtendedBlockState {
         CHARGEPAD(MachineBlock.MACHINE_BLOCK_1, 14, "Chargepad", -1, TileEntityChargepad.class, true, true, false,
               Plane.HORIZONTAL, false),
         LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", 59, TileEntityLogisticalSorter.class,
-              false, true, false, ALL_FACINGS, true),
+              false, true, false, BlockStateUtils.ALL_FACINGS, true),
         ROTARY_CONDENSENTRATOR(MachineBlock.MACHINE_BLOCK_2, 0, "RotaryCondensentrator", 7,
               TileEntityRotaryCondensentrator.class, true, true, false, Plane.HORIZONTAL, false),
         CHEMICAL_OXIDIZER(MachineBlock.MACHINE_BLOCK_2, 1, "ChemicalOxidizer", 29, TileEntityChemicalOxidizer.class,
@@ -168,21 +166,21 @@ public class BlockStateMachine extends ExtendedBlockState {
         PRESSURIZED_REACTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 10, "PressurizedReactionChamber", 40,
               TileEntityPRC.class, true, true, false, Plane.HORIZONTAL, true),
         FLUID_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "FluidTank", 41, TileEntityFluidTank.class, false, true, false,
-              NO_ROTATION, true),
+              BlockStateUtils.NO_ROTATION, true),
         FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, TileEntityFluidicPlenisher.class,
               true, true, false, Plane.HORIZONTAL, true),
         LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false,
-              ALL_FACINGS, false),
+              BlockStateUtils.ALL_FACINGS, false),
         LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false,
-              true, false, ALL_FACINGS, true),
+              true, false, BlockStateUtils.ALL_FACINGS, true),
         LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class,
-              false, true, false, ALL_FACINGS, true),
+              false, true, false, BlockStateUtils.ALL_FACINGS, true),
         QUANTUM_ENTANGLOPORTER(MachineBlock.MACHINE_BLOCK_3, 0, "QuantumEntangloporter", 46,
-              TileEntityQuantumEntangloporter.class, true, false, false, ALL_FACINGS, false),
+              TileEntityQuantumEntangloporter.class, true, false, false, BlockStateUtils.ALL_FACINGS, false),
         SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47,
               TileEntitySolarNeutronActivator.class, false, true, false, Plane.HORIZONTAL, true),
         AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48,
-              TileEntityAmbientAccumulator.class, true, false, false, NO_ROTATION, true),
+              TileEntityAmbientAccumulator.class, true, false, false, BlockStateUtils.NO_ROTATION, true),
         OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52,
               TileEntityOredictionificator.class, false, false, false, Plane.HORIZONTAL, true),
         RESISTIVE_HEATER(MachineBlock.MACHINE_BLOCK_3, 4, "ResistiveHeater", 53, TileEntityResistiveHeater.class, true,
@@ -441,7 +439,7 @@ public class BlockStateMachine extends ExtendedBlockState {
         }
 
         public boolean hasRotations() {
-            return !facingPredicate.equals(NO_ROTATION);
+            return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
         }
 
         public boolean hasActiveTexture() {
