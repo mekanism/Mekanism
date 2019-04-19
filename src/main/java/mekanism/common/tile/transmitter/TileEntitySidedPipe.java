@@ -583,7 +583,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             } else {
                 EnumFacing hitSide = sideHit(hit.subHit + 1);
 
-                if(hitSide == null && connectionTypes[side.ordinal()] == ConnectionType.NONE) {
+                if(hitSide == null) {
+                    if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == EnumActionResult.SUCCESS) {
+                        return EnumActionResult.SUCCESS;
+                    }
                     hitSide = side;
                 }
 
@@ -602,7 +605,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
                     return EnumActionResult.SUCCESS;
                 } else {
-                    return onConfigure(player, 6, side);
+                    return EnumActionResult.PASS;
                 }
             }
         }
