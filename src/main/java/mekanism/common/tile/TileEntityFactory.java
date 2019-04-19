@@ -774,9 +774,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             sorting = dataStream.readBoolean();
             upgraded = dataStream.readBoolean();
             lastUsage = dataStream.readDouble();
-            infuseStored.setAmount(dataStream.readInt());
-            if (infuseStored.getAmount() > 0) {
+            int amount = dataStream.readInt();
+            if (amount > 0) {
+                infuseStored.setAmount(amount);
                 infuseStored.setType(InfuseRegistry.get(PacketHandler.readString(dataStream)));
+            } else {
+                infuseStored.setEmpty();
             }
 
             if (recipeType != oldRecipe) {
@@ -808,8 +811,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInteger("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
-        infuseStored.setAmount(nbtTags.getInteger("infuseStored"));
-        infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
+        int amount = nbtTags.getInteger("infuseStored");
+        if (amount != 0) {
+            infuseStored.setAmount(amount);
+            infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
+        }
 
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInteger("progress" + i);
@@ -826,10 +832,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         nbtTags.setInteger("recipeType", recipeType.ordinal());
         nbtTags.setInteger("recipeTicks", recipeTicks);
         nbtTags.setBoolean("sorting", sorting);
-        nbtTags.setInteger("infuseStored", infuseStored.getAmount());
-
         if (infuseStored.getType() != null) {
             nbtTags.setString("type", infuseStored.getType().name);
+            nbtTags.setInteger("infuseStored", infuseStored.getAmount());
         } else {
             nbtTags.setString("type", "null");
         }

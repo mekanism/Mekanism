@@ -242,8 +242,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        infuseStored.setAmount(nbtTags.getInteger("infuseStored"));
-        if (infuseStored.getAmount() != 0) {
+        int amount = nbtTags.getInteger("infuseStored");
+        if (amount != 0) {
+            infuseStored.setAmount(amount);
             infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
         }
     }
@@ -275,9 +276,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            infuseStored.setAmount(dataStream.readInt());
-            if (infuseStored.getAmount() > 0) {
+            int amount = dataStream.readInt();
+            if (amount > 0) {
+                infuseStored.setAmount(amount);
                 infuseStored.setType(InfuseRegistry.get(PacketHandler.readString(dataStream)));
+            } else {
+                infuseStored.setEmpty();
             }
         }
     }

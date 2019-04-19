@@ -41,26 +41,22 @@ public class InfuseStorage implements ISustainedData {
         if (type == null) {
             type = input.type;
             amount = input.amount;
-        } else {
-            if (type == input.type) {
+        } else  if (type == input.type) {
                 amount += input.amount;
             } else {
                 Mekanism.logger.error("Tried to increase infusion storage with an incompatible type", new Exception());
             }
-        }
     }
 
     public void increase(InfuseObject input) {
         if (type == null) {
             type = input.type;
             amount = input.stored;
-        } else {
-            if (type == input.type) {
+        } else if (type == input.type) {
                 amount += input.stored;
             } else {
                 Mekanism.logger.error("Tried to increase infusion storage with an incompatible type", new Exception());
             }
-        }
     }
 
     @Override
@@ -85,10 +81,7 @@ public class InfuseStorage implements ISustainedData {
     }
 
     public InfuseType getType() {
-        if (amount == 0) {
-            return null;
-        }
-        return type;
+        return amount == 0 ? null : type;
     }
 
     public InfuseStorage setType(InfuseType type) {
