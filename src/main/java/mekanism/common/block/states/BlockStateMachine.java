@@ -367,7 +367,88 @@ public class BlockStateMachine extends ExtendedBlockState {
         }
 
         public void updateUsage() {
-            baseEnergy = 400 * getUsage();
+            double usage = getUsage(), storage;
+            switch (this) {
+                case ENRICHMENT_CHAMBER:
+                    storage = MekanismConfig.current().storage.enrichmentChamberStorage.val();
+                    break;
+                case OSMIUM_COMPRESSOR:
+                    storage = MekanismConfig.current().storage.osmiumCompressorStorage.val();
+                    break;
+                case COMBINER:
+                    storage = MekanismConfig.current().storage.combinerStorage.val();
+                    break;
+                case CRUSHER:
+                    storage = MekanismConfig.current().storage.crusherStorage.val();
+                    break;
+                case DIGITAL_MINER:
+                    storage = MekanismConfig.current().storage.digitalMinerStorage.val();
+                    break;
+                case METALLURGIC_INFUSER:
+                    storage = MekanismConfig.current().storage.metallurgicInfuserStorage.val();
+                    break;
+                case PURIFICATION_CHAMBER:
+                    storage = MekanismConfig.current().storage.purificationChamberStorage.val();
+                    break;
+                case ENERGIZED_SMELTER:
+                    storage = MekanismConfig.current().storage.energizedSmelterStorage.val();
+                    break;
+                case TELEPORTER:
+                    storage = MekanismConfig.current().storage.teleporterStorage.val();
+                    break;
+                case ELECTRIC_PUMP:
+                    storage = MekanismConfig.current().storage.electricPumpStorage.val();
+                    break;
+                case CHARGEPAD:
+                    storage = MekanismConfig.current().storage.chargePadStorage.val();
+                    break;
+                case ROTARY_CONDENSENTRATOR:
+                    storage = MekanismConfig.current().storage.rotaryCondensentratorStorage.val();
+                    break;
+                case CHEMICAL_OXIDIZER:
+                    storage = MekanismConfig.current().storage.oxidationChamberStorage.val();
+                    break;
+                case CHEMICAL_INFUSER:
+                    storage = MekanismConfig.current().storage.chemicalInfuserStorage.val();
+                    break;
+                case CHEMICAL_INJECTION_CHAMBER:
+                    storage = MekanismConfig.current().storage.chemicalInjectionChamberStorage.val();
+                    break;
+                case ELECTROLYTIC_SEPARATOR:
+                    storage = MekanismConfig.current().storage.electrolyticSeparatorStorage.val();
+                    break;
+                case PRECISION_SAWMILL:
+                    storage = MekanismConfig.current().storage.precisionSawmillStorage.val();
+                    break;
+                case CHEMICAL_DISSOLUTION_CHAMBER:
+                    storage = MekanismConfig.current().storage.chemicalDissolutionChamberStorage.val();
+                    break;
+                case CHEMICAL_WASHER:
+                    storage = MekanismConfig.current().storage.chemicalWasherStorage.val();
+                    break;
+                case CHEMICAL_CRYSTALLIZER:
+                    storage = MekanismConfig.current().storage.chemicalCrystallizerStorage.val();
+                    break;
+                case SEISMIC_VIBRATOR:
+                    storage = MekanismConfig.current().storage.seismicVibratorStorage.val();
+                    break;
+                case PRESSURIZED_REACTION_CHAMBER:
+                    storage = MekanismConfig.current().storage.pressurizedReactionBaseStorage.val();
+                    break;
+                case FLUIDIC_PLENISHER:
+                    storage = MekanismConfig.current().storage.fluidicPlenisherStorage.val();
+                    break;
+                case LASER:
+                    storage = MekanismConfig.current().storage.laserStorage.val();
+                    break;
+                case FORMULAIC_ASSEMBLICATOR:
+                    storage = MekanismConfig.current().storage.formulaicAssemblicatorStorage.val();
+                    break;
+                default:
+                    storage = 400 * usage;
+                    break;
+            }
+            baseEnergy = Math.max(usage, storage);
         }
 
         public String getDescription() {
