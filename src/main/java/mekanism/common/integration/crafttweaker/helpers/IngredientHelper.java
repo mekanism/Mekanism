@@ -110,7 +110,7 @@ public class IngredientHelper {
         } else if (in instanceof InfusionInput) {
             InfusionInput input = (InfusionInput) in;
             return matches(input.inputStack, toMatch.getIngredient()) && (toMatch.getInfuseType().isEmpty() || toMatch
-                  .getInfuseType().equalsIgnoreCase(input.infuse.type.name));
+                  .getInfuseType().equalsIgnoreCase(input.infuse.getType().name));
         } else if (in instanceof IntegerInput) {
             IntegerInput input = (IntegerInput) in;
             return input.ingredient == toMatch.getAmount();

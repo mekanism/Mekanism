@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.base.ISustainedData;
@@ -8,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 public class InfuseStorage implements ISustainedData {
 
-    public InfuseType type;
+    private InfuseType type;
 
-    public int amount;
+    private int amount;
 
     public InfuseStorage() {
     }
@@ -29,6 +30,36 @@ public class InfuseStorage implements ISustainedData {
             amount -= storage.amount;
         } else if (type == storage.type) {
             amount = 0;
+        }
+        if (amount <= 0) {
+            type = null;
+            amount = 0;
+        }
+    }
+
+    public void increase(InfuseStorage input) {
+        if (type == null) {
+            type = input.type;
+            amount = input.amount;
+        } else {
+            if (type == input.type) {
+                amount += input.amount;
+            } else {
+                Mekanism.logger.error("Tried to increase infusion storage with an incompatible type", new Exception());
+            }
+        }
+    }
+
+    public void increase(InfuseObject input) {
+        if (type == null) {
+            type = input.type;
+            amount = input.stored;
+        } else {
+            if (type == input.type) {
+                amount += input.stored;
+            } else {
+                Mekanism.logger.error("Tried to increase infusion storage with an incompatible type", new Exception());
+            }
         }
     }
 
@@ -51,5 +82,37 @@ public class InfuseStorage implements ISustainedData {
             type = null;
             amount = 0;
         }
+    }
+
+    public InfuseType getType() {
+        if (amount == 0) {
+            return null;
+        }
+        return type;
+    }
+
+    public InfuseStorage setType(InfuseType type) {
+        this.type = type;
+        return this;
+    }
+
+    public int getAmount() {
+        if (type == null){
+            return 0;
+        }
+        return amount;
+    }
+
+    public InfuseStorage setAmount(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        this.amount = amount;
+        return this;
+    }
+
+    public void setEmpty() {
+        this.amount = 0;
+        this.type = null;
     }
 }

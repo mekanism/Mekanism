@@ -158,7 +158,7 @@ public interface IFactory {
             } else if (fuelType == MachineFuelType.CHANCE) {
                 return getChanceRecipe(slotStack);
             } else if (this == INFUSING) {
-                if (infuse.type != null) {
+                if (infuse.getType() != null) {
                     return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
                 } else {
                     for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get()

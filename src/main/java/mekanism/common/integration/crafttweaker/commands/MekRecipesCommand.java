@@ -173,8 +173,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 type = Recipe.METALLURGIC_INFUSER;
                 for (MetallurgicInfuserRecipe recipe : Recipe.METALLURGIC_INFUSER.get().values()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.infuser.addRecipe(%s, %s, %s, %s)",
-                          recipe.getInput().infuse.type,
-                          recipe.getInput().infuse.amount,
+                          recipe.getInput().infuse.getType(),
+                          recipe.getInput().infuse.getAmount(),
                           RecipeInfoHelper.getItemName(recipe.getInput().inputStack),
                           RecipeInfoHelper.getItemName(recipe.getOutput().output)
                     ));
