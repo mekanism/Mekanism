@@ -139,6 +139,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+            //TODO: Simulate??
             double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
             double rejects = acceptor.injectEnergy(side, toTransfer, 0);
 
@@ -174,7 +175,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromTesla(acceptor.givePower(toTesla(amount), false));
+            return fromTesla(acceptor.givePower(toTesla(amount), simulate));
         }
 
         @Override
