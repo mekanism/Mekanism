@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Function;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
@@ -33,29 +32,6 @@ public final class CableUtils {
         }
 
         return false;
-    }
-
-    /**
-     * Gets the adjacent connections to a TileEntity, from a subset of its sides.
-     *
-     * @param tileEntity - center TileEntity
-     * @param sideFunction - set of sides to check
-     * @return boolean[] of adjacent connections
-     */
-    public static boolean[] getConnections(TileEntity tileEntity, Function<EnumFacing, Boolean> sideFunction) {
-        boolean[] connectable = new boolean[]{false, false, false, false, false, false};
-        Coord4D coord = Coord4D.get(tileEntity);
-
-        for (EnumFacing side : EnumFacing.values()) {
-            if (sideFunction.apply(side)) {
-                TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
-
-                connectable[side.ordinal()] = isValidAcceptorOnSide(tileEntity, tile, side);
-                connectable[side.ordinal()] |= isCable(tile);
-            }
-        }
-
-        return connectable;
     }
 
     /**
@@ -235,25 +211,25 @@ public final class CableUtils {
     }
 
     public static void emit(IEnergyWrapper emitter) {
-        if (!((TileEntity) emitter).getWorld().isRemote && MekanismUtils.canFunction((TileEntity) emitter)) {
+        TileEntity tileEntity = (TileEntity) emitter;
+        if (!tileEntity.getWorld().isRemote && MekanismUtils.canFunction(tileEntity)) {
             double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 
             if (energyToSend > 0) {
-                boolean[] connectable = getConnections((TileEntity) emitter, emitter::sideIsOutput);
-
+                Coord4D coord = Coord4D.get(tileEntity);
                 Set<EnergyAcceptorTarget> targets = new HashSet<>();
-
                 for (EnumFacing side : EnumFacing.values()) {
-                    if (connectable[side.ordinal()]) {
-                        TileEntity tile = Coord4D.get((TileEntity) emitter).offset(side)
-                              .getTileEntity(((TileEntity) emitter).getWorld());
-                        //Get the opposite side as the current side is relative to us
-                        EnumFacing opposite = side.getOpposite();
-                        EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
-                        if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor.needsEnergy(opposite)) {
-                            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-                            target.addSide(opposite, acceptor);
-                            targets.add(target);
+                    if (emitter.sideIsOutput(side)) {
+                        TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
+                        //If it can accept energy or it is a cable
+                        if (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile)) {
+                            //Get the opposite side as the current side is relative to us
+                            EnumFacing opposite = side.getOpposite();
+                            EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
+                            if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor
+                                  .needsEnergy(opposite)) {
+                                targets.add(new EnergyAcceptorTarget(opposite, acceptor));
+                            }
                         }
                     }
                 }

@@ -12,6 +12,16 @@ public class EnergyAcceptorTarget {
     private Map<EnumFacing, Double> needed = new HashMap<>();
     private Map<EnumFacing, Double> given = new HashMap<>();
 
+    public EnergyAcceptorTarget() {
+    }
+
+    /**
+     * Create a new acceptor target, adding the side and wrapper to wrappers in one call
+     */
+    public EnergyAcceptorTarget(EnumFacing side, EnergyAcceptorWrapper wrapper) {
+        wrappers.put(side, wrapper);
+    }
+
     public boolean hasAcceptors() {
         return !wrappers.isEmpty();
     }
@@ -46,8 +56,9 @@ public class EnergyAcceptorTarget {
     }
 
     private double acceptAmount(EnumFacing side, double amount) {
+        //TODO: Do we need to verify there is an acceptor for that side?
+        // We should be able to safely assume that there is given how we get to this point
         EnergyAcceptorWrapper acceptor = wrappers.get(side);
-        //TODO: Verify there is an acceptor for that side???
         //Give it power and add how much actually got accepted instead of how much
         // we attempted to give it
         return acceptor.acceptEnergy(side, amount, false);
