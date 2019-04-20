@@ -124,7 +124,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     /**
-     * @return sent
+     * @return sent The amount that actually got sent
      */
     public double doEmit(double energyToSend) {
         Set<EnergyAcceptorTarget> availableAcceptors = getAcceptorTargets();
@@ -142,8 +142,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
                     EnumFacing side = entry.getKey();
                     double amountNeeded = entry.getValue().acceptEnergy(side, energyToSend, true);
                     boolean canGive = amountNeeded <= amountPer;
-                    //TODO: Make addAmount return 0 if canGive is true, and otherwise return amountNeeded
-                    // That way we can run it as target.simulate(side, energyToSend)
+                    //Add the amount
                     target.addAmount(side, amountNeeded, canGive);
                     if (canGive) {
                         //If we are giving it, then lower the amount we are checking/splitting
@@ -153,18 +152,18 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
                     }
                 }
             }
-            //TODO: Second set of ones that have things still with needed?
-            // Or just loop over all and have boolean lookup to see if there are needed ones
 
-            //TODO: Make this more efficient as it is the least efficient part of it
-            // Custom datastructure sorted by value??
             boolean amountPerChanged = true;
             while (amountPerChanged) {
                 amountPerChanged = false;
                 double amountPerLast = amountPer;
-                //TODO: Recalc the amountPerChanged between one target to the next?
                 for (EnergyAcceptorTarget target : availableAcceptors) {
-                    //TODO: have target keep track of moving needed to given?
+                    if (target.noneNeeded()) {
+                        continue;
+                    }
+                    //Use an iterator rather than a copy of the keyset of the needed submap
+                    // This allows for us to remove it once we find it without  having to
+                    // start looping again or make a large number of copies of the set
                     Iterator<Entry<EnumFacing, Double>> iterator = target.getNeededIterator();
                     while (iterator.hasNext()) {
                         Entry<EnumFacing, Double> needInfo = iterator.next();
@@ -181,11 +180,11 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
                                 //We changed our amount so set it back to true so that we know we need
                                 // to loop over things again
                                 amountPerChanged = true;
+                                //Continue checking things in case we happen to be
+                                // getting things in a bad order so that we don't recheck
+                                // the same values many times
                             }
                         }
-                        //Continue checking this iteration of it in case we happen to be
-                        // getting things in a bad order so that we don't recheck
-                        // the same values many times
                     }
                 }
             }
@@ -231,6 +230,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         return toReturn;
     }
 
+    //TODO: Replace the other network's sending things with a target system like this
     public Set<EnergyAcceptorTarget> getAcceptorTargets() {
         Set<EnergyAcceptorTarget> toReturn = new HashSet<>();
 

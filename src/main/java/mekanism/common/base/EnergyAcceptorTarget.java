@@ -67,4 +67,8 @@ public class EnergyAcceptorTarget {
     public Iterator<Entry<EnumFacing, Double>> getNeededIterator() {
         return needed.entrySet().iterator();
     }
+
+    public boolean noneNeeded() {
+        return needed.isEmpty();
+    }
 }
