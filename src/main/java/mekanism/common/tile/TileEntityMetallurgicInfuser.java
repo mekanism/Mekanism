@@ -87,13 +87,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             ChargeUtils.discharge(4, this);
 
             if (!inventory.get(1).isEmpty()) {
-                if (InfuseRegistry.getObject(inventory.get(1)) != null) {
-                    InfuseObject infuse = InfuseRegistry.getObject(inventory.get(1));
-
-                    if (infuseStored.type == null || infuseStored.type == infuse.type) {
-                        if (infuseStored.amount + infuse.stored <= MAX_INFUSE) {
-                            infuseStored.amount += infuse.stored;
-                            infuseStored.type = infuse.type;
+                InfuseObject pendingInfuseInput = InfuseRegistry.getObject(inventory.get(1));
+                if (pendingInfuseInput != null) {
+                    if (infuseStored.getType() == null || infuseStored.getType() == pendingInfuseInput.type) {
+                        if (infuseStored.getAmount() + pendingInfuseInput.stored <= MAX_INFUSE) {
+                            infuseStored.increase(pendingInfuseInput);
                             inventory.get(1).shrink(1);
                         }
                     }
@@ -120,11 +118,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
 
             if (!canOperate(recipe)) {
                 operatingTicks = 0;
-            }
-
-            if (infuseStored.amount <= 0) {
-                infuseStored.amount = 0;
-                infuseStored.type = null;
             }
 
             prevEnergy = getEnergy();
@@ -207,13 +200,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
         if (slotID == 3) {
             return false;
         } else if (slotID == 1) {
-            return InfuseRegistry.getObject(itemstack) != null && (infuseStored.type == null
-                  || infuseStored.type == InfuseRegistry.getObject(itemstack).type);
+            return InfuseRegistry.getObject(itemstack) != null && (infuseStored.getType() == null
+                  || infuseStored.getType() == InfuseRegistry.getObject(itemstack).type);
         } else if (slotID == 0) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade
                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 2) {
-            if (infuseStored.type != null) {
+            if (infuseStored.getType() != null) {
                 return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null;
             } else {
                 return Recipe.METALLURGIC_INFUSER.get().keySet().stream()
@@ -242,15 +235,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     }
 
     public int getScaledInfuseLevel(int i) {
-        return infuseStored.amount * i / MAX_INFUSE;
+        return infuseStored.getAmount() * i / MAX_INFUSE;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        infuseStored.amount = nbtTags.getInteger("infuseStored");
-        infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
+        int amount = nbtTags.getInteger("infuseStored");
+        if (amount != 0) {
+            infuseStored.setAmount(amount);
+            infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
+        }
     }
 
     @Nonnull
@@ -258,10 +254,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
 
-        nbtTags.setInteger("infuseStored", infuseStored.amount);
-
-        if (infuseStored.type != null) {
-            nbtTags.setString("type", infuseStored.type.name);
+        if (infuseStored.getType() != null) {
+            nbtTags.setString("type", infuseStored.getType().name);
+            nbtTags.setInteger("infuseStored", infuseStored.getAmount());
         } else {
             nbtTags.setString("type", "null");
         }
@@ -274,16 +269,19 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            infuseStored.amount = dataStream.readInt();
+            infuseStored.setAmount(dataStream.readInt());
             return;
         }
 
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            infuseStored.amount = dataStream.readInt();
-            if (infuseStored.amount > 0) {
-                infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+            int amount = dataStream.readInt();
+            if (amount > 0) {
+                infuseStored.setAmount(amount);
+                infuseStored.setType(InfuseRegistry.get(PacketHandler.readString(dataStream)));
+            } else {
+                infuseStored.setEmpty();
             }
         }
     }
@@ -292,9 +290,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        data.add(infuseStored.amount);
-        if (infuseStored.amount > 0) {
-            data.add(infuseStored.type.name);
+        data.add(infuseStored.getAmount());
+        if (infuseStored.getAmount() > 0) {
+            data.add(infuseStored.getType().name);
         }
 
         return data;
@@ -323,7 +321,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
             case 6:
                 return new Object[]{infuseStored};
             case 7:
-                return new Object[]{MAX_INFUSE - infuseStored.amount};
+                return new Object[]{MAX_INFUSE - infuseStored.getAmount()};
             default:
                 throw new NoSuchMethodException();
         }

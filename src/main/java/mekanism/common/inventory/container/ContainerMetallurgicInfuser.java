@@ -31,8 +31,8 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
             stack = slotStack.copy();
 
             if (slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3) {
-                if (InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null
-                      || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type)) {
+                if (InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.getType() == null
+                      || tileEntity.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -78,7 +78,7 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
     }
 
     public boolean isInputItem(ItemStack itemStack) {
-        if (tileEntity.infuseStored.type != null) {
+        if (tileEntity.infuseStored.getType() != null) {
             return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tileEntity.infuseStored, itemStack))
                   != null;
         } else {
