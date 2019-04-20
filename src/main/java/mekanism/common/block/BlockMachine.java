@@ -815,7 +815,7 @@ public abstract class BlockMachine extends BlockContainer {
         if (!target.typeOfHit.equals(Type.BLOCK)) {
             return super.addHitEffects(state, world, target, manager);
         }
-        MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
+        MachineType type = state.getValue(getTypeProperty());
         //If it is one of the types that block state won't have a color for
         if (type == MachineType.FLUID_TANK) {
             if (MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager)) {
