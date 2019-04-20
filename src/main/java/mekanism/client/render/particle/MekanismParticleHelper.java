@@ -17,7 +17,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MekanismParticleHelper {
 
-    //From net.minecraft.client.particle.ParticleManager
+    /** Centre offset? */
+    private static final double OFFSET_1 = 0.20000000298023224D;
+
+    /** Side offset? */
+    private static final double OFFSET_2 = 0.10000000149011612D;
+
+    /**
+     * Adds block hit particles for the specified block, accounting for tier colour
+     * @see ParticleManager#addBlockHitEffects(net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing) for source of copy
+     *
+     * @param world relevant world
+     * @param pos position of block
+     * @param side which side was hit
+     * @param manager vanilla particle manager in use
+     * @return true if handled (always true)
+     */
     public static boolean addBlockHitEffects(World world, BlockPos pos, EnumFacing side, ParticleManager manager) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
         EnumColor color = null;
@@ -29,42 +44,42 @@ public class MekanismParticleHelper {
         }
 
         if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE) {
-            int i = pos.getX();
-            int j = pos.getY();
-            int k = pos.getZ();
+            int blockX = pos.getX();
+            int blockY = pos.getY();
+            int blockZ = pos.getZ();
             AxisAlignedBB axisalignedbb = iblockstate.getBoundingBox(world, pos);
-            double d0 = (double) i + world.rand.nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX
-                  - 0.20000000298023224D) + 0.10000000149011612D + axisalignedbb.minX;
-            double d1 = (double) j + world.rand.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY
-                  - 0.20000000298023224D) + 0.10000000149011612D + axisalignedbb.minY;
-            double d2 = (double) k + world.rand.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ
-                  - 0.20000000298023224D) + 0.10000000149011612D + axisalignedbb.minZ;
+            double particleX = (double) blockX + world.rand.nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX
+                  - OFFSET_1) + OFFSET_2 + axisalignedbb.minX;
+            double particleY = (double) blockY + world.rand.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY
+                  - OFFSET_1) + OFFSET_2 + axisalignedbb.minY;
+            double particleZ = (double) blockZ + world.rand.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ
+                  - OFFSET_1) + OFFSET_2 + axisalignedbb.minZ;
 
             if (side == EnumFacing.DOWN) {
-                d1 = (double) j + axisalignedbb.minY - 0.10000000149011612D;
+                particleY = (double) blockY + axisalignedbb.minY - OFFSET_2;
             }
 
             if (side == EnumFacing.UP) {
-                d1 = (double) j + axisalignedbb.maxY + 0.10000000149011612D;
+                particleY = (double) blockY + axisalignedbb.maxY + OFFSET_2;
             }
 
             if (side == EnumFacing.NORTH) {
-                d2 = (double) k + axisalignedbb.minZ - 0.10000000149011612D;
+                particleZ = (double) blockZ + axisalignedbb.minZ - OFFSET_2;
             }
 
             if (side == EnumFacing.SOUTH) {
-                d2 = (double) k + axisalignedbb.maxZ + 0.10000000149011612D;
+                particleZ = (double) blockZ + axisalignedbb.maxZ + OFFSET_2;
             }
 
             if (side == EnumFacing.WEST) {
-                d0 = (double) i + axisalignedbb.minX - 0.10000000149011612D;
+                particleX = (double) blockX + axisalignedbb.minX - OFFSET_2;
             }
 
             if (side == EnumFacing.EAST) {
-                d0 = (double) i + axisalignedbb.maxX + 0.10000000149011612D;
+                particleX = (double) blockX + axisalignedbb.maxX + OFFSET_2;
             }
 
-            manager.addEffect(new TieredParticleDigging(world, d0, d1, d2, 0, 0, 0, iblockstate, color)
+            manager.addEffect(new TieredParticleDigging(world, particleX, particleY, particleZ, 0, 0, 0, iblockstate, color)
                   .setBlockPos(pos).multiplyVelocity(0.2F).multipleParticleScaleBy(0.6F));
         }
         return true;
