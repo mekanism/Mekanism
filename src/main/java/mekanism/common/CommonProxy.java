@@ -400,8 +400,6 @@ public class CommonProxy implements IGuiProvider {
             MekanismAPI.addBoxBlacklist(Blocks.MOB_SPAWNER, OreDictionary.WILDCARD_VALUE);
         }
 
-        BlockStateMachine.MachineType.updateAllUsages();
-
         if (MekanismConfig.current().general.voiceServerEnabled.val() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();
         }

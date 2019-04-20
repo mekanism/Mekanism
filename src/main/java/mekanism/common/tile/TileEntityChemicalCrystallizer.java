@@ -18,7 +18,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
@@ -50,8 +49,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public TileComponentConfig configComponent;
 
     public TileEntityChemicalCrystallizer() {
-        super("machine.crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy,
-              MekanismConfig.current().usage.chemicalCrystallizerUsage.val(), 3, 200);
+        super("machine.crystallizer", "ChemicalCrystallizer",
+                MachineType.CHEMICAL_CRYSTALLIZER.getStorage(),
+                MachineType.CHEMICAL_CRYSTALLIZER.getUsage(), 3, 200);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
               TransmissionType.GAS);

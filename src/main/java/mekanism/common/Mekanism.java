@@ -591,7 +591,7 @@ public class Mekanism {
                   2 * MekanismConfig.current().general.FROM_H2.val(),
                   new GasStack(MekanismFluids.Sodium, 1), new GasStack(MekanismFluids.Chlorine, 1));
             RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("heavywater", 2),
-                  MekanismConfig.current().usage.heavyWaterElectrolysisUsage.val(),
+                  MekanismConfig.current().usage.heavyWaterElectrolysis.val(),
                   new GasStack(MekanismFluids.Deuterium, 2),
                   new GasStack(MekanismFluids.Oxygen, 1));
         }

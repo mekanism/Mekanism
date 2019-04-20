@@ -30,8 +30,8 @@ public abstract class TileEntityMachine extends TileEntityEffectsBlock implement
     public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-    public TileEntityMachine(String sound, String name, double maxEnergy, double baseEnergyUsage, int upgradeSlot) {
-        super(sound, name, maxEnergy);
+    public TileEntityMachine(String sound, String name, double baseMaxEnergy, double baseEnergyUsage, int upgradeSlot) {
+        super(sound, name, baseMaxEnergy);
 
         energyPerTick = BASE_ENERGY_PER_TICK = baseEnergyUsage;
 

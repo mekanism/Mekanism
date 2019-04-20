@@ -64,14 +64,14 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      *
      * @param soundPath - location of the sound effect
      * @param name - full name of this machine
-     * @param maxEnergy - maximum amount of energy this machine can hold.
+     * @param baseMaxEnergy - maximum amount of energy this machine can hold.
      * @param baseEnergyUsage - how much energy this machine uses per tick.
      * @param ticksRequired - how many ticks it takes to smelt an item.
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
-    public TileEntityAdvancedElectricMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage,
+    public TileEntityAdvancedElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
           int ticksRequired, int secondaryPerTick) {
-        super(soundPath, name, maxEnergy, baseEnergyUsage, 4, ticksRequired,
+        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired,
               MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);

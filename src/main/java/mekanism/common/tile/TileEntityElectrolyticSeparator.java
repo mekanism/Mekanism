@@ -93,7 +93,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
 
     public TileEntityElectrolyticSeparator() {
         super("machine.electrolyticseparator", "ElectrolyticSeparator",
-              MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy, 0, 4);
+                MachineType.ELECTROLYTIC_SEPARATOR.getStorage(), 0, 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 

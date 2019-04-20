@@ -37,7 +37,7 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     public Random random = new Random();
 
     public TileEntityChargepad() {
-        super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
+        super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.getStorage());
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 

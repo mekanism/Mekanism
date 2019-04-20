@@ -83,12 +83,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
     public static int[] EJECT_INV;
-    public final double BASE_ENERGY_USAGE = MekanismConfig.current().usage.digitalMinerUsage.val();
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
     public HashList<MinerFilter> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
-    public double energyUsage = MekanismConfig.current().usage.digitalMinerUsage.val();
+    public final double BASE_ENERGY_USAGE = MachineType.DIGITAL_MINER.getUsage();
+    public double energyUsage = BASE_ENERGY_USAGE;
 
     private int radius;
 
@@ -141,7 +141,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
           "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     public TileEntityDigitalMiner() {
-        super("DigitalMiner", MachineType.DIGITAL_MINER.baseEnergy);
+        super("DigitalMiner", MachineType.DIGITAL_MINER.getStorage());
         inventory = NonNullList.withSize(INV_SLOTS.length + 1, ItemStack.EMPTY);
         radius = 10;
 

@@ -21,6 +21,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -76,7 +77,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     /**
      * How much energy this machine consumes per-tick.
      */
-    public double BASE_ENERGY_PER_TICK = MekanismConfig.current().usage.electricPumpUsage.val();
+    public double BASE_ENERGY_PER_TICK = MachineType.ELECTRIC_PUMP.getUsage();
     public double energyPerTick = BASE_ENERGY_PER_TICK;
     /**
      * How many ticks it takes to run an operation.
@@ -99,7 +100,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityElectricPump() {
-        super("ElectricPump", 10000);
+        super("ElectricPump", MachineType.ELECTRIC_PUMP.getStorage());
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
         upgradeComponent.setSupported(Upgrade.FILTER);

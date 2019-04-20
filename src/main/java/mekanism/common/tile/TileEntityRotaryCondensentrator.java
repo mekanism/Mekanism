@@ -22,7 +22,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
@@ -65,8 +64,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     public TileEntityRotaryCondensentrator() {
         super("machine.rotarycondensentrator", "RotaryCondensentrator",
-              MachineType.ROTARY_CONDENSENTRATOR.baseEnergy,
-              MekanismConfig.current().usage.rotaryCondensentratorUsage.val(), 5);
+              MachineType.ROTARY_CONDENSENTRATOR.getStorage(),
+              MachineType.ROTARY_CONDENSENTRATOR.getUsage(), 5);
         inventory = NonNullList.withSize(6, ItemStack.EMPTY);
     }
 

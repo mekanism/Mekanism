@@ -69,7 +69,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
           "addOreFilter", "removeOreFilter"};
 
     public TileEntityLogisticalSorter() {
-        super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.baseEnergy);
+        super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.getStorage());
         inventory = NonNullList.withSize(1, ItemStack.EMPTY);
         doAutoSync = false;
     }

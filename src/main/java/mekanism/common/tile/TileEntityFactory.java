@@ -354,7 +354,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
     public void setRecipeType(RecipeType type) {
         recipeType = type;
-        BASE_MAX_ENERGY = maxEnergy = 200 * tier.processes * recipeType.getEnergyUsage();
+        BASE_MAX_ENERGY = maxEnergy = 0.5D * tier.processes * recipeType.getEnergyStorage();
         BASE_ENERGY_PER_TICK = energyPerTick = recipeType.getEnergyUsage();
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);

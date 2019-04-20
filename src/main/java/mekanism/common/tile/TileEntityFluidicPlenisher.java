@@ -63,7 +63,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     /**
      * How much energy this machine consumes per-tick.
      */
-    public double BASE_ENERGY_PER_TICK = MekanismConfig.current().usage.fluidicPlenisherUsage.val();
+    public double BASE_ENERGY_PER_TICK = MachineType.FLUIDIC_PLENISHER.getUsage();
     public double energyPerTick = BASE_ENERGY_PER_TICK;
     /**
      * How many ticks it takes to run an operation.
@@ -79,7 +79,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityFluidicPlenisher() {
-        super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.baseEnergy);
+        super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.getStorage());
         inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     }
 
