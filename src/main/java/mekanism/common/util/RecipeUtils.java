@@ -7,6 +7,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -47,8 +48,10 @@ public class RecipeUtils {
 
         if (target.getItem() instanceof IFactory && input.getItem() instanceof IFactory) {
             if (isFactory(target) && isFactory(input)) {
-                return ((IFactory) target.getItem()).getRecipeType(target) == ((IFactory) input.getItem())
-                      .getRecipeType(input);
+                RecipeType recipeTypeInput = ((IFactory) input.getItem()).getRecipeTypeOrNull(input);
+                //If either factory has invalid NBT don't crash it
+                return recipeTypeInput != null
+                      && ((IFactory) target.getItem()).getRecipeTypeOrNull(target) == recipeTypeInput;
             }
         }
 

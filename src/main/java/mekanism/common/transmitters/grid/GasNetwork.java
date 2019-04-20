@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -29,7 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *
  * @author aidancbrady
  */
-public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
+public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> {
 
     public int transferDelay = 0;
 
@@ -51,33 +52,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
     public GasNetwork(Collection<GasNetwork> networks) {
         for (GasNetwork net : networks) {
             if (net != null) {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-                    if (net.refGas != null && net.gasScale > gasScale) {
-                        gasScale = net.gasScale;
-                        refGas = net.refGas;
-                        buffer = net.buffer;
-
-                        net.gasScale = 0;
-                        net.refGas = null;
-                        net.buffer = null;
-                    }
-                } else {
-                    if (net.buffer != null) {
-                        if (buffer == null) {
-                            buffer = net.buffer.copy();
-                        } else {
-                            if (buffer.isGasEqual(net.buffer)) {
-                                buffer.amount += net.buffer.amount;
-                            } else if (net.buffer.amount > buffer.amount) {
-                                buffer = net.buffer.copy();
-                            }
-
-                        }
-
-                        net.buffer = null;
-                    }
-                }
-
                 adoptTransmittersAndAcceptorsFrom(net);
                 net.deregister();
             }
@@ -89,14 +63,47 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork> transmitter) {
-        Object b = transmitter.getBuffer();
+    public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            if (net.refGas != null && net.gasScale > gasScale) {
+                gasScale = net.gasScale;
+                refGas = net.refGas;
+                buffer = net.buffer;
 
-        if (!(b instanceof GasStack) || ((GasStack) b).getGas() == null || ((GasStack) b).amount == 0) {
+                net.gasScale = 0;
+                net.refGas = null;
+                net.buffer = null;
+            }
+        } else {
+            if (net.buffer != null) {
+                if (buffer == null) {
+                    buffer = net.buffer.copy();
+                } else {
+                    if (buffer.isGasEqual(net.buffer)) {
+                        buffer.amount += net.buffer.amount;
+                    } else if (net.buffer.amount > buffer.amount) {
+                        buffer = net.buffer.copy();
+                    }
+
+                }
+                net.buffer = null;
+            }
+        }
+        super.adoptTransmittersAndAcceptorsFrom(net);
+    }
+
+    @Nullable
+    public GasStack getBuffer() {
+        return buffer;
+    }
+
+    @Override
+    public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork, GasStack> transmitter) {
+        GasStack gas = transmitter.getBuffer();
+
+        if (gas == null || gas.getGas() == null || gas.amount == 0) {
             return;
         }
-
-        GasStack gas = (GasStack) b;
 
         if (buffer == null || buffer.getGas() == null || buffer.amount == 0) {
             buffer = gas.copy();
@@ -301,6 +308,18 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork> {
     @Override
     public String getFlowInfo() {
         return prevTransferAmount + "/t";
+    }
+
+    @Override
+    public boolean isCompatibleWith(GasNetwork other) {
+        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer == null || this.buffer
+              .isGasEqual(other.buffer));
+    }
+
+    @Override
+    public boolean compatibleWithBuffer(GasStack buffer) {
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer
+              .isGasEqual(buffer));
     }
 
     public static class GasTransferEvent extends Event {

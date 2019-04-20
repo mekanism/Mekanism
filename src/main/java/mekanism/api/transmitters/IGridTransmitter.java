@@ -1,11 +1,12 @@
 package mekanism.api.transmitters;
 
 import java.util.Collection;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter {
+public interface IGridTransmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends ITransmitter {
 
     boolean hasTransmitterNetwork();
 
@@ -14,14 +15,14 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
      *
      * @return network this transmitter is using
      */
-    N getTransmitterNetwork();
+    NETWORK getTransmitterNetwork();
 
     /**
      * Sets this transmitter segment's network to a new value.
      *
      * @param network - network to set to
      */
-    void setTransmitterNetwork(N network);
+    void setTransmitterNetwork(NETWORK network);
 
     void setRequestsUpdate();
 
@@ -45,7 +46,7 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 
     Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side);
 
-    A getAcceptor(EnumFacing side);
+    ACCEPTOR getAcceptor(EnumFacing side);
 
     boolean isValid();
 
@@ -53,15 +54,50 @@ public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITr
 
     void setOrphan(boolean orphaned);
 
-    N createEmptyNetwork();
+    NETWORK createEmptyNetwork();
 
-    N mergeNetworks(Collection<N> toMerge);
+    NETWORK mergeNetworks(Collection<NETWORK> toMerge);
 
-    N getExternalNetwork(Coord4D from);
+    NETWORK getExternalNetwork(Coord4D from);
 
     void takeShare();
 
     void updateShare();
 
-    Object getBuffer();
+    /**
+     * @return The transmitter's buffer.
+     */
+    @Nullable
+    BUFFER getBuffer();
+
+    /**
+     * If the transmitter does not have a buffer this will try to fallback on the network's buffer.
+     * @return The transmitter's buffer, or if null the network's buffer.
+     */
+    @Nullable
+    default BUFFER getBufferWithFallback() {
+        BUFFER buffer = getBuffer();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer == null && hasTransmitterNetwork()) {
+            return getTransmitterNetwork().getBuffer();
+        }
+        return buffer;
+    }
+
+    default boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other){
+        return true;
+    }
+
+    /**
+     * Gets called on an orphan if at least one attempted network fails to connect
+     * due to having connected to another network that is incompatible with the
+     * next attempted ones.
+     *
+     * This is primarily used for if extra handling needs to be done, such as
+     * refreshing the connections visually on a minor delay so that it has
+     * time to have the buffer no longer be null and properly compare the
+     * connection.
+     */
+    default void connectionFailed() {
+    }
 }

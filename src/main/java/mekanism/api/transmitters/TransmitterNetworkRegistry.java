@@ -130,10 +130,10 @@ public class TransmitterNetworkRegistry {
         orphanTransmitters.clear();
     }
 
-    public <A, N extends DynamicNetwork<A, N>> DynamicNetwork<A, N> getNetworkFromOrphan(
-          IGridTransmitter<A, N> startOrphan) {
+    public <A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> DynamicNetwork<A, N, BUFFER> getNetworkFromOrphan(
+          IGridTransmitter<A, N, BUFFER> startOrphan) {
         if (startOrphan.isValid() && startOrphan.isOrphan()) {
-            OrphanPathFinder<A, N> finder = new OrphanPathFinder<>(startOrphan);
+            OrphanPathFinder<A, N, BUFFER> finder = new OrphanPathFinder<>(startOrphan);
             finder.start();
             N network;
 
@@ -167,6 +167,13 @@ public class TransmitterNetworkRegistry {
 
             network.addNewTransmitters(finder.connectedTransmitters);
 
+            if (finder.someNetworksFailed) {
+                //At least one network that connection was attempted with is not compatible
+                // So inform this transmitter that there was a failed connection attempt
+                // so that it can refresh the connections
+                startOrphan.connectionFailed();
+            }
+
             return network;
         }
 
@@ -197,18 +204,20 @@ public class TransmitterNetworkRegistry {
         return strings;
     }
 
-    public class OrphanPathFinder<A, N extends DynamicNetwork<A, N>> {
+    public class OrphanPathFinder<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> {
 
-        public IGridTransmitter<A, N> startPoint;
+        public IGridTransmitter<A, N, BUFFER> startPoint;
 
         public HashSet<Coord4D> iterated = Sets.newHashSet();
 
-        public HashSet<IGridTransmitter<A, N>> connectedTransmitters = Sets.newHashSet();
+        public HashSet<IGridTransmitter<A, N, BUFFER>> connectedTransmitters = Sets.newHashSet();
         public HashSet<N> networksFound = Sets.newHashSet();
 
         private Deque<Coord4D> queue = new LinkedList<>();
 
-        public OrphanPathFinder(IGridTransmitter<A, N> start) {
+        public boolean someNetworksFailed;
+
+        public OrphanPathFinder(IGridTransmitter<A, N, BUFFER> start) {
             startPoint = start;
         }
 
@@ -231,9 +240,10 @@ public class TransmitterNetworkRegistry {
             iterated.add(from);
 
             if (orphanTransmitters.containsKey(from)) {
-                IGridTransmitter<A, N> transmitter = orphanTransmitters.get(from);
+                IGridTransmitter<A, N, BUFFER> transmitter = orphanTransmitters.get(from);
 
-                if (transmitter.isValid() && transmitter.isOrphan()) {
+                if (transmitter.isValid() && transmitter.isOrphan() && (connectedTransmitters.isEmpty()
+                      || connectedTransmitters.stream().anyMatch(existing -> existing.isCompatibleWith(transmitter)))) {
                     connectedTransmitters.add(transmitter);
                     transmitter.setOrphan(false);
 
@@ -256,8 +266,15 @@ public class TransmitterNetworkRegistry {
 
         public void addNetworkToIterated(Coord4D from) {
             N net = startPoint.getExternalNetwork(from);
-            if (net != null) {
-                networksFound.add(net);
+            //Make sure that there is an external network and that it is compatible with this buffer
+            if (net != null && net.compatibleWithBuffer(startPoint.getBuffer())) {
+                if (networksFound.isEmpty() || networksFound.iterator().next().isCompatibleWith(net)) {
+                    networksFound.add(net);
+                } else {
+                    //If it a network was found but it is incompatible, then mark we have a failed
+                    // network so we can inform the transmitter it should do a tick delayed refresh
+                    someNetworksFailed = true;
+                }
             }
         }
     }

@@ -101,9 +101,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             } else if (delayTicks < 5) {
                 delayTicks++;
             }
-        }
-
-        if (!getWorld().isRemote) {
+        } else  {
             if (forceUpdate) {
                 refreshConnections();
                 forceUpdate = false;
@@ -148,8 +146,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                       .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
                       && TransmissionType.checkTransmissionType(CapabilityUtils
                             .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
-                      getTransmitterType().getTransmission())
-                      && isValidTransmitter(tileEntity)) {
+                      getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)) {
                     connections |= 1 << side.ordinal();
                 }
             }
@@ -196,8 +193,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                   .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
                   && TransmissionType.checkTransmissionType(CapabilityUtils
                         .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
-                  getTransmitterType().getTransmission())
-                  && isValidTransmitter(tileEntity);
+                  getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity);
         }
 
         return false;
@@ -312,6 +308,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public boolean canConnect(EnumFacing side) {
+        if(connectionTypes[side.ordinal()] == ConnectionType.NONE) {
+            return false;
+        }
         if (handlesRedstone()) {
             if (!redstoneSet) {
                 if (redstoneReactive) {
@@ -424,13 +423,28 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (!getWorld().isRemote) {
             byte possibleTransmitters = getPossibleTransmitterConnections();
             byte possibleAcceptors = getPossibleAcceptorConnections();
+            byte newlyEnabledTransmitters = 0;
 
             if ((possibleTransmitters | possibleAcceptors) != getAllCurrentConnections()) {
                 sendDesc = true;
+
+                if (possibleTransmitters != currentTransmitterConnections) {
+                    //If they don't match get the difference
+                    newlyEnabledTransmitters = (byte) (possibleTransmitters ^ currentTransmitterConnections);
+                    //Now remove all bits that already where enabled so we only have the
+                    // ones that are newly enabled. There is no need to recheck for a
+                    // network merge on two transmitters if one is no longer accessible
+                    newlyEnabledTransmitters &= ~currentTransmitterConnections;
+                }
             }
 
             currentTransmitterConnections = possibleTransmitters;
             currentAcceptorConnections = possibleAcceptors;
+
+            if (newlyEnabledTransmitters != 0) {
+                //If any sides are now valid transmitters that were not before recheck the connection
+                recheckConnections(newlyEnabledTransmitters);
+            }
         }
     }
 
@@ -438,19 +452,47 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (!getWorld().isRemote) {
             boolean possibleTransmitter = getPossibleTransmitterConnection(side);
             boolean possibleAcceptor = getPossibleAcceptorConnection(side);
+            boolean transmitterChanged = false;
 
             if ((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(),
                   side)) {
                 sendDesc = true;
+
+                if (possibleTransmitter != connectionMapContainsSide(currentTransmitterConnections, side)) {
+                    //If it doesn't match check if it is now enabled, as we don't care about it changing to disabled
+                    transmitterChanged = possibleTransmitter;
+                }
             }
 
             currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
             currentAcceptorConnections = setConnectionBit(currentAcceptorConnections, possibleAcceptor, side);
+
+            if (transmitterChanged) {
+                //If this side is now a valid transmitter and it wasn't before recheck the connection
+                recheckConnection(side);
+            }
         }
+    }
+
+    /**
+     * Only call this from server side
+     * @param newlyEnabledTransmitters The transmitters that are now enabled and were not before.
+     */
+    protected void recheckConnections(byte newlyEnabledTransmitters) {
+    }
+
+    /**
+     * Only call this from server side
+     * @param side The side that a transmitter is now enabled on after having been disabled.
+     */
+    protected void recheckConnection(EnumFacing side) {
     }
 
     protected void onModeChange(EnumFacing side) {
         markDirtyAcceptor(side);
+        if (getPossibleTransmitterConnections() != currentTransmitterConnections) {
+            markDirtyTransmitters();
+        }
         markDirty();
     }
 
@@ -541,18 +583,29 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             } else {
                 EnumFacing hitSide = sideHit(hit.subHit + 1);
 
+                if(hitSide == null) {
+                    if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == EnumActionResult.SUCCESS) {
+                        return EnumActionResult.SUCCESS;
+                    }
+                    hitSide = side;
+                }
+
                 if (hitSide != null) {
                     connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
                     sendDesc = true;
 
                     onModeChange(EnumFacing.byIndex(hitSide.ordinal()));
+
+                    refreshConnections();
+                    notifyTileChange();
+
                     player.sendMessage(
                           new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ")
                                 .translation(connectionTypes[hitSide.ordinal()].translationKey()));
 
                     return EnumActionResult.SUCCESS;
                 } else {
-                    return onConfigure(player, 6, side);
+                    return EnumActionResult.PASS;
                 }
             }
         }

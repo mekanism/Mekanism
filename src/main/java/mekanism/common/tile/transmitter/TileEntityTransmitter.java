@@ -2,8 +2,11 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -20,14 +23,14 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
-public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> extends TileEntitySidedPipe implements
-      IAlloyInteraction {
+public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends
+      TileEntitySidedPipe implements IAlloyInteraction {
 
-    public TransmitterImpl<A, N> transmitterDelegate;
+    public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public boolean unloaded = true;
-
     public boolean dataRequest = false;
+    public boolean delayedRefresh = false;
 
     private N lastClientNetwork = null;
 
@@ -35,7 +38,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
         transmitterDelegate = new TransmitterImpl<>(this);
     }
 
-    public TransmitterImpl<A, N> getTransmitter() {
+    public TransmitterImpl<A, N, BUFFER> getTransmitter() {
         return transmitterDelegate;
     }
 
@@ -57,6 +60,13 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
     @Override
     public void update() {
         super.update();
+
+        if (delayedRefresh) {
+            //Gets run the tick after the variable has been set. This is enough
+            // time to ensure that the transmitter has been registered.
+            delayedRefresh = false;
+            refreshConnections();
+        }
 
         if (getWorld().isRemote) {
             if (!dataRequest) {
@@ -103,6 +113,103 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
         if (getTransmitter().hasTransmitterNetwork()) {
             getTransmitter().getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
         }
+    }
+
+    protected boolean canHaveIncompatibleNetworks() {
+        return false;
+    }
+
+    @Override
+    protected void recheckConnections(byte newlyEnabledTransmitters) {
+        if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
+            //We only need to check if we can have incompatible networks and if we actually have a network
+            boolean networkUpdated = false;
+            for (EnumFacing side : EnumFacing.values()) {
+                if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
+                    //Recheck the side that is now enabled, as we manually merge this
+                    // cannot be simplified to a first match is good enough
+                    networkUpdated |= recheckConnectionPrechecked(side);
+                }
+            }
+            if (networkUpdated) {
+                refreshNetwork();
+            }
+        }
+    }
+
+    @Override
+    protected void recheckConnection(EnumFacing side) {
+        if (canHaveIncompatibleNetworks() && getTransmitter().hasTransmitterNetwork()) {
+            //We only need to check if we can have incompatible networks and if we actually have a network
+            if (recheckConnectionPrechecked(side)) {
+                refreshNetwork();
+            }
+        }
+    }
+
+    private void refreshNetwork() {
+        //Queue an update for all the transmitters in the network just in case something went wrong
+        // and to update the rendering of them
+        N network = getTransmitter().getTransmitterNetwork();
+        network.queueClientUpdate(network.transmitters);
+        //Copy values into a set so that we don't risk a CME
+        Set<IGridTransmitter<A, N, BUFFER>> transmitters = new HashSet<>(network.transmitters);
+        //TODO: Make some better way of refreshing the connections, given we only need to refresh
+        // connections to ourself anyways
+        // The best way to do this is probably by making a method that updates the values for
+        // the valid transmitters manually if the network is the same object.
+        for (IGridTransmitter<A, N, BUFFER> transmitter : transmitters) {
+            if (transmitter instanceof TransmitterImpl) {
+                //Refresh the connections because otherwise sometimes they need to wait for a block update
+                ((TransmitterImpl<A, N, BUFFER>) transmitter).containingTile.refreshConnections();
+            }
+        }
+    }
+
+    private boolean recheckConnectionPrechecked(EnumFacing side) {
+        N network = getTransmitter().getTransmitterNetwork();
+        TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
+        if (tileEntity instanceof TileEntityTransmitter) {
+            TileEntityTransmitter other = (TileEntityTransmitter) tileEntity;
+            //The other one should always have the same incompatible networks state as us
+            // But just in case it doesn't just check the boolean
+            if (other.canHaveIncompatibleNetworks() && other.getTransmitter().hasTransmitterNetwork()) {
+                N otherNetwork = (N) other.getTransmitter().getTransmitterNetwork();
+                if (network != otherNetwork && network.isCompatibleWith(otherNetwork)) {
+                    //We have two networks that are now compatible and they are not the same source network
+                    // The most common cause they would be same source network is that they would merge
+                    // from the first pipe checking when it attempts to reconnect, and then the second
+                    // pipe still is going to be checking the connection.
+
+                    if (getBufferWithFallback() == null) {
+                        //If we don't have any use them as primary network
+                        N tempNetwork = network;
+                        network = otherNetwork;
+                        otherNetwork = tempNetwork;
+                    }
+
+                    // Manually merge the networks.
+                    // This code is not in network registry as there is special handling needed to ensure
+                    // it visually updates properly. There also were above checks that get us to a certain
+                    // point where we can make some assumptions about the networks and if it is actually
+                    // valid to merge them when otherwise people may try to merge things when they shouldn't
+                    // be merged causing unexpected bugs.
+                    network.adoptTransmittersAndAcceptorsFrom(otherNetwork);
+                    //Unregister the other network
+                    otherNetwork.deregister();
+                    //Commit the changes of the new network
+                    network.commit();
+
+                    //We did not have these as part of the update because they got directly added
+                    // This means that we have to update the capacity/buffer and queue client updates
+                    // ourselves
+                    network.updateCapacity();
+                    network.clampBuffer();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public abstract A getCachedAcceptor(EnumFacing side);
@@ -169,7 +276,18 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N>> e
 
     public abstract int getCapacity();
 
-    public abstract Object getBuffer();
+    @Nullable
+    public abstract BUFFER getBuffer();
+
+    @Nullable
+    public BUFFER getBufferWithFallback() {
+        BUFFER buffer = getBuffer();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer == null && getTransmitter().hasTransmitterNetwork()) {
+            return getTransmitter().getTransmitterNetwork().getBuffer();
+        }
+        return buffer;
+    }
 
     public abstract void takeShare();
 
