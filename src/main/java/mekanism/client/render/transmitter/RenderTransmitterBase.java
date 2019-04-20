@@ -1,6 +1,6 @@
 package mekanism.client.render.transmitter;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -53,7 +53,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         if (!keys.isEmpty()) {
             for (String key : keys) {
                 if (!modelParts.containsKey(key)) {
-                    modelParts.put(key, objModel.bake(new OBJState(ImmutableList.of(key), false),
+                    modelParts.put(key, objModel.bake(new OBJState(Collections.singletonList(key), false),
                           Attributes.DEFAULT_BAKED_FORMAT, textureGetterFlipV));
                 }
             }
