@@ -65,7 +65,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory {
             itemStacks.init(2, true, 11, 18);
             itemStacks.set(0, tempRecipe.getInput().inputStack);
             itemStacks.set(1, tempRecipe.getOutput().output);
-            itemStacks.set(2, getInfuseStacks(tempRecipe.getInput().infuse.type));
+            itemStacks.set(2, getInfuseStacks(tempRecipe.getInput().infuse.getType()));
         }
     }
 }

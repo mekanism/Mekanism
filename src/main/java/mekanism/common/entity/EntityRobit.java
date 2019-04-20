@@ -312,10 +312,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         setFollowing(false);
 
         if (world.provider.getDimension() != homeLocation.dimensionId) {
-            changeDimension(homeLocation.dimensionId);
+            changeDimension(homeLocation.dimensionId, (world1, entity, yaw) -> entity.setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, yaw, rotationPitch));
+        } else {
+            setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
         }
-
-        setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
 
         motionX = 0;
         motionY = 0;

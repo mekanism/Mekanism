@@ -6,12 +6,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
@@ -26,7 +26,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork> implements
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements
       IFluidHandlerWrapper {
 
     public PipeTier tier = PipeTier.BASIC;
@@ -168,6 +168,19 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
+    public boolean isValidTransmitter(TileEntity tileEntity) {
+        if (!super.isValidTransmitter(tileEntity)) {
+            return false;
+        }
+        if (!(tileEntity instanceof TileEntityMechanicalPipe)) {
+            return true;
+        }
+        FluidStack buffer = getBufferWithFallback();
+        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tileEntity).getBufferWithFallback();
+        return buffer == null || otherBuffer == null || buffer.isFluidEqual(otherBuffer);
+    }
+
+    @Override
     public FluidNetwork createNewNetwork() {
         return new FluidNetwork();
     }
@@ -178,10 +191,16 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
+    protected boolean canHaveIncompatibleNetworks() {
+        return true;
+    }
+
+    @Override
     public int getCapacity() {
         return tier.getPipeCapacity();
     }
 
+    @Nullable
     @Override
     public FluidStack getBuffer() {
         return buffer == null ? null : buffer.getFluid();

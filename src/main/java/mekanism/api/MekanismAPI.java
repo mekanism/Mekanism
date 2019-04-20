@@ -16,6 +16,11 @@ import org.apache.logging.log4j.LogManager;
 public class MekanismAPI {
 
     /**
+     * The version of the api classes - may not always match the mod's version
+     */
+    public static final String API_VERSION = "9.7.2";
+
+    /**
      * Mekanism debug mode
      */
     public static boolean debug = false;

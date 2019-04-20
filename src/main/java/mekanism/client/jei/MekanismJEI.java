@@ -61,7 +61,10 @@ public class MekanismJEI implements IModPlugin {
         }
 
         if (itemStack.getItem() instanceof IFactory) {
-            ret += ":" + RecipeType.values()[((IFactory) itemStack.getItem()).getRecipeType(itemStack)].getName();
+            RecipeType recipeType = ((IFactory) itemStack.getItem()).getRecipeTypeOrNull(itemStack);
+            if (recipeType != null) {
+                ret += ":" + recipeType.getName();
+            }
         }
 
         if (itemStack.getItem() instanceof ItemBlockGasTank) {

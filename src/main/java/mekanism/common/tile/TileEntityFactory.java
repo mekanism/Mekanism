@@ -342,11 +342,6 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 }
             }
 
-            if (infuseStored.amount <= 0) {
-                infuseStored.amount = 0;
-                infuseStored.type = null;
-            }
-
             lastUsage = prev - getEnergy();
             prevEnergy = getEnergy();
         }
@@ -479,7 +474,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             }*/ else if (cached.recipeInput instanceof InfusionInput) {
                 InfusionInput infusionInput = (InfusionInput) cached.recipeInput;
                 recipeInput = infusionInput.inputStack;
-                secondaryMatch = infuseStored.amount == 0 || infuseStored.type == infusionInput.infuse.type;
+                secondaryMatch = infuseStored.getAmount() == 0 || infuseStored.getType() == infusionInput.infuse.getType();
             }
             //If there is no cached item input or it doesn't match our fallback
             // then it is an out of date cache so we compare against the new one
@@ -536,13 +531,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                     inventory.get(4).shrink(1);
                 }
             } else if (recipeType == RecipeType.INFUSING) {
-                if (InfuseRegistry.getObject(inventory.get(4)) != null) {
-                    InfuseObject infuse = InfuseRegistry.getObject(inventory.get(4));
-
-                    if (infuseStored.type == null || infuseStored.type == infuse.type) {
-                        if (infuseStored.amount + infuse.stored <= maxInfuse) {
-                            infuseStored.amount += infuse.stored;
-                            infuseStored.type = infuse.type;
+                InfuseObject pendingInfusionInput = InfuseRegistry.getObject(inventory.get(4));
+                if (pendingInfusionInput != null) {
+                    if (infuseStored.getType() == null || infuseStored.getType() == pendingInfusionInput.type) {
+                        if (infuseStored.getAmount() + pendingInfusionInput.stored <= maxInfuse) {
+                            infuseStored.increase(pendingInfusionInput);
                             inventory.get(4).shrink(1);
                         }
                     }
@@ -620,8 +613,8 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             } else if (recipeType.getFuelType() == MachineFuelType.DOUBLE) {
                 return recipeType.hasRecipeForExtra(itemstack);
             } else if (recipeType == RecipeType.INFUSING) {
-                return InfuseRegistry.getObject(itemstack) != null && (infuseStored.type == null
-                      || infuseStored.type == InfuseRegistry.getObject(itemstack).type);
+                return InfuseRegistry.getObject(itemstack) != null && (infuseStored.getType() == null
+                      || infuseStored.getType() == InfuseRegistry.getObject(itemstack).type);
             }
         }
 
@@ -633,7 +626,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
     }
 
     public int getScaledInfuseLevel(int i) {
-        return infuseStored.amount * i / maxInfuse;
+        return infuseStored.getAmount() * i / maxInfuse;
     }
 
     public int getScaledGasLevel(int i) {
@@ -765,8 +758,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 sorting = !sorting;
             } else if (type == 1) {
                 gasTank.setGas(null);
-                infuseStored.amount = 0;
-                infuseStored.type = null;
+                infuseStored.setEmpty();
             }
 
             return;
@@ -782,9 +774,12 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             sorting = dataStream.readBoolean();
             upgraded = dataStream.readBoolean();
             lastUsage = dataStream.readDouble();
-            infuseStored.amount = dataStream.readInt();
-            if (infuseStored.amount > 0) {
-                infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+            int amount = dataStream.readInt();
+            if (amount > 0) {
+                infuseStored.setAmount(amount);
+                infuseStored.setType(InfuseRegistry.get(PacketHandler.readString(dataStream)));
+            } else {
+                infuseStored.setEmpty();
             }
 
             if (recipeType != oldRecipe) {
@@ -816,8 +811,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInteger("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
-        infuseStored.amount = nbtTags.getInteger("infuseStored");
-        infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
+        int amount = nbtTags.getInteger("infuseStored");
+        if (amount != 0) {
+            infuseStored.setAmount(amount);
+            infuseStored.setType(InfuseRegistry.get(nbtTags.getString("type")));
+        }
 
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInteger("progress" + i);
@@ -834,10 +832,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         nbtTags.setInteger("recipeType", recipeType.ordinal());
         nbtTags.setInteger("recipeTicks", recipeTicks);
         nbtTags.setBoolean("sorting", sorting);
-        nbtTags.setInteger("infuseStored", infuseStored.amount);
-
-        if (infuseStored.type != null) {
-            nbtTags.setString("type", infuseStored.type.name);
+        if (infuseStored.getType() != null) {
+            nbtTags.setString("type", infuseStored.getType().name);
+            nbtTags.setInteger("infuseStored", infuseStored.getAmount());
         } else {
             nbtTags.setString("type", "null");
         }
@@ -861,9 +858,9 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         data.add(upgraded);
         data.add(lastUsage);
 
-        data.add(infuseStored.amount);
-        if (infuseStored.amount > 0) {
-            data.add(infuseStored.type.name);
+        data.add(infuseStored.getAmount());
+        if (infuseStored.getAmount() > 0) {
+            data.add(infuseStored.getType().name);
         }
 
         data.add(progress);

@@ -18,7 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork> {
+public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
 
     public InventoryNetwork() {
     }
@@ -82,7 +82,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<TileEntity, InventoryNetwork> transmitter) {
+    public void absorbBuffer(IGridTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
     }
 
     @Override

@@ -36,7 +36,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork> implements ILogisticalTransporter {
+public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
 
     private Map<Integer, TransporterStack> transit = new HashMap<>();
 

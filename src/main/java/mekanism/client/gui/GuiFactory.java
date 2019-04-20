@@ -76,8 +76,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
                             + ": " + tileEntity.gasTank.getStored() : LangUtils.localize("gui.none"), xAxis, yAxis);
             } else if (tileEntity.getRecipeType() == RecipeType.INFUSING) {
                 drawHoveringText(
-                      tileEntity.infuseStored.type != null ? tileEntity.infuseStored.type.getLocalizedName() + ": "
-                            + tileEntity.infuseStored.amount : LangUtils.localize("gui.empty"), xAxis, yAxis);
+                      tileEntity.infuseStored.getType() != null ? tileEntity.infuseStored.getType().getLocalizedName() + ": "
+                            + tileEntity.infuseStored.getAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -116,7 +116,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
             }
         } else if (tileEntity.getRecipeType() == RecipeType.INFUSING) {
             if (tileEntity.getScaledInfuseLevel(160) > 0) {
-                displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.type.sprite);
+                displayGauge(8, 78, tileEntity.getScaledInfuseLevel(160), 5, tileEntity.infuseStored.getType().sprite);
             }
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
