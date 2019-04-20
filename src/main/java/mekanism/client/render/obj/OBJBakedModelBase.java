@@ -216,7 +216,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
             bakedQuads.add(quad);
         }
 
-        return Collections.synchronizedList(Lists.newArrayList(bakedQuads));
+        return bakedQuads;
     }
 
     @SuppressWarnings("deprecation")
