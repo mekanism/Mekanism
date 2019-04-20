@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.client.render.obj.MekanismOBJModel.OBJModelType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -65,7 +66,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
             for (String s : objModel.getMatLib().getMaterialNames()) {
                 ResourceLocation texture = objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation();
                 if (texture.getPath().startsWith("#")) {
-                    FMLLog.log.error("OBJLoader: Unresolved texture '{}' for obj model '{}'", texture.getPath(),
+                    Mekanism.logger.error("OBJLoader: Unresolved texture '{}' for obj model '{}'", texture.getPath(),
                           modelLocation);
                     builder.put(s, missing);
                 } else {
