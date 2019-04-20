@@ -1,4 +1,7 @@
 {
+	"textures": {
+		"particle": "#glass"
+	},
 	"elements": [
 		{
 			"name": "RightGlass",

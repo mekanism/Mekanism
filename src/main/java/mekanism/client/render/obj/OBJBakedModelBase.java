@@ -166,8 +166,9 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
         for (Face f : faces) {
             String groupName = groupNameMap.get(f);
 
-            if (getOverrideTexture(f, groupName) != null) {
-                tempSprite = getOverrideTexture(f, groupName);
+            TextureAtlasSprite overrideTexture = getOverrideTexture(f, groupName);
+            if (overrideTexture != null) {
+                tempSprite = overrideTexture;
             } else if (getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite()) {
                 for (Vertex v : f.getVertices()) {
                     if (!v.getMaterial().equals(getModel().getMatLib().getMaterial(v.getMaterial().getName()))) {
@@ -182,8 +183,9 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
 
             float[] color = new float[]{1, 1, 1, 1};
 
-            if (getOverrideColor(f, groupName) != null) {
-                color = getOverrideColor(f, groupName);
+            float[] overrideColor = getOverrideColor(f, groupName);
+            if (overrideColor != null) {
+                color = overrideColor;
             }
 
             EnumFacing facing = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
@@ -214,9 +216,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
             bakedQuads.add(quad);
         }
 
-        List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(bakedQuads));
-
-        return quadList;
+        return bakedQuads;
     }
 
     @SuppressWarnings("deprecation")

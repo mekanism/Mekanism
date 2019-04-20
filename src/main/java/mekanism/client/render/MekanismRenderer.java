@@ -117,8 +117,7 @@ public class MekanismRenderer {
             spriteLocation = fluid.getFlowing();
         }
 
-        TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
-        return sprite != null ? sprite : missingIcon;
+        return getTextureAtlasSprite(spriteLocation);
     }
 
     public static TextureAtlasSprite getFluidTexture(FluidStack fluidStack, FluidType type) {
@@ -134,6 +133,10 @@ public class MekanismRenderer {
         } else {
             spriteLocation = fluid.getFlowing(fluidStack);
         }
+        return getTextureAtlasSprite(spriteLocation);
+    }
+
+    public static TextureAtlasSprite getTextureAtlasSprite(ResourceLocation spriteLocation) {
         TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
         return sprite != null ? sprite : missingIcon;
     }
