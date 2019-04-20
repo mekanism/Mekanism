@@ -3,25 +3,25 @@ package mekanism.common.util;
 import cofh.redstoneflux.api.IEnergyConnection;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.EnergyAcceptorTarget;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.ic2.IC2Integration;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 
 public final class CableUtils {
 
@@ -158,104 +158,108 @@ public final class CableUtils {
         return false;
     }
 
+    /**
+     * @param availableAcceptors The EnergyAcceptorWrapper targets to send energy fairly to.
+     * @param energyToSend The amount of energy to attempt to send
+     * @return The amount that actually got sent
+     */
+    public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableAcceptors, double energyToSend) {
+        double sent = 0;
+
+        if (!availableAcceptors.isEmpty()) {
+            double energyToSplit = energyToSend;
+            int toSplitAmong = availableAcceptors.size();
+            double amountPer = energyToSplit / toSplitAmong;
+
+            //Simulate addition
+            for (EnergyAcceptorTarget target : availableAcceptors) {
+                Map<EnumFacing, EnergyAcceptorWrapper> wrappers = target.getWrappers();
+                for (Entry<EnumFacing, EnergyAcceptorWrapper> entry : wrappers.entrySet()) {
+                    EnumFacing side = entry.getKey();
+                    double amountNeeded = entry.getValue().acceptEnergy(side, energyToSend, true);
+                    boolean canGive = amountNeeded <= amountPer;
+                    //Add the amount
+                    target.addAmount(side, amountNeeded, canGive);
+                    if (canGive) {
+                        //If we are giving it, then lower the amount we are checking/splitting
+                        energyToSplit -= amountNeeded;
+                        toSplitAmong--;
+                        amountPer = energyToSplit / toSplitAmong;
+                    }
+                }
+            }
+
+            boolean amountPerChanged = true;
+            while (amountPerChanged) {
+                amountPerChanged = false;
+                double amountPerLast = amountPer;
+                for (EnergyAcceptorTarget target : availableAcceptors) {
+                    if (target.noneNeeded()) {
+                        continue;
+                    }
+                    //Use an iterator rather than a copy of the keyset of the needed submap
+                    // This allows for us to remove it once we find it without  having to
+                    // start looping again or make a large number of copies of the set
+                    Iterator<Entry<EnumFacing, Double>> iterator = target.getNeededIterator();
+                    while (iterator.hasNext()) {
+                        Entry<EnumFacing, Double> needInfo = iterator.next();
+                        Double amountNeeded = needInfo.getValue();
+                        if (amountNeeded <= amountPer) {
+                            target.addGiven(needInfo.getKey(), amountNeeded);
+                            //Remove it as it no longer valid
+                            iterator.remove();
+                            //Adjust the energy split
+                            energyToSplit -= amountNeeded;
+                            toSplitAmong--;
+                            amountPer = energyToSplit / toSplitAmong;
+                            if (!amountPerChanged && amountPer != amountPerLast) {
+                                //We changed our amount so set it back to true so that we know we need
+                                // to loop over things again
+                                amountPerChanged = true;
+                                //Continue checking things in case we happen to be
+                                // getting things in a bad order so that we don't recheck
+                                // the same values many times
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Give them all the energy we calculated they deserve/want
+            for (EnergyAcceptorTarget target : availableAcceptors) {
+                sent += target.sendGivenWithDefault(amountPer);
+            }
+        }
+
+        return sent;
+    }
+
     public static void emit(IEnergyWrapper emitter) {
         if (!((TileEntity) emitter).getWorld().isRemote && MekanismUtils.canFunction((TileEntity) emitter)) {
             double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 
             if (energyToSend > 0) {
-                List<EnumFacing> outputtingSides = new LinkedList<>();
                 boolean[] connectable = getConnections((TileEntity) emitter, emitter::sideIsOutput);
+
+                Set<EnergyAcceptorTarget> targets = new HashSet<>();
 
                 for (EnumFacing side : EnumFacing.values()) {
                     if (connectable[side.ordinal()]) {
-                        outputtingSides.add(side);
+                        TileEntity tile = Coord4D.get((TileEntity) emitter).offset(side)
+                              .getTileEntity(((TileEntity) emitter).getWorld());
+                        //Get the opposite side as the current side is relative to us
+                        EnumFacing opposite = side.getOpposite();
+                        EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
+                        if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor.needsEnergy(opposite)) {
+                            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
+                            target.addSide(opposite, acceptor);
+                            targets.add(target);
+                        }
                     }
                 }
-
-                if (!outputtingSides.isEmpty()) {
-                    double sent = 0;
-                    boolean tryAgain = false;
-                    int i = 0;
-
-                    do {
-                        double prev = sent;
-                        sent += emit_do(emitter, outputtingSides, energyToSend - sent, tryAgain);
-
-                        tryAgain = energyToSend - sent > 0 && sent - prev > 0 && i < 100;
-
-                        i++;
-                    } while (tryAgain);
-
-                    emitter.setEnergy(emitter.getEnergy() - sent);
-                }
+                double sent = sendToAcceptors(targets, energyToSend);
+                emitter.setEnergy(emitter.getEnergy() - sent);
             }
         }
-    }
-
-    private static double emit_do(IEnergyWrapper emitter, List<EnumFacing> outputtingSides, double totalToSend,
-          boolean tryAgain) {
-        double remains = totalToSend % outputtingSides.size();
-        double splitSend = (totalToSend - remains) / outputtingSides.size();
-        double sent = 0;
-
-        for (Iterator<EnumFacing> it = outputtingSides.iterator(); it.hasNext(); ) {
-            EnumFacing side = it.next();
-
-            TileEntity tileEntity = Coord4D.get((TileEntity) emitter).offset(side)
-                  .getTileEntity(((TileEntity) emitter).getWorld());
-            double toSend = splitSend + remains;
-            remains = 0;
-
-            double prev = sent;
-            sent += emit_do_do(emitter, tileEntity, side, toSend, tryAgain);
-
-            if (sent - prev == 0) {
-                it.remove();
-            }
-        }
-
-        return sent;
-    }
-
-    private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending,
-          boolean tryAgain) {
-        double sent = 0;
-
-        if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite())) {
-            IStrictEnergyAcceptor acceptor = CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite());
-
-            if (acceptor.canReceiveEnergy(side.getOpposite())) {
-                sent += acceptor.acceptEnergy(side.getOpposite(), currentSending, false);
-            }
-        } else if (MekanismUtils.useTesla() && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite())) {
-            ITeslaConsumer consumer = CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite());
-            sent += consumer
-                  .givePower(Math.round(currentSending * MekanismConfig.current().general.TO_TESLA.val()), false)
-                  * MekanismConfig.current().general.FROM_TESLA.val();
-        } else if (MekanismUtils.useForge() && CapabilityUtils
-              .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
-            IEnergyStorage storage = CapabilityUtils
-                  .getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite());
-            sent += storage
-                  .receiveEnergy((int) Math.round(
-                        Math.min(Integer.MAX_VALUE, currentSending * MekanismConfig.current().general.TO_FORGE.val())),
-                        false) * MekanismConfig.current().general.FROM_FORGE.val();
-        } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
-            IEnergyReceiver handler = (IEnergyReceiver) tileEntity;
-
-            if (handler.canConnectEnergy(side.getOpposite())) {
-                int toSend = Math.min((int) Math.round(currentSending * MekanismConfig.current().general.TO_RF.val()),
-                      Integer.MAX_VALUE);
-                int used = handler.receiveEnergy(side.getOpposite(), toSend, false);
-                sent += used * MekanismConfig.current().general.FROM_RF.val();
-            }
-        } else if (MekanismUtils.useIC2()) {
-            sent += IC2Integration.emitEnergy(from, tileEntity, side, currentSending);
-        }
-
-        return sent;
     }
 }

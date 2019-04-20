@@ -3,9 +3,6 @@ package mekanism.common.transmitters.grid;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -14,6 +11,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.EnergyAcceptorTarget;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -124,78 +122,11 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     /**
-     * @return sent The amount that actually got sent
+     * @param energyToSend The amount of energy to attempt to send
+     * @return The amount that actually got sent
      */
     public double doEmit(double energyToSend) {
-        Set<EnergyAcceptorTarget> availableAcceptors = getAcceptorTargets();
-        double sent = 0;
-
-        if (!availableAcceptors.isEmpty()) {
-            double energyToSplit = energyToSend;
-            int toSplitAmong = availableAcceptors.size();
-            double amountPer = energyToSplit / toSplitAmong;
-
-            //Simulate addition
-            for (EnergyAcceptorTarget target : availableAcceptors) {
-                Map<EnumFacing, EnergyAcceptorWrapper> wrappers = target.getWrappers();
-                for (Entry<EnumFacing, EnergyAcceptorWrapper> entry : wrappers.entrySet()) {
-                    EnumFacing side = entry.getKey();
-                    double amountNeeded = entry.getValue().acceptEnergy(side, energyToSend, true);
-                    boolean canGive = amountNeeded <= amountPer;
-                    //Add the amount
-                    target.addAmount(side, amountNeeded, canGive);
-                    if (canGive) {
-                        //If we are giving it, then lower the amount we are checking/splitting
-                        energyToSplit -= amountNeeded;
-                        toSplitAmong--;
-                        amountPer = energyToSplit / toSplitAmong;
-                    }
-                }
-            }
-
-            boolean amountPerChanged = true;
-            while (amountPerChanged) {
-                amountPerChanged = false;
-                double amountPerLast = amountPer;
-                for (EnergyAcceptorTarget target : availableAcceptors) {
-                    if (target.noneNeeded()) {
-                        continue;
-                    }
-                    //Use an iterator rather than a copy of the keyset of the needed submap
-                    // This allows for us to remove it once we find it without  having to
-                    // start looping again or make a large number of copies of the set
-                    Iterator<Entry<EnumFacing, Double>> iterator = target.getNeededIterator();
-                    while (iterator.hasNext()) {
-                        Entry<EnumFacing, Double> needInfo = iterator.next();
-                        Double amountNeeded = needInfo.getValue();
-                        if (amountNeeded <= amountPer) {
-                            target.addGiven(needInfo.getKey(), amountNeeded);
-                            //Remove it as it no longer valid
-                            iterator.remove();
-                            //Adjust the energy split
-                            energyToSplit -= amountNeeded;
-                            toSplitAmong--;
-                            amountPer = energyToSplit / toSplitAmong;
-                            if (!amountPerChanged && amountPer != amountPerLast) {
-                                //We changed our amount so set it back to true so that we know we need
-                                // to loop over things again
-                                amountPerChanged = true;
-                                //Continue checking things in case we happen to be
-                                // getting things in a bad order so that we don't recheck
-                                // the same values many times
-                            }
-                        }
-                    }
-                }
-            }
-
-            //Give them all the energy we calculated they deserve/want
-            for (EnergyAcceptorTarget target : availableAcceptors) {
-                sent += target.sendGivenWithDefault(amountPer);
-            }
-        }
-
-        return sent;
+        return CableUtils.sendToAcceptors(getAcceptorTargets(), energyToSend);
     }
 
     @Override
@@ -247,7 +178,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             if (tile == null) {
                 continue;
             }
-            EnergyAcceptorTarget target = new EnergyAcceptorTarget(coord);
+            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
             for (EnumFacing side : sides) {
                 EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
                 if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {

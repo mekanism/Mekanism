@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import mekanism.api.Coord4D;
 import net.minecraft.util.EnumFacing;
 
 public class EnergyAcceptorTarget {
@@ -12,12 +11,6 @@ public class EnergyAcceptorTarget {
     private Map<EnumFacing, EnergyAcceptorWrapper> wrappers = new HashMap<>();
     private Map<EnumFacing, Double> needed = new HashMap<>();
     private Map<EnumFacing, Double> given = new HashMap<>();
-    private final Coord4D coord;
-
-    public EnergyAcceptorTarget(Coord4D coord) {
-        //We don't use it but might as well have it be accessible?
-        this.coord = coord;
-    }
 
     public boolean hasAcceptors() {
         return !wrappers.isEmpty();
