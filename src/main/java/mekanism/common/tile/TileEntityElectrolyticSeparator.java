@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -157,7 +157,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (tank.getGas() != null) {
             if (mode != GasMode.DUMPING) {
                 GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), output));
-                tank.draw(GasUtils.emit(toSend, this, Collections.singletonList(side)), true);
+                tank.draw(GasUtils.emit(toSend, this, EnumSet.of(side)), true);
             } else {
                 tank.draw(dumpAmount, true);
             }

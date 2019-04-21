@@ -238,7 +238,7 @@ public final class CableUtils {
                     if (emitter.sideIsOutput(side)) {
                         TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
                         //If it can accept energy or it is a cable
-                        if (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile)) {
+                        if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {
                             //Get the opposite side as the current side is relative to us
                             EnumFacing opposite = side.getOpposite();
                             EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);

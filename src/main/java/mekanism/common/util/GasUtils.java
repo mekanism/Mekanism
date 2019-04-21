@@ -1,9 +1,9 @@
 package mekanism.common.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +36,7 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public final class GasUtils {
 
-    public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity, Collection<EnumFacing> sides) {
-        return getConnectedAcceptors(tileEntity.getPos(), tileEntity.getWorld(), sides);
-    }
-
-    public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Collection<EnumFacing> sides) {
+    public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<EnumFacing> sides) {
         IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
 
         for (EnumFacing orientation : sides) {
@@ -59,15 +55,10 @@ public final class GasUtils {
     /**
      * Gets all the acceptors around a tile entity.
      *
-     * @param tileEntity - center tile entity
      * @return array of IGasAcceptors
      */
-    public static IGasHandler[] getConnectedAcceptors(TileEntity tileEntity) {
-        return getConnectedAcceptors(tileEntity.getPos(), tileEntity.getWorld(), Arrays.asList(EnumFacing.VALUES));
-    }
-
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world) {
-        return getConnectedAcceptors(pos, world, Arrays.asList(EnumFacing.VALUES));
+        return getConnectedAcceptors(pos, world, EnumSet.allOf(EnumFacing.class));
     }
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side) {
@@ -206,46 +197,36 @@ public final class GasUtils {
      * @param sides - the list of sides to output from
      * @return the amount of gas emitted
      */
-    public static int emit(GasStack stack, TileEntity from, Collection<EnumFacing> sides) {
-        if (stack == null) {
+    public static int emit(GasStack stack, TileEntity from, Set<EnumFacing> sides) {
+        if (stack == null || stack.amount == 0) {
             return 0;
         }
 
-        List<IGasHandler> availableAcceptors = new ArrayList<>();
-        IGasHandler[] possibleAcceptors = getConnectedAcceptors(from, sides);
-
-        for (int i = 0; i < possibleAcceptors.length; i++) {
-            IGasHandler handler = possibleAcceptors[i];
-
-            if (handler != null && handler.canReceiveGas(EnumFacing.byIndex(i).getOpposite(), stack.getGas())) {
-                availableAcceptors.add(handler);
+        //Fake that we have one target given we know that no sides will overlap
+        // This allows us to have slightly better performance
+        GasHandlerTarget target = new GasHandlerTarget(stack.getGas());
+        int totalAcceptors = 0;
+        for (EnumFacing orientation : sides) {
+            TileEntity acceptor = from.getWorld().getTileEntity(from.getPos().offset(orientation));
+            if (acceptor == null) {
+                continue;
             }
-        }
-
-        Collections.shuffle(availableAcceptors);
-
-        int toSend = stack.amount;
-        int prevSending = toSend;
-
-        if (!availableAcceptors.isEmpty()) {
-            int divider = availableAcceptors.size();
-            int remaining = toSend % divider;
-            int sending = (toSend - remaining) / divider;
-
-            for (IGasHandler acceptor : availableAcceptors) {
-                int currentSending = sending;
-
-                if (remaining > 0) {
-                    currentSending++;
-                    remaining--;
+            EnumFacing opposite = orientation.getOpposite();
+            if (CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, opposite)) {
+                IGasHandler handler = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY,
+                      opposite);
+                if (handler != null && handler.canReceiveGas(opposite, stack.getGas())) {
+                    target.addSide(opposite, handler);
+                    totalAcceptors++;
                 }
-
-                EnumFacing dir = EnumFacing.byIndex(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
-                toSend -= acceptor.receiveGas(dir, new GasStack(stack.getGas(), currentSending), true);
             }
         }
-
-        return prevSending - toSend;
+        if (target.hasAcceptors()) {
+            Set<GasHandlerTarget> targets = new HashSet<>();
+            targets.add(target);
+            return sendToAcceptors(targets, totalAcceptors, stack);
+        }
+        return 0;
     }
 
     public static void writeSustainedData(GasTank gasTank, ItemStack itemStack) {

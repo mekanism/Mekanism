@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
@@ -61,8 +62,8 @@ public class TileComponentConfig implements ITileComponent {
         canEject.put(type, true);
     }
 
-    public EnumSet<EnumFacing> getSidesForData(TransmissionType type, EnumFacing facing, int dataIndex) {
-        EnumSet<EnumFacing> ret = EnumSet.noneOf(EnumFacing.class);
+    public Set<EnumFacing> getSidesForData(TransmissionType type, EnumFacing facing, int dataIndex) {
+        Set<EnumFacing> ret = EnumSet.noneOf(EnumFacing.class);
         SideConfig config = getConfig(type);
         EnumFacing[] translatedFacings = MekanismUtils.getBaseOrientations(facing);
 
