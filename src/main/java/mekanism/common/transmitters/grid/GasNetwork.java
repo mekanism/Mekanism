@@ -1,11 +1,8 @@
 package mekanism.common.transmitters.grid;
 
-import com.google.common.collect.Lists;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -14,8 +11,10 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.base.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.GasUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
@@ -130,51 +129,38 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         return getCapacity() - (buffer != null ? buffer.amount : 0);
     }
 
-    public int tickEmit(GasStack stack) {
-        List<Pair<Coord4D, IGasHandler>> availableAcceptors = Lists.newArrayList();
+    private int tickEmit(GasStack stack) {
+        Set<GasHandlerTarget> availableAcceptors = new HashSet<>();
+        int totalAcceptors = 0;
 
-        availableAcceptors.addAll(getAcceptors(stack.getGas()));
+        Gas type = stack.getGas();
+        for (Coord4D coord : possibleAcceptors.keySet()) {
+            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
+            TileEntity tile = coord.getTileEntity(getWorld());
+            if (tile == null) {
+                continue;
+            }
+            GasHandlerTarget target = new GasHandlerTarget(type);
+            for (EnumFacing side : sides) {
+                if (CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side)) {
+                    IGasHandler acceptor = CapabilityUtils
+                          .getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
 
-        Collections.shuffle(availableAcceptors);
-
-        int toSend = stack.amount;
-        int prevSending = toSend;
-
-        if (!availableAcceptors.isEmpty()) {
-            int divider = availableAcceptors.size();
-            int remaining = toSend % divider;
-            int sending = (toSend - remaining) / divider;
-
-            for (Pair<Coord4D, IGasHandler> pair : availableAcceptors) {
-                IGasHandler acceptor = pair.getRight();
-                int currentSending = sending;
-                EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
-
-                if (remaining > 0) {
-                    currentSending++;
-                    remaining--;
-                }
-
-                for (EnumFacing side : sides) {
-                    int prev = toSend;
-
-                    toSend -= acceptor.receiveGas(side, new GasStack(stack.getGas(), currentSending), true);
-
-                    if (toSend < prev) {
-                        break;
+                    if (acceptor != null && acceptor.canReceiveGas(side, type)) {
+                        target.addSide(side, acceptor);
+                        totalAcceptors++;
                     }
                 }
             }
+            if (target.hasAcceptors()) {
+                availableAcceptors.add(target);
+            }
         }
 
-        int sent = prevSending - toSend;
-
-        if (sent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            didTransfer = true;
-            transferDelay = 2;
-        }
-
-        return sent;
+        return GasUtils.sendToAcceptors(availableAcceptors, totalAcceptors, stack);
     }
 
     public int emit(GasStack stack, boolean doTransfer) {
@@ -226,6 +212,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
             if (buffer != null) {
                 prevTransferAmount = tickEmit(buffer);
+                if (prevTransferAmount > 0) {
+                    didTransfer = true;
+                    transferDelay = 2;
+                }
                 buffer.amount -= prevTransferAmount;
 
                 if (buffer.amount <= 0) {

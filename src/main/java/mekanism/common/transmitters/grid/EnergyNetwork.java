@@ -102,12 +102,11 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         return getCapacity() - buffer.amount;
     }
 
-    public double tickEmit(double energyToSend) {
+    private double tickEmit(double energyToSend) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             return 0;
         }
 
-        //TODO: Replace the other network's sending things with a target system like this
         Set<EnergyAcceptorTarget> targets = new HashSet<>();
         int totalAcceptors = 0;
         for (Coord4D coord : possibleAcceptors.keySet()) {
@@ -132,8 +131,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             }
         }
 
-        joulesTransmitted = CableUtils.sendToAcceptors(targets, totalAcceptors, energyToSend);
-        return joulesTransmitted;
+        return CableUtils.sendToAcceptors(targets, totalAcceptors, energyToSend);
     }
 
     public double emit(double energyToSend, boolean doEmit) {
@@ -204,7 +202,8 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             }
 
             if (buffer.amount > 0) {
-                buffer.amount -= tickEmit(buffer.amount);
+                joulesTransmitted = tickEmit(buffer.amount);
+                buffer.amount -= joulesTransmitted;
             }
         }
     }

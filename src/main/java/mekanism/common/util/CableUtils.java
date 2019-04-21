@@ -143,7 +143,7 @@ public final class CableUtils {
      */
     public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableAcceptors, int totalAcceptors,
           double energyToSend) {
-        if (availableAcceptors.isEmpty()) {
+        if (availableAcceptors.isEmpty() || totalAcceptors == 0) {
             return 0;
         }
         double sent = 0;
@@ -167,7 +167,7 @@ public final class CableUtils {
                     toSplitAmong--;
                     //Only recalculate it if it is not willing to accept/doesn't want the
                     // full per side split
-                    if (amountNeeded != amountPer) {
+                    if (amountNeeded != amountPer && toSplitAmong != 0) {
                         amountPer = energyToSplit / toSplitAmong;
                         amountPerChanged = true;
                     }
@@ -199,7 +199,7 @@ public final class CableUtils {
                         toSplitAmong--;
                         //Only recalculate it if it is not willing to accept/doesn't want the
                         // full per side split
-                        if (amountNeeded != amountPer) {
+                        if (amountNeeded != amountPer && toSplitAmong != 0) {
                             amountPer = energyToSplit / toSplitAmong;
                             if (!amountPerChanged && amountPer != amountPerLast) {
                                 //We changed our amount so set it back to true so that we know we need

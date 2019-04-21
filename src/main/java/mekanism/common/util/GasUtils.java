@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.BiFunction;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -13,8 +17,9 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.OreDictCache;
-import mekanism.common.tier.GasTankTier;
+import mekanism.common.base.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tier.GasTankTier;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -110,6 +115,87 @@ public final class GasUtils {
         }
 
         return 0;
+    }
+
+    public static int sendToAcceptors(Set<GasHandlerTarget> availableAcceptors, int totalAcceptors,
+          GasStack gasToSend) {
+        if (availableAcceptors.isEmpty() || totalAcceptors == 0) {
+            return 0;
+        }
+        int sent = 0;
+        int amountToSplit = gasToSend.amount;
+        int toSplitAmong = totalAcceptors;
+        int amountPer = amountToSplit / toSplitAmong;
+        boolean amountPerChanged = false;
+
+        //Simulate addition
+        for (GasHandlerTarget target : availableAcceptors) {
+            Map<EnumFacing, IGasHandler> wrappers = target.getWrappers();
+            for (Entry<EnumFacing, IGasHandler> entry : wrappers.entrySet()) {
+                EnumFacing side = entry.getKey();
+                int amountNeeded = entry.getValue().receiveGas(side, gasToSend, false);
+                boolean canGive = amountNeeded <= amountPer;
+                //Add the amount
+                target.addAmount(side, amountNeeded, canGive);
+                if (canGive) {
+                    //If we are giving it, then lower the amount we are checking/splitting
+                    amountToSplit -= amountNeeded;
+                    toSplitAmong--;
+                    //Only recalculate it if it is not willing to accept/doesn't want the
+                    // full per side split
+                    if (amountNeeded != amountPer && toSplitAmong != 0) {
+                        amountPer = amountToSplit / toSplitAmong;
+                        amountPerChanged = true;
+                    }
+                }
+            }
+        }
+
+        //Only run this if we changed the amountPer from when we first ran things
+        while (amountPerChanged) {
+            amountPerChanged = false;
+            double amountPerLast = amountPer;
+            for (GasHandlerTarget target : availableAcceptors) {
+                if (target.noneNeeded()) {
+                    continue;
+                }
+                //Use an iterator rather than a copy of the keyset of the needed submap
+                // This allows for us to remove it once we find it without  having to
+                // start looping again or make a large number of copies of the set
+                Iterator<Entry<EnumFacing, Integer>> iterator = target.getNeededIterator();
+                while (iterator.hasNext()) {
+                    Entry<EnumFacing, Integer> needInfo = iterator.next();
+                    Integer amountNeeded = needInfo.getValue();
+                    if (amountNeeded <= amountPer) {
+                        target.addGiven(needInfo.getKey(), amountNeeded);
+                        //Remove it as it no longer valid
+                        iterator.remove();
+                        //Adjust the energy split
+                        amountToSplit -= amountNeeded;
+                        toSplitAmong--;
+                        //Only recalculate it if it is not willing to accept/doesn't want the
+                        // full per side split
+                        if (amountNeeded != amountPer && toSplitAmong != 0) {
+                            amountPer = amountToSplit / toSplitAmong;
+                            if (!amountPerChanged && amountPer != amountPerLast) {
+                                //We changed our amount so set it back to true so that we know we need
+                                // to loop over things again
+                                amountPerChanged = true;
+                                //Continue checking things in case we happen to be
+                                // getting things in a bad order so that we don't recheck
+                                // the same values many times
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Give them all the energy we calculated they deserve/want
+        for (GasHandlerTarget target : availableAcceptors) {
+            sent += target.sendGivenWithDefault(amountPer);
+        }
+        return sent;
     }
 
     /**
