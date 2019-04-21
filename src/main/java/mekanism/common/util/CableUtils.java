@@ -146,6 +146,7 @@ public final class CableUtils {
             double energyToSplit = energyToSend;
             int toSplitAmong = availableAcceptors.size();
             double amountPer = energyToSplit / toSplitAmong;
+            boolean amountPerChanged = false;
 
             //Simulate addition
             for (EnergyAcceptorTarget target : availableAcceptors) {
@@ -160,12 +161,17 @@ public final class CableUtils {
                         //If we are giving it, then lower the amount we are checking/splitting
                         energyToSplit -= amountNeeded;
                         toSplitAmong--;
-                        amountPer = energyToSplit / toSplitAmong;
+                        //Only recalculate it if it is not willing to accept/doesn't want the
+                        // full per side split
+                        if (amountNeeded != amountPer) {
+                            amountPer = energyToSplit / toSplitAmong;
+                            amountPerChanged = true;
+                        }
                     }
                 }
             }
 
-            boolean amountPerChanged = true;
+            //Only run this if we changed the amountPer from when we first ran things
             while (amountPerChanged) {
                 amountPerChanged = false;
                 double amountPerLast = amountPer;
@@ -187,14 +193,18 @@ public final class CableUtils {
                             //Adjust the energy split
                             energyToSplit -= amountNeeded;
                             toSplitAmong--;
-                            amountPer = energyToSplit / toSplitAmong;
-                            if (!amountPerChanged && amountPer != amountPerLast) {
-                                //We changed our amount so set it back to true so that we know we need
-                                // to loop over things again
-                                amountPerChanged = true;
-                                //Continue checking things in case we happen to be
-                                // getting things in a bad order so that we don't recheck
-                                // the same values many times
+                            //Only recalculate it if it is not willing to accept/doesn't want the
+                            // full per side split
+                            if (amountNeeded != amountPer) {
+                                amountPer = energyToSplit / toSplitAmong;
+                                if (!amountPerChanged && amountPer != amountPerLast) {
+                                    //We changed our amount so set it back to true so that we know we need
+                                    // to loop over things again
+                                    amountPerChanged = true;
+                                    //Continue checking things in case we happen to be
+                                    // getting things in a bad order so that we don't recheck
+                                    // the same values many times
+                                }
                             }
                         }
                     }
