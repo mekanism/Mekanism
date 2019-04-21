@@ -13,8 +13,6 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-//import mekanism.common.multipart.MultipartTransmitter;
-
 public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void> {
 
     public double meanTemp = 0;
@@ -84,14 +82,6 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
                     double[] d = heatTransmitter.simulateHeat();
                     newHeatTransferred += d[0];
                     newHeatLost += d[1];
-                }
-            }
-
-            for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
-                if (transmitter instanceof TransmitterImpl && ((TransmitterImpl) transmitter).getTileEntity()
-                      .hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null)) {
-                    IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity()
-                          .getCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null);
                     newSumTemp += heatTransmitter.applyTemperatureChange();
                 }
             }
