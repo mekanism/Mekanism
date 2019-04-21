@@ -107,7 +107,32 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             return 0;
         }
 
-        joulesTransmitted = doEmit(energyToSend);
+        //TODO: Replace the other network's sending things with a target system like this
+        Set<EnergyAcceptorTarget> targets = new HashSet<>();
+        int totalAcceptors = 0;
+        for (Coord4D coord : possibleAcceptors.keySet()) {
+            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
+            TileEntity tile = coord.getTileEntity(getWorld());
+            if (tile == null) {
+                continue;
+            }
+            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
+            for (EnumFacing side : sides) {
+                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
+                if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
+                    target.addSide(side, acceptor);
+                    totalAcceptors++;
+                }
+            }
+            if (target.hasAcceptors()) {
+                targets.add(target);
+            }
+        }
+
+        joulesTransmitted = CableUtils.sendToAcceptors(targets, totalAcceptors, energyToSend);
         return joulesTransmitted;
     }
 
@@ -119,14 +144,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         }
 
         return energyToSend - toUse;
-    }
-
-    /**
-     * @param energyToSend The amount of energy to attempt to send
-     * @return The amount that actually got sent
-     */
-    public double doEmit(double energyToSend) {
-        return CableUtils.sendToAcceptors(getAcceptorTargets(), energyToSend);
     }
 
     @Override
@@ -155,38 +172,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
                         break;
                     }
                 }
-            }
-        }
-
-        return toReturn;
-    }
-
-    //TODO: Replace the other network's sending things with a target system like this
-    public Set<EnergyAcceptorTarget> getAcceptorTargets() {
-        Set<EnergyAcceptorTarget> toReturn = new HashSet<>();
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return toReturn;
-        }
-
-        for (Coord4D coord : possibleAcceptors.keySet()) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-            TileEntity tile = coord.getTileEntity(getWorld());
-            if (tile == null) {
-                continue;
-            }
-            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-            for (EnumFacing side : sides) {
-                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
-                if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
-                    target.addSide(side, acceptor);
-                }
-            }
-            if (target.hasAcceptors()) {
-                toReturn.add(target);
             }
         }
 
