@@ -60,6 +60,9 @@ public class EmitUtils {
      */
     public static <HANDLER, EXTRA, TARGET extends IntegerTypeTarget<HANDLER, EXTRA>> int sendToAcceptors(
           Set<TARGET> availableTargets, int totalTargets, int amountToSplit, EXTRA toSend) {
+        if (availableTargets.isEmpty() || totalTargets == 0) {
+            return 0;
+        }
         return sendToAcceptors(availableTargets, totalTargets, new IntegerSplitInfo(amountToSplit, totalTargets),
               toSend, 0);
     }
@@ -73,6 +76,9 @@ public class EmitUtils {
      */
     public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets,
           double amountToSplit) {
+        if (availableTargets.isEmpty() || totalTargets == 0) {
+            return 0;
+        }
         return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets),
               amountToSplit, 0D);
     }
