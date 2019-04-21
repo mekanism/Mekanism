@@ -27,10 +27,7 @@ public class EmitUtils {
         if (availableTargets.isEmpty() || totalTargets == 0) {
             return 0;
         }
-        int sent = 0;
-        int toSplitAmong = totalTargets;
-        int amountPer = amountToSplit / toSplitAmong;
-        boolean amountPerChanged = false;
+        IntegerSplitInfo splitInfo = new IntegerSplitInfo(amountToSplit, totalTargets);
 
         //Simulate addition
         for (TARGET target : availableTargets) {
@@ -38,63 +35,45 @@ public class EmitUtils {
             for (Entry<EnumFacing, HANDLER> entry : wrappers.entrySet()) {
                 EnumFacing side = entry.getKey();
                 int amountNeeded = target.simulate(entry.getValue(), side, toSend);
-                boolean canGive = amountNeeded <= amountPer;
+                boolean canGive = amountNeeded <= splitInfo.amountPer;
                 //Add the amount
                 target.addAmount(side, amountNeeded, canGive);
                 if (canGive) {
-                    //If we are giving it, then lower the amount we are checking/splitting
-                    amountToSplit -= amountNeeded;
-                    toSplitAmong--;
-                    //Only recalculate it if it is not willing to accept/doesn't want the
-                    // full per side split
-                    if (amountNeeded != amountPer && toSplitAmong != 0) {
-                        amountPer = amountToSplit / toSplitAmong;
-                        amountPerChanged = true;
-                    }
+                    splitInfo.remove(amountNeeded);
                 }
             }
         }
 
         //Only run this if we changed the amountPer from when we first ran things
-        while (amountPerChanged) {
-            amountPerChanged = false;
-            int amountPerLast = amountPer;
+        while (splitInfo.amountPerChanged) {
+            splitInfo.amountPerChanged = false;
             for (TARGET target : availableTargets) {
                 //Use an iterator rather than a copy of the keyset of the needed submap
                 // This allows for us to remove it once we find it without  having to
                 // start looping again or make a large number of copies of the set
                 Iterator<Entry<EnumFacing, Integer>> iterator = target.getNeededIterator();
+                //TODO: Can pass this inner responsibility to the target by giving it access to the splitInfo
                 while (iterator.hasNext()) {
                     Entry<EnumFacing, Integer> needInfo = iterator.next();
-                    Integer amountNeeded = needInfo.getValue();
-                    if (amountNeeded <= amountPer) {
+                    int amountNeeded = needInfo.getValue();
+                    if (amountNeeded <= splitInfo.amountPer) {
                         target.addGiven(needInfo.getKey(), amountNeeded);
                         //Remove it as it no longer valid
                         iterator.remove();
-                        //Adjust the energy split
-                        amountToSplit -= amountNeeded;
-                        toSplitAmong--;
-                        //Only recalculate it if it is not willing to accept/doesn't want the
-                        // full per side split
-                        if (amountNeeded != amountPer && toSplitAmong != 0) {
-                            amountPer = amountToSplit / toSplitAmong;
-                            if (!amountPerChanged && amountPer != amountPerLast) {
-                                //We changed our amount so set it back to true so that we know we need
-                                // to loop over things again
-                                amountPerChanged = true;
-                                //Continue checking things in case we happen to be
-                                // getting things in a bad order so that we don't recheck
-                                // the same values many times
-                            }
-                        }
+                        //Remove this amount from the split calculation
+                        splitInfo.remove(amountNeeded);
+                        //Continue checking things in case we happen to be
+                        // getting things in a bad order so that we don't recheck
+                        // the same values many times
                     }
                 }
             }
         }
 
-        //Give them all the energy we calculated they deserve/want
+        //Give them the amount we calculated they deserve/want
+        int sent = 0;
         for (TARGET target : availableTargets) {
-            sent += target.sendGivenWithDefault(amountPer);
+            sent += target.sendGivenWithDefault(splitInfo.amountPer);
         }
         return sent;
     }
@@ -112,10 +91,7 @@ public class EmitUtils {
             return 0;
         }
         double sent = 0;
-        double energyToSplit = energyToSend;
-        int toSplitAmong = totalHandlers;
-        double amountPer = energyToSplit / toSplitAmong;
-        boolean amountPerChanged = false;
+        DoubleSplitInfo splitInfo = new DoubleSplitInfo(energyToSend, totalHandlers);
 
         //Simulate addition
         for (EnergyAcceptorTarget target : availableHandlers) {
@@ -123,27 +99,18 @@ public class EmitUtils {
             for (Entry<EnumFacing, EnergyAcceptorWrapper> entry : wrappers.entrySet()) {
                 EnumFacing side = entry.getKey();
                 double amountNeeded = target.simulate(entry.getValue(), side, energyToSend);
-                boolean canGive = amountNeeded <= amountPer;
+                boolean canGive = amountNeeded <= splitInfo.amountPer;
                 //Add the amount
                 target.addAmount(side, amountNeeded, canGive);
                 if (canGive) {
-                    //If we are giving it, then lower the amount we are checking/splitting
-                    energyToSplit -= amountNeeded;
-                    toSplitAmong--;
-                    //Only recalculate it if it is not willing to accept/doesn't want the
-                    // full per side split
-                    if (amountNeeded != amountPer && toSplitAmong != 0) {
-                        amountPer = energyToSplit / toSplitAmong;
-                        amountPerChanged = true;
-                    }
+                    splitInfo.remove(amountNeeded);
                 }
             }
         }
 
         //Only run this if we changed the amountPer from when we first ran things
-        while (amountPerChanged) {
-            amountPerChanged = false;
-            double amountPerLast = amountPer;
+        while (splitInfo.amountPerChanged) {
+            splitInfo.amountPerChanged = false;
             for (EnergyAcceptorTarget target : availableHandlers) {
                 //Use an iterator rather than a copy of the keyset of the needed submap
                 // This allows for us to remove it once we find it without  having to
@@ -151,27 +118,13 @@ public class EmitUtils {
                 Iterator<Entry<EnumFacing, Double>> iterator = target.getNeededIterator();
                 while (iterator.hasNext()) {
                     Entry<EnumFacing, Double> needInfo = iterator.next();
-                    Double amountNeeded = needInfo.getValue();
-                    if (amountNeeded <= amountPer) {
+                    double amountNeeded = needInfo.getValue();
+                    if (amountNeeded <= splitInfo.amountPer) {
                         target.addGiven(needInfo.getKey(), amountNeeded);
                         //Remove it as it no longer valid
                         iterator.remove();
-                        //Adjust the energy split
-                        energyToSplit -= amountNeeded;
-                        toSplitAmong--;
-                        //Only recalculate it if it is not willing to accept/doesn't want the
-                        // full per side split
-                        if (amountNeeded != amountPer && toSplitAmong != 0) {
-                            amountPer = energyToSplit / toSplitAmong;
-                            if (!amountPerChanged && amountPer != amountPerLast) {
-                                //We changed our amount so set it back to true so that we know we need
-                                // to loop over things again
-                                amountPerChanged = true;
-                                //Continue checking things in case we happen to be
-                                // getting things in a bad order so that we don't recheck
-                                // the same values many times
-                            }
-                        }
+                        //Remove this amount from the split calculation
+                        splitInfo.remove(amountNeeded);
                     }
                 }
             }
@@ -179,9 +132,67 @@ public class EmitUtils {
 
         //Give them all the energy we calculated they deserve/want
         for (EnergyAcceptorTarget target : availableHandlers) {
-            sent += target.sendGivenWithDefault(amountPer);
+            sent += target.sendGivenWithDefault(splitInfo.amountPer);
         }
 
         return sent;
+    }
+
+    private static class IntegerSplitInfo {
+        private int amountToSplit;
+        private int toSplitAmong;
+        //AmountPer is the one that needs to be int or double
+        private int amountPer;
+        private boolean amountPerChanged = false;
+
+        //Amount to split also should be int or double
+        private IntegerSplitInfo(int amountToSplit, int totalTargets) {
+            this.amountToSplit = amountToSplit;
+            this.toSplitAmong = totalTargets;
+            this.amountPer = amountToSplit / toSplitAmong;
+        }
+
+        private void remove(int amountNeeded) {
+            //If we are giving it, then lower the amount we are checking/splitting
+            amountToSplit -= amountNeeded;
+            toSplitAmong--;
+            //Only recalculate it if it is not willing to accept/doesn't want the
+            // full per side split
+            if (amountNeeded != amountPer && toSplitAmong != 0) {
+                int amountPerLast = amountPer;
+                amountPer = amountToSplit / toSplitAmong;
+                if (!amountPerChanged && amountPer != amountPerLast) {
+                    amountPerChanged = true;
+                }
+            }
+        }
+    }
+
+    private static class DoubleSplitInfo {
+        private double amountToSplit;
+        private int toSplitAmong;
+        private double amountPer;
+        private boolean amountPerChanged = false;
+
+        private DoubleSplitInfo(double amountToSplit, int totalTargets) {
+            this.amountToSplit = amountToSplit;
+            this.toSplitAmong = totalTargets;
+            this.amountPer = amountToSplit / toSplitAmong;
+        }
+
+        private void remove(double amountNeeded) {
+            //If we are giving it, then lower the amount we are checking/splitting
+            amountToSplit -= amountNeeded;
+            toSplitAmong--;
+            //Only recalculate it if it is not willing to accept/doesn't want the
+            // full per side split
+            if (amountNeeded != amountPer && toSplitAmong != 0) {
+                double amountPerLast = amountPer;
+                amountPer = amountToSplit / toSplitAmong;
+                if (!amountPerChanged && amountPer != amountPerLast) {
+                    amountPerChanged = true;
+                }
+            }
+        }
     }
 }
