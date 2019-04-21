@@ -24,6 +24,7 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -133,6 +134,12 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         int start = 0;
+        int color = fluid.getFluid().getColor(fluid);
+        if (color != -1) {
+            MekanismRenderer.color(color);
+        }
+        TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+        mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
         while (true) {
             int renderRemaining;
             if (scale > 16) {
@@ -142,14 +149,14 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 renderRemaining = scale;
                 scale = 0;
             }
-            mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  MekanismRenderer.getFluidTexture(fluid, FluidType.STILL), 16, 16 - (16 - renderRemaining));
+                  fluidTexture, 16, 16 - (16 - renderRemaining));
             start += 16;
             if (renderRemaining == 0 || scale == 0) {
                 break;
             }
         }
+        MekanismRenderer.resetColor();
         mc.renderEngine.bindTexture(getGuiLocation());
         drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
     }

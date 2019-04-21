@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -120,6 +121,12 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         int start = 0;
+        int color = fluid.getFluid().getColor(fluid);
+        if (color != -1) {
+            MekanismRenderer.color(color);
+        }
+        TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+        mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
         while (true) {
             int renderRemaining;
             if (scale > 16) {
@@ -129,14 +136,14 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
                 renderRemaining = scale;
                 scale = 0;
             }
-            mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
             drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  MekanismRenderer.getFluidTexture(fluid, FluidType.STILL), 16, 16 - (16 - renderRemaining));
+                  fluidTexture, 16, 16 - (16 - renderRemaining));
             start += 16;
             if (renderRemaining == 0 || scale == 0) {
                 break;
             }
         }
+        MekanismRenderer.resetColor();
         mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiIndustrialTurbine.png"));
         drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 0, 16, 54);
     }
