@@ -12,23 +12,12 @@ public class EnergyAcceptorTarget {
     private Map<EnumFacing, Double> needed = new HashMap<>();
     private Map<EnumFacing, Double> given = new HashMap<>();
 
-    public EnergyAcceptorTarget() {
-    }
-
-    /**
-     * Create a new acceptor target, adding the side and wrapper to wrappers in one call
-     */
-    public EnergyAcceptorTarget(EnumFacing side, EnergyAcceptorWrapper wrapper) {
-        wrappers.put(side, wrapper);
-    }
-
     public boolean hasAcceptors() {
         return !wrappers.isEmpty();
     }
 
     public void addSide(EnumFacing side, EnergyAcceptorWrapper acceptor) {
         wrappers.put(side, acceptor);
-        //TODO: If the wrapper is sideless keep track of that somehow?
     }
 
     public Map<EnumFacing, EnergyAcceptorWrapper> getWrappers() {

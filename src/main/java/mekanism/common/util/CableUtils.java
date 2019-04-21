@@ -227,7 +227,9 @@ public final class CableUtils {
 
             if (energyToSend > 0) {
                 Coord4D coord = Coord4D.get(tileEntity);
-                Set<EnergyAcceptorTarget> targets = new HashSet<>();
+                //Fake that we have one target given we know that no sides will overlap
+                // This allows us to have slightly better performance
+                EnergyAcceptorTarget target = new EnergyAcceptorTarget();
                 for (EnumFacing side : EnumFacing.values()) {
                     if (emitter.sideIsOutput(side)) {
                         TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
@@ -238,13 +240,17 @@ public final class CableUtils {
                             EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
                             if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor
                                   .needsEnergy(opposite)) {
-                                targets.add(new EnergyAcceptorTarget(opposite, acceptor));
+                                target.addSide(opposite, acceptor);
                             }
                         }
                     }
                 }
-                double sent = sendToAcceptors(targets, energyToSend);
-                emitter.setEnergy(emitter.getEnergy() - sent);
+                if (target.hasAcceptors()) {
+                    Set<EnergyAcceptorTarget> targets = new HashSet<>();
+                    targets.add(target);
+                    double sent = sendToAcceptors(targets, energyToSend);
+                    emitter.setEnergy(emitter.getEnergy() - sent);
+                }
             }
         }
     }
