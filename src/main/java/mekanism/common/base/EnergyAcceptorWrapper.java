@@ -139,8 +139,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            //TODO: Simulate??
             double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
+            if (simulate) {
+                //IC2 has no built in way to simulate, so we have to calculate it ourselves
+                return toTransfer;
+            }
             double rejects = acceptor.injectEnergy(side, toTransfer, 0);
 
             return fromEU(toTransfer - rejects);
