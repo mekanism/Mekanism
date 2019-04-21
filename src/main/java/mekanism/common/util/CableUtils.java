@@ -11,7 +11,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.EnergyAcceptorTarget;
+import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
@@ -135,26 +135,26 @@ public final class CableUtils {
     }
 
     /**
-     * @param availableAcceptors The EnergyAcceptorWrapper targets to send energy fairly to.
-     * @param totalAcceptors The total number of acceptors. Note: this number is bigger than availableAcceptors.size if
+     * @param availableHandlers The EnergyAcceptorWrapper targets to send energy fairly to.
+     * @param totalHandlers The total number of targets. Note: this number is bigger than availableHandlers.size if
      * any targets have more than one acceptor.
      * @param energyToSend The amount of energy to attempt to send
      * @return The amount that actually got sent
      */
-    public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableAcceptors, int totalAcceptors,
+    public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableHandlers, int totalHandlers,
           double energyToSend) {
-        if (availableAcceptors.isEmpty() || totalAcceptors == 0) {
+        if (availableHandlers.isEmpty() || totalHandlers == 0) {
             return 0;
         }
         double sent = 0;
         double energyToSplit = energyToSend;
-        int toSplitAmong = totalAcceptors;
+        int toSplitAmong = totalHandlers;
         double amountPer = energyToSplit / toSplitAmong;
         boolean amountPerChanged = false;
 
         //Simulate addition
-        for (EnergyAcceptorTarget target : availableAcceptors) {
-            Map<EnumFacing, EnergyAcceptorWrapper> wrappers = target.getWrappers();
+        for (EnergyAcceptorTarget target : availableHandlers) {
+            Map<EnumFacing, EnergyAcceptorWrapper> wrappers = target.getHandlers();
             for (Entry<EnumFacing, EnergyAcceptorWrapper> entry : wrappers.entrySet()) {
                 EnumFacing side = entry.getKey();
                 double amountNeeded = entry.getValue().acceptEnergy(side, energyToSend, true);
@@ -179,10 +179,7 @@ public final class CableUtils {
         while (amountPerChanged) {
             amountPerChanged = false;
             double amountPerLast = amountPer;
-            for (EnergyAcceptorTarget target : availableAcceptors) {
-                if (target.noneNeeded()) {
-                    continue;
-                }
+            for (EnergyAcceptorTarget target : availableHandlers) {
                 //Use an iterator rather than a copy of the keyset of the needed submap
                 // This allows for us to remove it once we find it without  having to
                 // start looping again or make a large number of copies of the set
@@ -216,7 +213,7 @@ public final class CableUtils {
         }
 
         //Give them all the energy we calculated they deserve/want
-        for (EnergyAcceptorTarget target : availableAcceptors) {
+        for (EnergyAcceptorTarget target : availableHandlers) {
             sent += target.sendGivenWithDefault(amountPer);
         }
 
@@ -233,7 +230,6 @@ public final class CableUtils {
                 //Fake that we have one target given we know that no sides will overlap
                 // This allows us to have slightly better performance
                 EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-                int totalAcceptors = 0;
                 for (EnumFacing side : EnumFacing.values()) {
                     if (emitter.sideIsOutput(side)) {
                         TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
@@ -244,16 +240,16 @@ public final class CableUtils {
                             EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
                             if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor
                                   .needsEnergy(opposite)) {
-                                target.addSide(opposite, acceptor);
-                                totalAcceptors++;
+                                target.addHandler(opposite, acceptor);
                             }
                         }
                     }
                 }
-                if (target.hasAcceptors()) {
+                int curHandlers = target.getHandlers().size();
+                if (curHandlers > 0) {
                     Set<EnergyAcceptorTarget> targets = new HashSet<>();
                     targets.add(target);
-                    double sent = sendToAcceptors(targets, totalAcceptors, energyToSend);
+                    double sent = sendToAcceptors(targets, curHandlers, energyToSend);
                     emitter.setEnergy(emitter.getEnergy() - sent);
                 }
             }

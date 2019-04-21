@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.base.FluidHandlerTarget;
+import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
@@ -126,7 +126,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     private int tickEmit(FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new HashSet<>();
-        int totalAcceptors = 0;
+        int totalHandlers = 0;
         for (Coord4D coord : possibleAcceptors.keySet()) {
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
@@ -144,17 +144,18 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                     IFluidHandler acceptor = CapabilityUtils
                           .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
                     if (acceptor != null && PipeUtils.canFill(acceptor, fluidToSend)) {
-                        target.addSide(side, acceptor);
-                        totalAcceptors++;
+                        target.addHandler(side, acceptor);
                     }
                 }
             }
-            if (target.hasAcceptors()) {
+            int curHandlers = target.getHandlers().size();
+            if (curHandlers > 0) {
                 availableAcceptors.add(target);
+                totalHandlers += curHandlers;
             }
         }
 
-        return PipeUtils.sendToAcceptors(availableAcceptors, totalAcceptors, fluidToSend);
+        return PipeUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend);
     }
 
     public int emit(FluidStack fluidToSend, boolean doTransfer) {

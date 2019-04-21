@@ -9,7 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.base.EnergyAcceptorTarget;
+import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -108,7 +108,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         }
 
         Set<EnergyAcceptorTarget> targets = new HashSet<>();
-        int totalAcceptors = 0;
+        int totalHandlers = 0;
         for (Coord4D coord : possibleAcceptors.keySet()) {
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
@@ -122,16 +122,17 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             for (EnumFacing side : sides) {
                 EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
                 if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
-                    target.addSide(side, acceptor);
-                    totalAcceptors++;
+                    target.addHandler(side, acceptor);
                 }
             }
-            if (target.hasAcceptors()) {
+            int curHandlers = target.getHandlers().size();
+            if (curHandlers > 0) {
                 targets.add(target);
+                totalHandlers += curHandlers;
             }
         }
 
-        return CableUtils.sendToAcceptors(targets, totalAcceptors, energyToSend);
+        return CableUtils.sendToAcceptors(targets, totalHandlers, energyToSend);
     }
 
     public double emit(double energyToSend, boolean doEmit) {

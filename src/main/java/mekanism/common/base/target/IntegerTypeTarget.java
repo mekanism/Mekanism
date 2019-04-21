@@ -1,18 +1,12 @@
-package mekanism.common.base;
+package mekanism.common.base.target;
 
 import java.util.Map.Entry;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasHandler;
 import net.minecraft.util.EnumFacing;
 
-public class GasHandlerTarget extends Target<IGasHandler, Integer> {
-
-    private Gas type;
-
-    public GasHandlerTarget(Gas type) {
-        this.type = type;
-    }
+/**
+ * To be removed and merged into {@link Target} once energy no longer uses doubles.
+ */
+public abstract class IntegerTypeTarget<HANDLER> extends Target<HANDLER, Integer> {
 
     @Override
     public Integer sendGivenWithDefault(Integer amountPer) {
@@ -25,11 +19,5 @@ public class GasHandlerTarget extends Target<IGasHandler, Integer> {
             sent += acceptAmount(side, amountPer);
         }
         return sent;
-    }
-
-    private int acceptAmount(EnumFacing side, int amount) {
-        //Give it gas and add how much actually got accepted instead of how much
-        // we attempted to give it
-        return wrappers.get(side).receiveGas(side, new GasStack(type, amount), true);
     }
 }

@@ -1,6 +1,7 @@
-package mekanism.common.base;
+package mekanism.common.base.target;
 
 import java.util.Map.Entry;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import net.minecraft.util.EnumFacing;
 
 public class EnergyAcceptorTarget extends Target<EnergyAcceptorWrapper, Double> {
@@ -18,9 +19,10 @@ public class EnergyAcceptorTarget extends Target<EnergyAcceptorWrapper, Double> 
         return sent;
     }
 
-    private double acceptAmount(EnumFacing side, double amount) {
+    @Override
+    protected Double acceptAmount(EnumFacing side, Double amount) {
         //Give it power and add how much actually got accepted instead of how much
         // we attempted to give it
-        return wrappers.get(side).acceptEnergy(side, amount, false);
+        return handlers.get(side).acceptEnergy(side, amount, false);
     }
 }

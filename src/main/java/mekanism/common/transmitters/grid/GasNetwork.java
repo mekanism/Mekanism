@@ -11,7 +11,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.base.GasHandlerTarget;
+import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -131,8 +131,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     private int tickEmit(GasStack stack) {
         Set<GasHandlerTarget> availableAcceptors = new HashSet<>();
-        int totalAcceptors = 0;
-
+        int totalHandlers = 0;
         Gas type = stack.getGas();
         for (Coord4D coord : possibleAcceptors.keySet()) {
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
@@ -150,17 +149,18 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                           .getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
 
                     if (acceptor != null && acceptor.canReceiveGas(side, type)) {
-                        target.addSide(side, acceptor);
-                        totalAcceptors++;
+                        target.addHandler(side, acceptor);
                     }
                 }
             }
-            if (target.hasAcceptors()) {
+            int curHandlers = target.getHandlers().size();
+            if (curHandlers > 0) {
                 availableAcceptors.add(target);
+                totalHandlers += curHandlers;
             }
         }
 
-        return GasUtils.sendToAcceptors(availableAcceptors, totalAcceptors, stack);
+        return GasUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack);
     }
 
     public int emit(GasStack stack, boolean doTransfer) {

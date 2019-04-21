@@ -17,7 +17,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.MekanismFluids;
 import mekanism.common.OreDictCache;
-import mekanism.common.base.GasHandlerTarget;
+import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.GasTankTier;
 import net.minecraft.init.Items;
@@ -108,20 +108,20 @@ public final class GasUtils {
         return 0;
     }
 
-    public static int sendToAcceptors(Set<GasHandlerTarget> availableAcceptors, int totalAcceptors,
+    public static int sendToAcceptors(Set<GasHandlerTarget> availableHandlers, int totalHandlers,
           GasStack gasToSend) {
-        if (availableAcceptors.isEmpty() || totalAcceptors == 0) {
+        if (availableHandlers.isEmpty() || totalHandlers == 0) {
             return 0;
         }
         int sent = 0;
         int amountToSplit = gasToSend.amount;
-        int toSplitAmong = totalAcceptors;
+        int toSplitAmong = totalHandlers;
         int amountPer = amountToSplit / toSplitAmong;
         boolean amountPerChanged = false;
 
         //Simulate addition
-        for (GasHandlerTarget target : availableAcceptors) {
-            Map<EnumFacing, IGasHandler> wrappers = target.getWrappers();
+        for (GasHandlerTarget target : availableHandlers) {
+            Map<EnumFacing, IGasHandler> wrappers = target.getHandlers();
             for (Entry<EnumFacing, IGasHandler> entry : wrappers.entrySet()) {
                 EnumFacing side = entry.getKey();
                 int amountNeeded = entry.getValue().receiveGas(side, gasToSend, false);
@@ -146,10 +146,7 @@ public final class GasUtils {
         while (amountPerChanged) {
             amountPerChanged = false;
             double amountPerLast = amountPer;
-            for (GasHandlerTarget target : availableAcceptors) {
-                if (target.noneNeeded()) {
-                    continue;
-                }
+            for (GasHandlerTarget target : availableHandlers) {
                 //Use an iterator rather than a copy of the keyset of the needed submap
                 // This allows for us to remove it once we find it without  having to
                 // start looping again or make a large number of copies of the set
@@ -183,7 +180,7 @@ public final class GasUtils {
         }
 
         //Give them all the energy we calculated they deserve/want
-        for (GasHandlerTarget target : availableAcceptors) {
+        for (GasHandlerTarget target : availableHandlers) {
             sent += target.sendGivenWithDefault(amountPer);
         }
         return sent;
@@ -205,7 +202,6 @@ public final class GasUtils {
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
         GasHandlerTarget target = new GasHandlerTarget(stack.getGas());
-        int totalAcceptors = 0;
         for (EnumFacing orientation : sides) {
             TileEntity acceptor = from.getWorld().getTileEntity(from.getPos().offset(orientation));
             if (acceptor == null) {
@@ -216,15 +212,15 @@ public final class GasUtils {
                 IGasHandler handler = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY,
                       opposite);
                 if (handler != null && handler.canReceiveGas(opposite, stack.getGas())) {
-                    target.addSide(opposite, handler);
-                    totalAcceptors++;
+                    target.addHandler(opposite, handler);
                 }
             }
         }
-        if (target.hasAcceptors()) {
+        int curHandlers = target.getHandlers().size();
+        if (curHandlers > 0) {
             Set<GasHandlerTarget> targets = new HashSet<>();
             targets.add(target);
-            return sendToAcceptors(targets, totalAcceptors, stack);
+            return sendToAcceptors(targets, curHandlers, stack);
         }
         return 0;
     }

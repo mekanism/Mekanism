@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import mekanism.common.base.FluidHandlerTarget;
+import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -72,20 +72,20 @@ public final class PipeUtils {
         return acceptors;
     }
 
-    public static int sendToAcceptors(Set<FluidHandlerTarget> availableAcceptors, int totalAcceptors,
+    public static int sendToAcceptors(Set<FluidHandlerTarget> availableHandlers, int totalHandlers,
           FluidStack fluidToSend) {
-        if (availableAcceptors.isEmpty() || totalAcceptors == 0) {
+        if (availableHandlers.isEmpty() || totalHandlers == 0) {
             return 0;
         }
         int sent = 0;
         int amountToSplit = fluidToSend.amount;
-        int toSplitAmong = totalAcceptors;
+        int toSplitAmong = totalHandlers;
         int amountPer = amountToSplit / toSplitAmong;
         boolean amountPerChanged = false;
 
         //Simulate addition
-        for (FluidHandlerTarget target : availableAcceptors) {
-            Map<EnumFacing, IFluidHandler> wrappers = target.getWrappers();
+        for (FluidHandlerTarget target : availableHandlers) {
+            Map<EnumFacing, IFluidHandler> wrappers = target.getHandlers();
             for (Entry<EnumFacing, IFluidHandler> entry : wrappers.entrySet()) {
                 EnumFacing side = entry.getKey();
                 int amountNeeded = entry.getValue().fill(fluidToSend, false);
@@ -110,10 +110,7 @@ public final class PipeUtils {
         while (amountPerChanged) {
             amountPerChanged = false;
             double amountPerLast = amountPer;
-            for (FluidHandlerTarget target : availableAcceptors) {
-                if (target.noneNeeded()) {
-                    continue;
-                }
+            for (FluidHandlerTarget target : availableHandlers) {
                 //Use an iterator rather than a copy of the keyset of the needed submap
                 // This allows for us to remove it once we find it without  having to
                 // start looping again or make a large number of copies of the set
@@ -147,7 +144,7 @@ public final class PipeUtils {
         }
 
         //Give them all the energy we calculated they deserve/want
-        for (FluidHandlerTarget target : availableAcceptors) {
+        for (FluidHandlerTarget target : availableHandlers) {
             sent += target.sendGivenWithDefault(amountPer);
         }
         return sent;
@@ -168,7 +165,6 @@ public final class PipeUtils {
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
         FluidHandlerTarget target = new FluidHandlerTarget(stack);
-        int totalAcceptors = 0;
         for (EnumFacing orientation : sides) {
             TileEntity acceptor = from.getWorld().getTileEntity(from.getPos().offset(orientation));
             if (acceptor == null) {
@@ -179,15 +175,15 @@ public final class PipeUtils {
                 IFluidHandler handler = CapabilityUtils.getCapability(acceptor,
                       CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite);
                 if (handler != null && canFill(handler, stack)) {
-                    target.addSide(opposite, handler);
-                    totalAcceptors++;
+                    target.addHandler(opposite, handler);
                 }
             }
         }
-        if (target.hasAcceptors()) {
+        int curHandlers = target.getHandlers().size();
+        if (curHandlers > 0) {
             Set<FluidHandlerTarget> targets = new HashSet<>();
             targets.add(target);
-            return sendToAcceptors(targets, totalAcceptors, stack);
+            return sendToAcceptors(targets, curHandlers, stack);
         }
         return 0;
     }
