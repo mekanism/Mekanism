@@ -1,9 +1,8 @@
 package mekanism.common.base.target;
 
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+import mekanism.common.base.SplitInfo;
 import net.minecraft.util.EnumFacing;
 
 /**
@@ -73,13 +72,6 @@ public abstract class Target<HANDLER, TYPE extends Number, EXTRA> {
     }
 
     /**
-     * Iterator over the needed's entry set. Used for removing from the map while looping over it adding to given.
-     */
-    public Iterator<Entry<EnumFacing, TYPE>> getNeededIterator() {
-        return needed.entrySet().iterator();
-    }
-
-    /**
      * Gives the handler on the specified side the given amount.
      *
      * @param side Side of handler to give.
@@ -89,4 +81,6 @@ public abstract class Target<HANDLER, TYPE extends Number, EXTRA> {
     protected abstract TYPE acceptAmount(EnumFacing side, TYPE amount);
 
     public abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
+
+    public abstract void shiftNeeded(SplitInfo<TYPE> splitInfo);
 }
