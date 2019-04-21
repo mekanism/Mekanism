@@ -1,7 +1,5 @@
 package mekanism.common.util;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.common.base.SplitInfo;
 import mekanism.common.base.SplitInfo.DoubleSplitInfo;
@@ -9,7 +7,6 @@ import mekanism.common.base.SplitInfo.IntegerSplitInfo;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.target.IntegerTypeTarget;
 import mekanism.common.base.target.Target;
-import net.minecraft.util.EnumFacing;
 
 public class EmitUtils {
 
@@ -34,28 +31,12 @@ public class EmitUtils {
         }
 
         //Simulate addition
-        for (TARGET target : availableTargets) {
-            Map<EnumFacing, HANDLER> wrappers = target.getHandlers();
-            for (Entry<EnumFacing, HANDLER> entry : wrappers.entrySet()) {
-                EnumFacing side = entry.getKey();
-                TYPE amountNeeded = target.simulate(entry.getValue(), side, toSend);
-                int compared = amountNeeded.compareTo(splitInfo.getAmountPer());
-
-                boolean canGive = compared <= 0;
-                //Add the amount
-                target.addAmount(side, amountNeeded, canGive);
-                if (canGive) {
-                    splitInfo.remove(amountNeeded);
-                }
-            }
-        }
+        availableTargets.forEach(target -> target.simulate(toSend, splitInfo));
 
         //Only run this if we changed the amountPer from when we first ran things
         while (splitInfo.amountPerChanged) {
             splitInfo.amountPerChanged = false;
-            for (TARGET target : availableTargets) {
-                target.shiftNeeded(splitInfo);
-            }
+            availableTargets.forEach(target -> target.shiftNeeded(splitInfo));
         }
 
         //Give them the amount we calculated they deserve/want
@@ -80,8 +61,7 @@ public class EmitUtils {
     public static <HANDLER, EXTRA, TARGET extends IntegerTypeTarget<HANDLER, EXTRA>> int sendToAcceptors(
           Set<TARGET> availableTargets, int totalTargets, int amountToSplit, EXTRA toSend) {
         return sendToAcceptors(availableTargets, totalTargets, new IntegerSplitInfo(amountToSplit, totalTargets),
-              toSend,
-              0);
+              toSend, 0);
     }
 
     /**
@@ -93,8 +73,7 @@ public class EmitUtils {
      */
     public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets,
           double amountToSplit) {
-        //toSend is 0 as we don't have any extra data
-        return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets), 0D,
-              0D);
+        return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets),
+              amountToSplit, 0D);
     }
 }

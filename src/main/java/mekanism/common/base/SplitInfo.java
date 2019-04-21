@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-public abstract class SplitInfo<TYPE extends Number> {
+public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
 
     protected int toSplitAmong;
     public boolean amountPerChanged = false;
@@ -16,7 +16,7 @@ public abstract class SplitInfo<TYPE extends Number> {
     public static class IntegerSplitInfo extends SplitInfo<Integer> {
         private int amountToSplit;
         //AmountPer is the one that needs to be int or double
-        public int amountPer;
+        private int amountPer;
 
         //Amount to split also should be int or double
         public IntegerSplitInfo(int amountToSplit, int totalTargets) {
@@ -49,7 +49,7 @@ public abstract class SplitInfo<TYPE extends Number> {
 
     public static class DoubleSplitInfo extends SplitInfo<Double> {
         private double amountToSplit;
-        public double amountPer;
+        private double amountPer;
 
         public DoubleSplitInfo(double amountToSplit, int totalTargets) {
             super(totalTargets);

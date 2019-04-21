@@ -68,14 +68,6 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     public abstract TYPE sendGivenWithDefault(TYPE current, TYPE amountPer);
 
     /**
-     * Adds a side and amount to the given map. Used for when calculating if we are willing to supply the needed
-     * amount.
-     */
-    public void addGiven(EnumFacing side, TYPE amountNeeded) {
-        given.put(side, amountNeeded);
-    }
-
-    /**
      * Gives the handler on the specified side the given amount.
      *
      * @param side Side of handler to give.
@@ -84,7 +76,19 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      */
     protected abstract TYPE acceptAmount(EnumFacing side, TYPE amount);
 
-    public abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
+    protected abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
+
+    public void simulate(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
+        for (Entry<EnumFacing, HANDLER> entry : handlers.entrySet()) {
+            TYPE amountNeeded = simulate(entry.getValue(), entry.getKey(), toSend);
+            boolean canGive = amountNeeded.compareTo(splitInfo.getAmountPer()) <= 0;
+            addAmount(entry.getKey(), amountNeeded, canGive);
+            //Add the amount
+            if (canGive) {
+                splitInfo.remove(amountNeeded);
+            }
+        }
+    }
 
     public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
         Iterator<Entry<EnumFacing, TYPE>> iterator = needed.entrySet().iterator();
@@ -95,7 +99,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
             Entry<EnumFacing, TYPE> needInfo = iterator.next();
             TYPE amountNeeded = needInfo.getValue();
             if (amountNeeded.compareTo(splitInfo.getAmountPer()) <= 0) {
-                addGiven(needInfo.getKey(), amountNeeded);
+                given.put(needInfo.getKey(), amountNeeded);
                 //Remove it as it no longer valid
                 iterator.remove();
                 //Remove this amount from the split calculation

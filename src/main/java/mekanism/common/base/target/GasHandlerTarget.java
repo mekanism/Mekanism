@@ -18,7 +18,7 @@ public class GasHandlerTarget extends IntegerTypeTarget<IGasHandler, GasStack> {
     }
 
     @Override
-    public Integer simulate(IGasHandler handler, EnumFacing side, GasStack gasStack) {
+    protected Integer simulate(IGasHandler handler, EnumFacing side, GasStack gasStack) {
         return handler.receiveGas(side, gasStack, false);
     }
 }

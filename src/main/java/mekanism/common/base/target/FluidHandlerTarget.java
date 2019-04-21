@@ -19,7 +19,7 @@ public class FluidHandlerTarget extends IntegerTypeTarget<IFluidHandler, FluidSt
     }
 
     @Override
-    public Integer simulate(IFluidHandler handler, EnumFacing side, FluidStack fluidStack) {
+    protected Integer simulate(IFluidHandler handler, EnumFacing side, FluidStack fluidStack) {
         return handler.fill(fluidStack, false);
     }
 }

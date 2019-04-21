@@ -27,7 +27,7 @@ public class EnergyAcceptorTarget extends Target<EnergyAcceptorWrapper, Double, 
     }
 
     @Override
-    public Double simulate(EnergyAcceptorWrapper wrapper, EnumFacing side, Double energyToSend) {
+    protected Double simulate(EnergyAcceptorWrapper wrapper, EnumFacing side, Double energyToSend) {
         return wrapper.acceptEnergy(side, energyToSend, true);
     }
 }
