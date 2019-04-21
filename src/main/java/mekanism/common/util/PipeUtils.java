@@ -1,9 +1,6 @@
 package mekanism.common.util;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
@@ -72,84 +69,6 @@ public final class PipeUtils {
         return acceptors;
     }
 
-    public static int sendToAcceptors(Set<FluidHandlerTarget> availableHandlers, int totalHandlers,
-          FluidStack fluidToSend) {
-        if (availableHandlers.isEmpty() || totalHandlers == 0) {
-            return 0;
-        }
-        int sent = 0;
-        int amountToSplit = fluidToSend.amount;
-        int toSplitAmong = totalHandlers;
-        int amountPer = amountToSplit / toSplitAmong;
-        boolean amountPerChanged = false;
-
-        //Simulate addition
-        for (FluidHandlerTarget target : availableHandlers) {
-            Map<EnumFacing, IFluidHandler> wrappers = target.getHandlers();
-            for (Entry<EnumFacing, IFluidHandler> entry : wrappers.entrySet()) {
-                EnumFacing side = entry.getKey();
-                int amountNeeded = entry.getValue().fill(fluidToSend, false);
-                boolean canGive = amountNeeded <= amountPer;
-                //Add the amount
-                target.addAmount(side, amountNeeded, canGive);
-                if (canGive) {
-                    //If we are giving it, then lower the amount we are checking/splitting
-                    amountToSplit -= amountNeeded;
-                    toSplitAmong--;
-                    //Only recalculate it if it is not willing to accept/doesn't want the
-                    // full per side split
-                    if (amountNeeded != amountPer && toSplitAmong != 0) {
-                        amountPer = amountToSplit / toSplitAmong;
-                        amountPerChanged = true;
-                    }
-                }
-            }
-        }
-
-        //Only run this if we changed the amountPer from when we first ran things
-        while (amountPerChanged) {
-            amountPerChanged = false;
-            double amountPerLast = amountPer;
-            for (FluidHandlerTarget target : availableHandlers) {
-                //Use an iterator rather than a copy of the keyset of the needed submap
-                // This allows for us to remove it once we find it without  having to
-                // start looping again or make a large number of copies of the set
-                Iterator<Entry<EnumFacing, Integer>> iterator = target.getNeededIterator();
-                while (iterator.hasNext()) {
-                    Entry<EnumFacing, Integer> needInfo = iterator.next();
-                    Integer amountNeeded = needInfo.getValue();
-                    if (amountNeeded <= amountPer) {
-                        target.addGiven(needInfo.getKey(), amountNeeded);
-                        //Remove it as it no longer valid
-                        iterator.remove();
-                        //Adjust the energy split
-                        amountToSplit -= amountNeeded;
-                        toSplitAmong--;
-                        //Only recalculate it if it is not willing to accept/doesn't want the
-                        // full per side split
-                        if (amountNeeded != amountPer && toSplitAmong != 0) {
-                            amountPer = amountToSplit / toSplitAmong;
-                            if (!amountPerChanged && amountPer != amountPerLast) {
-                                //We changed our amount so set it back to true so that we know we need
-                                // to loop over things again
-                                amountPerChanged = true;
-                                //Continue checking things in case we happen to be
-                                // getting things in a bad order so that we don't recheck
-                                // the same values many times
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //Give them all the energy we calculated they deserve/want
-        for (FluidHandlerTarget target : availableHandlers) {
-            sent += target.sendGivenWithDefault(amountPer);
-        }
-        return sent;
-    }
-
     /**
      * Emits fluid from a central block by splitting the received stack among the sides given.
      *
@@ -183,7 +102,7 @@ public final class PipeUtils {
         if (curHandlers > 0) {
             Set<FluidHandlerTarget> targets = new HashSet<>();
             targets.add(target);
-            return sendToAcceptors(targets, curHandlers, stack);
+            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.amount, stack);
         }
         return 0;
     }

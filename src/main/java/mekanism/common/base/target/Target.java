@@ -11,11 +11,12 @@ import net.minecraft.util.EnumFacing;
  *
  * @param <HANDLER> The Handler this target keeps track of.
  * @param <TYPE> The type that is being transferred.
+ * @param <EXTRA> Any extra information this target may need to keep track of.
  * @implNote Eventually when/if we do away with Joules this will be able to be converted to having TYPE always be an
  * Integer. We will then be able to use the primitive type in various places getting rid of the need for
  * IntegerTypeTarget, and having the {@link #sendGivenWithDefault(Number)} )} be implemented directly here.
  */
-public abstract class Target<HANDLER, TYPE extends Number> {
+public abstract class Target<HANDLER, TYPE extends Number, EXTRA> {
 
     /**
      * Map of the sides to the handler for that side.
@@ -29,6 +30,8 @@ public abstract class Target<HANDLER, TYPE extends Number> {
      * Map of sides to how much we are giving them, this will be less than or equal to our offered split.
      */
     protected final Map<EnumFacing, TYPE> given = new EnumMap<>(EnumFacing.class);
+
+    protected EXTRA extra;
 
     public void addHandler(EnumFacing side, HANDLER handler) {
         handlers.put(side, handler);
@@ -84,4 +87,6 @@ public abstract class Target<HANDLER, TYPE extends Number> {
      * @return Amount actually taken.
      */
     protected abstract TYPE acceptAmount(EnumFacing side, TYPE amount);
+
+    public abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
 }

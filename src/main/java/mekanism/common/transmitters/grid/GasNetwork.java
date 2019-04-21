@@ -14,7 +14,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.GasUtils;
+import mekanism.common.util.EmitUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
@@ -142,7 +142,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             if (tile == null) {
                 continue;
             }
-            GasHandlerTarget target = new GasHandlerTarget(type);
+            GasHandlerTarget target = new GasHandlerTarget(stack);
             for (EnumFacing side : sides) {
                 if (CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side)) {
                     IGasHandler acceptor = CapabilityUtils
@@ -160,7 +160,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             }
         }
 
-        return GasUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack);
+        return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.amount, stack);
     }
 
     public int emit(GasStack stack, boolean doTransfer) {

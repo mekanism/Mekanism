@@ -6,7 +6,7 @@ import net.minecraft.util.EnumFacing;
 /**
  * To be removed and merged into {@link Target} once energy no longer uses doubles.
  */
-public abstract class IntegerTypeTarget<HANDLER> extends Target<HANDLER, Integer> {
+public abstract class IntegerTypeTarget<HANDLER, EXTRA> extends Target<HANDLER, Integer, EXTRA> {
 
     @Override
     public Integer sendGivenWithDefault(Integer amountPer) {

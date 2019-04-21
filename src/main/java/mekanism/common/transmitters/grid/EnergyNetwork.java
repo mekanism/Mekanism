@@ -9,9 +9,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.EnergyAcceptorWrapper;
-import mekanism.common.util.CableUtils;
+import mekanism.common.base.target.EnergyAcceptorTarget;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -132,7 +132,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             }
         }
 
-        return CableUtils.sendToAcceptors(targets, totalHandlers, energyToSend);
+        return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend);
     }
 
     public double emit(double energyToSend, boolean doEmit) {

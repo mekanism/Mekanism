@@ -10,6 +10,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -155,7 +156,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             }
         }
 
-        return PipeUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend);
+        return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend.amount, fluidToSend);
     }
 
     public int emit(FluidStack fluidToSend, boolean doTransfer) {

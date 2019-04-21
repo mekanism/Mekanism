@@ -4,16 +4,13 @@ import cofh.redstoneflux.api.IEnergyConnection;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.ic2.IC2Integration;
 import net.minecraft.tileentity.TileEntity;
@@ -134,92 +131,6 @@ public final class CableUtils {
         return false;
     }
 
-    /**
-     * @param availableHandlers The EnergyAcceptorWrapper targets to send energy fairly to.
-     * @param totalHandlers The total number of targets. Note: this number is bigger than availableHandlers.size if
-     * any targets have more than one acceptor.
-     * @param energyToSend The amount of energy to attempt to send
-     * @return The amount that actually got sent
-     */
-    public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableHandlers, int totalHandlers,
-          double energyToSend) {
-        if (availableHandlers.isEmpty() || totalHandlers == 0) {
-            return 0;
-        }
-        double sent = 0;
-        double energyToSplit = energyToSend;
-        int toSplitAmong = totalHandlers;
-        double amountPer = energyToSplit / toSplitAmong;
-        boolean amountPerChanged = false;
-
-        //Simulate addition
-        for (EnergyAcceptorTarget target : availableHandlers) {
-            Map<EnumFacing, EnergyAcceptorWrapper> wrappers = target.getHandlers();
-            for (Entry<EnumFacing, EnergyAcceptorWrapper> entry : wrappers.entrySet()) {
-                EnumFacing side = entry.getKey();
-                double amountNeeded = entry.getValue().acceptEnergy(side, energyToSend, true);
-                boolean canGive = amountNeeded <= amountPer;
-                //Add the amount
-                target.addAmount(side, amountNeeded, canGive);
-                if (canGive) {
-                    //If we are giving it, then lower the amount we are checking/splitting
-                    energyToSplit -= amountNeeded;
-                    toSplitAmong--;
-                    //Only recalculate it if it is not willing to accept/doesn't want the
-                    // full per side split
-                    if (amountNeeded != amountPer && toSplitAmong != 0) {
-                        amountPer = energyToSplit / toSplitAmong;
-                        amountPerChanged = true;
-                    }
-                }
-            }
-        }
-
-        //Only run this if we changed the amountPer from when we first ran things
-        while (amountPerChanged) {
-            amountPerChanged = false;
-            double amountPerLast = amountPer;
-            for (EnergyAcceptorTarget target : availableHandlers) {
-                //Use an iterator rather than a copy of the keyset of the needed submap
-                // This allows for us to remove it once we find it without  having to
-                // start looping again or make a large number of copies of the set
-                Iterator<Entry<EnumFacing, Double>> iterator = target.getNeededIterator();
-                while (iterator.hasNext()) {
-                    Entry<EnumFacing, Double> needInfo = iterator.next();
-                    Double amountNeeded = needInfo.getValue();
-                    if (amountNeeded <= amountPer) {
-                        target.addGiven(needInfo.getKey(), amountNeeded);
-                        //Remove it as it no longer valid
-                        iterator.remove();
-                        //Adjust the energy split
-                        energyToSplit -= amountNeeded;
-                        toSplitAmong--;
-                        //Only recalculate it if it is not willing to accept/doesn't want the
-                        // full per side split
-                        if (amountNeeded != amountPer && toSplitAmong != 0) {
-                            amountPer = energyToSplit / toSplitAmong;
-                            if (!amountPerChanged && amountPer != amountPerLast) {
-                                //We changed our amount so set it back to true so that we know we need
-                                // to loop over things again
-                                amountPerChanged = true;
-                                //Continue checking things in case we happen to be
-                                // getting things in a bad order so that we don't recheck
-                                // the same values many times
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        //Give them all the energy we calculated they deserve/want
-        for (EnergyAcceptorTarget target : availableHandlers) {
-            sent += target.sendGivenWithDefault(amountPer);
-        }
-
-        return sent;
-    }
-
     public static void emit(IEnergyWrapper emitter) {
         TileEntity tileEntity = (TileEntity) emitter;
         if (!tileEntity.getWorld().isRemote && MekanismUtils.canFunction(tileEntity)) {
@@ -249,7 +160,7 @@ public final class CableUtils {
                 if (curHandlers > 0) {
                     Set<EnergyAcceptorTarget> targets = new HashSet<>();
                     targets.add(target);
-                    double sent = sendToAcceptors(targets, curHandlers, energyToSend);
+                    double sent = EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
                     emitter.setEnergy(emitter.getEnergy() - sent);
                 }
             }
