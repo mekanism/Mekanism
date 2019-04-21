@@ -1,7 +1,9 @@
 package mekanism.common.base.target;
 
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import mekanism.common.base.SplitInfo;
 import net.minecraft.util.EnumFacing;
 
@@ -13,9 +15,10 @@ import net.minecraft.util.EnumFacing;
  * @param <EXTRA> Any extra information this target may need to keep track of.
  * @implNote Eventually when/if we do away with Joules this will be able to be converted to having TYPE always be an
  * Integer. We will then be able to use the primitive type in various places getting rid of the need for
- * IntegerTypeTarget, and having the {@link #sendGivenWithDefault(Number)} )} be implemented directly here.
+ * IntegerTypeTarget, and having the {@link #sendGivenWithDefault(Number, Number)} be implemented directly here. This
+ * can then be simplified as well as having SplitInfo be simplified down to using primitive integers.
  */
-public abstract class Target<HANDLER, TYPE extends Number, EXTRA> {
+public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA> {
 
     /**
      * Map of the sides to the handler for that side.
@@ -58,10 +61,11 @@ public abstract class Target<HANDLER, TYPE extends Number, EXTRA> {
      * Sends the calculated amount in given to each handler. If we failed to calculate a given amount for any handler in
      * this target send the given default instead.
      *
+     * @param current The current amount of power having been given.
      * @param amountPer Default amount per handler in this target.
-     * @return Actual total amount sent to this target.
+     * @return Actual total amount sent to this target added to the current amount
      */
-    public abstract TYPE sendGivenWithDefault(TYPE amountPer);
+    public abstract TYPE sendGivenWithDefault(TYPE current, TYPE amountPer);
 
     /**
      * Adds a side and amount to the given map. Used for when calculating if we are willing to supply the needed
@@ -82,5 +86,24 @@ public abstract class Target<HANDLER, TYPE extends Number, EXTRA> {
 
     public abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
 
-    public abstract void shiftNeeded(SplitInfo<TYPE> splitInfo);
+    public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
+        Iterator<Entry<EnumFacing, TYPE>> iterator = needed.entrySet().iterator();
+        //Use an iterator rather than a copy of the keyset of the needed submap
+        // This allows for us to remove it once we find it without  having to
+        // start looping again or make a large number of copies of the set
+        while (iterator.hasNext()) {
+            Entry<EnumFacing, TYPE> needInfo = iterator.next();
+            TYPE amountNeeded = needInfo.getValue();
+            if (amountNeeded.compareTo(splitInfo.getAmountPer()) <= 0) {
+                addGiven(needInfo.getKey(), amountNeeded);
+                //Remove it as it no longer valid
+                iterator.remove();
+                //Remove this amount from the split calculation
+                splitInfo.remove(amountNeeded);
+                //Continue checking things in case we happen to be
+                // getting things in a bad order so that we don't recheck
+                // the same values many times
+            }
+        }
+    }
 }
