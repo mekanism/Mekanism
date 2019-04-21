@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -8,9 +8,15 @@ import net.minecraft.util.EnumFacing;
 
 public class EnergyAcceptorTarget {
 
-    private Map<EnumFacing, EnergyAcceptorWrapper> wrappers = new HashMap<>();
-    private Map<EnumFacing, Double> needed = new HashMap<>();
-    private Map<EnumFacing, Double> given = new HashMap<>();
+    private final Map<EnumFacing, EnergyAcceptorWrapper> wrappers;
+    private final Map<EnumFacing, Double> needed;
+    private final Map<EnumFacing, Double> given;
+
+    public EnergyAcceptorTarget() {
+        wrappers = new EnumMap<>(EnumFacing.class);
+        needed = new EnumMap<>(EnumFacing.class);
+        given = new EnumMap<>(EnumFacing.class);
+    }
 
     public boolean hasAcceptors() {
         return !wrappers.isEmpty();
