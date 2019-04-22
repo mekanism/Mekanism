@@ -270,11 +270,18 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     }
 
     @Nonnull
+    @Override
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        return getDropItem(world, pos);
+    }
+
+    @Nonnull
     private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
+        ItemStack itemStack = ItemStack.EMPTY;
         TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
         if (tileEntity != null) {
-            ItemStack itemStack = new ItemStack(MekanismBlocks.Transmitter, 1,
-                  tileEntity.getTransmitterType().ordinal());
+            itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.getTransmitterType().ordinal());
 
             if (!itemStack.hasTagCompound()) {
                 itemStack.setTagCompound(new NBTTagCompound());
@@ -282,17 +289,9 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
             ITierItem tierItem = (ITierItem) itemStack.getItem();
             tierItem.setBaseTier(itemStack, tileEntity.getBaseTier());
-            return itemStack;
         }
 
-        return ItemStack.EMPTY;
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        return getDropItem(world, pos);
+        return itemStack;
     }
 
     @Override

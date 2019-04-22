@@ -164,16 +164,16 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
     }
 
     @Nonnull
-    private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
-        TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
-        return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
-    }
-
-    @Nonnull
     @Override
     public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
           @Nonnull BlockPos pos, EntityPlayer player) {
         return getDropItem(world, pos);
+    }
+
+    @Nonnull
+    private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
+        TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
+        return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
     }
 
     @Override

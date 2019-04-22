@@ -714,6 +714,13 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Nonnull
+    @Override
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        return getDropItem(state, world, pos);
+    }
+
+    @Nonnull
     private ItemStack getDropItem(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
@@ -807,13 +814,6 @@ public abstract class BlockMachine extends BlockContainer {
             }
         }
         return super.addHitEffects(state, world, target, manager);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        return getDropItem(state, world, pos);
     }
 
     @Override

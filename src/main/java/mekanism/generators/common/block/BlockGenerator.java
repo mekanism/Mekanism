@@ -508,12 +508,6 @@ public abstract class BlockGenerator extends BlockContainer {
         return getDropItem(state, world, pos);
     }
 
-    @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state,
-          int fortune) {
-        drops.add(getDropItem(state, world, pos));
-    }
-
     private ItemStack getDropItem(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         if (tileEntity == null) {
@@ -563,6 +557,12 @@ public abstract class BlockGenerator extends BlockContainer {
         }
 
         return itemStack;
+    }
+
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state,
+          int fortune) {
+        drops.add(getDropItem(state, world, pos));
     }
 
     /**

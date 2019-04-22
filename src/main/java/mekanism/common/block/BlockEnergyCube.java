@@ -253,6 +253,13 @@ public class BlockEnergyCube extends BlockContainer {
     }
 
     @Nonnull
+    @Override
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        return getDropItem(world, pos);
+    }
+
+    @Nonnull
     private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
@@ -285,13 +292,6 @@ public class BlockEnergyCube extends BlockContainer {
         inventory.setInventory(tileEntity.getInventory(), itemStack);
 
         return itemStack;
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        return getDropItem(world, pos);
     }
 
     @Override
