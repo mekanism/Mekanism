@@ -59,8 +59,11 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
                             if ((tint & 0xFF000000) == 0) {
                                 tint = 0xFF000000 | tint;
                             }
-                            //TODO: Fix Hydrogen not displaying the color properly
-                            style = style.filledColor(tint).alternateFilledColor(tint);
+                            if (tint != 0xFFFFFFFF) {
+                                //TOP bugs out with full white background so just use default instead
+                                // The default is a slightly off white color so is better for readability
+                                style = style.filledColor(tint).alternateFilledColor(tint);
+                            }
                         }
                         probeInfo.progress(tank.getStored(), tank.getMaxGas(), style);
                     }
