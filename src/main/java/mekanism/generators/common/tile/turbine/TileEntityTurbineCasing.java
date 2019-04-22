@@ -156,12 +156,12 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         return structure != null ? structure.getEnergyCapacity() : 0;
     }
 
-    public int getScaledFluidLevel(int i) {
+    public int getScaledFluidLevel(long i) {
         if (structure.getFluidCapacity() == 0 || structure.fluidStored == null) {
             return 0;
         }
 
-        return structure.fluidStored.amount * i / structure.getFluidCapacity();
+        return (int) (structure.fluidStored.amount * i / structure.getFluidCapacity());
     }
 
     @Override
