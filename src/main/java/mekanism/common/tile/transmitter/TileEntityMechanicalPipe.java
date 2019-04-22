@@ -255,6 +255,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public FluidTankInfo[] getAllTanks() {
+        //TODO: Investigate consequences of this
+        if (getTransmitter().hasTransmitterNetwork()) {
+            FluidNetwork network = getTransmitter().getTransmitterNetwork();
+            return new FluidTankInfo[]{new FluidTankInfo(network.getBuffer(), network.getCapacity())};
+        }
         return new FluidTankInfo[]{buffer.getInfo()};
     }
 

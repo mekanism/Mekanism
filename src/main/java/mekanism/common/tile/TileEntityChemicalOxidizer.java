@@ -201,7 +201,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine imp
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != MekanismUtils.getRight(facing);
+            return side != null && side != MekanismUtils.getRight(facing);
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side == facing || side == facing.getOpposite();
         }
