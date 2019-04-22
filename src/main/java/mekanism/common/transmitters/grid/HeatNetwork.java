@@ -1,8 +1,6 @@
 package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
-import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -11,7 +9,6 @@ import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void> {
 
@@ -58,11 +55,6 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
 
     @Override
     public void clampBuffer() {
-    }
-
-    @Override
-    public Set<Pair<Coord4D, IHeatTransfer>> getAcceptors(Object data) {
-        return null;
     }
 
     @Override

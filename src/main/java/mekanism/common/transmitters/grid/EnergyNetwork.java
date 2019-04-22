@@ -146,38 +146,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     @Override
-    public Set<Pair<Coord4D, EnergyAcceptorWrapper>> getAcceptors(Object data) {
-        Set<Pair<Coord4D, EnergyAcceptorWrapper>> toReturn = new HashSet<>();
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return toReturn;
-        }
-
-        for (Coord4D coord : possibleAcceptors.keySet()) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-
-            TileEntity tile = coord.getTileEntity(getWorld());
-
-            for (EnumFacing side : sides) {
-                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
-
-                if (acceptor != null) {
-                    if (acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
-                        toReturn.add(Pair.of(coord, acceptor));
-                        break;
-                    }
-                }
-            }
-        }
-
-        return toReturn;
-    }
-
-    @Override
     public String toString() {
         return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
     }

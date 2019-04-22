@@ -22,7 +22,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> {
 
@@ -239,41 +238,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 buffer = null;
             }
         }
-    }
-
-    @Override
-    public Set<Pair<Coord4D, IFluidHandler>> getAcceptors(Object data) {
-        FluidStack fluidToSend = (FluidStack) data;
-        Set<Pair<Coord4D, IFluidHandler>> toReturn = new HashSet<>();
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return toReturn;
-        }
-
-        for (Coord4D coord : possibleAcceptors.keySet()) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-            TileEntity tile = coord.getTileEntity(getWorld());
-
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-
-            for (EnumFacing side : sides) {
-                if (!CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
-                    continue;
-                }
-
-                IFluidHandler acceptor = CapabilityUtils
-                      .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
-
-                if (acceptor != null && PipeUtils.canFill(acceptor, fluidToSend)) {
-                    toReturn.add(Pair.of(coord, acceptor));
-                    break;
-                }
-            }
-        }
-
-        return toReturn;
     }
 
     public float getScale() {

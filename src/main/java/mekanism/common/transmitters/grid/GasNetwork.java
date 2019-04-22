@@ -20,7 +20,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Gasses. By default this is server-only, but if
@@ -240,40 +239,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 buffer = null;
             }
         }
-    }
-
-    @Override
-    public Set<Pair<Coord4D, IGasHandler>> getAcceptors(Object data) {
-        Gas type = (Gas) data;
-        Set<Pair<Coord4D, IGasHandler>> toReturn = new HashSet<>();
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return toReturn;
-        }
-
-        for (Coord4D coord : possibleAcceptors.keySet()) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-            TileEntity tile = coord.getTileEntity(getWorld());
-
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-
-            for (EnumFacing side : sides) {
-                if (!CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side)) {
-                    continue;
-                }
-
-                IGasHandler acceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side);
-
-                if (acceptor != null && acceptor.canReceiveGas(side, type)) {
-                    toReturn.add(Pair.of(coord, acceptor));
-                    break;
-                }
-            }
-        }
-
-        return toReturn;
     }
 
     public float getScale() {
