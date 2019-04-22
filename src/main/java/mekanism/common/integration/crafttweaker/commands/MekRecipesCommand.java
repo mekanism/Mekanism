@@ -51,7 +51,7 @@ public class MekRecipesCommand extends CraftTweakerCommand {
         setDescription(SpecialMessagesChat.getClickableCommandText(
               TextFormatting.DARK_GREEN + "/ct " + subCommandName + "<type>", "/ct " + subCommandName, true),
               SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA +
-                    "Outputs a list of all registered commands for to the crafttweaker.log"));
+                    "Outputs a list of all registered Mekanism Machine recipes to the crafttweaker.log for the given machine type."));
     }
 
     @Override
