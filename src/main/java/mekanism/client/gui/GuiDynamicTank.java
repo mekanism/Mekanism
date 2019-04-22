@@ -1,24 +1,20 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank> {
+public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> {
 
     public GuiDynamicTank(InventoryPlayer inventory, TileEntityDynamicTank tile) {
         super(tile, new ContainerDynamicTank(inventory, tile));
@@ -70,42 +66,8 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank> {
         return MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png");
     }
 
-    public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/) {
-        if (fluid == null) {
-            return;
-        }
-
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-
-        int start = 0;
-        int color = fluid.getFluid().getColor(fluid);
-        if (color != -1) {
-            MekanismRenderer.color(color);
-        }
-        TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
-        mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-        while (true) {
-            int renderRemaining;
-
-            if (scale > 16) {
-                renderRemaining = 16;
-                scale -= 16;
-            } else {
-                renderRemaining = scale;
-                scale = 0;
-            }
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  fluidTexture, 16, 16 - (16 - renderRemaining));
-            start += 16;
-
-            if (renderRemaining == 0 || scale == 0) {
-                break;
-            }
-        }
-        MekanismRenderer.resetColor();
-
-        mc.renderEngine.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+    @Override
+    protected ResourceLocation getGaugeResource() {
+        return getGuiLocation();
     }
 }

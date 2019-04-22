@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiEmbeddedGaugeTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -24,17 +22,15 @@ import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasing> {
+public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing> {
 
     public GuiIndustrialTurbine(InventoryPlayer inventory, TileEntityTurbineCasing tile) {
         super(tile, new ContainerFilter(inventory, tile));
@@ -127,38 +123,9 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
-    public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/) {
-        if (fluid == null) {
-            return;
-        }
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        int start = 0;
-        int color = fluid.getFluid().getColor(fluid);
-        if (color != -1) {
-            MekanismRenderer.color(color);
-        }
-        TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
-        mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-        while (true) {
-            int renderRemaining;
-            if (scale > 16) {
-                renderRemaining = 16;
-                scale -= 16;
-            } else {
-                renderRemaining = scale;
-                scale = 0;
-            }
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  fluidTexture, 16, 16 - (16 - renderRemaining));
-            start += 16;
-            if (renderRemaining == 0 || scale == 0) {
-                break;
-            }
-        }
-        MekanismRenderer.resetColor();
-        mc.renderEngine.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+    @Override
+    protected ResourceLocation getGaugeResource() {
+        return getGuiLocation();
     }
 
     @Override
