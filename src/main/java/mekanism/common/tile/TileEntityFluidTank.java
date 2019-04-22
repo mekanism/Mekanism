@@ -447,7 +447,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != EnumFacing.DOWN && side != EnumFacing.UP;
+            return side != null && side != EnumFacing.DOWN && side != EnumFacing.UP;
         }
         return super.isCapabilityDisabled(capability, side);
     }
