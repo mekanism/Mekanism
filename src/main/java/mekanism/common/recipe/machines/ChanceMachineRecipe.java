@@ -12,14 +12,18 @@ public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<REC
         super(input, output);
     }
 
+    public boolean inputMatches(NonNullList<ItemStack> inventory, int inputIndex) {
+        return getInput().useItemStackFromInventory(inventory, inputIndex, false);
+    }
+
     public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int primaryIndex, int secondaryIndex) {
-        return getInput().useItemStackFromInventory(inventory, inputIndex, false) && getOutput()
+        return inputMatches(inventory, inputIndex) && getOutput()
               .applyOutputs(inventory, primaryIndex, secondaryIndex, false);
     }
 
-    public void operate(NonNullList<ItemStack> inventory) {
-        if (getInput().useItemStackFromInventory(inventory, 0, true)) {
-            getOutput().applyOutputs(inventory, 2, 4, true);
+    public void operate(NonNullList<ItemStack> inventory, int inputIndex, int primaryIndex, int secondaryIndex) {
+        if (getInput().useItemStackFromInventory(inventory, inputIndex, true)) {
+            getOutput().applyOutputs(inventory, primaryIndex, secondaryIndex, true);
         }
     }
 }

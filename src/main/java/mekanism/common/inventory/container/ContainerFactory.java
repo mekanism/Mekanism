@@ -109,7 +109,7 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
                     return ItemStack.EMPTY;
                 }
             } else if (tileEntity.getRecipeType() == RecipeType.INFUSING && InfuseRegistry.getObject(slotStack) != null
-                  && (tileEntity.infuseStored.type == null || tileEntity.infuseStored.type == InfuseRegistry
+                  && (tileEntity.infuseStored.getType() == null || tileEntity.infuseStored.getType() == InfuseRegistry
                   .getObject(slotStack).type)) {
                 if (transferExtraSlot(slotID, slotStack)) {
                     return ItemStack.EMPTY;

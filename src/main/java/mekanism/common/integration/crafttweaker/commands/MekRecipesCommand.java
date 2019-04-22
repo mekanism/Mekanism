@@ -51,7 +51,7 @@ public class MekRecipesCommand extends CraftTweakerCommand {
         setDescription(SpecialMessagesChat.getClickableCommandText(
               TextFormatting.DARK_GREEN + "/ct " + subCommandName + "<type>", "/ct " + subCommandName, true),
               SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA +
-                    "Outputs a list of all registered commands for to the crafttweaker.log"));
+                    "Outputs a list of all registered Mekanism Machine recipes to the crafttweaker.log for the given machine type."));
     }
 
     @Override
@@ -173,8 +173,8 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 type = Recipe.METALLURGIC_INFUSER;
                 for (MetallurgicInfuserRecipe recipe : Recipe.METALLURGIC_INFUSER.get().values()) {
                     CraftTweakerAPI.logCommand(String.format("mods.mekanism.infuser.addRecipe(%s, %s, %s, %s)",
-                          recipe.getInput().infuse.type,
-                          recipe.getInput().infuse.amount,
+                          recipe.getInput().infuse.getType(),
+                          recipe.getInput().infuse.getAmount(),
                           RecipeInfoHelper.getItemName(recipe.getInput().inputStack),
                           RecipeInfoHelper.getItemName(recipe.getOutput().output)
                     ));

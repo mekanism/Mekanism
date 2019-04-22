@@ -2,10 +2,13 @@
   {
     "modid": "mekanism",
     "name": "Mekanism",
-    "description": "Tools and Machines; an active fork of Mekanism",
+    "description": "Tools and Machines",
     "version": "${version}",
     "mcversion": "${mc_version}",
     "authorList": [
+      "aidancbrady",
+      "thommy101",
+      "thiakil",
       "pupnewfster",
       "dizzyd"
     ],
@@ -22,10 +25,12 @@
       "computercraft",
       "galaticraft api",
       "metallurgy",
-      "crafttweaker"
+      "crafttweaker",
+      "cofhcore",
+      "cyclicmagic"
     ],
     "requiredMods": [
-      "forge@[14.23.2.2639,)"
+      "forge@[14.23.5.2768,)"
     ]
   },
   {
@@ -35,6 +40,9 @@
     "version": "${version}",
     "mcversion": "${mc_version}",
     "authorList": [
+      "aidancbrady",
+      "thommy101",
+      "thiakil",
       "pupnewfster",
       "dizzyd"
     ],
@@ -54,6 +62,9 @@
     "version": "${version}",
     "mcversion": "${mc_version}",
     "authorList": [
+      "aidancbrady",
+      "thommy101",
+      "thiakil",
       "pupnewfster",
       "dizzyd"
     ],

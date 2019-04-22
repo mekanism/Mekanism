@@ -483,6 +483,20 @@ public final class MekanismUtils {
     }
 
     /**
+     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
+     *
+     * @param world world the change exists in
+     * @param neighborSide The side the neighbor to notify is on
+     * @param fromPos pos of our block that updated
+     */
+    public static void notifyNeighborOfChange(World world, EnumFacing neighborSide, BlockPos fromPos) {
+        BlockPos neighbor = fromPos.offset(neighborSide);
+        IBlockState state = world.getBlockState(neighbor);
+        state.getBlock().onNeighborChange(world, neighbor, fromPos);
+        state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos);
+    }
+
+    /**
      * Places a fake bounding block at the defined location.
      *
      * @param world - world to place block in

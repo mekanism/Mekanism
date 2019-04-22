@@ -2,6 +2,7 @@ package mekanism.common.multiblock;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -24,6 +25,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> {
 
     public boolean hasRenderer;
 
+    @Nullable//may be null if structure has not been fully sent
     public Coord4D renderLocation;
 
     public Coord4D minLocation;

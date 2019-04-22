@@ -23,7 +23,7 @@ public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         List<ItemStack> inputStacks = Collections.singletonList(recipe.recipeInput.inputStack);
-        List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.type);
+        List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInput().infuse.getType());
         ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.inputStack);
         ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(inputStacks, infuseStacks));
         ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.output);
@@ -37,7 +37,7 @@ public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper {
     public void drawInfo(Minecraft mc, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         if (mc.currentScreen != null) {
             mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-            mc.currentScreen.drawTexturedModalRect(2, 2, recipe.getInput().infuse.type.sprite, 4, 52);
+            mc.currentScreen.drawTexturedModalRect(2, 2, recipe.getInput().infuse.getType().sprite, 4, 52);
         }
     }
 
@@ -45,7 +45,7 @@ public class MetallurgicInfuserRecipeWrapper implements IRecipeWrapper {
     public List<String> getTooltipStrings(int mouseX, int mouseY) {
         if (mouseX >= 2 && mouseX < 6 && mouseY >= 2 && mouseY < 54) {
             InfuseStorage infuse = recipe.getInput().infuse;
-            return Collections.singletonList(infuse.type.getLocalizedName() + ": " + infuse.amount);
+            return Collections.singletonList(infuse.getType().getLocalizedName() + ": " + infuse.getAmount());
         }
         return Collections.emptyList();
     }

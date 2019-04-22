@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -17,8 +18,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFactory;
@@ -45,6 +44,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -144,19 +145,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
         if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
               || type == MachineType.ELITE_FACTORY) {
-            BaseTier tier = type == MachineType.BASIC_FACTORY ? BaseTier.BASIC
-                  : (type == MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
+            BaseTier tier = type.factoryTier.getBaseTier();
 
-            if (I18n.canTranslate(
-                  "tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getTranslationKey()
-                        + "Factory")) {
-                return LangUtils.localize(
-                      "tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getTranslationKey()
-                            + "Factory");
+            RecipeType recipeType = getRecipeTypeOrNull(itemstack);
+            if (recipeType != null) {
+
+                String langKey = "tile." + tier.getSimpleName() + recipeType.getTranslationKey() + "Factory";
+                if (I18n.canTranslate(langKey)) {
+                    return LangUtils.localize(langKey);
+                }
+
+                return tier.getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super
+                      .getItemStackDisplayName(itemstack);
             }
-
-            return tier.getLocalizedName() + " " + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName()
-                  + " " + super.getItemStackDisplayName(itemstack);
         } else if (type == MachineType.FLUID_TANK) {
             return LangUtils.localize("tile.FluidTank" + getBaseTier(itemstack).getSimpleName() + ".name");
         }
@@ -222,9 +223,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
                   || type == MachineType.ELITE_FACTORY) {
-                list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + RecipeType
-                            .values()[getRecipeType(itemstack)].getLocalizedName());
+
+                RecipeType recipeType = getRecipeTypeOrNull(itemstack);
+                if (recipeType != null) {
+                    list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY
+                          + recipeType.getLocalizedName());
+                }
             }
 
             if (type == MachineType.FLUID_TANK) {
@@ -361,8 +365,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (tileEntity instanceof TileEntityFactory) {
                 TileEntityFactory factory = (TileEntityFactory) tileEntity;
-                RecipeType recipeType = RecipeType.values()[getRecipeType(stack)];
-                factory.setRecipeType(recipeType);
+                RecipeType recipeType = getRecipeTypeOrNull(stack);
+                if (recipeType != null) {
+                    factory.setRecipeType(recipeType);
+                }
                 world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
 
                 Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
@@ -529,6 +535,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         return itemStack.getTagCompound().getInteger("recipeType");
     }
 
+    @Nullable
+    @Override
+    public RecipeType getRecipeTypeOrNull(ItemStack itemStack) {
+        int recipeType = getRecipeType(itemStack);
+        if (recipeType < RecipeType.values().length) {
+            return RecipeType.values()[recipeType];
+        }
+        return null;
+    }
+
     @Override
     public void setRecipeType(int type, ItemStack itemStack) {
         if (itemStack.getTagCompound() == null) {
@@ -627,9 +643,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
         if (machineType.isFactory()) {
             // 200*tier.processes*recipeType.getEnergyUsage(); // From TileEntityFactory
-            RecipeType recipeType = RecipeType.values()[getRecipeType(itemStack)];
+            RecipeType recipeType = getRecipeTypeOrNull(itemStack);
             int tierProcess = machineType.factoryTier.processes;
-            double baseMaxEnergy = 200 * tierProcess * recipeType.getEnergyUsage();
+            double baseMaxEnergy = 200 * tierProcess * (recipeType == null ? 1 : recipeType.getEnergyUsage());
 
             return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
         }

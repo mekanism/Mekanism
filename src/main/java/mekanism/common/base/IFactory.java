@@ -3,6 +3,7 @@ package mekanism.common.base;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.InfuseStorage;
@@ -15,6 +16,7 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
@@ -44,6 +46,15 @@ public interface IFactory {
     int getRecipeType(ItemStack itemStack);
 
     /**
+     * Gets the recipe type this Factory currently has.
+     *
+     * @param itemStack - stack to check
+     * @return RecipeType or null if it has invalid NBT
+     */
+    @Nullable
+    RecipeType getRecipeTypeOrNull(ItemStack itemStack);
+
+    /**
      * Sets the recipe type of this Smelting Factory to a new value.
      *
      * @param type - RecipeType ordinal
@@ -54,7 +65,8 @@ public interface IFactory {
     enum MachineFuelType {
         BASIC,
         ADVANCED,
-        DOUBLE
+        DOUBLE,
+        CHANCE
     }
 
     enum RecipeType implements IStringSerializable {
@@ -71,7 +83,9 @@ public interface IFactory {
         INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true,
               Recipe.CHEMICAL_INJECTION_CHAMBER),
         INFUSING("Infusing", "metalinfuser", MachineType.METALLURGIC_INFUSER, MachineFuelType.BASIC, false,
-              Recipe.METALLURGIC_INFUSER);
+              Recipe.METALLURGIC_INFUSER),
+        SAWING("Sawing", "sawmill", MachineType.PRECISION_SAWMILL, MachineFuelType.CHANCE, false,
+              Recipe.PRECISION_SAWMILL);
 
         private String name;
         private SoundEvent sound;
@@ -129,6 +143,14 @@ public interface IFactory {
             return getRecipe(new DoubleMachineInput(input, extra));
         }
 
+        public ChanceMachineRecipe getChanceRecipe(ItemStackInput input) {
+            return RecipeHandler.getChanceRecipe(input, recipe.get());
+        }
+
+        public ChanceMachineRecipe getChanceRecipe(ItemStack input) {
+            return getChanceRecipe(new ItemStackInput(input));
+        }
+
         public MetallurgicInfuserRecipe getRecipe(InfusionInput input) {
             return RecipeHandler.getMetallurgicInfuserRecipe(input);
         }
@@ -143,8 +165,10 @@ public interface IFactory {
                 return getRecipe(slotStack, gasType);
             } else if (fuelType == MachineFuelType.DOUBLE) {
                 return getRecipe(slotStack, extraStack);
+            } else if (fuelType == MachineFuelType.CHANCE) {
+                return getChanceRecipe(slotStack);
             } else if (this == INFUSING) {
-                if (infuse.type != null) {
+                if (infuse.getType() != null) {
                     return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
                 } else {
                     for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get()

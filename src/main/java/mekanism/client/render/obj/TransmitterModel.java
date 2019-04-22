@@ -68,12 +68,13 @@ public class TransmitterModel extends OBJBakedModelBase {
     private TransmitterModel itemCache;
     private IBlockState tempState;
     private ItemStack tempStack;
+    private TextureAtlasSprite particle;
     private TransmitterOverride override = new TransmitterOverride();
 
     public TransmitterModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format,
           ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) {
         super(base, model, state, format, textures, transform);
-
+        particle = textureMap.getOrDefault("None_Center", textureMap.getOrDefault("CentreMaterial", tempSprite));
         modelInstances.add(this);
     }
 
@@ -177,6 +178,12 @@ public class TransmitterModel extends OBJBakedModelBase {
         }
 
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return particle;
     }
 
     @Override

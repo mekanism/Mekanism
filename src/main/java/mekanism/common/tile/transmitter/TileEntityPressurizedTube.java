@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -10,10 +11,10 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.TubeTier;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -22,7 +23,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork> implements IGasHandler {
+public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements
+      IGasHandler {
 
     public TubeTier tier = TubeTier.BASIC;
 
@@ -170,6 +172,19 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
+    public boolean isValidTransmitter(TileEntity tileEntity) {
+        if (!super.isValidTransmitter(tileEntity)) {
+            return false;
+        }
+        if (!(tileEntity instanceof TileEntityPressurizedTube)) {
+            return true;
+        }
+        GasStack buffer = getBufferWithFallback();
+        GasStack otherBuffer = ((TileEntityPressurizedTube) tileEntity).getBufferWithFallback();
+        return buffer == null || otherBuffer == null || buffer.isGasEqual(otherBuffer);
+    }
+
+    @Override
     public GasNetwork createNewNetwork() {
         return new GasNetwork();
     }
@@ -180,13 +195,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
+    protected boolean canHaveIncompatibleNetworks() {
+        return true;
+    }
+
+    @Override
     public int getCapacity() {
         return tier.getTubeCapacity();
     }
 
+    @Nullable
     @Override
     public GasStack getBuffer() {
-        return buffer == null ? null : buffer.getGas();
+        if (buffer == null) {
+            return null;
+        }
+        GasStack gas = buffer.getGas();
+        return gas == null || gas.amount == 0 ? null : gas;
     }
 
     @Override

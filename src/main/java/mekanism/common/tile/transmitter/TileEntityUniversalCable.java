@@ -40,7 +40,7 @@ import net.minecraftforge.fml.common.Optional;
 @Optional.InterfaceList(
       @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 )
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements
       IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver {
 
     public CableTier tier = CableTier.BASIC;
@@ -240,7 +240,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     }
 
     @Override
-    public Object getBuffer() {
+    public EnergyStack getBuffer() {
         return buffer;
     }
 

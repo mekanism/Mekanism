@@ -93,6 +93,9 @@ public class MekanismTools implements IModule {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        //Load the config
+        proxy.loadConfiguration();
+
         addItems();
     }
 
@@ -103,9 +106,6 @@ public class MekanismTools implements IModule {
 
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         MinecraftForge.EVENT_BUS.register(this);
-
-        //Load the proxy
-        proxy.loadConfiguration();
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
@@ -146,10 +146,6 @@ public class MekanismTools implements IModule {
               SoundEvents.ITEM_ARMOR_EQUIP_IRON);
         armorSTEEL = getArmorMaterial("STEEL", MekanismConfig.current().tools.armorSTEEL,
               SoundEvents.ITEM_ARMOR_EQUIP_IRON);
-
-        if (Mekanism.configuration.hasChanged()) {
-            Mekanism.configuration.save();
-        }
 
         ToolsItems.initializeItems();
         ToolsItems.setHarvestLevels();
