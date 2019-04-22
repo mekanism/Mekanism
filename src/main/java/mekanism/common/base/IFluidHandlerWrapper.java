@@ -20,4 +20,12 @@ public interface IFluidHandlerWrapper {
     FluidTankInfo[] getTankInfo(EnumFacing from);
 
     FluidTankInfo[] getAllTanks();
+
+    /**
+     * Called when accessing the handler from a null side. Overriding this allows replacing the local tanks with the
+     * networks tanks. Used by TileEntityMechanicalPipe to report the network's contents to TOP
+     */
+    default FluidTankInfo[] getAllNetworkTanks() {
+        return getAllTanks();
+    }
 }
