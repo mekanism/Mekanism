@@ -2,11 +2,11 @@ package mekanism.generators.common.block.states;
 
 import com.google.common.base.Predicate;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.prefab.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
@@ -157,8 +157,9 @@ public class BlockStateReactor extends ExtendedBlockState {
 
     public static class ReactorBlockStateMapper extends StateMapperBase {
 
+        @Nonnull
         @Override
-        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             BlockReactor block = (BlockReactor) state.getBlock();
             ReactorBlockType type = state.getValue(block.getTypeProperty());
             StringBuilder builder = new StringBuilder();
@@ -174,7 +175,7 @@ public class BlockStateReactor extends ExtendedBlockState {
                 builder.append("normal");
             }
 
-            ResourceLocation baseLocation = new ResourceLocation(MekanismGenerators.MODID,
+            ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators",
                   nameOverride != null ? nameOverride : type.getName());
 
             return new ModelResourceLocation(baseLocation, builder.toString());

@@ -1,11 +1,12 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.api.TileNetworkList;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
@@ -76,9 +77,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 structure = getNewStructure();
             }
 
-            if (structure != null && clientHasStructure && isRendering) {
+            if (structure != null && structure.renderLocation != null && clientHasStructure && isRendering) {
                 if (!prevStructure) {
-                    Mekanism.proxy.doMultiblockSparkle(this);
+                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength,
+                          structure.volWidth, structure.volHeight, tile -> MultiblockManager.areEqual(this, tile));
                 }
             }
 
@@ -248,6 +250,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -270,6 +273,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         return false;
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {

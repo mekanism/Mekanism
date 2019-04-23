@@ -19,7 +19,7 @@ public class IC2Proxy implements MekWrenchProxy, IMekWrench {
 
         try {
             w = Class.forName(IC2_WRENCH_CLASS);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException ignored) {
         }
 
         wrenchClass = w;

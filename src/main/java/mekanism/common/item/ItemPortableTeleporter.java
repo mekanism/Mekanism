@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
@@ -44,7 +45,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             neededEnergy += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
         } else {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
-
             neededEnergy += (distance * MekanismConfig.current().usage.teleporterDistanceUsage.val());
         }
 
@@ -67,8 +67,9 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         super.addInformation(itemstack, world, list, flag);
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
 
         if (!world.isRemote) {
@@ -77,7 +78,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
                 Mekanism.packetHandler
                       .sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, entityplayer.getUniqueID(), null));
                 entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.nowOwn")));
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                            .localize("gui.nowOwn")));
             } else {
                 if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                     entityplayer.openGui(Mekanism.instance, 14, world, hand.ordinal(), 0, 0);

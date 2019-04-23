@@ -1,56 +1,25 @@
 package mekanism.common.inventory.container;
 
+import javax.annotation.Nonnull;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerSolarNeutronActivator extends Container {
+public class ContainerSolarNeutronActivator extends ContainerMekanism<TileEntitySolarNeutronActivator> {
 
-    private TileEntitySolarNeutronActivator tileEntity;
-
-    public ContainerSolarNeutronActivator(InventoryPlayer inventory, TileEntitySolarNeutronActivator tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new SlotStorageTank(tentity, 0, 5, 56));
-        addSlotToContainer(new SlotStorageTank(tentity, 1, 155, 56));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
+    public ContainerSolarNeutronActivator(InventoryPlayer inventory, TileEntitySolarNeutronActivator tile) {
+        super(tile, inventory);
     }
 
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
-    }
-
+    @Nonnull
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
-        Slot currentSlot = (Slot) inventorySlots.get(slotID);
+        Slot currentSlot = inventorySlots.get(slotID);
 
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
@@ -104,5 +73,11 @@ public class ContainerSolarNeutronActivator extends Container {
         }
 
         return stack;
+    }
+
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new SlotStorageTank(tileEntity, 0, 5, 56));
+        addSlotToContainer(new SlotStorageTank(tileEntity, 1, 155, 56));
     }
 }

@@ -26,7 +26,7 @@ public class MekanismFluids {
           new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true);
 
     //Internal gases
-    public static final Gas LiquidOsmium = new Gas("liquidosmium", 0x9090A3);
+    public static final Gas LiquidOsmium = new Gas("liquidosmium", 0x52bdca);
     public static final Gas Ethene = new Gas("ethene", 0xEACCF9);
     public static final Gas Sodium = new Gas("sodium", 0xE9FEF4);
     public static final Gas Brine = new Gas("brine", 0xFEEF9C);
@@ -60,15 +60,11 @@ public class MekanismFluids {
         for (Resource resource : Resource.values()) {
             String name = resource.getName();
             String nameLower = name.toLowerCase(Locale.ROOT);
-
-            OreGas clean = new OreGas("clean" + name, "oregas." + nameLower);
-            clean.setVisible(false).setTint(resource.tint);
-
-            OreGas dirty = new OreGas(nameLower, "oregas." + nameLower).setCleanGas(clean);
-            dirty.setVisible(false).setTint(resource.tint);
-
+            //Clean
+            OreGas clean = new OreGas("clean" + name, "oregas." + nameLower, resource.tint);
             GasRegistry.register(clean);
-            GasRegistry.register(dirty);
+            //Dirty
+            GasRegistry.register(new OreGas(nameLower, "oregas." + nameLower, resource.tint, clean));
         }
 
         FluidRegistry.enableUniversalBucket();

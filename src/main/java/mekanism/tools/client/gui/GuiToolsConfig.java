@@ -12,10 +12,13 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by ben on 27/06/14.
  */
+@SideOnly(Side.CLIENT)
 public class GuiToolsConfig extends GuiConfig {
 
     public GuiToolsConfig(GuiScreen parent) {

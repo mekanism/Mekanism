@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotOutput;
@@ -10,62 +11,28 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerMetallurgicInfuser extends Container {
+public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMetallurgicInfuser> {
 
-    private TileEntityMetallurgicInfuser tileEntity;
-
-    public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 1, 17, 35));
-        addSlotToContainer(new Slot(tentity, 2, 51, 43));
-        addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
-        addSlotToContainer(new SlotEnergy.SlotDischarge(tentity, 4, 143, 35));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
+    public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tile) {
+        super(tile, inventory);
     }
 
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
-    }
-
+    @Nonnull
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
-        Slot currentSlot = (Slot) inventorySlots.get(slotID);
+        Slot currentSlot = inventorySlots.get(slotID);
 
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
             if (slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3) {
-                if (InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.type == null
-                      || tileEntity.infuseStored.type == InfuseRegistry.getObject(slotStack).type)) {
+                if (InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.getType() == null
+                      || tileEntity.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -78,16 +45,12 @@ public class ContainerMetallurgicInfuser extends Container {
                         return ItemStack.EMPTY;
                     }
                 } else {
-                    if (slotID >= 4 && slotID <= 30) {
+                    if (slotID <= 30) {
                         if (!mergeItemStack(slotStack, 31, inventorySlots.size(), false)) {
                             return ItemStack.EMPTY;
                         }
-                    } else if (slotID > 30) {
-                        if (!mergeItemStack(slotStack, 4, 30, false)) {
-                            return ItemStack.EMPTY;
-                        }
                     } else {
-                        if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                        if (!mergeItemStack(slotStack, 4, 30, false)) {
                             return ItemStack.EMPTY;
                         }
                     }
@@ -115,18 +78,21 @@ public class ContainerMetallurgicInfuser extends Container {
     }
 
     public boolean isInputItem(ItemStack itemStack) {
-        if (tileEntity.infuseStored.type != null) {
+        if (tileEntity.infuseStored.getType() != null) {
             return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tileEntity.infuseStored, itemStack))
                   != null;
         } else {
-            for (Object obj : Recipe.METALLURGIC_INFUSER.get().keySet()) {
-                InfusionInput input = (InfusionInput) obj;
-                if (input.inputStack.isItemEqual(itemStack)) {
-                    return true;
-                }
-            }
+            return Recipe.METALLURGIC_INFUSER.get().keySet().stream()
+                  .anyMatch(input -> input.inputStack.isItemEqual(itemStack));
         }
 
-        return false;
+    }
+
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new Slot(tileEntity, 1, 17, 35));
+        addSlotToContainer(new Slot(tileEntity, 2, 51, 43));
+        addSlotToContainer(new SlotOutput(tileEntity, 3, 109, 43));
+        addSlotToContainer(new SlotEnergy.SlotDischarge(tileEntity, 4, 143, 35));
     }
 }

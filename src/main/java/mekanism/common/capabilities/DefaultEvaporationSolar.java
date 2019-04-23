@@ -11,7 +11,7 @@ public class DefaultEvaporationSolar implements IEvaporationSolar {
     }
 
     @Override
-    public boolean seesSun() {
+    public boolean canSeeSun() {
         return false;
     }
 }

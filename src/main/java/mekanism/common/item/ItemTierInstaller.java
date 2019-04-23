@@ -1,7 +1,8 @@
 package mekanism.common.item;
 
 import java.util.Locale;
-import mekanism.common.Tier.BaseTier;
+import javax.annotation.Nonnull;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -24,6 +25,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
         setHasSubtypes(true);
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
           float hitY, float hitZ, EnumHand hand) {
@@ -65,7 +67,7 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList) {
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
         if (!isInCreativeTab(tabs)) {
             return;
         }
@@ -76,8 +78,9 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
         }
     }
 
+    @Nonnull
     @Override
-    public String getUnlocalizedName(ItemStack item) {
+    public String getTranslationKey(ItemStack item) {
         return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase(Locale.ROOT)
               + "TierInstaller";
     }

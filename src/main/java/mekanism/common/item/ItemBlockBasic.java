@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -11,10 +12,10 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.BinTier;
-import mekanism.common.Tier.InductionCellTier;
-import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.BinTier;
+import mekanism.common.tier.InductionCellTier;
+import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
@@ -109,7 +110,8 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
         BasicBlockType type = BasicBlockType.get(itemstack);
 
         if (type != null && type.hasDescription) {
@@ -163,8 +165,9 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         return BasicBlockType.get(stack) == BasicBlockType.BIN && ItemDataUtils.hasData(stack, "newCount");
     }
 
+    @Nonnull
     @Override
-    public ItemStack getContainerItem(ItemStack stack) {
+    public ItemStack getContainerItem(@Nonnull ItemStack stack) {
         if (BasicBlockType.get(stack) == BasicBlockType.BIN) {
             if (!ItemDataUtils.hasData(stack, "newCount")) {
                 return ItemStack.EMPTY;
@@ -183,8 +186,8 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-          float hitX, float hitY, float hitZ, IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
         boolean place = true;
 
         BasicBlockType type = BasicBlockType.get(stack);
@@ -236,12 +239,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
         return place;
     }
 
+    @Nonnull
     @Override
-    public String getUnlocalizedName(ItemStack itemstack) {
+    public String getTranslationKey(ItemStack itemstack) {
         BasicBlockType type = BasicBlockType.get(itemstack);
 
         if (type != null) {
-            String name = getUnlocalizedName() + "." + type.name;
+            String name = getTranslationKey() + "." + type.name;
 
             if (type == BasicBlockType.BIN || type == BasicBlockType.INDUCTION_CELL
                   || type == BasicBlockType.INDUCTION_PROVIDER) {
@@ -296,7 +300,11 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem, ITierIt
 
     @Override
     public int getItemBurnTime(ItemStack itemStack) {
-        return this.metaBlock == MekanismBlocks.BasicBlock && itemStack.getMetadata() == 3 ? 200 * 8 * 9
-              : super.getItemBurnTime(itemStack);
+        // If this is a block of charcoal, set burn time to 16000 ticks (per Minecraft standard)
+        if (this.metaBlock == MekanismBlocks.BasicBlock && itemStack.getMetadata() == 3) {
+            return 16000; // ticks
+        } else {
+            return super.getItemBurnTime(itemStack);
+        }
     }
 }

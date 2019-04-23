@@ -1,6 +1,8 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -17,28 +19,29 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 
     @Override
     public IMessage onMessage(ScubaTankDataMessage message, MessageContext context) {
+        // Queue up processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
+        PacketHandler.handlePacket(() -> {
+                  if (message.packetType == ScubaTankPacket.UPDATE) {
+                      Mekanism.playerState.setGasmaskState(message.uuid, message.value, false);
 
-        if (message.packetType == ScubaTankPacket.UPDATE) {
-            if (message.value) {
-                Mekanism.gasmaskOn.add(message.userId);
-            } else {
-                Mekanism.gasmaskOn.remove(message.userId);
-            }
-
-            if (!player.world.isRemote) {
-                Mekanism.packetHandler
-                      .sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.userId, message.value),
-                            player.world.provider.getDimension());
-            }
-        } else if (message.packetType == ScubaTankPacket.MODE) {
-            ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
-                ((ItemScubaTank) stack.getItem()).toggleFlowing(stack);
-            }
-        }
-
+                      // If we got this on the server, relay out to all players in the same dimension
+                      // TODO: Why is this a dimensional thing?!
+                      if (!player.world.isRemote) {
+                          Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+                      }
+                  } else if (message.packetType == ScubaTankPacket.MODE) {
+                      // Use has changed the mode of their gasmask; update it
+                      ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+                      if (!stack.isEmpty() && stack.getItem() instanceof ItemScubaTank) {
+                          ((ItemScubaTank) stack.getItem()).toggleFlowing(stack);
+                      }
+                  } else if (message.packetType == ScubaTankPacket.FULL) {
+                      // This is a full sync; merge into our player state
+                      Mekanism.playerState.setActiveGasmasks(message.activeGasmasks);
+                  }
+              },
+              player);
         return null;
     }
 
@@ -50,37 +53,52 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 
     public static class ScubaTankDataMessage implements IMessage {
 
-        public ScubaTankPacket packetType;
+        protected ScubaTankPacket packetType;
 
-        public UUID userId;
-        public boolean value;
+        protected Set<UUID> activeGasmasks;
+
+        protected UUID uuid;
+        protected boolean value;
 
         public ScubaTankDataMessage() {
         }
 
-        public ScubaTankDataMessage(ScubaTankPacket type, UUID name, boolean state) {
+        public ScubaTankDataMessage(ScubaTankPacket type) {
             packetType = type;
+        }
 
-            if (packetType == ScubaTankPacket.UPDATE) {
-                userId = name;
-                value = state;
-            }
+        public static ScubaTankDataMessage MODE_CHANGE(boolean change) {
+            ScubaTankDataMessage m = new ScubaTankDataMessage(ScubaTankPacket.MODE);
+            m.value = change;
+            return m;
+        }
+
+        public static ScubaTankDataMessage UPDATE(UUID uuid, boolean state) {
+            ScubaTankDataMessage m = new ScubaTankDataMessage(ScubaTankPacket.UPDATE);
+            m.uuid = uuid;
+            m.value = state;
+            return m;
+        }
+
+        public static ScubaTankDataMessage FULL(Set<UUID> activeNames) {
+            ScubaTankDataMessage m = new ScubaTankDataMessage((ScubaTankPacket.FULL));
+            m.activeGasmasks = activeNames;
+            return m;
         }
 
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
 
-            if (packetType == ScubaTankPacket.UPDATE) {
-                PacketHandler.writeUUID(dataStream, userId);
+            if (packetType == ScubaTankPacket.MODE) {
+                dataStream.writeBoolean(value);
+            } else if (packetType == ScubaTankPacket.UPDATE) {
+                PacketHandler.writeUUID(dataStream, uuid);
                 dataStream.writeBoolean(value);
             } else if (packetType == ScubaTankPacket.FULL) {
-                dataStream.writeInt(Mekanism.gasmaskOn.size());
-
-                synchronized (Mekanism.gasmaskOn) {
-                    for (UUID name : Mekanism.gasmaskOn) {
-                        PacketHandler.writeUUID(dataStream, name);
-                    }
+                dataStream.writeInt(activeGasmasks.size());
+                for (UUID uuid : activeGasmasks) {
+                    PacketHandler.writeUUID(dataStream, uuid);
                 }
             }
         }
@@ -89,17 +107,18 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
         public void fromBytes(ByteBuf dataStream) {
             packetType = ScubaTankPacket.values()[dataStream.readInt()];
 
-            if (packetType == ScubaTankPacket.FULL) {
-                Mekanism.gasmaskOn.clear();
+            if (packetType == ScubaTankPacket.MODE) {
+                value = dataStream.readBoolean();
+            } else if (packetType == ScubaTankPacket.UPDATE) {
+                uuid = PacketHandler.readUUID(dataStream);
+                value = dataStream.readBoolean();
+            } else if (packetType == ScubaTankPacket.FULL) {
+                activeGasmasks = new HashSet<>();
 
                 int amount = dataStream.readInt();
-
                 for (int i = 0; i < amount; i++) {
-                    Mekanism.gasmaskOn.add(PacketHandler.readUUID(dataStream));
+                    activeGasmasks.add(PacketHandler.readUUID(dataStream));
                 }
-            } else if (packetType == ScubaTankPacket.UPDATE) {
-                userId = PacketHandler.readUUID(dataStream);
-                value = dataStream.readBoolean();
             }
         }
     }

@@ -21,8 +21,9 @@ public class IC2ItemManager implements IElectricItemManager {
     public double charge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean simulate) {
         if (energizedItem.canReceive(itemStack)) {
             double energyNeeded = energizedItem.getMaxEnergy(itemStack) - energizedItem.getEnergy(itemStack);
-            double energyToStore = Math.min(Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(),
-                  energizedItem.getMaxEnergy(itemStack) * 0.01), energyNeeded);
+            double energyToStore = Math
+                  .min(Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(),
+                        energizedItem.getMaxEnergy(itemStack) * 0.01), energyNeeded);
 
             if (!simulate) {
                 energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) + energyToStore);

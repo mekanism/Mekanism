@@ -7,6 +7,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -16,8 +18,6 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFactory;
@@ -44,6 +44,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -126,33 +128,36 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         return i;
     }
 
+    @Nonnull
     @Override
-    public String getUnlocalizedName(ItemStack itemstack) {
+    public String getTranslationKey(ItemStack itemstack) {
         if (MachineType.get(itemstack) != null) {
-            return getUnlocalizedName() + "." + MachineType.get(itemstack).blockName;
+            return getTranslationKey() + "." + MachineType.get(itemstack).blockName;
         }
 
         return "null";
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName(ItemStack itemstack) {
+    public String getItemStackDisplayName(@Nonnull ItemStack itemstack) {
         MachineType type = MachineType.get(itemstack);
 
         if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
               || type == MachineType.ELITE_FACTORY) {
-            BaseTier tier = type == MachineType.BASIC_FACTORY ? BaseTier.BASIC
-                  : (type == MachineType.ADVANCED_FACTORY ? BaseTier.ADVANCED : BaseTier.ELITE);
+            BaseTier tier = type.factoryTier.getBaseTier();
 
-            if (I18n.canTranslate(
-                  "tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)].getUnlocalizedName()
-                        + "Factory")) {
-                return LangUtils.localize("tile." + tier.getSimpleName() + RecipeType.values()[getRecipeType(itemstack)]
-                      .getUnlocalizedName() + "Factory");
+            RecipeType recipeType = getRecipeTypeOrNull(itemstack);
+            if (recipeType != null) {
+
+                String langKey = "tile." + tier.getSimpleName() + recipeType.getTranslationKey() + "Factory";
+                if (I18n.canTranslate(langKey)) {
+                    return LangUtils.localize(langKey);
+                }
+
+                return tier.getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super
+                      .getItemStackDisplayName(itemstack);
             }
-
-            return tier.getLocalizedName() + " " + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName()
-                  + " " + super.getItemStackDisplayName(itemstack);
         } else if (type == MachineType.FLUID_TANK) {
             return LangUtils.localize("tile.FluidTank" + getBaseTier(itemstack).getSimpleName() + ".name");
         }
@@ -162,7 +167,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
         MachineType type = MachineType.get(itemstack);
 
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
@@ -217,9 +223,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
                   || type == MachineType.ELITE_FACTORY) {
-                list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + RecipeType
-                            .values()[getRecipeType(itemstack)].getLocalizedName());
+
+                RecipeType recipeType = getRecipeTypeOrNull(itemstack);
+                if (recipeType != null) {
+                    list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY
+                          + recipeType.getLocalizedName());
+                }
             }
 
             if (type == MachineType.FLUID_TANK) {
@@ -261,9 +270,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         }
     }
 
+    @Nonnull
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side,
-          float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World world, @Nonnull BlockPos pos, @Nonnull EnumHand hand,
+          @Nonnull EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         MachineType type = MachineType.get(stack);
 
@@ -275,8 +285,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-          float hitX, float hitY, float hitZ, IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
         boolean place = true;
 
         MachineType type = MachineType.get(stack);
@@ -355,8 +365,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (tileEntity instanceof TileEntityFactory) {
                 TileEntityFactory factory = (TileEntityFactory) tileEntity;
-                RecipeType recipeType = RecipeType.values()[getRecipeType(stack)];
-                factory.setRecipeType(recipeType);
+                RecipeType recipeType = getRecipeTypeOrNull(stack);
+                if (recipeType != null) {
+                    factory.setRecipeType(recipeType);
+                }
                 world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType(), true);
 
                 Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
@@ -426,8 +438,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         }
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
         MachineType type = MachineType.get(itemstack);
 
@@ -447,68 +460,64 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         } else if (type == MachineType.FLUID_TANK && getBucketMode(itemstack)) {
             if (SecurityUtils.canAccess(entityplayer, itemstack)) {
                 RayTraceResult pos = rayTrace(world, entityplayer, !entityplayer.isSneaking());
+                //It can be null if there is nothing in range
+                if (pos != null && pos.typeOfHit == RayTraceResult.Type.BLOCK) {
+                    Coord4D coord = new Coord4D(pos.getBlockPos(), world);
 
-                if (pos == null) {
-                    return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-                } else {
-                    if (pos.typeOfHit == RayTraceResult.Type.BLOCK) {
-                        Coord4D coord = new Coord4D(pos.getBlockPos(), world);
+                    if (!world.provider.canMineBlock(entityplayer, coord.getPos())) {
+                        return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                    }
 
-                        if (!world.provider.canMineBlock(entityplayer, coord.getPos())) {
+                    if (!entityplayer.isSneaking()) {
+                        if (!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack)) {
                             return new ActionResult<>(EnumActionResult.FAIL, itemstack);
                         }
 
-                        if (!entityplayer.isSneaking()) {
-                            if (!entityplayer.canPlayerEdit(coord.getPos(), pos.sideHit, itemstack)) {
+                        FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
+
+                        if (fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack)
+                              .isFluidEqual(fluid))) {
+                            int needed = getCapacity(itemstack) - (getFluidStack(itemstack) != null ? getFluidStack(
+                                  itemstack).amount : 0);
+
+                            if (fluid.amount > needed) {
                                 return new ActionResult<>(EnumActionResult.FAIL, itemstack);
                             }
 
-                            FluidStack fluid = MekanismUtils.getFluid(world, coord, false);
-
-                            if (fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack)
-                                  .isFluidEqual(fluid))) {
-                                int needed = getCapacity(itemstack) - (getFluidStack(itemstack) != null ? getFluidStack(
-                                      itemstack).amount : 0);
-
-                                if (fluid.amount > needed) {
-                                    return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-                                }
-
-                                if (getFluidStack(itemstack) == null) {
-                                    setFluidStack(fluid, itemstack);
-                                } else {
-                                    FluidStack newStack = getFluidStack(itemstack);
-                                    newStack.amount += fluid.amount;
-                                    setFluidStack(newStack, itemstack);
-                                }
-
-                                world.setBlockToAir(coord.getPos());
-                            }
-                        } else {
-                            FluidStack stored = getFluidStack(itemstack);
-
-                            if (stored == null || stored.amount < Fluid.BUCKET_VOLUME) {
-                                return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                            if (getFluidStack(itemstack) == null) {
+                                setFluidStack(fluid, itemstack);
+                            } else {
+                                FluidStack newStack = getFluidStack(itemstack);
+                                newStack.amount += fluid.amount;
+                                setFluidStack(newStack, itemstack);
                             }
 
-                            Coord4D trans = coord.offset(pos.sideHit);
+                            world.setBlockToAir(coord.getPos());
+                        }
+                    } else {
+                        FluidStack stored = getFluidStack(itemstack);
 
-                            if (!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack)) {
-                                return new ActionResult<>(EnumActionResult.FAIL, itemstack);
-                            }
+                        if (stored == null || stored.amount < Fluid.BUCKET_VOLUME) {
+                            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                        }
 
-                            if (tryPlaceContainedLiquid(world, itemstack, trans.getPos())
-                                  && !entityplayer.capabilities.isCreativeMode) {
-                                FluidStack newStack = stored.copy();
-                                newStack.amount -= Fluid.BUCKET_VOLUME;
+                        Coord4D trans = coord.offset(pos.sideHit);
 
-                                setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
-                            }
+                        if (!entityplayer.canPlayerEdit(trans.getPos(), pos.sideHit, itemstack)) {
+                            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
+                        }
+
+                        if (tryPlaceContainedLiquid(world, itemstack, trans.getPos())
+                              && !entityplayer.capabilities.isCreativeMode) {
+                            FluidStack newStack = stored.copy();
+                            newStack.amount -= Fluid.BUCKET_VOLUME;
+
+                            setFluidStack(newStack.amount > 0 ? newStack : null, itemstack);
                         }
                     }
-
-                    return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
                 }
+
+                return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
             } else {
                 SecurityUtils.displayNoAccess(entityplayer);
             }
@@ -524,6 +533,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         }
 
         return itemStack.getTagCompound().getInteger("recipeType");
+    }
+
+    @Nullable
+    @Override
+    public RecipeType getRecipeTypeOrNull(ItemStack itemStack) {
+        int recipeType = getRecipeType(itemStack);
+        if (recipeType < RecipeType.values().length) {
+            return RecipeType.values()[recipeType];
+        }
+        return null;
     }
 
     @Override
@@ -624,9 +643,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
         if (machineType.isFactory()) {
             // 200*tier.processes*recipeType.getEnergyUsage(); // From TileEntityFactory
-            RecipeType recipeType = RecipeType.values()[getRecipeType(itemStack)];
+            RecipeType recipeType = getRecipeTypeOrNull(itemStack);
             int tierProcess = machineType.factoryTier.processes;
-            double baseMaxEnergy = 200 * tierProcess * recipeType.getEnergyUsage();
+            double baseMaxEnergy = 200 * tierProcess * (recipeType == null ? 1 : recipeType.getEnergyUsage());
 
             return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
         }
@@ -833,7 +852,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         return new ItemCapabilityWrapper(stack, new TeslaItemWrapper(), new ForgeEnergyItemWrapper(),
               new FluidItemWrapper()) {
             @Override
-            public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+            public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
                 if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY) {
                     return MachineType.get(itemStack) == MachineType.FLUID_TANK;
                 }

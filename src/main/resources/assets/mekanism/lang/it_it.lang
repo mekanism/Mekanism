@@ -794,9 +794,6 @@ reactor.depleted.desc=Il reattore non ha carburante sufficiente per sostenere un
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
-# NEI stuff -maybe will be added-
-# nei.chemicalInjectionChamber=C. Injection Chamber
-
 #############
 # GENERATORS
 #############

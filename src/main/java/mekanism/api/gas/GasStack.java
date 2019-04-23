@@ -44,7 +44,7 @@ public class GasStack {
      * @return GasStack stored in the tag compound
      */
     public static GasStack readFromNBT(NBTTagCompound nbtTags) {
-        if (nbtTags == null || nbtTags.hasNoTags()) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
         }
 

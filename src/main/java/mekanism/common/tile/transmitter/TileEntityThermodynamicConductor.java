@@ -2,6 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
@@ -9,9 +10,8 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.ConductorTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.ConductorTier;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -23,10 +23,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork> implements
+public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork, Void> implements
       IHeatTransfer {
 
-    public Tier.ConductorTier tier = Tier.ConductorTier.BASIC;
+    public ConductorTier tier = ConductorTier.BASIC;
 
     public double temperature = 0;
     public double clientTemperature = 0;
@@ -39,7 +39,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.ConductorTier.get(baseTier);
+        tier = ConductorTier.get(baseTier);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public Object getBuffer() {
+    public Void getBuffer() {
         return null;
     }
 
@@ -97,10 +97,11 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
         temperature = nbtTags.getDouble("temperature");
         if (nbtTags.hasKey("tier")) {
-            tier = Tier.ConductorTier.values()[nbtTags.getInteger("tier")];
+            tier = ConductorTier.values()[nbtTags.getInteger("tier")];
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -149,7 +150,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     public ColourRGBA getBaseColour() {
-        return tier.baseColour;
+        return tier.getBaseColour();
     }
 
     @Override
@@ -209,14 +210,14 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

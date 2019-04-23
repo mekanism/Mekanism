@@ -2,12 +2,13 @@ package mekanism.common.block;
 
 import java.util.Random;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.render.particle.MekanismParticleHelper;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IFactory;
@@ -31,6 +32,7 @@ import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMess
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityLaser;
@@ -42,6 +44,7 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -54,13 +57,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -75,6 +79,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
@@ -124,13 +129,15 @@ public abstract class BlockMachine extends BlockContainer {
 
     public abstract MachineBlock getMachineBlock();
 
+    @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateMachine(this, getTypeProperty());
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         MachineType type = MachineType.get(getMachineBlock(), meta & 0xF);
 
@@ -143,9 +150,10 @@ public abstract class BlockMachine extends BlockContainer {
         return type.meta;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
@@ -161,7 +169,7 @@ public abstract class BlockMachine extends BlockContainer {
         }
 
         if (tile instanceof TileEntityFactory) {
-            state = state.withProperty(BlockStateMachine.recipeProperty, ((TileEntityFactory) tile).recipeType);
+            state = state.withProperty(BlockStateMachine.recipeProperty, ((TileEntityFactory) tile).getRecipeType());
         }
 
         return state;
@@ -205,7 +213,7 @@ public abstract class BlockMachine extends BlockContainer {
         }
 
         tileEntity.setFacing((short) change);
-        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
+        tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
 
         if (tileEntity instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tileEntity;
@@ -214,7 +222,7 @@ public abstract class BlockMachine extends BlockContainer {
                 for (EnumFacing dir : EnumFacing.VALUES) {
                     TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(world);
 
-                    if (tile instanceof IInventory) {
+                    if (InventoryUtils.isItemHandler(tile, dir)) {
                         tileEntity.setFacing((short) dir.getOpposite().ordinal());
                         break;
                     }
@@ -228,7 +236,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
 
         if (tileEntity instanceof IBoundingBlock) {
@@ -250,7 +258,7 @@ public abstract class BlockMachine extends BlockContainer {
         if (MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig
               .current().client.machineEffects.val()) {
             float xRandom = (float) pos.getX() + 0.5F;
-            float yRandom = pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+            float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
@@ -296,11 +304,10 @@ public abstract class BlockMachine extends BlockContainer {
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-
-            if (tileEntity instanceof IActiveState) {
-                if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
-                    return MekanismConfig.current().client.ambientLightingLevel.val();
-                }
+            if (tileEntity instanceof IActiveState &&
+                  ((IActiveState) tileEntity).lightUpdate() &&
+                  ((IActiveState) tileEntity).wasActiveRecently()) {
+                return MekanismConfig.current().client.ambientLightingLevel.val();
             }
         }
 
@@ -321,9 +328,11 @@ public abstract class BlockMachine extends BlockContainer {
                     case ADVANCED_FACTORY:
                     case ELITE_FACTORY:
                         for (RecipeType recipe : RecipeType.values()) {
-                            ItemStack stack = new ItemStack(this, 1, type.meta);
-                            ((IFactory) stack.getItem()).setRecipeType(recipe.ordinal(), stack);
-                            list.add(stack);
+                            if (recipe.getType().isEnabled()) {
+                                ItemStack stack = new ItemStack(this, 1, type.meta);
+                                ((IFactory) stack.getItem()).setRecipeType(recipe.ordinal(), stack);
+                                list.add(stack);
+                            }
                         }
 
                         break;
@@ -377,7 +386,7 @@ public abstract class BlockMachine extends BlockContainer {
                                     for (EnumFacing dir : EnumFacing.VALUES) {
                                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
-                                        if (tile instanceof IInventory) {
+                                        if (InventoryUtils.isItemHandler(tile, dir)) {
                                             change = dir.getOpposite().ordinal();
                                             break;
                                         }
@@ -454,8 +463,8 @@ public abstract class BlockMachine extends BlockContainer {
                     if (!entityplayer.isSneaking()) {
                         UUID owner = ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
 
-                        if (MekanismUtils.isOp(entityplayer) || owner == null || entityplayer
-                              .getUniqueID().equals(owner)) {
+                        if (MekanismUtils.isOp(entityplayer) || owner == null || entityplayer.getUniqueID()
+                              .equals(owner)) {
                             entityplayer
                                   .openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
                         } else {
@@ -486,7 +495,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         int metadata = state.getBlock().getMetaFromState(state);
 
         if (MachineType.get(getMachineBlock(), metadata) == null) {
@@ -497,35 +506,40 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
+    public TileEntity createNewTileEntity(@Nonnull World world, int metadata) {
         return null;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
+    @Nonnull
     @Override
     public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return null;
+        return Items.AIR;
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @SideOnly(Side.CLIENT)
+    @Nonnull
     @Override
-    public BlockRenderLayer getBlockLayer() {
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }
 
-    @Deprecated
     @Override
-    public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos) {
+    @Deprecated
+    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
+          @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
 
         return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos)
@@ -544,8 +558,8 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
-          boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
         if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
             TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
 
@@ -563,14 +577,14 @@ public abstract class BlockMachine extends BlockContainer {
         return world.setBlockToAir(pos);
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean hasComparatorInputOverride(IBlockState state) {
         return true;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
@@ -685,8 +699,8 @@ public abstract class BlockMachine extends BlockContainer {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         if (!world.isRemote) {
@@ -703,7 +717,7 @@ public abstract class BlockMachine extends BlockContainer {
                     for (EnumFacing dir : EnumFacing.VALUES) {
                         TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
-                        if (tile instanceof IInventory) {
+                        if (InventoryUtils.isItemHandler(tile, dir)) {
                             sorter.setFacing((short) dir.getOpposite().ordinal());
                             return;
                         }
@@ -713,9 +727,10 @@ public abstract class BlockMachine extends BlockContainer {
         }
     }
 
+    @Nonnull
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
-          EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
@@ -774,7 +789,7 @@ public abstract class BlockMachine extends BlockContainer {
 
         if (tileEntity instanceof TileEntityFactory) {
             IFactory factoryItem = (IFactory) itemStack.getItem();
-            factoryItem.setRecipeType(((TileEntityFactory) tileEntity).recipeType.ordinal(), itemStack);
+            factoryItem.setRecipeType(((TileEntityFactory) tileEntity).getRecipeType().ordinal(), itemStack);
         }
 
         //this MUST be done after the factory info is saved, as it caps the energy to max, which is based on the recipe type
@@ -795,15 +810,26 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public boolean addHitEffects(IBlockState state, World world, RayTraceResult target, ParticleManager manager) {
+        if (!target.typeOfHit.equals(Type.BLOCK)) {
+            return super.addHitEffects(state, world, target, manager);
+        }
+        MachineType type = state.getValue(getTypeProperty());
+        //If it is one of the types that block state won't have a color for
+        if (type == MachineType.FLUID_TANK) {
+            if (MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager)) {
+                return true;
+            }
+        }
+        return super.addHitEffects(state, world, target, manager);
+    }
+
+    @Override
     public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
-        switch (type) {
-            case LASER_AMPLIFIER:
-                return true;
-            default:
-                return false;
-        }
+        return type == MachineType.LASER_AMPLIFIER;
     }
 
     public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
@@ -826,8 +852,9 @@ public abstract class BlockMachine extends BlockContainer {
         return itemStack;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
@@ -856,15 +883,15 @@ public abstract class BlockMachine extends BlockContainer {
         }
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
-    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    @Deprecated
+    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         MachineType type = MachineType.get(getMachineBlock(), state.getBlock().getMetaFromState(state));
 
         switch (type) {
@@ -883,7 +910,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
-    public EnumFacing[] getValidRotations(World world, BlockPos pos) {
+    public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         EnumFacing[] valid = new EnumFacing[6];
 
@@ -901,7 +928,7 @@ public abstract class BlockMachine extends BlockContainer {
     }
 
     @Override
-    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
+    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEntityBasicBlock) {
@@ -916,8 +943,8 @@ public abstract class BlockMachine extends BlockContainer {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 

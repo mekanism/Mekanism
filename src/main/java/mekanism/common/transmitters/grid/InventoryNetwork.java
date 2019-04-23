@@ -6,19 +6,19 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransporterStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
-public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork> {
+public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
 
     public InventoryNetwork() {
     }
@@ -34,11 +34,11 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
         register();
     }
 
-    public List<AcceptorData> calculateAcceptors(TransitRequest request, EnumColor color) {
+    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack) {
         List<AcceptorData> toReturn = new ArrayList<>();
 
         for (Coord4D coord : possibleAcceptors.keySet()) {
-            if (coord == null) {
+            if (coord == null || coord.equals(stack.homeLocation)) {
                 continue;
             }
 
@@ -53,7 +53,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
             for (EnumFacing side : sides) {
                 TransitResponse response = TransporterManager
-                      .getPredictedInsert(acceptor, color, request, side.getOpposite());
+                      .getPredictedInsert(acceptor, stack.color, request, side.getOpposite());
 
                 if (!response.isEmpty()) {
                     if (data == null) {
@@ -82,7 +82,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<TileEntity, InventoryNetwork> transmitter) {
+    public void absorbBuffer(IGridTransmitter<TileEntity, InventoryNetwork, Void> transmitter) {
     }
 
     @Override

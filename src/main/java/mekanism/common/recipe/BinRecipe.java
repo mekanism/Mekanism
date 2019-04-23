@@ -1,7 +1,8 @@
 package mekanism.common.recipe;
 
+import javax.annotation.Nonnull;
 import mekanism.common.MekanismItems;
-import mekanism.common.Tier.BinTier;
+import mekanism.common.tier.BinTier;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemProxy;
@@ -32,7 +33,7 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
     }
 
     @Override
-    public boolean matches(InventoryCrafting inv, World world) {
+    public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
         return !getCraftingResult(inv).isEmpty();
     }
 
@@ -44,8 +45,9 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
         return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
     }
 
+    @Nonnull
     @Override
-    public ItemStack getCraftingResult(InventoryCrafting inv) {
+    public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
         return getResult(inv);
     }
 
@@ -99,11 +101,13 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
         }
     }
 
+    @Nonnull
     @Override
     public ItemStack getRecipeOutput() {
         return ItemStack.EMPTY;
     }
 
+    @Nonnull
     @Override
     public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);

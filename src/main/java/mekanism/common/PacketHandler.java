@@ -3,8 +3,8 @@ package mekanism.common;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Range4D;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketBoxBlacklist;
@@ -80,7 +80,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -182,16 +181,6 @@ public class PacketHandler {
 
     public static void handlePacket(Runnable runnable, EntityPlayer player) {
         Mekanism.proxy.handlePacket(runnable, player);
-    }
-
-    @NotNull
-    public static UUID readUUID(ByteBuf dataStream) {
-        return new UUID(dataStream.readLong(), dataStream.readLong());
-    }
-
-    public static void writeUUID(ByteBuf dataStream, UUID uuid) {
-        dataStream.writeLong(uuid.getMostSignificantBits());
-        dataStream.writeLong(uuid.getLeastSignificantBits());
     }
 
     public void initialize() {
@@ -307,7 +296,7 @@ public class PacketHandler {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
         if (server != null && cuboid != null) {
-            for (EntityPlayerMP player : (List<EntityPlayerMP>) server.getPlayerList().getPlayers()) {
+            for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == dimId && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ))) {
                     sendTo(message, player);
                 }
@@ -319,11 +308,21 @@ public class PacketHandler {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
         if (server != null) {
-            for (EntityPlayerMP player : (List<EntityPlayerMP>) server.getPlayerList().getPlayers()) {
+            for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range)) {
                     sendTo(message, player);
                 }
             }
         }
+    }
+
+    @Nonnull
+    public static UUID readUUID(ByteBuf dataStream) {
+        return new UUID(dataStream.readLong(), dataStream.readLong());
+    }
+
+    public static void writeUUID(ByteBuf dataStream, UUID uuid) {
+        dataStream.writeLong(uuid.getMostSignificantBits());
+        dataStream.writeLong(uuid.getLeastSignificantBits());
     }
 }

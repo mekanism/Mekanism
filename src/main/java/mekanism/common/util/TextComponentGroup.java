@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import javax.annotation.Nonnull;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -19,11 +20,13 @@ public class TextComponentGroup extends TextComponentString {
         getStyle().setColor(color);
     }
 
+    @Nonnull
     @Override
     public String getUnformattedComponentText() {
         return "";
     }
 
+    @Nonnull
     @Override
     public TextComponentGroup createCopy() {
         TextComponentGroup textcomponentstring = new TextComponentGroup();

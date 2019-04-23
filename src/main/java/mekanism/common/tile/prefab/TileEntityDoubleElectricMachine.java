@@ -1,14 +1,10 @@
 package mekanism.common.tile.prefab;
 
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Upgrade;
-import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.DoubleMachineInput;
 import mekanism.common.recipe.machines.DoubleMachineRecipe;
@@ -25,7 +21,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 
 public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachineRecipe<RECIPE>> extends
-      TileEntityBasicMachine<DoubleMachineInput, ItemStackOutput, RECIPE> implements ITierUpgradeable {
+      TileEntityUpgradeableMachine<DoubleMachineInput, ItemStackOutput, RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
           "getMaxEnergy", "getEnergyNeeded"};
@@ -64,67 +60,13 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     }
 
     @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier != BaseTier.BASIC) {
-            return false;
-        }
-
-        world.setBlockToAir(getPos());
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
-
-        TileEntityFactory factory = (TileEntityFactory) world.getTileEntity(getPos());
-        RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-
-        //Basic
-        factory.facing = facing;
-        factory.clientFacing = clientFacing;
-        factory.ticker = ticker;
-        factory.redstone = redstone;
-        factory.redstoneLastTick = redstoneLastTick;
-        factory.doAutoSync = doAutoSync;
-
-        //Electric
-        factory.electricityStored = electricityStored;
-
-        //Noisy
-        factory.soundURL = soundURL;
-
-        //Machine
-        factory.progress[0] = operatingTicks;
-        factory.updateDelay = updateDelay;
-        factory.isActive = isActive;
-        factory.clientActive = clientActive;
-        factory.controlType = controlType;
-        factory.prevEnergy = prevEnergy;
-        factory.upgradeComponent.readFrom(upgradeComponent);
-        factory.upgradeComponent.setUpgradeSlot(0);
-        factory.ejectorComponent.readFrom(ejectorComponent);
-        factory.ejectorComponent
-              .setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-        factory.recipeType = type;
-        factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
-        factory.securityComponent.readFrom(securityComponent);
-
-        for (TransmissionType transmission : configComponent.transmissions) {
-            factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
-            factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
-        }
-
+    protected void upgradeInventory(TileEntityFactory factory) {
         //Double Machine
         factory.inventory.set(5, inventory.get(0));
         factory.inventory.set(4, inventory.get(1));
         factory.inventory.set(5 + 3, inventory.get(2));
         factory.inventory.set(1, inventory.get(3));
         factory.inventory.set(0, inventory.get(4));
-
-        for (Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgradables(upgrade);
-        }
-
-        factory.upgraded = true;
-        factory.markDirty();
-
-        return true;
     }
 
     @Override
@@ -163,7 +105,7 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 2) {
             return false;
         } else if (slotID == 4) {
@@ -218,11 +160,12 @@ public abstract class TileEntityDoubleElectricMachine<RECIPE extends DoubleMachi
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2;
+        }
 
     }
 

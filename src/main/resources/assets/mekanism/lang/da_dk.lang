@@ -912,9 +912,6 @@ reactor.depleted.desc=Reaktoren har utilstrækkelig brændstof til at vedligehol
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
-# NEI stuff
-nei.chemicalInjectionChamber=K. Injektionskammer
-
 #############
 # GENERATORS
 #############

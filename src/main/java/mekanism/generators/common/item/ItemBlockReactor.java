@@ -1,6 +1,7 @@
 package mekanism.generators.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -29,14 +30,16 @@ public class ItemBlockReactor extends ItemBlock {
         return i;
     }
 
+    @Nonnull
     @Override
-    public String getUnlocalizedName(ItemStack itemstack) {
-        return getUnlocalizedName() + "." + ReactorBlockType.get(itemstack).name;
+    public String getTranslationKey(ItemStack itemstack) {
+        return getTranslationKey() + "." + ReactorBlockType.get(itemstack).name;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
         ReactorBlockType type = ReactorBlockType.get(itemstack);
 
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {

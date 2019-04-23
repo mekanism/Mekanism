@@ -3,12 +3,12 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
@@ -19,6 +19,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -28,10 +29,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoilerData> implements IHeatTransfer {
 
-    protected static final int[] INV_SLOTS = {0, 1};
+    protected static final int[] INV_SLOTS = {0,1};
+
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering
      * fluids.
@@ -208,21 +211,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             data.add(structure.temperature);
             data.add(structure.lastMaxBoil);
 
-            if (structure.waterStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.waterStored));
-                data.add(structure.waterStored.amount);
-            } else {
-                data.add(0);
-            }
-
-            if (structure.steamStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.steamStored));
-                data.add(structure.steamStored.amount);
-            } else {
-                data.add(0);
-            }
+            TileUtils.addFluidStack(data, structure.waterStored);
+            TileUtils.addFluidStack(data, structure.steamStored);
 
             structure.upperRenderLocation.write(data);
 
@@ -279,19 +269,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.temperature = dataStream.readDouble();
                 structure.lastMaxBoil = dataStream.readInt();
 
-                if (dataStream.readInt() == 1) {
-                    structure.waterStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.waterStored = null;
-                }
-
-                if (dataStream.readInt() == 1) {
-                    structure.steamStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.steamStored = null;
-                }
+                structure.waterStored = TileUtils.readFluidStack(dataStream);
+                structure.steamStored = TileUtils.readFluidStack(dataStream);
 
                 structure.upperRenderLocation = Coord4D.read(dataStream);
 
@@ -306,7 +285,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     for (int i = 0; i < size; i++) {
                         ValveData data = new ValveData();
                         data.location = Coord4D.read(dataStream);
-                        data.side = EnumFacing.getFront(dataStream.readInt());
+                        data.side = EnumFacing.byIndex(dataStream.readInt());
 
                         valveViewing.add(data);
 
@@ -363,27 +342,38 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return null;
     }
 
+    //TODO: Decide if heat capability should be moved to valve only
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);
     }
 
     @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Nonnull
+    @Override
     public String getName() {
         return LangUtils.localize("gui.thermoelectricBoiler");
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
     }
 }

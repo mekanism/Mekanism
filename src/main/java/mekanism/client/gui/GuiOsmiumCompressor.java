@@ -9,8 +9,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiOsmiumCompressor extends GuiAdvancedElectricMachine {
 
-    public GuiOsmiumCompressor(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tentity) {
-        super(inventory, tentity);
+    public GuiOsmiumCompressor(InventoryPlayer inventory, TileEntityAdvancedElectricMachine tile) {
+        super(inventory, tile);
     }
 
     @Override

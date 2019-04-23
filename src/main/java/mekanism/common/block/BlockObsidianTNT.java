@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityObsidianTNT;
 import net.minecraft.block.Block;
@@ -25,7 +26,7 @@ public class BlockObsidianTNT extends Block {
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
         super.breakBlock(world, pos, state);
 
         world.removeTileEntity(pos);
@@ -35,24 +36,24 @@ public class BlockObsidianTNT extends Block {
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
         super.onBlockAdded(world, pos, state);
 
-        if (world.isBlockIndirectlyGettingPowered(pos) > 0) {
+        if (world.getRedstonePowerFromNeighbors(pos) > 0) {
             explode(world, pos);
             world.setBlockToAir(pos);
         }
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
-        if (world.isBlockIndirectlyGettingPowered(pos) > 0) {
+        if (world.getRedstonePowerFromNeighbors(pos) > 0) {
             explode(world, pos);
             world.setBlockToAir(pos);
         }
     }
 
     @Override
-    public void onBlockDestroyedByExplosion(World world, BlockPos pos, Explosion explosion) {
+    public void onExplosionDestroy(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
         if (!world.isRemote) {
             EntityObsidianTNT entity = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY() + 0.5F,
                   pos.getZ() + 0.5F);
@@ -90,14 +91,14 @@ public class BlockObsidianTNT extends Block {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (entity instanceof EntityArrow && !world.isRemote) {
             EntityArrow entityarrow = (EntityArrow) entity;
 

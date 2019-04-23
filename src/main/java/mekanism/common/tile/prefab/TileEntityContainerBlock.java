@@ -5,7 +5,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ItemHandlerWrapper;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.capabilities.IToggleableCapability;
 import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -25,7 +25,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory,
-      ISustainedInventory, ITickable {
+      ISustainedInventory, ITickable, IToggleableCapability {
 
     /**
      * The inventory slot itemstacks used by this block.
@@ -93,12 +93,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
                 byte slotID = tagCompound.getByte("Slot");
 
                 if (slotID >= 0 && slotID < getSizeInventory()) {
-                    setInventorySlotContents(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                    setInventorySlotContents(slotID, new ItemStack(tagCompound));
                 }
             }
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -131,11 +132,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         return getInventory() != null ? getInventory().size() : 0;
     }
 
+    @Nonnull
     @Override
     public ItemStack getStackInSlot(int slotID) {
         return getInventory() != null ? getInventory().get(slotID) : ItemStack.EMPTY;
     }
 
+    @Nonnull
     @Override
     public ItemStack decrStackSize(int slotID, int amount) {
         if (getInventory() == null) {
@@ -145,6 +148,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         return ItemStackHelper.getAndSplit(getInventory(), slotID, amount);
     }
 
+    @Nonnull
     @Override
     public ItemStack removeStackFromSlot(int slotID) {
         if (getInventory() == null) {
@@ -155,7 +159,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     }
 
     @Override
-    public void setInventorySlotContents(int slotID, ItemStack itemstack) {
+    public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack) {
         getInventory().set(slotID, itemstack);
 
         if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
@@ -166,14 +170,15 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer entityplayer) {
+    public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
         return !isInvalid() && this.world
               .isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
     }
 
+    @Nonnull
     @Override
     public String getName() {
-        return LangUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".name");
+        return LangUtils.localize(getBlockType().getTranslationKey() + "." + fullName + ".name");
     }
 
     @Override
@@ -182,11 +187,11 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(@Nonnull EntityPlayer player) {
     }
 
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(@Nonnull EntityPlayer player) {
     }
 
     @Override
@@ -195,23 +200,21 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         return true;
     }
-	/*{
-		return InventoryUtils.EMPTY;
-	}*/
 
     @Override
-    public boolean canInsertItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return isItemValidForSlot(slotID, itemstack);
     }
 
+    @Nonnull
     @Override
-    public abstract int[] getSlotsForFace(EnumFacing side);
+    public abstract int[] getSlotsForFace(@Nonnull EnumFacing side);
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return true;
     }
 
@@ -224,11 +227,11 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 
         for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
-            NBTTagCompound tagCompound = (NBTTagCompound) nbtTags.getCompoundTagAt(slots);
+            NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
     }
@@ -276,25 +279,32 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     public void clear() {
     }
 
+    @Nonnull
     @Override
     public ITextComponent getDisplayName() {
         return new TextComponentString(getName());
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (facing == null) {
-                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(nullHandler);
-            }
-            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(itemManager.getWrapper(this, facing));
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
         }
 
         return super.getCapability(capability, facing);
+    }
+
+    protected IItemHandler getItemHandler(EnumFacing side) {
+        return side == null ? nullHandler : itemManager.getWrapper(this, side);
     }
 }

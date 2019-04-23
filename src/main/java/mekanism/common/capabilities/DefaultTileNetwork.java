@@ -1,8 +1,8 @@
 package mekanism.common.capabilities;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.TileNetworkList;
 import mekanism.common.base.ITileNetwork;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -13,7 +13,7 @@ public class DefaultTileNetwork implements ITileNetwork {
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
+    public void handlePacketData(ByteBuf dataStream) {
     }
 
     @Override

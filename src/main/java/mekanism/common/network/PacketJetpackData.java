@@ -1,6 +1,8 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -18,35 +20,34 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
     @Override
     public IMessage onMessage(JetpackDataMessage message, MessageContext context) {
+        // Queue up the processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
+        PacketHandler.handlePacket(() -> {
+                  if (message.packetType == JetpackPacket.UPDATE) {
+                      Mekanism.playerState.setJetpackState(message.uuid, message.value, false);
 
-        PacketHandler.handlePacket(() ->
-        {
-            if (message.packetType == JetpackPacket.UPDATE) {
-                if (message.value) {
-                    Mekanism.jetpackOn.add(message.userId);
-                } else {
-                    Mekanism.jetpackOn.remove(message.userId);
-                }
-
-                if (!player.world.isRemote) {
-                    Mekanism.packetHandler
-                          .sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.userId, message.value),
-                                player.world.provider.getDimension());
-                }
-            } else if (message.packetType == JetpackPacket.MODE) {
-                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemJetpack) {
-                    if (!message.value) {
-                        ((ItemJetpack) stack.getItem()).incrementMode(stack);
-                    } else {
-                        ((ItemJetpack) stack.getItem()).setMode(stack, JetpackMode.DISABLED);
-                    }
-                }
-            }
-        }, player);
-
+                      // If we got this packet on the server, propagate it out to all players in the same
+                      // dimension
+                      // TODO: Why is this a dimensional thing?!
+                      if (!player.world.isRemote) {
+                          Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+                      }
+                  } else if (message.packetType == JetpackPacket.MODE) {
+                      // Use has changed the mode of their jetpack; update it
+                      ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+                      if (!stack.isEmpty() && stack.getItem() instanceof ItemJetpack) {
+                          if (!message.value) {
+                              ((ItemJetpack) stack.getItem()).incrementMode(stack);
+                          } else {
+                              ((ItemJetpack) stack.getItem()).setMode(stack, JetpackMode.DISABLED);
+                          }
+                      }
+                  } else if (message.packetType == JetpackPacket.FULL) {
+                      // This is a full sync; merge it into our player state
+                      Mekanism.playerState.setActiveJetpacks(message.activeJetpacks);
+                  }
+              },
+              player);
         return null;
     }
 
@@ -58,21 +59,37 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
     public static class JetpackDataMessage implements IMessage {
 
-        public JetpackPacket packetType;
+        protected JetpackPacket packetType;
 
-        public UUID userId;
-        public boolean value;
+        protected Set<UUID> activeJetpacks;
+
+        protected UUID uuid;
+        protected boolean value;
 
         public JetpackDataMessage() {
         }
 
-        public JetpackDataMessage(JetpackPacket type, UUID name, boolean state) {
+        public JetpackDataMessage(JetpackPacket type) {
             packetType = type;
-            value = state;
+        }
 
-            if (packetType == JetpackPacket.UPDATE) {
-                userId = name;
-            }
+        public static JetpackDataMessage MODE_CHANGE(boolean change) {
+            JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.MODE);
+            m.value = change;
+            return m;
+        }
+
+        public static JetpackDataMessage UPDATE(UUID uuid, boolean state) {
+            JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.UPDATE);
+            m.uuid = uuid;
+            m.value = state;
+            return m;
+        }
+
+        public static JetpackDataMessage FULL(Set<UUID> activeNames) {
+            JetpackDataMessage m = new JetpackDataMessage(JetpackPacket.FULL);
+            m.activeJetpacks = activeNames;
+            return m;
         }
 
         @Override
@@ -82,15 +99,12 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
             if (packetType == JetpackPacket.MODE) {
                 dataStream.writeBoolean(value);
             } else if (packetType == JetpackPacket.UPDATE) {
-                PacketHandler.writeUUID(dataStream, userId);
+                PacketHandler.writeUUID(dataStream, uuid);
                 dataStream.writeBoolean(value);
             } else if (packetType == JetpackPacket.FULL) {
-                dataStream.writeInt(Mekanism.jetpackOn.size());
-
-                synchronized (Mekanism.jetpackOn) {
-                    for (UUID uuid : Mekanism.jetpackOn) {
-                        PacketHandler.writeUUID(dataStream, uuid);
-                    }
+                dataStream.writeInt(activeJetpacks.size());
+                for (UUID uuid : activeJetpacks) {
+                    PacketHandler.writeUUID(dataStream, uuid);
                 }
             }
         }
@@ -102,15 +116,14 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
             if (packetType == JetpackPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == JetpackPacket.UPDATE) {
-                userId = PacketHandler.readUUID(dataStream);
+                uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();
             } else if (packetType == JetpackPacket.FULL) {
-                Mekanism.jetpackOn.clear();
+                activeJetpacks = new HashSet<>();
 
                 int amount = dataStream.readInt();
-
                 for (int i = 0; i < amount; i++) {
-                    Mekanism.jetpackOn.add(PacketHandler.readUUID(dataStream));
+                    activeJetpacks.add(PacketHandler.readUUID(dataStream));
                 }
             }
         }

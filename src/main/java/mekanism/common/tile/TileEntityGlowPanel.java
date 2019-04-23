@@ -1,11 +1,12 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -42,8 +43,8 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
     }
 
     @Override
-    public void handlePacketData(ByteBuf dataStream) throws Exception {
-        side = EnumFacing.getFront(dataStream.readInt());
+    public void handlePacketData(ByteBuf dataStream) {
+        side = EnumFacing.byIndex(dataStream.readInt());
         colour = EnumColor.DYES[dataStream.readInt()];
 
         MekanismUtils.updateBlock(world, pos);
@@ -70,6 +71,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
@@ -80,6 +82,7 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
         return nbt;
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound getUpdateTag() {
         return writeToNBT(new NBTTagCompound());
@@ -89,19 +92,19 @@ public class TileEntityGlowPanel extends TileEntity implements ITileNetwork {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
 
-        side = EnumFacing.getFront(nbt.getInteger("side"));
+        side = EnumFacing.byIndex(nbt.getInteger("side"));
         colour = EnumColor.DYES[nbt.getInteger("colour")];
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return (T) this;
+            return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, facing);
     }

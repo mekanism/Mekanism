@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -23,7 +25,6 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
 
@@ -36,13 +37,13 @@ public final class TransporterPathfinder {
             return paths;
         }
 
-        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack.color);
+        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack);
 
         for (AcceptorData entry : acceptors) {
             DestChecker checker = new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, EnumFacing dir, TileEntity tile) {
-                    return InventoryUtils.canInsert(tile, stack.color, entry.response.stack, dir, false);
+                    return InventoryUtils.canInsert(tile, stack.color, entry.response.getStack(), dir, false);
                 }
             };
 
@@ -79,7 +80,7 @@ public final class TransporterPathfinder {
 
     public static Destination getPath(DestChecker checker, EnumSet<EnumFacing> sides, ILogisticalTransporter start,
           Coord4D dest, TransporterStack stack, TransitResponse response, int min) {
-        if (response.stack.getCount() >= min) {
+        if (response.getStack().getCount() >= min) {
             List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
 
             if (test != null && checkPath(start.world(), test, stack)) {
@@ -121,8 +122,7 @@ public final class TransporterPathfinder {
             }
         }
 
-        List<Destination> dests = new ArrayList<>();
-        dests.addAll(destPaths.values());
+        List<Destination> dests = new ArrayList<>(destPaths.values());
 
         Collections.sort(dests);
 
@@ -141,6 +141,10 @@ public final class TransporterPathfinder {
                 closest = dests.get(dests.size() - 1);
                 outputter.rrIndex = 0;
             }
+        }
+
+        if (closest == null) {
+            return null;
         }
 
         return closest;
@@ -333,7 +337,7 @@ public final class TransporterPathfinder {
         }
 
         @Override
-        public int compareTo(Destination dest) {
+        public int compareTo(@Nonnull Destination dest) {
             if (score < dest.score) {
                 return -1;
             } else if (score > dest.score) {
@@ -449,7 +453,9 @@ public final class TransporterPathfinder {
                     neighbors[direction.ordinal()] = neighbor;
                     TileEntity neighborEntity = neighbor.getTileEntity(worldObj);
                     neighborEntities[direction.ordinal()] = neighborEntity;
-                    if (currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction)) {
+                    if ((currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction)) ||
+                        (neighbor.equals(finalNode) && destChecker
+                          .isValid(transportStack, direction, neighborEntities[direction.ordinal()]))) {
                         directionsToCheck.add(direction);
                     }
                 }

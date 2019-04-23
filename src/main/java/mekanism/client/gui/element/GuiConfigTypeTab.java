@@ -7,7 +7,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -15,16 +14,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiConfigTypeTab extends GuiElement {
 
-    public TransmissionType transmission;
-    public boolean visible;
-    public boolean left;
-    private TileEntity tileEntity;
+    private final TransmissionType transmission;
+    private boolean visible;
+    private boolean left;
     private int yPos;
 
-    public GuiConfigTypeTab(IGuiWrapper gui, TileEntity tile, TransmissionType type, ResourceLocation def) {
+    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, ResourceLocation def) {
         super(getResource(type), gui, def);
-
-        tileEntity = tile;
         transmission = type;
     }
 
@@ -36,9 +32,30 @@ public class GuiConfigTypeTab extends GuiElement {
         yPos = y;
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public TransmissionType getTransmissionType() {
+        return transmission;
+    }
+
     @Override
     public Rectangle4i getBounds(int guiWidth, int guiHeight) {
         return new Rectangle4i(guiWidth + getLeftBound(false) - 4, guiHeight + yPos, 26, 26);
+    }
+
+    @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos + 4 && yAxis <= yPos + 22;
     }
 
     @Override
@@ -46,17 +63,10 @@ public class GuiConfigTypeTab extends GuiElement {
         if (!visible) {
             return;
         }
-
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth + getLeftBound(false) - 4, guiHeight + yPos, 0, left ? 0 : 26, 26, 26);
-
-        if (xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
-            guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos + 4, 26, 0, 18, 18);
-        } else {
-            guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos + 4, 26, 18, 18, 18);
-        }
-
+        guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos + 4, 26,
+              inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -65,13 +75,10 @@ public class GuiConfigTypeTab extends GuiElement {
         if (!visible) {
             return;
         }
-
         mc.renderEngine.bindTexture(RESOURCE);
-
-        if (xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
+        if (inBounds(xAxis, yAxis)) {
             displayTooltip(transmission.localize(), xAxis, yAxis);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -92,14 +99,10 @@ public class GuiConfigTypeTab extends GuiElement {
         if (!visible) {
             return;
         }
-
-        if (button == 0) {
-            if (xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos + 4
-                  && yAxis <= yPos + 22) {
-                ((GuiSideConfiguration) guiObj).currentType = transmission;
-                ((GuiSideConfiguration) guiObj).updateTabs();
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
+        if (button == 0 && inBounds(xAxis, yAxis)) {
+            ((GuiSideConfiguration) guiObj).setCurrentType(transmission);
+            ((GuiSideConfiguration) guiObj).updateTabs();
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }
 }

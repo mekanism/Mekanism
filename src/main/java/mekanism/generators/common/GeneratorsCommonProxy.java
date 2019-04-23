@@ -6,7 +6,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.util.TEFixer;
 import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
@@ -37,11 +36,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ModFixs;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -58,7 +54,7 @@ public class GeneratorsCommonProxy implements IGuiProvider {
     /**
      * Register normal tile entities
      */
-    public void registerRegularTileEntities() {
+    public void registerTileEntities() {
         registerTileEntity(TileEntityAdvancedSolarGenerator.class, "advanced_solar_generator");
         registerTileEntity(TileEntityBioGenerator.class, "bio_generator");
         registerTileEntity(TileEntityElectromagneticCoil.class, "electromagnetic_coil");
@@ -78,16 +74,12 @@ public class GeneratorsCommonProxy implements IGuiProvider {
         registerTileEntity(TileEntityTurbineValve.class, "turbine_valve");
         registerTileEntity(TileEntityTurbineVent.class, "turbine_vent");
         registerTileEntity(TileEntityWindGenerator.class, "wind_turbine");
-
-        //Fix old names to be domain specific
-        ModFixs fixes = FMLCommonHandler.instance().getDataFixer().init(MekanismGenerators.MODID, 1);
-        fixes.registerFix(FixTypes.BLOCK_ENTITY, new TEFixer.Generators());
     }
 
     /**
      * Register tile entities that have special models. Overwritten in client to register TESRs.
      */
-    public void registerSpecialTileEntities() {
+    public void registerTESRs() {
     }
 
     /**

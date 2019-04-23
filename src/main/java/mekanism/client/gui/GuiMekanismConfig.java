@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,11 +12,14 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiMekanismConfig extends GuiConfig {
 
     public GuiMekanismConfig(GuiScreen parent) {
-        super(parent, getConfigElements(), MekanismAPI.MODID, false, false, "Mekanism");
+        super(parent, getConfigElements(), Mekanism.MODID, false, false, "Mekanism");
     }
 
     private static List<IConfigElement> getConfigElements() {

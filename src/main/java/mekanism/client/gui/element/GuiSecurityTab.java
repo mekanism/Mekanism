@@ -1,5 +1,6 @@
 package mekanism.client.gui.element;
 
+import java.util.Arrays;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -15,7 +16,6 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
@@ -28,22 +28,18 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiSecurityTab extends GuiElement {
+public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
-    public boolean isItem;
-    public EnumHand currentHand;
-
-    public TileEntity tileEntity;
+    private final EnumHand currentHand;
+    private boolean isItem;
 
     public GuiSecurityTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def);
-
-        tileEntity = tile;
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def, tile);
+        this.currentHand = EnumHand.MAIN_HAND;
     }
 
     public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, EnumHand hand) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def);
-
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def, null);
         isItem = true;
         currentHand = hand;
     }
@@ -54,38 +50,32 @@ public class GuiSecurityTab extends GuiElement {
     }
 
     @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54;
+    }
+
+    @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
-
         SecurityMode mode = getSecurity();
         SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
-
         if (data != null && data.override) {
             mode = data.mode;
         }
-
         int renderX = 26 + (18 * mode.ordinal());
-
         if (getOwner() != null && getOwner().equals(mc.player.getUniqueID()) && (data == null || !data.override)) {
-            if (xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54) {
-                guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 0, 18, 18);
-            } else {
-                guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 18, 18, 18);
-            }
+            guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
         } else {
             guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 36, 18, 18);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
-
-        if (xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54) {
+        if (inBounds(xAxis, yAxis)) {
             String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT)
                   : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
             String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
@@ -94,12 +84,11 @@ public class GuiSecurityTab extends GuiElement {
 
             if (isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT)
                   : SecurityUtils.isOverridden(tileEntity, Side.CLIENT)) {
-                displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis);
+                displayTooltips(Arrays.asList(securityText, ownerText, overrideText), xAxis, yAxis);
             } else {
-                displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis);
+                displayTooltips(Arrays.asList(securityText, ownerText), xAxis, yAxis);
             }
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -109,11 +98,9 @@ public class GuiSecurityTab extends GuiElement {
                 mc.player.closeScreen();
                 return null;
             }
-
             return SecurityUtils.getFrequency(getOwner());
-        } else {
-            return ((ISecurityTile) tileEntity).getSecurity().getFrequency();
         }
+        return ((ISecurityTile) tileEntity).getSecurity().getFrequency();
     }
 
     private SecurityMode getSecurity() {
@@ -139,11 +126,9 @@ public class GuiSecurityTab extends GuiElement {
                 mc.player.closeScreen();
                 return null;
             }
-
             return ((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem());
-        } else {
-            return ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
         }
+        return ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
     }
 
     private String getOwnerUsername() {
@@ -152,11 +137,9 @@ public class GuiSecurityTab extends GuiElement {
                 mc.player.closeScreen();
                 return null;
             }
-
             return MekanismClient.clientUUIDMap.get(((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem()));
-        } else {
-            return ((ISecurityTile) tileEntity).getSecurity().getClientOwner();
         }
+        return ((ISecurityTile) tileEntity).getSecurity().getClientOwner();
     }
 
     private ItemStack getItem() {
@@ -171,7 +154,7 @@ public class GuiSecurityTab extends GuiElement {
     public void mouseClicked(int xAxis, int yAxis, int button) {
         if (button == 0 && MekanismConfig.current().general.allowProtection.val()) {
             if (getOwner() != null && mc.player.getUniqueID().equals(getOwner())) {
-                if (xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54) {
+                if (inBounds(xAxis, yAxis)) {
                     SecurityMode current = getSecurity();
                     int ordinalToSet =
                           current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;

@@ -1,5 +1,6 @@
 package mekanism.common.tile.prefab;
 
+import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IElectricMachine;
@@ -47,8 +48,9 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
         return configComponent.hasSideForData(TransmissionType.ENERGY, facing, 1, side);
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
     }
 
@@ -68,16 +70,28 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return (T) this;
+            return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
+              .isCapabilityDisabled(capability, side);
     }
 }

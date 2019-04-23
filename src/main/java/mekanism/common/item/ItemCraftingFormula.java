@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -70,8 +71,9 @@ public class ItemCraftingFormula extends ItemMekanism {
         }
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
         if (player.isSneaking()) {
@@ -93,8 +95,9 @@ public class ItemCraftingFormula extends ItemMekanism {
         return getInventory(stack) != null ? 1 : 64;
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         if (getInventory(stack) == null) {
             return super.getItemStackDisplayName(stack);
         }
@@ -125,7 +128,7 @@ public class ItemCraftingFormula extends ItemMekanism {
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < 9) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
 

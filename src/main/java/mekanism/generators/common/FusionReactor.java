@@ -434,7 +434,8 @@ public class FusionReactor {
         double k = active ? caseWaterConductivity : 0;
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) / (
               MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (plasmaCaseConductivity + k
-                    + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+                    + caseAirConductivity)
+                    - plasmaCaseConductivity * (k + caseAirConductivity));
         return (int) (2 * Math.ceil(aMin / 2D));
     }
 
@@ -442,7 +443,8 @@ public class FusionReactor {
         double k = active ? caseWaterConductivity : 0;
         return
               injectionRate * MekanismConfig.current().generators.energyPerFusionFuel.val() / plasmaCaseConductivity * (
-                    plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
+                    plasmaCaseConductivity + k
+              + caseAirConductivity) / (k + caseAirConductivity);
     }
 
     public double getMaxCasingTemperature(boolean active) {
@@ -454,9 +456,11 @@ public class FusionReactor {
     public double getIgnitionTemperature(boolean active) {
         double k = active ? caseWaterConductivity : 0;
         return burnTemperature * MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (
-              plasmaCaseConductivity + k + caseAirConductivity) / (
+              plasmaCaseConductivity + k
+              + caseAirConductivity) / (
               MekanismConfig.current().generators.energyPerFusionFuel.val() * burnRatio * (plasmaCaseConductivity + k
-                    + caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+                    + caseAirConductivity)
+                    - plasmaCaseConductivity * (k + caseAirConductivity));
     }
 
     public double getPassiveGeneration(boolean active, boolean current) {

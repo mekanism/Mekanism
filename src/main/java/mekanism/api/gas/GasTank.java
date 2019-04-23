@@ -32,7 +32,7 @@ public class GasTank implements GasTankInfo {
      * @return tank stored in the tag compound
      */
     public static GasTank readFromNBT(NBTTagCompound nbtTags) {
-        if (nbtTags == null || nbtTags.hasNoTags()) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
         }
 
@@ -104,7 +104,6 @@ public class GasTank implements GasTankInfo {
      */
     public boolean canReceive(Gas gas) {
         return getNeeded() != 0 && (stored == null || (gas == null || gas == stored.getGas()));
-
     }
 
     /**
@@ -115,7 +114,6 @@ public class GasTank implements GasTankInfo {
      */
     public boolean canReceiveType(Gas gas) {
         return stored == null || (gas == null || gas == stored.getGas());
-
     }
 
     /**
@@ -127,7 +125,6 @@ public class GasTank implements GasTankInfo {
      */
     public boolean canDraw(Gas gas) {
         return stored != null && (gas == null || gas == stored.getGas());
-
     }
 
     /**
@@ -223,7 +220,8 @@ public class GasTank implements GasTankInfo {
         if (nbtTags.hasKey("stored")) {
             stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
             if (stored.amount <= 0) {
-                stored = null;//fix any old data that may be borked
+                //fix any old data that may be broken
+                stored = null;
             }
         }
 

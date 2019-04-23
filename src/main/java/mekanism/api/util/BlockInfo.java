@@ -28,7 +28,7 @@ public class BlockInfo {
     @Override
     public int hashCode() {
         int code = 1;
-        code = 31 * code + block.getUnlocalizedName().hashCode();
+        code = 31 * code + block.getTranslationKey().hashCode();
         code = 31 * code + meta;
         return code;
     }

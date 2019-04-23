@@ -3,12 +3,12 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
@@ -22,7 +22,9 @@ import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,13 +32,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState,
       ITankManager {
@@ -44,7 +49,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public static final int MAX_OUTPUT = 10000;
     public static final int MAX_SOLARS = 4;
     public static final int MAX_HEIGHT = 18;
-    private static final int[] SLOTS = {0, 1, 2, 3};
+    private static final int[] SLOTS = {0,1,2,3};
 
     public FluidTank inputTank = new FluidTank(0);
     public FluidTank outputTank = new FluidTank(MAX_OUTPUT);
@@ -231,7 +236,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     private void updateTemperature() {
         if (!temperatureSet) {
-            biomeTemp = world.getBiomeForCoordsBody(getPos()).getFloatTemperature(getPos());
+            biomeTemp = world.getBiomeForCoordsBody(getPos()).getTemperature(getPos());
             temperatureSet = true;
         }
 
@@ -279,7 +284,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         int ret = 0;
 
         for (IEvaporationSolar solar : solars) {
-            if (solar != null && solar.seesSun()) {
+            if (solar != null && solar.canSeeSun()) {
                 ret++;
             }
         }
@@ -481,19 +486,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (dataStream.readBoolean()) {
-                inputTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                      dataStream.readInt()));
-            } else {
-                inputTank.setFluid(null);
-            }
-
-            if (dataStream.readBoolean()) {
-                outputTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                      dataStream.readInt()));
-            } else {
-                outputTank.setFluid(null);
-            }
+            TileUtils.readTankData(dataStream, inputTank);
+            TileUtils.readTankData(dataStream, outputTank);
 
             structured = dataStream.readBoolean();
             controllerConflict = dataStream.readBoolean();
@@ -511,7 +505,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 MekanismUtils.updateBlock(world, getPos());
 
                 if (structured) {
-                    Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityThermalEvaporationBlock);
+                    // Calculate the two corners of the evap tower using the render location as basis (which is the
+                    // lowest rightmost corner inside the tower, relative to the controller).
+                    BlockPos corner1 = getRenderLocation().getPos().offset(facing).offset(facing.rotateYCCW()).down();
+                    BlockPos corner2 = corner1.offset(facing.getOpposite(), 3).offset(facing.rotateYCCW().getOpposite(), 3).up(height-1);
+                    // Use the corners to spin up the sparkle
+                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2,
+                          tile -> tile instanceof  TileEntityThermalEvaporationBlock);
                 }
 
                 clientStructured = structured;
@@ -522,23 +522,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
-        if (inputTank.getFluid() != null) {
-            data.add(true);
-            data.add(FluidRegistry.getFluidName(inputTank.getFluid()));
-            data.add(inputTank.getFluid().amount);
-        } else {
-            data.add(false);
-        }
-
-        if (outputTank.getFluid() != null) {
-            data.add(true);
-            data.add(FluidRegistry.getFluidName(outputTank.getFluid()));
-            data.add(outputTank.getFluid().amount);
-        } else {
-            data.add(false);
-        }
-
+        TileUtils.addTankData(data, inputTank);
+        TileUtils.addTankData(data, outputTank);
         data.add(structured);
         data.add(controllerConflict);
         data.add(getActiveSolars());
@@ -566,6 +551,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         partialOutput = nbtTags.getDouble("partialBrine");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -604,6 +590,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         solars = new IEvaporationSolar[]{null, null, null, null};
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
@@ -634,8 +621,30 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return new Object[]{inputTank, outputTank};
     }
 
+    //TODO: Move getSlotsForFace, isItemValidForSlot, and isCapabilityDisabled to Valve
+    //NOTE: For now it has to be in the controller as it uses the old multiblock structure so the valve's don't actually
+    //have an inventory, which causes a crash trying to insert into them
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return SLOTS;
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return getController() == null ? InventoryUtils.EMPTY : SLOTS;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        if (slot == 0) {
+            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack) != null;
+        } else if (slot == 2) {
+            return FluidContainerUtils.isFluidContainer(stack) && FluidUtil.getFluidContained(stack) == null;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return false;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

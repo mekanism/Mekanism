@@ -3,7 +3,6 @@ package mekanism.common.recipe.inputs;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.common.InfuseStorage;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,7 +25,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
     public ItemStack inputStack = ItemStack.EMPTY;
 
     public InfusionInput(InfuseStorage storage, ItemStack itemStack) {
-        infuse = new InfuseStorage(storage.type, storage.amount);
+        infuse = new InfuseStorage(storage.getType(), storage.getAmount());
         inputStack = itemStack;
     }
 
@@ -40,7 +39,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        inputStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
+        inputStack = new ItemStack(nbtTags.getCompoundTag("input"));
         InfuseType type = InfuseRegistry.get(nbtTags.getString("infuseType"));
         int amount = nbtTags.getInteger("infuseAmount");
         infuse = new InfuseStorage(type, amount);
@@ -48,12 +47,12 @@ public class InfusionInput extends MachineInput<InfusionInput> {
 
     @Override
     public InfusionInput copy() {
-        return new InfusionInput(infuse.type, infuse.amount, inputStack.copy());
+        return new InfusionInput(infuse.getType(), infuse.getAmount(), inputStack.copy());
     }
 
     @Override
     public boolean isValid() {
-        return infuse.type != null && !inputStack.isEmpty();
+        return infuse.getType() != null && !inputStack.isEmpty();
     }
 
     public boolean use(NonNullList<ItemStack> inventory, int index, InfuseStorage infuseStorage, boolean deplete) {
@@ -71,7 +70,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
 
     @Override
     public int hashIngredients() {
-        return infuse.type.unlocalizedName.hashCode() << 8 | StackUtils.hashItemStack(inputStack);
+        return infuse.getType().unlocalizedName.hashCode() << 8 | StackUtils.hashItemStack(inputStack);
     }
 
     @Override
@@ -80,7 +79,7 @@ public class InfusionInput extends MachineInput<InfusionInput> {
             return !other.isValid();
         }
 
-        return infuse.type == other.infuse.type && MachineInput.inputItemMatches(inputStack, other.inputStack);
+        return infuse.getType() == other.infuse.getType() && MachineInput.inputItemMatches(inputStack, other.inputStack);
     }
 
     @Override

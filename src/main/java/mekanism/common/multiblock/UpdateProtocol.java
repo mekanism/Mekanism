@@ -64,16 +64,12 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
         if (isCorner) {
             if (isViableNode(origX + 1, origY, origZ)) {
-                xmin = 0;
-
                 while (isViableNode(origX + x + 1, origY, origZ)) {
                     x++;
                 }
 
                 xmax = x;
             } else {
-                xmax = 0;
-
                 while (isViableNode(origX + x - 1, origY, origZ)) {
                     x--;
                 }

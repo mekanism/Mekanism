@@ -2,11 +2,11 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiOredictionificator;
-import mekanism.client.gui.GuiOredictionificatorFilter;
+import mekanism.client.gui.filter.GuiOredictionificatorFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
@@ -38,8 +38,7 @@ public class PacketOredictionificatorGui implements IMessageHandler<Oredictionif
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance()
                       .getWorld(message.coord4D.dimensionId);
 
-                if (worldServer != null && message.coord4D
-                      .getTileEntity(worldServer) instanceof TileEntityOredictionificator) {
+                if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator) {
                     OredictionificatorGuiMessage
                           .openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player,
                                 message.coord4D, message.index);

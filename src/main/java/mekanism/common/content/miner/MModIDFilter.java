@@ -1,16 +1,17 @@
 package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
+import mekanism.api.TileNetworkList;
+import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.transporter.Finder.ModIDFinder;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class MModIDFilter extends MinerFilter {
+public class MModIDFilter extends MinerFilter implements IModIDFilter {
 
-    public String modID;
+    private String modID;
 
     @Override
     public boolean canFilter(ItemStack itemStack) {
@@ -74,5 +75,15 @@ public class MModIDFilter extends MinerFilter {
         filter.modID = modID;
 
         return filter;
+    }
+
+    @Override
+    public void setModID(String id) {
+        modID = id;
+    }
+
+    @Override
+    public String getModID() {
+        return modID;
     }
 }

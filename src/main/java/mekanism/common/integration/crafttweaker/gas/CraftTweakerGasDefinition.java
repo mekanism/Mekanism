@@ -12,8 +12,8 @@ public class CraftTweakerGasDefinition implements IGasDefinition {
     }
 
     @Override
-    public IGasStack asStack(int millibuckets) {
-        return new CraftTweakerGasStack(new GasStack(gas, millibuckets));
+    public IGasStack asStack(int mb) {
+        return new CraftTweakerGasStack(new GasStack(gas, mb));
     }
 
     @Override

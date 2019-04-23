@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateOre;
 import mekanism.common.block.states.BlockStateOre.EnumOreType;
@@ -25,13 +26,15 @@ public class BlockOre extends Block {
         setCreativeTab(Mekanism.tabMekanism);
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateOre(this);
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(BlockStateOre.typeProperty, EnumOreType.values()[meta]);
     }

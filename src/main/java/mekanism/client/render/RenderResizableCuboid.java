@@ -86,7 +86,7 @@ public class RenderResizableCuboid {
         if (face == null) {
             return VEC_ZERO;
         }
-        return new Vec3d(face.getFrontOffsetX(), face.getFrontOffsetY(), face.getFrontOffsetZ());
+        return new Vec3d(face.getXOffset(), face.getYOffset(), face.getZOffset());
 
     }
 

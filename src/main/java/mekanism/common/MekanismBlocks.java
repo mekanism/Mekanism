@@ -32,10 +32,11 @@ import mekanism.common.item.ItemBlockTransmitter;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("mekanism")
+@ObjectHolder(Mekanism.MODID)
 public class MekanismBlocks {
 
     public static Block BasicBlock = BlockBasic.getBlockBasic(BASIC_BLOCK_1);
@@ -47,7 +48,7 @@ public class MekanismBlocks {
     public static Block ObsidianTNT = new BlockObsidianTNT().setCreativeTab(Mekanism.tabMekanism);
     public static Block EnergyCube = new BlockEnergyCube();
     public static Block Transmitter = new BlockTransmitter();
-    public static Block BoundingBlock = (BlockBounding) new BlockBounding();
+    public static Block BoundingBlock = new BlockBounding();
     public static Block GasTank = new BlockGasTank();
     public static Block CardboardBox = new BlockCardboardBox();
     public static Block GlowPanel = new BlockGlowPanel();
@@ -116,6 +117,6 @@ public class MekanismBlocks {
     }
 
     public static Block init(Block block, String name) {
-        return block.setUnlocalizedName(name).setRegistryName("mekanism:" + name);
+        return block.setTranslationKey(name).setRegistryName(new ResourceLocation(Mekanism.MODID, name));
     }
 }

@@ -1,35 +1,47 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
+    private static final int[] SLOTS = {0};
+
     public static final float SPEED = 32F;
     public static final float SPEED_SCALED = 256F / SPEED;
-    public static final int[] SLOTS = {0};
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
+    static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
           "getMultiplier"};
-    /**
-     * The angle the blades of this Wind Turbine are currently at.
-     */
-    public double angle;
-    public float currentMultiplier;
+
+    private double angle;
+    private float currentMultiplier;
+    private boolean isBlacklistDimension = false;
 
     public TileEntityWindGenerator() {
-        super("wind", "WindGenerator", 200000, (MekanismConfig.current().generators.windGenerationMax.val()) * 2);
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+        super("wind", "WindGenerator", 200000, MekanismConfig.current().generators.windGenerationMax.val() * 2);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
+        // an initial activity status and the client (in MP) will show the windmills turning while not
+        // generating any power
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val()
+              .contains(world.provider.getDimension());
+        if (isBlacklistDimension) {
+            setActive(false);
+        }
     }
 
     @Override
@@ -39,8 +51,15 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (!world.isRemote) {
             ChargeUtils.charge(0, this);
 
+            // If we're in a blacklisted dimension, there's nothing more to do
+            if (isBlacklistDimension) {
+                return;
+            }
+
             if (ticker % 20 == 0) {
-                setActive((currentMultiplier = getMultiplier()) > 0);
+                // Recalculate the current multiplier once a second
+                currentMultiplier = getMultiplier();
+                setActive(currentMultiplier > 0);
             }
 
             if (getActive()) {
@@ -60,6 +79,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
         if (world.isRemote) {
             currentMultiplier = dataStream.readFloat();
+            isBlacklistDimension = dataStream.readBoolean();
         }
     }
 
@@ -68,6 +88,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         super.getNetworkedData(data);
 
         data.add(currentMultiplier);
+        data.add(isBlacklistDimension);
 
         return data;
     }
@@ -76,9 +97,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     public float getMultiplier() {
-        if (isInBlacklistedDimension()) {
-            return 0;
-        }
         if (world.canSeeSky(getPos().add(0, 4, 0))) {
             final float minY = (float) MekanismConfig.current().generators.windGenerationMinY.val();
             final float maxY = (float) MekanismConfig.current().generators.windGenerationMaxY.val();
@@ -95,17 +113,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         } else {
             return 0;
         }
-    }
-
-    public boolean isInBlacklistedDimension() {
-        return MekanismConfig.current().generators.windGenerationBlacklist.val()
-              .contains(world.provider.getDimension());
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public float getVolume() {
-        return 1.5F * super.getVolume();
     }
 
     @Override
@@ -143,6 +150,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 2), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 3), current);
         MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 4), current);
+
+        // Check to see if the placement is happening in a blacklisted dimension
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val()
+              .contains(world.provider.getDimension());
     }
 
     @Override
@@ -165,8 +176,26 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         return false;
     }
 
+    public float getCurrentMultiplier() {
+        return currentMultiplier;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public boolean isBlacklistDimension() {
+        return isBlacklistDimension;
+    }
+
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return sideIsOutput(side) ? InventoryUtils.EMPTY : SLOTS;
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return SLOTS;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return ChargeUtils.canBeCharged(stack);
     }
 }

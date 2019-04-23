@@ -1,5 +1,6 @@
 package mekanism.common.entity;
 
+import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -106,12 +107,12 @@ public class EntityObsidianTNT extends Entity {
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound nbtTags) {
+    protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags) {
         nbtTags.setByte("Fuse", (byte) fuse);
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound nbtTags) {
+    protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
         fuse = nbtTags.getByte("Fuse");
     }
 }

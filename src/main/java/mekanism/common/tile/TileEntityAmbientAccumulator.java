@@ -9,18 +9,20 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection {
+public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler {
 
     public static Random gasRand = new Random();
     public GasTank collectedGas = new GasTank(1000);
@@ -75,38 +77,36 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return true;
-    }
-
-    @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        if (collectedGas.getGasType() != null) {
-            data.add(collectedGas.getGasType().getID());
-            data.add(collectedGas.getStored());
-        } else {
-            data.add(-1);
-            data.add(0);
-        }
-
+        TileUtils.addTankData(data, collectedGas);
         return data;
     }
 
     @Override
     public void handlePacketData(ByteBuf data) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            int gasID = data.readInt();
-
-            if (gasID < 0) {
-                collectedGas.setGas(null);
-            } else {
-                collectedGas.setGas(new GasStack(gasID, data.readInt()));
-            }
+            TileUtils.readTankData(data, collectedGas);
         }
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    //Gas capability is never disabled here
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
+        }
+
+        return super.getCapability(capability, side);
     }
 }

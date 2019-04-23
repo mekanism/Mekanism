@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.block.state.IBlockState;
@@ -44,7 +45,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
     protected TextureAtlasSprite tempSprite = ModelLoader.White.INSTANCE;
     protected VertexFormat vertexFormat;
     protected ImmutableMap<String, TextureAtlasSprite> textureMap;
-    protected HashMap<TransformType, Matrix4f> transformationMap = new HashMap<>();
+    protected HashMap<TransformType, Matrix4f> transformationMap;
 
     public OBJBakedModelBase(IBakedModel base, OBJModel model, IModelState state, VertexFormat format,
           ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) {
@@ -75,13 +76,9 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
                         d = LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
                     }
 
-                    if (v.getMaterial() != null) {
-                        builder.put(e, d * v.getMaterial().getColor().x * color[0],
-                              d * v.getMaterial().getColor().y * color[1], d * v.getMaterial().getColor().z * color[2],
-                              v.getMaterial().getColor().w * color[3]);
-                    } else {
-                        builder.put(e, d, d, d, 1);
-                    }
+                    builder.put(e, d * v.getMaterial().getColor().x * color[0],
+                          d * v.getMaterial().getColor().y * color[1], d * v.getMaterial().getColor().z * color[2],
+                          v.getMaterial().getColor().w * color[3]);
 
                     break;
                 case UV:
@@ -124,6 +121,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
         return null;
     }
 
+    @Nonnull
     @Override
     public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand) {
         if (side != null) {
@@ -132,7 +130,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
 
         List<BakedQuad> bakedQuads = new ArrayList<>();
 
-        Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
+        Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<>());
         Optional<TRSRTransformation> transform = Optional.empty();
         Map<Face, String> groupNameMap = new HashMap<>();
 
@@ -168,8 +166,9 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
         for (Face f : faces) {
             String groupName = groupNameMap.get(f);
 
-            if (getOverrideTexture(f, groupName) != null) {
-                tempSprite = getOverrideTexture(f, groupName);
+            TextureAtlasSprite overrideTexture = getOverrideTexture(f, groupName);
+            if (overrideTexture != null) {
+                tempSprite = overrideTexture;
             } else if (getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite()) {
                 for (Vertex v : f.getVertices()) {
                     if (!v.getMaterial().equals(getModel().getMatLib().getMaterial(v.getMaterial().getName()))) {
@@ -184,8 +183,9 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
 
             float[] color = new float[]{1, 1, 1, 1};
 
-            if (getOverrideColor(f, groupName) != null) {
-                color = getOverrideColor(f, groupName);
+            float[] overrideColor = getOverrideColor(f, groupName);
+            if (overrideColor != null) {
+                color = overrideColor;
             }
 
             EnumFacing facing = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
@@ -216,9 +216,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
             bakedQuads.add(quad);
         }
 
-        List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(bakedQuads));
-
-        return quadList;
+        return bakedQuads;
     }
 
     @SuppressWarnings("deprecation")
@@ -236,6 +234,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
         }
     }
 
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleTexture() {
         return tempSprite;

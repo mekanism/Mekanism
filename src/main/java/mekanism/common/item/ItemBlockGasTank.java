@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -14,8 +15,8 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.GasTankTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
@@ -72,14 +73,15 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
         return i;
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName(ItemStack itemstack) {
+    public String getItemStackDisplayName(@Nonnull ItemStack itemstack) {
         return LangUtils.localize("tile.GasTank" + getBaseTier(itemstack).getSimpleName() + ".name");
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-          float hitX, float hitY, float hitZ, IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
         boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
 
         if (place) {
@@ -88,26 +90,22 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
             tileEntity.gasTank.setMaxGas(tileEntity.tier.getStorage());
             tileEntity.gasTank.setGas(getGas(stack));
 
-            if (tileEntity instanceof ISecurityTile) {
-                ISecurityTile security = tileEntity;
-                security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
+            ISecurityTile security = tileEntity;
+            security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
 
-                if (hasSecurity(stack)) {
-                    security.getSecurity().setMode(getSecurity(stack));
-                }
-
-                if (getOwnerUUID(stack) == null) {
-                    security.getSecurity().setOwnerUUID(player.getUniqueID());
-                }
+            if (hasSecurity(stack)) {
+                security.getSecurity().setMode(getSecurity(stack));
             }
 
-            if (tileEntity instanceof ISideConfiguration) {
-                ISideConfiguration config = tileEntity;
+            if (getOwnerUUID(stack) == null) {
+                security.getSecurity().setOwnerUUID(player.getUniqueID());
+            }
 
-                if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                    config.getConfig().read(ItemDataUtils.getDataMap(stack));
-                    config.getEjector().read(ItemDataUtils.getDataMap(stack));
-                }
+            ISideConfiguration config = tileEntity;
+
+            if (ItemDataUtils.hasData(stack, "sideDataStored")) {
+                config.getConfig().read(ItemDataUtils.getDataMap(stack));
+                config.getEjector().read(ItemDataUtils.getDataMap(stack));
             }
 
             ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
@@ -123,7 +121,8 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
 
         if (gasStack == null) {
@@ -185,7 +184,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
     }
 
     @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }
@@ -310,7 +309,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
     }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
+    public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }
 

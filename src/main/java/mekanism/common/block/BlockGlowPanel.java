@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Random;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -95,21 +96,24 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
         return 0;
     }
 
+    @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateGlowPanel(this);
     }
 
-    @Deprecated
+    @Nonnull
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
         return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
     }
 
     @SideOnly(Side.CLIENT)
+    @Nonnull
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 
         if (tileEntity != null) {
@@ -124,8 +128,8 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
         return state;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 
@@ -163,8 +167,9 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
         }
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 
@@ -176,7 +181,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side) {
+    public boolean canPlaceBlockOnSide(@Nonnull World world, @Nonnull BlockPos pos, EnumFacing side) {
         return world.isSideSolid(pos.offset(side.getOpposite()), side);
     }
 
@@ -190,16 +195,17 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
         return 0;
     }
 
+    @Nonnull
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
-          EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
         TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
         return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
-          boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
         if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
             float motion = 0.7F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -216,7 +222,7 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         return new TileEntityGlowPanel();
     }
 
@@ -225,32 +231,33 @@ public class BlockGlowPanel extends Block implements ITileEntityProvider {
         return true;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullBlock(IBlockState state) {
         return false;
     }

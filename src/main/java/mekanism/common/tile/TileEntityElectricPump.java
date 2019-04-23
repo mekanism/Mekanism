@@ -6,11 +6,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.TileNetworkList;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -32,6 +34,7 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,7 +55,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandlerWrapper, ISustainedTank,
       IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IComputerIntegration, ISecurityTile {
@@ -60,6 +62,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     private static final int[] UPSLOTS = {0};
     private static final int[] DOWNSLOTS = {1};
     private static final int[] SIDESLOTS = {2};
+
     private static final String[] methods = new String[]{"reset"};
     /**
      * This pump's tank
@@ -147,7 +150,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         if (!world.isRemote && fluidTank.getFluid() != null) {
             TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.UP).getTileEntity(world);
 
-            if (tileEntity != null && CapabilityUtils
+            if (CapabilityUtils
                   .hasCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN)) {
                 IFluidHandler handler = CapabilityUtils
                       .getCapability(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.DOWN);
@@ -163,7 +166,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     public boolean suck(boolean take) {
-        List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[recurringNodes.size()]));
+        List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[0]));
         Collections.shuffle(tempPumpList);
 
         //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
@@ -254,12 +257,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (dataStream.readInt() == 1) {
-                fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(ByteBufUtils.readUTF8String(dataStream)),
-                      dataStream.readInt()));
-            } else {
-                fluidTank.setFluid(null);
-            }
+            TileUtils.readTankData(dataStream, fluidTank);
 
             controlType = RedstoneControl.values()[dataStream.readInt()];
         }
@@ -269,19 +267,14 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        if (fluidTank.getFluid() != null) {
-            data.add(1);
-            data.add(FluidRegistry.getFluidName(fluidTank.getFluid()));
-            data.add(fluidTank.getFluid().amount);
-        } else {
-            data.add(0);
-        }
+        TileUtils.addTankData(data, fluidTank);
 
         data.add(controlType.ordinal());
 
         return data;
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -343,24 +336,23 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
-        if (slotID == 1) {
-            return false;
-        } else if (slotID == 0) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
+        if (slotID == 0) {
+            //Only allow empty fluid containers
             return FluidContainerUtils.isFluidContainer(itemstack) && FluidUtil.getFluidContained(itemstack) == null;
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
-
-        return true;
+        return false;
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 2) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 1;
+        }
 
     }
 
@@ -374,8 +366,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
         return side != 0 && side != 1;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         if (side == EnumFacing.UP) {
             return UPSLOTS;
         } else if (side == EnumFacing.DOWN) {
@@ -415,9 +408,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing
-              .getFront(1)) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()
+              && from == EnumFacing.byIndex(1)) {
             return drain(from, resource.amount, doDrain);
         }
 
@@ -425,13 +418,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         return 0;
     }
 
     @Override
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        if (from == EnumFacing.getFront(1)) {
+        if (from == EnumFacing.byIndex(1)) {
             return fluidTank.drain(maxDrain, doDrain);
         }
 
@@ -439,21 +432,22 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         return false;
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return from == EnumFacing.getFront(1);
+        return from == EnumFacing.byIndex(1);
     }
 
     @Override
     public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
         reset();
 
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
-              .localize("tooltip.configurator.pumpReset")));
+        player.sendMessage(
+              new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                    .localize("tooltip.configurator.pumpReset")));
 
         return EnumActionResult.SUCCESS;
     }
@@ -464,20 +458,20 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
               || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
-            return (T) this;
+            return Capabilities.CONFIGURABLE_CAPABILITY.cast(this);
         }
 
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (T) new FluidHandlerWrapper(this, side);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);
@@ -516,13 +510,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
     @Override
     public Object[] invoke(int method, Object[] arguments) throws Exception {
-        switch (method) {
-            case 0:
-                reset();
-                return new Object[]{"Pump calculation reset."};
-            default:
-                throw new NoSuchMethodException();
+        if (method == 0) {
+            reset();
+            return new Object[]{"Pump calculation reset."};
         }
+        throw new NoSuchMethodException();
     }
 
     @Override

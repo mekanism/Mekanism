@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import javax.annotation.Nonnull;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -10,7 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityPersonalChest extends TileEntityContainerBlock implements ISecurityTile {
 
@@ -67,12 +70,13 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         return true;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         if (side == EnumFacing.DOWN || SecurityUtils.getSecurity(this, Side.SERVER) != SecurityMode.PUBLIC) {
             return InventoryUtils.EMPTY;
         } else {
@@ -89,7 +93,20 @@ public class TileEntityPersonalChest extends TileEntityContainerBlock implements
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Still allow for the capability if it is not public. It just won't
+            // return any slots for the face. It doesn't properly sync when the state
+            // changes so the pipes stay connected/disconnected and have to be replaced.
+            // Leaving the slotsForFace to determine the ability to insert/extract in
+            // those cases fixes that issue.
+            return side == EnumFacing.DOWN;
+        }
+        return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return true;
     }
 

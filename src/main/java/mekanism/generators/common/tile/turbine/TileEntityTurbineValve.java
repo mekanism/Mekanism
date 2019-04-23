@@ -7,6 +7,7 @@ import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergyTile;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -29,7 +30,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -43,7 +43,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
           "getSteamInput"};
     public boolean ic2Registered = false;
     public TurbineFluidTank fluidTank;
-    public Fluid STEAM = FluidRegistry.getFluid("steam");
     private CapabilityWrapperManager<IEnergyWrapper, TeslaIntegration> teslaManager = new CapabilityWrapperManager<>(
           IEnergyWrapper.class, TeslaIntegration.class);
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(
@@ -90,9 +89,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 
             if (registered != this) {
-                if (registered instanceof IEnergyTile) {
+                if (registered != null && ic2Registered) {
                     MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-                } else if (registered == null) {
+                    ic2Registered = false;
+                } else {
                     MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
                     ic2Registered = true;
                 }
@@ -105,8 +105,9 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if (!world.isRemote) {
             IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
 
-            if (registered instanceof IEnergyTile) {
+            if (registered != null && ic2Registered) {
                 MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
+                ic2Registered = false;
             }
         }
     }
@@ -324,7 +325,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         if (resource == null || !canFill(from, resource)) {
             return 0;
         }
@@ -343,7 +344,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
@@ -353,8 +354,8 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        if (fluid.getFluid() == FluidRegistry.getFluid("steam")) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        if (fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("steam"))) {
             return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure));
         }
 
@@ -366,6 +367,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         return false;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return LangUtils.localize("gui.industrialTurbine");
@@ -391,8 +393,9 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 case 2:
                     return new Object[]{structure.clientFlow};
                 case 3:
-                    double rate = structure.lowerVolume * (structure.clientDispersers * MekanismConfig
-                          .current().generators.turbineDisperserGasFlow.val());
+                    double rate =
+                          structure.lowerVolume * (structure.clientDispersers * MekanismConfig
+                                .current().generators.turbineDisperserGasFlow.val());
                     rate = Math
                           .min(rate, structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
                     return new Object[]{rate};
@@ -405,7 +408,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
                   || capability == Capabilities.ENERGY_STORAGE_CAPABILITY
@@ -421,7 +424,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) {
             if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY
                   || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
@@ -429,7 +432,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
 
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                return (T) new FluidHandlerWrapper(this, side);
+                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
             }
 
             if (capability == Capabilities.TESLA_HOLDER_CAPABILITY
@@ -438,7 +441,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
 
             if (capability == CapabilityEnergy.ENERGY) {
-                return (T) forgeEnergyManager.getWrapper(this, facing);
+                return CapabilityEnergy.ENERGY.cast(forgeEnergyManager.getWrapper(this, facing));
             }
         }
 

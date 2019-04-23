@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile;
 
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.common.base.IBoundingBlock;
@@ -14,12 +15,16 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     public TileEntityAdvancedSolarGenerator() {
         super("AdvancedSolarGenerator", 200000, MekanismConfig.current().generators.advancedSolarGeneration.val() * 2);
-        GENERATION_RATE = MekanismConfig.current().generators.advancedSolarGeneration.val();
     }
 
     @Override
     public boolean sideIsOutput(EnumFacing side) {
         return side == facing;
+    }
+
+    @Override
+    protected float getConfiguredMax() {
+        return (float) MekanismConfig.current().generators.advancedSolarGeneration.val();
     }
 
     @Override
@@ -49,19 +54,14 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    public boolean seesSun() {
-        return seesSun;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY) {
-            return (T) this;
+            return Capabilities.EVAPORATION_SOLAR_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

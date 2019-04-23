@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.common.config.options.Option;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -54,7 +55,7 @@ public class TypeConfigManager<T extends Enum<T>> extends Option<TypeConfigManag
     }
 
     @Override
-    protected void load(Configuration config) {
+    public void load(Configuration config) {
         for (T type : validValuesSupplier.get()) {
             String typeName = nameSupplier.apply(type);
             final Property property = config.get(this.category, typeName + "Enabled", true,
@@ -65,14 +66,14 @@ public class TypeConfigManager<T extends Enum<T>> extends Option<TypeConfigManag
     }
 
     @Override
-    protected void write(ByteBuf buf) {
+    public void write(ByteBuf buf) {
         for (T type : validValuesSupplier.get()) {
             buf.writeBoolean(config.contains(type));
         }
     }
 
     @Override
-    protected void read(ByteBuf buf) {
+    public void read(ByteBuf buf) {
         config.clear();
         for (T type : validValuesSupplier.get()) {
             if (buf.readBoolean()) {

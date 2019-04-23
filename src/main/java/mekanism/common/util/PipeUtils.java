@@ -63,9 +63,8 @@ public final class PipeUtils {
         for (EnumFacing orientation : EnumFacing.VALUES) {
             TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
 
-            if (acceptor != null && CapabilityUtils
-                  .hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                        orientation.getOpposite())) {
+            if (CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                  orientation.getOpposite())) {
                 IFluidHandler handler = CapabilityUtils
                       .getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
                             orientation.getOpposite());
@@ -116,7 +115,7 @@ public final class PipeUtils {
                     remaining--;
                 }
 
-                EnumFacing dir = EnumFacing.getFront(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
+                EnumFacing dir = EnumFacing.byIndex(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
                 toSend -= acceptor.fill(copy(stack, currentSending), true);
             }
         }

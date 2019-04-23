@@ -2,7 +2,6 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +24,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        itemStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
+        itemStack = new ItemStack(nbtTags.getCompoundTag("input"));
         gasType = Gas.readFromNBT(nbtTags.getCompoundTag("gasType"));
     }
 

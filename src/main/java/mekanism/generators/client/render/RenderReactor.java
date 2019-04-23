@@ -70,6 +70,7 @@ public class RenderReactor extends TileEntitySpecialRenderer<TileEntityReactorCo
 
             MekanismRenderer.glowOff();
             MekanismRenderer.blendOff();
+            MekanismRenderer.resetColor();
 
             GlStateManager.popMatrix();
         }

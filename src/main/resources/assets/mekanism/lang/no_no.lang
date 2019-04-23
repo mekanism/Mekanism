@@ -654,9 +654,6 @@ dye.white=Hvit
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
-# NEI stuff
-nei.chemicalInjectionChamber=C. Injeksjons Kammer
-
 #############
 # GENERATORS
 #############

@@ -2,12 +2,8 @@ package mekanism.common.util;
 
 import com.mojang.authlib.GameProfile;
 import ic2.api.energy.EnergyNet;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +11,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.IMekWrench;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -23,23 +18,14 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
-import mekanism.common.MekanismItems;
-import mekanism.common.OreDictCache;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.BinTier;
-import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.Tier.FactoryTier;
-import mekanism.common.Tier.FluidTankTier;
-import mekanism.common.Tier.GasTankTier;
-import mekanism.common.Tier.InductionCellTier;
-import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.FactoryTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.Upgrade;
-import mekanism.common.Version;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IModule;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
@@ -48,10 +34,7 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.ContainerPersonalChest;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
@@ -82,7 +65,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -97,7 +79,6 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -127,248 +108,12 @@ public final class MekanismUtils {
     }
 
     /**
-     * Checks for a new version of Mekanism.
-     */
-    public static boolean checkForUpdates(EntityPlayer entityplayer) {
-        try {
-            if (MekanismConfig.current().general.updateNotifications.val() && Mekanism.latestVersionNumber != null
-                  && Mekanism.recentNews != null) {
-                if (!Mekanism.latestVersionNumber.equals("null")) {
-                    ArrayList<IModule> list = new ArrayList<>();
-
-                    for (IModule module : Mekanism.modulesLoaded) {
-                        if (Version.get(Mekanism.latestVersionNumber).comparedState(module.getVersion()) == 1) {
-                            list.add(module);
-                        }
-                    }
-
-                    if (Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list
-                          .isEmpty()) {
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
-                                    + " -------------"));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
-
-                        if (Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1) {
-                            entityplayer.sendMessage(new TextComponentString(
-                                  EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
-                        }
-
-                        for (IModule module : list) {
-                            entityplayer.sendMessage(new TextComponentString(
-                                  EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module
-                                        .getVersion()));
-                        }
-
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY
-                                    + Mekanism.latestVersionNumber));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO
-                                    + Mekanism.recentNews));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY
-                                    + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + LangUtils
-                                    .localize("update.toDownload") + "."));
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY
-                                    + " -------------"));
-                        return true;
-                    } else if (Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1) {
-                        entityplayer.sendMessage(new TextComponentString(
-                              EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
-                                    .localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
-                        return true;
-                    }
-                } else {
-                    Mekanism.logger.info("Minecraft is in offline mode, could not check for updates.");
-                }
-            }
-        } catch (Exception e) {
-        }
-
-        return false;
-    }
-
-    /**
-     * Updates the donator list by retrieving the most recent information from a foreign document.
-     */
-    public static void updateDonators() {
-        Mekanism.donators.clear();
-        Mekanism.donators.addAll(getHTML("http://aidancbrady.com/data/capes/Mekanism.txt"));
-    }
-
-    /**
-     * Returns one line of HTML from the url.
-     *
-     * @param urlToRead - URL to read from.
-     * @return HTML text from the url.
-     */
-    public static List<String> getHTML(String urlToRead) {
-        String line;
-        List<String> result = new ArrayList<>();
-
-        try {
-            URL url = new URL(urlToRead);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "Mekanism/" + Mekanism.versionNumber.toString());
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            while ((line = rd.readLine()) != null) {
-                result.add(line.trim());
-            }
-
-            rd.close();
-        } catch (Exception e) {
-            result.clear();
-            result.add("null");
-            Mekanism.logger.error("An error occurred while connecting to URL '" + urlToRead + "'", e);
-        }
-
-        return result;
-    }
-
-    public static String merge(List<String> text) {
-        StringBuilder builder = new StringBuilder();
-
-        for (String s : text) {
-            builder.append(s);
-        }
-
-        return builder.toString();
-    }
-
-    /**
-     * Checks if the mod doesn't need an update.
-     *
-     * @return if mod doesn't need an update
-     */
-    public static boolean noUpdates() {
-        if (Mekanism.latestVersionNumber.contains("null")) {
-            return true;
-        }
-
-        if (Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1) {
-            return false;
-        }
-
-        for (IModule module : Mekanism.modulesLoaded) {
-            if (module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if Minecraft is running in offline mode.
-     *
-     * @return if mod is running in offline mode.
-     */
-    public static boolean isOffline() {
-        try {
-            new URL("http://www.apple.com").openConnection().connect();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Copies an ItemStack and returns it with a defined getCount().
-     *
-     * @param itemstack - stack to change size
-     * @param size - size to change to
-     * @return resized ItemStack
-     */
-    public static ItemStack size(ItemStack itemstack, int size) {
-        ItemStack newStack = itemstack.copy();
-        newStack.setCount(size);
-        return newStack;
-    }
-
-    /**
-     * Adds a recipe directly to the CraftingManager that works with the Forge Ore Dictionary.
-     *
-     * @param output the ItemStack produced by this recipe
-     * @param params the items/blocks/itemstacks required to create the output ItemStack
-     */
-    public static void addRecipe(ItemStack output, Object[] params) {
-//		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, params));
-    }
-
-    /**
-     * Retrieves an empty Energy Cube with a defined tier.
-     *
-     * @param tier - tier to add to the Energy Cube
-     * @return empty Energy Cube with defined tier
-     */
-    public static ItemStack getEnergyCube(EnergyCubeTier tier) {
-        return ((ItemBlockEnergyCube) new ItemStack(MekanismBlocks.EnergyCube).getItem()).getUnchargedItem(tier);
-    }
-
-    /**
-     * Returns a Control Circuit with a defined tier, using an OreDict value if enabled in the config.
-     *
-     * @param tier - tier to add to the Control Circuit
-     * @return Control Circuit with defined tier
-     */
-    public static Object getControlCircuit(BaseTier tier) {
-        return MekanismConfig.current().general.controlCircuitOreDict.val() ? "circuit" + tier.getSimpleName()
-              : new ItemStack(MekanismItems.ControlCircuit, 1, tier.ordinal());
-    }
-
-    /**
-     * Retrieves an empty Induction Cell with a defined tier.
-     *
-     * @param tier - tier to add to the Induction Cell
-     * @return empty Induction Cell with defined tier
-     */
-    public static ItemStack getInductionCell(InductionCellTier tier) {
-        return ((ItemBlockBasic) new ItemStack(MekanismBlocks.BasicBlock2, 1, 3).getItem()).getUnchargedCell(tier);
-    }
-
-    /**
-     * Retrieves an Induction Provider with a defined tier.
-     *
-     * @param tier - tier to add to the Induction Provider
-     * @return Induction Provider with defined tier
-     */
-    public static ItemStack getInductionProvider(InductionProviderTier tier) {
-        return ((ItemBlockBasic) new ItemStack(MekanismBlocks.BasicBlock2, 1, 4).getItem()).getUnchargedProvider(tier);
-    }
-
-    /**
-     * Retrieves an Bin with a defined tier.
-     *
-     * @param tier - tier to add to the Bin
-     * @return Bin with defined tier
-     */
-    public static ItemStack getBin(BinTier tier) {
-        ItemStack ret = new ItemStack(MekanismBlocks.BasicBlock, 1, 6);
-        ((ItemBlockBasic) ret.getItem()).setBaseTier(ret, tier.getBaseTier());
-
-        return ret;
-    }
-
-    /**
      * Retrieves an empty Gas Tank.
      *
      * @return empty gas tank
      */
     public static ItemStack getEmptyGasTank(GasTankTier tier) {
         return ((ItemBlockGasTank) new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem(tier);
-    }
-
-    public static ItemStack getEmptyFluidTank(FluidTankTier tier) {
-        ItemStack stack = new ItemStack(MekanismBlocks.MachineBlock2, 1, 11);
-        ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
-        itemMachine.setBaseTier(stack, tier.getBaseTier());
-
-        return stack;
     }
 
     public static ItemStack getTransmitter(TransmitterType type, BaseTier tier, int amount) {
@@ -440,35 +185,6 @@ public final class MekanismUtils {
      */
     public static EnumFacing getBack(EnumFacing orientation) {
         return orientation.getOpposite();
-    }
-
-    /**
-     * Checks to see if a specified ItemStack is stored in the Ore Dictionary with the specified name.
-     *
-     * @param check - ItemStack to check
-     * @param oreDict - name to check with
-     * @return if the ItemStack has the Ore Dictionary key
-     */
-    public static boolean oreDictCheck(ItemStack check, String oreDict) {
-        boolean hasResource = false;
-
-        for (ItemStack ore : OreDictionary.getOres(oreDict)) {
-            if (ore.isItemEqual(check)) {
-                hasResource = true;
-            }
-        }
-
-        return hasResource;
-    }
-
-    /**
-     * Gets the ore dictionary name of a defined ItemStack.
-     *
-     * @param check - ItemStack to check OreDict name of
-     * @return OreDict name
-     */
-    public static List<String> getOreDictName(ItemStack check) {
-        return OreDictCache.getOreDictName(check);
     }
 
     /**
@@ -604,8 +320,8 @@ public final class MekanismUtils {
      * @return required operating ticks
      */
     public static int getTicks(IUpgradeTile mgmt, int def) {
-        return (int) (def * Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(),
-              -fractionUpgrades(mgmt, Upgrade.SPEED)));
+        return (int) (def * Math.pow(
+              MekanismConfig.current().general.maxUpgradeMultiplier.val(), -fractionUpgrades(mgmt, Upgrade.SPEED)));
     }
 
     /**
@@ -676,7 +392,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Better version of the World.isBlockIndirectlyGettingPowered() method that doesn't load chunks.
+     * Better version of the World.getRedstonePowerFromNeighbors() method that doesn't load chunks.
      *
      * @param world - the world to perform the check in
      * @param coord - the coordinate of the block performing the check
@@ -764,6 +480,20 @@ public final class MekanismUtils {
     }
 
     /**
+     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement.
+     *
+     * @param world world the change exists in
+     * @param neighborSide The side the neighbor to notify is on
+     * @param fromPos pos of our block that updated
+     */
+    public static void notifyNeighborOfChange(World world, EnumFacing neighborSide, BlockPos fromPos) {
+        BlockPos neighbor = fromPos.offset(neighborSide);
+        IBlockState state = world.getBlockState(neighbor);
+        state.getBlock().onNeighborChange(world, neighbor, fromPos);
+        state.neighborChanged(world, neighbor, world.getBlockState(fromPos).getBlock(), fromPos);
+    }
+
+    /**
      * Places a fake bounding block at the defined location.
      *
      * @param world - world to place block in
@@ -845,10 +575,6 @@ public final class MekanismUtils {
         IBlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
 
-        if (block == null) {
-            return null;
-        }
-
         if ((block == Blocks.WATER || block == Blocks.FLOWING_WATER) && state.getValue(BlockLiquid.LEVEL) == 0) {
             if (!filter) {
                 return new FluidStack(FluidRegistry.WATER, Fluid.BUCKET_VOLUME);
@@ -879,7 +605,7 @@ public final class MekanismUtils {
         IBlockState state = pos.getBlockState(world);
         Block block = state.getBlock();
 
-        if (block == null || block.getMetaFromState(state) == 0) {
+        if (block.getMetaFromState(state) == 0) {
             return false;
         }
 
@@ -947,36 +673,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Removes all recipes that are used to create the defined ItemStacks.
-     *
-     * @param itemStacks - ItemStacks to perform the operation on
-     * @return if any recipes were removed
-     */
-    public static boolean removeRecipes(ItemStack... itemStacks) {
-        boolean didRemove = false;
-
-//		for(Iterator itr = CraftingManager.getInstance().getRecipeList().iterator(); itr.hasNext();)
-//		{
-//			Object obj = itr.next();
-//
-//			if(obj instanceof IRecipe && ((IRecipe)obj).getRecipeOutput() != null)
-//			{
-//				for(ItemStack itemStack : itemStacks)
-//				{
-//					if(((IRecipe)obj).getRecipeOutput().isItemEqual(itemStack))
-//					{
-//						itr.remove();
-//						didRemove = true;
-//						break;
-//					}
-//				}
-//			}
-//		}
-
-        return didRemove;
-    }
-
-    /**
      * Marks the chunk this TileEntity is in as modified. Call this method to be sure NBT is written by the defined tile
      * entity.
      *
@@ -1030,7 +726,7 @@ public final class MekanismUtils {
 
         Vec3d headVec = getHeadVec(player);
         Vec3d lookVec = player.getLook(1);
-        Vec3d endVec = headVec.addVector(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
+        Vec3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
 
         return world.rayTraceBlocks(headVec, endVec, true);
     }
@@ -1211,56 +907,16 @@ public final class MekanismUtils {
     public static List<String> splitTooltip(String s, ItemStack stack) {
         s = s.trim();
 
-        try {
-            FontRenderer renderer = (FontRenderer) Mekanism.proxy.getFontRenderer();
-
-            if (!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null) {
-                renderer = stack.getItem().getFontRenderer(stack);
-            }
-
-            List<String> words = new ArrayList<>();
-            List<String> lines = new ArrayList<>();
-
-            String currentWord = "";
-
-            for (Character c : s.toCharArray()) {
-                if (c.equals(' ')) {
-                    words.add(currentWord);
-                    currentWord = "";
-                } else {
-                    currentWord += c;
-                }
-            }
-
-            if (!currentWord.isEmpty()) {
-                words.add(currentWord);
-            }
-
-            String currentLine = "";
-
-            for (String word : words) {
-                if (currentLine.isEmpty() || renderer.getStringWidth(currentLine + " " + word) <= 200) {
-                    if (currentLine.length() > 0) {
-                        currentLine += " ";
-                    }
-
-                    currentLine += word;
-                } else {
-                    lines.add(currentLine);
-                    currentLine = word;
-                }
-            }
-
-            if (!currentLine.isEmpty()) {
-                lines.add(currentLine);
-            }
-
-            return lines;
-        } catch (Throwable t) {
-            t.printStackTrace();
+        FontRenderer renderer = (FontRenderer) Mekanism.proxy.getFontRenderer();
+        if (!stack.isEmpty() && stack.getItem().getFontRenderer(stack) != null) {
+            renderer = stack.getItem().getFontRenderer(stack);
         }
 
-        return new ArrayList<>();
+        if (renderer != null) {
+            return renderer.listFormattedStringToWidth(s, 200);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -1280,7 +936,7 @@ public final class MekanismUtils {
     public static InventoryCrafting getDummyCraftingInv() {
         Container tempContainer = new Container() {
             @Override
-            public boolean canInteractWith(EntityPlayer player) {
+            public boolean canInteractWith(@Nonnull EntityPlayer player) {
                 return false;
             }
         };
@@ -1309,7 +965,7 @@ public final class MekanismUtils {
             }
         }
 
-        if ((dmgItems.get(0).isEmpty()) || (dmgItems.get(0).getItem() == null)) {
+        if (dmgItems.get(0).isEmpty()) {
             return ItemStack.EMPTY;
         }
 
@@ -1358,7 +1014,7 @@ public final class MekanismUtils {
 
         EntityPlayerMP player = (EntityPlayerMP) p;
 
-        return MekanismConfig.current().general.opsBypassRestrictions.val() && player.mcServer.getPlayerList()
+        return MekanismConfig.current().general.opsBypassRestrictions.val() && player.server.getPlayerList()
               .canSendCommands(player.getGameProfile());
     }
 
@@ -1451,7 +1107,7 @@ public final class MekanismUtils {
             {
                 return true;
             }
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
         }
 
         return false;
@@ -1480,6 +1136,11 @@ public final class MekanismUtils {
         return ret != null ? ret : "<???>";
     }
 
+    public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
+        return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn)
+              .getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+    }
+
     /**
      * Clamp a double to int without using Math.min due to double representation issues. Primary use: power systems that
      * use int, where Mek uses doubles internally
@@ -1501,28 +1162,6 @@ public final class MekanismUtils {
         } else {
             return Integer.MAX_VALUE;
         }
-    }
-
-    /**
-     * Clamp a double to long without using Math.min due to double representation issues. Primary use: power systems
-     * that use long, where Mek uses doubles internally
-     *
-     * @param d double to clamp
-     * @return long clamped to Long.MAX_VALUE
-     * @see #clampToInt(double)
-     */
-    public static long clampToLong(double d) {
-        // Not using Math.min because it makes you cast things wrong
-        if (d < Long.MAX_VALUE) {
-            return (long) d;
-        } else {
-            return Long.MAX_VALUE;
-        }
-    }
-
-    public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
-        return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn)
-              .getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
 
     public enum ResourceType {

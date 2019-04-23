@@ -1,8 +1,8 @@
 package mekanism.common.content.transporter;
 
 import java.util.List;
+import mekanism.common.OreDictCache;
 import mekanism.common.util.ItemRegistryUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -31,7 +31,7 @@ public abstract class Finder {
 
         @Override
         public boolean modifies(ItemStack stack) {
-            List<String> oreKeys = MekanismUtils.getOreDictName(stack);
+            List<String> oreKeys = OreDictCache.getOreDictName(stack);
 
             if (oreKeys.isEmpty()) {
                 return false;

@@ -1,5 +1,6 @@
 package mekanism.client.render.entity;
 
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.entity.EntityObsidianTNT;
@@ -24,7 +25,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
     }
 
     @Override
-    public void doRender(EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw,
+    public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw,
           float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
@@ -66,7 +67,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityObsidianTNT entity) {
+    protected ResourceLocation getEntityTexture(@Nonnull EntityObsidianTNT entity) {
         return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 }

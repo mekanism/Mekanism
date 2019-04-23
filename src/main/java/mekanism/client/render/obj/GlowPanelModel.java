@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.api.EnumColor;
@@ -85,11 +86,13 @@ public class GlowPanelModel extends OBJBakedModelBase {
         return EnumColor.WHITE;
     }
 
+    @Nonnull
     @Override
     public ItemOverrideList getOverrides() {
         return override;
     }
 
+    @Nonnull
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
         if (side != null) {
@@ -122,6 +125,7 @@ public class GlowPanelModel extends OBJBakedModelBase {
         return null;
     }
 
+    @Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType) {
         if (transformType == TransformType.GUI) {
@@ -152,8 +156,9 @@ public class GlowPanelModel extends OBJBakedModelBase {
             super(Lists.newArrayList());
         }
 
+        @Nonnull
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world,
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world,
               EntityLivingBase entity) {
             if (glowPanelItemCache.containsKey(stack.getItemDamage())) {
                 return glowPanelItemCache.get(stack.getItemDamage());
@@ -165,16 +170,8 @@ public class GlowPanelModel extends OBJBakedModelBase {
                   .getAtlasSprite(new ResourceLocation("missingno").toString());
 
             for (String s : getModel().getMatLib().getMaterialNames()) {
-                TextureAtlasSprite sprite = null;
-
-                if (sprite == null) {
-                    sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(
-                          getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-                }
-
-                if (sprite == null) {
-                    sprite = missing;
-                }
+                TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(
+                      getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
 
                 builder.put(s, sprite);
             }

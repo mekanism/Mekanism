@@ -2,7 +2,7 @@ package mekanism.common.recipe;
 
 import com.google.gson.JsonObject;
 import java.util.function.BooleanSupplier;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.states.BlockStateGenerator;
@@ -22,8 +22,7 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
     public BooleanSupplier parse(JsonContext context, JsonObject json) {
         if (JsonUtils.hasField(json, "machineType")) {
             String machineType = JsonUtils.getString(json, "machineType");
-            final BlockStateMachine.MachineType type = MekanismConfig.current().general.machinesManager
-                  .typeFromName(machineType);
+            final MachineType type = MekanismConfig.current().general.machinesManager.typeFromName(machineType);
             return () -> MekanismConfig.current().general.machinesManager.isEnabled(type);
         }
 

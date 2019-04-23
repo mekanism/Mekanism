@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -37,7 +38,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -78,6 +78,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     getState(itemstack)));
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
           float hitY, float hitZ, EnumHand hand) {
@@ -98,7 +99,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
                             player.sendMessage(new TextComponentString(
-                                  EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(
+                                  EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
                                         getState(stack).getTransmission()) + ": " + initial.color + initial.localize()
                                         + " (" + initial.color.getColoredName() + ")"));
                         } else {
@@ -110,9 +111,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                     SideData data = config.getConfig()
                                           .getOutput(getState(stack).getTransmission(), side, config.getOrientation());
                                     player.sendMessage(new TextComponentString(
-                                          EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(
-                                                getState(stack).getTransmission()) + ": " + data.color + data.localize()
-                                                + " (" + data.color.getColoredName() + ")"));
+                                          EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
+                                                + getToggleModeText(getState(stack).getTransmission()) + ": "
+                                                + data.color + data.localize() + " (" + data.color.getColoredName()
+                                                + ")"));
 
                                     if (config instanceof TileEntityBasicBlock) {
                                         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) config;
@@ -148,9 +150,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             } else if (getState(stack) == ConfiguratorMode.EMPTY) //Empty
             {
                 if (tile instanceof TileEntityContainerBlock) {
-                    IInventory inv = (IInventory) tile;
-
                     if (SecurityUtils.canAccess(player, tile)) {
+                        //TODO: Switch this to an IItemHandler
+                        // It isn't a simple switch to IItemHandlerModifiable as then it makes the empty mode only work
+                        // when it is done on a side configured to work as an IItemHandler.
+                        IInventory inv = (IInventory) tile;
                         for (int i = 0; i < inv.getSizeInventory(); i++) {
                             ItemStack slotStack = inv.getStackInSlot(i);
 
@@ -167,7 +171,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
                                       pos.getZ() + zRandom, slotStack.copy());
 
                                 if (slotStack.hasTagCompound()) {
-                                    item.getItem().setTagCompound((NBTTagCompound) slotStack.getTagCompound().copy());
+                                    item.getItem().setTagCompound(slotStack.getTagCompound().copy());
                                 }
 
                                 float k = 0.05F;

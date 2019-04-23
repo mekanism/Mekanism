@@ -7,21 +7,18 @@ import javax.annotation.Nullable;
 import mekanism.api.EnumColor;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemUpgrade;
@@ -37,13 +34,13 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -52,7 +49,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityPRC extends
       TileEntityBasicMachine<PressurizedInput, PressurizedOutput, PressurizedRecipe> implements IFluidHandlerWrapper,
-      IGasHandler, ITubeConnection, ISustainedData, ITankManager {
+      IGasHandler, ISustainedData, ITankManager {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
           "getMaxEnergy", "getEnergyNeeded", "getFluidStored", "getGasStored"};
@@ -61,10 +58,10 @@ public class TileEntityPRC extends
     public GasTank outputGasTank = new GasTank(10000);
 
     public TileEntityPRC() {
-        super("prc", BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.blockName,
-              BlockStateMachine.MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy,
-              MekanismConfig.current().usage.pressurizedReactionBaseUsage.val(), 3, 100,
-              new ResourceLocation("mekanism", "gui/GuiPRC.png"));
+        super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER.blockName,
+              MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy,
+              MekanismConfig.current().usage.pressurizedReactionBaseUsage.val(),
+              3, 100, new ResourceLocation("mekanism", "gui/GuiPRC.png"));
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
               TransmissionType.FLUID, TransmissionType.GAS);
@@ -144,7 +141,7 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             return RecipeHandler.isInPressurizedRecipe(itemstack);
         } else if (slotID == 1) {
@@ -186,42 +183,21 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2 || slotID == 4;
+        }
 
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
-        if (inputFluidTank.getFluid() != null) {
-            data.add(true);
-            data.add(FluidRegistry.getFluidName(inputFluidTank.getFluid()));
-            data.add(inputFluidTank.getFluidAmount());
-        } else {
-            data.add(false);
-        }
-
-        if (inputGasTank.getGas() != null) {
-            data.add(true);
-            data.add(inputGasTank.getGas().getGas().getID());
-            data.add(inputGasTank.getStored());
-        } else {
-            data.add(false);
-        }
-
-        if (outputGasTank.getGas() != null) {
-            data.add(true);
-            data.add(outputGasTank.getGas().getGas().getID());
-            data.add(outputGasTank.getStored());
-        } else {
-            data.add(false);
-        }
-
+        TileUtils.addTankData(data, inputFluidTank);
+        TileUtils.addTankData(data, inputGasTank);
+        TileUtils.addTankData(data, outputGasTank);
         return data;
     }
 
@@ -230,24 +206,9 @@ public class TileEntityPRC extends
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (dataStream.readBoolean()) {
-                inputFluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                      dataStream.readInt()));
-            } else {
-                inputFluidTank.setFluid(null);
-            }
-
-            if (dataStream.readBoolean()) {
-                inputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                inputGasTank.setGas(null);
-            }
-
-            if (dataStream.readBoolean()) {
-                outputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                outputGasTank.setGas(null);
-            }
+            TileUtils.readTankData(dataStream, inputFluidTank);
+            TileUtils.readTankData(dataStream, inputGasTank);
+            TileUtils.readTankData(dataStream, outputGasTank);
         }
     }
 
@@ -260,6 +221,7 @@ public class TileEntityPRC extends
         outputGasTank.read(nbtTags.getCompoundTag("outputGasTank"));
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -271,9 +233,10 @@ public class TileEntityPRC extends
         return nbtTags;
     }
 
+    @Nonnull
     @Override
     public String getName() {
-        return LangUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".short.name");
+        return LangUtils.localize(getBlockType().getTranslationKey() + "." + fullName + ".short.name");
     }
 
     @Override
@@ -313,7 +276,7 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         if (canFill(from, resource)) {
             return inputFluidTank.fill(resource, doFill);
         }
@@ -322,7 +285,7 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
@@ -332,7 +295,7 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         SideData data = configComponent.getOutput(TransmissionType.FLUID, from, facing);
 
         if (data.hasSlot(0)) {
@@ -388,11 +351,6 @@ public class TileEntityPRC extends
         return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(2) && outputGasTank.canDraw(type);
     }
 
-    @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(1, 2);
-    }
-
     @Nonnull
     @Override
     public GasTankInfo[] getTankInfo() {
@@ -400,24 +358,31 @@ public class TileEntityPRC extends
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
-            return (T) this;
-        }
-
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (T) new FluidHandlerWrapper(this, side);
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
+        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
+              .isCapabilityDisabled(capability, side);
     }
 
     @Override

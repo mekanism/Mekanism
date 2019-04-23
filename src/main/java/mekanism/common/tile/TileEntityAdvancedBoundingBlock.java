@@ -4,6 +4,7 @@ import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -54,6 +55,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         return inv.getSizeInventory();
     }
 
+    @Nonnull
     @Override
     public ItemStack getStackInSlot(int i) {
         IAdvancedBoundingBlock inv = getInv();
@@ -64,6 +66,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         return inv.getStackInSlot(i);
     }
 
+    @Nonnull
     @Override
     public ItemStack decrStackSize(int i, int j) {
         IAdvancedBoundingBlock inv = getInv();
@@ -74,6 +77,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         return inv.decrStackSize(i, j);
     }
 
+    @Nonnull
     @Override
     public ItemStack removeStackFromSlot(int i) {
         IAdvancedBoundingBlock inv = getInv();
@@ -85,7 +89,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack) {
+    public void setInventorySlotContents(int i, @Nonnull ItemStack itemstack) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return;
@@ -94,6 +98,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         inv.setInventorySlotContents(i, itemstack);
     }
 
+    @Nonnull
     @Override
     public String getName() {
         IAdvancedBoundingBlock inv = getInv();
@@ -114,6 +119,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         return inv.hasCustomName();
     }
 
+    @Nonnull
     @Override
     public ITextComponent getDisplayName() {
         return new TextComponentString(getName());
@@ -130,7 +136,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer entityplayer) {
+    public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
@@ -140,7 +146,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(@Nonnull EntityPlayer player) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return;
@@ -150,7 +156,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(@Nonnull EntityPlayer player) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return;
@@ -160,13 +166,13 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int i, @Nonnull ItemStack itemstack) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
         }
 
-        return inv.canBoundInsert(getPos(), i, itemstack);
+        return inv.isItemValidForSlot(i, itemstack);
     }
 
     @Override
@@ -188,29 +194,35 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     public void clear() {
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return InventoryUtils.EMPTY;
         }
 
-        return inv.getBoundSlots(getPos(), side);
+        return inv.getSlotsForFace(side);
     }
 
     @Override
-    public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing side) {
-        return isItemValidForSlot(i, itemstack);
-    }
-
-    @Override
-    public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing side) {
+    public boolean canInsertItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return false;
         }
 
-        return inv.canBoundExtract(getPos(), i, itemstack, side);
+        return inv.canInsertItem(i, itemstack, side);
+    }
+
+    @Override
+    public boolean canExtractItem(int i, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        IAdvancedBoundingBlock inv = getInv();
+        if (inv == null) {
+            return false;
+        }
+
+        return inv.canExtractItem(i, itemstack, side);
     }
 
     @Override
@@ -328,16 +340,16 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return null;
         }
 
+        // Return the inventory/main tile; note that it's possible, esp. when chunks are
+        // loading that the inventory/main tile has not yet loaded and thus is null.
         TileEntity tile = new Coord4D(mainPos, world).getTileEntity(world);
-
         if (tile == null) {
             return null;
         }
-
         if (!(tile instanceof IAdvancedBoundingBlock)) {
-            Mekanism.logger
-                  .error("Found tile {} instead of an IAdvancedBoundingBlock, at {}. Multiblock cannot function", tile,
-                        mainPos);
+            // On the off chance that another block got placed there (which seems only likely with corruption,
+            // go ahead and log what we found.
+            Mekanism.logger.error("Found tile {} instead of an IAdvancedBoundingBlock, at {}. Multiblock cannot function", tile, mainPos);
             //world.setBlockToAir(mainPos);
             return null;
         }
@@ -416,7 +428,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return super.hasCapability(capability, facing);
         }
@@ -426,11 +438,11 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return super.hasCapability(capability, facing);
         }
 
-        return inv.hasCapability(capability, facing);
+        return inv.hasOffsetCapability(capability, facing, pos.subtract(mainPos));
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return super.getCapability(capability, facing);
         }
@@ -440,6 +452,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return super.getCapability(capability, facing);
         }
 
-        return inv.getCapability(capability, facing);
+        return inv.getOffsetCapability(capability, facing, pos.subtract(mainPos));
     }
 }

@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -20,7 +21,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork> {
+public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> {
 
     public double clientEnergyScale = 0;
     public EnergyStack buffer = new EnergyStack(0);
@@ -34,15 +35,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     public EnergyNetwork(Collection<EnergyNetwork> networks) {
         for (EnergyNetwork net : networks) {
             if (net != null) {
-                if (net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale) {
-                    clientEnergyScale = net.clientEnergyScale;
-                    jouleBufferLastTick = net.jouleBufferLastTick;
-                    joulesTransmitted = net.joulesTransmitted;
-                    lastPowerScale = net.lastPowerScale;
-                }
-
-                buffer.amount += net.buffer.amount;
-
                 adoptTransmittersAndAcceptorsFrom(net);
                 net.deregister();
             }
@@ -51,13 +43,31 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         register();
     }
 
+    @Override
+    public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
+        if (net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale) {
+            clientEnergyScale = net.clientEnergyScale;
+            jouleBufferLastTick = net.jouleBufferLastTick;
+            joulesTransmitted = net.joulesTransmitted;
+            lastPowerScale = net.lastPowerScale;
+        }
+
+        buffer.amount += net.buffer.amount;
+        super.adoptTransmittersAndAcceptorsFrom(net);
+    }
+
     public static double round(double d) {
         return Math.round(d * 10000) / 10000;
     }
 
+    @Nullable
+    public EnergyStack getBuffer() {
+        return buffer;
+    }
+
     @Override
-    public void absorbBuffer(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> transmitter) {
-        EnergyStack energy = (EnergyStack) transmitter.getBuffer();
+    public void absorbBuffer(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> transmitter) {
+        EnergyStack energy = transmitter.getBuffer();
         buffer.amount += energy.amount;
         energy.amount = 0;
     }
@@ -78,7 +88,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         int numCables = transmitters.size();
         double reciprocalSum = 0;
 
-        for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> cable : transmitters) {
+        for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> cable : transmitters) {
             reciprocalSum += 1.0 / (double) cable.getCapacity();
         }
 
@@ -132,8 +142,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     public double doEmit(double energyToSend) {
         double sent = 0;
 
-        List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>();
-        availableAcceptors.addAll(getAcceptors(null));
+        List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>(getAcceptors(null));
 
         Collections.shuffle(availableAcceptors);
 

@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.gas;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.BracketHandler;
-import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IngredientAny;
 import crafttweaker.zenscript.IBracketHandler;
@@ -20,7 +19,6 @@ import stanhebben.zenscript.type.natives.IJavaMethod;
 import stanhebben.zenscript.util.ZenPosition;
 
 @BracketHandler(priority = 100)
-@ModOnly("mtlib")
 @ZenRegister
 public class GasBracketHandler implements IBracketHandler {
 
@@ -34,11 +32,7 @@ public class GasBracketHandler implements IBracketHandler {
 
     public static IGasStack getGas(String name) {
         Gas gas = GasRegistry.getGas(name);
-        if (gas != null) {
-            return new CraftTweakerGasStack(new GasStack(gas, 1));
-        } else {
-            return null;
-        }
+        return gas == null ? null : new CraftTweakerGasStack(new GasStack(gas, 1));
     }
 
     @Override
@@ -46,13 +40,9 @@ public class GasBracketHandler implements IBracketHandler {
         if (tokens.size() == 1 && tokens.get(0).getValue().equals("*")) {
             return symbolAny;
         }
-
-        if (tokens.size() > 2) {
-            if (tokens.get(0).getValue().equals("gas") && tokens.get(1).getValue().equals(":")) {
-                return find(environment, tokens, 2, tokens.size());
-            }
+        if (tokens.size() > 2 && tokens.get(0).getValue().equals("gas") && tokens.get(1).getValue().equals(":")) {
+            return find(environment, tokens, 2, tokens.size());
         }
-
         return null;
     }
 
@@ -64,11 +54,7 @@ public class GasBracketHandler implements IBracketHandler {
         }
 
         Gas gas = GasRegistry.getGas(valueBuilder.toString());
-        if (gas != null) {
-            return new GasReferenceSymbol(environment, valueBuilder.toString());
-        }
-
-        return null;
+        return gas == null ? null : new GasReferenceSymbol(environment, valueBuilder.toString());
     }
 
     private class GasReferenceSymbol implements IZenSymbol {

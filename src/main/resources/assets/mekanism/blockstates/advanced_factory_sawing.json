@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryside",
+      "front": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryfront",
+      "south": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryback",
+      "west": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryside",
+      "east": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryside",
+      "up": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorytop",
+      "down": "mekanism:blocks/factory/advanced/AdvancedFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactoryfronton",
+          "south": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorybackon",
+          "west": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorysideon",
+          "east": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorysideon",
+          "up": "mekanism:blocks/factory/advanced/sawing/advancedsawingfactorytopon"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

@@ -17,16 +17,22 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.fixers.GeneratorTEFixer;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.CompoundDataFixer;
+import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -38,7 +44,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
-@Mod(modid = MekanismGenerators.MODID, name = "MekanismGenerators", version = "${version}", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MekanismGenerators.MODID, useMetadata = true, guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 @Mod.EventBusSubscriber()
 public class MekanismGenerators implements IModule {
 
@@ -47,13 +53,14 @@ public class MekanismGenerators implements IModule {
     @SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
     public static GeneratorsCommonProxy proxy;
 
-    @Instance(MODID)
+    @Instance(MekanismGenerators.MODID)
     public static MekanismGenerators instance;
 
     /**
      * MekanismGenerators version number
      */
     public static Version versionNumber = new Version(999, 999, 999);
+    public static final int DATA_VERSION = 1;
 
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>(
           "industrialTurbine");
@@ -97,15 +104,13 @@ public class MekanismGenerators implements IModule {
         MinecraftForge.EVENT_BUS.register(this);
 
         //Load the proxy
-        proxy.registerRegularTileEntities();
-        proxy.registerSpecialTileEntities();
+        proxy.registerTileEntities();
+        proxy.registerTESRs();
 
-        addRecipes();
-
-        for (ItemStack ore : OreDictionary.getOres("dustGold")) {
-            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4),
-                  GeneratorsItems.Hohlraum.getEmptyItem());
-        }
+        CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+        ModFixs fixes = fixer.init(MODID, DATA_VERSION);
+        //Fix old tile entity names
+        fixes.registerFix(FixTypes.BLOCK_ENTITY, new GeneratorTEFixer());
 
         //Finalization
         Mekanism.logger.info("Loaded MekanismGenerators module.");
@@ -120,18 +125,25 @@ public class MekanismGenerators implements IModule {
                 }
             }
 
-            BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(),
-                  (long) (240 * MekanismConfig.current().general.TO_RF.val() / 20 * MjAPI.MJ),
-                  40 * Fluid.BUCKET_VOLUME);
+            BuildcraftFuelRegistry.fuel
+                  .addFuel(MekanismFluids.Ethene.getFluid(),
+                        (long) (240 * MekanismConfig.current().general.TO_RF.val() / 20 * MjAPI.MJ),
+                        40 * Fluid.BUCKET_VOLUME);
         }
     }
 
-    public void addRecipes() {
+    @SubscribeEvent
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+        //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
         FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.current().general.ETHENE_BURN_TIME.val(),
               MekanismConfig.current().general.FROM_H2.val()
-                    + MekanismConfig.current().generators.bioGeneration.val() * 2 * MekanismConfig
-                    .current().general.ETHENE_BURN_TIME
-                    .val()); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+                    + MekanismConfig.current().generators.bioGeneration.val() * 2
+                    * MekanismConfig.current().general.ETHENE_BURN_TIME.val());
+
+        for (ItemStack ore : OreDictionary.getOres("dustGold")) {
+            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, StackUtils.size(ore, 4),
+                  GeneratorsItems.Hohlraum.getEmptyItem());
+        }
     }
 
     @Override
@@ -162,7 +174,7 @@ public class MekanismGenerators implements IModule {
 
     @SubscribeEvent
     public void onConfigChanged(OnConfigChangedEvent event) {
-        if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(MekanismAPI.MODID)) {
+        if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
             proxy.loadConfiguration();
         }
     }

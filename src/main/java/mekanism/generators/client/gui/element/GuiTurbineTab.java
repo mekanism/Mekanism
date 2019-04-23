@@ -2,30 +2,27 @@ package mekanism.generators.client.gui.element;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiTileEntityElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiTurbineTab extends GuiElement {
+public class GuiTurbineTab extends GuiTileEntityElement<TileEntityTurbineCasing> {
 
-    private TileEntity tileEntity;
-    private TurbineTab tabType;
-    private int yPos;
+    private final TurbineTab tabType;
+    private final int yPos;
 
-    public GuiTurbineTab(IGuiWrapper gui, TileEntity tile, TurbineTab type, int y, ResourceLocation def) {
-        super(type.getResource(), gui, def);
-
-        tileEntity = tile;
+    public GuiTurbineTab(IGuiWrapper gui, TileEntityTurbineCasing tile, TurbineTab type, int y, ResourceLocation def) {
+        super(type.getResource(), gui, def, tile);
         tabType = type;
         yPos = y;
     }
@@ -36,28 +33,24 @@ public class GuiTurbineTab extends GuiElement {
     }
 
     @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= -21 && xAxis <= -3 && yAxis >= yPos + 4 && yAxis <= yPos + 22;
+    }
+
+    @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth - 26, guiHeight + yPos, 0, 0, 26, 26);
-
-        if (xAxis >= -21 && xAxis <= -3 && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
-            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos + 4, 26, 0, 18, 18);
-        } else {
-            guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos + 4, 26, 18, 18, 18);
-        }
-
+        guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos + 4, 26, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
-
-        if (xAxis >= -21 && xAxis <= -3 && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
+        if (inBounds(xAxis, yAxis)) {
             displayTooltip(tabType.getDesc(), xAxis, yAxis);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -67,11 +60,9 @@ public class GuiTurbineTab extends GuiElement {
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0) {
-            if (xAxis >= -21 && xAxis <= -3 && yAxis >= yPos + 4 && yAxis <= yPos + 22) {
-                tabType.openGui(tileEntity);
-                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            }
+        if (button == 0 && inBounds(xAxis, yAxis)) {
+            tabType.openGui(tileEntity);
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
         }
     }
 
@@ -93,7 +84,7 @@ public class GuiTurbineTab extends GuiElement {
             return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
         }
 
-        public void openGui(TileEntity tile) {
+        public void openGui(TileEntityTurbineCasing tile) {
             Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), 1, guiId));
         }
 

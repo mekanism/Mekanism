@@ -129,23 +129,30 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                 structure.condensers = condensers.size();
 
                 int turbineHeight = 0;
+                int blades = 0;
 
-                //Make sure a complete line of turbine rotors exist from the complex to the multiblock's base
+                // Starting from the complex, walk down and count the number of rotors/blades in the structure
                 for (int y = complex.y - 1; y > structure.minLocation.y; y--) {
                     TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(centerX, y, centerZ));
-
-                    if (!(tile instanceof TileEntityTurbineRotor)) {
+                    if (tile instanceof TileEntityTurbineRotor) {
+                        TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)tile;
+                        turbineHeight++;
+                        blades += rotor.getHousedBlades();
+                        structure.internalLocations.add(Coord4D.get(tile));
+                        turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().provider.getDimension()));
+                    } else {
+                        // Not a contiguous set of rotors
                         return false;
                     }
-
-                    turbineHeight++;
-                    turbines.remove(new Coord4D(centerX, y, centerZ, pointer.getWorld().provider.getDimension()));
                 }
 
-                //If any turbines were not processed, they're in the wrong place
+                // If there are any rotors left over, they are in the wrong place in the structure
                 if (turbines.size() > 0) {
                     return false;
                 }
+
+                // Update the structure with number of blades found on rotors
+                structure.blades = blades;
 
                 Coord4D startCoord = complex.offset(EnumFacing.UP);
 
@@ -162,12 +169,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                     return false;
                 }
 
-                Coord4D turbineCoord = complex.offset(EnumFacing.DOWN);
-                TileEntity turbineTile = turbineCoord.getTileEntity(pointer.getWorld());
 
-                if (turbineTile instanceof TileEntityTurbineRotor) {
-                    structure.blades = ((TileEntityTurbineRotor) turbineTile).blades;
-                }
 
                 for (Coord4D coord : structure.locations) {
                     if (coord.getTileEntity(pointer.getWorld()) instanceof TileEntityTurbineVent) {

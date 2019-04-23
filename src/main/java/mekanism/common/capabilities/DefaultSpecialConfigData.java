@@ -9,7 +9,7 @@ public class DefaultSpecialConfigData extends DefaultConfigCardAccess implements
 
     public static void register() {
         CapabilityManager.INSTANCE
-              .register(ISpecialConfigData.class, new NullStorage<>(), DefaultSpecialConfigData.class);
+              .register(ISpecialConfigData.class, new NullStorage<>(), DefaultSpecialConfigData::new);
     }
 
     @Override

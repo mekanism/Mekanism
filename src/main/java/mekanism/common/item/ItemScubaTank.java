@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -66,7 +67,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
     }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
+    public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }
 
@@ -194,7 +195,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }

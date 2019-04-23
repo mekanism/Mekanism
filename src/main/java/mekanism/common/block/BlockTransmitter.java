@@ -1,13 +1,14 @@
 package mekanism.common.block;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
+import mekanism.client.render.particle.MekanismParticleHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.property.PropertyConnection;
 import mekanism.common.block.states.BlockStateTransmitter;
@@ -15,6 +16,7 @@ import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType.Size;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
@@ -32,6 +34,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -48,6 +51,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -133,9 +137,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         return sidedPipe;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(worldIn, pos);
         if (tile != null) {
             state = state.withProperty(BlockStateTransmitter.tierProperty, tile.getBaseTier());
@@ -144,8 +149,9 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         return state;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         TransmitterType type = TransmitterType.get(meta);
         return getDefaultState().withProperty(BlockStateTransmitter.typeProperty, type);
@@ -157,14 +163,16 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         return type.ordinal();
     }
 
+    @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateTransmitter(this);
     }
 
     @SideOnly(Side.CLIENT)
+    @Nonnull
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess w, BlockPos pos) {
+    public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess w, BlockPos pos) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(w, pos);
 
         if (tile != null) {
@@ -175,13 +183,15 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
                   ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
             PropertyConnection connectionProp = new PropertyConnection((byte) 0, (byte) 0, typeArray, true);
 
-            return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(Arrays.asList(), true))
+            return ((IExtendedBlockState) state)
+                  .withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true))
                   .withProperty(PropertyConnection.INSTANCE, connectionProp);
         }
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 
@@ -192,10 +202,11 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         return largeSides[6];
     }
 
-    @Deprecated
     @Override
-    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox,
-          List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) {
+    @Deprecated
+    public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos,
+          @Nonnull AxisAlignedBB entityBox, @Nonnull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn,
+          boolean b) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 
         if (tile != null) {
@@ -207,15 +218,17 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         }
     }
 
-    @Deprecated
+    @Nonnull
     @Override
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
+    @Deprecated
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos) {
         return getDefaultForTile(getTileEntitySidedPipe(world, pos)).offset(pos);
     }
 
-    @Deprecated
     @Override
-    public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) {
+    @Deprecated
+    public RayTraceResult collisionRayTrace(IBlockState blockState, @Nonnull World world, @Nonnull BlockPos pos,
+          @Nonnull Vec3d start, @Nonnull Vec3d end) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
 
         if (tile == null) {
@@ -256,9 +269,10 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         return false;
     }
 
+    @Nonnull
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
-          EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
         ItemStack itemStack = ItemStack.EMPTY;
         TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
         if (tileEntity != null) {
@@ -273,6 +287,16 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         }
 
         return itemStack;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean addHitEffects(IBlockState state, World world, RayTraceResult target, ParticleManager manager) {
+        if (!target.typeOfHit.equals(Type.BLOCK)) {
+            return super.addHitEffects(state, world, target, manager);
+        }
+        return MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager) ||
+              super.addHitEffects(state, world, target, manager);
     }
 
     public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
@@ -319,8 +343,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         }
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
@@ -352,32 +376,33 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         return layer == BlockRenderLayer.CUTOUT;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullBlock(IBlockState state) {
         return false;
     }
@@ -388,8 +413,8 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
-          boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
         if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
             float motion = 0.7F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -406,7 +431,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         TransmitterType type = TransmitterType.get(meta);
 
         switch (type) {

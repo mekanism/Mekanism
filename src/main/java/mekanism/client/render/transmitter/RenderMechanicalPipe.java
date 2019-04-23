@@ -240,14 +240,13 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     public boolean renderFluidInOut(BufferBuilder renderer, EnumFacing side, TileEntityMechanicalPipe pipe) {
         if (pipe != null && pipe.getTransmitter() != null && pipe.getTransmitter().getTransmitterNetwork() != null) {
             bindTexture(MekanismRenderer.getBlocksTexture());
-            TextureAtlasSprite tex;
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
+            TextureAtlasSprite tex;
             if (fn.buffer != null) {
                 tex = MekanismRenderer.getFluidTexture(fn.buffer, FluidType.STILL);
             } else {
                 tex = MekanismRenderer.getBaseFluidTexture(fn.refFluid, FluidType.STILL);
             }
-
             int color = fn.buffer != null ? fn.buffer.getFluid().getColor(fn.buffer) : fn.refFluid.getColor();
             ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale);
             if (color != 0xFFFFFFFF) {

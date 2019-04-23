@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import javax.annotation.Nonnull;
 import mekanism.api.IAlloyInteraction;
 import mekanism.common.MekanismItems;
 import mekanism.common.capabilities.Capabilities;
@@ -20,6 +21,7 @@ public class ItemAlloy extends ItemMekanism {
         super();
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side,
           float hitX, float hitY, float hitZ) {

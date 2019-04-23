@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -238,14 +237,14 @@ public class Coord4D {
             return this;
         }
 
-        return new Coord4D(x + (side.getFrontOffsetX() * amount), y + (side.getFrontOffsetY() * amount),
-              z + (side.getFrontOffsetZ() * amount), dimensionId);
+        return new Coord4D(x + (side.getXOffset() * amount), y + (side.getYOffset() * amount),
+              z + (side.getZOffset() * amount), dimensionId);
     }
 
     public ItemStack getStack(IBlockAccess world) {
         IBlockState state = getBlockState(world);
 
-        if (state == null || state == Blocks.AIR) {
+        if (state == null || state.getBlock().isAir(state, world, null)) {
             return ItemStack.EMPTY;
         }
 
@@ -273,8 +272,7 @@ public class Coord4D {
         Coord4D diff = difference(other);
 
         for (EnumFacing side : EnumFacing.VALUES) {
-            if (side.getFrontOffsetX() == diff.x && side.getFrontOffsetY() == diff.y
-                  && side.getFrontOffsetZ() == diff.z) {
+            if (side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z) {
                 return side;
             }
         }
@@ -321,7 +319,7 @@ public class Coord4D {
      * @return this Coord4D
      */
     public Coord4D step(EnumFacing side) {
-        return translate(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
+        return translate(side.getXOffset(), side.getYOffset(), side.getZOffset());
     }
 
     /**
@@ -342,7 +340,7 @@ public class Coord4D {
      * @return the chunk of this Coord4D
      */
     public Chunk getChunk(World world) {
-        return world.getChunkFromBlockCoords(getPos());
+        return world.getChunk(getPos());
     }
 
     /**

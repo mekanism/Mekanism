@@ -1,12 +1,10 @@
 package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -15,12 +13,10 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class MekanismOBJModel extends OBJModel {
 
-    public OBJModelType modelType;
-    public ResourceLocation location;
+    private OBJModelType modelType;
+    private ResourceLocation location;
 
     public MekanismOBJModel(OBJModelType type, MaterialLibrary matLib, ResourceLocation modelLocation) {
         super(matLib, modelLocation);
@@ -29,8 +25,9 @@ public class MekanismOBJModel extends OBJModel {
         location = modelLocation;
     }
 
+    @Nonnull
     @Override
-    public IBakedModel bake(IModelState state, VertexFormat format,
+    public IBakedModel bake(@Nonnull IModelState state, @Nonnull VertexFormat format,
           Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
         IBakedModel preBaked = super.bake(state, format, bakedTextureGetter);
 
@@ -42,28 +39,25 @@ public class MekanismOBJModel extends OBJModel {
                   TransmitterModel.getTexturesForOBJModel(preBaked), null);
         }
 
-        return null;
+        return preBaked;
     }
 
+    @Nonnull
     @Override
-    public IModel process(ImmutableMap<String, String> customData) {
+    public IModel process(@Nonnull ImmutableMap<String, String> customData) {
         return new MekanismOBJModel(modelType, getMatLib(), location);
     }
 
+    @Nonnull
     @Override
-    public IModel retexture(ImmutableMap<String, String> textures) {
+    public IModel retexture(@Nonnull ImmutableMap<String, String> textures) {
         return new MekanismOBJModel(modelType, getMatLib().makeLibWithReplacements(textures), location);
     }
 
+    @Nonnull
     @Override
     public Collection<ResourceLocation> getTextures() {
-        List<ResourceLocation> superlist = new ArrayList<>();
-        for (ResourceLocation r : super.getTextures()) {
-            if (!r.getResourcePath().startsWith("#")) {
-                superlist.add(r);
-            }
-        }
-        return superlist;
+        return super.getTextures().stream().filter(r -> !r.getPath().startsWith("#")).collect(Collectors.toList());
     }
 
     public enum OBJModelType {

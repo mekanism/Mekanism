@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import javax.annotation.Nonnull;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
@@ -9,13 +10,9 @@ public class CreativeTabMekanism extends CreativeTabs {
         super("tabMekanism");
     }
 
+    @Nonnull
     @Override
-    public ItemStack getIconItemStack() {
-        return new ItemStack(MekanismItems.AtomicAlloy);
-    }
-
-    @Override
-    public ItemStack getTabIconItem() {
+    public ItemStack createIcon() {
         return new ItemStack(MekanismItems.AtomicAlloy);
     }
 }

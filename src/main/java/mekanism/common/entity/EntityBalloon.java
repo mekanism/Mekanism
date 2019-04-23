@@ -2,6 +2,7 @@ package mekanism.common.entity;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
@@ -26,16 +27,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData {
 
-    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager.<Byte>createKey(EntityBalloon.class,
-          DataSerializers.BYTE);
-    private static final DataParameter<Integer> LATCHED_X = EntityDataManager.<Integer>createKey(EntityBalloon.class,
-          DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.<Integer>createKey(EntityBalloon.class,
-          DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.<Integer>createKey(EntityBalloon.class,
-          DataSerializers.VARINT);
-    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.<Integer>createKey(EntityBalloon.class,
-          DataSerializers.VARINT);
+    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager
+          .createKey(EntityBalloon.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> LATCHED_X = EntityDataManager
+          .createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager
+          .createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager
+          .createKey(EntityBalloon.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager
+          .createKey(EntityBalloon.class, DataSerializers.VARINT);
     public EnumColor color = EnumColor.DARK_BLUE;
     public Coord4D latched;
     public EntityLivingBase latchedEntity;
@@ -118,8 +119,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
         if (world.isRemote) {
             if (dataManager.get(IS_LATCHED) == 1) {
-                latched = new Coord4D((int) dataManager.get(LATCHED_X), (int) dataManager.get(LATCHED_Y),
-                      (int) dataManager.get(LATCHED_Z), world.provider.getDimension());
+                latched = new Coord4D(dataManager.get(LATCHED_X), dataManager.get(LATCHED_Y),
+                      dataManager.get(LATCHED_Z), world.provider.getDimension());
             } else {
                 latched = null;
             }
@@ -239,7 +240,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             for (int i = 0; i < 10; i++) {
                 try {
                     doParticle();
-                } catch (Throwable t) {
+                } catch (Throwable ignored) {
                 }
             }
         }
@@ -278,7 +279,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound nbtTags) {
+    protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
         color = EnumColor.values()[nbtTags.getInteger("color")];
 
         if (nbtTags.hasKey("latched")) {
@@ -292,7 +293,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound nbtTags) {
+    protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags) {
         nbtTags.setInteger("color", color.ordinal());
 
         if (latched != null) {
@@ -368,11 +369,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource dmgSource, float damage) {
+    public boolean attackEntityFrom(@Nonnull DamageSource dmgSource, float damage) {
         if (isEntityInvulnerable(dmgSource)) {
             return false;
         } else {
-            setBeenAttacked();
+            markVelocityChanged();
 
             if (dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL) {
                 pop();

@@ -2,12 +2,13 @@ package mekanism.common.block;
 
 import java.util.Random;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITierItem;
@@ -48,6 +49,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -197,13 +199,15 @@ public abstract class BlockBasic extends Block {
 
     public abstract BasicBlock getBasicBlock();
 
+    @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateBasic(this, getTypeProperty());
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         BlockStateBasic.BasicBlockType type = BlockStateBasic.BasicBlockType.get(getBasicBlock(), meta & 0xF);
 
@@ -216,9 +220,10 @@ public abstract class BlockBasic extends Block {
         return type.meta;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
@@ -262,8 +267,8 @@ public abstract class BlockBasic extends Block {
         return state;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = new Coord4D(pos, world).getTileEntity(world);
@@ -324,7 +329,8 @@ public abstract class BlockBasic extends Block {
     }
 
     @Override
-    public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
+          SpawnPlacementType type) {
         int meta = state.getBlock().getMetaFromState(state);
 
         switch (getBasicBlock()) {
@@ -520,32 +526,34 @@ public abstract class BlockBasic extends Block {
         return false;
     }
 
-    @Deprecated
     @Override
-    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    @Deprecated
+    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         return BasicBlockType.get(state) != BasicBlockType.STRUCTURAL_GLASS;
     }
 
     @SideOnly(Side.CLIENT)
+    @Nonnull
     @Override
-    public BlockRenderLayer getBlockLayer() {
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
@@ -594,7 +602,7 @@ public abstract class BlockBasic extends Block {
     }
 
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         if (BasicBlockType.get(state) == null) {
             return null;
         }
@@ -637,7 +645,7 @@ public abstract class BlockBasic extends Block {
             }
 
             tileEntity.setFacing((short) change);
-            tileEntity.redstone = world.isBlockIndirectlyGettingPowered(pos) > 0;
+            tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
 
             if (tileEntity instanceof TileEntitySecurityDesk) {
                 ((TileEntitySecurityDesk) tileEntity).ownerUUID = placer.getUniqueID();
@@ -666,7 +674,7 @@ public abstract class BlockBasic extends Block {
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
         TileEntity tileEntity = world.getTileEntity(pos);
 
         if (tileEntity instanceof IBoundingBlock) {
@@ -676,9 +684,10 @@ public abstract class BlockBasic extends Block {
         super.breakBlock(world, pos, state);
     }
 
+    @Nonnull
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
-          EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
         BasicBlockType type = BasicBlockType.get(state);
         ItemStack ret = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
@@ -710,14 +719,15 @@ public abstract class BlockBasic extends Block {
         return ret;
     }
 
+    @Nonnull
     @Override
     public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return null;
+        return Items.AIR;
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
-          boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
         if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
             float motion = 0.7F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -753,10 +763,11 @@ public abstract class BlockBasic extends Block {
         return itemStack;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
+          EnumFacing side) {
         if (BasicBlockType.get(state) == BasicBlockType.STRUCTURAL_GLASS
               && BasicBlockType.get(world.getBlockState(pos.offset(side))) == BasicBlockType.STRUCTURAL_GLASS) {
             return false;
@@ -766,7 +777,7 @@ public abstract class BlockBasic extends Block {
     }
 
     @Override
-    public EnumFacing[] getValidRotations(World world, BlockPos pos) {
+    public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         EnumFacing[] valid = new EnumFacing[6];
 
@@ -784,7 +795,7 @@ public abstract class BlockBasic extends Block {
     }
 
     @Override
-    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
+    public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
         TileEntity tile = world.getTileEntity(pos);
 
         if (tile instanceof TileEntityBasicBlock) {
@@ -810,21 +821,20 @@ public abstract class BlockBasic extends Block {
     }
 
     @Override
-    @Deprecated
     public boolean hasComparatorInputOverride(IBlockState blockState) {
-        return BasicBlockType.get(blockState) == BasicBlockType.BIN;
+        BasicBlockType basicBlockType = BasicBlockType.get(blockState);
+        return basicBlockType != null && basicBlockType.hasRedstoneOutput;
     }
 
     @Override
-    @Deprecated
     public int getComparatorInputOverride(IBlockState blockState, World worldIn, BlockPos pos) {
-        if (BasicBlockType.get(blockState) == BasicBlockType.BIN) {
+        BasicBlockType basicBlockType = BasicBlockType.get(blockState);
+        if (basicBlockType != null && basicBlockType.hasRedstoneOutput) {
             TileEntity tile = worldIn.getTileEntity(pos);
             if (tile instanceof TileEntityBin) {
                 return ((TileEntityBin) tile).getRedstoneLevel();
             }
         }
-
         return 0;
     }
 }

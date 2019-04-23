@@ -1,18 +1,20 @@
 package mekanism.common.item;
 
 import com.google.common.collect.Multimap;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.state.IBlockState;
@@ -48,7 +50,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public boolean canHarvestBlock(IBlockState state, ItemStack stack) {
+    public boolean canHarvestBlock(@Nonnull IBlockState state, ItemStack stack) {
         return state.getBlock() != Blocks.BEDROCK;
     }
 
@@ -84,7 +86,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public float getStrVsBlock(ItemStack itemstack, IBlockState state) {
+    public float getDestroySpeed(ItemStack itemstack, IBlockState state) {
         return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
     }
 
@@ -97,7 +99,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         itemstack)));
         } else {
             setEnergy(itemstack, getEnergy(itemstack) - (
-                  MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * (getEfficiency(itemstack)) / 2));
+                  MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * (getEfficiency(itemstack)) / 2F));
         }
 
         return true;
@@ -108,7 +110,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         Vec3d playerLook = player.getLook(1.0F);
         double blockReachDistance = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE)
               .getAttributeValue();
-        Vec3d maxReach = positionEyes.addVector(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance,
+        Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance,
               playerLook.z * blockReachDistance);
         RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
         //noinspection ConstantConditions - idea thinks it's nonnull due to package level annotations, but it's not
@@ -132,7 +134,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
             Coord4D orig = new Coord4D(pos, player.world);
 
-            List<String> names = MekanismUtils.getOreDictName(stack);
+            List<String> names = OreDictCache.getOreDictName(stack);
 
             boolean isOre = false;
 
@@ -147,13 +149,14 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
                 for (Coord4D coord : found) {
                     if (coord.equals(orig) || getEnergy(itemstack) < (
-                          MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(itemstack))) {
+                          MekanismConfig.current().general.DISASSEMBLER_USAGE.val() * getEfficiency(
+                          itemstack))) {
                         continue;
                     }
 
                     Block block2 = coord.getBlock(player.world);
 
-                    block2.onBlockDestroyedByPlayer(player.world, coord.getPos(), state);
+                    block2.onBlockHarvested(player.world, coord.getPos(), state, player);
                     player.world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
                     player.world.setBlockToAir(coord.getPos());
                     block2.breakBlock(player.world, coord.getPos(), state);
@@ -174,15 +177,17 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return true;
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
 
         if (entityplayer.isSneaking()) {
             if (!world.isRemote) {
                 toggleMode(itemstack);
                 entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle")
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                            .localize("tooltip.modeToggle")
                             + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(
                             itemstack) + ")"));
             }
@@ -193,6 +198,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side,
           float hitX, float hitY, float hitZ) {
@@ -250,7 +256,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 }
 
                 if (block == Blocks.DIRT) {
-                    switch ((BlockDirt.DirtType) iblockstate.getValue(BlockDirt.VARIANT)) {
+                    switch (iblockstate.getValue(BlockDirt.VARIANT)) {
                         case DIRT:
                             setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
                             return EnumActionResult.SUCCESS;
@@ -324,8 +330,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return false;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
         Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
 
@@ -342,8 +349,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         public static Map<Block, List<Block>> ignoreBlocks = new HashMap<>();
 
         static {
-            ignoreBlocks.put(Blocks.REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
-            ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, ListUtils.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
+            ignoreBlocks.put(Blocks.REDSTONE_ORE, Arrays.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
+            ignoreBlocks.put(Blocks.LIT_REDSTONE_ORE, Arrays.asList(Blocks.REDSTONE_ORE, Blocks.LIT_REDSTONE_ORE));
         }
 
         private final EntityPlayer player;
@@ -377,7 +384,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                       .getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
 
                 if (coord.exists(world) && checkID(coord.getBlock(world)) && (stack.isItemEqual(blockStack) || (
-                      coord.getBlock(world) == startBlock && MekanismUtils.getOreDictName(stack).contains("logWood")
+                      coord.getBlock(world) == startBlock && OreDictCache.getOreDictName(stack).contains("logWood")
                             && coord.getBlockMeta(world) % 4 == stack.getItemDamage() % 4))) {
                     loop(coord);
                 }

@@ -6,10 +6,8 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismFluids;
 import mekanism.common.SideData;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -17,17 +15,14 @@ import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> {
 
     public TileEntityChemicalInjectionChamber() {
-        super("injection", "ChemicalInjectionChamber",
-              BlockStateMachine.MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy,
-              MekanismConfig.current().usage.chemicalInjectionChamberUsage.val(), 200, 1);
+        super("injection", "ChemicalInjectionChamber", MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy,
+              MekanismConfig.current().usage.chemicalInjectionChamberUsage.val(),
+              BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
 
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -42,23 +37,6 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     }
 
     @Override
-    public GasStack getItemGas(ItemStack itemstack) {
-        if (MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) {
-            return new GasStack(MekanismFluids.SulfuricAcid, 2);
-        }
-        if (MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) {
-            return new GasStack(MekanismFluids.HydrogenChloride, 2);
-        }
-        if (Block.getBlockFromItem(itemstack.getItem()) == MekanismBlocks.GasTank
-              && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
-              isValidGas(((IGasItem) itemstack.getItem()).getGas(itemstack).getGas())) {
-            return new GasStack(MekanismFluids.SulfuricAcid, 1);
-        }
-
-        return null;
-    }
-
-    @Override
     public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
         if (canReceiveGas(side, stack.getGas())) {
             return gasTank.receive(stack, doTransfer);
@@ -69,11 +47,9 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        if (configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0)) {
-            return isValidGas(type);
-        }
+        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0) && gasTank.canReceive(type)
+              && isValidGas(type);
 
-        return false;
     }
 
     @Override
@@ -93,14 +69,8 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
-    }
-
-    @Override
     public boolean isValidGas(Gas gas) {
-        return gas == MekanismFluids.SulfuricAcid || gas == MekanismFluids.Water
-              || gas == MekanismFluids.HydrogenChloride;
+        return Recipe.CHEMICAL_INJECTION_CHAMBER.containsRecipe(gas);
     }
 
     @Override

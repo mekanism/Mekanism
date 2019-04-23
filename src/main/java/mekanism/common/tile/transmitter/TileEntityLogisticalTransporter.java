@@ -2,15 +2,18 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.TransporterTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -37,14 +40,17 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork> {
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
 
-    public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
+    private final int SYNC_PACKET = 1;
+    private final int BATCH_PACKET = 2;
 
-    public int pullDelay = 0;
+    public TransporterTier tier = TransporterTier.BASIC;
+
+    private int delay = 0;
+    private int delayCount = 0;
 
     public TileEntityLogisticalTransporter() {
         transmitterDelegate = new TransporterImpl(this);
@@ -57,7 +63,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.TransporterTier.get(baseTier);
+        tier = TransporterTier.get(baseTier);
     }
 
     @Override
@@ -115,29 +121,37 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     public void pullItems() {
-        if (pullDelay == 0) {
-            boolean did = false;
+        // If a delay has been imposed, wait a bit
+        if (delay > 0) {
+            delay--;
+            return;
+        }
 
-            for (EnumFacing side : getConnections(ConnectionType.PULL)) {
-                TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-                TransitRequest request = TransitRequest.getTopStacks(tile, side, tier.getPullAmount());
+        // Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again
+        // in 3 ticks
+        delay = 3;
 
-                if (!request.isEmpty()) {
-                    TransitResponse response = TransporterUtils
-                          .insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+        // Attempt to pull
+        for (EnumFacing side : getConnections(ConnectionType.PULL)) {
+            TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
+            TransitRequest request = TransitRequest.buildInventoryMap(tile, side, tier.getPullAmount());
 
-                    if (!response.isEmpty()) {
-                        did = true;
-                        response.getInvStack(tile, side.getOpposite()).use(response.stack.getCount());
-                    }
+            // There's a stack available to insert into the network...
+            if (!request.isEmpty()) {
+                TransitResponse response = TransporterUtils
+                      .insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+
+                // If the insert succeeded, remove the inserted count and try again for another 10 ticks
+                if (!response.isEmpty()) {
+                    response.getInvStack(tile, side.getOpposite()).use(response.getStack().getCount());
+                    delay = 10;
+                } else {
+                    // Insert failed; increment the backoff and calculate delay. Note that we cap retries
+                    // at a max of 40 ticks (2 seocnds), which would be 4 consecutive retries
+                    delayCount++;
+                    delay = Math.min(40, (int) Math.exp(delayCount));
                 }
             }
-
-            if (did) {
-                pullDelay = 10;
-            }
-        } else {
-            pullDelay--;
         }
     }
 
@@ -182,27 +196,20 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
                     MekanismUtils.updateBlock(world, pos);
                 }
 
-                getTransmitter().transit.clear();
+                getTransmitter().readFromPacket(dataStream);
 
-                int amount = dataStream.readInt();
+            } else if (type == SYNC_PACKET) {
+                readStack(dataStream);
 
-                for (int i = 0; i < amount; i++) {
-                    getTransmitter().transit.add(TransporterStack.readFromPacket(dataStream));
+            } else if (type == BATCH_PACKET) {
+                int updates = dataStream.readInt();
+                for (int i = 0; i < updates; i++) {
+                    readStack(dataStream);
                 }
-            } else if (type == 1) {
-                boolean kill = dataStream.readBoolean();
-                int index = dataStream.readInt();
 
-                if (kill) {
-                    getTransmitter().transit.remove(index);
-                } else {
-                    TransporterStack stack = TransporterStack.readFromPacket(dataStream);
-
-                    if (stack.progress == 0) {
-                        stack.progress = 5;
-                    }
-
-                    getTransmitter().transit.replace(index, stack);
+                int deletes = dataStream.readInt();
+                for (int i = 0; i < deletes; i++) {
+                    getTransmitter().deleteStack(dataStream.readInt());
                 }
             }
         }
@@ -222,32 +229,59 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             data.add(-1);
         }
 
-        data.add(getTransmitter().transit.size());
-
-        for (TransporterStack stack : getTransmitter().transit) {
-            stack.write(getTransmitter(), data);
-        }
+        // Serialize all the in-flight stacks (this includes their ID)
+        getTransmitter().writeToPacket(data);
 
         return data;
     }
 
-    public TileNetworkList getSyncPacket(TransporterStack stack, boolean kill) {
+    public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
         TileNetworkList data = new TileNetworkList();
 
         if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
         }
 
-        data.add(1);
-        data.add(kill);
-        data.add(getTransmitter().transit.indexOf(stack));
-
-        if (!kill) {
-            stack.write(getTransmitter(), data);
-        }
+        data.add(SYNC_PACKET);
+        data.add(stackId);
+        stack.write(getTransmitter(), data);
 
         return data;
     }
+
+    public TileNetworkList makeBatchPacket(Map<Integer, TransporterStack> updates, Set<Integer> deletes) {
+        TileNetworkList data = new TileNetworkList();
+
+        if (Mekanism.hooks.MCMPLoaded) {
+            MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
+        }
+
+        data.add(BATCH_PACKET);
+
+        data.add(updates.size());
+        for (Entry<Integer, TransporterStack> entry : updates.entrySet()) {
+            data.add(entry.getKey());
+            entry.getValue().write(getTransmitter(), data);
+        }
+
+        data.add(deletes.size());
+        data.addAll(deletes);
+
+        return data;
+    }
+
+
+    private void readStack(ByteBuf dataStream) {
+        int id = dataStream.readInt();
+        TransporterStack stack = TransporterStack.readFromPacket(dataStream);
+
+        if (stack.progress == 0) {
+            stack.progress = 5;
+        }
+
+        getTransmitter().addStack(id, stack);
+    }
+
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
@@ -257,21 +291,10 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             tier = TransporterTier.values()[nbtTags.getInteger("tier")];
         }
 
-        if (nbtTags.hasKey("color")) {
-            getTransmitter().setColor(TransporterUtils.colors.get(nbtTags.getInteger("color")));
-        }
-
-        if (nbtTags.hasKey("stacks")) {
-            NBTTagList tagList = nbtTags.getTagList("stacks", NBT.TAG_COMPOUND);
-
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompoundTagAt(i));
-
-                getTransmitter().transit.add(stack);
-            }
-        }
+        getTransmitter().readFromNBT(nbtTags);
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -284,7 +307,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
         NBTTagList stacks = new NBTTagList();
 
-        for (TransporterStack stack : getTransmitter().transit) {
+        for (TransporterStack stack : getTransmitter().getTransit()) {
             NBTTagCompound tagCompound = new NBTTagCompound();
             stack.write(tagCompound);
             stacks.appendTag(tagCompound);
@@ -306,7 +329,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
               new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new TileNetworkList())),
               new Range4D(new Coord4D(getPos(), getWorld())));
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
-              .string("[Mekanism] ", TextFormatting.DARK_BLUE)
+              .string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.toggleColor")
               .string(": ");
 
@@ -325,7 +348,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
         super.onRightClick(player, side);
         TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
-              .string("[Mekanism] ", TextFormatting.DARK_BLUE)
+              .string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
               .translation("tooltip.configurator.viewColor")
               .string(": ");
 
@@ -350,7 +373,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         super.onChunkUnload();
 
         if (!getWorld().isRemote) {
-            for (TransporterStack stack : getTransmitter().transit) {
+            for (TransporterStack stack : getTransmitter().getTransit()) {
                 TransporterUtils.drop(getTransmitter(), stack);
             }
         }
@@ -362,7 +385,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public Object getBuffer() {
+    public Void getBuffer() {
         return null;
     }
 
@@ -404,14 +427,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
-            return (T) getTransmitter();
+            return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.cast(getTransmitter());
         }
 
         return super.getCapability(capability, side);

@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import javax.annotation.Nonnull;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -216,6 +217,8 @@ public class Pos3D extends Vec3d {
      * @param yaw - yaw to rotate by
      * @return rotated Pos3D
      */
+    @Nonnull
+    @Override
     public Pos3D rotateYaw(float yaw) {
         double yawRadians = Math.toRadians(yaw);
 
@@ -230,6 +233,7 @@ public class Pos3D extends Vec3d {
         return new Pos3D(xPos, y, zPos);
     }
 
+    @Nonnull
     @Override
     public Pos3D rotatePitch(float pitch) {
         double pitchRadians = Math.toRadians(pitch);
@@ -284,6 +288,7 @@ public class Pos3D extends Vec3d {
         return new Pos3D(this.x * x, this.y * y, this.z * z);
     }
 
+    @Nonnull
     @Override
     public Pos3D scale(double scale) {
         return scale(scale, scale, scale);
@@ -325,6 +330,7 @@ public class Pos3D extends Vec3d {
         return Math.acos(dotProduct(pos2));
     }
 
+    @Nonnull
     @Override
     public Pos3D normalize() {
         return new Pos3D(super.normalize());
@@ -355,6 +361,7 @@ public class Pos3D extends Vec3d {
         return new Pos3D(x, y, z);
     }
 
+    @Nonnull
     @Override
     public String toString() {
         return "[Pos3D: " + x + ", " + y + ", " + z + "]";
@@ -364,8 +371,8 @@ public class Pos3D extends Vec3d {
     public boolean equals(Object obj) {
         return obj instanceof Vec3d &&
               ((Vec3d) obj).x == x &&
-              ((Vec3d) obj).x == y &&
-              ((Vec3d) obj).x == z;
+              ((Vec3d) obj).y == y &&
+              ((Vec3d) obj).z == z;
     }
 
     @Override

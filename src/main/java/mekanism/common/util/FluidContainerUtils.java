@@ -190,7 +190,7 @@ public final class FluidContainerUtils {
 
         if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH && fluidStack == null)) {
             return handleContainerItemFill(tileEntity, inventory, stack, inSlot, outSlot);
-        } else if (editMode == ContainerEditMode.EMPTY || (editMode == ContainerEditMode.BOTH && fluidStack != null)) {
+        } else if (editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH) {
             return handleContainerItemEmpty(tileEntity, inventory, stack, needed, inSlot, outSlot, checker);
         }
 

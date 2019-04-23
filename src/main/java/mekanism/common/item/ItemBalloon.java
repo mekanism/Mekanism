@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
@@ -56,7 +57,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }
@@ -71,8 +72,9 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
         }
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
         ItemStack itemstack = entityplayer.getHeldItem(hand);
 
         if (!world.isRemote) {
@@ -89,13 +91,14 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
         return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         EnumColor color = getColor(stack);
         String dyeName = color.getDyedName();
 
-        if (I18n.canTranslate(getUnlocalizedName(stack) + "." + color.dyeName)) {
-            return LangUtils.localize(getUnlocalizedName(stack) + "." + color.dyeName);
+        if (I18n.canTranslate(getTranslationKey(stack) + "." + color.dyeName)) {
+            return LangUtils.localize(getTranslationKey(stack) + "." + color.dyeName);
         }
 
         if (getColor(stack) == EnumColor.BLACK) {
@@ -105,6 +108,7 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
         return dyeName + " " + LangUtils.localize("tooltip.balloon");
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side,
           float hitX, float hitY, float hitZ) {
@@ -177,11 +181,12 @@ public class ItemBalloon extends ItemMekanism implements IMetaItem {
 
     public class DispenserBehavior extends BehaviorDefaultDispenseItem {
 
+        @Nonnull
         @Override
         public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
             Coord4D coord = new Coord4D(source.getX(), source.getY(), source.getZ(),
                   source.getWorld().provider.getDimension());
-            EnumFacing side = (EnumFacing) source.getBlockState().getValue(BlockDispenser.FACING);
+            EnumFacing side = source.getBlockState().getValue(BlockDispenser.FACING);
 
             List<EntityLivingBase> entities = source.getWorld()
                   .getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());

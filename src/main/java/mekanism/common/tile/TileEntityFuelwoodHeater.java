@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
@@ -125,6 +126,7 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
         maxBurnTime = nbtTags.getInteger("maxBurnTime");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -176,9 +178,15 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
         return side != 0 && side != 1;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return new int[]{0};
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
+        return TileEntityFurnace.getItemBurnTime(stack) > 0;
     }
 
     @Override
@@ -260,14 +268,14 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

@@ -1,15 +1,11 @@
 package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
+import javax.annotation.Nonnull;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.api.TileNetworkList;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -17,14 +13,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public abstract class TileEntityMachine extends TileEntityNoisyBlock implements IUpgradeTile, IRedstoneControl,
+public abstract class TileEntityMachine extends TileEntityEffectsBlock implements IUpgradeTile, IRedstoneControl,
       ISecurityTile {
-
-    public int updateDelay;
-
-    public boolean isActive;
-
-    public boolean clientActive;
 
     public double prevEnergy;
 
@@ -50,53 +40,8 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-
-        if (world.isRemote && updateDelay > 0) {
-            updateDelay--;
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-
-        if (!world.isRemote) {
-            if (updateDelay > 0) {
-                updateDelay--;
-
-                if (updateDelay == 0 && clientActive != isActive) {
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          new Range4D(Coord4D.get(this)));
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean canSetFacing(int facing) {
         return facing != 0 && facing != 1;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-
-        if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
-            updateDelay = 10;
-            clientActive = active;
-        }
     }
 
     @Override
@@ -114,16 +59,9 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            clientActive = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
             energyPerTick = dataStream.readDouble();
             maxEnergy = dataStream.readDouble();
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
@@ -131,7 +69,6 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        data.add(isActive);
         data.add(controlType.ordinal());
         data.add(energyPerTick);
         data.add(maxEnergy);
@@ -143,15 +80,14 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
 
-        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
 
         return nbtTags;
@@ -187,14 +123,10 @@ public abstract class TileEntityMachine extends TileEntityNoisyBlock implements 
     public void recalculateUpgradables(Upgrade upgrade) {
         super.recalculateUpgradables(upgrade);
 
-        switch (upgrade) {
-            case ENERGY:
-                maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
-                energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_PER_TICK);
-                setEnergy(Math.min(getMaxEnergy(), getEnergy()));
-                break;
-            default:
-                break;
+        if (upgrade == Upgrade.ENERGY) {
+            maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+            energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+            setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }
 }

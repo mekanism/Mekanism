@@ -5,6 +5,7 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
@@ -90,19 +91,21 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
         return i;
     }
 
+    @Nonnull
     @Override
-    public String getUnlocalizedName(ItemStack itemstack) {
+    public String getTranslationKey(ItemStack itemstack) {
         GeneratorType generatorType = GeneratorType.get(itemstack);
         if (generatorType == null) {
             return "KillMe!";
         }
 
-        return getUnlocalizedName() + "." + generatorType.blockName;
+        return getTranslationKey() + "." + generatorType.blockName;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
         GeneratorType type = GeneratorType.get(itemstack);
         if (type == null) {
             return;
@@ -157,8 +160,8 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-          float hitX, float hitY, float hitZ, IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
         boolean place = true;
         Block block = world.getBlockState(pos).getBlock();
 
@@ -181,11 +184,10 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
                 return false;
             }
 
-            outer:
             for (int yPos = 1; yPos <= 4; yPos++) {
                 if (!world.isAirBlock(pos.add(0, yPos, 0)) || pos.getY() + yPos > 255) {
                     place = false;
-                    break outer;
+                    break;
                 }
             }
         }

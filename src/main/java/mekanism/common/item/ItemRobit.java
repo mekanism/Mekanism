@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.base.ISustainedInventory;
@@ -37,6 +38,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory {
               getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUse(EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand,
           EnumFacing side, float posX, float posY, float posZ) {

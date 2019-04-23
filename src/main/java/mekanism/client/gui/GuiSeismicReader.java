@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import mekanism.api.Coord4D;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -11,7 +12,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,15 +24,15 @@ import org.lwjgl.util.Rectangle;
 @SideOnly(Side.CLIENT)
 public class GuiSeismicReader extends GuiScreen {
 
-    public ItemStack itemStack;
-    public Coord4D pos;
-    protected int xSize = 137;
-    protected int ySize = 182;
+    private ItemStack itemStack;
+    private Coord4D pos;
+    private int xSize = 137;
+    private int ySize = 182;
     private World worldObj;
     private ArrayList<Pair<Integer, Block>> blockList = new ArrayList<>();
     private Rectangle upButton, downButton, tooltip;
 
-    private int currentLayer = 0;
+    private int currentLayer;
 
     public GuiSeismicReader(World world, Coord4D coord, ItemStack stack) {
         pos = new Coord4D(coord.x, Math.min(255, coord.y), coord.z, world.provider.getDimension());
@@ -99,10 +99,6 @@ public class GuiSeismicReader extends GuiScreen {
             if (0 <= layer && layer < blockList.size()) {
                 ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
 
-                if (stack.getItem() == null) {
-                    continue;
-                }
-
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(centralX - 2, centralY - i * 16 + (22 * 2), 0);
 
@@ -126,13 +122,7 @@ public class GuiSeismicReader extends GuiScreen {
         if (currentLayer - 1 >= 0) {
             ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 1,
                   blockList.get(currentLayer - 1).getLeft());
-            String renderString = "unknown";
-
-            if (nameStack.getItem() != null) {
-                renderString = nameStack.getDisplayName();
-            } else if (blockList.get(currentLayer - 1).getRight() == Blocks.AIR) {
-                renderString = "Air";
-            }
+            String renderString = nameStack.getDisplayName();
 
             String capitalised = renderString.substring(0, 1).toUpperCase() + renderString.substring(1);
             int lengthX = fontRenderer.getStringWidth(capitalised);
@@ -163,7 +153,8 @@ public class GuiSeismicReader extends GuiScreen {
             if (blockList.get(currentLayer - 1) != null) {
                 Block block = blockList.get(currentLayer - 1).getRight();
 
-                if (pair.getRight() == block && pair.getLeft() == blockList.get(currentLayer - 1).getLeft()) {
+                if (pair.getRight() == block && Objects
+                      .equals(pair.getLeft(), blockList.get(currentLayer - 1).getLeft())) {
                     frequency++;
                 }
             }

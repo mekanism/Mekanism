@@ -6,7 +6,10 @@ import net.minecraft.util.EnumFacing;
  * Implement this if your block can connect to Pressurized Tubes.
  *
  * @author AidanBrady
+ * @deprecated Dropped in favor of better support for machines of what implements GAS_HANDLER_CAPABILITY use {@link
+ * IGasHandler} instead.
  */
+@Deprecated
 public interface ITubeConnection {
 
     /**

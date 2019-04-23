@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeItem;
@@ -48,6 +49,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem {
         return upgrade;
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
           float hitY, float hitZ, EnumHand hand) {

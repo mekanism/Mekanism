@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -16,7 +17,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -39,7 +40,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -80,10 +80,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     public TileComponentSecurity securityComponent;
     public TileComponentChunkLoader chunkLoaderComponent;
     public TileComponentUpgrade upgradeComponent;
-    private MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
     public TileEntityTeleporter() {
-        super("Teleporter", BlockStateMachine.MachineType.TELEPORTER.baseEnergy);
+        super("Teleporter", MachineType.TELEPORTER.baseEnergy);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
         securityComponent = new TileComponentSecurity(this);
@@ -287,13 +286,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
         }
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return new int[]{0};
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
@@ -451,6 +451,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -557,7 +558,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return ChargeUtils.canBeOutputted(itemstack, false);
     }
 
@@ -594,6 +595,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
         }
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {

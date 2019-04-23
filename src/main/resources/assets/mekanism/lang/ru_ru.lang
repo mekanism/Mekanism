@@ -979,9 +979,6 @@ reactor.depleted.desc=Реактору не хватает топлива для
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
-# NEI stuff
-nei.chemicalInjectionChamber=Хим. инъекционная камера
-
 #############
 # GENERATORS
 #############

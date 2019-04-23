@@ -4,6 +4,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemCondition;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.IItemTransformer;
+import crafttweaker.api.item.IItemTransformerNew;
 import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.player.IPlayer;
 import java.util.List;
@@ -16,7 +17,6 @@ public class CraftTweakerGasStack implements IGasStack {
     public CraftTweakerGasStack(GasStack stack) {
         this.stack = stack;
     }
-
 
     @Override
     public IGasDefinition getDefinition() {
@@ -69,6 +69,11 @@ public class CraftTweakerGasStack implements IGasStack {
     }
 
     @Override
+    public IIngredient transformNew(IItemTransformerNew transformer) {
+        return null;
+    }
+
+    @Override
     public IIngredient transform(IItemTransformer iItemTransformer) {
         return null;
     }
@@ -109,6 +114,16 @@ public class CraftTweakerGasStack implements IGasStack {
     }
 
     @Override
+    public IItemStack applyNewTransform(IItemStack item) {
+        return null;
+    }
+
+    @Override
+    public boolean hasNewTransformers() {
+        return false;
+    }
+
+    @Override
     public boolean hasTransformers() {
         return false;
     }
@@ -120,11 +135,17 @@ public class CraftTweakerGasStack implements IGasStack {
 
     @Override
     public Object getInternal() {
-        return null;
+        return stack;
+    }
+
+    @Override
+    public String toCommandString() {
+        return stack.amount > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.amount)
+              : String.format("<gas:%s>", stack.getGas().getName());
     }
 
     @Override
     public String toString() {
-        return String.format("<gas:%sx%dmb>", stack.getGas().getName(), stack.amount);
+        return toCommandString();
     }
 }

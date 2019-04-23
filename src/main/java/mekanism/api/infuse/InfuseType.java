@@ -40,7 +40,12 @@ public final class InfuseType {
         sprite = tex;
     }
 
+    @Deprecated
     public InfuseType setUnlocalizedName(String name) {
+        return setTranslationKey(name);
+    }
+
+    public InfuseType setTranslationKey(String name) {
         unlocalizedName = "infuse." + name;
 
         return this;

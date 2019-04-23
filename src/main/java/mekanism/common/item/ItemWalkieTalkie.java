@@ -4,8 +4,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -47,10 +49,14 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
               .localize("gui." + (getOn(itemstack) ? "on" : "off")));
         list.add(EnumColor.DARK_AQUA + LangUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(
               itemstack));
+        if (!MekanismConfig.current().general.voiceServerEnabled.val()) {
+            list.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.walkie_disabled"));
+        }
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
 
         if (player.isSneaking()) {
@@ -63,7 +69,7 @@ public class ItemWalkieTalkie extends ItemMekanism implements IItemNetwork {
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged) {
         return !ItemStack.areItemsEqual(oldStack, newStack);
     }
 

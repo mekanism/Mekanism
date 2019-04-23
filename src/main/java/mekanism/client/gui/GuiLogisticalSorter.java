@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
@@ -16,6 +15,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.content.transporter.TModIDFilter;
@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -43,7 +44,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
-public class GuiLogisticalSorter extends GuiMekanism {
+public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSorter> {
 
     // Scrollbar dimensions
     private final int scrollX = 154;
@@ -55,39 +56,36 @@ public class GuiLogisticalSorter extends GuiMekanism {
     private final int filterY = 18;
     private final int filterW = 96;
     private final int filterH = 29;
-    public TileEntityLogisticalSorter tileEntity;
     /**
      * Amount scrolled in filter list (0 = top, 1 = bottom)
      */
-    public float scroll;
+    private float scroll;
     /**
      * True if the scrollbar is being dragged
      */
-    public boolean isDragging = false;
-    public int dragOffset = 0;
-    public int stackSwitch = 0;
-    public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<>();
-    public Map<TModIDFilter, StackData> modIDStacks = new HashMap<>();
+    private boolean isDragging = false;
+    private int dragOffset = 0;
+    private int stackSwitch = 0;
+    private Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<>();
+    private Map<TModIDFilter, StackData> modIDStacks = new HashMap<>();
     // Buttons
-    int BUTTON_NEW = 0;
+    private final int BUTTON_NEW = 0;
     /**
      * True if the left mouse button was held down last time drawScreen was called.
      */
     private boolean wasClicking;
 
-    public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter entity) {
-        super(entity, new ContainerNull(player, entity));
-        tileEntity = entity;
+    public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tile) {
+        super(tile, new ContainerNull(player, tile));
 
         // Set size of gui
         // xSize = 189;
         // ySize = 166;
 
         // Add common Mekanism gui elements
-        guiElements.add(new GuiRedstoneControl(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
-        guiElements.add(new GuiSecurityTab(this, tileEntity,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
+        ResourceLocation resource = getGuiLocation();
+        addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
+        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
     }
 
     public int getScroll() {
@@ -293,12 +291,9 @@ public class GuiLogisticalSorter extends GuiMekanism {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
-
-        // Get mouse position relative to gui
-        final int xAxis = mouseX - guiLeft;
-        final int yAxis = mouseY - guiTop;
-
         if (isDragging) {
+            // Get mouse position relative to gui
+            final int yAxis = mouseY - guiTop;
             scroll = Math.min(Math.max((yAxis - 18 - dragOffset) / 123F, 0), 1);
         }
     }
@@ -343,6 +338,11 @@ public class GuiLogisticalSorter extends GuiMekanism {
                 scroll = 1.0F;
             }
         }
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png");
     }
 
     @Override
@@ -422,7 +422,7 @@ public class GuiLogisticalSorter extends GuiMekanism {
                             itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
                             RenderHelper.disableStandardItemLighting();
                             GlStateManager.popMatrix();
-                        } catch (final Exception e) {
+                        } catch (final Exception ignored) {
                         }
                     }
 
@@ -433,10 +433,10 @@ public class GuiLogisticalSorter extends GuiMekanism {
                 } else if (filter instanceof TMaterialFilter) {
                     final TMaterialFilter itemFilter = (TMaterialFilter) filter;
 
-                    if (!itemFilter.materialItem.isEmpty()) {
+                    if (!itemFilter.getMaterialItem().isEmpty()) {
                         GlStateManager.pushMatrix();
                         RenderHelper.enableGUIStandardItemLighting();
-                        itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
+                        itemRender.renderItemAndEffectIntoGUI(itemFilter.getMaterialItem(), 59, yStart + 3);
                         RenderHelper.disableStandardItemLighting();
                         GlStateManager.popMatrix();
                     }
@@ -461,7 +461,7 @@ public class GuiLogisticalSorter extends GuiMekanism {
                             itemRender.renderItemAndEffectIntoGUI(renderStack, 59, yStart + 3);
                             RenderHelper.disableStandardItemLighting();
                             GlStateManager.popMatrix();
-                        } catch (final Exception e) {
+                        } catch (final Exception ignored) {
                         }
                     }
 
@@ -526,7 +526,7 @@ public class GuiLogisticalSorter extends GuiMekanism {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 
         // Draw main gui background
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png"));
+        mc.renderEngine.bindTexture(getGuiLocation());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -597,7 +597,7 @@ public class GuiLogisticalSorter extends GuiMekanism {
             oreDictStacks.put(filter, new StackData());
         }
 
-        oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.oreDictName, false);
+        oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.getOreDictName(), false);
 
         stackSwitch = 0;
         updateScreen();
@@ -609,7 +609,7 @@ public class GuiLogisticalSorter extends GuiMekanism {
             modIDStacks.put(filter, new StackData());
         }
 
-        modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.modID, false);
+        modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.getModID(), false);
 
         stackSwitch = 0;
         updateScreen();

@@ -4,14 +4,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -35,8 +34,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = MekanismHooks.IC2_MOD_ID)
-public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IChunkLoadHandler,
-      IFrequencyHandler, ITickable {
+public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickable {
 
     /**
      * The direction this block is facing.
@@ -73,12 +71,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void update() {
         if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
-            MachineType type = BlockStateMachine.MachineType.get(getBlockType(), getBlockMetadata());
+            MachineType type = MachineType.get(getBlockType(), getBlockMetadata());
 
             if (type != null && !type.isEnabled()) {
                 Mekanism.logger
-                      .info("[Mekanism] Destroying machine of type '" + type.blockName + "' at coords " + Coord4D
-                            .get(this) + " as according to config.");
+                      .info("Destroying machine of type '" + type.blockName + "' at coords " + Coord4D.get(this)
+                            + " as according to config.");
                 world.setBlockToAir(getPos());
                 return;
             }
@@ -111,11 +109,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         onAdded();
     }
 
-    @Override
-    public void onChunkLoad() {
-
-    }
-
     public void open(EntityPlayer player) {
         playersUsing.add(player);
     }
@@ -127,7 +120,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            facing = EnumFacing.getFront(dataStream.readInt());
+            facing = EnumFacing.byIndex(dataStream.readInt());
             redstone = dataStream.readBoolean();
 
             if (clientFacing != facing) {
@@ -182,7 +175,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         super.readFromNBT(nbtTags);
 
         if (nbtTags.hasKey("facing")) {
-            facing = EnumFacing.getFront(nbtTags.getInteger("facing"));
+            facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
         }
 
         redstone = nbtTags.getBoolean("redstone");
@@ -192,6 +185,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -210,21 +204,21 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return (T) this;
+            return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, facing);
     }
 
     public void setFacing(short direction) {
         if (canSetFacing(direction)) {
-            facing = EnumFacing.getFront(direction);
+            facing = EnumFacing.byIndex(direction);
         }
 
         if (!(facing == clientFacing || world.isRemote)) {
@@ -264,7 +258,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     }
 
     private void updatePower() {
-        boolean power = world.isBlockIndirectlyGettingPowered(getPos()) > 0;
+        boolean power = world.getRedstonePowerFromNeighbors(getPos()) > 0;
 
         if (redstone != power) {
             redstone = power;
@@ -292,6 +286,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         return null;
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound getUpdateTag() {
         // Forge writes only x/y/z/id info to a new NBT Tag Compound. This is fine, we have a custom network system
@@ -300,7 +295,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     }
 
     @Override
-    public void handleUpdateTag(NBTTagCompound tag) {
+    public void handleUpdateTag(@Nonnull NBTTagCompound tag) {
         // The super implementation of handleUpdateTag is to call this readFromNBT. But, the given TagCompound
         // only has x/y/z/id data, so our readFromNBT will set a bunch of default values which are wrong.
         // So simply call the super's readFromNBT, to let Forge do whatever it wants, but don't treat this like

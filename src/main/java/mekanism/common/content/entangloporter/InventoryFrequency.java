@@ -6,9 +6,9 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.PacketHandler;
-import mekanism.common.Tier;
 import mekanism.common.frequency.Frequency;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tier.GasTankTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,9 +22,6 @@ public class InventoryFrequency extends Frequency {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
 
-    public static final int FLUID_TANK_SIZE = Tier.FluidTankTier.ULTIMATE.getOutput();
-    public static final int GAS_TANK_SIZE = Tier.GasTankTier.ULTIMATE.getOutput();
-
     public double storedEnergy;
     public FluidTank storedFluid;
     public GasTank storedGas;
@@ -34,8 +31,8 @@ public class InventoryFrequency extends Frequency {
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
 
-        storedFluid = new FluidTank(FLUID_TANK_SIZE);
-        storedGas = new GasTank(GAS_TANK_SIZE);
+        storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
+        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
     }
 
     public InventoryFrequency(NBTTagCompound nbtTags) {
@@ -80,8 +77,8 @@ public class InventoryFrequency extends Frequency {
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
 
-        storedFluid = new FluidTank(FLUID_TANK_SIZE);
-        storedGas = new GasTank(GAS_TANK_SIZE);
+        storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
+        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
 
         storedEnergy = nbtTags.getDouble("storedEnergy");
 
@@ -97,11 +94,11 @@ public class InventoryFrequency extends Frequency {
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
-            NBTTagCompound tagCompound = (NBTTagCompound) tagList.getCompoundTagAt(tagCount);
+            NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < 1) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
 
@@ -137,8 +134,8 @@ public class InventoryFrequency extends Frequency {
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
 
-        storedFluid = new FluidTank(FLUID_TANK_SIZE);
-        storedGas = new GasTank(GAS_TANK_SIZE);
+        storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
+        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
 
         storedEnergy = dataStream.readDouble();
 

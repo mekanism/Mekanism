@@ -117,9 +117,7 @@ public class MekanismRenderer {
             spriteLocation = fluid.getFlowing();
         }
 
-        TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
-
-        return sprite != null ? sprite : missingIcon;
+        return getTextureAtlasSprite(spriteLocation);
     }
 
     public static TextureAtlasSprite getFluidTexture(FluidStack fluidStack, FluidType type) {
@@ -135,20 +133,21 @@ public class MekanismRenderer {
         } else {
             spriteLocation = fluid.getFlowing(fluidStack);
         }
+        return getTextureAtlasSprite(spriteLocation);
+    }
 
+    public static TextureAtlasSprite getTextureAtlasSprite(ResourceLocation spriteLocation) {
         TextureAtlasSprite sprite = texMap.getTextureExtry(spriteLocation.toString());
-
         return sprite != null ? sprite : missingIcon;
     }
 
     public static RenderState pauseRenderer(Tessellator tess) {
+        RenderState state = null;
         if (MekanismRenderer.isDrawing(tess)) {
-            RenderState renderState = new RenderState(tess.getBuffer().getVertexFormat(),
-                  tess.getBuffer().getDrawMode());
+            state = new RenderState(tess.getBuffer().getVertexFormat(), tess.getBuffer().getDrawMode());
             tess.draw();
-            return renderState;
         }
-        return null;
+        return state;
     }
 
     public static void resumeRenderer(Tessellator tess, RenderState renderState) {
@@ -218,6 +217,10 @@ public class MekanismRenderer {
         GL11.glTranslated(object.minX, object.minY, object.minZ);
         RenderResizableCuboid.INSTANCE.renderCube(object);
         GlStateManager.popMatrix();
+    }
+
+    public static void bindTexture(ResourceLocation texture) {
+        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
     }
 
     public static void color(EnumColor color) {
@@ -371,17 +374,6 @@ public class MekanismRenderer {
         ResourceLocation getIcon(ItemStack stack, int side);
     }
 
-    public static class RenderState {
-
-        protected final VertexFormat prevFormat;
-        protected final int prevMode;
-
-        public RenderState(VertexFormat prevFormat, int prevMode) {
-            this.prevFormat = prevFormat;
-            this.prevMode = prevMode;
-        }
-    }
-
     public static class Model3D {
 
         public double posX, posY, posZ;
@@ -478,6 +470,17 @@ public class MekanismRenderer {
 
         public void render() {
             GL11.glCallList(display);
+        }
+    }
+
+    public static class RenderState {
+
+        private final VertexFormat prevFormat;
+        private final int prevMode;
+
+        private RenderState(VertexFormat prevFormat, int prevMode) {
+            this.prevFormat = prevFormat;
+            this.prevMode = prevMode;
         }
     }
 }

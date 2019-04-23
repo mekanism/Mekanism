@@ -15,24 +15,17 @@ public class GasHelper {
         if (ingredient == null) {
             return false;
         }
-
         if (ingredient == IngredientAny.INSTANCE) {
             return true;
         }
-
         if (ingredient instanceof IGasStack) {
             return toGas((IGasStack) ingredient).isGasEqual(toGas(gasStack));
         }
-
         return false;
     }
 
     public static GasStack toGas(IGasStack iStack) {
-        if (iStack == null) {
-            return null;
-        } else {
-            return new GasStack(GasRegistry.getGas(iStack.getName()), iStack.getAmount());
-        }
+        return iStack == null ? null : new GasStack(GasRegistry.getGas(iStack.getName()), iStack.getAmount());
     }
 
     public static GasStack[] toGases(IGasStack[] iStack) {

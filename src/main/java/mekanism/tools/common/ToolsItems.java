@@ -10,10 +10,11 @@ import mekanism.tools.item.ItemMekanismSword;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("mekanismtools")
+@ObjectHolder(MekanismTools.MODID)
 public class ToolsItems {
 
     //Vanilla Material Paxels
@@ -311,6 +312,6 @@ public class ToolsItems {
     }
 
     public static Item init(Item item, String name) {
-        return item.setUnlocalizedName(name).setRegistryName("mekanismtools:" + name);
+        return item.setTranslationKey(name).setRegistryName(new ResourceLocation(MekanismTools.MODID, name));
     }
 }

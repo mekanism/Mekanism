@@ -15,8 +15,8 @@ public class SolarNeutronRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.getInput().ingredient);
-        ingredients.setOutput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.getOutput().output);
+        ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.getInput().ingredient);
+        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutput().output);
     }
 
     public SolarNeutronRecipe getRecipe() {

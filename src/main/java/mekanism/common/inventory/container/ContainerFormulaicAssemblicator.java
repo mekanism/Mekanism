@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import javax.annotation.Nonnull;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotSpecific;
@@ -8,88 +9,22 @@ import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerFormulaicAssemblicator extends Container {
+public class ContainerFormulaicAssemblicator extends ContainerMekanism<TileEntityFormulaicAssemblicator> {
 
-    private TileEntityFormulaicAssemblicator tileEntity;
-
-    public ContainerFormulaicAssemblicator(InventoryPlayer inventory, TileEntityFormulaicAssemblicator tentity) {
-        tileEntity = tentity;
-        addSlotToContainer(new SlotDischarge(tentity, 1, 152, 76));
-        addSlotToContainer(new SlotSpecific(tentity, 2, 6, 26, ItemCraftingFormula.class));
-
-        int slotY;
-
-        for (slotY = 0; slotY < 2; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(tentity, slotX + slotY * 9 + 3, 8 + slotX * 18, 98 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 3; slotX++) {
-                addSlotToContainer(new Slot(tentity, slotX + slotY * 3 + 27, 26 + slotX * 18, 17 + slotY * 18) {
-                    @Override
-                    public boolean isItemValid(ItemStack stack) {
-                        return !tileEntity.autoMode;
-                    }
-
-                    @Override
-                    public boolean canTakeStack(EntityPlayer player) {
-                        return !tileEntity.autoMode;
-                    }
-
-                    @Override
-                    @SideOnly(Side.CLIENT)
-                    public boolean isEnabled() {
-                        return !tileEntity.autoMode;
-                    }
-                });
-            }
-        }
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 2; slotX++) {
-                addSlotToContainer(new SlotOutput(tentity, slotX + slotY * 2 + 21, 116 + slotX * 18, 17 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 3; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 148 + slotY * 18));
-            }
-        }
-
-        for (slotY = 0; slotY < 9; slotY++) {
-            addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 206));
-        }
-
-        tileEntity.open(inventory.player);
-        tileEntity.openInventory(inventory.player);
+    public ContainerFormulaicAssemblicator(InventoryPlayer inventory, TileEntityFormulaicAssemblicator tile) {
+        super(tile, inventory);
     }
 
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer) {
-        super.onContainerClosed(entityplayer);
-
-        tileEntity.close(entityplayer);
-        tileEntity.closeInventory(entityplayer);
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer) {
-        return tileEntity.isUsableByPlayer(entityplayer);
-    }
-
+    @Nonnull
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
-        Slot currentSlot = (Slot) inventorySlots.get(slotID);
+        Slot currentSlot = inventorySlots.get(slotID);
 
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
@@ -154,5 +89,51 @@ public class ContainerFormulaicAssemblicator extends Container {
         }
 
         return stack;
+    }
+
+    @Override
+    protected void addSlots() {
+        addSlotToContainer(new SlotDischarge(tileEntity, 1, 152, 76));
+        addSlotToContainer(new SlotSpecific(tileEntity, 2, 6, 26, ItemCraftingFormula.class));
+
+        for (int slotY = 0; slotY < 2; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                addSlotToContainer(new Slot(tileEntity, slotX + slotY * 9 + 3, 8 + slotX * 18, 98 + slotY * 18));
+            }
+        }
+
+        for (int slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 3; slotX++) {
+                addSlotToContainer(new Slot(tileEntity, slotX + slotY * 3 + 27, 26 + slotX * 18, 17 + slotY * 18) {
+                    @Override
+                    public boolean isItemValid(ItemStack stack) {
+                        return !tileEntity.autoMode;
+                    }
+
+                    @Override
+                    public boolean canTakeStack(EntityPlayer player) {
+                        return !tileEntity.autoMode;
+                    }
+
+                    @Override
+                    @SideOnly(Side.CLIENT)
+                    public boolean isEnabled() {
+                        return !tileEntity.autoMode;
+                    }
+                });
+            }
+        }
+
+        for (int slotY = 0; slotY < 3; slotY++) {
+            for (int slotX = 0; slotX < 2; slotX++) {
+                addSlotToContainer(
+                      new SlotOutput(tileEntity, slotX + slotY * 2 + 21, 116 + slotX * 18, 17 + slotY * 18));
+            }
+        }
+    }
+
+    @Override
+    protected int getInventoryOffset() {
+        return 148;
     }
 }

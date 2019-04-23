@@ -1,5 +1,6 @@
 package mekanism.common.inventory;
 
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -28,14 +29,18 @@ public class InventoryList implements IInventory {
     /**
      * Returns the stack in the given slot.
      */
+    @Nonnull
+    @Override
     public ItemStack getStackInSlot(int index) {
-        return index >= 0 && index < this.inventoryContents.size() ? (ItemStack) this.inventoryContents.get(index)
+        return index >= 0 && index < this.inventoryContents.size() ? this.inventoryContents.get(index)
               : ItemStack.EMPTY;
     }
 
     /**
      * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
      */
+    @Nonnull
+    @Override
     public ItemStack decrStackSize(int index, int count) {
         ItemStack itemstack = ItemStackHelper.getAndSplit(this.inventoryContents, index, count);
 
@@ -49,8 +54,10 @@ public class InventoryList implements IInventory {
     /**
      * Removes a stack from the given slot and returns it.
      */
+    @Nonnull
+    @Override
     public ItemStack removeStackFromSlot(int index) {
-        ItemStack itemstack = (ItemStack) this.inventoryContents.get(index);
+        ItemStack itemstack = this.inventoryContents.get(index);
 
         if (itemstack.isEmpty()) {
             return ItemStack.EMPTY;
@@ -63,7 +70,7 @@ public class InventoryList implements IInventory {
     /**
      * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
      */
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
         this.inventoryContents.set(index, stack);
 
         if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit()) {
@@ -93,6 +100,8 @@ public class InventoryList implements IInventory {
     /**
      * Get the name of this object. For players this returns their username
      */
+    @Nonnull
+    @Override
     public String getName() {
         return this.inventoryTitle;
     }
@@ -114,9 +123,11 @@ public class InventoryList implements IInventory {
     /**
      * Get the formatted ChatComponent that will be used for the sender's username in chat
      */
+    @Nonnull
+    @Override
     public ITextComponent getDisplayName() {
-        return (ITextComponent) (this.hasCustomName() ? new TextComponentString(this.getName())
-              : new TextComponentTranslation(this.getName(), new Object[0]));
+        return (this.hasCustomName() ? new TextComponentString(this.getName())
+              : new TextComponentTranslation(this.getName()));
     }
 
     /**
@@ -137,21 +148,21 @@ public class InventoryList implements IInventory {
     /**
      * Don't rename this method to canInteractWith due to conflicts with Container
      */
-    public boolean isUsableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(@Nonnull EntityPlayer player) {
         return true;
     }
 
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(@Nonnull EntityPlayer player) {
     }
 
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(@Nonnull EntityPlayer player) {
     }
 
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For
      * guis use Slot.isItemValid
      */
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
+    public boolean isItemValidForSlot(int index, @Nonnull ItemStack stack) {
         return true;
     }
 

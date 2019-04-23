@@ -13,7 +13,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -44,9 +43,10 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler,
-      ITubeConnection, IHeatTransfer, IConfigurable {
+      IHeatTransfer, IConfigurable {
 
     public boolean fluidEject;
 
@@ -63,6 +63,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         fluidEject = nbtTags.getBoolean("fluidEject");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -109,8 +110,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (resource.getFluid() == FluidRegistry.WATER && getReactor() != null && !fluidEject) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+        if (resource != null && resource.getFluid() == FluidRegistry.WATER && getReactor() != null && !fluidEject) {
             return getReactor().getWaterTank().fill(resource, doFill);
         }
 
@@ -118,8 +119,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (resource.getFluid() == FluidRegistry.getFluid("steam") && getReactor() != null) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+        if (resource != null && resource.getFluid() == FluidRegistry.getFluid("steam") && getReactor() != null) {
             getReactor().getSteamTank().drain(resource.amount, doDrain);
         }
 
@@ -136,13 +137,13 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        return (getReactor() != null && fluid.getFluid() == FluidRegistry.WATER && !fluidEject);
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        return getReactor() != null && fluid != null && fluid.getFluid().equals(FluidRegistry.WATER) && !fluidEject;
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
-        return getReactor() != null && (fluid == null || fluid.getFluid() == FluidRegistry.getFluid("steam"));
+        return getReactor() != null && fluid != null && fluid.getFluid() == FluidRegistry.getFluid("steam");
     }
 
     @Override
@@ -198,29 +199,28 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return getReactor() != null;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
               || capability == Capabilities.CONFIGURABLE_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
               || capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return (T) this;
         }
 
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (T) new FluidHandlerWrapper(this, side);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);
@@ -268,7 +268,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public double getMaxOutput() {
-        return 1000000000;
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -333,6 +333,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         return null;
     }
 
+    @Nonnull
     @Override
     public ItemStack getStackInSlot(int slotID) {
         return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory().get(slotID)
@@ -345,7 +346,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public void setInventorySlotContents(int slotID, ItemStack itemstack) {
+    public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack) {
         if (getReactor() != null && getReactor().isFormed()) {
             getReactor().getInventory().set(slotID, itemstack);
 
@@ -355,13 +356,25 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         }
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return getReactor() != null && getReactor().isFormed() ? new int[]{0} : InventoryUtils.EMPTY;
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Allow inserting
+            return false;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return getReactor() == null;
+        }
+        return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum) {
             ItemHohlraum hohlraum = (ItemHohlraum) itemstack.getItem();
 
@@ -373,7 +386,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum) {
             ItemHohlraum hohlraum = (ItemHohlraum) itemstack.getItem();
 
@@ -412,8 +425,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
             fluidEject = !fluidEject;
             String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils
                   .transOutputInput(fluidEject) + ".";
-            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
-                  .localize("tooltip.configurator.reactorPortEject") + modeText));
+            player.sendMessage(
+                  new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                        .localize("tooltip.configurator.reactorPortEject") + modeText));
             Mekanism.packetHandler
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));

@@ -9,16 +9,11 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -33,6 +28,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -41,11 +37,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends
-      TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection,
-      ITierUpgradeable, ISustainedData {
+      TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler,
+      ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive",
           "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+    public static final int BASE_TICKS_REQUIRED = 200;
+    public static final int BASE_GAS_PER_TICK = 1;
     public static int MAX_GAS = 210;
     /**
      * How much secondary energy (fuel) this machine uses per tick, not including upgrades.
@@ -103,52 +101,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier != BaseTier.BASIC) {
-            return false;
-        }
-
-        world.setBlockToAir(getPos());
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
-
-        TileEntityFactory factory = (TileEntityFactory) world.getTileEntity(getPos());
-        RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-
-        //Basic
-        factory.facing = facing;
-        factory.clientFacing = clientFacing;
-        factory.ticker = ticker;
-        factory.redstone = redstone;
-        factory.redstoneLastTick = redstoneLastTick;
-        factory.doAutoSync = doAutoSync;
-
-        //Electric
-        factory.electricityStored = electricityStored;
-
-        //Noisy
-        factory.soundURL = soundURL;
-
-        //Machine
-        factory.progress[0] = operatingTicks;
-        factory.updateDelay = updateDelay;
-        factory.isActive = isActive;
-        factory.clientActive = clientActive;
-        factory.controlType = controlType;
-        factory.prevEnergy = prevEnergy;
-        factory.upgradeComponent.readFrom(upgradeComponent);
-        factory.upgradeComponent.setUpgradeSlot(0);
-        factory.ejectorComponent.readFrom(ejectorComponent);
-        factory.ejectorComponent
-              .setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-        factory.recipeType = type;
-        factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
-        factory.securityComponent.readFrom(securityComponent);
-
-        for (TransmissionType transmission : configComponent.transmissions) {
-            factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
-            factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
-        }
-
+    protected void upgradeInventory(TileEntityFactory factory) {
         //Advanced Machine
         factory.gasTank.setGas(gasTank.getGas());
 
@@ -157,15 +110,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         factory.inventory.set(5 + 3, inventory.get(2));
         factory.inventory.set(1, inventory.get(3));
         factory.inventory.set(0, inventory.get(4));
-
-        for (Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgradables(upgrade);
-        }
-
-        factory.upgraded = true;
-        factory.markDirty();
-
-        return true;
     }
 
     /**
@@ -174,7 +118,16 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * @param itemstack - itemstack to check with
      * @return fuel ticks
      */
-    public abstract GasStack getItemGas(ItemStack itemstack);
+    public GasStack getItemGas(ItemStack itemstack) {
+        return GasUtils.getItemGas(itemstack, this::getIfValid);
+    }
+
+    private GasStack getIfValid(Gas gas, int quantity) {
+        if (gas != null && gasTank.canReceive(gas) && isValidGas(gas)) {
+            return new GasStack(gas, quantity);
+        }
+        return null;
+    }
 
     public abstract boolean isValidGas(Gas gas);
 
@@ -247,7 +200,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 2) {
             return false;
         } else if (slotID == 4) {
@@ -302,26 +255,14 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (dataStream.readBoolean()) {
-                gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
-            } else {
-                gasTank.setGas(null);
-            }
+            TileUtils.readTankData(dataStream, gasTank);
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
-        if (gasTank.getGas() != null) {
-            data.add(true);
-            data.add(gasTank.getGas().getGas().getID());
-            data.add(gasTank.getStored());
-        } else {
-            data.add(false);
-        }
-
+        TileUtils.addTankData(data, gasTank);
         return data;
     }
 
@@ -333,6 +274,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         gasTank.setMaxGas(MAX_GAS);
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -353,17 +295,13 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2;
+        }
 
-    }
-
-    @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return false;
     }
 
     @Override
@@ -393,17 +331,19 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
-            return (T) this;
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

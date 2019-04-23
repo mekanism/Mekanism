@@ -18,7 +18,7 @@ public class ElectrolyticSeparatorRecipeWrapper implements IRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         ingredients.setInput(VanillaTypes.FLUID, recipe.recipeInput.ingredient);
-        ingredients.setOutputs(MekanismJEI.GAS_INGREDIENT_TYPE,
+        ingredients.setOutputs(MekanismJEI.TYPE_GAS,
               Arrays.asList(recipe.recipeOutput.leftGas, recipe.recipeOutput.rightGas));
     }
 

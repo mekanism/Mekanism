@@ -8,9 +8,10 @@ import javax.annotation.Nullable;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -31,24 +32,24 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
     private static final GuiDummy gui = new GuiDummy();
 
-    protected IGuiHelper guiHelper;
-    protected String guiTexture;
+    private IGuiHelper guiHelper;
     protected ResourceLocation guiLocation;
     @Nullable
     protected ProgressBar progressBar;
     protected ITickTimer timer;
-    protected int xOffset = 28;
-    protected int yOffset = 16;
+    protected int xOffset;
+    protected int yOffset;
     protected IDrawable fluidOverlayLarge;
     protected IDrawable fluidOverlaySmall;
     protected Set<GuiElement> guiElements = new HashSet<>();
     private String recipeName;
     private String unlocalizedName;
 
-    public BaseRecipeCategory(IGuiHelper helper, String gui, String name, String unlocalized,
-          @Nullable ProgressBar progress) {
+    private final IDrawable background;
+
+    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized,
+          @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;
-        guiTexture = gui;
         guiLocation = new ResourceLocation(guiTexture);
 
         progressBar = progress;
@@ -58,14 +59,15 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
         timer = helper.createTickTimer(20, 20, false);
 
-        fluidOverlayLarge = guiHelper.createDrawable(
-              MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16,
-              59);
-        fluidOverlaySmall = guiHelper.createDrawable(
-              MekanismUtils.getResource(ResourceType.GUI_ELEMENT, GuiGauge.Type.STANDARD.textureLocation), 19, 1, 16,
-              29);
+        ResourceLocation resource = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, Type.STANDARD.textureLocation);
+        fluidOverlayLarge = guiHelper.createDrawable(resource, 19, 1, 16, 59);
+        fluidOverlaySmall = guiHelper.createDrawable(resource, 19, 1, 16, 29);
 
         addGuiElements();
+
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, width, height);
     }
 
     @Override
@@ -80,17 +82,14 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
     @Override
     public String getModName() {
-        return "Mekanism";
+        return Mekanism.MOD_NAME;
     }
 
     @Override
     public void drawExtras(Minecraft minecraft) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        changeTexture(guiLocation);
-
-        for (GuiElement e : guiElements) {
-            e.renderBackground(0, 0, -xOffset, -yOffset);
-        }
+        minecraft.renderEngine.bindTexture(guiLocation);
+        guiElements.forEach(e -> e.renderBackground(0, 0, -xOffset, -yOffset));
     }
 
     @Override
@@ -116,15 +115,12 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
         return null;
     }
 
-    public String stripTexture() {
-        return guiTexture.replace("mekanism:gui/", "");
+    protected void addGuiElements() {
     }
 
-    public void changeTexture(ResourceLocation texture) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(texture);
-    }
-
-    public void addGuiElements() {
+    @Override
+    public IDrawable getBackground() {
+        return background;
     }
 
     @Override
@@ -149,22 +145,6 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
               overlay ? fluidOverlay : null);
         group.init(slot, input, renderer, x, y, width, height, 0, 0);
         group.set(slot, stack);
-        //group.addTooltipCallback((index, isInput, ingredient, tooltip) -> tooltip.remove(1));
-    }
-
-    protected void initGasPerTick(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width,
-          int height, @Nullable GasStack stack, boolean overlay) {
-        if (stack == null) {
-            return;
-        }
-
-        IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;
-
-        GasStackRenderer renderer = new GasStackRenderer(stack.amount, GasStackRenderer.TooltipMode.AMOUNT_PER_TICK,
-              width, height, overlay ? fluidOverlay : null);
-        group.init(slot, input, renderer, x, y, width, height, 0, 0);
-        group.set(slot, stack);
-        //group.addTooltipCallback((index, isInput, ingredient, tooltip) -> tooltip.remove(1));
     }
 
     public static class GuiDummy extends Gui {

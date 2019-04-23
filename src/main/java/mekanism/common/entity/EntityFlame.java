@@ -2,6 +2,7 @@ package mekanism.common.entity;
 
 import io.netty.buffer.ByteBuf;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.config.MekanismConfig;
@@ -219,13 +220,13 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
             return false;
         }
 
-        if (!result.isEmpty() && result.getItem() != null) {
+        if (!result.isEmpty()) {
             if (!world.isRemote) {
                 IBlockState state = block.getBlockState(world);
                 Block b = state.getBlock();
                 Block newBlock = Block.getBlockFromItem(result.getItem());
 
-                if (newBlock != null && newBlock != Blocks.AIR) {
+                if (newBlock != Blocks.AIR) {
                     world.setBlockState(block.getPos(),
                           Block.getBlockFromItem(result.getItem()).getStateFromMeta(result.getItemDamage()), 3);
                 } else {
@@ -274,12 +275,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound nbtTags) {
+    protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
         mode = ItemFlamethrower.FlamethrowerMode.values()[nbtTags.getInteger("mode")];
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound nbtTags) {
+    protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags) {
         nbtTags.setInteger("mode", mode.ordinal());
     }
 

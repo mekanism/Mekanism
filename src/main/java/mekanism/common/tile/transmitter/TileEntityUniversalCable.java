@@ -8,14 +8,14 @@ import ic2.api.energy.tile.IEnergyTile;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.CableTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -40,18 +40,18 @@ import net.minecraftforge.fml.common.Optional;
 @Optional.InterfaceList(
       @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 )
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork> implements
+public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements
       IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver {
 
-    public Tier.CableTier tier = CableTier.BASIC;
+    public CableTier tier = CableTier.BASIC;
 
     public double currentPower = 0;
     public double lastWrite = 0;
 
     public EnergyStack buffer = new EnergyStack(0);
-    private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager(getClass(),
+    private CapabilityWrapperManager teslaManager = new CapabilityWrapperManager<>(getClass(),
           TeslaCableIntegration.class);
-    private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager(getClass(),
+    private CapabilityWrapperManager forgeEnergyManager = new CapabilityWrapperManager<>(getClass(),
           ForgeEnergyCableIntegration.class);
 
     @Override
@@ -61,7 +61,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.CableTier.get(baseTier);
+        tier = CableTier.get(baseTier);
     }
 
     @Override
@@ -105,16 +105,17 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                               .hasCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite())) {
                             ITeslaProducer producer = CapabilityUtils
                                   .getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
-                            double toDraw = producer.takePower(Math.round(Math.min(Integer.MAX_VALUE,
-                                  canDraw * MekanismConfig.current().general.TO_TESLA.val())), true) * MekanismConfig
-                                  .current().general.FROM_TESLA.val();
+                            double toDraw = producer
+                                  .takePower(Math.round(Math.min(Integer.MAX_VALUE,
+                                        canDraw * MekanismConfig.current().general.TO_TESLA.val())), true)
+                                  * MekanismConfig.current().general.FROM_TESLA.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
 
-                            producer.takePower(
-                                  Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
+                            producer.takePower(Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()),
+                                  false);
                         } else if (MekanismUtils.useForge() && CapabilityUtils
                               .hasCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite())) {
                             IEnergyStorage storage = CapabilityUtils
@@ -130,23 +131,25 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                             storage.extractEnergy(
                                   (int) Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
                         } else if (MekanismUtils.useRF() && outputter instanceof IEnergyProvider) {
-                            double toDraw = ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(), (int) Math
-                                  .round(Math.min(Integer.MAX_VALUE,
-                                        canDraw * MekanismConfig.current().general.TO_RF.val())), true) * MekanismConfig
-                                  .current().general.FROM_RF.val();
+                            double toDraw = ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
+                                  (int) Math.round(Math.min(Integer.MAX_VALUE,
+                                        canDraw * MekanismConfig.current().general.TO_RF.val())), true)
+                                  * MekanismConfig.current().general.FROM_RF.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
 
-                            ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
-                                  (int) Math.round(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
+                            ((IEnergyProvider) outputter)
+                                  .extractEnergy(side.getOpposite(),
+                                        (int) Math.round(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
 
                             if (tile instanceof IEnergySource) {
-                                double received = Math.min(((IEnergySource) tile).getOfferedEnergy() * MekanismConfig
-                                      .current().general.FROM_IC2.val(), canDraw);
+                                double received = Math
+                                      .min(((IEnergySource) tile).getOfferedEnergy() * MekanismConfig
+                                            .current().general.FROM_IC2.val(), canDraw);
                                 double toDraw = received;
 
                                 if (received > 0) {
@@ -201,10 +204,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
         }
 
         if (nbtTags.hasKey("tier")) {
-            tier = Tier.CableTier.values()[nbtTags.getInteger("tier")];
+            tier = CableTier.values()[nbtTags.getInteger("tier")];
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -236,7 +240,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     }
 
     @Override
-    public Object getBuffer() {
+    public EnergyStack getBuffer() {
         return buffer;
     }
 
@@ -251,9 +255,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return maxReceive - (int) Math.round(Math.min(Integer.MAX_VALUE,
-              takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) * MekanismConfig
-                    .current().general.TO_RF.val()));
+        return maxReceive - (int) Math
+              .round(Math.min(Integer.MAX_VALUE,
+                    takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) * MekanismConfig
+                          .current().general.TO_RF.val()));
     }
 
     @Override
@@ -382,7 +387,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
               || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY
               || capability == Capabilities.TESLA_CONSUMER_CAPABILITY
@@ -391,7 +396,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY
               || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
             return (T) this;

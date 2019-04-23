@@ -3,11 +3,11 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiLogisticalSorter;
-import mekanism.client.gui.GuiTFilterSelect;
-import mekanism.client.gui.GuiTItemStackFilter;
-import mekanism.client.gui.GuiTMaterialFilter;
-import mekanism.client.gui.GuiTModIDFilter;
-import mekanism.client.gui.GuiTOreDictFilter;
+import mekanism.client.gui.filter.GuiTFilterSelect;
+import mekanism.client.gui.filter.GuiTItemStackFilter;
+import mekanism.client.gui.filter.GuiTMaterialFilter;
+import mekanism.client.gui.filter.GuiTModIDFilter;
+import mekanism.client.gui.filter.GuiTOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -40,8 +40,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance()
                       .getWorld(message.coord4D.dimensionId);
 
-                if (worldServer != null && message.coord4D
-                      .getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
+                if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
                     LogisticalSorterGuiMessage
                           .openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player,
                                 message.coord4D, message.index);

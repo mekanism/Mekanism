@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -32,14 +33,15 @@ public class ItemBlockOre extends ItemBlock {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             list.add(
                   "Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode())
                         + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
         } else {
             list.addAll(MekanismUtils.splitTooltip(
-                  LangUtils.localize("tooltip." + getUnlocalizedName(itemstack).replace("tile.OreBlock.", "")),
+                  LangUtils.localize("tooltip." + getTranslationKey(itemstack).replace("tile.OreBlock.", "")),
                   itemstack));
         }
     }
@@ -49,8 +51,9 @@ public class ItemBlockOre extends ItemBlock {
         return i;
     }
 
+    @Nonnull
     @Override
-    public String getUnlocalizedName(ItemStack itemstack) {
+    public String getTranslationKey(ItemStack itemstack) {
         String name;
 
         switch (itemstack.getItemDamage()) {
@@ -68,6 +71,6 @@ public class ItemBlockOre extends ItemBlock {
                 break;
         }
 
-        return getUnlocalizedName() + "." + name;
+        return getTranslationKey() + "." + name;
     }
 }

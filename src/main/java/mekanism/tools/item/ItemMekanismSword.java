@@ -1,6 +1,7 @@
 package mekanism.tools.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
@@ -28,8 +29,8 @@ public class ItemMekanismSword extends ItemSword {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack stack1, ItemStack stack2) {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) ? true
-              : super.getIsRepairable(stack1, stack2);
+    public boolean getIsRepairable(ItemStack stack1, @Nonnull ItemStack stack2) {
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super
+              .getIsRepairable(stack1, stack2);
     }
 }

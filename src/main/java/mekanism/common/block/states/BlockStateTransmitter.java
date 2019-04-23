@@ -1,8 +1,9 @@
 package mekanism.common.block.states;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
@@ -59,7 +60,7 @@ public class BlockStateTransmitter extends ExtendedBlockState {
             return name().toLowerCase(Locale.ROOT);
         }
 
-        public String getUnlocalizedName() {
+        public String getTranslationKey() {
             return unlocalizedName;
         }
 
@@ -93,8 +94,9 @@ public class BlockStateTransmitter extends ExtendedBlockState {
 
     public static class TransmitterStateMapper extends StateMapperBase {
 
+        @Nonnull
         @Override
-        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             BlockTransmitter block = (BlockTransmitter) state.getBlock();
             TransmitterType type = state.getValue(typeProperty);
             StringBuilder builder = new StringBuilder();

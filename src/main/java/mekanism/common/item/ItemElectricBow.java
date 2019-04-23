@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import io.netty.buffer.ByteBuf;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.util.ItemDataUtils;
@@ -82,7 +83,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                     ItemArrow itemarrow = (ItemArrow) (ammo.getItem() instanceof ItemArrow ? ammo.getItem()
                           : Items.ARROW);
                     EntityArrow entityarrow = itemarrow.createArrow(world, itemstack, player);
-                    entityarrow.setAim(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
+                    entityarrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
 
                     if (f == 1.0F) {
                         entityarrow.setIsCritical(true);
@@ -122,6 +123,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
         return 72000;
     }
 
+    @Nonnull
     @Override
     public EnumAction getItemUseAction(ItemStack itemstack) {
         return EnumAction.BOW;
@@ -149,8 +151,9 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
         return !stack.isEmpty() && stack.getItem() instanceof ItemArrow;
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, @Nonnull EnumHand hand) {
         ItemStack itemStackIn = playerIn.getHeldItem(hand);
         boolean flag = !findAmmo(playerIn).isEmpty();
 
@@ -160,8 +163,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
         }
 
         if (!playerIn.capabilities.isCreativeMode && !flag) {
-            return !flag ? new ActionResult<>(EnumActionResult.FAIL, itemStackIn)
-                  : new ActionResult<>(EnumActionResult.PASS, itemStackIn);
+            return new ActionResult<>(EnumActionResult.FAIL, itemStackIn);
         } else {
             playerIn.setActiveHand(hand);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);

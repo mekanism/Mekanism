@@ -2,7 +2,7 @@ package mekanism.common.recipe.inputs;
 
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.OreDictCache;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
 
     public static final ItemStackIngredientMatcher DEFAULT_MATCHER = MachineInput::inputItemMatchesDefault;
-    static final Map<Class<? extends Item>, ItemStackIngredientMatcher> ITEM_MATCHER_OVERRIDES = new HashMap<>();
+    private static final Map<Class<? extends Item>, ItemStackIngredientMatcher> ITEM_MATCHER_OVERRIDES = new HashMap<>();
 
     public static void addCustomItemMatcher(Class<? extends Item> clazz, ItemStackIngredientMatcher matcher) {
         ITEM_MATCHER_OVERRIDES.put(clazz, matcher);
@@ -23,19 +23,6 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
         }
 
         return false;
-    }
-
-    public static boolean inputItemMatches(ItemStack container, ItemStack contained) {
-        return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER)
-              .test(container, contained);
-    }
-
-    private static boolean inputItemMatchesDefault(ItemStack container, ItemStack contained) {
-        if (MekanismUtils.getOreDictName(container).contains("treeSapling")) {
-            return StackUtils.equalsWildcard(contained, container);
-        }
-
-        return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
     }
 
     public abstract boolean isValid();
@@ -54,6 +41,19 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
      * @return True if input matches this one, IGNORING AMOUNTS!
      */
     public abstract boolean testEquality(INPUT other);
+
+    public static boolean inputItemMatches(ItemStack container, ItemStack contained) {
+        return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER)
+              .test(container, contained);
+    }
+
+    private static boolean inputItemMatchesDefault(ItemStack container, ItemStack contained) {
+        if (OreDictCache.getOreDictName(container).contains("treeSapling")) {
+            return StackUtils.equalsWildcard(contained, container);
+        }
+
+        return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
+    }
 
     @Override
     public int hashCode() {

@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
-import mekanism.common.Tier.BaseTier;
+import javax.annotation.Nonnull;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> itemList) {
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
         if (!isInCreativeTab(tabs)) {
             return;
         }
@@ -35,8 +36,9 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem {
         }
     }
 
+    @Nonnull
     @Override
-    public String getUnlocalizedName(ItemStack item) {
+    public String getTranslationKey(ItemStack item) {
         return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName() + "ControlCircuit";
     }
 }

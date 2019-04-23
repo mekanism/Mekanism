@@ -31,11 +31,7 @@ public class CommonPlayerTickHandler {
 
         BlockPos pos = new BlockPos(x, y, z);
         IBlockState s = player.world.getBlockState(pos);
-        AxisAlignedBB box = s.getBoundingBox(player.world, pos);
-        if (box == null) {//shouldnt be this, but #5259 has the above line causing an unexpected NPE
-            return true;//??
-        }
-        box = box.offset(pos);
+        AxisAlignedBB box = s.getBoundingBox(player.world, pos).offset(pos);
         AxisAlignedBB playerBox = player.getEntityBoundingBox();
 
         return !s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(box);
@@ -60,7 +56,7 @@ public class CommonPlayerTickHandler {
     }
 
     public static boolean isFlamethrowerOn(EntityPlayer player) {
-        if (Mekanism.flamethrowerActive.contains(player.getUniqueID())) {
+        if (Mekanism.playerState.isFlamethrowerOn(player)) {
             return !player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem()
                   .getItem() instanceof ItemFlamethrower;
         }
@@ -80,10 +76,8 @@ public class CommonPlayerTickHandler {
 
         if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.isSneaking()) {
             player.stepHeight = 1.002F;
-        } else {
-            if (player.stepHeight == 1.002F) {
-                player.stepHeight = 0.6F;
-            }
+        } else if (player.stepHeight == 1.002F) {
+            player.stepHeight = 0.6F;
         }
 
         if (isFlamethrowerOn(player)) {

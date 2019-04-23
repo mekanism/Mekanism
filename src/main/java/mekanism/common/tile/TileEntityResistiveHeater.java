@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
@@ -14,11 +15,10 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,10 +28,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements IHeatTransfer, IComputerIntegration,
+public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements IHeatTransfer, IComputerIntegration,
       IRedstoneControl, ISecurityTile {
 
     private static final int[] SLOTS = {0};
+
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature",
           "setEnergyUsage"};
     public double energyUsage = 100;
@@ -127,11 +128,6 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
     }
 
     @Override
-    public float getVolume() {
-        return super.getVolume() * Math.max(0.001F, soundScale);
-    }
-
-    @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
@@ -143,6 +139,7 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
         maxEnergy = energyUsage * 400;
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -250,14 +247,14 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);
@@ -340,8 +337,14 @@ public class TileEntityResistiveHeater extends TileEntityNoisyBlock implements I
         return securityComponent;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return sideIsConsumer(side) ? InventoryUtils.EMPTY : SLOTS;
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return SLOTS;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return ChargeUtils.canBeDischarged(stack);
     }
 }

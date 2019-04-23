@@ -18,8 +18,9 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        return (int) Math.round(
-              tileEntity.acceptEnergy(side, maxReceive * MekanismConfig.current().general.FROM_FORGE.val(), simulate)
+        return (int) Math
+              .round(tileEntity
+                    .acceptEnergy(side, maxReceive * MekanismConfig.current().general.FROM_FORGE.val(), simulate)
                     * MekanismConfig.current().general.TO_FORGE.val());
     }
 

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import mekanism.common.block.property.PropertyColor;
@@ -67,12 +68,13 @@ public class TransmitterModel extends OBJBakedModelBase {
     private TransmitterModel itemCache;
     private IBlockState tempState;
     private ItemStack tempStack;
+    private TextureAtlasSprite particle;
     private TransmitterOverride override = new TransmitterOverride();
 
     public TransmitterModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format,
           ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) {
         super(base, model, state, format, textures, transform);
-
+        particle = textureMap.getOrDefault("None_Center", textureMap.getOrDefault("CentreMaterial", tempSprite));
         modelInstances.add(this);
     }
 
@@ -111,11 +113,13 @@ public class TransmitterModel extends OBJBakedModelBase {
         }
     }
 
+    @Nonnull
     @Override
     public ItemOverrideList getOverrides() {
         return override;
     }
 
+    @Nonnull
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
         if (side != null) {
@@ -155,7 +159,7 @@ public class TransmitterModel extends OBJBakedModelBase {
                 }
 
                 return modelCache.get(hash);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 
@@ -174,6 +178,12 @@ public class TransmitterModel extends OBJBakedModelBase {
         }
 
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return particle;
     }
 
     @Override
@@ -206,10 +216,8 @@ public class TransmitterModel extends OBJBakedModelBase {
                             return textureMap.get(s);
                         }
                     }
-                } else {
-                    if (MekanismConfig.current().client.opaqueTransmitters.val()) {
-                        return textureMap.get(f.getMaterialName() + "_Opaque");
-                    }
+                } else if (MekanismConfig.current().client.opaqueTransmitters.val()) {
+                    return textureMap.get(f.getMaterialName() + "_Opaque");
                 }
             }
         }
@@ -235,7 +243,7 @@ public class TransmitterModel extends OBJBakedModelBase {
                     connection.connectionTypes);
 
         if (type == ConnectionType.NONE) {
-            if (MekanismConfig.current().client.oldTransmitterRender || connection.renderCenter) {
+            if (connection.renderCenter) {
                 return (byte) 0;
             } else if (connection.connectionByte == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP) {
                 return (byte) 1;
@@ -251,6 +259,7 @@ public class TransmitterModel extends OBJBakedModelBase {
         return (byte) 0;
     }
 
+    @Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(
           ItemCameraTransforms.TransformType cameraTransformType) {
@@ -263,8 +272,9 @@ public class TransmitterModel extends OBJBakedModelBase {
             super(Lists.newArrayList());
         }
 
+        @Nonnull
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world,
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world,
               EntityLivingBase entity) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();

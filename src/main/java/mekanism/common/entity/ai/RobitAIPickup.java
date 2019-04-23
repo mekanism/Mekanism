@@ -64,7 +64,7 @@ public class RobitAIPickup extends EntityAIBase {
             return false;
         }
 
-        if (closest != null && closest.getDistanceSqToEntity(closest) > 100
+        if (closest != null && closest.getDistanceSq(closest) > 100
               && thePathfinder.getPathToXYZ(closest.posX, closest.posY, closest.posZ) != null) {
             return true;
         }
@@ -79,7 +79,7 @@ public class RobitAIPickup extends EntityAIBase {
         while (iter.hasNext()) {
             EntityItem entity = iter.next();
 
-            double distance = theRobit.getDistanceToEntity(entity);
+            double distance = theRobit.getDistance(entity);
 
             if (distance <= 10) {
                 if (closestDistance == -1 || distance < closestDistance) {
@@ -98,7 +98,7 @@ public class RobitAIPickup extends EntityAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit
+        return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSq(closest) > 100 && theRobit
               .getDropPickup() && theRobit.getEnergy() > 0
               && closest.world.provider.getDimension() == theRobit.world.provider.getDimension();
     }
@@ -112,7 +112,7 @@ public class RobitAIPickup extends EntityAIBase {
 
     @Override
     public void resetTask() {
-        thePathfinder.clearPathEntity();
+        thePathfinder.clearPath();
         theRobit.setPathPriority(PathNodeType.WATER, oldWaterCost);
     }
 
@@ -128,7 +128,7 @@ public class RobitAIPickup extends EntityAIBase {
             ticker = 10;
 
             if (!thePathfinder.tryMoveToEntityLiving(closest, moveSpeed)) {
-                if (theRobit.getDistanceSqToEntity(closest) >= 144.0D) {
+                if (theRobit.getDistanceSq(closest) >= 144.0D) {
                     int x = MathHelper.floor(closest.posX) - 2;
                     int y = MathHelper.floor(closest.getEntityBoundingBox().minY);
                     int z = MathHelper.floor(closest.posZ) - 2;
@@ -143,7 +143,7 @@ public class RobitAIPickup extends EntityAIBase {
                                   new BlockPos(x + l, y + 1, z + i1))) {
                                 theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw,
                                       theRobit.rotationPitch);
-                                thePathfinder.clearPathEntity();
+                                thePathfinder.clearPath();
 
                                 return;
                             }

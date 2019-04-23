@@ -1,43 +1,46 @@
 package mekanism.generators.common.tile.reactor;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.client.sound.ISoundSource;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IHasSound;
-import mekanism.common.base.SoundWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
-import net.minecraft.client.audio.ISound.AttenuationType;
+import mekanism.generators.common.item.ItemHohlraum;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound,
-      ISoundSource {
+public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState {
 
     public static final int MAX_WATER = 100 * Fluid.BUCKET_VOLUME;
     public static final int MAX_STEAM = MAX_WATER * 100;
-    public static final int MAX_FUEL = 1 * Fluid.BUCKET_VOLUME;
+    public static final int MAX_FUEL = Fluid.BUCKET_VOLUME;
 
     public FluidTank waterTank = new FluidTank(MAX_WATER);
     public FluidTank steamTank = new FluidTank(MAX_STEAM);
@@ -48,14 +51,12 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public GasTank fuelTank = new GasTank(MAX_FUEL);
 
     public AxisAlignedBB box;
-
-    public ResourceLocation soundURL = new ResourceLocation("mekanism", "tile.machine.fusionreactor");
-
-    @SideOnly(Side.CLIENT)
-    public SoundWrapper sound;
-
     public double clientTemp = 0;
     public boolean clientBurning = false;
+    private SoundEvent soundEvent = new SoundEvent(new ResourceLocation("mekanism", "tile.machine.fusionreactor"));
+    @SideOnly(Side.CLIENT)
+    private ISound activeSound;
+    private int playSoundCooldown = 0;
 
     public TileEntityReactorController() {
         super("ReactorController", 1000000000);
@@ -116,10 +117,39 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     @SideOnly(Side.CLIENT)
-    public void updateSound() {
-        if (shouldPlaySound() && getSound().canRestart() && MekanismConfig.current().client.enableMachineSounds.val()) {
-            getSound().reset();
-            getSound().play();
+    private void updateSound() {
+        // If machine sounds are disabled, noop
+        if (!MekanismConfig.current().client.enableMachineSounds.val()) {
+            return;
+        }
+
+        if (isBurning() && !isInvalid()) {
+            // If sounds are being muted, we can attempt to start them on every tick, only to have them
+            // denied by the event bus, so use a cooldown period that ensures we're only trying once every
+            // second or so to start a sound.
+            if (--playSoundCooldown > 0) {
+                return;
+            }
+
+            if (activeSound == null || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(activeSound)) {
+                activeSound = SoundHandler.startTileSound(soundEvent.getSoundName(), 1.0f, getPos());
+                playSoundCooldown = 20;
+            }
+        } else {
+            if (activeSound != null) {
+                SoundHandler.stopTileSound(getPos());
+                activeSound = null;
+                playSoundCooldown = 0;
+            }
+        }
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+
+        if (world.isRemote) {
+            updateSound();
         }
     }
 
@@ -137,6 +167,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         formMultiblock(false);
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
@@ -200,10 +231,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             data.add(fuelTank.getStored());
             data.add(deuteriumTank.getStored());
             data.add(tritiumTank.getStored());
-            data.add(waterTank.getCapacity());
-            data.add(waterTank.getFluidAmount());
-            data.add(steamTank.getCapacity());
-            data.add(steamTank.getFluidAmount());
+            TileUtils.addTankData(data, waterTank);
+            TileUtils.addTankData(data, steamTank);
         }
 
         return data;
@@ -214,12 +243,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
 
-            switch (type) {
-                case 0:
-                    if (getReactor() != null) {
-                        getReactor().setInjectionRate(dataStream.readInt());
-                    }
-                    break;
+            if (type == 0) {
+                if (getReactor() != null) {
+                    getReactor().setInjectionRate(dataStream.readInt());
+                }
             }
 
             return;
@@ -232,7 +259,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
             if (formed) {
                 if (getReactor() == null || !getReactor().formed) {
-                    Mekanism.proxy.doGenericSparkle(this, tile -> tile instanceof TileEntityReactorBlock);
+                    BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
+                    Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6,
+                          tile -> tile instanceof TileEntityReactorBlock);
                 }
 
                 if (getReactor() == null) {
@@ -248,10 +277,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 fuelTank.setGas(new GasStack(MekanismFluids.FusionFuel, dataStream.readInt()));
                 deuteriumTank.setGas(new GasStack(MekanismFluids.Deuterium, dataStream.readInt()));
                 tritiumTank.setGas(new GasStack(MekanismFluids.Tritium, dataStream.readInt()));
-                waterTank.setCapacity(dataStream.readInt());
-                waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
-                steamTank.setCapacity(dataStream.readInt());
-                steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
+                TileUtils.readTankData(dataStream, waterTank);
+                TileUtils.readTankData(dataStream, steamTank);
             } else if (getReactor() != null) {
                 setReactor(null);
                 MekanismUtils.updateBlock(world, getPos());
@@ -289,6 +316,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         return false;
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
@@ -300,76 +328,23 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         return box;
     }
 
+    @Nonnull
     @Override
-    @SideOnly(Side.CLIENT)
-    public SoundWrapper getSound() {
-        return sound;
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return isFormed() ? new int[]{0} : InventoryUtils.EMPTY;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public boolean shouldPlaySound() {
-        return isBurning() && !isInvalid();
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return stack.getItem() instanceof ItemHohlraum;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public ResourceLocation getSoundLocation() {
-        return soundURL;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public float getVolume() {
-        return 2F;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public float getFrequency() {
-        return 1F;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public Vec3d getSoundPosition() {
-        return new Vec3d(getPos()).addVector(0.5, 0.5, 0.5);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean shouldRepeat() {
-        return false;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getRepeatDelay() {
-        return 0;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public AttenuationType getAttenuation() {
-        return AttenuationType.LINEAR;
-    }
-
-    @Override
-    public void validate() {
-        super.validate();
-
-        if (world.isRemote) {
-            initSounds();
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Allow inserting
+            return false;
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void initSounds() {
-        sound = new SoundWrapper(this, this);
-    }
-
-    @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return InventoryUtils.EMPTY;
+        return super.isCapabilityDisabled(capability, side);
     }
 }

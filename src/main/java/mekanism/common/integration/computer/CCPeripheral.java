@@ -1,10 +1,10 @@
 package mekanism.common.integration.computer;
 
 import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import javax.annotation.Nonnull;
 import mekanism.common.integration.MekanismHooks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -24,12 +24,14 @@ public class CCPeripheral implements IPeripheral {
         computerTile = tile;
     }
 
+    @Nonnull
     @Override
     @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public String getType() {
         return computerTile.getName();
     }
 
+    @Nonnull
     @Override
     @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
     public String[] getMethodNames() {
@@ -38,8 +40,8 @@ public class CCPeripheral implements IPeripheral {
 
     @Override
     @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
-    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
-          throws LuaException, InterruptedException {
+    public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method,
+          @Nonnull Object[] arguments) {
         try {
             return computerTile.invoke(method, arguments);
         } catch (NoSuchMethodException e) {
@@ -52,12 +54,12 @@ public class CCPeripheral implements IPeripheral {
 
     @Override
     @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
-    public void attach(IComputerAccess computer) {
+    public void attach(@Nonnull IComputerAccess computer) {
     }
 
     @Override
     @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
-    public void detach(IComputerAccess computer) {
+    public void detach(@Nonnull IComputerAccess computer) {
     }
 
     @Override
@@ -69,10 +71,10 @@ public class CCPeripheral implements IPeripheral {
     public static class CCPeripheralProvider implements IPeripheralProvider {
 
         @Override
-        public IPeripheral getPeripheral(World world, BlockPos pos, EnumFacing side) {
+        public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side) {
             TileEntity te = world.getTileEntity(pos);
 
-            if (te != null && te instanceof IComputerIntegration) {
+            if (te instanceof IComputerIntegration) {
                 return new CCPeripheral((IComputerIntegration) te);
             }
 

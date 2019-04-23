@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RecipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -49,15 +48,17 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
 
     public static ShapedMekanismRecipe create(NBTTagCompound nbtTags) {
         if (!nbtTags.hasKey("result") || !nbtTags.hasKey("input")) {
-            Mekanism.logger.error("[Mekanism] Shaped recipe parse error: missing input or result compound tag.");
+            Mekanism.logger
+                  .error(Mekanism.LOG_TAG + " Shaped recipe parse error: missing input or result compound tag.");
             return null;
         }
 
-        ItemStack result = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("result"));
+        ItemStack result = new ItemStack(nbtTags.getCompoundTag("result"));
         NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
 
         if (result.isEmpty() || list.tagCount() == 0) {
-            Mekanism.logger.error("[Mekanism] Shaped recipe parse error: invalid result stack or input data list.");
+            Mekanism.logger
+                  .error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid result stack or input data list.");
             return null;
         }
 
@@ -74,15 +75,16 @@ public class ShapedMekanismRecipe extends ShapedOreRecipe {
                 String s = compound.getString("character");
 
                 if (s.length() > 1) {
-                    Mekanism.logger.error("[Mekanism] Shaped recipe parse error: invalid pattern character data.");
+                    Mekanism.logger
+                          .error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid pattern character data.");
                     return null;
                 }
 
                 ret[i] = compound.getString("character").toCharArray()[0];
             } else if (compound.hasKey("itemstack")) {
-                ret[i] = InventoryUtils.loadFromNBT(compound.getCompoundTag("itemstack"));
+                ret[i] = new ItemStack(compound.getCompoundTag("itemstack"));
             } else {
-                Mekanism.logger.error("[Mekanism] Shaped recipe parse error: invalid input tag data key.");
+                Mekanism.logger.error(Mekanism.LOG_TAG + " Shaped recipe parse error: invalid input tag data key.");
                 return null;
             }
         }

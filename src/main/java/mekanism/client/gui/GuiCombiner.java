@@ -9,8 +9,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiCombiner extends GuiDoubleElectricMachine {
 
-    public GuiCombiner(InventoryPlayer inventory, TileEntityDoubleElectricMachine tentity) {
-        super(inventory, tentity);
+    public GuiCombiner(InventoryPlayer inventory, TileEntityDoubleElectricMachine tile) {
+        super(inventory, tile);
     }
 
     @Override

@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.api.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -33,109 +33,106 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
     public IMessage onMessage(PortableTeleporterMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
 
-        PacketHandler.handlePacket(new Runnable() {
-            @Override
-            public void run() {
-                ItemStack itemstack = player.getHeldItem(message.currentHand);
-                World world = player.world;
+        PacketHandler.handlePacket(() -> {
+            ItemStack itemstack = player.getHeldItem(message.currentHand);
+            World world = player.world;
 
-                if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemPortableTeleporter) {
-                    ItemPortableTeleporter item = (ItemPortableTeleporter) itemstack.getItem();
+            if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemPortableTeleporter) {
+                ItemPortableTeleporter item = (ItemPortableTeleporter) itemstack.getItem();
 
-                    switch (message.packetType) {
-                        case DATA_REQUEST:
-                            sendDataResponse(message.frequency, world, player, item, itemstack, message.currentHand);
-                            break;
-                        case DATA_RESPONSE:
-                            Mekanism.proxy.handleTeleporterUpdate(message);
-                            break;
-                        case SET_FREQ:
-                            FrequencyManager manager1 = getManager(
-                                  message.frequency.isPublic() ? null : player.getUniqueID(), world);
-                            Frequency toUse = null;
+                switch (message.packetType) {
+                    case DATA_REQUEST:
+                        sendDataResponse(message.frequency, world, player, item, itemstack, message.currentHand);
+                        break;
+                    case DATA_RESPONSE:
+                        Mekanism.proxy.handleTeleporterUpdate(message);
+                        break;
+                    case SET_FREQ:
+                        FrequencyManager manager1 = getManager(
+                              message.frequency.isPublic() ? null : player.getUniqueID(), world);
+                        Frequency toUse = null;
 
-                            for (Frequency freq : manager1.getFrequencies()) {
-                                if (freq.name.equals(message.frequency.name)) {
-                                    toUse = freq;
-                                    break;
-                                }
-                            }
-
-                            if (toUse == null) {
-                                toUse = new Frequency(message.frequency.name, player.getPersistentID())
-                                      .setPublic(message.frequency.isPublic());
-                                manager1.addFrequency(toUse);
-                            }
-
-                            item.setFrequency(itemstack, toUse);
-
-                            sendDataResponse(toUse, world, player, item, itemstack, message.currentHand);
-
-                            break;
-                        case DEL_FREQ:
-                            FrequencyManager manager = getManager(
-                                  message.frequency.isPublic() ? null : player.getUniqueID(), world);
-                            manager.remove(message.frequency.name, player.getUniqueID());
-
-                            item.setFrequency(itemstack, null);
-
-                            break;
-                        case TELEPORT:
-                            FrequencyManager manager2 = getManager(
-                                  message.frequency.isPublic() ? null : player.getUniqueID(), world);
-                            Frequency found = null;
-
-                            for (Frequency freq : manager2.getFrequencies()) {
-                                if (message.frequency.name.equals(freq.name)) {
-                                    found = freq;
-                                    break;
-                                }
-                            }
-
-                            if (found == null) {
+                        for (Frequency freq : manager1.getFrequencies()) {
+                            if (freq.name.equals(message.frequency.name)) {
+                                toUse = freq;
                                 break;
                             }
+                        }
 
-                            Coord4D coords = found.getClosestCoords(new Coord4D(player));
+                        if (toUse == null) {
+                            toUse = new Frequency(message.frequency.name, player.getPersistentID())
+                                  .setPublic(message.frequency.isPublic());
+                            manager1.addFrequency(toUse);
+                        }
 
-                            if (coords != null) {
-                                World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance()
-                                      .getWorld(coords.dimensionId);
-                                TileEntityTeleporter teleporter = (TileEntityTeleporter) coords
-                                      .getTileEntity(teleWorld);
+                        item.setFrequency(itemstack, toUse);
 
-                                if (teleporter != null) {
-                                    try {
-                                        teleporter.didTeleport.add(player.getPersistentID());
-                                        teleporter.teleDelay = 5;
+                        sendDataResponse(toUse, world, player, item, itemstack, message.currentHand);
 
-                                        item.setEnergy(itemstack,
-                                              item.getEnergy(itemstack) - ItemPortableTeleporter
-                                                    .calculateEnergyCost(player, coords));
+                        break;
+                    case DEL_FREQ:
+                        FrequencyManager manager = getManager(
+                              message.frequency.isPublic() ? null : player.getUniqueID(), world);
+                        manager.remove(message.frequency.name, player.getUniqueID());
 
-                                        if (player instanceof EntityPlayerMP) {
-                                            ((EntityPlayerMP) player).connection.floatingTickCount = 0;
-                                        }
+                        item.setFrequency(itemstack, null);
 
-                                        player.closeScreen();
+                        break;
+                    case TELEPORT:
+                        FrequencyManager manager2 = getManager(
+                              message.frequency.isPublic() ? null : player.getUniqueID(), world);
+                        Frequency found = null;
 
-                                        Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)),
-                                              coords.getTargetPoint(40D));
+                        for (Frequency freq : manager2.getFrequencies()) {
+                            if (message.frequency.name.equals(freq.name)) {
+                                found = freq;
+                                break;
+                            }
+                        }
+
+                        if (found == null) {
+                            break;
+                        }
+
+                        Coord4D coords = found.getClosestCoords(new Coord4D(player));
+
+                        if (coords != null) {
+                            World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance()
+                                  .getWorld(coords.dimensionId);
+                            TileEntityTeleporter teleporter = (TileEntityTeleporter) coords.getTileEntity(teleWorld);
+
+                            if (teleporter != null) {
+                                try {
+                                    teleporter.didTeleport.add(player.getPersistentID());
+                                    teleporter.teleDelay = 5;
+
+                                    item.setEnergy(itemstack, item.getEnergy(itemstack) - ItemPortableTeleporter
+                                          .calculateEnergyCost(player, coords));
+
+                                    if (player instanceof EntityPlayerMP) {
+                                        ((EntityPlayerMP) player).connection.floatingTickCount = 0;
+                                    }
+
+                                    player.closeScreen();
+
+                                    Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)),
+                                          coords.getTargetPoint(40D));
+                                    if (player instanceof EntityPlayerMP) {
                                         TileEntityTeleporter
                                               .teleportPlayerTo((EntityPlayerMP) player, coords, teleporter);
                                         TileEntityTeleporter.alignPlayer((EntityPlayerMP) player, coords);
-
-                                        world.playSound(player, player.posX, player.posY, player.posZ,
-                                              SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                        Mekanism.packetHandler
-                                              .sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
-                                    } catch (Exception e) {
                                     }
+
+                                    world.playSound(player, player.posX, player.posY, player.posZ,
+                                          SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    Mekanism.packetHandler
+                                          .sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
+                                } catch (Exception ignored) {
                                 }
                             }
+                        }
 
-                            break;
-                    }
+                        break;
                 }
             }
         }, player);
@@ -145,13 +142,10 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 
     public void sendDataResponse(Frequency given, World world, EntityPlayer player, ItemPortableTeleporter item,
           ItemStack itemstack, EnumHand hand) {
-        List<Frequency> publicFreqs = new ArrayList<>();
 
-        publicFreqs.addAll(getManager(null, world).getFrequencies());
+        List<Frequency> publicFreqs = new ArrayList<>(getManager(null, world).getFrequencies());
 
-        List<Frequency> privateFreqs = new ArrayList<>();
-
-        privateFreqs.addAll(getManager(player.getUniqueID(), world).getFrequencies());
+        List<Frequency> privateFreqs = new ArrayList<>(getManager(player.getUniqueID(), world).getFrequencies());
 
         byte status = 3;
 

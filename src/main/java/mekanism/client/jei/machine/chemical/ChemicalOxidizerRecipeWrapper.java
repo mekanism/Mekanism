@@ -17,7 +17,7 @@ public class ChemicalOxidizerRecipeWrapper implements IRecipeWrapper {
     @Override
     public void getIngredients(IIngredients ingredients) {
         ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.ingredient);
-        ingredients.setOutput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.recipeOutput.output);
+        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
     }
 
     public OxidationRecipe getRecipe() {

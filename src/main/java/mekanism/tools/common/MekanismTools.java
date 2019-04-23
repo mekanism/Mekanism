@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.Version;
@@ -21,6 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,7 +37,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = MekanismTools.MODID, name = "MekanismTools", version = "${version}", dependencies = "required-after:mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MekanismTools.MODID, useMetadata = true, guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 @Mod.EventBusSubscriber()
 public class MekanismTools implements IModule {
 
@@ -46,7 +46,7 @@ public class MekanismTools implements IModule {
     @SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
     public static ToolsCommonProxy proxy;
 
-    @Instance(MODID)
+    @Instance(MekanismTools.MODID)
     public static MekanismTools instance;
 
     /**
@@ -93,7 +93,9 @@ public class MekanismTools implements IModule {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        //Load the config
         proxy.loadConfiguration();
+
         addItems();
     }
 
@@ -105,11 +107,8 @@ public class MekanismTools implements IModule {
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         MinecraftForge.EVENT_BUS.register(this);
 
-        //Load this module
-        addRecipes();
-
         //Finalization
-        Mekanism.logger.info("Loaded MekanismTools module.");
+        Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }
 
     public void addItems() {
@@ -128,15 +127,10 @@ public class MekanismTools implements IModule {
         toolSTEEL2 = getToolMaterial("STEEL2", MekanismConfig.current().tools.toolSTEEL2);
 
         setAxeSpeedDamage(toolOBSIDIAN, MekanismConfig.current().tools.toolOBSIDIAN);
-
         setAxeSpeedDamage(toolLAZULI, MekanismConfig.current().tools.toolLAZULI);
-
         setAxeSpeedDamage(toolOSMIUM, MekanismConfig.current().tools.toolOSMIUM);
-
         setAxeSpeedDamage(toolBRONZE, MekanismConfig.current().tools.toolBRONZE);
-
         setAxeSpeedDamage(toolGLOWSTONE, MekanismConfig.current().tools.toolGLOWSTONE);
-
         setAxeSpeedDamage(toolSTEEL, MekanismConfig.current().tools.toolSTEEL);
 
         //Armors
@@ -153,10 +147,6 @@ public class MekanismTools implements IModule {
         armorSTEEL = getArmorMaterial("STEEL", MekanismConfig.current().tools.armorSTEEL,
               SoundEvents.ITEM_ARMOR_EQUIP_IRON);
 
-        if (Mekanism.configuration.hasChanged()) {
-            Mekanism.configuration.save();
-        }
-
         ToolsItems.initializeItems();
         ToolsItems.setHarvestLevels();
     }
@@ -167,33 +157,22 @@ public class MekanismTools implements IModule {
     }
 
     private ToolMaterial getToolMaterial(String enumName, ToolsConfig.ToolBalance toolConfig) {
-        return EnumHelper.addToolMaterial(enumName
-              , toolConfig.harvestLevel.val()
-              , toolConfig.maxUses.val()
-              , toolConfig.efficiency.val()
-              , toolConfig.damage.val()
-              , toolConfig.enchantability.val()
-        );
+        return EnumHelper.addToolMaterial(enumName, toolConfig.harvestLevel.val(), toolConfig.maxUses.val(),
+              toolConfig.efficiency.val(), toolConfig.damage.val(), toolConfig.enchantability.val());
     }
 
     private ArmorMaterial getArmorMaterial(String enumName, ToolsConfig.ArmorBalance settings,
           SoundEvent equipSoundEvent) {
-        return EnumHelper.addArmorMaterial(enumName, "TODO"
-              , settings.durability.val()
-              , new int[]
-                    {
-                          settings.feetProtection.val(),
-                          settings.legsProtection.val(),
-                          settings.chestProtection.val(),
-                          settings.headProtection.val(),
-                    }
-              , settings.enchantability.val()
-              , equipSoundEvent
-              , settings.toughness.val()
-        );
+        return EnumHelper.addArmorMaterial(enumName, "TODO", settings.durability.val(), new int[]{
+              settings.feetProtection.val(),
+              settings.legsProtection.val(),
+              settings.chestProtection.val(),
+              settings.headProtection.val(),
+        }, settings.enchantability.val(), equipSoundEvent, settings.toughness.val());
     }
 
-    public void addRecipes() {
+    @SubscribeEvent
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
         //Furnace Recipes
         GameRegistry.addSmelting(ToolsItems.IronPaxel, new ItemStack(Items.IRON_NUGGET), 0.1F);
         GameRegistry.addSmelting(ToolsItems.GoldPaxel, new ItemStack(Items.GOLD_NUGGET), 0.1F);
@@ -336,7 +315,7 @@ public class MekanismTools implements IModule {
 
     @SubscribeEvent
     public void onConfigChanged(OnConfigChangedEvent event) {
-        if (event.getModID().equals(MODID) || event.getModID().equals(MekanismAPI.MODID)) {
+        if (event.getModID().equals(MekanismTools.MODID) || event.getModID().equalsIgnoreCase(Mekanism.MODID)) {
             proxy.loadConfiguration();
         }
     }

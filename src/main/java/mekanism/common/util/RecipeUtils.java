@@ -7,19 +7,16 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory;
+import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.security.ISecurityItem;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -30,7 +27,7 @@ public class RecipeUtils {
     public static boolean areItemsEqualForCrafting(ItemStack target, ItemStack input) {
         if (target.isEmpty() && !input.isEmpty() || !target.isEmpty() && input.isEmpty()) {
             return false;
-        } else if (target.isEmpty() && input.isEmpty()) {
+        } else if (target.isEmpty()) {
             return true;
         }
 
@@ -51,8 +48,10 @@ public class RecipeUtils {
 
         if (target.getItem() instanceof IFactory && input.getItem() instanceof IFactory) {
             if (isFactory(target) && isFactory(input)) {
-                return ((IFactory) target.getItem()).getRecipeType(target) == ((IFactory) input.getItem())
-                      .getRecipeType(input);
+                RecipeType recipeTypeInput = ((IFactory) input.getItem()).getRecipeTypeOrNull(input);
+                //If either factory has invalid NBT don't crash it
+                return recipeTypeInput != null
+                      && ((IFactory) target.getItem()).getRecipeTypeOrNull(target) == recipeTypeInput;
             }
         }
 
@@ -60,16 +59,18 @@ public class RecipeUtils {
     }
 
     private static boolean isFactory(ItemStack stack) {
-        return BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.BASIC_FACTORY
-              || BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ADVANCED_FACTORY
-              || BlockStateMachine.MachineType.get(stack) == BlockStateMachine.MachineType.ELITE_FACTORY;
+        return MachineType.get(stack) == MachineType.BASIC_FACTORY
+              || MachineType.get(stack) == MachineType.ADVANCED_FACTORY
+              || MachineType.get(stack) == MachineType.ELITE_FACTORY;
     }
 
     public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn) {
+        int invLength = inv.getSizeInventory();
+
         if (toReturn.getItem() instanceof IEnergizedItem) {
             double energyFound = 0;
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
 
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof IEnergizedItem) {
@@ -86,7 +87,7 @@ public class RecipeUtils {
         if (toReturn.getItem() instanceof IGasItem) {
             GasStack gasFound = null;
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
 
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
@@ -117,7 +118,7 @@ public class RecipeUtils {
         }
 
         if (toReturn.getItem() instanceof ISecurityItem) {
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
 
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof ISecurityItem) {
@@ -134,7 +135,7 @@ public class RecipeUtils {
         if (FluidContainerUtils.isFluidContainer(toReturn)) {
             FluidStack fluidFound = null;
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
 
                 if (FluidContainerUtils.isFluidContainer(itemstack)) {
@@ -167,7 +168,7 @@ public class RecipeUtils {
             int foundCount = 0;
             ItemStack foundType = ItemStack.EMPTY;
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
 
                 if (!itemstack.isEmpty() && BasicBlockType.get(itemstack) == BasicBlockType.BIN) {
@@ -185,15 +186,14 @@ public class RecipeUtils {
             }
         }
 
-        if (BlockStateMachine.MachineType.get(toReturn) != null && BlockStateMachine.MachineType
-              .get(toReturn).supportsUpgrades) {
+        if (MachineType.get(toReturn) != null && MachineType.get(toReturn).supportsUpgrades) {
             Map<Upgrade, Integer> upgrades = new HashMap<>();
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
 
-                if (!itemstack.isEmpty() && BlockStateMachine.MachineType.get(itemstack) != null
-                      && BlockStateMachine.MachineType.get(itemstack).supportsUpgrades) {
+                if (!itemstack.isEmpty() && MachineType.get(itemstack) != null && MachineType
+                      .get(itemstack).supportsUpgrades) {
                     Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
 
                     for (Map.Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
@@ -211,37 +211,6 @@ public class RecipeUtils {
         }
 
         return toReturn;
-    }
-
-    public static ItemStack loadRecipeItemStack(NBTTagCompound nbtTags) {
-        int meta = 0;
-        int amount = 1;
-
-        if (nbtTags.hasKey("meta")) {
-            meta = nbtTags.getInteger("meta");
-        }
-
-        if (nbtTags.hasKey("amount")) {
-            amount = nbtTags.getInteger("amount");
-        }
-
-        if (nbtTags.hasKey("itemstack")) {
-            return InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemstack"));
-        } else if (nbtTags.hasKey("itemname")) {
-            Object obj = Item.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("itemname")));
-
-            if (obj != null) {
-                return new ItemStack((Item) obj, amount, meta);
-            }
-        } else if (nbtTags.hasKey("blockname")) {
-            Object obj = Block.REGISTRY.getObject(new ResourceLocation(nbtTags.getString("blockname")));
-
-            if (obj != null) {
-                return new ItemStack((Block) obj, amount, meta);
-            }
-        }
-
-        return ItemStack.EMPTY;
     }
 
     public static IRecipe getRecipeFromGrid(InventoryCrafting inv, World world) {

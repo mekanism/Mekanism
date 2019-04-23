@@ -34,8 +34,7 @@ public class CofhProxy implements MekWrenchProxy, IMekWrench {
     @Override
     public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {
         if (wrench.getItem() instanceof IToolHammer) {
-            ((IToolHammer) wrench.getItem())
-                  .toolUsed(wrench, player, rayTrace.getBlockPos() != null ? rayTrace.getBlockPos() : BlockPos.ORIGIN);
+            ((IToolHammer) wrench.getItem()).toolUsed(wrench, player, rayTrace.getBlockPos());
         }
     }
 }

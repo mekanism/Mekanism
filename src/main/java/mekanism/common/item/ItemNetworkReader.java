@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IHeatTransfer;
@@ -9,6 +10,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +31,7 @@ public class ItemNetworkReader extends ItemEnergized {
         super(60000);
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
           float hitY, float hitZ, EnumHand hand) {
@@ -49,7 +52,7 @@ public class ItemNetworkReader extends ItemEnergized {
                           .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
 
                     player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
+                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
                                 + " -------------"));
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter
@@ -93,7 +96,7 @@ public class ItemNetworkReader extends ItemEnergized {
                     IHeatTransfer transfer = CapabilityUtils
                           .getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
                     player.sendMessage(new TextComponentString(
-                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY
+                          EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY
                                 + " -------------"));
                     player.sendMessage(new TextComponentString(
                           EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + transfer.getTemp()
@@ -115,7 +118,7 @@ public class ItemNetworkReader extends ItemEnergized {
 
                         TileEntity tile = coord.getTileEntity(world);
 
-                        if (tile != null && CapabilityUtils
+                        if (CapabilityUtils
                               .hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSide.getOpposite())) {
                             IGridTransmitter transmitter = CapabilityUtils
                                   .getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY,

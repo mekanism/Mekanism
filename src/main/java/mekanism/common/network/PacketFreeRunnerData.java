@@ -21,14 +21,14 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
         PacketHandler.handlePacket(() -> {
             if (message.packetType == FreeRunnerPacket.UPDATE) {
                 if (message.value) {
-                    Mekanism.freeRunnerOn.add(message.userId);
+                    Mekanism.freeRunnerOn.add(message.uuid);
                 } else {
-                    Mekanism.freeRunnerOn.remove(message.userId);
+                    Mekanism.freeRunnerOn.remove(message.uuid);
                 }
 
                 if (!entityPlayer.world.isRemote) {
                     Mekanism.packetHandler.sendToDimension(
-                          new FreeRunnerDataMessage(FreeRunnerPacket.UPDATE, message.userId, message.value),
+                          new FreeRunnerDataMessage(FreeRunnerPacket.UPDATE, message.uuid, message.value),
                           entityPlayer.world.provider.getDimension());
                 }
             } else if (message.packetType == FreeRunnerPacket.MODE) {
@@ -57,18 +57,18 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
 
         public FreeRunnerPacket packetType;
 
-        public UUID userId;
+        public UUID uuid;
         public boolean value;
 
         public FreeRunnerDataMessage() {
         }
 
-        public FreeRunnerDataMessage(FreeRunnerPacket packetType, UUID username, boolean value) {
+        public FreeRunnerDataMessage(FreeRunnerPacket packetType, UUID uuid, boolean value) {
             this.packetType = packetType;
             this.value = value;
 
             if (packetType == FreeRunnerPacket.UPDATE) {
-                this.userId = username;
+                this.uuid = uuid;
             }
         }
 
@@ -79,14 +79,14 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
             if (packetType == FreeRunnerPacket.MODE) {
                 buf.writeBoolean(value);
             } else if (packetType == FreeRunnerPacket.UPDATE) {
-                PacketHandler.writeUUID(buf, userId);
+                PacketHandler.writeUUID(buf, uuid);
                 buf.writeBoolean(value);
             } else if (packetType == FreeRunnerPacket.FULL) {
                 buf.writeInt(Mekanism.freeRunnerOn.size());
 
                 synchronized (Mekanism.freeRunnerOn) {
-                    for (UUID usernameToSend : Mekanism.freeRunnerOn) {
-                        PacketHandler.writeUUID(buf, usernameToSend);
+                    for (UUID uuidToSend : Mekanism.freeRunnerOn) {
+                        PacketHandler.writeUUID(buf, uuidToSend);
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class PacketFreeRunnerData implements IMessageHandler<PacketFreeRunnerDat
             if (packetType == FreeRunnerPacket.MODE) {
                 value = buf.readBoolean();
             } else if (packetType == FreeRunnerPacket.UPDATE) {
-                userId = PacketHandler.readUUID(buf);
+                uuid = PacketHandler.readUUID(buf);
                 value = buf.readBoolean();
             } else if (packetType == FreeRunnerPacket.FULL) {
                 Mekanism.freeRunnerOn.clear();

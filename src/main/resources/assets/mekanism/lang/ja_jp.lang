@@ -973,9 +973,6 @@ reactor.depleted.desc=反応に十分な量の燃料が不足している時
 
 # Creative tab
 
-# NEI stuff
-nei.chemicalInjectionChamber=化学注入室
-
 #############
 # GENERATORS
 #############

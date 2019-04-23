@@ -1,10 +1,11 @@
 package mekanism.client;
 
+import com.google.common.collect.Lists;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -19,12 +20,8 @@ import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
 import mekanism.common.network.PacketItemStack.ItemStackMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
-import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
-import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,21 +42,21 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler {
 
-    public static final String keybindCategory = "Mekanism";
+    public static final String keybindCategory = Mekanism.MOD_NAME;
     public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.mode"),
           Keyboard.KEY_M, keybindCategory);
     public static KeyBinding armorModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.armorMode"),
           Keyboard.KEY_G, keybindCategory);
-    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.feetMode"),
-          Keyboard.KEY_H, keybindCategory);
     public static KeyBinding voiceKey = new KeyBinding("Mekanism " + LangUtils.localize("key.voice"), Keyboard.KEY_U,
           keybindCategory);
+    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.feetMode"),
+          Keyboard.KEY_H, keybindCategory);
     public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
     public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
 
     public MekanismKeyHandler() {
         super(new KeyBinding[]{modeSwitchKey, armorModeSwitchKey, freeRunnerModeSwitchKey, voiceKey},
-              new boolean[]{false, false, true});
+              new boolean[]{false, false, false, true});
 
         ClientRegistry.registerKeyBinding(modeSwitchKey);
         ClientRegistry.registerKeyBinding(armorModeSwitchKey);
@@ -80,7 +77,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             EntityPlayer player = FMLClientHandler.instance().getClient().player;
             ItemStack toolStack = player.inventory.getCurrentItem();
 
-            Item item = StackUtils.getItem(toolStack);
+            Item item = toolStack.getItem();
 
             if (player.isSneaking() && item instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) item;
@@ -89,9 +86,9 @@ public class MekanismKeyHandler extends MekKeyHandler {
                       configurator.getState(toolStack).ordinal() + 1 : 0;
                 configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
                 Mekanism.packetHandler
-                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(toSet)));
+                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(toSet)));
                 player.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.configureState") + ": " + configurator
                             .getColor(configurator.getState(toolStack)) + configurator
                             .getStateDisplay(configurator.getState(toolStack))));
@@ -100,20 +97,21 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
                 bow.setFireState(toolStack, !bow.getFireState(toolStack));
                 Mekanism.packetHandler.sendToServer(
-                      new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(bow.getFireState(toolStack))));
+                      new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(bow.getFireState(toolStack))));
                 player.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.fireMode")
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
+                            .localize("tooltip.fireMode")
                             + ": " + (bow.getFireState(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED)
                             + LangUtils.transOnOff(bow.getFireState(toolStack))));
             } else if (player.isSneaking() && item instanceof ItemBlockMachine) {
                 ItemBlockMachine machine = (ItemBlockMachine) item;
 
-                if (BlockStateMachine.MachineType.get(toolStack) == BlockStateMachine.MachineType.FLUID_TANK) {
+                if (MachineType.get(toolStack) == MachineType.FLUID_TANK) {
                     machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
                     Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND,
-                          ListUtils.asArrayList(machine.getBucketMode(toolStack))));
+                          Lists.newArrayList(machine.getBucketMode(toolStack))));
                     player.sendMessage(new TextComponentString(
-                          EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
+                          EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                                 .localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack)
                                 ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils
                                 .transOnOff(machine.getBucketMode(toolStack))));
@@ -125,8 +123,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     int newChan = wt.getChannel(toolStack) < 9 ? wt.getChannel(toolStack) + 1 : 1;
                     wt.setChannel(toolStack, newChan);
                     Mekanism.packetHandler
-                          .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, ListUtils.asArrayList(newChan)));
-                    SoundHandler.playSound(MekanismSounds.DING);
+                          .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(newChan)));
                 }
             } else if (player.isSneaking() && item instanceof ItemFlamethrower) {
                 ItemFlamethrower flamethrower = (ItemFlamethrower) item;
@@ -136,14 +133,14 @@ public class MekanismKeyHandler extends MekKeyHandler {
                       new PacketFlamethrowerData.FlamethrowerDataMessage(PacketFlamethrowerData.FlamethrowerPacket.MODE,
                             EnumHand.MAIN_HAND, null, false));
                 player.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
                             .localize("tooltip.flamethrower.modeBump") + ": " + flamethrower.getMode(toolStack)
                             .getName()));
             }
         } else if (kb == armorModeSwitchKey) {
             EntityPlayer player = FMLClientHandler.instance().getClient().player;
             ItemStack chestStack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            Item chestItem = StackUtils.getItem(chestStack);
+            Item chestItem = chestStack.getItem();
 
             if (chestItem instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chestItem;
@@ -154,20 +151,19 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     jetpack.incrementMode(chestStack);
                 }
 
-                Mekanism.packetHandler
-                      .sendToServer(new JetpackDataMessage(JetpackPacket.MODE, null, player.isSneaking()));
+                Mekanism.packetHandler.sendToServer(JetpackDataMessage.MODE_CHANGE(player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             } else if (chestItem instanceof ItemScubaTank) {
                 ItemScubaTank scubaTank = (ItemScubaTank) chestItem;
 
                 scubaTank.toggleFlowing(chestStack);
-                Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.MODE, null, false));
+                Mekanism.packetHandler.sendToServer(ScubaTankDataMessage.MODE_CHANGE(false));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             }
         } else if (kb == freeRunnerModeSwitchKey) {
             EntityPlayer player = FMLClientHandler.instance().getClient().player;
             ItemStack feetStack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
-            Item feetItem = StackUtils.getItem(feetStack);
+            Item feetItem = feetStack.getItem();
 
             if (feetItem instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) feetItem;

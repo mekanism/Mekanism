@@ -73,7 +73,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             return true;
         }
 
-        if (waterStored != null && prevWater != null) {
+        if (waterStored != null) {
             if ((waterStored.getFluid() != prevWater.getFluid()) || (waterStored.amount != prevWater.amount)) {
                 return true;
             }
@@ -83,7 +83,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             return true;
         }
 
-        if (steamStored != null && prevSteam != null) {
+        if (steamStored != null) {
             return (steamStored.getFluid() != prevSteam.getFluid()) || (steamStored.amount != prevSteam.amount);
         }
 

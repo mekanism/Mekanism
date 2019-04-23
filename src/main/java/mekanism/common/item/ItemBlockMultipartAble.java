@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import mcmultipart.api.container.IMultipartContainer;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.multipart.MultipartHelper;
@@ -33,9 +34,10 @@ public abstract class ItemBlockMultipartAble extends ItemBlock {
     /**
      * Reimplementation of onItemUse that will divert to MCMultipart placement functions if applicable
      */
+    @Nonnull
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand,
-          EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, @Nonnull BlockPos pos, @Nonnull EnumHand hand,
+          @Nonnull EnumFacing facing, float hitX, float hitY, float hitZ) {
         IBlockState iblockstate = worldIn.getBlockState(pos);
         Block block = iblockstate.getBlock();
 
@@ -109,15 +111,15 @@ public abstract class ItemBlockMultipartAble extends ItemBlock {
     protected abstract IMultipart getMultiPart();
 
     @Override
-    public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side, EntityPlayer player,
-          ItemStack stack) {
+    public boolean canPlaceBlockOnSide(World worldIn, @Nonnull BlockPos pos, @Nonnull EnumFacing side,
+          EntityPlayer player, ItemStack stack) {
         return super.canPlaceBlockOnSide(worldIn, pos, side, player, stack) || (Mekanism.hooks.MCMPLoaded
               && MultipartHelper.getContainer(worldIn, pos).isPresent());
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-          float hitX, float hitY, float hitZ, IBlockState newState) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState newState) {
         if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
             return false;
         }

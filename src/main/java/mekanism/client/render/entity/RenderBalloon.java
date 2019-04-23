@@ -1,5 +1,6 @@
 package mekanism.client.render.entity;
 
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.client.model.ModelBalloon;
 import mekanism.common.entity.EntityBalloon;
@@ -25,12 +26,12 @@ public class RenderBalloon extends Render<EntityBalloon> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityBalloon entity) {
+    protected ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
         return MekanismUtils.getResource(ResourceType.RENDER, "Balloon.png");
     }
 
     @Override
-    public void doRender(EntityBalloon balloon, double x, double y, double z, float f, float partialTick) {
+    public void doRender(@Nonnull EntityBalloon balloon, double x, double y, double z, float f, float partialTick) {
         double renderPosX = x - (balloon.lastTickPosX + (balloon.posX - balloon.lastTickPosX) * partialTick);
         double renderPosY = y - (balloon.lastTickPosY + (balloon.posY - balloon.lastTickPosY) * partialTick);
         double renderPosZ = z - (balloon.lastTickPosZ + (balloon.posZ - balloon.lastTickPosZ) * partialTick);

@@ -5,20 +5,18 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
@@ -27,11 +25,10 @@ import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.prefab.TileEntityMachine;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -40,8 +37,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, ITubeConnection,
-      IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile {
+public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, IRedstoneControl,
+      ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile {
 
     public static final int MAX_GAS = 10000;
     public GasTank leftTank = new GasTank(MAX_GAS);
@@ -54,7 +51,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     public double clientEnergyUsed;
 
     public TileEntityChemicalInfuser() {
-        super("machine.cheminfuser", "ChemicalInfuser", BlockStateMachine.MachineType.CHEMICAL_INFUSER.baseEnergy,
+        super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy,
               MekanismConfig.current().usage.chemicalInfuserUsage.val(), 4);
 
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
@@ -66,22 +63,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-
-            if (!inventory.get(0).isEmpty() && (leftTank.getGas() == null || leftTank.getStored() < leftTank
-                  .getMaxGas())) {
-                leftTank
-                      .receive(GasUtils.removeGas(inventory.get(0), leftTank.getGasType(), leftTank.getNeeded()), true);
-            }
-
-            if (!inventory.get(1).isEmpty() && (rightTank.getGas() == null || rightTank.getStored() < rightTank
-                  .getMaxGas())) {
-                rightTank.receive(GasUtils.removeGas(inventory.get(1), rightTank.getGasType(), rightTank.getNeeded()),
-                      true);
-            }
-
-            if (!inventory.get(2).isEmpty() && centerTank.getGas() != null) {
-                centerTank.draw(GasUtils.addGas(inventory.get(2), centerTank.getGas()), true);
-            }
+            TileUtils.receiveGas(inventory.get(0), leftTank);
+            TileUtils.receiveGas(inventory.get(1), rightTank);
+            TileUtils.drawGas(inventory.get(2), centerTank);
 
             ChemicalInfuserRecipe recipe = getRecipe();
 
@@ -98,13 +82,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
                     setActive(false);
                 }
             }
-
-            if (centerTank.getGas() != null) {
-                GasStack toSend = new GasStack(centerTank.getGas().getGas(),
-                      Math.min(centerTank.getStored(), gasOutput));
-                centerTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
-            }
-
+            TileUtils.emitGas(this, centerTank, gasOutput, facing);
             prevEnergy = getEnergy();
         }
     }
@@ -159,57 +137,19 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             clientEnergyUsed = dataStream.readDouble();
-
-            if (dataStream.readBoolean()) {
-                leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                leftTank.setGas(null);
-            }
-
-            if (dataStream.readBoolean()) {
-                rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                rightTank.setGas(null);
-            }
-
-            if (dataStream.readBoolean()) {
-                centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                centerTank.setGas(null);
-            }
+            TileUtils.readTankData(dataStream, leftTank);
+            TileUtils.readTankData(dataStream, rightTank);
+            TileUtils.readTankData(dataStream, centerTank);
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(clientEnergyUsed);
-
-        if (leftTank.getGas() != null) {
-            data.add(true);
-            data.add(leftTank.getGas().getGas().getID());
-            data.add(leftTank.getStored());
-        } else {
-            data.add(false);
-        }
-
-        if (rightTank.getGas() != null) {
-            data.add(true);
-            data.add(rightTank.getGas().getGas().getID());
-            data.add(rightTank.getStored());
-        } else {
-            data.add(false);
-        }
-
-        if (centerTank.getGas() != null) {
-            data.add(true);
-            data.add(centerTank.getGas().getGas().getID());
-            data.add(centerTank.getStored());
-        } else {
-            data.add(false);
-        }
-
+        TileUtils.addTankData(data, leftTank);
+        TileUtils.addTankData(data, rightTank);
+        TileUtils.addTankData(data, centerTank);
         return data;
     }
 
@@ -222,6 +162,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         centerTank.read(nbtTags.getCompoundTag("centerTank"));
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -257,11 +198,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == facing;
-    }
-
-    @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
         return (getTank(side) != null && getTank(side) != centerTank) && getTank(side).canReceive(type);
     }
@@ -290,29 +226,39 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
-            return (T) this;
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing) && side != facing;
+        }
+        return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         return slotID == 3 && ChargeUtils.canBeDischarged(itemstack);
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 0 || slotID == 2) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem())
                   .canReceiveGas(itemstack, null);
@@ -326,8 +272,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         return false;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         if (side == MekanismUtils.getLeft(facing)) {
             return new int[]{0};
         } else if (side == facing) {

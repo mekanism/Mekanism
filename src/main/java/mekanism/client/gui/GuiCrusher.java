@@ -9,8 +9,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiCrusher extends GuiElectricMachine {
 
-    public GuiCrusher(InventoryPlayer inventory, TileEntityElectricMachine tentity) {
-        super(inventory, tentity);
+    public GuiCrusher(InventoryPlayer inventory, TileEntityElectricMachine tile) {
+        super(inventory, tile);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
@@ -9,8 +10,8 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -121,6 +122,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         return true;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getSimpleName() + ".name");
@@ -136,7 +138,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             return ChargeUtils.canBeCharged(itemstack);
         } else if (slotID == 1) {
@@ -166,13 +168,14 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         return tier.getMaxEnergy();
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         } else if (slotID == 0) {
@@ -237,6 +240,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -304,14 +308,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        //Special isCapabilityDisabled override not needed here as it already gets handled in TileEntityElectricBlock
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
-            return (T) this;
+            return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

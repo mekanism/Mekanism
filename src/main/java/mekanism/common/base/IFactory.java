@@ -2,6 +2,8 @@ package mekanism.common.base;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.InfuseStorage;
@@ -26,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 
 /**
  * Internal interface for managing various Factory types.
@@ -41,6 +44,15 @@ public interface IFactory {
      * @return RecipeType ordinal
      */
     int getRecipeType(ItemStack itemStack);
+
+    /**
+     * Gets the recipe type this Factory currently has.
+     *
+     * @param itemStack - stack to check
+     * @return RecipeType or null if it has invalid NBT
+     */
+    @Nullable
+    RecipeType getRecipeTypeOrNull(ItemStack itemStack);
 
     /**
      * Sets the recipe type of this Smelting Factory to a new value.
@@ -76,7 +88,7 @@ public interface IFactory {
               Recipe.PRECISION_SAWMILL);
 
         private String name;
-        private ResourceLocation sound;
+        private SoundEvent sound;
         private MachineType type;
         private MachineFuelType fuelType;
         private boolean fuelSpeed;
@@ -85,7 +97,7 @@ public interface IFactory {
 
         RecipeType(String s, String s1, MachineType t, MachineFuelType ft, boolean b1, Recipe r) {
             name = s;
-            sound = new ResourceLocation("mekanism", "tile.machine." + s1);
+            sound = new SoundEvent(new ResourceLocation("mekanism", "tile.machine." + s1));
             type = t;
             fuelType = ft;
             fuelSpeed = b1;
@@ -156,15 +168,13 @@ public interface IFactory {
             } else if (fuelType == MachineFuelType.CHANCE) {
                 return getChanceRecipe(slotStack);
             } else if (this == INFUSING) {
-                if (infuse.type != null) {
+                if (infuse.getType() != null) {
                     return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuse, slotStack));
                 } else {
-                    for (Object obj : Recipe.METALLURGIC_INFUSER.get().entrySet()) {
-                        Map.Entry entry = (Map.Entry) obj;
-                        InfusionInput input = (InfusionInput) entry.getKey();
-
-                        if (input.inputStack.isItemEqual(slotStack)) {
-                            return (MetallurgicInfuserRecipe) entry.getValue();
+                    for (Entry<InfusionInput, MetallurgicInfuserRecipe> entry : Recipe.METALLURGIC_INFUSER.get()
+                          .entrySet()) {
+                        if (entry.getKey().inputStack.isItemEqual(slotStack)) {
+                            return entry.getValue();
                         }
                     }
                 }
@@ -197,12 +207,8 @@ public interface IFactory {
             return false;
         }
 
-        public boolean canTubeConnect(EnumFacing side) {
-            if (fuelType == MachineFuelType.ADVANCED) {
-                return getTile().canTubeConnect(side);
-            }
-
-            return false;
+        public boolean supportsGas() {
+            return fuelType == MachineFuelType.ADVANCED;
         }
 
         public boolean isValidGas(Gas gas) {
@@ -272,7 +278,7 @@ public interface IFactory {
             return type.getStack();
         }
 
-        public String getUnlocalizedName() {
+        public String getTranslationKey() {
             return name;
         }
 
@@ -280,7 +286,7 @@ public interface IFactory {
             return LangUtils.localize("gui.factory." + name);
         }
 
-        public ResourceLocation getSound() {
+        public SoundEvent getSound() {
             return sound;
         }
 

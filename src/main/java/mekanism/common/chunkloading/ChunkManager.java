@@ -5,11 +5,11 @@ import java.util.List;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
+import net.minecraftforge.common.ForgeChunkManager.PlayerOrderedLoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
-public class ChunkManager implements LoadingCallback, ForgeChunkManager.PlayerOrderedLoadingCallback {
+public class ChunkManager implements LoadingCallback, PlayerOrderedLoadingCallback {
 
     @Override
     public void ticketsLoaded(List<Ticket> tickets, World world) {

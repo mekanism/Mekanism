@@ -5,13 +5,13 @@ import com.google.common.base.Predicates;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -66,12 +66,10 @@ public class BlockStateGenerator extends ExtendedBlockState {
         }
 
         public Block getBlock() {
-            switch (this) {
-                case GENERATOR_BLOCK_1:
-                    return GeneratorsBlocks.Generator;
-                default:
-                    return null;
+            if (this == GeneratorBlock.GENERATOR_BLOCK_1) {
+                return GeneratorsBlocks.Generator;
             }
+            return null;
         }
     }
 
@@ -81,8 +79,8 @@ public class BlockStateGenerator extends ExtendedBlockState {
         SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class,
               true, Plane.HORIZONTAL, false),
         GAS_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 3, "GasGenerator", 3,
-              -1/*uses config, set after generators config loaded*/, TileEntityGasGenerator.class, true,
-              Plane.HORIZONTAL, false),
+              -1/*uses config, set after generators config loaded*/,
+              TileEntityGasGenerator.class, true, Plane.HORIZONTAL, false),
         BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class,
               true, Plane.HORIZONTAL, false),
         ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000,
@@ -108,6 +106,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
         static {
             GENERATORS_FOR_CONFIG = new ArrayList<>();
+
             for (GeneratorType type : GeneratorType.values()) {
                 if (type.ordinal() <= 5) {
                     GENERATORS_FOR_CONFIG.add(type);
@@ -238,8 +237,9 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
     public static class GeneratorBlockStateMapper extends StateMapperBase {
 
+        @Nonnull
         @Override
-        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             BlockGenerator block = (BlockGenerator) state.getBlock();
             GeneratorType type = state.getValue(block.getTypeProperty());
             StringBuilder builder = new StringBuilder();
@@ -271,7 +271,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
                 builder.append("normal");
             }
 
-            ResourceLocation baseLocation = new ResourceLocation(MekanismGenerators.MODID,
+            ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators",
                   nameOverride != null ? nameOverride : type.getName());
 
             return new ModelResourceLocation(baseLocation, builder.toString());

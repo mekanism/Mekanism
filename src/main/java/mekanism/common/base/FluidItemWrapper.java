@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import javax.annotation.Nonnull;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -51,6 +52,7 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandlerIte
         return getItem().drain(getStack(), maxDrain, doDrain);
     }
 
+    @Nonnull
     @Override
     public ItemStack getContainer() {
         return getStack();

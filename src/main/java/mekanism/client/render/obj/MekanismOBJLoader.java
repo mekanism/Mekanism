@@ -1,11 +1,13 @@
 package mekanism.client.render.obj;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import javax.annotation.Nonnull;
 import mekanism.client.render.obj.MekanismOBJModel.OBJModelType;
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -14,6 +16,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
@@ -22,6 +25,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
+import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -37,16 +41,12 @@ public class MekanismOBJLoader implements ICustomModelLoader {
     public void onModelBake(ModelBakeEvent event) {
         GlowPanelModel.forceRebake();
 
+        IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         for (String s : OBJ_RENDERS) {
             ModelResourceLocation model = new ModelResourceLocation("mekanism:" + s, "inventory");
-            Object obj = event.getModelRegistry().getObject(model);
-
-            if (obj instanceof IBakedModel) {
-                event.getModelRegistry().putObject(model,
-                      createBakedObjItemModel((IBakedModel) obj, "mekanism:models/block/" + s + ".obj.mek",
-                            new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
-                            DefaultVertexFormats.ITEM));
-            }
+            IBakedModel bakedModel = modelRegistry.getObject(model);
+            modelRegistry.putObject(model, createBakedObjItemModel(bakedModel, "mekanism:models/block/" + s +
+                  ".obj.mek", new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM));
         }
     }
 
@@ -64,15 +64,13 @@ public class MekanismOBJLoader implements ICustomModelLoader {
             TextureAtlasSprite missing = textureGetter.apply(new ResourceLocation("missingno"));
 
             for (String s : objModel.getMatLib().getMaterialNames()) {
-                if (objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath()
-                      .startsWith("#")) {
-                    FMLLog.severe("OBJLoader: Unresolved texture '%s' for obj model '%s'",
-                          objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(),
+                ResourceLocation texture = objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation();
+                if (texture.getPath().startsWith("#")) {
+                    Mekanism.logger.error("OBJLoader: Unresolved texture '{}' for obj model '{}'", texture.getPath(),
                           modelLocation);
                     builder.put(s, missing);
                 } else {
-                    builder.put(s,
-                          textureGetter.apply(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation()));
+                    builder.put(s, textureGetter.apply(texture));
                 }
             }
 
@@ -87,23 +85,24 @@ public class MekanismOBJLoader implements ICustomModelLoader {
     }
 
     @Override
-    public boolean accepts(ResourceLocation modelLocation) {
-        return modelLocation.getResourcePath().endsWith(".obj.mek");
+    public boolean accepts(@Nonnull ResourceLocation modelLocation) {
+        return modelLocation.getPath().endsWith(".obj.mek");
     }
 
+    @Nonnull
     @Override
-    public IModel loadModel(ResourceLocation loc) throws Exception {
-        ResourceLocation file = new ResourceLocation(loc.getResourceDomain(), loc.getResourcePath());
+    public IModel loadModel(@Nonnull ResourceLocation loc) throws Exception {
+        ResourceLocation file = new ResourceLocation(loc.getNamespace(), loc.getPath());
 
         if (!modelCache.containsKey(file)) {
             IModel model = OBJLoader.INSTANCE.loadModel(file);
 
             if (model instanceof OBJModel) {
-                if (file.getResourcePath().contains("glow_panel")) {
+                if (file.getPath().contains("glow_panel")) {
                     MekanismOBJModel mekModel = new MekanismOBJModel(OBJModelType.GLOW_PANEL,
                           ((OBJModel) model).getMatLib(), file);
                     modelCache.put(file, mekModel);
-                } else if (file.getResourcePath().contains("transmitter")) {
+                } else if (file.getPath().contains("transmitter")) {
                     MekanismOBJModel mekModel = new MekanismOBJModel(OBJModelType.TRANSMITTER,
                           ((OBJModel) model).getMatLib(), file);
                     modelCache.put(file, mekModel);
@@ -121,7 +120,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
     }
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
         modelCache.clear();
     }
 }

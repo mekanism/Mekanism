@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public final class SecurityUtils {
 
     public static boolean canAccess(EntityPlayer player, ItemStack stack) {
+        // If protection is disabled, access is always granted
         if (!MekanismConfig.current().general.allowProtection.val()) {
             return true;
         }
@@ -45,7 +46,7 @@ public final class SecurityUtils {
     }
 
     public static boolean canAccess(EntityPlayer player, TileEntity tile) {
-        if (!MekanismConfig.current().general.allowProtection.val() || !(tile instanceof ISecurityTile)) {
+        if (!(tile instanceof ISecurityTile)) {
             return true;
         }
 
@@ -59,6 +60,11 @@ public final class SecurityUtils {
     }
 
     private static boolean canAccess(SecurityMode mode, EntityPlayer player, UUID owner) {
+        // If protection is disabled, access is always granted
+        if (!MekanismConfig.current().general.allowProtection.val()) {
+            return true;
+        }
+
         if (owner == null || player.getUniqueID().equals(owner)) {
             return true;
         }
@@ -105,7 +111,7 @@ public final class SecurityUtils {
 
     public static void displayNoAccess(EntityPlayer player) {
         player.sendMessage(new TextComponentString(
-              EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
+              EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils.localize("gui.noAccessDesc")));
     }
 
     public static SecurityMode getSecurity(ISecurityTile security, Side side) {

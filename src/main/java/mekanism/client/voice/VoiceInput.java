@@ -13,14 +13,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class VoiceInput extends Thread {
 
     private VoiceClient voiceClient;
-
     private DataLine.Info microphone;
-
     private TargetDataLine targetLine;
 
     public VoiceInput(VoiceClient client) {
         voiceClient = client;
-        microphone = new DataLine.Info(TargetDataLine.class, voiceClient.format, 2200);
+        microphone = new DataLine.Info(TargetDataLine.class, voiceClient.getAudioFormat(), 2200);
 
         setDaemon(true);
         setName("VoiceServer Client Input Thread");
@@ -34,40 +32,40 @@ public class VoiceInput extends Thread {
                 return;
             }
             targetLine = ((TargetDataLine) AudioSystem.getLine(microphone));
-            targetLine.open(voiceClient.format, 2200);
+            targetLine.open(voiceClient.getAudioFormat(), 2200);
             targetLine.start();
             AudioInputStream audioInput = new AudioInputStream(targetLine);
 
             boolean doFlush = false;
 
-            while (voiceClient.running) {
+            while (voiceClient.isRunning()) {
                 if (MekanismKeyHandler.voiceKey.isPressed()) {
                     targetLine.flush();
 
-                    while (voiceClient.running && MekanismKeyHandler.voiceKey.isPressed()) {
+                    while (voiceClient.isRunning() && MekanismKeyHandler.voiceKey.isPressed()) {
                         try {
                             int availableBytes = audioInput.available();
                             byte[] audioData = new byte[availableBytes > 2200 ? 2200 : availableBytes];
                             int bytesRead = audioInput.read(audioData, 0, audioData.length);
 
                             if (bytesRead > 0) {
-                                voiceClient.output.writeShort(audioData.length);
-                                voiceClient.output.write(audioData);
+                                voiceClient.getOutputStream().writeShort(audioData.length);
+                                voiceClient.getOutputStream().write(audioData);
                             }
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
                         }
                     }
 
                     try {
                         Thread.sleep(200L);
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
 
                     doFlush = true;
                 } else if (doFlush) {
                     try {
-                        voiceClient.output.flush();
-                    } catch (Exception e) {
+                        voiceClient.getOutputStream().flush();
+                    } catch (Exception ignored) {
                     }
 
                     doFlush = false;
@@ -75,7 +73,7 @@ public class VoiceInput extends Thread {
 
                 try {
                     Thread.sleep(20L);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
 

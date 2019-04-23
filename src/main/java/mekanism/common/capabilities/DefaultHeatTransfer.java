@@ -8,7 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultHeatTransfer implements IHeatTransfer {
 
     public static void register() {
-        CapabilityManager.INSTANCE.register(IHeatTransfer.class, new NullStorage<>(), DefaultHeatTransfer.class);
+        CapabilityManager.INSTANCE.register(IHeatTransfer.class, new NullStorage<>(), DefaultHeatTransfer::new);
     }
 
     @Override

@@ -3,7 +3,7 @@ package mekanism.client.gui.element;
 import java.util.Arrays;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
@@ -18,15 +18,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+@SideOnly(Side.CLIENT)
 public class GuiFluidGauge extends GuiGauge<FluidStack> {
 
-    IFluidInfoHandler infoHandler;
+    private final IFluidInfoHandler infoHandler;
 
     public GuiFluidGauge(IFluidInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         super(type, gui, def, x, y);
-
         infoHandler = handler;
     }
 
@@ -40,11 +42,17 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
     @Override
     public int getRenderColor() {
         if (dummy) {
-            return dummyType.getFluid().getColor(dummyType);
+            return dummyType.getFluid().getColor();
         }
 
-        FluidStack fluidStack = infoHandler.getTank().getFluid();
-        return fluidStack != null ? fluidStack.getFluid().getColor(fluidStack) : 0;
+        FluidStack fluid = infoHandler.getTank().getFluid();
+        return fluid == null ? dummyType.getFluid().getColor() : fluid.getFluid().getColor(fluid);
+    }
+
+    @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
+              && yAxis <= yLocation + height - 1;
     }
 
     @Override
@@ -54,12 +62,11 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
-              && yAxis <= yLocation + height - 1) {
+        if (inBounds(xAxis, yAxis)) {
             ItemStack stack = mc.player.inventory.getItemStack();
 
-            if (guiObj instanceof GuiMekanism && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-                TileEntity tile = ((GuiMekanism) guiObj).getTileEntity();
+            if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+                TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
 
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
                     int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(infoHandler.getTank());
@@ -81,15 +88,12 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
         if (dummy) {
             return height - 2;
         }
-
         if (infoHandler.getTank().getFluid() == null || infoHandler.getTank().getCapacity() == 0) {
             return 0;
         }
-
         if (infoHandler.getTank().getFluidAmount() == Integer.MAX_VALUE) {
             return height - 2;
         }
-
         return infoHandler.getTank().getFluidAmount() * (height - 2) / infoHandler.getTank().getCapacity();
     }
 
@@ -98,8 +102,8 @@ public class GuiFluidGauge extends GuiGauge<FluidStack> {
         if (dummy) {
             return MekanismRenderer.getFluidTexture(dummyType, FluidType.STILL);
         }
-
-        return MekanismRenderer.getFluidTexture(infoHandler.getTank().getFluid(), FluidType.STILL);
+        FluidStack fluid = infoHandler.getTank().getFluid();
+        return MekanismRenderer.getFluidTexture(fluid == null ? dummyType : fluid, FluidType.STILL);
     }
 
     @Override

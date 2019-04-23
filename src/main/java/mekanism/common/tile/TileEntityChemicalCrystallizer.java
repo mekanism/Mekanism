@@ -6,19 +6,17 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
@@ -28,10 +26,10 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -40,7 +38,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine implements IGasHandler,
-      ITubeConnection, ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess {
+      ISideConfiguration, ISustainedData, ITankManager, IConfigCardAccess {
 
     public static final int MAX_GAS = 10000;
 
@@ -52,8 +50,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public TileComponentConfig configComponent;
 
     public TileEntityChemicalCrystallizer() {
-        super("machine.crystallizer", "ChemicalCrystallizer",
-              BlockStateMachine.MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy,
+        super("machine.crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy,
               MekanismConfig.current().usage.chemicalCrystallizerUsage.val(), 3, 200);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
@@ -84,13 +81,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
-
-            if (!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank
-                  .getMaxGas())) {
-                inputTank.receive(GasUtils.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()),
-                      true);
-            }
-
+            TileUtils.receiveGas(inventory.get(0), inputTank);
             CrystallizerRecipe recipe = getRecipe();
 
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
@@ -148,26 +139,14 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            if (dataStream.readBoolean()) {
-                inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                inputTank.setGas(null);
-            }
+            TileUtils.readTankData(dataStream, inputTank);
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
-        if (inputTank.getGas() != null) {
-            data.add(true);
-            data.add(inputTank.getGas().getGas().getID());
-            data.add(inputTank.getStored());
-        } else {
-            data.add(false);
-        }
-
+        TileUtils.addTankData(data, inputTank);
         return data;
     }
 
@@ -178,6 +157,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         inputTank.read(nbtTags.getCompoundTag("rightTank"));
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -192,11 +172,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public boolean canSetFacing(int i) {
         return i != 0 && i != 1;
-    }
-
-    @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return configComponent.getOutput(TransmissionType.GAS, side, facing).hasSlot(0);
     }
 
     @Override
@@ -231,16 +206,20 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.CONFIG_CARD_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || capability == Capabilities.CONFIG_CARD_CAPABILITY) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return (T) this;
         }
 
@@ -248,7 +227,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
+              .isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem
                   && ((IGasItem) itemstack.getItem()).getGas(itemstack) != null &&
@@ -262,7 +247,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 0) {
             return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem
                   && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null;
@@ -275,8 +260,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         return false;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
     }
 

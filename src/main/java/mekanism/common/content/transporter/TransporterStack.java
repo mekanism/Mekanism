@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -135,7 +134,7 @@ public class TransporterStack {
         }
 
         pathType = Path.values()[nbtTags.getInteger("pathType")];
-        itemStack = InventoryUtils.loadFromNBT(nbtTags);
+        itemStack = new ItemStack(nbtTags);
     }
 
     public void setPath(List<Coord4D> path, Path type) {
@@ -249,7 +248,7 @@ public class TransporterStack {
             if (getNext(transporter) != null) {
                 return getNext(transporter).sideDifference(transporter.coord());
             }
-        } else if (progress > 50) {
+        } else {
             if (getNext(transporter) != null) {
                 return getNext(transporter).sideDifference(transporter.coord());
             }

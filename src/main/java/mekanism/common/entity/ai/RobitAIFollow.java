@@ -79,7 +79,7 @@ public class RobitAIFollow extends EntityAIBase {
 
             theRobit.getLookHelper().setLookPositionWithEntity(player, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
             return false;
-        } else if (theRobit.getDistanceSqToEntity(player) < (minDist * minDist)) {
+        } else if (theRobit.getDistanceSq(player) < (minDist * minDist)) {
             return false;
         } else if (theRobit.getEnergy() == 0) {
             return false;
@@ -91,7 +91,7 @@ public class RobitAIFollow extends EntityAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit
+        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit
               .getFollowing() && theRobit.getEnergy() > 0
               && theOwner.world.provider.getDimension() == theRobit.world.provider.getDimension();
     }
@@ -106,7 +106,7 @@ public class RobitAIFollow extends EntityAIBase {
     @Override
     public void resetTask() {
         theOwner = null;
-        thePathfinder.clearPathEntity();
+        thePathfinder.clearPath();
         theRobit.setPathPriority(PathNodeType.WATER, oldWaterCost);
     }
 
@@ -119,7 +119,7 @@ public class RobitAIFollow extends EntityAIBase {
                 ticker = 10;
 
                 if (!thePathfinder.tryMoveToEntityLiving(theOwner, moveSpeed)) {
-                    if (theRobit.getDistanceSqToEntity(theOwner) >= 144.0D) {
+                    if (theRobit.getDistanceSq(theOwner) >= 144.0D) {
                         int x = MathHelper.floor(theOwner.posX) - 2;
                         int y = MathHelper.floor(theOwner.getEntityBoundingBox().minY);
                         int z = MathHelper.floor(theOwner.posZ) - 2;
@@ -134,7 +134,7 @@ public class RobitAIFollow extends EntityAIBase {
                                       new BlockPos(x + l, y + 1, z + i1))) {
                                     theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F,
                                           theRobit.rotationYaw, theRobit.rotationPitch);
-                                    thePathfinder.clearPathEntity();
+                                    thePathfinder.clearPath();
                                     return;
                                 }
                             }

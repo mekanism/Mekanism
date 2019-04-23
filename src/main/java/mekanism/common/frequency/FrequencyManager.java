@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import net.minecraft.nbt.NBTTagCompound;
@@ -260,7 +261,7 @@ public class FrequencyManager {
         }
 
         @Override
-        public void readFromNBT(NBTTagCompound nbtTags) {
+        public void readFromNBT(@Nonnull NBTTagCompound nbtTags) {
             try {
                 String frequencyClass = nbtTags.getString("frequencyClass");
 
@@ -285,8 +286,9 @@ public class FrequencyManager {
             }
         }
 
+        @Nonnull
         @Override
-        public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound nbtTags) {
             nbtTags.setString("frequencyClass", manager.frequencyClass.getName());
 
             if (manager.ownerUUID != null) {

@@ -19,6 +19,7 @@ public class MekanismIngredient extends Ingredient {
         this.stack = stack;
     }
 
+    @Nonnull
     public static Ingredient fromStacks(ItemStack... stacks) {
         if (stacks.length > 0) {
             for (ItemStack itemstack : stacks) {

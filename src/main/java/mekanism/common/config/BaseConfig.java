@@ -3,6 +3,7 @@ package mekanism.common.config;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.common.config.options.Option;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -15,7 +16,7 @@ public abstract class BaseConfig {
      */
     protected static BaseConfig NULL_OWNER = new BaseConfig() {
         @Override
-        protected void registerOption(Option option) {
+        public void registerOption(Option option) {
         }
     };
 
@@ -26,7 +27,7 @@ public abstract class BaseConfig {
      *
      * @param option the option to add.
      */
-    protected void registerOption(Option option) {
+    public void registerOption(Option option) {
         options.add(option);
     }
 

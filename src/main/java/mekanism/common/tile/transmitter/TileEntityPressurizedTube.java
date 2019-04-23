@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -10,11 +11,10 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.TubeTier;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.grid.GasNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
@@ -23,9 +23,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork> implements IGasHandler {
+public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements
+      IGasHandler {
 
-    public Tier.TubeTier tier = Tier.TubeTier.BASIC;
+    public TubeTier tier = TubeTier.BASIC;
 
     public float currentScale;
 
@@ -40,7 +41,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.TubeTier.get(baseTier);
+        tier = TubeTier.get(baseTier);
         buffer.setMaxGas(getCapacity());
     }
 
@@ -139,6 +140,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -170,6 +172,19 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
+    public boolean isValidTransmitter(TileEntity tileEntity) {
+        if (!super.isValidTransmitter(tileEntity)) {
+            return false;
+        }
+        if (!(tileEntity instanceof TileEntityPressurizedTube)) {
+            return true;
+        }
+        GasStack buffer = getBufferWithFallback();
+        GasStack otherBuffer = ((TileEntityPressurizedTube) tileEntity).getBufferWithFallback();
+        return buffer == null || otherBuffer == null || buffer.isGasEqual(otherBuffer);
+    }
+
+    @Override
     public GasNetwork createNewNetwork() {
         return new GasNetwork();
     }
@@ -180,13 +195,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
+    protected boolean canHaveIncompatibleNetworks() {
+        return true;
+    }
+
+    @Override
     public int getCapacity() {
         return tier.getTubeCapacity();
     }
 
+    @Nullable
     @Override
     public GasStack getBuffer() {
-        return buffer == null ? null : buffer.getGas();
+        if (buffer == null) {
+            return null;
+        }
+        GasStack gas = buffer.getGas();
+        return gas == null || gas.amount == 0 ? null : gas;
     }
 
     @Override
@@ -278,14 +303,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);

@@ -1,12 +1,12 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.Objects;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -30,7 +30,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         receivedCoords = true;
 
         if (!world.isRemote) {
-            mainPos = Objects.requireNonNull(pos);
+            mainPos = pos;
 
             Mekanism.packetHandler
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
@@ -53,7 +53,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         if (tile instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) tile;
 
-            int power = world.isBlockIndirectlyGettingPowered(getPos());
+            int power = world.getRedstonePowerFromNeighbors(getPos());
 
             if (prevPower != power) {
                 if (power > 0) {
@@ -92,6 +92,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         receivedCoords = nbtTags.getBoolean("receivedCoords");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -116,14 +117,14 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return (T) this;
+            return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, facing);

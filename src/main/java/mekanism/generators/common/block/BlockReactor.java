@@ -1,6 +1,7 @@
 package mekanism.generators.common.block;
 
 import buildcraft.api.tools.IToolWrench;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
@@ -58,9 +59,10 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
     public abstract ReactorBlock getReactorBlock();
 
-    @Deprecated
+    @Nonnull
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
 
         if (tile instanceof TileEntityReactorController) {
@@ -74,13 +76,15 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
         return state;
     }
 
+    @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateReactor(this, getTypeProperty());
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta & 0xF);
 
@@ -98,8 +102,8 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
         return state.getBlock().getMetaFromState(state);
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
         if (!world.isRemote) {
@@ -123,7 +127,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
         ItemStack stack = entityplayer.getHeldItem(hand);
 
         if (!stack.isEmpty()) {
-            if (MekanismUtils.isBCWrench(stack.getItem()) && !stack.getUnlocalizedName().contains("omniwrench")) {
+            if (MekanismUtils.isBCWrench(stack.getItem()) && !stack.getTranslationKey().contains("omniwrench")) {
                 if (entityplayer.isSneaking()) {
                     dismantleBlock(world, pos, false);
                     return true;
@@ -166,7 +170,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     }
 
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         int metadata = state.getBlock().getMetaFromState(state);
 
         if (ReactorBlockType.get(getReactorBlock(), metadata) == null) {
@@ -176,39 +180,42 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
         return ReactorBlockType.get(getReactorBlock(), metadata).create();
     }
 
+    @Nonnull
     @Override
-    public BlockRenderLayer getBlockLayer() {
+    public BlockRenderLayer getRenderLayer() {
         return this == GeneratorsBlocks.Reactor ? BlockRenderLayer.CUTOUT : BlockRenderLayer.TRANSLUCENT;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     /*This method is not used, metadata manipulation is required to create a Tile Entity.*/
     @Override
-    public TileEntity createNewTileEntity(World world, int meta) {
+    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
         return null;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
+          EnumFacing side) {
         int meta = state.getBlock().getMetaFromState(state);
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta);
 
@@ -226,8 +233,8 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
         return super.shouldSideBeRendered(state, world, pos, side);
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
 
@@ -238,9 +245,9 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
         return 0;
     }
 
-    @Deprecated
     @Override
-    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    @Deprecated
+    public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), state.getBlock().getMetaFromState(state));
 
         switch (type) {
@@ -257,12 +264,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         ReactorBlockType type = BlockStateReactor.ReactorBlockType.get(this, state.getBlock().getMetaFromState(state));
 
-        switch (type) {
-            case REACTOR_LOGIC_ADAPTER:
-                return true;
-            default:
-                return false;
-        }
+        return type == ReactorBlockType.REACTOR_LOGIC_ADAPTER;
     }
 
     public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock) {

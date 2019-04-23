@@ -43,11 +43,6 @@ import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
 import mekanism.common.inventory.container.ContainerResistiveHeater;
-import mekanism.common.inventory.container.ContainerRobitCrafting;
-import mekanism.common.inventory.container.ContainerRobitInventory;
-import mekanism.common.inventory.container.ContainerRobitMain;
-import mekanism.common.inventory.container.ContainerRobitRepair;
-import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.inventory.container.ContainerSecurityDesk;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
@@ -55,6 +50,11 @@ import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerThermalEvaporationController;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
+import mekanism.common.inventory.container.robit.ContainerRobitCrafting;
+import mekanism.common.inventory.container.robit.ContainerRobitInventory;
+import mekanism.common.inventory.container.robit.ContainerRobitMain;
+import mekanism.common.inventory.container.robit.ContainerRobitRepair;
+import mekanism.common.inventory.container.robit.ContainerRobitSmelting;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityChanceMachine;
@@ -78,7 +78,6 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
@@ -93,6 +92,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.tile.prefab.TileEntityDoubleElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -107,7 +107,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.oredict.OreDictionary;
@@ -119,14 +118,13 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class CommonProxy implements IGuiProvider {
 
-    protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<>(null);
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
           "please delete it from your mods folder and restart the game."};
 
     /**
      * Register tile entities that have special models. Overwritten in client to register TESRs.
      */
-    public void registerSpecialTileEntities() {
+    public void registerTESRs() {
     }
 
     public void handleTeleporterUpdate(PortableTeleporterMessage message) {
@@ -190,15 +188,16 @@ public class CommonProxy implements IGuiProvider {
     }
 
     /**
-     * Does a generic creation animation, starting from the rendering block.
+     * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
     }
 
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntityMultiblock<?> tileEntity) {
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height,
+          INodeChecker checker) {
     }
 
     @Override
@@ -378,7 +377,7 @@ public class CommonProxy implements IGuiProvider {
 
     public double getReach(EntityPlayer player) {
         if (player instanceof EntityPlayerMP) {
-            return ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
+            return player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
         }
 
         return 0;
@@ -402,48 +401,24 @@ public class CommonProxy implements IGuiProvider {
 
         BlockStateMachine.MachineType.updateAllUsages();
 
+        if (MekanismConfig.current().general.voiceServerEnabled.val() && Mekanism.voiceManager == null) {
+            Mekanism.voiceManager = new VoiceServerManager();
+        }
         if (fromPacket) {
             Mekanism.logger.info("Received config from server.");
         }
     }
 
-    private WeakReference<EntityPlayer> createNewPlayer(WorldServer world) {
-        EntityPlayer player = FakePlayerFactory.get(world, Mekanism.gameProfile);
-
-        return new WeakReference<>(player);
-    }
-
-    private WeakReference<EntityPlayer> createNewPlayer(WorldServer world, double x, double y, double z) {
-        EntityPlayer player = FakePlayerFactory.get(world, Mekanism.gameProfile);
-
-        player.posX = x;
-        player.posY = y;
-        player.posZ = z;
-
-        return new WeakReference<>(player);
-    }
-
     public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world) {
-        if (dummyPlayer.get() == null) {
-            dummyPlayer = createNewPlayer(world);
-        } else {
-            dummyPlayer.get().world = world;
-        }
-
-        return dummyPlayer;
+        return MekFakePlayer.getInstance(world);
     }
 
     public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, double x, double y, double z) {
-        if (dummyPlayer.get() == null) {
-            dummyPlayer = createNewPlayer(world, x, y, z);
-        } else {
-            dummyPlayer.get().world = world;
-            dummyPlayer.get().posX = x;
-            dummyPlayer.get().posY = y;
-            dummyPlayer.get().posZ = z;
-        }
+        return MekFakePlayer.getInstance(world, x, y, z);
+    }
 
-        return dummyPlayer;
+    public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, BlockPos pos) {
+        return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public EntityPlayer getPlayer(MessageContext context) {

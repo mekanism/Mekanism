@@ -22,7 +22,7 @@ public final class ItemRegistryUtils {
 
     /* Mod ID lookup thanks to JEI */
     public static String getMod(ItemStack stack) {
-        if (stack.isEmpty() || stack.getItem() == null) {
+        if (stack.isEmpty()) {
             return "null";
         }
 
@@ -36,7 +36,7 @@ public final class ItemRegistryUtils {
             return "null";
         }
 
-        String modId = itemResourceLocation.getResourceDomain();
+        String modId = itemResourceLocation.getNamespace();
         String lowercaseModId = modId.toLowerCase(Locale.ENGLISH);
         String modName = modIDMap.computeIfAbsent(lowercaseModId, k -> WordUtils.capitalize(modId));
 

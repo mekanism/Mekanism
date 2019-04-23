@@ -3,6 +3,7 @@ package mekanism.common.block;
 import static mekanism.common.block.states.BlockStateCardboardBox.storageProperty;
 
 import java.util.Random;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.states.BlockStateCardboardBox;
@@ -44,13 +45,15 @@ public class BlockCardboardBox extends BlockContainer {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateCardboardBox(this);
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(storageProperty, meta == 1);
     }
@@ -61,7 +64,7 @@ public class BlockCardboardBox extends BlockContainer {
     }
 
     @Override
-    public boolean isReplaceable(IBlockAccess world, BlockPos pos) {
+    public boolean isReplaceable(IBlockAccess world, @Nonnull BlockPos pos) {
         return testingPlace;
     }
 
@@ -117,13 +120,15 @@ public class BlockCardboardBox extends BlockContainer {
         return entityplayer.isSneaking();
     }
 
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int meta) {
+    public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
         return new TileEntityCardboardBox();
     }
 
@@ -147,9 +152,10 @@ public class BlockCardboardBox extends BlockContainer {
         return itemStack;
     }
 
+    @Nonnull
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
-          EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
         TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
 
         ItemStack itemStack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
@@ -164,8 +170,8 @@ public class BlockCardboardBox extends BlockContainer {
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
-          boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
         if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
             float motion = 0.7F;
             double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -186,6 +192,7 @@ public class BlockCardboardBox extends BlockContainer {
         return 0;
     }
 
+    @Nonnull
     @Override
     public Item getItemDropped(IBlockState state, Random random, int fortune) {
         return Items.AIR;

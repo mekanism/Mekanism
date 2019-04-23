@@ -12,15 +12,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-
 @SideOnly(Side.CLIENT)
 public class GuiEnergyInfo extends GuiElement {
 
-    public IInfoHandler infoHandler;
+    private final IInfoHandler infoHandler;
 
     public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
-
         infoHandler = handler;
     }
 
@@ -30,21 +28,21 @@ public class GuiEnergyInfo extends GuiElement {
     }
 
     @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160;
+    }
+
+    @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        if (xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160) {
-            List<String> info = new ArrayList<>();
-
-            info.addAll(infoHandler.getInfo());
-
+        if (inBounds(xAxis, yAxis)) {
+            List<String> info = new ArrayList<>(infoHandler.getInfo());
             info.add(LangUtils.localize("gui.unit") + ": " + MekanismConfig.current().general.energyUnit.val());
             displayTooltips(info, xAxis, yAxis);
         }
@@ -56,12 +54,10 @@ public class GuiEnergyInfo extends GuiElement {
 
     @Override
     public void mouseClicked(int xAxis, int yAxis, int button) {
-        if (button == 0) {
-            if (xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160) {
-                MekanismConfig.current().general.energyUnit
-                      .set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1)
-                            % EnergyType.values().length]);
-            }
+        if (button == 0 && inBounds(xAxis, yAxis)) {
+            MekanismConfig.current().general.energyUnit
+                  .set(EnergyType.values()[(MekanismConfig.current().general.energyUnit.val().ordinal() + 1)
+                        % EnergyType.values().length]);
         }
     }
 }

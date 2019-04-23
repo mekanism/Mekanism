@@ -1,6 +1,7 @@
 package mekanism.common.block.states;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.common.block.BlockPlastic;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -34,8 +35,9 @@ public class BlockStatePlastic extends BlockStateContainer {
 
     public static class PlasticBlockStateMapper extends StateMapperBase {
 
+        @Nonnull
         @Override
-        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             PlasticBlockType type = ((BlockPlastic) state.getBlock()).type;
             String property = "type=" + type.getName();
 

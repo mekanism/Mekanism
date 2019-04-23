@@ -1,6 +1,7 @@
 package mekanism.common.world;
 
 import java.util.Random;
+import javax.annotation.Nonnull;
 import mekanism.common.MekanismBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,7 +22,7 @@ public class WorldGenSalt extends WorldGenerator {
     }
 
     @Override
-    public boolean generate(World world, Random random, BlockPos pos) {
+    public boolean generate(@Nonnull World world, @Nonnull Random random, @Nonnull BlockPos pos) {
         if (world.getBlockState(pos).getMaterial() != Material.WATER) {
             return false;
         } else {

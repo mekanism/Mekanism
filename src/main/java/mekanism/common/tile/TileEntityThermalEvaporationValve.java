@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
@@ -40,16 +41,16 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         TileEntityThermalEvaporationController controller = getController();
         return controller == null ? 0 : controller.inputTank.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         TileEntityThermalEvaporationController controller = getController();
 
-        if (controller != null && (resource == null || resource.isFluidEqual(controller.outputTank.getFluid()))) {
+        if (controller != null && resource != null && resource.isFluidEqual(controller.outputTank.getFluid())) {
             return controller.outputTank.drain(resource.amount, doDrain);
         }
 
@@ -68,16 +69,15 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller != null && controller.hasRecipe(fluid.getFluid());
+        return controller != null && fluid != null && controller.hasRecipe(fluid.getFluid());
     }
 
     @Override
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller != null && controller.outputTank.getFluidAmount() > 0 && (fluid == null
-              || controller.outputTank.getFluid().isFluidEqual(fluid));
+        return controller != null && controller.outputTank.getFluidAmount() > 0;
     }
 
     @Override
@@ -141,20 +141,20 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
               (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) ||
               super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
 
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) {
-            return (T) new FluidHandlerWrapper(this, side);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);

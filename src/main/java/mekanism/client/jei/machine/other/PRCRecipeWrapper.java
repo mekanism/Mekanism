@@ -18,9 +18,9 @@ public class PRCRecipeWrapper implements IRecipeWrapper {
     public void getIngredients(IIngredients ingredients) {
         ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.getSolid());
         ingredients.setInput(VanillaTypes.FLUID, recipe.recipeInput.getFluid());
-        ingredients.setInput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.recipeInput.getGas());
+        ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.getGas());
         ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.getItemOutput());
-        ingredients.setOutput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.recipeOutput.getGasOutput());
+        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.getGasOutput());
     }
 
     public PressurizedRecipe getRecipe() {

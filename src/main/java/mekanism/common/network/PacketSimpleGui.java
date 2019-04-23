@@ -34,7 +34,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance()
                       .getWorld(message.coord4D.dimensionId);
 
-                if (worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock) {
+                if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock) {
                     if (message.guiId == -1) {
                         return;
                     }

@@ -1,15 +1,16 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
+import mekanism.api.TileNetworkList;
+import mekanism.common.content.filter.IOreDictFilter;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TOreDictFilter extends TransporterFilter {
+public class TOreDictFilter extends TransporterFilter implements IOreDictFilter {
 
-    public String oreDictName;
+    private String oreDictName;
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
@@ -78,5 +79,15 @@ public class TOreDictFilter extends TransporterFilter {
         filter.oreDictName = oreDictName;
 
         return filter;
+    }
+
+    @Override
+    public void setOreDictName(String name) {
+        oreDictName = name;
+    }
+
+    @Override
+    public String getOreDictName() {
+        return oreDictName;
     }
 }

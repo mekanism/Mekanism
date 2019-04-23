@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
@@ -41,8 +42,8 @@ public class ItemMekanismArmor extends ItemArmor {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack stack1, ItemStack stack2) {
-        return StackUtils.equalsWildcard(getRepairStack(), stack2) ? true : super.getIsRepairable(stack1, stack2);
+    public boolean getIsRepairable(ItemStack stack1, @Nonnull ItemStack stack2) {
+        return StackUtils.equalsWildcard(getRepairStack(), stack2) || super.getIsRepairable(stack1, stack2);
     }
 
     private ItemStack getRepairStack() {

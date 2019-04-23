@@ -2,6 +2,7 @@ package mekanism.tools.item;
 
 import com.google.common.collect.Multimap;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.StackUtils;
@@ -38,15 +39,16 @@ public class ItemMekanismHoe extends ItemMekanism {
         setMaxStackSize(1);
         setMaxDamage(enumtoolmaterial.getMaxUses());
         setCreativeTab(CreativeTabs.TOOLS);
-        speed = enumtoolmaterial.getDamageVsEntity() + 1.0F;
+        speed = enumtoolmaterial.getAttackDamage() + 1.0F;
     }
 
     @Override
     public boolean getIsRepairable(ItemStack stack1, ItemStack stack2) {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) ? true
-              : super.getIsRepairable(stack1, stack2);
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super
+              .getIsRepairable(stack1, stack2);
     }
 
+    @Nonnull
     @Override
     @SuppressWarnings("incomplete-switch")
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
@@ -71,7 +73,7 @@ public class ItemMekanismHoe extends ItemMekanism {
                 }
 
                 if (block == Blocks.DIRT) {
-                    switch ((BlockDirt.DirtType) iblockstate.getValue(BlockDirt.VARIANT)) {
+                    switch (iblockstate.getValue(BlockDirt.VARIANT)) {
                         case DIRT:
                             setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
                             return EnumActionResult.SUCCESS;
@@ -96,8 +98,9 @@ public class ItemMekanismHoe extends ItemMekanism {
         }
     }
 
+    @Nonnull
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot equipmentSlot,
+    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot equipmentSlot,
           ItemStack stack) {
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
 

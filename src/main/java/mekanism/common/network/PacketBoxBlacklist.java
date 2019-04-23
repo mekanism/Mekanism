@@ -58,9 +58,8 @@ public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, 
                 MekanismAPI.addBoxBlacklistMod(ByteBufUtils.readUTF8String(dataStream));
             }
 
-            Mekanism.logger
-                  .info("Received Cardboard Box blacklist entries from server (" + amount + " explicit blocks, "
-                        + amountMods + " mod wildcards)");
+            Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount +
+                  " explicit blocks, " + amountMods + " mod wildcards)");
         }
     }
 }

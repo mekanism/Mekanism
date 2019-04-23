@@ -1,5 +1,6 @@
 package mekanism.client.render.entity;
 
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.entity.EntityFlame;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -22,7 +23,7 @@ public class RenderFlame extends Render<EntityFlame> {
     }
 
     @Override
-    public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick) {
+    public void doRender(@Nonnull EntityFlame entity, double x, double y, double z, float f, float partialTick) {
         if (entity.ticksExisted < 1) {
             return;
         }
@@ -51,7 +52,7 @@ public class RenderFlame extends Render<EntityFlame> {
         int i = 0;
         float f2 = 0.0F;
         float f3 = 0.5F;
-        float f4 = (float) (0 + i * 10) / 32F;
+        float f4 = (float) (i * 10) / 32F;
         float f5 = (float) (5 + i * 10) / 32F;
         float scale = 0.05625F * (0.8F + size);
 
@@ -80,7 +81,7 @@ public class RenderFlame extends Render<EntityFlame> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityFlame entity) {
+    protected ResourceLocation getEntityTexture(@Nonnull EntityFlame entity) {
         return new ResourceLocation("mekanism:render/Flame.png");
     }
 }

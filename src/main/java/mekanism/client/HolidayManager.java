@@ -40,7 +40,7 @@ public final class HolidayManager {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -57,7 +57,7 @@ public final class HolidayManager {
                     return holiday.filterSound(sound);
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         return sound;
@@ -130,7 +130,8 @@ public final class HolidayManager {
         @Override
         public void onEvent(EntityPlayer player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
-            player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
+            player.sendMessage(
+                  new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
             player.sendMessage(new TextComponentString(
                   EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
             player.sendMessage(new TextComponentString(EnumColor.RED + "May you have plenty of Christmas cheer"));
@@ -170,7 +171,8 @@ public final class HolidayManager {
         @Override
         public void onEvent(EntityPlayer player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.WHITE, EnumColor.YELLOW}, 13);
-            player.sendMessage(new TextComponentString(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
+            player.sendMessage(
+                  new TextComponentString(themedLines + EnumColor.DARK_BLUE + Mekanism.LOG_TAG + themedLines));
             player.sendMessage(new TextComponentString(
                   EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
             player.sendMessage(new TextComponentString(EnumColor.AQUA + "Best wishes to you as we enter this"));

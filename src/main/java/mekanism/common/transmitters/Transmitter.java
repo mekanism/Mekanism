@@ -3,19 +3,19 @@ package mekanism.common.transmitters;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 
-public abstract class Transmitter<A, N extends DynamicNetwork<A, N>> implements IGridTransmitter<A, N> {
+public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> {
 
-    public N theNetwork = null;
+    public NETWORK theNetwork = null;
 
     public boolean orphaned = true;
 
     @Override
-    public N getTransmitterNetwork() {
+    public NETWORK getTransmitterNetwork() {
         return theNetwork;
     }
 
     @Override
-    public void setTransmitterNetwork(N network) {
+    public void setTransmitterNetwork(NETWORK network) {
         if (theNetwork == network) {
             return;
         }

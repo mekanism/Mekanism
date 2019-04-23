@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.common.MekanismBlocks;
@@ -44,7 +45,8 @@ public class ItemBlockCardboardBox extends ItemBlock {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
+          @Nonnull ITooltipFlag flag) {
         list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils
               .transYesNo(getBlockData(itemstack) != null));
         BlockData data = getBlockData(itemstack);
@@ -58,7 +60,7 @@ public class ItemBlockCardboardBox extends ItemBlock {
                 if (data.tileTag != null) {
                     list.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }
@@ -68,6 +70,7 @@ public class ItemBlockCardboardBox extends ItemBlock {
         return i;
     }
 
+    @Nonnull
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
           float hitY, float hitZ, EnumHand hand) {
@@ -98,7 +101,12 @@ public class ItemBlockCardboardBox extends ItemBlock {
                     stack.shrink(1);
                 }
 
-                world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1), 3);
+                // First, set the block to air to give the underlying block a chance to process
+                // any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
+                // double updates, but if the block we are wrapping has multiple stacked blocks,
+                // we need to make sure it has a chance to update.
+                world.setBlockToAir(pos);
+                world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1));
 
                 isMonitoring = false;
 
@@ -116,8 +124,8 @@ public class ItemBlockCardboardBox extends ItemBlock {
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-          float hitX, float hitY, float hitZ, IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
         if (world.isRemote) {
             return true;
         }

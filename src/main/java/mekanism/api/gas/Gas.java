@@ -1,6 +1,5 @@
 package mekanism.api.gas;
 
-import mekanism.api.MekanismAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -17,7 +16,7 @@ import net.minecraftforge.fluids.FluidRegistry;
  */
 public class Gas {
 
-    private String name;
+    private final String name;
 
     private String unlocalizedName;
 
@@ -39,8 +38,7 @@ public class Gas {
      * @param s - name or key to associate this Gas with
      */
     public Gas(String s, String icon) {
-        unlocalizedName = name = s;
-        iconLocation = new ResourceLocation(icon);
+        this(s, new ResourceLocation(icon));
     }
 
     public Gas(String s, ResourceLocation icon) {
@@ -55,9 +53,8 @@ public class Gas {
      * @param t - tint of this Gas
      */
     public Gas(String s, int t) {
-        unlocalizedName = name = s;
-        iconLocation = new ResourceLocation(MekanismAPI.MODID, "blocks/liquid/liquid");
-        tint = t;
+        this(s, "mekanism:blocks/liquid/liquid");
+        setTint(t);
     }
 
     /**
@@ -68,7 +65,7 @@ public class Gas {
         iconLocation = f.getStill();
         fluid = f;
         from_fluid = true;
-        tint = f.getColor() & 0xFFFFFF;
+        setTint(f.getColor() & 0xFFFFFF);
     }
 
     /**
@@ -78,7 +75,7 @@ public class Gas {
      * @return Gas stored in the tag compound
      */
     public static Gas readFromNBT(NBTTagCompound nbtTags) {
-        if (nbtTags == null || nbtTags.hasNoTags()) {
+        if (nbtTags == null || nbtTags.isEmpty()) {
             return null;
         }
 
@@ -117,11 +114,32 @@ public class Gas {
     }
 
     /**
+     * DEPRECATED: Gets the unlocalized name of this Gas. Use getTranslationKey instead.
+     *
+     * @return this Gas's unlocalized name
+     */
+    @Deprecated
+    public String getUnlocalizedName() {
+        return getTranslationKey();
+    }
+
+    /**
+     * DEPRECATED: Sets the unlocalized name of this Gas. Use setTranslationKey instead.
+     *
+     * @param s - unlocalized name to set
+     * @return this Gas object
+     */
+    @Deprecated
+    public Gas setUnlocalizedName(String s) {
+        return setTranslationKey(s);
+    }
+
+    /**
      * Gets the unlocalized name of this Gas.
      *
      * @return this Gas's unlocalized name
      */
-    public String getUnlocalizedName() {
+    public String getTranslationKey() {
         return "gas." + unlocalizedName;
     }
 
@@ -131,9 +149,8 @@ public class Gas {
      * @param s - unlocalized name to set
      * @return this Gas object
      */
-    public Gas setUnlocalizedName(String s) {
+    public Gas setTranslationKey(String s) {
         unlocalizedName = s;
-
         return this;
     }
 
@@ -143,7 +160,7 @@ public class Gas {
      * @return this Gas's localized name
      */
     public String getLocalizedName() {
-        return I18n.translateToLocal(getUnlocalizedName());
+        return I18n.translateToLocal(getTranslationKey());
     }
 
     /**
@@ -251,7 +268,13 @@ public class Gas {
     public Gas registerFluid(String name) {
         if (fluid == null) {
             if (FluidRegistry.getFluid(name) == null) {
-                fluid = new Fluid(name, getIcon(), getIcon(), getTint());
+                int tint = getTint();
+                //Fluids use ARGB so make sure that we are not using a fully transparent tint.
+                // This fixes issues with some mods rendering our fluids as invisible
+                if ((tint & 0xFF000000) == 0) {
+                    tint = 0xFF000000 | tint;
+                }
+                fluid = new Fluid(name, getIcon(), getIcon(), tint);
                 FluidRegistry.registerFluid(fluid);
             } else {
                 fluid = FluidRegistry.getFluid(name);

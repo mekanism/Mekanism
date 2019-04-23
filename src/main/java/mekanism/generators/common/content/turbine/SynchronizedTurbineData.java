@@ -54,7 +54,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
             return true;
         }
 
-        if (fluidStored != null && prevFluid != null) {
+        if (fluidStored != null) {
             return (fluidStored.getFluid() != prevFluid.getFluid()) || (fluidStored.amount != prevFluid.amount);
         }
 

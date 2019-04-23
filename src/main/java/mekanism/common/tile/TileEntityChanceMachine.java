@@ -1,22 +1,18 @@
 package mekanism.common.tile;
 
 import java.util.Map;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Upgrade;
-import mekanism.common.base.ITierUpgradeable;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.prefab.TileEntityBasicMachine;
+import mekanism.common.tile.prefab.TileEntityUpgradeableMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +22,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends
-      TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE> implements ITierUpgradeable {
+      TileEntityUpgradeableMachine<ItemStackInput, ChanceOutput, RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
           "getMaxEnergy", "getEnergyNeeded"};
@@ -52,66 +48,14 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     }
 
     @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier != BaseTier.BASIC) {
-            return false;
-        }
-
-        world.setBlockToAir(getPos());
-        world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
-
-        TileEntityFactory factory = (TileEntityFactory)world.getTileEntity(getPos());
-        RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
-
-        //Basic
-        factory.facing = facing;
-        factory.clientFacing = clientFacing;
-        factory.ticker = ticker;
-        factory.redstone = redstone;
-        factory.redstoneLastTick = redstoneLastTick;
-        factory.doAutoSync = doAutoSync;
-
-        //Electric
-        factory.electricityStored = electricityStored;
-
-        //Noisy
-        factory.soundURL = soundURL;
-
-        //Machine
-        factory.progress[0] = operatingTicks;
-        factory.updateDelay = updateDelay;
-        factory.isActive = isActive;
-        factory.clientActive = clientActive;
-        factory.controlType = controlType;
-        factory.prevEnergy = prevEnergy;
-        factory.upgradeComponent.readFrom(upgradeComponent);
-        factory.upgradeComponent.setUpgradeSlot(0);
+    protected void upgradeInventory(TileEntityFactory factory) {
         //Chance Machine
-        factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[] {4, 8, 9, 10};
-        factory.ejectorComponent.readFrom(ejectorComponent);
-        factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-        factory.recipeType = type;
-        factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
-        factory.securityComponent.readFrom(securityComponent);
-
-        for(TransmissionType transmission : configComponent.transmissions) {
-            factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
-            factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
-        }
+        factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{4, 8, 9, 10};
 
         factory.inventory.set(5, inventory.get(0));
         factory.inventory.set(1, inventory.get(1));
-        factory.inventory.set(5+3, inventory.get(2));
+        factory.inventory.set(5 + 3, inventory.get(2));
         factory.inventory.set(0, inventory.get(3));
-
-        for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgradables(upgrade);
-        }
-
-        factory.upgraded = true;
-        factory.markDirty();
-
-        return true;
     }
 
     @Override
@@ -150,7 +94,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 3) {
             return itemstack.getItem() == MekanismItems.SpeedUpgrade
                   || itemstack.getItem() == MekanismItems.EnergyUpgrade;
@@ -182,11 +126,12 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else
+        } else {
             return slotID == 2 || slotID == 4;
+        }
 
     }
 

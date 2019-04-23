@@ -7,18 +7,16 @@ import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.GasTankTier;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -34,6 +32,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -44,8 +43,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection,
-      IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable, IComputerIntegration {
+public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, IRedstoneControl,
+      ISideConfiguration, ISecurityTile, ITierUpgradeable, IComputerIntegration {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -69,6 +68,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
     public TileComponentSecurity securityComponent;
+
     public TileEntityGasTank() {
         super("GasTank");
 
@@ -96,17 +96,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     @Override
     public void onUpdate() {
         if (!world.isRemote) {
-            if (!inventory.get(0).isEmpty() && gasTank.getGas() != null) {
-                gasTank.draw(GasUtils.addGas(inventory.get(0), gasTank.getGas()), tier != GasTankTier.CREATIVE);
-            }
+            TileUtils.drawGas(inventory.get(0), gasTank, tier != GasTankTier.CREATIVE);
 
-            if (!inventory.get(1).isEmpty() && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank
-                  .getMaxGas())) {
-                gasTank.receive(GasUtils.removeGas(inventory.get(1), gasTank.getGasType(), gasTank.getNeeded()), true);
-
-                if (tier == GasTankTier.CREATIVE && gasTank.getGas() != null) {
-                    gasTank.getGas().amount = Integer.MAX_VALUE;
-                }
+            if (TileUtils.receiveGas(inventory.get(1), gasTank) && tier == GasTankTier.CREATIVE
+                  && gasTank.getGas() != null) {
+                gasTank.getGas().amount = Integer.MAX_VALUE;
             }
 
             if (gasTank.getGas() != null && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE
@@ -164,13 +158,14 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         return true;
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return LangUtils.localize("tile.GasTank" + tier.getBaseTier().getSimpleName() + ".name");
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return (itemstack.getItem() instanceof IGasItem
                   && ((IGasItem) itemstack.getItem()).getGas(itemstack) == null);
@@ -185,7 +180,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             return itemstack.getItem() instanceof IGasItem && (gasTank.getGas() == null || ((IGasItem) itemstack
                   .getItem()).canReceiveGas(itemstack, gasTank.getGas().getGas()));
@@ -197,8 +192,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         return false;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
     }
 
@@ -244,20 +240,28 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
-            return (T) this;
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super
+              .isCapabilityDisabled(capability, side);
     }
 
     @Override
@@ -286,12 +290,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
             tier = GasTankTier.values()[dataStream.readInt()];
             gasTank.setMaxGas(tier.getStorage());
-
-            if (dataStream.readBoolean()) {
-                gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                gasTank.setGas(null);
-            }
+            TileUtils.readTankData(dataStream, gasTank);
 
             dumping = GasMode.values()[dataStream.readInt()];
             controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -313,6 +312,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -330,14 +330,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         super.getNetworkedData(data);
 
         data.add(tier.ordinal());
-
-        if (gasTank.getGas() != null) {
-            data.add(true);
-            data.add(gasTank.getGas().getGas().getID());
-            data.add(gasTank.getStored());
-        } else {
-            data.add(false);
-        }
+        TileUtils.addTankData(data, gasTank);
 
         data.add(dumping.ordinal());
         data.add(controlType.ordinal());
@@ -348,11 +341,6 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
     @Override
     public boolean canSetFacing(int side) {
         return side != 0 && side != 1;
-    }
-
-    @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return true;
     }
 
     public int getRedstoneLevel() {

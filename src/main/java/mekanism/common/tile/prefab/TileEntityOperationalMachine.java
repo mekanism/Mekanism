@@ -1,8 +1,9 @@
 package mekanism.common.tile.prefab;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.TileNetworkList;
+import javax.annotation.Nonnull;
 import mekanism.common.Upgrade;
+import mekanism.api.TileNetworkList;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -15,7 +16,7 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine {
 
     public int ticksRequired;
 
-    public TileEntityOperationalMachine(String sound, String name, double maxEnergy, double baseEnergyUsage,
+    protected TileEntityOperationalMachine(String sound, String name, double maxEnergy, double baseEnergyUsage,
           int upgradeSlot, int baseTicksRequired) {
         super(sound, name, maxEnergy, baseEnergyUsage, upgradeSlot);
 
@@ -53,6 +54,7 @@ public abstract class TileEntityOperationalMachine extends TileEntityMachine {
         operatingTicks = nbtTags.getInteger("operatingTicks");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);

@@ -14,7 +14,7 @@ public class ItemHandlerWrapper extends SidedInvWrapper {
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-        int slot1 = getSlot(inv, slot, side);
-        return slot1 == -1 ? false : inv.isItemValidForSlot(slot1, stack);
+        int sl = getSlot(inv, slot, side);
+        return sl != -1 && inv.isItemValidForSlot(sl, stack);
     }
 }

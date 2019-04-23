@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -22,7 +23,7 @@ import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -47,6 +48,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
@@ -63,19 +65,23 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
+
     public static int[] EJECT_INV;
     public final double BASE_ENERGY_USAGE = MekanismConfig.current().usage.digitalMinerUsage.val();
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
@@ -84,7 +90,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
     public double energyUsage = MekanismConfig.current().usage.digitalMinerUsage.val();
 
-    public int radius;
+    private int radius;
 
     public boolean inverse;
 
@@ -121,6 +127,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     public boolean clientRendering = false;
 
+    private Set<ChunkPos> chunkSet;
+
     /**
      * This machine's current RedstoneControl type.
      */
@@ -133,7 +141,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
           "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     public TileEntityDigitalMiner() {
-        super("DigitalMiner", BlockStateMachine.MachineType.DIGITAL_MINER.baseEnergy);
+        super("DigitalMiner", MachineType.DIGITAL_MINER.baseEnergy);
         inventory = NonNullList.withSize(INV_SLOTS.length + 1, ItemStack.EMPTY);
         radius = 10;
 
@@ -211,7 +219,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                             Block block = state.getBlock();
                             int meta = block.getMetaFromState(state);
 
-                            if (block == null || coord.isAirBlock(world)) {
+                            if (coord.isAirBlock(world)) {
                                 set.clear(index);
 
                                 if (set.cardinality() == 0) {
@@ -275,26 +283,25 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             TransitRequest ejectMap = getEjectItemMap();
 
-            if (doEject && delayTicks == 0 && !ejectMap.isEmpty() && getEjectInv() != null && getEjectTile() != null) {
-                if (CapabilityUtils.hasCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
-                      facing.getOpposite())) {
-                    TransitResponse response = TransporterUtils.insert(getEjectTile(), CapabilityUtils
-                          .getCapability(getEjectInv(), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
-                                facing.getOpposite()), ejectMap, null, true, 0);
-
-                    if (!response.isEmpty()) {
-                        response.getInvStack(this, facing.getOpposite()).use();
+            if (doEject && delayTicks == 0 && !ejectMap.isEmpty()) {
+                TileEntity ejectInv = getEjectInv();
+                TileEntity ejectTile = getEjectTile();
+                if (ejectInv != null && ejectTile != null) {
+                    TransitResponse response;
+                    if (CapabilityUtils.hasCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
+                          facing.getOpposite())) {
+                        response = TransporterUtils.insert(ejectTile, CapabilityUtils
+                              .getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
+                                    facing.getOpposite()), ejectMap, null, true, 0);
+                    } else {
+                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, facing.getOpposite(), false);
                     }
-                } else {
-                    TransitResponse response = InventoryUtils
-                          .putStackInInventory(getEjectInv(), ejectMap, facing.getOpposite(), false);
-
                     if (!response.isEmpty()) {
-                        response.getInvStack(this, facing.getOpposite()).use();
+                        response.getInvStack(ejectTile, facing.getOpposite()).use();
                     }
+
+                    delayTicks = 10;
                 }
-
-                delayTicks = 10;
             } else if (delayTicks > 0) {
                 delayTicks--;
             }
@@ -315,7 +322,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         double ret = energyUsage;
 
         if (silkTouch) {
-            ret *= 6F;
+            ret *= MekanismConfig.current().general.minerSilkMultiplier.val();
         }
 
         int baseRad = Math.max(radius - 10, 0);
@@ -331,6 +338,22 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         return delayLength;
     }
 
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int newRadius) {
+        boolean changed = (radius != newRadius);
+        radius = newRadius;
+
+        // If the radius changed and we're on the server, go ahead and refresh
+        // the chunk set
+        if (changed && hasWorld() && world.isRemote) {
+            chunkSet = null;
+            getChunkSet();
+        }
+    }
+
     /*
      * returns false if unsuccessful
      */
@@ -342,7 +365,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                   Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
 
             IBlockState s = obj.getBlockState(world);
-            if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock()).canBlockStay(world, obj.getPos(), s)) {
+            if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock())
+                  .canBlockStay(world, obj.getPos(), s)) {
                 s.getBlock().dropBlockAsItem(world, obj.getPos(), s, 1);
                 world.setBlockToAir(obj.getPos());
             }
@@ -366,8 +390,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     private boolean canMine(Coord4D coord) {
         IBlockState state = coord.getBlockState(world);
 
-        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, pos.getX(), pos.getY(), pos.getZ())
-              .get();
+        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get();
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
 
@@ -385,7 +408,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             if (!inventory.get(i).isEmpty() && inventory.get(i).isItemEqual(filter.replaceStack)) {
                 inventory.get(i).shrink(1);
 
-                return MekanismUtils.size(filter.replaceStack, 1);
+                return StackUtils.size(filter.replaceStack, 1);
             }
         }
 
@@ -395,7 +418,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
             if (stack != null) {
                 stack.use();
-                return MekanismUtils.size(filter.replaceStack, 1);
+                return StackUtils.size(filter.replaceStack, 1);
             }
         }
 
@@ -424,7 +447,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 }
 
                 if (!request.hasType(stack)) {
-                    request.setItem(stack, i);
+                    request.addItem(stack, i);
                 }
             }
         }
@@ -445,21 +468,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         for (ItemStack stack : stacks) {
             stack = stack.copy();
 
-            if (stack.isEmpty() || stack.getItem() == null) {
+            if (stack.isEmpty()) {
                 continue;
             }
 
             for (int i = 0; i < 27; i++) {
-                if (!testInv.get(i).isEmpty() && testInv.get(i).getItem() == null) {
-                    testInv.set(i, ItemStack.EMPTY);
-                }
-
                 if (testInv.get(i).isEmpty()) {
                     testInv.set(i, stack);
                     added++;
 
                     continue stacks;
-                } else if (testInv.get(i).isItemEqual(stack) && testInv.get(i).getCount() + stack.getCount() <= stack
+                } else if (testInv.get(i).isItemEqual(stack)
+                      && testInv.get(i).getCount() + stack.getCount() <= stack
                       .getMaxStackSize()) {
                     testInv.get(i).grow(stack.getCount());
                     added++;
@@ -560,7 +580,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(@Nonnull EntityPlayer player) {
         super.openInventory(player);
 
         if (!world.isRemote) {
@@ -574,29 +594,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        radius = Math.min(nbtTags.getInteger("radius"), MekanismConfig.current().general.digitalMinerMaxRadius.val());
-        minY = nbtTags.getInteger("minY");
-        maxY = nbtTags.getInteger("maxY");
-        doEject = nbtTags.getBoolean("doEject");
-        doPull = nbtTags.getBoolean("doPull");
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
-        silkTouch = nbtTags.getBoolean("silkTouch");
         numPowering = nbtTags.getInteger("numPowering");
         searcher.state = State.values()[nbtTags.getInteger("state")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        inverse = nbtTags.getBoolean("inverse");
-
-        if (nbtTags.hasKey("filters")) {
-            NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
-
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
-            }
-        }
+        setConfigurationData(nbtTags);
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -605,31 +612,35 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             reset();
         }
 
-        nbtTags.setInteger("radius", radius);
-        nbtTags.setInteger("minY", minY);
-        nbtTags.setInteger("maxY", maxY);
-        nbtTags.setBoolean("doEject", doEject);
-        nbtTags.setBoolean("doPull", doPull);
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setBoolean("running", running);
         nbtTags.setInteger("delay", delay);
-        nbtTags.setBoolean("silkTouch", silkTouch);
         nbtTags.setInteger("numPowering", numPowering);
         nbtTags.setInteger("state", searcher.state.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
-        nbtTags.setBoolean("inverse", inverse);
+        return getConfigurationData(nbtTags);
+    }
 
-        NBTTagList filterTags = new NBTTagList();
+    private void readBasicData(ByteBuf dataStream) {
+        setRadius(dataStream.readInt());//client allowed to use whatever server sends
+        minY = dataStream.readInt();
+        maxY = dataStream.readInt();
+        doEject = dataStream.readBoolean();
+        doPull = dataStream.readBoolean();
+        clientActive = dataStream.readBoolean();
+        running = dataStream.readBoolean();
+        silkTouch = dataStream.readBoolean();
+        numPowering = dataStream.readInt();
+        searcher.state = State.values()[dataStream.readInt()];
+        clientToMine = dataStream.readInt();
+        controlType = RedstoneControl.values()[dataStream.readInt()];
+        inverse = dataStream.readBoolean();
 
-        for (MinerFilter filter : filters) {
-            filterTags.appendTag(filter.write(new NBTTagCompound()));
+        if (dataStream.readBoolean()) {
+            missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+        } else {
+            missingStack = ItemStack.EMPTY;
         }
-
-        if (filterTags.tagCount() != 0) {
-            nbtTags.setTag("filters", filterTags);
-        }
-
-        return nbtTags;
     }
 
     @Override
@@ -654,8 +665,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                     reset();
                     break;
                 case 6:
-                    radius = Math
-                          .min(dataStream.readInt(), MekanismConfig.current().general.digitalMinerMaxRadius.val());
+                    setRadius(
+                          Math.min(dataStream.readInt(), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
                     break;
                 case 7:
                     minY = dataStream.readInt();
@@ -710,25 +721,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             int type = dataStream.readInt();
 
             if (type == 0) {
-                radius = dataStream.readInt();//client allowed to use whatever server sends
-                minY = dataStream.readInt();
-                maxY = dataStream.readInt();
-                doEject = dataStream.readBoolean();
-                doPull = dataStream.readBoolean();
-                clientActive = dataStream.readBoolean();
-                running = dataStream.readBoolean();
-                silkTouch = dataStream.readBoolean();
-                numPowering = dataStream.readInt();
-                searcher.state = State.values()[dataStream.readInt()];
-                clientToMine = dataStream.readInt();
-                controlType = RedstoneControl.values()[dataStream.readInt()];
-                inverse = dataStream.readBoolean();
-
-                if (dataStream.readBoolean()) {
-                    missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-                } else {
-                    missingStack = ItemStack.EMPTY;
-                }
+                readBasicData(dataStream);
 
                 filters.clear();
 
@@ -738,25 +731,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                     filters.add(MinerFilter.readFromPacket(dataStream));
                 }
             } else if (type == 1) {
-                radius = dataStream.readInt();//client allowed to use whatever server sends
-                minY = dataStream.readInt();
-                maxY = dataStream.readInt();
-                doEject = dataStream.readBoolean();
-                doPull = dataStream.readBoolean();
-                clientActive = dataStream.readBoolean();
-                running = dataStream.readBoolean();
-                silkTouch = dataStream.readBoolean();
-                numPowering = dataStream.readInt();
-                searcher.state = State.values()[dataStream.readInt()];
-                clientToMine = dataStream.readInt();
-                controlType = RedstoneControl.values()[dataStream.readInt()];
-                inverse = dataStream.readBoolean();
-
-                if (dataStream.readBoolean()) {
-                    missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-                } else {
-                    missingStack = ItemStack.EMPTY;
-                }
+                readBasicData(dataStream);
             } else if (type == 2) {
                 filters.clear();
 
@@ -784,12 +759,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         }
     }
 
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-
-        data.add(0);
-
+    private void addBasicData(TileNetworkList data) {
         data.add(radius);
         data.add(minY);
         data.add(maxY);
@@ -817,7 +787,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         } else {
             data.add(false);
         }
+    }
 
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
+        data.add(0);
+        addBasicData(data);
         data.add(filters.size());
 
         for (MinerFilter filter : filters) {
@@ -854,37 +830,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     public TileNetworkList getGenericPacket(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(1);
-
-        data.add(radius);
-        data.add(minY);
-        data.add(maxY);
-        data.add(doEject);
-        data.add(doPull);
-        data.add(isActive);
-        data.add(running);
-        data.add(silkTouch);
-        data.add(numPowering);
-        data.add(searcher.state.ordinal());
-
-        if (searcher.state == State.SEARCHING) {
-            data.add(searcher.found);
-        } else {
-            data.add(getSize());
-        }
-
-        data.add(controlType.ordinal());
-        data.add(inverse);
-
-        if (!missingStack.isEmpty()) {
-            data.add(true);
-            data.add(MekanismUtils.getID(missingStack));
-            data.add(missingStack.getItemDamage());
-        } else {
-            data.add(false);
-        }
-
+        addBasicData(data);
         return data;
     }
 
@@ -962,7 +909,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
         if (clientActive != active) {
             Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                  .sendToReceivers(
+                        new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));
 
             clientActive = active;
@@ -979,6 +927,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         return false;
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
@@ -1018,9 +967,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         }
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return side == facing.getOpposite() ? INV_SLOTS : InventoryUtils.EMPTY;
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        //Allow for automation via the top (as that is where it can auto pull from)
+        return side == EnumFacing.UP || side == facing.getOpposite() ? INV_SLOTS : InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack stack) {
+        return slotID != 27 || ChargeUtils.canBeDischarged(stack);
     }
 
     public TileEntity getEjectTile() {
@@ -1029,55 +985,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public int[] getBoundSlots(BlockPos location, EnumFacing side) {
-        EnumFacing dir = facing.getOpposite();
-
-        BlockPos pull = getPos().up();
-        BlockPos eject = pull.offset(dir);
-
-        if ((location.equals(eject) && side == dir) || (location.equals(pull) && side == EnumFacing.UP)) {
-            if (EJECT_INV == null) {
-                EJECT_INV = new int[27];
-
-                for (int i = 0; i < EJECT_INV.length; i++) {
-                    EJECT_INV[i] = i;
-                }
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (side == EnumFacing.UP) {
+            if (slotID == 27) {
+                return ChargeUtils.canBeDischarged(itemstack);
+            } else {
+                return !itemstack.isEmpty() && isReplaceStack(itemstack);
             }
-
-            return EJECT_INV;
-        }
-
-        return InventoryUtils.EMPTY;
-    }
-
-    @Override
-    public boolean canBoundInsert(BlockPos location, int i, ItemStack itemstack) {
-        EnumFacing side = facing.getOpposite();
-
-        BlockPos pull = getPos().up();
-        BlockPos eject = pull.offset(side);
-
-        if (location.equals(eject)) {
-            return false;
-        } else if (location.equals(pull)) {
-            return !itemstack.isEmpty() && isReplaceStack(itemstack);
         }
 
         return false;
     }
 
     @Override
-    public boolean canBoundExtract(BlockPos location, int i, ItemStack itemstack, EnumFacing dir) {
-        EnumFacing side = facing.getOpposite();
-
-        BlockPos pull = getPos().up();
-        BlockPos eject = pull.offset(side);
-
-        if (location.equals(eject)) {
-            return itemstack.isEmpty() || !isReplaceStack(itemstack);
-
-        } else if (location.equals(pull)) {
-            return false;
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
+        if (side == facing.getOpposite()) {
+            if (slotID == 27) {
+                return !ChargeUtils.canBeDischarged(itemstack);
+            } else {
+                return itemstack.isEmpty() || !isReplaceStack(itemstack);
+            }
         }
 
         return false;
@@ -1099,14 +1026,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public Object[] invoke(int method, Object[] arguments) throws Exception {
+    public Object[] invoke(int method, Object[] arguments) {
         if (method == 0) {
             if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
                 return new Object[]{"Invalid parameters."};
             }
 
-            radius = Math.min(((Double) arguments[0]).intValue(),
-                  MekanismConfig.current().general.digitalMinerMaxRadius.val());
+            setRadius(Math.min(((Double) arguments[0]).intValue(),
+                  MekanismConfig.current().general.digitalMinerMaxRadius.val()));
         } else if (method == 1) {
             if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
                 return new Object[]{"Invalid parameters."};
@@ -1164,7 +1091,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             String ore = (String) arguments[0];
             MOreDictFilter filter = new MOreDictFilter();
 
-            filter.oreDictName = ore;
+            filter.setOreDictName(ore);
             filters.add(filter);
 
             return new Object[]{"Added filter."};
@@ -1180,7 +1107,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 MinerFilter filter = iter.next();
 
                 if (filter instanceof MOreDictFilter) {
-                    if (((MOreDictFilter) filter).oreDictName.equals(ore)) {
+                    if (((MOreDictFilter) filter).getOreDictName().equals(ore)) {
                         iter.remove();
                         return new Object[]{"Removed filter."};
                     }
@@ -1235,7 +1162,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     @Override
     public void setConfigurationData(NBTTagCompound nbtTags) {
-        radius = Math.min(nbtTags.getInteger("radius"), MekanismConfig.current().general.digitalMinerMaxRadius.val());
+        setRadius(Math.min(nbtTags.getInteger("radius"), MekanismConfig.current().general.digitalMinerMaxRadius.val()));
         minY = nbtTags.getInteger("minY");
         maxY = nbtTags.getInteger("maxY");
         doEject = nbtTags.getBoolean("doEject");
@@ -1254,7 +1181,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     @Override
     public String getDataType() {
-        return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
+        return getBlockType().getTranslationKey() + "." + fullName + ".name";
     }
 
     public void writeSustainedData(ItemStack itemStack) {
@@ -1282,8 +1209,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     @Override
     public void readSustainedData(ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, "hasMinerConfig")) {
-            radius = Math.min(ItemDataUtils.getInt(itemStack, "radius"),
-                  MekanismConfig.current().general.digitalMinerMaxRadius.val());
+            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"),
+                  MekanismConfig.current().general.digitalMinerMaxRadius.val()));
             minY = ItemDataUtils.getInt(itemStack, "minY");
             maxY = ItemDataUtils.getInt(itemStack, "maxY");
             doEject = ItemDataUtils.getBoolean(itemStack, "doEject");
@@ -1295,7 +1222,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                 NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
 
                 for (int i = 0; i < tagList.tagCount(); i++) {
-                    filters.add(MinerFilter.readFromNBT((NBTTagCompound) tagList.getCompoundTagAt(i)));
+                    filters.add(MinerFilter.readFromNBT(tagList.getCompoundTagAt(i)));
                 }
             }
         }
@@ -1343,7 +1270,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
               || super.hasCapability(capability, side);
@@ -1351,7 +1278,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
@@ -1361,13 +1288,94 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     }
 
     @Override
+    public boolean hasOffsetCapability(@Nonnull Capability<?> capability, EnumFacing side, @Nonnull Vec3i offset) {
+        if (isOffsetCapabilityDisabled(capability, side, offset)) {
+            return false;
+        }
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            return true;
+        }
+        return hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getOffsetCapability(@Nonnull Capability<T> capability, EnumFacing side, @Nonnull Vec3i offset) {
+        if (isOffsetCapabilityDisabled(capability, side, offset)) {
+            return null;
+        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
+        } else if (isStrictEnergy(capability)) {
+            return (T) this;
+        } else if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(getForgeEnergyWrapper(side));
+        } else if (isTesla(capability, side)) {
+            return (T) getTeslaEnergyWrapper(side);
+        }
+        return getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side,
+          @Nonnull Vec3i offset) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            //Input
+            if (offset.equals(new Vec3i(0, 1, 0))) {
+                //If input then disable if wrong face of input
+                return side != EnumFacing.UP;
+            }
+            //Output
+            EnumFacing back = facing.getOpposite();
+            if (offset.equals(new Vec3i(back.getXOffset(), 1, back.getZOffset()))) {
+                //If output then disable if wrong face of output
+                return side != back;
+            }
+            return true;
+        }
+        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            if (offset.equals(Vec3i.NULL_VECTOR)) {
+                //Disable if it is the bottom port but wrong side of it
+                return side != EnumFacing.DOWN;
+            }
+            EnumFacing left = MekanismUtils.getLeft(facing);
+            EnumFacing right = MekanismUtils.getRight(facing);
+            if (offset.equals(new Vec3i(left.getXOffset(), 0, left.getZOffset()))) {
+                //Disable if left power port but wrong side of the port
+                return side != left;
+            } else if (offset.equals(new Vec3i(right.getXOffset(), 0, right.getZOffset()))) {
+                //Disable if right power port but wrong side of the port
+                return side != right;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        //Return some capabilities as disabled, and handle them with offset capabilities instead
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
     public TileComponentChunkLoader getChunkLoader() {
         return chunkLoaderComponent;
     }
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream()
-              .map(Chunk3D::getPos).collect(Collectors.toSet());
+        if (chunkSet == null) {
+            chunkSet = new Range4D(Coord4D.get(this)).expandFromCenter(radius).
+                  getIntersectingChunks().stream().
+                  map(Chunk3D::getPos).collect(Collectors.toSet());
+
+        }
+        return chunkSet;
     }
 }

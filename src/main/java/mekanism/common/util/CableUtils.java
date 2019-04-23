@@ -26,8 +26,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 public final class CableUtils {
 
     public static boolean isCable(TileEntity tileEntity) {
-        if (tileEntity != null && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
+        if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
             return TransmissionType.checkTransmissionType(
                   CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null),
                   TransmissionType.ENERGY);
@@ -240,9 +239,10 @@ public final class CableUtils {
               .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
             IEnergyStorage storage = CapabilityUtils
                   .getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite());
-            sent += storage.receiveEnergy((int) Math
-                        .round(Math.min(Integer.MAX_VALUE, currentSending * MekanismConfig.current().general.TO_FORGE.val())),
-                  false) * MekanismConfig.current().general.FROM_FORGE.val();
+            sent += storage
+                  .receiveEnergy((int) Math.round(
+                        Math.min(Integer.MAX_VALUE, currentSending * MekanismConfig.current().general.TO_FORGE.val())),
+                        false) * MekanismConfig.current().general.FROM_FORGE.val();
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             IEnergyReceiver handler = (IEnergyReceiver) tileEntity;
 

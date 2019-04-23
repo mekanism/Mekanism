@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Random;
+import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import net.minecraft.block.Block;
@@ -18,6 +19,7 @@ public class BlockSalt extends Block {
         setSoundType(SoundType.SAND);
     }
 
+    @Nonnull
     @Override
     public Item getItemDropped(IBlockState state, Random random, int fortune) {
         return MekanismItems.Salt;

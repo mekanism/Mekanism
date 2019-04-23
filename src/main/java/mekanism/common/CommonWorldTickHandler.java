@@ -91,7 +91,7 @@ public class CommonWorldTickHandler {
 
                     Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world,
                           ((ChunkProviderServer) world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
-                    Mekanism.logger.info("[Mekanism] Regenerating ores at chunk " + nextChunk);
+                    Mekanism.logger.info("Regenerating ores at chunk " + nextChunk);
                 }
 
                 if (chunksToGen.isEmpty()) {

@@ -73,7 +73,7 @@ public class Chunk3D {
      * @return the corresponding Chunk object
      */
     public Chunk getChunk(World world) {
-        return world.getChunkFromChunkCoords(x, z);
+        return world.getChunk(x, z);
     }
 
     /**

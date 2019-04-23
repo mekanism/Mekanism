@@ -4,7 +4,7 @@ import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
-import java.util.Objects;
+import java.util.function.Function;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
@@ -14,6 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.apache.logging.log4j.LogManager;
@@ -32,38 +33,17 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         EnergyAcceptorWrapper wrapper = null;
 
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side)) {
-            IStrictEnergyAcceptor mekAcceptor = CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side);
-            if (mekAcceptor != null) {
-                wrapper = new MekanismAcceptor(mekAcceptor);
-            } else {
-                LOGGER.error("Tile {} @ {} told us it had IStrictEnergyAcceptor cap but returned null", tileEntity,
-                      tileEntity.getPos());
-            }
-        } else if (MekanismUtils.useTesla() && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
-            ITeslaConsumer teslaConsumer = CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side);
-            if (teslaConsumer != null) {
-                wrapper = new TeslaAcceptor(teslaConsumer);
-            } else {
-                LOGGER.error("Tile {} @ {} told us it had ITeslaConsumer cap but returned null", tileEntity,
-                      tileEntity.getPos());
-            }
+            wrapper = fromCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side, MekanismAcceptor::new);
         } else if (MekanismUtils.useForge() && CapabilityUtils
               .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
-            IEnergyStorage forgeConsumer = CapabilityUtils.getCapability(tileEntity, CapabilityEnergy.ENERGY, side);
-            if (forgeConsumer != null) {
-                wrapper = new ForgeAcceptor(forgeConsumer);
-            } else {
-                LOGGER.error("Tile {} @ {} told us it had IEnergyStorage cap but returned null", tileEntity,
-                      tileEntity.getPos());
-            }
+            wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             wrapper = new RFAcceptor((IEnergyReceiver) tileEntity);
+        } else if (MekanismUtils.useTesla() && CapabilityUtils
+              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
+            wrapper = fromCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side, TeslaAcceptor::new);
         } else if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-
             if (tile instanceof IEnergySink) {
                 wrapper = new IC2Acceptor((IEnergySink) tile);
             }
@@ -76,6 +56,21 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         return wrapper;
     }
 
+    /**
+     * Note: It is assumed that a check for hasCapability was already ran.
+     */
+    private static <T> EnergyAcceptorWrapper fromCapability(TileEntity tileEntity, Capability<T> capability,
+          EnumFacing side, Function<T, EnergyAcceptorWrapper> makeAcceptor) {
+        T acceptor = CapabilityUtils.getCapability(tileEntity, capability, side);
+        if (acceptor != null) {
+            return makeAcceptor.apply(acceptor);
+        } else {
+            LOGGER.error("Tile {} @ {} told us it had {} cap but returned null", tileEntity,
+                  tileEntity.getPos(), capability.getName());
+        }
+        return null;
+    }
+
     public abstract boolean needsEnergy(EnumFacing side);
 
     public static class MekanismAcceptor extends EnergyAcceptorWrapper {
@@ -83,7 +78,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         private IStrictEnergyAcceptor acceptor;
 
         public MekanismAcceptor(IStrictEnergyAcceptor mekAcceptor) {
-            Objects.requireNonNull(mekAcceptor);
             acceptor = mekAcceptor;
         }
 
@@ -108,7 +102,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         private IEnergyReceiver acceptor;
 
         public RFAcceptor(IEnergyReceiver rfAcceptor) {
-            Objects.requireNonNull(rfAcceptor);
             acceptor = rfAcceptor;
         }
 
@@ -141,7 +134,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         private IEnergySink acceptor;
 
         public IC2Acceptor(IEnergySink ic2Acceptor) {
-            Objects.requireNonNull(ic2Acceptor);
             acceptor = ic2Acceptor;
         }
 
@@ -177,7 +169,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         private ITeslaConsumer acceptor;
 
         public TeslaAcceptor(ITeslaConsumer teslaConsumer) {
-            Objects.requireNonNull(teslaConsumer);
             acceptor = teslaConsumer;
         }
 
@@ -210,7 +201,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         private IEnergyStorage acceptor;
 
         public ForgeAcceptor(IEnergyStorage forgeConsumer) {
-            Objects.requireNonNull(forgeConsumer);
             acceptor = forgeConsumer;
         }
 

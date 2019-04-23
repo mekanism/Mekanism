@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.transmitters.TransmissionType;
@@ -15,6 +14,7 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
+import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -70,7 +70,7 @@ public class TileComponentEjector implements ITileComponent {
 
         for (int i = trackers.get(type)[index] + 1; i <= trackers.get(type)[index] + 6; i++) {
             for (EnumFacing side : dirs) {
-                if (EnumFacing.getFront(i % 6) == side) {
+                if (EnumFacing.byIndex(i % 6) == side) {
                     sides.add(side);
                 }
             }
@@ -172,14 +172,14 @@ public class TileComponentEjector implements ITileComponent {
                           TransitRequest.getFromStack(stack.copy()), outputColor, true, 0);
 
                     if (!response.isEmpty()) {
-                        stack.shrink(response.stack.getCount());
+                        stack.shrink(response.getStack().getCount());
                     }
                 } else {
                     TransitResponse response = InventoryUtils
                           .putStackInInventory(tile, TransitRequest.getFromStack(stack.copy()), side, false);
 
                     if (!response.isEmpty()) {
-                        stack.shrink(response.stack.getCount());
+                        stack.shrink(response.getStack().getCount());
                     }
                 }
 

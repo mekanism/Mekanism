@@ -1,11 +1,12 @@
 package mekanism.common.item;
 
+import javax.annotation.Nonnull;
 import mcmultipart.api.multipart.IMultipart;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.api.TileNetworkList;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -40,8 +41,8 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
     }
 
     @Override
-    public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-          float hitX, float hitY, float hitZ, IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
+          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
         if (stack.getItemDamage() >= EnumColor.DYES.length) {
             return false;
         }
@@ -69,7 +70,7 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> listToAddTo) {
+    public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> listToAddTo) {
         if (!isInCreativeTab(tab)) {
             return;
         }
@@ -78,8 +79,9 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
         }
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         int itemDamage = stack.getItemDamage();
         if (itemDamage >= EnumColor.DYES.length) {
             return "Invalid Damage: " + itemDamage;
@@ -87,8 +89,8 @@ public class ItemBlockGlowPanel extends ItemBlockMultipartAble {
         EnumColor colour = EnumColor.DYES[itemDamage];
         String colourName;
 
-        if (I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName)) {
-            return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
+        if (I18n.canTranslate(getTranslationKey(stack) + "." + colour.dyeName)) {
+            return LangUtils.localize(getTranslationKey(stack) + "." + colour.dyeName);
         }
 
         if (colour == EnumColor.BLACK) {

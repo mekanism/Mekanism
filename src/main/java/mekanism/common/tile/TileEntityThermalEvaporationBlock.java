@@ -1,7 +1,10 @@
 package mekanism.common.tile;
 
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
@@ -11,6 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraft.util.math.BlockPos;
 
 public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock implements IComputerIntegration {
 
@@ -78,6 +84,16 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
 
     public void updateController() {
         if (!(this instanceof TileEntityThermalEvaporationController)) {
+            for (EnumFacing side : EnumFacing.values()){
+                BlockPos checkPos = pos.offset(side);
+                TileEntity check;
+                if (world.isBlockLoaded(checkPos) && (check = world.getTileEntity(checkPos)) instanceof TileEntityThermalEvaporationBlock) {
+                    if (check instanceof TileEntityThermalEvaporationController){
+                        ((TileEntityThermalEvaporationController) check).refresh();
+                        return;
+                    }
+                }
+            }
             TileEntityThermalEvaporationController found = new ControllerFinder().find();
 
             if (found != null) {
@@ -127,43 +143,58 @@ public class TileEntityThermalEvaporationBlock extends TileEntityContainerBlock 
         }
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     public class ControllerFinder {
 
         public TileEntityThermalEvaporationController found;
 
-        public Set<Coord4D> iterated = new HashSet<>();
+        public Set<BlockPos> iterated = new HashSet<>();
 
-        public void loop(Coord4D pos) {
-            if (iterated.size() > 512 || found != null) {
-                return;
-            }
+        private Deque<BlockPos> checkQueue = new LinkedList<>();
 
-            iterated.add(pos);
+        public void loop(BlockPos startPos) {
+            checkQueue.add(startPos);
 
-            for (EnumFacing side : EnumFacing.VALUES) {
-                Coord4D coord = pos.offset(side);
-
-                if (!iterated.contains(coord) && coord
-                      .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock) {
-                    ((TileEntityThermalEvaporationBlock) coord.getTileEntity(world)).attempted = true;
-
-                    if (coord.getTileEntity(world) instanceof TileEntityThermalEvaporationController) {
-                        found = (TileEntityThermalEvaporationController) coord.getTileEntity(world);
+            while (checkQueue.peek() != null) {
+                BlockPos checkPos = checkQueue.pop();
+                if (iterated.contains(checkPos)) {
+                    continue;
+                }
+                iterated.add(checkPos);
+                if (world.isBlockLoaded(checkPos)) {
+                    TileEntity te = world.getTileEntity(checkPos);
+                    if (te instanceof TileEntityThermalEvaporationController) {
+                        found = (TileEntityThermalEvaporationController) te;
                         return;
                     }
-
-                    loop(coord);
+                    if (te instanceof TileEntityThermalEvaporationBlock) {
+                        ((TileEntityThermalEvaporationBlock) te).attempted = true;
+                        for (EnumFacing side : EnumFacing.VALUES) {
+                            BlockPos coord = checkPos.offset(side);
+                            if (!iterated.contains(coord)) {
+                                checkQueue.addLast(coord);
+                            }
+                        }
+                    }
                 }
             }
         }
 
         public TileEntityThermalEvaporationController find() {
-            loop(Coord4D.get(TileEntityThermalEvaporationBlock.this));
+            loop(TileEntityThermalEvaporationBlock.this.pos);
 
             return found;
         }

@@ -11,15 +11,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiPowerBar extends GuiElement {
 
-    private int xLocation;
-    private int yLocation;
-
-    private int width = 6;
-    private int height = 56;
-    private int innerOffsetY = 2;
-
-    private IStrictEnergyStorage tileEntity;
-    private IPowerInfoHandler handler;
+    private final IStrictEnergyStorage tileEntity;
+    private final IPowerInfoHandler handler;
+    private final int xLocation;
+    private final int yLocation;
+    private final int width = 6;
+    private final int height = 56;
 
     public GuiPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
@@ -44,7 +41,7 @@ public class GuiPowerBar extends GuiElement {
 
     public GuiPowerBar(IGuiWrapper gui, IPowerInfoHandler h, ResourceLocation def, int x, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
-
+        tileEntity = null;
         handler = h;
 
         xLocation = x;
@@ -57,13 +54,18 @@ public class GuiPowerBar extends GuiElement {
     }
 
     @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= xLocation && xAxis <= xLocation + width && yAxis >= yLocation && yAxis <= yLocation + height;
+    }
+
+    @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
 
         guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
 
         if (handler.getLevel() > 0) {
-            int displayInt = (int) (handler.getLevel() * 52) + innerOffsetY;
+            int displayInt = (int) (handler.getLevel() * 52) + 2;
             guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6,
                   height - displayInt, width, displayInt);
         }
@@ -74,12 +76,9 @@ public class GuiPowerBar extends GuiElement {
     @Override
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
-
-        if (handler.getTooltip() != null && xAxis >= xLocation && xAxis <= xLocation + width && yAxis >= yLocation
-              && yAxis <= yLocation + height) {
+        if (handler.getTooltip() != null && inBounds(xAxis, yAxis)) {
             displayTooltip(handler.getTooltip(), xAxis, yAxis);
         }
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 

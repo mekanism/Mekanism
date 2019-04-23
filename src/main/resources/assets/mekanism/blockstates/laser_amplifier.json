@@ -1,7 +1,13 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "mekanism:laser_amplifier"
+    "model": "mekanism:laser_amplifier",
+    "textures": {
+      "frame": "mekanism:blocks/models/laser_device_frame",
+      "side_empty": "mekanism:blocks/models/laser_amplifier_side_empty",
+      "side_full": "mekanism:blocks/models/laser_amplifier_side_full",
+      "side_maybe": "mekanism:blocks/models/laser_amplifier_side_empty"
+    }
   },
   "variants": {
     "normal": [{}],

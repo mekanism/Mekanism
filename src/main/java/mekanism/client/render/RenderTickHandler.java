@@ -12,6 +12,7 @@ import mekanism.client.render.particle.EntityJetpackSmokeFX;
 import mekanism.client.render.particle.EntityScubaBubbleFX;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemFlamethrower;
@@ -69,7 +70,7 @@ public class RenderTickHandler {
                             }
                         }
 
-                        font.drawStringWithShadow("Block: " + block.getUnlocalizedName(), 1, 1, 0x404040);
+                        font.drawStringWithShadow("Block: " + block.getTranslationKey(), 1, 1, 0x404040);
                         font.drawStringWithShadow("Metadata: " + obj.getBlockState(world), 1, 10, 0x404040);
                         font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
                         font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
@@ -102,101 +103,100 @@ public class RenderTickHandler {
 
                     ScaledResolution scaledresolution = new ScaledResolution(mc);
 
-                    int x = scaledresolution.getScaledWidth();
                     int y = scaledresolution.getScaledHeight();
+                    boolean alignLeft = MekanismConfig.current().client.alignHUDLeft.val();
 
                     if (stack.getItem() instanceof ItemJetpack) {
                         ItemJetpack jetpack = (ItemJetpack) stack.getItem();
 
-                        font.drawStringWithShadow("Mode: " + jetpack.getMode(stack).getName(), 1, y - 20, 0x404040);
-                        font.drawStringWithShadow("Hydrogen: " + jetpack.getStored(stack), 1, y - 11, 0x404040);
+                        drawString(scaledresolution, "Mode: " + jetpack.getMode(stack).getName(), alignLeft,y - 20, 0xc8c8c8);
+                        drawString(scaledresolution, "Hydrogen: " + jetpack.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
                     } else if (stack.getItem() instanceof ItemScubaTank) {
                         ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
                         String state = (scubaTank.getFlowing(stack) ? EnumColor.DARK_GREEN + "On"
                               : EnumColor.DARK_RED + "Off");
 
-                        font.drawStringWithShadow("Mode: " + state, 1, y - 20, 0x404040);
-                        font.drawStringWithShadow("Oxygen: " + scubaTank.getStored(stack), 1, y - 11, 0x404040);
+                        drawString(scaledresolution, "Mode: " + state, alignLeft, y - 20, 0xc8c8c8);
+                        drawString(scaledresolution, "Oxygen: " + scubaTank.getStored(stack), alignLeft, y - 11, 0xc8c8c8);
                     }
                 }
 
-                synchronized (Mekanism.jetpackOn) {
-                    for (UUID s : Mekanism.jetpackOn) {
-                        EntityPlayer p = mc.world.getPlayerEntityByUUID(s);
+                // Traverse a copy of jetpack state and do animations
+                // TODO: This means we're making a full copy of the state per render....might need to revisit
+                for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
+                    EntityPlayer p = mc.world.getPlayerEntityByUUID(uuid);
 
-                        if (p == null) {
+                    if (p == null) {
+                        continue;
+                    }
+
+                    Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+
+                    float random = (rand.nextFloat() - 0.5F) * 0.1F;
+
+                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0)
+                          .rotateYaw(p.renderYawOffset);
+                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0)
+                          .rotateYaw(p.renderYawOffset);
+                    Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30)
+                          .rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
+
+                    Pos3D rLeft = vLeft.scale(random);
+                    Pos3D rRight = vRight.scale(random);
+
+                    Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+
+                    mLeft = mLeft.translate(rLeft);
+                    mRight = mRight.translate(rRight);
+
+                    Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mLeft.x, mLeft.y,
+                          mLeft.z);
+
+                    v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mRight.x, mRight.y,
+                          mRight.z);
+
+                    v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+                    spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mCenter.x, mCenter.y,
+                          mCenter.z);
+                }
+
+                // Traverse a copy of gasmask state and do animations
+                // TODO: This means we're making a full copy of the state per render....might need to revisit
+                if (world.getWorldTime() % 4 == 0) {
+                    for (UUID uuid : Mekanism.playerState.getActiveGasmasks()) {
+                        EntityPlayer p = mc.world.getPlayerEntityByUUID(uuid);
+
+                        if (p == null || !p.isInWater()) {
                             continue;
                         }
 
                         Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
 
-                        float random = (rand.nextFloat() - 0.5F) * 0.1F;
+                        float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
+                        float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
 
-                        Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0)
-                              .rotateYaw(p.renderYawOffset);
-                        Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0)
-                              .rotateYaw(p.renderYawOffset);
-                        Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30)
-                              .rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
+                        Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
+                        Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
 
-                        Pos3D rLeft = vLeft.scale(random);
-                        Pos3D rRight = vRight.scale(random);
-
-                        Pos3D mLeft = vLeft.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                        Pos3D mRight = vRight.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                        Pos3D mCenter = vCenter.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-
-                        mLeft = mLeft.translate(rLeft);
-                        mRight = mRight.translate(rRight);
-
-                        Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                        spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-                        spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mLeft.x, mLeft.y,
-                              mLeft.z);
-
-                        v = playerPos.translate(vRight).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                        spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y,
-                              mRight.z);
-                        spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mRight.x, mRight.y,
-                              mRight.z);
-
-                        v = playerPos.translate(vCenter).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-                        spawnAndSetParticle(EnumParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y,
-                              mCenter.z);
-                        spawnAndSetParticle(EnumParticleTypes.SMOKE_NORMAL, world, v.x, v.y, v.z, mCenter.x, mCenter.y,
-                              mCenter.z);
+                        Pos3D v = playerPos.translate(vec);
+                        spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.x, v.y, v.z, motion.x,
+                              motion.y + 0.2, motion.z);
                     }
                 }
 
-                synchronized (Mekanism.gasmaskOn) {
-                    if (world.getWorldTime() % 4 == 0) {
-                        for (UUID s : Mekanism.gasmaskOn) {
-                            EntityPlayer p = mc.world.getPlayerEntityByUUID(s);
-
-                            if (p == null || !p.isInWater()) {
-                                continue;
-                            }
-
-                            Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-
-                            float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
-                            float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
-
-                            Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1)))
-                                  .translate(0, -0.2, 0);
-                            Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-
-                            Pos3D v = playerPos.translate(vec);
-                            spawnAndSetParticle(EnumParticleTypes.WATER_BUBBLE, world, v.x, v.y, v.z, motion.x,
-                                  motion.y + 0.2, motion.z);
-                        }
-                    }
-                }
-
+                // Traverse a copy of flamethrower state and do animations
+                // TODO: This means we're making a full copy of the state per render....might need to revisit
                 if (world.getWorldTime() % 4 == 0) {
                     for (EntityPlayer p : world.playerEntities) {
-                        if (!Mekanism.flamethrowerActive.contains(p.getUniqueID()) && !p.isSwingInProgress
-                              && !p.inventory.getCurrentItem().isEmpty() && p.inventory.getCurrentItem()
+                        if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress && !p.inventory
+                              .getCurrentItem().isEmpty() && p.inventory.getCurrentItem()
                               .getItem() instanceof ItemFlamethrower) {
                             if (((ItemFlamethrower) p.inventory.getCurrentItem().getItem())
                                   .getGas(p.inventory.getCurrentItem()) != null) {
@@ -259,5 +259,17 @@ public class RenderTickHandler {
         }
 
         mc.effectRenderer.addEffect(fx);
+    }
+
+    private void drawString(ScaledResolution res, String s, boolean leftSide, int y, int color) {
+        FontRenderer font = mc.fontRenderer;
+
+        // Note that we always offset by 2 pixels when left or right aligned
+        if (leftSide) {
+            font.drawStringWithShadow(s, 2, y, color);
+        } else {
+            int width = font.getStringWidth(s) + 2;
+            font.drawStringWithShadow(s, res.getScaledWidth() - width, y, color);
+        }
     }
 }

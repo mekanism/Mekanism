@@ -2,16 +2,16 @@ package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier;
-import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.PipeTier;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.CapabilityWrapperManager;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
@@ -26,10 +26,10 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork> implements
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements
       IFluidHandlerWrapper {
 
-    public Tier.PipeTier tier = Tier.PipeTier.BASIC;
+    public PipeTier tier = PipeTier.BASIC;
 
     public float currentScale;
 
@@ -46,7 +46,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void setBaseTier(BaseTier baseTier) {
-        tier = Tier.PipeTier.get(baseTier);
+        tier = PipeTier.get(baseTier);
         buffer.setCapacity(getCapacity());
     }
 
@@ -125,7 +125,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         super.readFromNBT(nbtTags);
 
         if (nbtTags.hasKey("tier")) {
-            tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
+            tier = PipeTier.values()[nbtTags.getInteger("tier")];
         }
         buffer.setCapacity(getCapacity());
 
@@ -136,6 +136,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -167,6 +168,19 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
+    public boolean isValidTransmitter(TileEntity tileEntity) {
+        if (!super.isValidTransmitter(tileEntity)) {
+            return false;
+        }
+        if (!(tileEntity instanceof TileEntityMechanicalPipe)) {
+            return true;
+        }
+        FluidStack buffer = getBufferWithFallback();
+        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tileEntity).getBufferWithFallback();
+        return buffer == null || otherBuffer == null || buffer.isFluidEqual(otherBuffer);
+    }
+
+    @Override
     public FluidNetwork createNewNetwork() {
         return new FluidNetwork();
     }
@@ -177,10 +191,16 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
+    protected boolean canHaveIncompatibleNetworks() {
+        return true;
+    }
+
+    @Override
     public int getCapacity() {
         return tier.getPipeCapacity();
     }
 
+    @Nullable
     @Override
     public FluidStack getBuffer() {
         return buffer == null ? null : buffer.getFluid();
@@ -196,7 +216,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         if (getConnectionType(from) == ConnectionType.NORMAL) {
             return takeFluid(resource, doFill);
         }
@@ -210,12 +230,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         return getConnectionType(from) == ConnectionType.NORMAL;
     }
 
@@ -293,14 +313,14 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (T) manager.getWrapper(this, side);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(manager.getWrapper(this, side));
         }
 
         return super.getCapability(capability, side);

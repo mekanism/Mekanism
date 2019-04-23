@@ -13,21 +13,16 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiScrollList extends GuiElement {
 
-    public int xSize;
-    public int size;
+    private final int xPosition;
+    private final int yPosition;
+    private final int xSize;
+    private final int size;
 
-    public int xPosition;
-    public int yPosition;
-
-    public List<String> textEntries = new ArrayList<>();
-
-    public int dragOffset = 0;
-
-    public int selected = -1;
-
-    public float scroll;
-
-    public boolean isDragging;
+    private List<String> textEntries = new ArrayList<>();
+    private boolean isDragging;
+    private int dragOffset = 0;
+    private int selected = -1;
+    private float scroll;
 
     public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiScrollList.png"), gui, def);
@@ -47,6 +42,10 @@ public class GuiScrollList extends GuiElement {
         return selected;
     }
 
+    public void clearSelection() {
+        this.selected = -1;
+    }
+
     public void setText(List<String> text) {
         if (text == null) {
             textEntries.clear();
@@ -54,7 +53,7 @@ public class GuiScrollList extends GuiElement {
         }
 
         if (selected > text.size() - 1) {
-            selected = -1;
+            clearSelection();
         }
 
         textEntries = text;
@@ -175,7 +174,7 @@ public class GuiScrollList extends GuiElement {
             } else if (xAxis >= xPosition && xAxis <= xPosition + xSize - 6 && yAxis >= yPosition
                   && yAxis <= yPosition + size * 10) {
                 int index = getScrollIndex();
-                selected = -1;
+                clearSelection();
 
                 for (int i = 0; i < size; i++) {
                     if (index + i <= textEntries.size() - 1) {

@@ -1,5 +1,6 @@
 package mekanism.common.item;
 
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
@@ -23,14 +24,15 @@ public class ItemBlockPlastic extends ItemBlock {
         return i;
     }
 
+    @Nonnull
     @Override
-    public String getItemStackDisplayName(ItemStack stack) {
+    public String getItemStackDisplayName(@Nonnull ItemStack stack) {
         EnumDyeColor dyeColour = EnumDyeColor.byDyeDamage(stack.getItemDamage() & 15);
         EnumColor colour = EnumColor.DYES[dyeColour.getDyeDamage()];
         String colourName;
 
-        if (I18n.canTranslate(getUnlocalizedName(stack) + "." + colour.dyeName)) {
-            return LangUtils.localize(getUnlocalizedName(stack) + "." + colour.dyeName);
+        if (I18n.canTranslate(getTranslationKey(stack) + "." + colour.dyeName)) {
+            return LangUtils.localize(getTranslationKey(stack) + "." + colour.dyeName);
         }
 
         if (colour == EnumColor.BLACK) {

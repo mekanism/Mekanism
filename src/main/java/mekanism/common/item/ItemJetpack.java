@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -55,7 +56,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
+    public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
         return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
     }
 
@@ -185,7 +186,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }
@@ -199,8 +200,8 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     @Override
-    public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage,
-          int slot) {
+    public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source,
+          double damage, int slot) {
         if (this == MekanismItems.Jetpack) {
             return new ArmorProperties(0, 0, 0);
         } else if (this == MekanismItems.ArmoredJetpack) {
@@ -212,7 +213,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     @Override
-    public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
+    public int getArmorDisplay(EntityPlayer player, @Nonnull ItemStack armor, int slot) {
         if (armor.getItem() == MekanismItems.Jetpack) {
             return 0;
         } else if (armor.getItem() == MekanismItems.ArmoredJetpack) {
@@ -223,7 +224,8 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     }
 
     @Override
-    public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
+    public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage,
+          int slot) {
     }
 
     public enum JetpackMode {

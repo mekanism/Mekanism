@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import mekanism.common.util.InventoryUtils;
+import javax.annotation.Nonnull;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,8 +16,9 @@ public class ItemProxy extends Item {
         setMaxDamage(1);
     }
 
+    @Nonnull
     @Override
-    public ItemStack getContainerItem(ItemStack stack) {
+    public ItemStack getContainerItem(@Nonnull ItemStack stack) {
         return getSavedItem(stack);
     }
 
@@ -38,7 +39,7 @@ public class ItemProxy extends Item {
 
     public ItemStack getSavedItem(ItemStack stack) {
         if (ItemDataUtils.getBoolean(stack, "hasStack")) {
-            return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
+            return new ItemStack(ItemDataUtils.getCompound(stack, "savedItem"));
         }
 
         return ItemStack.EMPTY;

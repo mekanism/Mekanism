@@ -29,7 +29,6 @@ public class ChanceMachineRecipeWrapper implements IRecipeWrapper {
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
         ChanceOutput output = (ChanceOutput) recipe.getOutput();
-
         if (output.hasSecondary()) {
             FontRenderer fontRendererObj = minecraft.fontRenderer;
             fontRendererObj.drawString(Math.round(output.secondaryChance * 100) + "%", 104, 41, 0x404040, false);

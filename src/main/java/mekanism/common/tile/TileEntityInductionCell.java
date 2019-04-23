@@ -1,9 +1,10 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.Tier.InductionCellTier;
+import mekanism.common.tier.InductionCellTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
@@ -24,7 +25,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 
     public String getName() {
         return LangUtils.localize(
-              getBlockType().getUnlocalizedName() + ".InductionCell" + tier.getBaseTier().getSimpleName() + ".name");
+              getBlockType().getTranslationKey() + ".InductionCell" + tier.getBaseTier().getSimpleName() + ".name");
     }
 
     @Override
@@ -63,6 +64,7 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
         electricityStored = nbtTags.getDouble("electricityStored");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -89,15 +91,15 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     }
 
     @Override
-    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability,
+    public boolean hasCapability(@Nonnull net.minecraftforge.common.capabilities.Capability<?> capability,
           net.minecraft.util.EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, net.minecraft.util.EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, net.minecraft.util.EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
-            return (T) this;
+            return Capabilities.ENERGY_STORAGE_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, facing);
     }

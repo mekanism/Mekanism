@@ -9,11 +9,6 @@ public class MekanismConfig {
 
     private static MekanismConfig LOCAL = new MekanismConfig();
     private static MekanismConfig SERVER = null;
-    public GeneralConfig general = new GeneralConfig();
-    public ClientConfig client = new ClientConfig();
-    public UsageConfig usage = new UsageConfig();
-    public GeneratorsConfig generators = Loader.isModLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
-    public ToolsConfig tools = Loader.isModLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
 
     /**
      * Current config, for use when querying the config
@@ -40,4 +35,11 @@ public class MekanismConfig {
         SERVER = newConfig;
     }
 
+    public GeneralConfig general = new GeneralConfig();
+    public ClientConfig client = new ClientConfig();
+    public UsageConfig usage = new UsageConfig();
+
+    public GeneratorsConfig generators = Loader.isModLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
+
+    public ToolsConfig tools = Loader.isModLoaded(MekanismTools.MODID) ? new ToolsConfig() : null;
 }

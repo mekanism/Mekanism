@@ -1,11 +1,14 @@
 package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
+import mekanism.api.TileNetworkList;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -40,6 +43,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         }
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -78,9 +82,16 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public TileNetworkList getSyncPacket(TransporterStack stack, boolean kill) {
-        TileNetworkList data = super.getSyncPacket(stack, kill);
+    public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
+        return addModes(super.makeSyncPacket(stackId, stack));
+    }
 
+    @Override
+    public TileNetworkList makeBatchPacket(Map<Integer, TransporterStack> updates, Set<Integer> deletes) {
+        return addModes(super.makeBatchPacket(updates, deletes));
+    }
+
+    private TileNetworkList addModes(TileNetworkList data) {
         data.add(modes[0]);
         data.add(modes[1]);
         data.add(modes[2]);
@@ -112,8 +123,9 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
         refreshConnections();
         notifyTileChange();
-        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils
-              .localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
+        player.sendMessage(
+              new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils
+                    .localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
         Coord4D coord = new Coord4D(getPos(), getWorld());
         Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())),
               new Range4D(coord));
@@ -131,7 +143,6 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         boolean redstone = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
 
         return (mode != 2 || !redstone) && (mode != 1 || redstone);
-
     }
 
     @Override

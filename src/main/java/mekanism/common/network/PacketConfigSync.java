@@ -61,7 +61,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             } catch (Exception e) {
                 LOGGER.fatal("Something went wrong", e);
             }
-
         }
     }
 }

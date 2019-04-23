@@ -17,8 +17,8 @@ public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<REC
     }
 
     public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int primaryIndex, int secondaryIndex) {
-        return inputMatches(inventory, inputIndex) && getOutput().applyOutputs(inventory,
-              primaryIndex, secondaryIndex, false);
+        return inputMatches(inventory, inputIndex) && getOutput()
+              .applyOutputs(inventory, primaryIndex, secondaryIndex, false);
     }
 
     public void operate(NonNullList<ItemStack> inventory, int inputIndex, int primaryIndex, int secondaryIndex) {

@@ -10,7 +10,6 @@ public class ToolsCommonProxy {
      */
     public void loadConfiguration() {
         MekanismConfig.current().tools.load(Mekanism.configuration);
-
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
         }

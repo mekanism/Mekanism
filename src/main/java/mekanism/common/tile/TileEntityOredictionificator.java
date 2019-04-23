@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.Range4D;
@@ -13,7 +14,7 @@ import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
@@ -22,6 +23,7 @@ import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -32,12 +34,14 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl,
       ISpecialConfigData, ISustainedData, ISecurityTile {
 
     public static final int MAX_LENGTH = 24;
+    private static final int[] SLOTS = {0, 1};
     public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
     public HashList<OredictionificatorFilter> filters = new HashList<>();
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -47,7 +51,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityOredictionificator() {
-        super(BlockStateMachine.MachineType.OREDICTIONIFICATOR.blockName);
+        super(MachineType.OREDICTIONIFICATOR.blockName);
 
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
@@ -124,7 +128,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         for (OredictionificatorFilter filter : filters) {
             if (filter.filter.equals(s)) {
                 if (ores.size() - 1 >= filter.index) {
-                    return MekanismUtils.size(ores.get(filter.index), 1);
+                    return StackUtils.size(ores.get(filter.index), 1);
                 } else {
                     return ItemStack.EMPTY;
                 }
@@ -134,28 +138,27 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
         return ItemStack.EMPTY;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        if (side == MekanismUtils.getLeft(facing)) {
-            return new int[]{0};
-        } else if (side == MekanismUtils.getRight(facing)) {
-            return new int[]{1};
-        } else {
-            return InventoryUtils.EMPTY;
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        if (side != facing) {
+            return SLOTS;
         }
+        return InventoryUtils.EMPTY;
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return slotID == 1;
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         return slotID == 0 && !getResult(itemstack).isEmpty();
 
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -275,7 +278,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     }
 
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(@Nonnull EntityPlayer player) {
         if (!world.isRemote) {
             Mekanism.packetHandler
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new TileNetworkList())),
@@ -313,7 +316,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
     @Override
     public String getDataType() {
-        return getBlockType().getUnlocalizedName() + "." + fullName + ".name";
+        return getBlockType().getTranslationKey() + "." + fullName + ".name";
     }
 
     @Override
@@ -367,20 +370,33 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY
               || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.CONFIG_CARD_CAPABILITY
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.CONFIG_CARD_CAPABILITY
               || capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return (T) this;
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return side == facing;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

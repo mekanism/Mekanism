@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import java.util.Arrays;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -9,17 +10,14 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 public final class TransporterUtils {
 
-    public static List<EnumColor> colors = ListUtils
+    public static List<EnumColor> colors = Arrays
           .asList(EnumColor.DARK_BLUE, EnumColor.DARK_GREEN, EnumColor.DARK_AQUA, EnumColor.DARK_RED, EnumColor.PURPLE,
                 EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK,
                 EnumColor.YELLOW, EnumColor.BLACK);
@@ -28,24 +26,7 @@ public final class TransporterUtils {
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
         }
-
-        if (!(tile instanceof TileEntityBin) && InventoryUtils.isItemHandler(tile, side.getOpposite())) {
-            return true;
-        } else if (tile instanceof IInventory) {
-            IInventory inventory = (IInventory) tile;
-
-            if (inventory.getSizeInventory() > 0) {
-                if (!(inventory instanceof ISidedInventory)) {
-                    return true;
-                }
-
-                int[] slots = ((ISidedInventory) inventory).getSlotsForFace(side.getOpposite());
-
-                return (slots != null && slots.length > 0);
-            }
-        }
-
-        return false;
+        return InventoryUtils.isItemHandler(tile, side.getOpposite());
     }
 
     public static TransitResponse insert(TileEntity outputter, ILogisticalTransporter transporter,

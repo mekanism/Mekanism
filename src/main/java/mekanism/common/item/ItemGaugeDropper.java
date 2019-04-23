@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
@@ -44,7 +45,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     }
 
     @Override
-    public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list) {
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
         if (!isInCreativeTab(tabs)) {
             return;
         }
@@ -66,8 +67,9 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         return 1D - Math.max(gasRatio, fluidRatio);
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
         if (player.isSneaking() && !world.isRemote) {
@@ -93,7 +95,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         } else if (gasStack != null) {
             list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
                   + gasStack.amount);
-        } else if (fluidStack != null) {
+        } else {
             list.add(
                   LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": "
                         + fluidStack.amount);

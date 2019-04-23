@@ -1,6 +1,5 @@
 package mekanism.common.recipe.inputs;
 
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +22,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        ingredient = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("input"));
+        ingredient = new ItemStack(nbtTags.getCompoundTag("input"));
         ingredientHash = hashIngredients();
         wildVersion = null;
     }

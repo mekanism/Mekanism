@@ -2,16 +2,16 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
-import mekanism.client.gui.GuiMFilterSelect;
-import mekanism.client.gui.GuiMItemStackFilter;
-import mekanism.client.gui.GuiMMaterialFilter;
-import mekanism.client.gui.GuiMModIDFilter;
-import mekanism.client.gui.GuiMOreDictFilter;
+import mekanism.client.gui.filter.GuiMFilterSelect;
+import mekanism.client.gui.filter.GuiMItemStackFilter;
+import mekanism.client.gui.filter.GuiMMaterialFilter;
+import mekanism.client.gui.filter.GuiMModIDFilter;
+import mekanism.client.gui.filter.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -44,8 +44,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
                 World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance()
                       .getWorld(message.coord4D.dimensionId);
 
-                if (worldServer != null && message.coord4D
-                      .getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
+                if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
                     DigitalMinerGuiMessage
                           .openServerGui(message.packetType, message.guiType, worldServer, (EntityPlayerMP) player,
                                 message.coord4D, message.index);

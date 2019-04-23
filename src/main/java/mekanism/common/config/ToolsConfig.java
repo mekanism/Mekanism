@@ -1,5 +1,8 @@
 package mekanism.common.config;
 
+import mekanism.common.config.options.DoubleOption;
+import mekanism.common.config.options.FloatOption;
+import mekanism.common.config.options.IntOption;
 import mekanism.common.util.FieldsAreNonnullByDefault;
 
 /**
@@ -8,8 +11,8 @@ import mekanism.common.util.FieldsAreNonnullByDefault;
 @FieldsAreNonnullByDefault
 public class ToolsConfig extends BaseConfig {
 
-    public final DoubleOption armorSpawnRate = new DoubleOption(this, "tools.general", "MobArmorSpawnRate", 0.03, null,
-          0.00, 1.00);
+    public final DoubleOption armorSpawnRate = new DoubleOption(this, "tools.general", "MobArmorSpawnRate", 0.03,
+          "The chance that Mekanism Armor can spawn on mobs.", 0.00, 1.00);
 
     public final ArmorBalance armorOBSIDIAN = new ArmorBalance(this, "obsidian", 50, 5, 8, 12, 5, 40, 4);
     public final ArmorBalance armorLAZULI = new ArmorBalance(this, "lapis", 13, 2, 6, 5, 2, 8, 0);
@@ -47,13 +50,21 @@ public class ToolsConfig extends BaseConfig {
               int enchantabilityDefault, float toughnessDefault) {
             final String category = "tools.armor-balance." + toolKey;
             final String protectionCategory = category + ".protection";
-            this.durability = new IntOption(owner, category, "durability", durabilityDefault);
-            this.feetProtection = new IntOption(owner, protectionCategory, "feet", feetProtectionDefault);
-            this.legsProtection = new IntOption(owner, protectionCategory, "legs", legsProtectionDefault);
-            this.chestProtection = new IntOption(owner, protectionCategory, "chest", chestProtectionDefault);
-            this.headProtection = new IntOption(owner, protectionCategory, "head", headProtectionDefault);
-            this.enchantability = new IntOption(owner, category, "enchantability", enchantabilityDefault);
-            this.toughness = new FloatOption(owner, category, "toughness", toughnessDefault);
+            this.durability = new IntOption(owner, category, "durability", durabilityDefault,
+                  "Base durability of " + toolKey + " armor.");
+            String protectionComment = "Protection value of " + toolKey;
+            this.feetProtection = new IntOption(owner, protectionCategory, "feet", feetProtectionDefault,
+                  protectionComment + " boots.");
+            this.legsProtection = new IntOption(owner, protectionCategory, "legs", legsProtectionDefault,
+                  protectionComment + " leggings.");
+            this.chestProtection = new IntOption(owner, protectionCategory, "chest", chestProtectionDefault,
+                  protectionComment + " chestplates.");
+            this.headProtection = new IntOption(owner, protectionCategory, "head", headProtectionDefault,
+                  protectionComment + " helmets.");
+            this.enchantability = new IntOption(owner, category, "enchantability", enchantabilityDefault,
+                  "Natural enchantability factor of " + toolKey + " armor.");
+            this.toughness = new FloatOption(owner, category, "toughness", toughnessDefault,
+                  "Base armor toughness value of " + toolKey + " armor.");
 
             this.durability.setRequiresGameRestart(true);
             this.feetProtection.setRequiresGameRestart(true);
@@ -80,15 +91,22 @@ public class ToolsConfig extends BaseConfig {
               int maxUsesDefault, float efficiencyDefault, int damageDefault, int enchantabilityDefault,
               float axeAttackDamageDefault, float axeAttackSpeedDefault) {
             final String category = "tools.tool-balance." + toolKey + "." + variant;
-            this.harvestLevel = new IntOption(owner, category, "harvestLevel", harvestLevelDefault);
-            this.maxUses = new IntOption(owner, category, "maxUses", maxUsesDefault);
-            this.efficiency = new FloatOption(owner, category, "efficiency", efficiencyDefault);
-            this.damage = new IntOption(owner, category, "damage", damageDefault);
-            this.enchantability = new IntOption(owner, category, "enchantability", enchantabilityDefault);
+            this.harvestLevel = new IntOption(owner, category, "harvestLevel", harvestLevelDefault,
+                  "Harvest level of " + toolKey + " tools.");
+            this.maxUses = new IntOption(owner, category, "maxUses", maxUsesDefault,
+                  "Maximum durability of " + toolKey + " tools.");
+            this.efficiency = new FloatOption(owner, category, "efficiency", efficiencyDefault,
+                  "Base speed of " + toolKey + ".");
+            this.damage = new IntOption(owner, category, "damage", damageDefault,
+                  "Base attack damage of " + toolKey + ".");
+            this.enchantability = new IntOption(owner, category, "enchantability", enchantabilityDefault,
+                  "Natural enchantability factor of " + toolKey + ".");
 
             if (variant.equals("regular")) {
-                this.axeAttackDamage = new FloatOption(owner, category, "axeAttackDamage", axeAttackDamageDefault);
-                this.axeAttackSpeed = new FloatOption(owner, category, "axeAttackSpeed", axeAttackSpeedDefault);
+                this.axeAttackDamage = new FloatOption(owner, category, "axeAttackDamage", axeAttackDamageDefault,
+                      "Base attack damage of a " + toolKey + " axe.");
+                this.axeAttackSpeed = new FloatOption(owner, category, "axeAttackSpeed", axeAttackSpeedDefault,
+                      "Base attack speed of a " + toolKey + " axe.");
             } else {
                 this.axeAttackDamage = new FloatOption(NULL_OWNER, "", "");
                 this.axeAttackSpeed = new FloatOption(NULL_OWNER, "", "");

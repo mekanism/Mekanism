@@ -12,7 +12,7 @@ public interface IMekWrench {
 
     /* easier compat with BC */
     default boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace) {
-        return canUseWrench(stack, player, rayTrace.getBlockPos() != null ? rayTrace.getBlockPos() : BlockPos.ORIGIN);
+        return canUseWrench(stack, player, rayTrace.getBlockPos());
     }
 
     default void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {

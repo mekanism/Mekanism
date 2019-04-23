@@ -1,26 +1,20 @@
 package mekanism.common.tile;
 
-import cofh.redstoneflux.api.IEnergyContainerItem;
-import ic2.api.item.ElectricItem;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Random;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
-import mekanism.api.energy.EnergizedItemManager;
-import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.block.states.BlockStateMachine;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -31,13 +25,11 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChargepad extends TileEntityNoisyBlock {
+public class TileEntityChargepad extends TileEntityEffectsBlock {
 
     public boolean isActive;
     public boolean clientActive;
@@ -45,7 +37,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
     public Random random = new Random();
 
     public TileEntityChargepad() {
-        super("machine.chargepad", "Chargepad", BlockStateMachine.MachineType.CHARGEPAD.baseEnergy);
+        super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
         inventory = NonNullList.withSize(0, ItemStack.EMPTY);
     }
 
@@ -79,7 +71,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
                         double prevEnergy = getEnergy();
 
                         for (ItemStack itemstack : player.inventory.armorInventory) {
-                            chargeItemStack(itemstack);
+                            ChargeUtils.charge(itemstack, this);
 
                             if (prevEnergy != getEnergy()) {
                                 break;
@@ -87,7 +79,7 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
                         }
 
                         for (ItemStack itemstack : player.inventory.mainInventory) {
-                            chargeItemStack(itemstack);
+                            ChargeUtils.charge(itemstack, this);
 
                             if (prevEnergy != getEnergy()) {
                                 break;
@@ -99,13 +91,11 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
 
             if (clientActive != isActive) {
                 if (isActive) {
-                    world.playSound((EntityPlayer) null, getPos().getX() + 0.5, getPos().getY() + 0.1,
-                          getPos().getZ() + 0.5, SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_ON, SoundCategory.BLOCKS,
-                          0.3F, 0.8F);
+                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
+                          SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.8F);
                 } else {
-                    world.playSound((EntityPlayer) null, getPos().getX() + 0.5, getPos().getY() + 0.1,
-                          getPos().getZ() + 0.5, SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS,
-                          0.3F, 0.7F);
+                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
+                          SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
                 }
 
                 setActive(isActive);
@@ -113,41 +103,6 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
         } else if (isActive) {
             world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(),
                   getPos().getY() + 0.15, getPos().getZ() + random.nextDouble(), 0, 0, 0);
-        }
-    }
-
-    public void chargeItemStack(ItemStack itemstack) {
-        if (!itemstack.isEmpty()) {
-            if (itemstack.getItem() instanceof IEnergizedItem) {
-                setEnergy(getEnergy() - EnergizedItemManager.charge(itemstack, getEnergy()));
-            } else if (MekanismUtils.useTesla() && itemstack
-                  .hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null)) {
-                ITeslaConsumer consumer = itemstack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
-
-                long stored = Math.round(getEnergy() * MekanismConfig.current().general.TO_TESLA.val());
-                setEnergy(getEnergy() - consumer.givePower(stored, false) * MekanismConfig.current().general.FROM_TESLA
-                      .val());
-            } else if (MekanismUtils.useForge() && itemstack.hasCapability(CapabilityEnergy.ENERGY, null)) {
-                IEnergyStorage storage = itemstack.getCapability(CapabilityEnergy.ENERGY, null);
-
-                if (storage.canReceive()) {
-                    int stored = (int) Math.round(
-                          Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_FORGE.val()));
-                    setEnergy(getEnergy() - storage.receiveEnergy(stored, false) * MekanismConfig
-                          .current().general.FROM_FORGE.val());
-                }
-            } else if (MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem) {
-                IEnergyContainerItem item = (IEnergyContainerItem) itemstack.getItem();
-
-                int toTransfer = (int) Math.round(getEnergy() * MekanismConfig.current().general.TO_RF.val());
-                setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false) * MekanismConfig
-                      .current().general.FROM_RF.val()));
-            } else if (MekanismUtils.useIC2() && ChargeUtils.isIC2Chargeable(itemstack)) {
-                double sent = ElectricItem.manager
-                      .charge(itemstack, getEnergy() * MekanismConfig.current().general.TO_IC2.val(), 4, true, false)
-                      * MekanismConfig.current().general.FROM_IC2.val();
-                setEnergy(getEnergy() - sent);
-            }
         }
     }
 
@@ -178,9 +133,10 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
+        clientActive = isActive = nbtTags.getBoolean("isActive");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -217,12 +173,6 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public float getVolume() {
-        return 0.4F * super.getVolume();
-    }
-
-    @Override
     public boolean renderUpdate() {
         return false;
     }
@@ -232,8 +182,17 @@ public class TileEntityChargepad extends TileEntityNoisyBlock {
         return true;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

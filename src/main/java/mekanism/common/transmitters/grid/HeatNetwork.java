@@ -15,7 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 //import mekanism.common.multipart.MultipartTransmitter;
 
-public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork> {
+public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void> {
 
     public double meanTemp = 0;
 
@@ -55,7 +55,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork> {
     }
 
     @Override
-    public void absorbBuffer(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter) {
+    public void absorbBuffer(IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter) {
     }
 
     @Override
@@ -76,7 +76,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork> {
         double newHeatTransferred = 0;
 
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            for (IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters) {
+            for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl && ((TransmitterImpl) transmitter).getTileEntity()
                       .hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null)) {
                     IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity()
@@ -87,7 +87,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork> {
                 }
             }
 
-            for (IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters) {
+            for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl && ((TransmitterImpl) transmitter).getTileEntity()
                       .hasCapability(Capabilities.HEAT_TRANSFER_CAPABILITY, null)) {
                     IHeatTransfer heatTransmitter = (IHeatTransfer) ((TransmitterImpl) transmitter).getTileEntity()

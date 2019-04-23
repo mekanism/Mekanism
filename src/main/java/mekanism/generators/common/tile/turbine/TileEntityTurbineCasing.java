@@ -1,12 +1,12 @@
 package mekanism.generators.common.tile.turbine;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -17,6 +17,7 @@ import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
@@ -25,9 +26,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements
       IStrictEnergyStorage {
@@ -61,10 +62,12 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
                     if (stored > 0 && getEnergy() < structure.getEnergyCapacity()) {
                         double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val()
-                              / TurbineUpdateProtocol.MAX_BLADES) * Math.min(structure.blades,
-                              structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());
-                        double rate = structure.lowerVolume * (structure.getDispersers() * MekanismConfig
-                              .current().generators.turbineDisperserGasFlow.val());
+                              / TurbineUpdateProtocol.MAX_BLADES) * Math
+                              .min(structure.blades,
+                                    structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());
+                        double rate =
+                              structure.lowerVolume * (structure.getDispersers() * MekanismConfig
+                                    .current().generators.turbineDisperserGasFlow.val());
                         rate = Math.min(rate,
                               structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
 
@@ -115,6 +118,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         }
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return LangUtils.localize("gui.industrialTurbine");
@@ -177,13 +181,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             data.add(structure.lastSteamInput);
             data.add(structure.dumpMode.ordinal());
 
-            if (structure.fluidStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.fluidStored));
-                data.add(structure.fluidStored.amount);
-            } else {
-                data.add(0);
-            }
+            TileUtils.addFluidStack(data, structure.fluidStored);
 
             if (isRendering) {
                 structure.complex.write(data);
@@ -225,12 +223,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.lastSteamInput = dataStream.readInt();
                 structure.dumpMode = GasMode.values()[dataStream.readInt()];
 
-                if (dataStream.readInt() == 1) {
-                    structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.fluidStored = null;
-                }
+                structure.fluidStored = TileUtils.readFluidStack(dataStream);
 
                 if (isRendering) {
                     structure.complex = Coord4D.read(dataStream);
@@ -262,8 +255,17 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         return MekanismGenerators.turbineManager;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

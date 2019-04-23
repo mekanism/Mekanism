@@ -17,8 +17,8 @@ public class EntityBabySkeleton extends EntitySkeleton {
     private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID,
           "Baby speed boost", 0.5D, 1);
 
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(
-          EntityBabySkeleton.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager
+          .createKey(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
 
     public EntityBabySkeleton(World world) {
         super(world);

@@ -2,6 +2,7 @@ package mekanism.client.jei.machine.chemical;
 
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -18,9 +19,10 @@ public class ChemicalWasherRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(VanillaTypes.FLUID, new FluidStack(FluidRegistry.WATER, 1));
-        ingredients.setInput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.recipeInput.ingredient);
-        ingredients.setOutput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.recipeOutput.output);
+        ingredients
+              .setInput(VanillaTypes.FLUID, new FluidStack(FluidRegistry.WATER, TileEntityChemicalWasher.WATER_USAGE));
+        ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.ingredient);
+        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
     }
 
     public WasherRecipe getRecipe() {

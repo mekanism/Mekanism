@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.FluidSlot;
@@ -93,15 +94,15 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 0) {
             if (getFuel(itemstack) > 0) {
                 return true;
             } else {
                 if (FluidRegistry.isFluidRegistered("bioethanol")) {
-                    if (FluidUtil.getFluidContained(itemstack) != null) {
-                        return FluidUtil.getFluidContained(itemstack).getFluid() == FluidRegistry
-                              .getFluid("bioethanol");
+                    FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
+                    if (fluidContained != null) {
+                        return fluidContained.getFluid() == FluidRegistry.getFluid("bioethanol");
                     }
                 }
 
@@ -126,6 +127,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         bioFuelSlot.fluidStored = nbtTags.getInteger("bioFuelStored");
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -149,8 +151,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         return bioFuelSlot.fluidStored * i / bioFuelSlot.MAX_FLUID;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return side == MekanismUtils.getRight(facing) ? new int[]{1} : new int[]{0};
     }
 
@@ -201,8 +204,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (FluidRegistry.isFluidRegistered("bioethanol") && from != facing) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
+        if (resource != null && FluidRegistry.isFluidRegistered("bioethanol") && from != facing) {
             if (resource.getFluid() == FluidRegistry.getFluid("bioethanol")) {
                 int fuelTransfer;
                 int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
@@ -231,14 +234,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         return null;
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
-        return FluidRegistry.isFluidRegistered("bioethanol") && fluid.getFluid() == FluidRegistry
-              .getFluid("bioethanol");
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
+        return fluid != null && fluid.getFluid().equals(FluidRegistry.getFluid("bioethanol"));
     }
 
     @Override
@@ -262,15 +264,15 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
         return (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super
               .hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (T) new FluidHandlerWrapper(this, side);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);

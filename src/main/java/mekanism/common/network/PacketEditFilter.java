@@ -2,9 +2,9 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.api.TileNetworkList;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
@@ -30,71 +30,68 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 
         worldServer.addScheduledTask(() ->
         {
-            if (worldServer != null) {
-                if (message.type == 0 && message.coord4D
-                      .getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
-                    TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) message.coord4D
-                          .getTileEntity(worldServer);
+            if (message.type == 0 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter) {
+                TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) message.coord4D
+                      .getTileEntity(worldServer);
 
-                    if (!sorter.filters.contains(message.tFilter)) {
-                        return;
-                    }
+                if (!sorter.filters.contains(message.tFilter)) {
+                    return;
+                }
 
-                    int index = sorter.filters.indexOf(message.tFilter);
+                int index = sorter.filters.indexOf(message.tFilter);
 
-                    sorter.filters.remove(index);
+                sorter.filters.remove(index);
 
-                    if (!message.delete) {
-                        sorter.filters.add(index, message.tEdited);
-                    }
+                if (!message.delete) {
+                    sorter.filters.add(index, message.tEdited);
+                }
 
-                    for (EntityPlayer iterPlayer : sorter.playersUsing) {
-                        Mekanism.packetHandler.sendTo(
-                              new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new TileNetworkList())),
-                              (EntityPlayerMP) iterPlayer);
-                    }
-                } else if (message.type == 1 && message.coord4D
-                      .getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
-                    TileEntityDigitalMiner miner = (TileEntityDigitalMiner) message.coord4D.getTileEntity(worldServer);
+                for (EntityPlayer iterPlayer : sorter.playersUsing) {
+                    Mekanism.packetHandler.sendTo(
+                          new TileEntityMessage(Coord4D.get(sorter), sorter.getFilterPacket(new TileNetworkList())),
+                          (EntityPlayerMP) iterPlayer);
+                }
+            } else if (message.type == 1 && message.coord4D
+                  .getTileEntity(worldServer) instanceof TileEntityDigitalMiner) {
+                TileEntityDigitalMiner miner = (TileEntityDigitalMiner) message.coord4D.getTileEntity(worldServer);
 
-                    if (!miner.filters.contains(message.mFilter)) {
-                        return;
-                    }
+                if (!miner.filters.contains(message.mFilter)) {
+                    return;
+                }
 
-                    int index = miner.filters.indexOf(message.mFilter);
+                int index = miner.filters.indexOf(message.mFilter);
 
-                    miner.filters.remove(index);
+                miner.filters.remove(index);
 
-                    if (!message.delete) {
-                        miner.filters.add(index, message.mEdited);
-                    }
+                if (!message.delete) {
+                    miner.filters.add(index, message.mEdited);
+                }
 
-                    for (EntityPlayer iterPlayer : miner.playersUsing) {
-                        Mekanism.packetHandler.sendTo(
-                              new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new TileNetworkList())),
-                              (EntityPlayerMP) iterPlayer);
-                    }
-                } else if (message.type == 2 && message.coord4D
-                      .getTileEntity(worldServer) instanceof TileEntityOredictionificator) {
-                    TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator) message.coord4D
-                          .getTileEntity(worldServer);
+                for (EntityPlayer iterPlayer : miner.playersUsing) {
+                    Mekanism.packetHandler.sendTo(
+                          new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new TileNetworkList())),
+                          (EntityPlayerMP) iterPlayer);
+                }
+            } else if (message.type == 2 && message.coord4D
+                  .getTileEntity(worldServer) instanceof TileEntityOredictionificator) {
+                TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator) message.coord4D
+                      .getTileEntity(worldServer);
 
-                    if (!oredictionificator.filters.contains(message.oFilter)) {
-                        return;
-                    }
+                if (!oredictionificator.filters.contains(message.oFilter)) {
+                    return;
+                }
 
-                    int index = oredictionificator.filters.indexOf(message.oFilter);
+                int index = oredictionificator.filters.indexOf(message.oFilter);
 
-                    oredictionificator.filters.remove(index);
+                oredictionificator.filters.remove(index);
 
-                    if (!message.delete) {
-                        oredictionificator.filters.add(index, message.oEdited);
-                    }
+                if (!message.delete) {
+                    oredictionificator.filters.add(index, message.oEdited);
+                }
 
-                    for (EntityPlayer iterPlayer : oredictionificator.playersUsing) {
-                        Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator),
-                              oredictionificator.getFilterPacket(new TileNetworkList())), (EntityPlayerMP) iterPlayer);
-                    }
+                for (EntityPlayer iterPlayer : oredictionificator.playersUsing) {
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator),
+                          oredictionificator.getFilterPacket(new TileNetworkList())), (EntityPlayerMP) iterPlayer);
                 }
             }
         });

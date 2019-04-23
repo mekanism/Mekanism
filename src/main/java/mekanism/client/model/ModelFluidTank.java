@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Tier.FluidTankTier;
+import mekanism.common.tier.FluidTankTier;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -101,6 +101,7 @@ public class ModelFluidTank extends ModelBase {
         BackGlass.render(size);
         RightGlass.render(size);
         LeftGlass.render(size);
+        MekanismRenderer.resetColor();
         MekanismRenderer.blendOff();
     }
 

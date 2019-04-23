@@ -3,11 +3,11 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.block.BlockBasic;
 import mekanism.common.content.tank.SynchronizedTankData;
@@ -19,19 +19,20 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements
       IFluidContainerManager {
 
-    protected static final int[] SLOTS = {0, 1};
+    protected static final int[] SLOTS = {0,1};
 
     /**
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering
@@ -178,13 +179,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             data.add(structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
             data.add(structure.editMode.ordinal());
 
-            if (structure.fluidStored != null) {
-                data.add(1);
-                data.add(FluidRegistry.getFluidName(structure.fluidStored));
-                data.add(structure.fluidStored.amount);
-            } else {
-                data.add(0);
-            }
+            TileUtils.addFluidStack(data, structure.fluidStored);
 
             if (isRendering) {
                 Set<ValveData> toSend = new HashSet<>();
@@ -216,12 +211,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 clientCapacity = dataStream.readInt();
                 structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
 
-                if (dataStream.readInt() == 1) {
-                    structure.fluidStored = new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)),
-                          dataStream.readInt());
-                } else {
-                    structure.fluidStored = null;
-                }
+                structure.fluidStored = TileUtils.readFluidStack(dataStream);
 
                 if (isRendering) {
                     int size = dataStream.readInt();
@@ -231,7 +221,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                     for (int i = 0; i < size; i++) {
                         ValveData data = new ValveData();
                         data.location = Coord4D.read(dataStream);
-                        data.side = EnumFacing.getFront(dataStream.readInt());
+                        data.side = EnumFacing.byIndex(dataStream.readInt());
 
                         valveViewing.add(data);
 
@@ -272,8 +262,17 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         structure.editMode = mode;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

@@ -1,8 +1,8 @@
 package mekanism.common.block;
 
 import java.util.Random;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -23,12 +24,6 @@ import net.minecraft.world.World;
 
 public class BlockBounding extends Block {
 
-    public BlockBounding() {
-        super(Material.IRON);
-        setHardness(3.5F);
-        setResistance(8F);
-    }
-
     @Nullable
     private static BlockPos getMainBlockPos(World world, BlockPos thisPos) {
         TileEntity te = world.getTileEntity(thisPos);
@@ -38,107 +33,95 @@ public class BlockBounding extends Block {
         return null;
     }
 
+    public BlockBounding() {
+        super(Material.IRON);
+        setHardness(3.5F);
+        setResistance(8F);
+    }
+
+    @Nonnull
     @Override
     public BlockStateContainer createBlockState() {
         return new BlockStateBounding(this);
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState().withProperty(BlockStateBounding.advancedProperty, meta > 0);
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        boolean isAdvanced = state.getValue(BlockStateBounding.advancedProperty);
-        return isAdvanced ? 1 : 0;
+        return state.getValue(BlockStateBounding.advancedProperty) ? 1 : 0;
     }
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
           EnumFacing side, float hitX, float hitY, float hitZ) {
-        try {
-            BlockPos mainPos = getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                IBlockState state1 = world.getBlockState(mainPos);
-                return state1.getBlock().onBlockActivated(world, mainPos, state1, player, hand, side, hitX, hitY, hitZ);
-            }
-        } catch (Exception e) {
-            Mekanism.logger.error("Something went wrong", e);
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos == null) {
+            return false;
         }
-        return false;
+        IBlockState state1 = world.getBlockState(mainPos);
+        return state1.getBlock().onBlockActivated(world, mainPos, state1, player, hand, side, hitX, hitY, hitZ);
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
         super.breakBlock(world, pos, state);
-
         world.removeTileEntity(pos);
     }
 
+    @Nonnull
     @Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos,
-          EntityPlayer player) {
-        try {
-            BlockPos mainPos = getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                IBlockState state1 = world.getBlockState(mainPos);
-                return state1.getBlock().getPickBlock(state1, target, world, mainPos, player);
-            }
-        } catch (Exception e) {
-            Mekanism.logger.error("Something went wrong", e);
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos == null) {
+            return ItemStack.EMPTY;
         }
-        return ItemStack.EMPTY;
+        IBlockState state1 = world.getBlockState(mainPos);
+        return state1.getBlock().getPickBlock(state1, target, world, mainPos, player);
     }
 
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
-          boolean willHarvest) {
-        try {
-            BlockPos mainPos = getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                IBlockState state1 = world.getBlockState(mainPos);
-                return state1.getBlock().removedByPlayer(state1, world, mainPos, player, willHarvest);
-            }
-        } catch (Exception e) {
-            Mekanism.logger.error("Something went wrong", e);
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos == null) {
+            return false;
         }
-        return false;
+        IBlockState state1 = world.getBlockState(mainPos);
+        return state1.getBlock().removedByPlayer(state1, world, mainPos, player, willHarvest);
     }
 
+    @Override
     @Deprecated
-    @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
           BlockPos neighborPos) {
-        try {
-            TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
-            if (tileEntity != null) {
-                tileEntity.onNeighborChange(state.getBlock());
-            }
-            BlockPos mainPos = getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                IBlockState state1 = world.getBlockState(mainPos);
-                state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos);
-            }
-        } catch (Exception e) {
-            Mekanism.logger.error("Something went wrong", e);
+        TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
+        if (tileEntity != null) {
+            tileEntity.onNeighborChange(state.getBlock());
+        }
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos != null) {
+            IBlockState state1 = world.getBlockState(mainPos);
+            state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos);
         }
     }
 
-    @Deprecated
     @Override
-    public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer player, World world, BlockPos pos) {
-        try {
-            BlockPos mainPos = getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                IBlockState state1 = world.getBlockState(mainPos);
-                return state1.getBlock().getPlayerRelativeBlockHardness(state1, player, world, mainPos);
-            }
-        } catch (Exception e) {
-            Mekanism.logger.error("Something went wrong", e);
+    @Deprecated
+    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
+          @Nonnull BlockPos pos) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos == null) {
+            return super.getPlayerRelativeBlockHardness(state, player, world, pos);
         }
-        return super.getPlayerRelativeBlockHardness(state, player, world, pos);
+        IBlockState state1 = world.getBlockState(mainPos);
+        return state1.getBlock().getPlayerRelativeBlockHardness(state1, player, world, mainPos);
     }
 
     @Override
@@ -146,25 +129,27 @@ public class BlockBounding extends Block {
         return 0;
     }
 
+    @Nonnull
     @Override
     public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return null;
+        return Items.AIR;
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.INVISIBLE;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
-    @Deprecated
     @Override
+    @Deprecated
     public boolean isFullCube(IBlockState state) {
         return false;
     }
@@ -175,11 +160,10 @@ public class BlockBounding extends Block {
     }
 
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state) {
+    public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         if (state.getValue(BlockStateBounding.advancedProperty)) {
             return new TileEntityAdvancedBoundingBlock();
-        } else {
-            return new TileEntityBoundingBlock();
         }
+        return new TileEntityBoundingBlock();
     }
 }

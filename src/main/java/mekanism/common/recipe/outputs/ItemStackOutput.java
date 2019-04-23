@@ -1,6 +1,5 @@
 package mekanism.common.recipe.outputs;
 
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -18,7 +17,7 @@ public class ItemStackOutput extends MachineOutput<ItemStackOutput> {
 
     @Override
     public void load(NBTTagCompound nbtTags) {
-        output = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("output"));
+        output = new ItemStack(nbtTags.getCompoundTag("output"));
     }
 
     public boolean applyOutputs(NonNullList<ItemStack> inventory, int index, boolean doEmit) {

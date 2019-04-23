@@ -2,11 +2,11 @@ package mekanism.common.block;
 
 import static mekanism.common.block.states.BlockStatePlastic.colorProperty;
 
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -24,13 +24,15 @@ public class BlockPlasticFence extends BlockFence {
         setCreativeTab(Mekanism.tabMekanism);
     }
 
+    @Nonnull
     @Override
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, new IProperty[]{NORTH, EAST, WEST, SOUTH, colorProperty});
+        return new BlockStateContainer(this, NORTH, EAST, WEST, SOUTH, colorProperty);
     }
 
-    @Deprecated
+    @Nonnull
     @Override
+    @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         return this.getDefaultState().withProperty(colorProperty, EnumDyeColor.byDyeDamage(meta));
     }
@@ -54,8 +56,9 @@ public class BlockPlasticFence extends BlockFence {
 
     public static class PlasticFenceStateMapper extends StateMapperBase {
 
+        @Nonnull
         @Override
-        protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
             String properties = "east=" + state.getValue(EAST) + ",";
             properties += "north=" + state.getValue(NORTH) + ",";
             properties += "south=" + state.getValue(SOUTH) + ",";

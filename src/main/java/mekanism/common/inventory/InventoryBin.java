@@ -1,9 +1,8 @@
 package mekanism.common.inventory;
 
-import mekanism.common.Tier.BinTier;
+import mekanism.common.tier.BinTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -82,7 +81,6 @@ public class InventoryBin {
         }
 
         return stack.isItemEqual(getItemType()) && ItemStack.areItemStackTagsEqual(stack, getItemType());
-
     }
 
     public int getMaxStorage() {
@@ -110,7 +108,7 @@ public class InventoryBin {
             return ItemStack.EMPTY;
         }
 
-        return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(bin, "storedItem"));
+        return new ItemStack(ItemDataUtils.getCompound(bin, "storedItem"));
     }
 
     public void setItemType(ItemStack stack) {

@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyOutputter;
@@ -30,6 +31,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl,
       IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration, ISecurityTile {
@@ -136,7 +138,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
                         if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
                               .val()) {
-                            LaserManager.breakBlock(hitCoord, true, world);
+                            LaserManager.breakBlock(hitCoord, true, world, pos);
                             diggingProgress = 0;
                         }
                     }
@@ -280,6 +282,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
         outputMode = RedstoneOutput.values()[nbtTags.getInteger("outputMode")];
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -344,7 +347,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
               || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
               || capability == Capabilities.LASER_RECEPTOR_CAPABILITY
@@ -352,22 +355,31 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
-            return (T) this;
+            return Capabilities.ENERGY_STORAGE_CAPABILITY.cast(this);
         }
         if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
-            return (T) this;
+            return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.cast(this);
         }
         if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
-            return (T) this;
+            return Capabilities.LASER_RECEPTOR_CAPABILITY.cast(this);
         }
         return super.getCapability(capability, facing);
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         return InventoryUtils.EMPTY;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     public enum RedstoneOutput {

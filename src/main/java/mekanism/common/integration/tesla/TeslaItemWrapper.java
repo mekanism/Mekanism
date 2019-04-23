@@ -5,7 +5,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -71,14 +70,12 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getStoredPower() {
-        return MekanismUtils.clampToLong(
-              Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val()));
+        return Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.TESLA_MOD_ID)
     public long getCapacity() {
-        return MekanismUtils.clampToLong(
-              Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val()));
+        return Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_TESLA.val());
     }
 }

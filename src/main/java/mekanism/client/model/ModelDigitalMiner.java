@@ -431,7 +431,7 @@ public class ModelDigitalMiner extends ModelBase {
 
         manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
         GlStateManager.scale(1.001F, 1.001F, 1.001F);
-        GlStateManager.translate(0, -0.0011F, 0);
+        GlStateManager.translate(-0.0011F, -0.0011F, -0.0011F);
         MekanismRenderer.glowOn();
 
         doRender(size);

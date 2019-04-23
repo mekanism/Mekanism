@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.Chunk3D;
 import mekanism.api.EnumColor;
 import mekanism.client.MekKeyHandler;
@@ -49,15 +50,16 @@ public class ItemSeismicReader extends ItemEnergized {
         }
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer entityplayer, @Nonnull EnumHand hand) {
         Chunk3D chunk = new Chunk3D(entityplayer);
         ItemStack itemstack = entityplayer.getHeldItem(hand);
 
         if (getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.capabilities.isCreativeMode) {
             if (!world.isRemote) {
                 entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils
                             .localize("tooltip.seismicReader.needsEnergy")));
             }
 
@@ -65,7 +67,7 @@ public class ItemSeismicReader extends ItemEnergized {
         } else if (!MekanismUtils.isChunkVibrated(chunk)) {
             if (!world.isRemote) {
                 entityplayer.sendMessage(new TextComponentString(
-                      EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils
+                      EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.RED + LangUtils
                             .localize("tooltip.seismicReader.noVibrations")));
             }
 

@@ -7,12 +7,11 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
@@ -23,7 +22,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -32,104 +30,89 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
-import mekanism.common.util.GasUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.biome.BiomeDesert;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl,
-      IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, ITankManager, ISecurityTile,
-      IUpgradeTile, IUpgradeInfoHandler {
+      IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager, ISecurityTile, IUpgradeTile,
+      IUpgradeInfoHandler {
 
     public static final int MAX_GAS = 10000;
-    private static final int[] SLOTS = {0, 1, 2};
+    private static final int[] INPUT_SLOT = {0};
+    private static final int[] OUTPUT_SLOT = {1};
+
     public GasTank inputTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
-    public int updateDelay;
-
-    public boolean isActive;
-
-    public boolean clientActive;
 
     public int gasOutput = 256;
 
-    public SolarNeutronRecipe cachedRecipe;
+    private SolarNeutronRecipe cachedRecipe;
 
-    /**
-     * This machine's current RedstoneControl type.
-     */
+    private boolean isActive;
+    private boolean needsRainCheck;
+
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, SLOTS.length);
+    public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySolarNeutronActivator() {
         super("SolarNeutronActivator");
         upgradeComponent.setSupported(Upgrade.ENERGY, false);
-        inventory = NonNullList.withSize(SLOTS.length + 1, ItemStack.EMPTY);
+        inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+
+        // Cache the flag to know if rain matters where this block is placed
+        needsRainCheck = world.provider.getBiomeForCoords(getPos()).canRain();
     }
 
     @Override
     public void onUpdate() {
-        if (world.isRemote && updateDelay > 0) {
-            updateDelay--;
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-
         if (!world.isRemote) {
-            if (updateDelay > 0) {
-                updateDelay--;
-
-                if (updateDelay == 0 && clientActive != isActive) {
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          new Range4D(Coord4D.get(this)));
-                }
-            }
-
-            if (!inventory.get(0).isEmpty() && (inputTank.getGas() == null || inputTank.getStored() < inputTank
-                  .getMaxGas())) {
-                inputTank.receive(GasUtils.removeGas(inventory.get(0), inputTank.getGasType(), inputTank.getNeeded()),
-                      true);
-            }
-
-            if (!inventory.get(1).isEmpty() && outputTank.getGas() != null) {
-                outputTank.draw(GasUtils.addGas(inventory.get(1), outputTank.getGas()), true);
-            }
+            TileUtils.receiveGas(inventory.get(0), inputTank);
+            TileUtils.drawGas(inventory.get(1), outputTank);
 
             SolarNeutronRecipe recipe = getRecipe();
 
-            boolean sky =
-                  ((!world.isRaining() && !world.isThundering()) || isDesert()) && !world.provider.isNether() && world
-                        .canSeeSky(getPos().up()); // TODO Check isNether call, maybe it should be hasSkyLight
+            // TODO: Ideally the neutron activator should use the sky brightness to determine throughput; but
+            // changing this would dramatically affect a lot of setups with Fusion reactors which can take
+            // a long time to relight. I don't want to be chased by a mob right now, so just doing basic
+            // rain checks.
+            boolean seesSun = world.isDaytime() && world.canSeeSky(getPos().up(4)) && !world.provider.isNether();
+            if (needsRainCheck) {
+                seesSun &= !(world.isRaining() || world.isThundering());
+            }
 
-            if (world.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this)) {
+            if (seesSun && canOperate(recipe) && MekanismUtils.canFunction(this)) {
                 setActive(true);
-
-                int operations = operate(recipe);
+                operate(recipe);
             } else {
                 setActive(false);
             }
 
-            if (outputTank.getGas() != null) {
-                GasStack toSend = new GasStack(outputTank.getGas().getGas(),
-                      Math.min(outputTank.getStored(), gasOutput));
-                outputTank.draw(GasUtils.emit(toSend, this, ListUtils.asList(facing)), true);
+            TileUtils.emitGas(this, outputTank, gasOutput, facing);
+
+            // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
+            // traffic from previous implementation that send the update every 10 ticks.
+            if (world.getTotalWorldTime() % 20 == 0) {
+                Mekanism.packetHandler
+                      .sendToReceivers(
+                            new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                            new Range4D(Coord4D.get(this)));
             }
         }
     }
@@ -139,10 +122,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
 
         return possibleProcess;
-    }
-
-    public boolean isDesert() {
-        return world.provider.getBiomeForCoords(getPos()) instanceof BiomeDesert;
     }
 
     public SolarNeutronRecipe getRecipe() {
@@ -163,12 +142,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         return recipe != null && recipe.canOperate(inputTank, outputTank);
     }
 
-    public int operate(SolarNeutronRecipe recipe) {
-        int operations = getUpgradedUsage();
-
-        recipe.operate(inputTank, outputTank, operations);
-
-        return operations;
+    public void operate(SolarNeutronRecipe recipe) {
+        recipe.operate(inputTank, outputTank, getUpgradedUsage());
     }
 
     @Override
@@ -178,24 +153,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             isActive = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
-
-            if (dataStream.readBoolean()) {
-                inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                inputTank.setGas(null);
-            }
-
-            if (dataStream.readBoolean()) {
-                outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-            } else {
-                outputTank.setGas(null);
-            }
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
+            TileUtils.readTankData(dataStream, inputTank);
+            TileUtils.readTankData(dataStream, outputTank);
         }
     }
 
@@ -205,23 +164,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
         data.add(isActive);
         data.add(controlType.ordinal());
-
-        if (inputTank.getGas() != null) {
-            data.add(true);
-            data.add(inputTank.getGas().getGas().getID());
-            data.add(inputTank.getStored());
-        } else {
-            data.add(false);
-        }
-
-        if (outputTank.getGas() != null) {
-            data.add(true);
-            data.add(outputTank.getGas().getGas().getID());
-            data.add(outputTank.getStored());
-        } else {
-            data.add(false);
-        }
-
+        TileUtils.addTankData(data, inputTank);
+        TileUtils.addTankData(data, outputTank);
         return data;
     }
 
@@ -236,6 +180,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         outputTank.read(nbtTags.getCompoundTag("outputTank"));
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -300,25 +245,30 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return side == facing || side == EnumFacing.DOWN;
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || super.hasCapability(capability, side);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY) {
-            return (T) this;
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return side != facing && side != EnumFacing.DOWN;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
@@ -361,15 +311,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     @Override
     public void setActive(boolean active) {
-        isActive = active;
+        boolean stateChange = (isActive != active);
 
-        if (clientActive != active && updateDelay == 0) {
+        if (stateChange) {
+            isActive = active;
             Mekanism.packetHandler
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));
-
-            updateDelay = 10;
-            clientActive = active;
         }
     }
 
@@ -380,7 +328,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 
     @Override
     public boolean lightUpdate() {
-        return true;
+        return false;
     }
 
     @Override
@@ -403,14 +351,28 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
         return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }
 
+    public double getProgress() {
+        if (isActive) {
+            return .16 * (1 + (world.getTotalWorldTime() % 6));
+        }
+        return 0;
+    }
+
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return canTubeConnect(side) ? InventoryUtils.EMPTY : SLOTS;
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return side == facing ? OUTPUT_SLOT : INPUT_SLOT;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return stack.getItem() instanceof IGasItem;
     }
 }

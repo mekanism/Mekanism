@@ -1,97 +1,135 @@
 package mekanism.common.content.transporter;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.inventory.IInventory;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
 
+/**
+ * An InvStack attaches to an inventory and tracks a specific homogenous item in a variable amount
+ * of slots. An InvStack can either track the entirety of these slots or portions of their contents.
+ * Utility methods in this class allow for the strategic removal of clustered items from
+ * inventories.
+ * 
+ * @author aidancbrady
+ *
+ */
 public final class InvStack {
 
-    public TileEntity tileEntity;
-    public ArrayList<ItemStack> itemStacks;
-    public ArrayList<Integer> slotIDs;
-    public EnumFacing side;
+    /** The TileEntity owning the container this InvStack belongs to. */
+    private final TileEntity tileEntity;
+
+    /** The side of the inventory we are accessing with this InvStack. */
+    private final EnumFacing side;
+
+    /**
+     * A map associating the slot IDs in consideration to the amount of items in those slots we care
+     * about. Note that the associated item counts may not be the full count of items in the actual
+     * inventory slots.
+     */
+    private Map<Integer, Integer> itemMap = new HashMap<>();
+
+    /** The item type of this InvStack. Will be null until we have an insertion via appendStack. */
+    private HashedItem itemType;
+
+    /** The total amount of items tracked by this InvStack. */
+    private int itemCount;
 
     public InvStack(TileEntity inv, EnumFacing facing) {
         tileEntity = inv;
-        itemStacks = new ArrayList<>();
-        slotIDs = new ArrayList<>();
         side = facing;
     }
 
-    public InvStack(TileEntity inv, int id, ItemStack stack, EnumFacing facing) {
+    public InvStack(TileEntity inv, int slotID, ItemStack stack, EnumFacing facing) {
+        this(inv, stack, getMap(slotID, stack), facing);
+    }
+
+    public InvStack(TileEntity inv, ItemStack stack, Map<Integer, Integer> idMap, EnumFacing facing) {
         tileEntity = inv;
-        itemStacks = new ArrayList<>();
-        slotIDs = new ArrayList<>();
         side = facing;
+        itemMap = idMap;
 
-        appendStack(id, stack);
+        for (Map.Entry<Integer, Integer> entry : idMap.entrySet()) {
+            appendStack(entry.getKey(), StackUtils.size(stack, entry.getValue()));
+        }
     }
 
+    /**
+     * Gets an ItemStack of the defined type and total item count tracked by this InvStack.
+     * 
+     * @return the total ItemStack contents of this InvStack
+     */
     public ItemStack getStack() {
-        int size = 0;
-
-        for (ItemStack stack : itemStacks) {
-            size += stack.getCount();
+        if (itemType == null || itemCount == 0) {
+            return ItemStack.EMPTY;
         }
 
-        if (!itemStacks.isEmpty()) {
-            ItemStack ret = itemStacks.get(0).copy();
-            ret.setCount(size);
-
-            return ret;
-        }
-
-        return ItemStack.EMPTY;
+        return StackUtils.size(itemType.getStack(), itemCount);
     }
 
+    /**
+     * Appends a slot ID and specified ItemStack count to the tracked map of this InvStack.
+     * 
+     * @param id - slot ID of items to track
+     * @param stack - an ItemStack representing the count of items to track in the given slot ID
+     */
     public void appendStack(int id, ItemStack stack) {
-        slotIDs.add(id);
-        itemStacks.add(stack);
+        if (itemType == null) {
+            itemType = new HashedItem(stack);
+        }
+
+        itemMap.put(id, stack.getCount());
+        itemCount += stack.getCount();
     }
 
+    /**
+     * Removes a specified amount of items from the parent inventory.
+     * 
+     * @param amount - the amount of items to remove
+     */
     public void use(int amount) {
-        if (InventoryUtils.isItemHandler(tileEntity, side)) {
-            IItemHandler handler = InventoryUtils.getItemHandler(tileEntity, side);
+        if (!InventoryUtils.assertItemHandler("InvStack", tileEntity, side)) {
+            return;
+        }
 
-            for (int i = 0; i < slotIDs.size(); i++) {
-                ItemStack stack = itemStacks.get(i);
-                int toUse = Math.min(amount, stack.getCount());
-                handler.extractItem(slotIDs.get(i), toUse, false);
-                amount -= toUse;
+        IItemHandler handler = InventoryUtils.getItemHandler(tileEntity, side);
 
-                if (amount == 0) {
-                    return;
-                }
+        for (Map.Entry<Integer, Integer> entry : itemMap.entrySet()) {
+            int toUse = Math.min(amount, entry.getValue());
+            ItemStack ret = handler.extractItem(entry.getKey(), toUse, false);
+            boolean stackable = InventoryUtils.areItemsStackable(itemType.getStack(), ret);
+
+            if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
+                Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count")
+                        + " does not line up with InvStack's prediction.");
+
+                Mekanism.logger.warn("InvStack item: " + itemType.getStack() + ", ret: " + ret);
+                Mekanism.logger.warn("Tile: " + tileEntity + " " + tileEntity.getPos());
             }
-        } else if (tileEntity instanceof IInventory) {
-            IInventory inventory = InventoryUtils.checkChestInv((IInventory) tileEntity);
 
-            for (int i = 0; i < slotIDs.size(); i++) {
-                ItemStack stack = itemStacks.get(i);
+            amount -= toUse;
 
-                if (inventory.getStackInSlot(slotIDs.get(i)).getCount() == stack.getCount()
-                      && stack.getCount() <= amount) {
-                    inventory.setInventorySlotContents(slotIDs.get(i), ItemStack.EMPTY);
-                    amount -= stack.getCount();
-                } else {
-                    ItemStack ret = stack.copy();
-                    ret.setCount(inventory.getStackInSlot(slotIDs.get(i)).getCount() - amount);
-                    inventory.setInventorySlotContents(slotIDs.get(i), ret);
-                    amount -= stack.getCount();
-                }
-
-                if (amount == 0) {
-                    return;
-                }
+            if (amount == 0) {
+                return;
             }
         }
     }
 
+    /**
+     * Removes all the items being tracked by this InvStack.
+     */
     public void use() {
         use(getStack().getCount());
+    }
+
+    private static Map<Integer, Integer> getMap(int slotID, ItemStack stack) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(slotID, stack.getCount());
+        return map;
     }
 }

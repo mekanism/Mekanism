@@ -36,7 +36,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
     private EntityItem entityItem = new EntityItem(null);
-    private Render<Entity> renderer = (Render<Entity>) Minecraft.getMinecraft().getRenderManager()
+    private Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager()
           .getEntityClassRenderObject(EntityItem.class);
 
     public RenderLogisticalTransporter() {
@@ -67,7 +67,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
               transporter.getPos().getZ() + 0.5);
         entityItem.world = transporter.getWorld();
 
-        for (TransporterStack stack : transporter.getTransmitter().transit.clone()) {
+        for (TransporterStack stack : transporter.getTransmitter().getTransit()) {
             if (stack != null) {
                 GL11.glPushMatrix();
                 entityItem.setItem(stack.itemStack);

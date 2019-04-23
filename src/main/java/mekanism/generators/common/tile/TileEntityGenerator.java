@@ -1,20 +1,16 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
-import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.states.BlockStateGenerator;
@@ -26,28 +22,13 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityNoisyBlock implements IComputerIntegration, IActiveState,
-      IHasSound, ISoundSource, IRedstoneControl, ISecurityTile {
+public abstract class TileEntityGenerator extends TileEntityEffectsBlock implements IComputerIntegration,
+      IRedstoneControl, ISecurityTile {
 
     /**
      * Output per tick this generator can transfer.
      */
     public double output;
-
-    /**
-     * Whether or not this block is in it's active state.
-     */
-    public boolean isActive;
-
-    /**
-     * The client's current active state.
-     */
-    public boolean clientActive;
-
-    /**
-     * How many ticks must pass until this block's active state can sync with the client.
-     */
-    public int updateDelay;
 
     /**
      * This machine's current RedstoneControl type.
@@ -67,7 +48,6 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
         super("gen." + soundPath, name, maxEnergy);
 
         output = out;
-        isActive = false;
         controlType = RedstoneControl.DISABLED;
     }
 
@@ -75,34 +55,14 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
     public void onUpdate() {
         super.onUpdate();
 
-        if (world.isRemote && updateDelay > 0) {
-            updateDelay--;
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
-        }
-
         if (!world.isRemote) {
-            if (updateDelay > 0) {
-                updateDelay--;
-
-                if (updateDelay == 0 && clientActive != isActive) {
-                    clientActive = isActive;
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          new Range4D(Coord4D.get(this)));
-                }
-            }
-
             if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
                 GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
 
                 if (type != null && !type.isEnabled()) {
                     Mekanism.logger
-                          .info("[Mekanism] Destroying generator of type '" + type.blockName + "' at coords " + Coord4D
-                                .get(this) + " as according to config.");
+                          .info("Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this)
+                                + " as according to config.");
                     world.setBlockToAir(getPos());
                     return;
                 }
@@ -137,25 +97,6 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
     public abstract boolean canOperate();
 
     @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-
-        if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
-            updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-            clientActive = active;
-        }
-    }
-
-    @Override
     public boolean canSetFacing(int side) {
         return side != 0 && side != 1;
     }
@@ -165,14 +106,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            clientActive = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
-
-            if (updateDelay == 0 && clientActive != isActive) {
-                updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
@@ -180,7 +114,6 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
 
-        data.add(isActive);
         data.add(controlType.ordinal());
 
         return data;
@@ -190,20 +123,20 @@ public abstract class TileEntityGenerator extends TileEntityNoisyBlock implement
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
 
-        isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
 
-        nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
 
         return nbtTags;
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {

@@ -17,31 +17,25 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
     @Override
     public IMessage onMessage(FlamethrowerDataMessage message, MessageContext context) {
+        // Queue up the processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
+        PacketHandler.handlePacket(() -> {
+                  if (message.packetType == FlamethrowerPacket.UPDATE) {
+                      Mekanism.playerState.setFlamethrowerState(message.uuid, message.value, false);
 
-        PacketHandler.handlePacket(() ->
-        {
-            if (message.packetType == FlamethrowerPacket.UPDATE) {
-                if (message.value) {
-                    Mekanism.flamethrowerActive.add(message.userId);
-                } else {
-                    Mekanism.flamethrowerActive.remove(message.userId);
-                }
-
-                if (!player.world.isRemote) {
-                    Mekanism.packetHandler.sendToDimension(
-                          new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, message.currentHand, message.userId,
-                                message.value), player.world.provider.getDimension());
-                }
-            } else if (message.packetType == FlamethrowerPacket.MODE) {
-                ItemStack stack = player.getHeldItem(message.currentHand);
-
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower) {
-                    ((ItemFlamethrower) stack.getItem()).incrementMode(stack);
-                }
-            }
-        }, player);
-
+                      // If we got this packet on the server, resend out to all clients in same dimension
+                      // TODO: Why is this a dimensional thing?!
+                      if (!player.world.isRemote) {
+                          Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+                      }
+                  } else if (message.packetType == FlamethrowerPacket.MODE) {
+                      ItemStack stack = player.getHeldItem(message.currentHand);
+                      if (!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower) {
+                          ((ItemFlamethrower) stack.getItem()).incrementMode(stack);
+                      }
+                  }
+              },
+              player);
         return null;
     }
 
@@ -55,17 +49,17 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
         public FlamethrowerPacket packetType;
 
         public EnumHand currentHand;
-        public UUID userId;
+        public UUID uuid;
         public boolean value;
 
         public FlamethrowerDataMessage() {
         }
 
-        public FlamethrowerDataMessage(FlamethrowerPacket type, EnumHand hand, UUID name, boolean state) {
+        public FlamethrowerDataMessage(FlamethrowerPacket type, EnumHand hand, UUID uuid, boolean state) {
             packetType = type;
 
             if (type == FlamethrowerPacket.UPDATE) {
-                userId = name;
+                this.uuid = uuid;
                 value = state;
             } else if (type == FlamethrowerPacket.MODE) {
                 currentHand = hand;
@@ -77,7 +71,7 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             dataStream.writeInt(packetType.ordinal());
 
             if (packetType == FlamethrowerPacket.UPDATE) {
-                PacketHandler.writeUUID(dataStream, userId);
+                PacketHandler.writeUUID(dataStream, uuid);
                 dataStream.writeBoolean(value);
             } else {
                 dataStream.writeInt(currentHand.ordinal());
@@ -89,12 +83,11 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
             packetType = FlamethrowerPacket.values()[dataStream.readInt()];
 
             if (packetType == FlamethrowerPacket.UPDATE) {
-                userId = PacketHandler.readUUID(dataStream);
+                uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();
             } else if (packetType == FlamethrowerPacket.MODE) {
                 currentHand = EnumHand.values()[dataStream.readInt()];
             }
         }
-
     }
 }

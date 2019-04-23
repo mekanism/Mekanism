@@ -16,7 +16,7 @@ public class ChemicalCrystallizerRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(MekanismJEI.GAS_INGREDIENT_TYPE, recipe.recipeInput.ingredient);
+        ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.ingredient);
         ingredients.setOutput(VanillaTypes.ITEM, recipe.recipeOutput.output);
     }
 

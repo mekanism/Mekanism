@@ -15,7 +15,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -62,8 +61,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock implements ISideConfiguration,
-      ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, ITubeConnection,
-      IComputerIntegration, ISecurityTile, IChunkLoader, IUpgradeTile {
+      ITankManager, IFluidHandlerWrapper, IFrequencyHandler, IGasHandler, IHeatTransfer, IComputerIntegration,
+      ISecurityTile, IChunkLoader, IUpgradeTile {
 
     private static final int INV_SIZE = 1;//this.inventory size, used for upgrades. Manually handled
     private static final String[] methods = new String[]{"setFrequency"};
@@ -243,12 +242,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
             byte slotID = tagCompound.getByte("Slot");
 
             if (slotID >= 0 && slotID < inventory.size()) {
-                inventory.set(slotID, InventoryUtils.loadFromNBT(tagCompound));
+                inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
 
     }
 
+    @Nonnull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
@@ -405,13 +405,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, @Nullable FluidStack resource, boolean doFill) {
         return !hasFrequency() ? 0 : frequency.storedFluid.fill(resource, doFill);
     }
 
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        if (hasFrequency() && resource.isFluidEqual(frequency.storedFluid.getFluid())) {
+    public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
+        if (hasFrequency() && resource != null && resource.isFluidEqual(frequency.storedFluid.getFluid())) {
             return frequency.storedFluid.drain(resource.amount, doDrain);
         }
 
@@ -428,7 +428,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canFill(EnumFacing from, FluidStack fluid) {
+    public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
         if (hasFrequency()
               && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.INPUT) {
             return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
@@ -441,8 +441,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     public boolean canDrain(EnumFacing from, @Nullable FluidStack fluid) {
         if (hasFrequency()
               && configComponent.getOutput(TransmissionType.FLUID, from, facing).ioState == IOState.OUTPUT) {
-            return frequency.storedFluid.getFluid() != null && (fluid == null || frequency.storedFluid.getFluid()
-                  .isFluidEqual(fluid));
+            return frequency.storedFluid.getFluid() == null || frequency.storedFluid.getFluid().isFluidEqual(fluid);
         }
 
         return false;
@@ -563,13 +562,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canInsertItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canInsertItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return hasFrequency()
               && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.INPUT;
     }
 
+    @Nonnull
     @Override
-    public int[] getSlotsForFace(EnumFacing side) {
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
         if (hasFrequency() && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState != IOState.OFF) {
             return new int[]{0};
         }
@@ -578,7 +578,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side) {
+    public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         return hasFrequency()
               && configComponent.getOutput(TransmissionType.ITEM, side, facing).ioState == IOState.OUTPUT;
     }
@@ -613,31 +613,42 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
     }
 
     @Override
-    public boolean canTubeConnect(EnumFacing side) {
-        return hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side, facing).ioState != IOState.OFF;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return false;
+        }
         return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
               || capability == Capabilities.HEAT_TRANSFER_CAPABILITY
               || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
               || super.hasCapability(capability, side);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.TUBE_CONNECTION_CAPABILITY
-              || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return null;
+        }
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return (T) this;
         }
 
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return (T) new FluidHandlerWrapper(this, side);
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
 
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
+        if (configComponent.isCapabilityDisabled(capability, side, facing)) {
+            return true;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            //TODO: Figure out if checking ioState even needed
+            return !hasFrequency()
+                  || configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OFF;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
@@ -647,21 +658,19 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 
     @Override
     public Object[] invoke(int method, Object[] arguments) throws Exception {
-        switch (method) {
-            case 0:
-                if (!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean)) {
-                    return new Object[]{"Invalid parameters."};
-                }
+        if (method == 0) {
+            if (!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean)) {
+                return new Object[]{"Invalid parameters."};
+            }
 
-                String freq = ((String) arguments[0]).trim();
-                boolean isPublic = (Boolean) arguments[1];
+            String freq = ((String) arguments[0]).trim();
+            boolean isPublic = (Boolean) arguments[1];
 
-                setFrequency(freq, isPublic);
+            setFrequency(freq, isPublic);
 
-                return new Object[]{"Frequency set."};
-            default:
-                throw new NoSuchMethodException();
+            return new Object[]{"Frequency set."};
         }
+        throw new NoSuchMethodException();
     }
 
     @Override

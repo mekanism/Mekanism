@@ -7,6 +7,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
@@ -31,6 +32,6 @@ public class GeneratorsItems {
     }
 
     public static Item init(Item item, String name) {
-        return item.setUnlocalizedName(name).setRegistryName("mekanismgenerators:" + name);
+        return item.setTranslationKey(name).setRegistryName(new ResourceLocation(MekanismGenerators.MODID, name));
     }
 }

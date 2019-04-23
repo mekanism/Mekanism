@@ -1,6 +1,7 @@
 package mekanism.common.integration;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -44,12 +45,14 @@ public class WailaDataProvider implements IWailaDataProvider {
         registrar.registerHeadProvider(provider, TileEntityEnergyCube.class);
     }
 
+    @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
         return ItemStack.EMPTY;
     }
 
+    @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
     public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
@@ -74,6 +77,7 @@ public class WailaDataProvider implements IWailaDataProvider {
             TileEntityBoundingBlock bound = (TileEntityBoundingBlock) tile;
             Coord4D coord = new Coord4D(bound.getPos(), tile.getWorld());
 
+            //TODO: Switch to IItemHandler though there is no good way to get the name of an IItemHandler
             if (bound.receivedCoords && coord.getTileEntity(tile.getWorld()) instanceof IInventory) {
                 currenttip.set(0, EnumColor.WHITE + ((IInventory) coord.getTileEntity(tile.getWorld())).getName());
             }
@@ -82,6 +86,7 @@ public class WailaDataProvider implements IWailaDataProvider {
         return currenttip;
     }
 
+    @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
@@ -89,6 +94,7 @@ public class WailaDataProvider implements IWailaDataProvider {
         return currenttip;
     }
 
+    @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
     public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
@@ -96,6 +102,7 @@ public class WailaDataProvider implements IWailaDataProvider {
         return currenttip;
     }
 
+    @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world,
