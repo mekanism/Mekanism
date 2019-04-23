@@ -121,7 +121,7 @@ public class BlockBounding extends Block {
             return true;
         }
         removeMainBlock(world, pos);
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
+        return super.removedByPlayer(state, world, pos, player, false);
     }
 
     /**
