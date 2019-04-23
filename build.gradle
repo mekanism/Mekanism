@@ -367,4 +367,3 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         }
     }
 }
-
