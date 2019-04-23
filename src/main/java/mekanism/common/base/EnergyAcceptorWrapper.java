@@ -107,7 +107,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromRF(acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), simulate));
+            return fromRF(acceptor.receiveEnergy(side, toRF(amount), simulate));
         }
 
         @Override
@@ -121,7 +121,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public int toRF(double joules) {
-            return (int) Math.round(joules * MekanismConfig.current().general.TO_RF.val());
+            return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_RF.val());
         }
 
         public double fromRF(int rf) {
@@ -210,7 +210,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromForge(acceptor.receiveEnergy(Math.min(Integer.MAX_VALUE, toForge(amount)), simulate));
+            return fromForge(acceptor.receiveEnergy(toForge(amount), simulate));
         }
 
         @Override
@@ -224,7 +224,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public int toForge(double joules) {
-            return (int) Math.round(joules * MekanismConfig.current().general.TO_FORGE.val());
+            return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_FORGE.val());
         }
 
         public double fromForge(double forge) {
