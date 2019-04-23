@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.GuiEmbeddedGaugeTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRateBar;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -27,13 +25,12 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasing> {
+public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing> {
 
     public GuiIndustrialTurbine(InventoryPlayer inventory, TileEntityTurbineCasing tile) {
         super(tile, new ContainerFilter(inventory, tile));
@@ -119,39 +116,17 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         int displayInt = chooseByMode(tileEntity.structure.dumpMode, 142, 150, 158);
         drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
-        if (tileEntity.getScaledFluidLevel(58) > 0) {
-            displayGauge(7, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 0);
-            displayGauge(23, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 1);
+        int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
+        if (scaledFluidLevel > 0) {
+            displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);
+            displayGauge(23, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 1);
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 
-    public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/) {
-        if (fluid == null) {
-            return;
-        }
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        int start = 0;
-        while (true) {
-            int renderRemaining;
-            if (scale > 16) {
-                renderRemaining = 16;
-                scale -= 16;
-            } else {
-                renderRemaining = scale;
-                scale = 0;
-            }
-            mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  MekanismRenderer.getFluidTexture(fluid, FluidType.STILL), 16, 16 - (16 - renderRemaining));
-            start += 16;
-            if (renderRemaining == 0 || scale == 0) {
-                break;
-            }
-        }
-        mc.renderEngine.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+    @Override
+    protected ResourceLocation getGaugeResource() {
+        return getGuiLocation();
     }
 
     @Override
