@@ -134,14 +134,12 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier>
             }
         }
 
-        if (Character.isDigit(c) || isTextboxKey(c, i)) {
+        if (Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i)) {
             minField.textboxKeyTyped(c, i);
             maxField.textboxKeyTyped(c, i);
-            timerField.textboxKeyTyped(c, i);
-        }
-        else if(c == '.' || c == 'E') {
-            minField.textboxKeyTyped(c, i);
-            maxField.textboxKeyTyped(c, i);
+            if(c != '.' && c != 'E') {
+                timerField.textboxKeyTyped(c, i);
+            }
         }
     }
 
