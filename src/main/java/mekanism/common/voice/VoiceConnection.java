@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemWalkieTalkie;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,198 +16,148 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class VoiceConnection extends Thread
-{
-	public Socket socket;
+public class VoiceConnection extends Thread {
 
-	public String username;
+    private MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+    private DataOutputStream output;
+    private DataInputStream input;
+    private boolean open = true;
+    private Socket socket;
+    private UUID uuid;
 
-	public boolean open = true;
+    public VoiceConnection(Socket s) {
+        socket = s;
+    }
 
-	public DataInputStream input;
-	public DataOutputStream output;
+    @Override
+    public void run() {
+        try {
+            input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
-	public MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+            synchronized (Mekanism.voiceManager) {
+                int retryCount = 0;
 
-	public VoiceConnection(Socket s)
-	{
-		socket = s;
-	}
+                while (uuid == null && retryCount <= 100) {
+                    try {
+                        List<EntityPlayerMP> l = Collections
+                              .synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
-	@Override
-	public void run()
-	{
-		try {
-			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                        for (EntityPlayerMP playerMP : l) {
+                            String playerIP = playerMP.getPlayerIP();
 
-			synchronized(Mekanism.voiceManager)
-			{
-				int retryCount = 0;
+                            if (!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager
+                                  .isFoundLocal()) {
+                                Mekanism.voiceManager.setFoundLocal(true);
+                                uuid = playerMP.getUniqueID();
+                                break;
+                            } else if (playerIP.equals(socket.getInetAddress().getHostAddress())) {
+                                uuid = playerMP.getUniqueID();
+                                break;
+                            }
+                        }
 
-				while(username == null && retryCount <= 100)
-				{
-					try {
-						List<EntityPlayerMP> l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
+                        retryCount++;
+                        Thread.sleep(50);
+                    } catch (Exception ignored) {
+                    }
+                }
 
-						for(EntityPlayerMP playerMP : l)
-						{
-							String playerIP = playerMP.getPlayerIP();
+                if (uuid == null) {
+                    Mekanism.logger.error("VoiceServer: Unable to trace connection's IP address.");
+                    kill();
+                    return;
+                } else {
+                    Mekanism.logger.info("VoiceServer: Traced IP in " + retryCount + " attempts.");
+                }
+            }
+        } catch (Exception e) {
+            Mekanism.logger.error("VoiceServer: Error while starting server-based connection.", e);
+            open = false;
+        }
 
-							if(!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.foundLocal)
-							{
-								Mekanism.voiceManager.foundLocal = true;
-								username = playerMP.getName();
-								break;
-							}
-							else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
-							{
-								username = playerMP.getName();
-								break;
-							}
-						}
-
-						retryCount++;
-						Thread.sleep(50);
-					} catch(Exception e) {}
-				}
-
-				if(username == null)
-				{
-					Mekanism.logger.error("VoiceServer: Unable to trace connection's IP address.");
-					kill();
-					return;
-				}
-				else {
-					Mekanism.logger.info("VoiceServer: Traced IP in " + retryCount + " attempts.");
-				}
-			}
-		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while starting server-based connection.");
-			e.printStackTrace();
-			open = false;
-		}
-
-		//Main client listen thread
-		new Thread(() ->
-        {
-            while(open)
-            {
+        // Main client listen thread
+        new Thread(() -> {
+            while (open) {
                 try {
                     short byteCount = VoiceConnection.this.input.readShort();
                     byte[] audioData = new byte[byteCount];
                     VoiceConnection.this.input.readFully(audioData);
 
-                    if(byteCount > 0)
-                    {
+                    if (byteCount > 0) {
                         Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     open = false;
                 }
             }
 
-            if(!open)
-            {
+            if (!open) {
                 kill();
             }
         }).start();
-	}
+    }
 
-	public void kill()
-	{
-		try {
-			input.close();
-			output.close();
-			socket.close();
+    private void kill() {
+        try {
+            if (input != null) {
+                input.close();
+            }
+            if (output != null) {
+                output.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
+            Mekanism.voiceManager.removeConnection(this);
+        } catch (Exception e) {
+            Mekanism.logger.error("VoiceServer: Error while stopping server-based connection.", e);
+        }
+    }
 
-			Mekanism.voiceManager.connections.remove(this);
-		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while stopping server-based connection.");
-			e.printStackTrace();
-		}
-	}
+    public void sendToPlayer(short byteCount, byte[] audioData, VoiceConnection connection) {
+        if (!open) {
+            kill();
+        }
 
-	public void sendToPlayer(short byteCount, byte[] audioData, VoiceConnection connection)
-	{
-		if(!open)
-		{
-			kill();
-		}
+        try {
+            output.writeShort(byteCount);
+            output.write(audioData);
 
-		try {
-			output.writeShort(byteCount);
-			output.write(audioData);
+            output.flush();
+        } catch (Exception e) {
+            Mekanism.logger.error("VoiceServer: Error while sending data to player.", e);
+        }
+    }
 
-			output.flush();
-		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while sending data to player.");
-			e.printStackTrace();
-		}
-	}
+    public boolean canListen(int channel) {
+        return getPlayer().inventory.mainInventory.stream().anyMatch(itemStack -> canListen(channel, itemStack))
+              || getPlayer().inventory.offHandInventory.stream().anyMatch(itemStack -> canListen(channel, itemStack));
+    }
 
-	public boolean canListen(int channel)
-	{
-		for(ItemStack itemStack : getPlayer().inventory.mainInventory)
-		{
-			if(canListen(channel, itemStack))
-			{
-				return true;
-			}
-		}
-		
-		for(ItemStack itemStack : getPlayer().inventory.offHandInventory)
-		{
-			if(canListen(channel, itemStack))
-			{
-				return true;
-			}
-		}
+    private boolean canListen(int channel, ItemStack itemStack) {
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
+            ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
+            return walkieTalkie.getOn(itemStack) && walkieTalkie.getChannel(itemStack) == channel;
+        }
 
-		return false;
-	}
-	
-	public boolean canListen(int channel, ItemStack itemStack)
-	{
-		if(!itemStack.isEmpty())
-		{
-			if(itemStack.getItem() instanceof ItemWalkieTalkie)
-			{
-				if(((ItemWalkieTalkie)itemStack.getItem()).getOn(itemStack))
-				{
-					if(((ItemWalkieTalkie)itemStack.getItem()).getChannel(itemStack) == channel)
-					{
-						return true;
-					}
-				}
-			}
-		}
-		
-		return false;
-	}
+        return false;
+    }
 
-	public int getCurrentChannel()
-	{
-		ItemStack itemStack = getPlayer().inventory.getCurrentItem();
+    public int getCurrentChannel() {
+        ItemStack itemStack = getPlayer().inventory.getCurrentItem();
 
-		if(!itemStack.isEmpty())
-		{
-			ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie)itemStack.getItem();
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
+            ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
+            if (walkieTalkie.getOn(itemStack)) {
+                return walkieTalkie.getChannel(itemStack);
+            }
+        }
 
-			if(walkieTalkie != null)
-			{
-				if(walkieTalkie.getOn(itemStack))
-				{
-					return walkieTalkie.getChannel(itemStack);
-				}
-			}
-		}
+        return 0;
+    }
 
-		return 0;
-	}
-
-	public EntityPlayerMP getPlayer()
-	{
-		return server.getPlayerList().getPlayerByUsername(username);
-	}
+    public EntityPlayerMP getPlayer() {
+        return server.getPlayerList().getPlayerByUUID(uuid);
+    }
 }

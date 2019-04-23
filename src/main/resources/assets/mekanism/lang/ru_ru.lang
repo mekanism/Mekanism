@@ -615,6 +615,7 @@ gui.factory.Combining=Объединяющий
 gui.factory.Purifying=Очищающий
 gui.factory.Injecting=Впрыскивающий
 gui.factory.Infusing=Наполняющий
+gui.factory.Sawing=Распиловка
 
 gui.seismicReader.short=Сейсм. считыватель
 gui.seismicReader.solids=Твёрдые
@@ -977,9 +978,6 @@ reactor.depleted.desc=Реактору не хватает топлива для
 
 # Creative tab
 itemGroup.tabMekanism=Mekanism
-
-# NEI stuff
-nei.chemicalInjectionChamber=Хим. инъекционная камера
 
 #############
 # GENERATORS

@@ -7,16 +7,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiPrecisionSawmill extends GuiChanceMachine
-{
-	public GuiPrecisionSawmill(InventoryPlayer inventory, TileEntityChanceMachine tentity)
-	{
-		super(inventory, tentity);
-	}
-	
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.PURPLE;
-	}
+public class GuiPrecisionSawmill extends GuiChanceMachine {
+
+    public GuiPrecisionSawmill(InventoryPlayer inventory, TileEntityChanceMachine tile) {
+        super(inventory, tile);
+    }
+
+    @Override
+    public ProgressBar getProgressType() {
+        return ProgressBar.PURPLE;
+    }
 }

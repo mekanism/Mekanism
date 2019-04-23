@@ -3,7 +3,7 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
         maven {
             name = "sonatype"
@@ -40,11 +40,11 @@ apply plugin: 'com.matthewprenger.cursegradle'
 repositories {
     maven {
         name 'ForgeFS'
-        url 'http://files.minecraftforge.net/maven'
+        url 'https://files.minecraftforge.net/maven'
     }
     maven {
         name 'amadornes'
-        url 'http://maven.amadornes.com/'
+        url 'https://maven.amadornes.com/'
     }
     maven {
         name 'prog'
@@ -64,11 +64,11 @@ repositories {
     }
     maven {
         name 'hwyla'
-        url 'http://tehnut.info/maven'
+        url 'https://tehnut.info/maven'
     }
     maven {
         name 'CoFH Maven'
-        url = 'http://maven.covers1624.net'
+        url 'https://maven.covers1624.net'
     }
     maven {
         name 'buildcraft'
@@ -76,7 +76,7 @@ repositories {
     }
     maven {
         name 'tterrag'
-        url 'http://maven.tterrag.com/'
+        url 'https://maven.tterrag.com/'
     }
     maven {
         name 'ic2'
@@ -84,30 +84,24 @@ repositories {
     }
     maven {
         name 'BlameJared - Crafttweaker'
-        url 'http://maven.blamejared.com/'
+        url 'https://maven.blamejared.com/'
     }
     maven {
         name 'thiakil'
-        url 'http://maven.thiakil.com'
+        url 'https://maven.thiakil.com'
     }
-    /*ivy {// stopped working due to 404s redirecting, relying on forge maven which has only latest rv
-        name "ae2"
-        artifactPattern "http://ae-mod.info/builds/[module]-[revision](-[classifier])(.[ext])"
-    }*/
 }
 
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
-libsDirName = "../output"
-distsDirName = "../output"
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 def explodedVersion = mod_version.split("\\.")
 
 minecraft {
-    version = minecraft_version + "-" + forge_version
+    version = "${minecraft_version}-${forge_version}"
     mappings = "${mappings_version}"
     runDir = "run"
     useDepAts = true
@@ -121,33 +115,32 @@ minecraft {
 
 dependencies {
     deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
-    compileOnly "mezz.jei:jei_1.12.2:${jei_version}:api"
-    runtime "mezz.jei:jei_1.12.2:${jei_version}"
-    compileOnly "net.darkhax.tesla:Tesla-1.12:${tesla_version}"
+    compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
+    runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    compileOnly "net.darkhax.tesla:Tesla-${minecraft_version}:${tesla_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
-    compileOnly "li.cil.oc:OpenComputers:MC1.12.1-${opencomputers_version}:api" // Not updated yet
-    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
+    // Not updated yet
+    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
     deobfCompile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
     compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
-    compileOnly "team.chisel.ctm:CTM:MC1.12.2-${ctm_version}:api"
-    runtime "team.chisel.ctm:CTM:MC1.12.2-${ctm_version}"
+    compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
+    runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
-    compileOnly ("CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}") {
+    compileOnly("CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    runtime ("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}") {
+    deobfCompile("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${crafttweaker_version}") {
         exclude module: "asm-debug-all"
     }
-    compileOnly "com.blamejared:MTLib:${mtlib_version}"
     compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
-    compileOnly ("appeng:appliedenergistics2:${ae2_version}:api"){
+    compileOnly("appeng:appliedenergistics2:${ae2_version}:api") {
         exclude module: "jei_1.12.2"
     }
 }
 
-processResources
-{
+processResources {
     inputs.property "version", project.version
     inputs.property "mc_version", minecraft_version
 
@@ -264,11 +257,11 @@ uploadArchives {
                         description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
                         url 'http://aidancbrady.com/mekanism/'
                         scm {
-                            url 'https://github.com/aidancbrady/Mekanism.git'
+                            url 'https://github.com/mekanism-mod/Mekanism.git'
                         }
                         issueManagement {
                             system 'github'
-                            url 'https://github.com/aidancbrady/Mekanism/issues'
+                            url 'https://github.com/mekanism-mod/Mekanism/issues'
                         }
                         licenses {
                             license {
@@ -286,7 +279,7 @@ uploadArchives {
 tasks.curseforge.dependsOn coreJar, toolsJar, generatorsJar, apiJar
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
-    println "Enabling Curseforge config" 
+    println "Enabling Curseforge config"
     curseforge {
         apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
 
@@ -302,9 +295,9 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 String message = commit.shortMessage
                 if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {//Ignore PRs and Merges
                     message = message.replaceAll("#(\\d+)", {match->//turn issues/prs into links (github currently supports prs being linked as issues)
-                        return "<a href=\"https://github.com/aidancbrady/Mekanism/issues/${match[1]}\">${match[0]}</a>"
+                        return "<a href=\"https://github.com/mekanism-mod/Mekanism/issues/${match[1]}\">${match[0]}</a>"
                     })
-                    generatedChangelog += "<a href=\"https://github.com/aidancbrady/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
+                    generatedChangelog += "<a href=\"https://github.com/mekanism-mod/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
                 }
             }
             generatedChangelog += "</pre>"
@@ -326,12 +319,22 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             releaseType = 'release'
             mainArtifact (coreJar){
                 relations {
-                    optionalDependency "mtlib"
+                    optionalDependency "jei"
+                    optionalDependency "crafttweaker"
+                    optionalDependency "industrial-craft"
+                    optionalDependency "mcmultipart"
+                    optionalDependency "tesla"
+                    optionalDependency "cc-tweaked"
+                    optionalDependency "the-one-probe"
+                    optionalDependency "hwyla"
+                    optionalDependency "applied-energistics-2"
+                    optionalDependency "redstone-flux"
+                    optionalDependency "metallurgy-4-reforged"
+                    optionalDependency "opencomputers"
+                    optionalDependency "cyclic"
                 }
             }
             addArtifact apiJar
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
             addGameVersion '1.12.2'
         }
 
@@ -346,8 +349,6 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
             addGameVersion '1.12.2'
         }
 
@@ -362,9 +363,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.12'
-            addGameVersion '1.12.1'
             addGameVersion '1.12.2'
         }
     }
 }
+

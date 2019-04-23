@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
@@ -18,128 +18,115 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
-import java.util.Objects;
+public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork {
 
-public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
-{
-	public BlockPos mainPos = BlockPos.ORIGIN;
-	
-	public boolean receivedCoords;
+    public BlockPos mainPos = BlockPos.ORIGIN;
 
-	public int prevPower;
+    public boolean receivedCoords;
 
-	public void setMainLocation(BlockPos pos)
-	{
-		receivedCoords = true;
-		
-		if(!world.isRemote)
-		{
-			mainPos = Objects.requireNonNull(pos);
+    public int prevPower;
 
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
-		}
-	}
+    public void setMainLocation(BlockPos pos) {
+        receivedCoords = true;
 
-	@Override
-	public void validate()
-	{
-		super.validate();
+        if (!world.isRemote) {
+            mainPos = pos;
 
-		if(world.isRemote)
-		{
-			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
-		}
-	}
+            Mekanism.packetHandler
+                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                        new Range4D(Coord4D.get(this)));
+        }
+    }
 
-	public void onNeighborChange(Block block)
-	{
-		TileEntity tile = world.getTileEntity(mainPos);
+    @Override
+    public void validate() {
+        super.validate();
 
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)tile;
+        if (world.isRemote) {
+            Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
+        }
+    }
 
-			int power = world.isBlockIndirectlyGettingPowered(getPos());
+    public void onNeighborChange(Block block) {
+        TileEntity tile = world.getTileEntity(mainPos);
 
-			if(prevPower != power)
-			{
-				if(power > 0)
-				{
-					onPower();
-				}
-				else {
-					onNoPower();
-				}
+        if (tile instanceof TileEntityBasicBlock) {
+            TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) tile;
 
-				prevPower = power;
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
-			}
-		}
-	}
+            int power = world.getRedstonePowerFromNeighbors(getPos());
 
-	public void onPower() {}
+            if (prevPower != power) {
+                if (power > 0) {
+                    onPower();
+                } else {
+                    onNoPower();
+                }
 
-	public void onNoPower() {}
+                prevPower = power;
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
+                      tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+            }
+        }
+    }
 
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		if(world.isRemote)
-		{
-			mainPos = new BlockPos(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
-			prevPower = dataStream.readInt();
-		}
-	}
+    public void onPower() {
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
+    public void onNoPower() {
+    }
 
-		mainPos = new BlockPos(nbtTags.getInteger("mainX"), nbtTags.getInteger("mainY"), nbtTags.getInteger("mainZ"));
-		prevPower = nbtTags.getInteger("prevPower");
-		receivedCoords = nbtTags.getBoolean("receivedCoords");
-	}
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        if (world.isRemote) {
+            mainPos = new BlockPos(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+            prevPower = dataStream.readInt();
+        }
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags) {
+        super.readFromNBT(nbtTags);
 
-		nbtTags.setInteger("mainX", mainPos.getX());
-		nbtTags.setInteger("mainY", mainPos.getY());
-		nbtTags.setInteger("mainZ", mainPos.getZ());
-		nbtTags.setInteger("prevPower", prevPower);
-		nbtTags.setBoolean("receivedCoords", receivedCoords);
-		
-		return nbtTags;
-	}
+        mainPos = new BlockPos(nbtTags.getInteger("mainX"), nbtTags.getInteger("mainY"), nbtTags.getInteger("mainZ"));
+        prevPower = nbtTags.getInteger("prevPower");
+        receivedCoords = nbtTags.getBoolean("receivedCoords");
+    }
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		data.add(mainPos.getX());
-		data.add(mainPos.getY());
-		data.add(mainPos.getZ());
-		data.add(prevPower);
+    @Nonnull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        super.writeToNBT(nbtTags);
 
-		return data;
-	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
-	}
+        nbtTags.setInteger("mainX", mainPos.getX());
+        nbtTags.setInteger("mainY", mainPos.getY());
+        nbtTags.setInteger("mainZ", mainPos.getZ());
+        nbtTags.setInteger("prevPower", prevPower);
+        nbtTags.setBoolean("receivedCoords", receivedCoords);
 
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-	{
-		if(capability == Capabilities.TILE_NETWORK_CAPABILITY)
-		{
-			return (T)this;
-		}
-		
-		return super.getCapability(capability, facing);
-	}
+        return nbtTags;
+    }
+
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        data.add(mainPos.getX());
+        data.add(mainPos.getY());
+        data.add(mainPos.getZ());
+        data.add(prevPower);
+
+        return data;
+    }
+
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+        return capability == Capabilities.TILE_NETWORK_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
+            return Capabilities.TILE_NETWORK_CAPABILITY.cast(this);
+        }
+
+        return super.getCapability(capability, facing);
+    }
 }

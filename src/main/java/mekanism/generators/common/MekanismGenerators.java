@@ -1,8 +1,9 @@
 package mekanism.generators.common;
 
+import buildcraft.api.fuels.BuildcraftFuelRegistry;
+import buildcraft.api.fuels.IFuel;
 import buildcraft.api.mj.MjAPI;
 import io.netty.buffer.ByteBuf;
-
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -16,16 +17,22 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
+import mekanism.generators.common.fixers.GeneratorTEFixer;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.datafix.FixTypes;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.CompoundDataFixer;
+import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -36,151 +43,146 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import buildcraft.api.fuels.BuildcraftFuelRegistry;
-import buildcraft.api.fuels.IFuel;
 
-@Mod(modid = MekanismGenerators.MODID, name = "MekanismGenerators", version = "${version}", dependencies = "required-after:mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory", acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MekanismGenerators.MODID, useMetadata = true, guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 @Mod.EventBusSubscriber()
-public class MekanismGenerators implements IModule
-{
-	public static final String MODID = "mekanismgenerators";
+public class MekanismGenerators implements IModule {
 
-	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
-	public static GeneratorsCommonProxy proxy;
-	
-	@Instance(MODID)
-	public static MekanismGenerators instance;
-	
-	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(999, 999, 999);
-	
-	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
+    public static final String MODID = "mekanismgenerators";
 
-	@SubscribeEvent
-	public static void registerBlocks(RegistryEvent.Register<Block> event)
-	{
-		// Register blocks and tile entities
-		GeneratorsBlocks.registerBlocks(event.getRegistry());
-	}
+    @SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
+    public static GeneratorsCommonProxy proxy;
 
-	@SubscribeEvent
-	public static void registerItems(RegistryEvent.Register<Item> event)
-	{
-		// Register items and itemBlocks
-		GeneratorsItems.registerItems(event.getRegistry());
-		GeneratorsBlocks.registerItemBlocks(event.getRegistry());
-	}
+    @Instance(MekanismGenerators.MODID)
+    public static MekanismGenerators instance;
 
-	@SubscribeEvent
-	public static void registerModels(ModelRegistryEvent event)
-	{
-		// Register models
-		proxy.registerBlockRenders();
-		proxy.registerItemRenders();
-	}
+    /**
+     * MekanismGenerators version number
+     */
+    public static Version versionNumber = new Version(999, 999, 999);
+    public static final int DATA_VERSION = 1;
 
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
-		proxy.preInit();
-		proxy.loadConfiguration();
-	}
+    public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>(
+          "industrialTurbine");
 
-	@EventHandler
-	public void init(FMLInitializationEvent event)
-	{
-		//Add this module to the core list
-		Mekanism.modulesLoaded.add(this);
-		
-		//Register this module's GUI handler in the simple packet protocol
-		PacketSimpleGui.handlers.add(1, proxy);
-		
-		//Set up the GUI handler
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
-		MinecraftForge.EVENT_BUS.register(this);
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        // Register blocks and tile entities
+        GeneratorsBlocks.registerBlocks(event.getRegistry());
+    }
 
-		//Load the proxy
-		proxy.registerRegularTileEntities();
-		proxy.registerSpecialTileEntities();
-		
-		addRecipes();
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        // Register items and itemBlocks
+        GeneratorsItems.registerItems(event.getRegistry());
+        GeneratorsBlocks.registerItemBlocks(event.getRegistry());
+    }
 
-		for(ItemStack ore : OreDictionary.getOres("dustGold"))
-		{
-			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
-		}
-		
-		//Finalization
-		Mekanism.logger.info("Loaded MekanismGenerators module.");
-	}
+    @SubscribeEvent
+    public static void registerModels(ModelRegistryEvent event) {
+        // Register models
+        proxy.registerBlockRenders();
+        proxy.registerItemRenders();
+    }
 
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
-		if(FuelHandler.BCPresent() && BuildcraftFuelRegistry.fuel != null)
-		{
-			for(IFuel s : BuildcraftFuelRegistry.fuel.getFuels())
-			{
-				if(s.getFluid() != null && !GasRegistry.containsGas(s.getFluid().getFluid().getName()))
-				{
-					GasRegistry.register(new Gas(s.getFluid().getFluid()));
-				}
-			}
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        proxy.preInit();
+        proxy.loadConfiguration();
+    }
 
-			BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (long)(240 * MekanismConfig.current().general.TO_RF.val() / 20 * MjAPI.MJ), 40 * Fluid.BUCKET_VOLUME);
-		}
-	}
-	
-	public void addRecipes()
-	{
-		FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.current().general.ETHENE_BURN_TIME.val(), MekanismConfig.current().general.FROM_H2.val() + MekanismConfig.current().generators.bioGeneration.val() * 2 * MekanismConfig.current().general.ETHENE_BURN_TIME.val()); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-	}
+    @EventHandler
+    public void init(FMLInitializationEvent event) {
+        //Add this module to the core list
+        Mekanism.modulesLoaded.add(this);
 
-	@Override
-	public Version getVersion() 
-	{
-		return versionNumber;
-	}
+        //Register this module's GUI handler in the simple packet protocol
+        PacketSimpleGui.handlers.add(1, proxy);
 
-	@Override
-	public String getName()
-	{
-		return "Generators";
-	}
-	
-	@Override
-	public void writeConfig(ByteBuf dataStream, MekanismConfig config)
-	{
-		config.generators.write(dataStream);
-	}
+        //Set up the GUI handler
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
+        MinecraftForge.EVENT_BUS.register(this);
 
-	@Override
-	public void readConfig(ByteBuf dataStream, MekanismConfig destConfig)
-	{
-		destConfig.generators.read(dataStream);
-	}
-	
-	@Override
-	public void resetClient()
-	{
-		SynchronizedTurbineData.clientRotationMap.clear();
-		proxy.setGasGeneratorMaxEnergy();
-	}
+        //Load the proxy
+        proxy.registerTileEntities();
+        proxy.registerTESRs();
 
-	@SubscribeEvent
-	public void onConfigChanged(OnConfigChangedEvent event)
-	{
-		if(event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(MekanismAPI.MODID))
-		{
-			proxy.loadConfiguration();
-		}
-	}
+        CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
+        ModFixs fixes = fixer.init(MODID, DATA_VERSION);
+        //Fix old tile entity names
+        fixes.registerFix(FixTypes.BLOCK_ENTITY, new GeneratorTEFixer());
 
-	@SubscribeEvent
-	public void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event)
-	{
-		// Mekanism Generators multiblock structures
-		MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 5); // Advanced Solar Generator
-		MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 6); // Wind Generator
-	}
+        //Finalization
+        Mekanism.logger.info("Loaded MekanismGenerators module.");
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        if (FuelHandler.BCPresent() && BuildcraftFuelRegistry.fuel != null) {
+            for (IFuel s : BuildcraftFuelRegistry.fuel.getFuels()) {
+                if (s.getFluid() != null && !GasRegistry.containsGas(s.getFluid().getFluid().getName())) {
+                    GasRegistry.register(new Gas(s.getFluid().getFluid()));
+                }
+            }
+
+            BuildcraftFuelRegistry.fuel
+                  .addFuel(MekanismFluids.Ethene.getFluid(),
+                        (long) (240 * MekanismConfig.current().general.TO_RF.val() / 20 * MjAPI.MJ),
+                        40 * Fluid.BUCKET_VOLUME);
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+        //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+        FuelHandler.addGas(MekanismFluids.Ethene, MekanismConfig.current().general.ETHENE_BURN_TIME.val(),
+              MekanismConfig.current().general.FROM_H2.val()
+                    + MekanismConfig.current().generators.bioGeneration.val() * 2
+                    * MekanismConfig.current().general.ETHENE_BURN_TIME.val());
+
+        for (ItemStack ore : OreDictionary.getOres("dustGold")) {
+            RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, StackUtils.size(ore, 4),
+                  GeneratorsItems.Hohlraum.getEmptyItem());
+        }
+    }
+
+    @Override
+    public Version getVersion() {
+        return versionNumber;
+    }
+
+    @Override
+    public String getName() {
+        return "Generators";
+    }
+
+    @Override
+    public void writeConfig(ByteBuf dataStream, MekanismConfig config) {
+        config.generators.write(dataStream);
+    }
+
+    @Override
+    public void readConfig(ByteBuf dataStream, MekanismConfig destConfig) {
+        destConfig.generators.read(dataStream);
+    }
+
+    @Override
+    public void resetClient() {
+        SynchronizedTurbineData.clientRotationMap.clear();
+        proxy.setGasGeneratorMaxEnergy();
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(OnConfigChangedEvent event) {
+        if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
+            proxy.loadConfiguration();
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
+        // Mekanism Generators multiblock structures
+        MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 5); // Advanced Solar Generator
+        MekanismAPI.addBoxBlacklist(GeneratorsBlocks.Generator, 6); // Wind Generator
+    }
 }

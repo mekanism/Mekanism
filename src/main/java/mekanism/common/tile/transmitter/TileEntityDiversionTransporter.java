@@ -1,7 +1,9 @@
 package mekanism.common.tile.transmitter;
 
 import io.netty.buffer.ByteBuf;
-
+import java.util.Map;
+import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
@@ -18,141 +20,133 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 
-public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter
-{
-	public int[] modes = {0, 0, 0, 0, 0, 0};
+public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporter {
 
-	@Override
-	public TransmitterType getTransmitterType()
-	{
-		return TransmitterType.DIVERSION_TRANSPORTER;
-	}
-	
-	@Override
-	public boolean renderCenter()
-	{
-		return true;
-	}
+    public int[] modes = {0, 0, 0, 0, 0, 0};
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
+    @Override
+    public TransmitterType getTransmitterType() {
+        return TransmitterType.DIVERSION_TRANSPORTER;
+    }
 
-		if(nbtTags.hasKey("modes"))
-		{
-			modes = nbtTags.getIntArray("modes");
-		}
-	}
+    @Override
+    public boolean renderCenter() {
+        return true;
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags) {
+        super.readFromNBT(nbtTags);
 
-		nbtTags.setIntArray("modes", modes);
-		
-		return nbtTags;
-	}
+        if (nbtTags.hasKey("modes")) {
+            modes = nbtTags.getIntArray("modes");
+        }
+    }
 
-	@Override
-	public void handlePacketData(ByteBuf dataStream) throws Exception
-	{
-		super.handlePacketData(dataStream);
-		
-		if(getWorld().isRemote)
-		{
-			modes[0] = dataStream.readInt();
-			modes[1] = dataStream.readInt();
-			modes[2] = dataStream.readInt();
-			modes[3] = dataStream.readInt();
-			modes[4] = dataStream.readInt();
-			modes[5] = dataStream.readInt();
-		}
-	}
+    @Nonnull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        super.writeToNBT(nbtTags);
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		data = super.getNetworkedData(data);
+        nbtTags.setIntArray("modes", modes);
 
-		data.add(modes[0]);
-		data.add(modes[1]);
-		data.add(modes[2]);
-		data.add(modes[3]);
-		data.add(modes[4]);
-		data.add(modes[5]);
+        return nbtTags;
+    }
 
-		return data;
-	}
+    @Override
+    public void handlePacketData(ByteBuf dataStream) throws Exception {
+        super.handlePacketData(dataStream);
 
-	@Override
-	public TileNetworkList getSyncPacket(TransporterStack stack, boolean kill)
-	{
-		TileNetworkList data = super.getSyncPacket(stack, kill);
+        if (getWorld().isRemote) {
+            modes[0] = dataStream.readInt();
+            modes[1] = dataStream.readInt();
+            modes[2] = dataStream.readInt();
+            modes[3] = dataStream.readInt();
+            modes[4] = dataStream.readInt();
+            modes[5] = dataStream.readInt();
+        }
+    }
 
-		data.add(modes[0]);
-		data.add(modes[1]);
-		data.add(modes[2]);
-		data.add(modes[3]);
-		data.add(modes[4]);
-		data.add(modes[5]);
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        data = super.getNetworkedData(data);
 
-		return data;
-	}
+        data.add(modes[0]);
+        data.add(modes[1]);
+        data.add(modes[2]);
+        data.add(modes[3]);
+        data.add(modes[4]);
+        data.add(modes[5]);
 
-	@Override
-	protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side)
-	{
-		int newMode = (modes[side.ordinal()] + 1) % 3;
-		String description = "ERROR";
+        return data;
+    }
 
-		modes[side.ordinal()] = newMode;
+    @Override
+    public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
+        return addModes(super.makeSyncPacket(stackId, stack));
+    }
 
-		switch(newMode)
-		{
-			case 0:
-				description = LangUtils.localize("control.disabled.desc");
-				break;
-			case 1:
-				description = LangUtils.localize("control.high.desc");
-				break;
-			case 2:
-				description = LangUtils.localize("control.low.desc");
-				break;
-		}
+    @Override
+    public TileNetworkList makeBatchPacket(Map<Integer, TransporterStack> updates, Set<Integer> deletes) {
+        return addModes(super.makeBatchPacket(updates, deletes));
+    }
 
-		refreshConnections();
-		notifyTileChange();
-		player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-		Coord4D coord = new Coord4D(getPos(), getWorld());
-		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())), new Range4D(coord));
+    private TileNetworkList addModes(TileNetworkList data) {
+        data.add(modes[0]);
+        data.add(modes[1]);
+        data.add(modes[2]);
+        data.add(modes[3]);
+        data.add(modes[4]);
+        data.add(modes[5]);
 
-		return EnumActionResult.SUCCESS;
-	}
+        return data;
+    }
 
-	@Override
-	public boolean canConnect(EnumFacing side)
-	{
-		if(!super.canConnect(side))
-		{
-			return false;
-		}
+    @Override
+    protected EnumActionResult onConfigure(EntityPlayer player, int part, EnumFacing side) {
+        int newMode = (modes[side.ordinal()] + 1) % 3;
+        String description = "ERROR";
 
-		int mode = modes[side.ordinal()];
-		boolean redstone = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+        modes[side.ordinal()] = newMode;
 
-		if((mode == 2 && redstone) || (mode == 1 && !redstone))
-		{
-			return false;
-		}
+        switch (newMode) {
+            case 0:
+                description = LangUtils.localize("control.disabled.desc");
+                break;
+            case 1:
+                description = LangUtils.localize("control.high.desc");
+                break;
+            case 2:
+                description = LangUtils.localize("control.low.desc");
+                break;
+        }
 
-		return true;
-	}
-	
-	@Override
-	public EnumColor getRenderColor()
-	{
-		return null;
-	}
+        refreshConnections();
+        notifyTileChange();
+        player.sendMessage(
+              new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + LangUtils
+                    .localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
+        Coord4D coord = new Coord4D(getPos(), getWorld());
+        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord, getNetworkedData(new TileNetworkList())),
+              new Range4D(coord));
+
+        return EnumActionResult.SUCCESS;
+    }
+
+    @Override
+    public boolean canConnect(EnumFacing side) {
+        if (!super.canConnect(side)) {
+            return false;
+        }
+
+        int mode = modes[side.ordinal()];
+        boolean redstone = MekanismUtils.isGettingPowered(getWorld(), new Coord4D(getPos(), getWorld()));
+
+        return (mode != 2 || !redstone) && (mode != 1 || redstone);
+    }
+
+    @Override
+    public EnumColor getRenderColor() {
+        return null;
+    }
 }

@@ -3,103 +3,119 @@ package mekanism.api;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.util.BlockInfo;
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
 
-import javax.annotation.Nonnull;
+public class MekanismAPI {
 
-public class MekanismAPI
-{
-	public static final String MODID = "mekanism";
+    /**
+     * The version of the api classes - may not always match the mod's version
+     */
+    public static final String API_VERSION = "9.7.2";
 
-	//Add a BlockInfo value here if you don't want a certain block to be picked up by cardboard boxes
-	private static Set<BlockInfo> cardboardBoxIgnore = new HashSet<>();
+    /**
+     * Mekanism debug mode
+     */
+    public static boolean debug = false;
+    //Add a BlockInfo value here if you don't want a certain block to be picked up by cardboard boxes
+    private static Set<BlockInfo> cardboardBoxIgnore = new HashSet<>();
+    //Ignore all mod blocks
+    private static Set<String> cardboardBoxModIgnore = new HashSet<>();
+    private static MekanismRecipeHelper helper = null;
 
-	//ignore all mod blocks
-	private static Set<String> cardboardBoxModIgnore = new HashSet<>();
+    public static boolean isBlockCompatible(@Nonnull Block block, int meta) {
+        if (cardboardBoxModIgnore.contains(Objects.requireNonNull(block.getRegistryName()).getNamespace())) {
+            return false;
+        }
 
-	private static MekanismRecipeHelper helper = null;
-	
-	/** Mekanism debug mode */
-	public static boolean debug = false;
+        return cardboardBoxIgnore.stream()
+              .noneMatch(i -> i.block == block && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta));
+    }
 
-	public static boolean isBlockCompatible(Block block, int meta)
-	{
-		if (cardboardBoxModIgnore.contains(Objects.requireNonNull(block.getRegistryName()).getResourceDomain())){
-			return false;
-		}
+    public static void addBoxBlacklist(@Nullable Block block, int meta) {
+        //Allow block to be null but don't do anything if it is
+        if (block != null) {
+            cardboardBoxIgnore.add(new BlockInfo(block, meta));
+        }
+    }
 
-		for(BlockInfo i : cardboardBoxIgnore)
-		{
-			if(i.block == block && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta))
-			{
-				return false;
-			}
-		}
+    public static void removeBoxBlacklist(@Nonnull Block block, int meta) {
+        cardboardBoxIgnore.remove(new BlockInfo(block, meta));
+    }
 
-		return true;
-	}
+    public static Set<BlockInfo> getBoxIgnore() {
+        return cardboardBoxIgnore;
+    }
 
-	public static void addBoxBlacklist(Block block, int meta)
-	{
-		if (block == null)
-			return;//allow lazy adding via registry get
-		cardboardBoxIgnore.add(new BlockInfo(block, meta));
-	}
+    /**
+     * Get the instance of the recipe helper to directly add recipes.
+     *
+     * Do NOT copy/repackage this method into your package, nor use the class directly as it may change.
+     *
+     * @return {@link MekanismRecipeHelper} The handler.
+     */
+    public static MekanismRecipeHelper recipeHelper() {
+        if (helper == null) {
+            try {
+                helper = (MekanismRecipeHelper) Class.forName("mekanism.common.recipe.APIHandler").newInstance();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                LogManager.getLogger("MekanismAPI").error("Could not find API Handler", e);
+            }
+        }
+        return helper;
+    }
 
-	public static void removeBoxBlacklist(Block block, int meta)
-	{
-		cardboardBoxIgnore.remove(new BlockInfo(block, meta));
-	}
+    public static void addBoxBlacklistMod(@Nonnull String modid) {
+        cardboardBoxModIgnore.add(modid);
+    }
 
-	public static Set<BlockInfo> getBoxIgnore()
-	{
-		return cardboardBoxIgnore;
-	}
+    public static void removeBoxBlacklistMod(@Nonnull String modid) {
+        cardboardBoxModIgnore.remove(modid);
+    }
 
-	public static void addBoxBlacklistMod(@Nonnull String modid){
-		cardboardBoxModIgnore.add(modid);
-	}
+    public static Set<String> getBoxModIgnore() {
+        return cardboardBoxModIgnore;
+    }
 
-	public static void removeBoxBlacklistMod(@Nonnull String modid){
-		cardboardBoxModIgnore.remove(modid);
-	}
+    public static class BoxBlacklistEvent extends Event {
 
-	public static Set<String> getBoxModIgnore(){
-		return cardboardBoxModIgnore;
-	}
+        public void blacklist(@Nonnull ResourceLocation blockLocation, int meta) {
+            blacklist(ForgeRegistries.BLOCKS.getValue(blockLocation), meta);
+        }
 
-	public static class BoxBlacklistEvent extends Event {
-		public void blacklist(Block block, int meta){
-			addBoxBlacklist(block, meta);
-		}
-		public void blacklist(Block block){
-			addBoxBlacklist(block, OreDictionary.WILDCARD_VALUE);
-		}
-		public void blacklistMod(String modid){
-			addBoxBlacklistMod(modid);
-		}
-	}
+        public void blacklist(@Nullable Block block, int meta) {
+            addBoxBlacklist(block, meta);
+        }
 
-	/**
-	 * Get the instance of the recipe helper to directly add recipes.
-	 *
-	 * Do NOT copy/repackage this method into your package, nor use the class directly as it may change.
-	 *
-	 * @return {@link MekanismRecipeHelper} The handler.
-	 */
-	public static MekanismRecipeHelper recipeHelper(){
-		if (helper == null){
-			try {
-				helper = (MekanismRecipeHelper)Class.forName("mekanism.common.recipe.APIHandler").newInstance();
-			} catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
-				LogManager.getLogger("MekanismAPI").error("Could not find API Handler", e);
-			}
-		}
-		return helper;
-	}
+        public void blacklistWildcard(@Nonnull ResourceLocation blockLocation) {
+            blacklistWildcard(ForgeRegistries.BLOCKS.getValue(blockLocation));
+        }
+
+        public void blacklistWildcard(@Nullable Block block) {
+            addBoxBlacklist(block, OreDictionary.WILDCARD_VALUE);
+        }
+
+        public void blacklistMod(@Nonnull String modid) {
+            addBoxBlacklistMod(modid);
+        }
+
+        public void removeBlacklist(@Nonnull Block block, int meta) {
+            removeBoxBlacklist(block, meta);
+        }
+
+        public void removeWildcardBlacklist(@Nonnull Block block) {
+            removeBoxBlacklist(block, OreDictionary.WILDCARD_VALUE);
+        }
+
+        public void removeModBlacklist(@Nonnull String modid) {
+            removeBoxBlacklistMod(modid);
+        }
+    }
 }

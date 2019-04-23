@@ -1,7 +1,8 @@
 package mekanism.common.recipe;
 
+import javax.annotation.Nonnull;
 import mekanism.common.MekanismItems;
-import mekanism.common.Tier.BinTier;
+import mekanism.common.tier.BinTier;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemProxy;
@@ -18,182 +19,152 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
-{
-	private static boolean registered;
+public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
-	public BinRecipe()
-	{
-		if(!registered)
-		{
-			MinecraftForge.EVENT_BUS.register(this);
-			registered = true;
-		}
-		
-		setRegistryName("bin");
-	}
+    private static boolean registered;
 
-	@Override
-	public boolean matches(InventoryCrafting inv, World world)
-	{
-		return !getCraftingResult(inv).isEmpty();
-	}
+    public BinRecipe() {
+        if (!registered) {
+            MinecraftForge.EVENT_BUS.register(this);
+            registered = true;
+        }
 
-	private boolean isBin(ItemStack itemStack)
-	{
-		if(itemStack.isEmpty())
-		{
-			return false;
-		}
+        setRegistryName("bin");
+    }
 
-		return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
-	}
+    @Override
+    public boolean matches(@Nonnull InventoryCrafting inv, @Nonnull World world) {
+        return !getCraftingResult(inv).isEmpty();
+    }
 
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
-	{
-		return getResult(inv);
-	}
+    private boolean isBin(ItemStack itemStack) {
+        if (itemStack.isEmpty()) {
+            return false;
+        }
 
-	public ItemStack getResult(IInventory inv)
-	{
-		ItemStack bin = ItemStack.EMPTY;
+        return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
+    }
 
-		for(int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
+    @Nonnull
+    @Override
+    public ItemStack getCraftingResult(@Nonnull InventoryCrafting inv) {
+        return getResult(inv);
+    }
 
-			if(isBin(stack))
-			{
-				if(!bin.isEmpty())
-				{
-					return ItemStack.EMPTY;
-				}
+    public ItemStack getResult(IInventory inv) {
+        ItemStack bin = ItemStack.EMPTY;
 
-				bin = stack.copy();
-			}
-		}
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
 
-		if(bin.isEmpty() || bin.getCount() > 1)
-		{
-			return ItemStack.EMPTY;
-		}
+            if (isBin(stack)) {
+                if (!bin.isEmpty()) {
+                    return ItemStack.EMPTY;
+                }
 
-		ItemStack addStack = ItemStack.EMPTY;
+                bin = stack.copy();
+            }
+        }
 
-		for(int i = 0; i < 9; i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
+        if (bin.isEmpty() || bin.getCount() > 1) {
+            return ItemStack.EMPTY;
+        }
 
-			if(!stack.isEmpty() && !isBin(stack))
-			{
-				if(!addStack.isEmpty())
-				{
-					return ItemStack.EMPTY;
-				}
+        ItemStack addStack = ItemStack.EMPTY;
 
-				addStack = stack.copy();
-			}
-		}
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = inv.getStackInSlot(i);
 
-		InventoryBin binInv = new InventoryBin(bin);
+            if (!stack.isEmpty() && !isBin(stack)) {
+                if (!addStack.isEmpty()) {
+                    return ItemStack.EMPTY;
+                }
 
-		if(!addStack.isEmpty())
-		{
-			if(!(addStack.getItem() instanceof ItemProxy))
-			{
-				if(!binInv.getItemType().isEmpty() && !binInv.getItemType().isItemEqual(addStack))
-				{
-					return ItemStack.EMPTY;
-				}
+                addStack = stack.copy();
+            }
+        }
 
-				binInv.add(addStack);
-			}
+        InventoryBin binInv = new InventoryBin(bin);
 
-			return bin;
-		}
-		else {
-			return binInv.removeStack();
-		}
-	}
+        if (!addStack.isEmpty()) {
+            if (!(addStack.getItem() instanceof ItemProxy)) {
+                if (!binInv.getItemType().isEmpty() && !binInv.getItemType().isItemEqual(addStack)) {
+                    return ItemStack.EMPTY;
+                }
 
-	@Override
-	public ItemStack getRecipeOutput()
-	{
-		return ItemStack.EMPTY;
-	}
+                binInv.add(addStack);
+            }
 
-	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-	{
-		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-	}
+            return bin;
+        } else {
+            return binInv.removeStack();
+        }
+    }
 
-	@SubscribeEvent
-	public void onCrafting(ItemCraftedEvent event)
-	{
-		if(!getResult(event.craftMatrix).isEmpty())
-		{
-			if(!isBin(event.crafting))
-			{
-				for(int i = 0; i < event.craftMatrix.getSizeInventory(); i++)
-				{
-					if(isBin(event.craftMatrix.getStackInSlot(i)))
-					{
-						ItemStack bin = event.craftMatrix.getStackInSlot(i);
-						InventoryBin inv = new InventoryBin(bin.copy());
+    @Nonnull
+    @Override
+    public ItemStack getRecipeOutput() {
+        return ItemStack.EMPTY;
+    }
 
-						int size = inv.getItemCount();
+    @Nonnull
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+    }
 
-						ItemStack testRemove = inv.removeStack();
-						int newCount = size-(!testRemove.isEmpty() ? testRemove.getCount() : 0);
+    @SubscribeEvent
+    public void onCrafting(ItemCraftedEvent event) {
+        if (!getResult(event.craftMatrix).isEmpty()) {
+            if (!isBin(event.crafting)) {
+                for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
+                    if (isBin(event.craftMatrix.getStackInSlot(i))) {
+                        ItemStack bin = event.craftMatrix.getStackInSlot(i);
+                        InventoryBin inv = new InventoryBin(bin.copy());
 
-						if(inv.getTier() == BinTier.CREATIVE)
-						{
-							newCount = size;
-						}
+                        int size = inv.getItemCount();
 
-						ItemDataUtils.setInt(bin, "newCount", newCount);
-					}
-				}
-			}
-			else {
-				int bin = -1;
-				int other = -1;
+                        ItemStack testRemove = inv.removeStack();
+                        int newCount = size - (!testRemove.isEmpty() ? testRemove.getCount() : 0);
 
-				for(int i = 0; i < event.craftMatrix.getSizeInventory(); i++)
-				{
-					if(isBin(event.craftMatrix.getStackInSlot(i)))
-					{
-						bin = i;
-					}
-					else if(!isBin(event.craftMatrix.getStackInSlot(i)) && !event.craftMatrix.getStackInSlot(i).isEmpty())
-					{
-						other = i;
-					}
-				}
+                        if (inv.getTier() == BinTier.CREATIVE) {
+                            newCount = size;
+                        }
 
-				ItemStack binStack = event.craftMatrix.getStackInSlot(bin);
-				ItemStack otherStack = event.craftMatrix.getStackInSlot(other);
+                        ItemDataUtils.setInt(bin, "newCount", newCount);
+                    }
+                }
+            } else {
+                int bin = -1;
+                int other = -1;
 
-				ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
+                for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
+                    if (isBin(event.craftMatrix.getStackInSlot(i))) {
+                        bin = i;
+                    } else if (!isBin(event.craftMatrix.getStackInSlot(i)) && !event.craftMatrix.getStackInSlot(i)
+                          .isEmpty()) {
+                        other = i;
+                    }
+                }
 
-				if(!testRemain.isEmpty() && testRemain.getCount() > 0)
-				{
-					ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
-					((ItemProxy)proxy.getItem()).setSavedItem(proxy, testRemain.copy());
-					event.craftMatrix.setInventorySlotContents(other, proxy);
-				}
-				else {
-					event.craftMatrix.setInventorySlotContents(other, ItemStack.EMPTY);
-				}
-			}
-		}
-	}
+                ItemStack binStack = event.craftMatrix.getStackInSlot(bin);
+                ItemStack otherStack = event.craftMatrix.getStackInSlot(other);
 
-	@Override
-	public boolean canFit(int width, int height) 
-	{
-		return width * height >= 1;
-	}
+                ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
+
+                if (!testRemain.isEmpty() && testRemain.getCount() > 0) {
+                    ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
+                    ((ItemProxy) proxy.getItem()).setSavedItem(proxy, testRemain.copy());
+                    event.craftMatrix.setInventorySlotContents(other, proxy);
+                } else {
+                    event.craftMatrix.setInventorySlotContents(other, ItemStack.EMPTY);
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean canFit(int width, int height) {
+        return width * height >= 1;
+    }
 }

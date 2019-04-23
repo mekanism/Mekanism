@@ -1,7 +1,9 @@
 package mekanism.common.block.states;
 
+import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Tier.BaseTier;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.block.BlockTransmitter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.property.PropertyConnection;
@@ -16,123 +18,108 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-import java.util.Locale;
+public class BlockStateTransmitter extends ExtendedBlockState {
 
-public class BlockStateTransmitter extends ExtendedBlockState
-{
-	public static final PropertyEnum<TransmitterType> typeProperty = PropertyEnum.create("type", TransmitterType.class);
-	public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
-	
-	public BlockStateTransmitter(BlockTransmitter block)
-	{
-		super(block, new IProperty[] {typeProperty, tierProperty}, new IUnlistedProperty[] {OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
-	}
-	
-	public enum TransmitterType implements IStringSerializable
-	{
-		UNIVERSAL_CABLE("UniversalCable", Size.SMALL, TransmissionType.ENERGY, false, true),
-		MECHANICAL_PIPE("MechanicalPipe", Size.LARGE, TransmissionType.FLUID, false, true),
-		PRESSURIZED_TUBE("PressurizedTube", Size.SMALL, TransmissionType.GAS, false, true),
-		LOGISTICAL_TRANSPORTER("LogisticalTransporter", Size.LARGE, TransmissionType.ITEM, true, true),
-		RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM, false, false),
-		DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, true, false),
-		THERMODYNAMIC_CONDUCTOR("ThermodynamicConductor", Size.SMALL, TransmissionType.HEAT, false, true);
+    public static final PropertyEnum<TransmitterType> typeProperty = PropertyEnum.create("type", TransmitterType.class);
+    public static final PropertyEnum<BaseTier> tierProperty = PropertyEnum.create("tier", BaseTier.class);
 
-		private String unlocalizedName;
-		private Size size;
-		private TransmissionType transmissionType;
-		private boolean transparencyRender;
-		private boolean tiers;
+    public BlockStateTransmitter(BlockTransmitter block) {
+        super(block, new IProperty[]{typeProperty, tierProperty},
+              new IUnlistedProperty[]{OBJProperty.INSTANCE, PropertyColor.INSTANCE, PropertyConnection.INSTANCE});
+    }
 
-		TransmitterType(String name, Size s, TransmissionType type, boolean transparency, boolean b)
-		{
-			unlocalizedName = name;
-			size = s;
-			transmissionType = type;
-			transparencyRender = transparency;
-			tiers = b;
-		}
+    public enum TransmitterType implements IStringSerializable {
+        UNIVERSAL_CABLE("UniversalCable", Size.SMALL, TransmissionType.ENERGY, false, true),
+        MECHANICAL_PIPE("MechanicalPipe", Size.LARGE, TransmissionType.FLUID, false, true),
+        PRESSURIZED_TUBE("PressurizedTube", Size.SMALL, TransmissionType.GAS, false, true),
+        LOGISTICAL_TRANSPORTER("LogisticalTransporter", Size.LARGE, TransmissionType.ITEM, true, true),
+        RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM, false, false),
+        DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, true, false),
+        THERMODYNAMIC_CONDUCTOR("ThermodynamicConductor", Size.SMALL, TransmissionType.HEAT, false, true);
 
-		@Override
-		public String getName()
-		{
-			return name().toLowerCase(Locale.ROOT);
-		}
-		
-		public String getUnlocalizedName()
-		{
-			return unlocalizedName;
-		}
+        private String unlocalizedName;
+        private Size size;
+        private TransmissionType transmissionType;
+        private boolean transparencyRender;
+        private boolean tiers;
 
-		public Size getSize()
-		{
-			return size;
-		}
-		
-		public boolean hasTransparency()
-		{
-			return transparencyRender;
-		}
+        TransmitterType(String name, Size s, TransmissionType type, boolean transparency, boolean b) {
+            unlocalizedName = name;
+            size = s;
+            transmissionType = type;
+            transparencyRender = transparency;
+            tiers = b;
+        }
 
-		public TransmissionType getTransmission()
-		{
-			return transmissionType;
-		}
-		
-		public boolean hasTiers()
-		{
-			return tiers;
-		}
+        public static TransmitterType get(int meta) {
+            return TransmitterType.values()[meta];
+        }
 
-		public enum Size
-		{
-			SMALL(6),
-			LARGE(8);
+        @Override
+        public String getName() {
+            return name().toLowerCase(Locale.ROOT);
+        }
 
-			public int centerSize;
+        public String getTranslationKey() {
+            return unlocalizedName;
+        }
 
-			Size(int size)
-			{
-				centerSize = size;
-			}
-		}
-		
-		public static TransmitterType get(int meta)
-		{
-			return TransmitterType.values()[meta];
-		}
-	}
-	
-	public static class TransmitterStateMapper extends StateMapperBase
-	{
-		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
-		{
-			BlockTransmitter block = (BlockTransmitter)state.getBlock();
-			TransmitterType type = state.getValue(typeProperty);
-			StringBuilder builder = new StringBuilder();
-			String nameOverride = null;
-			
-			if(type.tiers)
-			{
-				BaseTier tier = state.getValue(tierProperty);
-				
-				if(tier == BaseTier.CREATIVE)
-				{
-					tier = BaseTier.ULTIMATE;
-				}
-				
-				nameOverride = type.getName() + "_" + tier.getName();
-			}
+        public Size getSize() {
+            return size;
+        }
 
-			if(builder.length() == 0)
-			{
-				builder.append("normal");
-			}
+        public boolean hasTransparency() {
+            return transparencyRender;
+        }
 
-			ResourceLocation baseLocation = new ResourceLocation("mekanism", nameOverride != null ? nameOverride : type.getName());
-			
-			return new ModelResourceLocation(baseLocation, builder.toString());
-		}
-	}
+        public TransmissionType getTransmission() {
+            return transmissionType;
+        }
+
+        public boolean hasTiers() {
+            return tiers;
+        }
+
+        public enum Size {
+            SMALL(6),
+            LARGE(8);
+
+            public int centerSize;
+
+            Size(int size) {
+                centerSize = size;
+            }
+        }
+    }
+
+    public static class TransmitterStateMapper extends StateMapperBase {
+
+        @Nonnull
+        @Override
+        protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state) {
+            BlockTransmitter block = (BlockTransmitter) state.getBlock();
+            TransmitterType type = state.getValue(typeProperty);
+            StringBuilder builder = new StringBuilder();
+            String nameOverride = null;
+
+            if (type.tiers) {
+                BaseTier tier = state.getValue(tierProperty);
+
+                if (tier == BaseTier.CREATIVE) {
+                    tier = BaseTier.ULTIMATE;
+                }
+
+                nameOverride = type.getName() + "_" + tier.getName();
+            }
+
+            if (builder.length() == 0) {
+                builder.append("normal");
+            }
+
+            ResourceLocation baseLocation = new ResourceLocation("mekanism",
+                  nameOverride != null ? nameOverride : type.getName());
+
+            return new ModelResourceLocation(baseLocation, builder.toString());
+        }
+    }
 }

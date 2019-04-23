@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import mekanism.common.util.InventoryUtils;
+import javax.annotation.Nonnull;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,63 +9,53 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class ItemProxy extends Item
-{
-	public ItemProxy()
-	{
-		super();
-		setMaxDamage(1);
-	}
+public class ItemProxy extends Item {
 
-	@Override
-	public ItemStack getContainerItem(ItemStack stack)
-	{
-		return getSavedItem(stack);
-	}
+    public ItemProxy() {
+        super();
+        setMaxDamage(1);
+    }
 
-	@Override
-	public boolean hasContainerItem(ItemStack itemStack)
-	{
-		return !getSavedItem(itemStack).isEmpty();
-	}
+    @Nonnull
+    @Override
+    public ItemStack getContainerItem(@Nonnull ItemStack stack) {
+        return getSavedItem(stack);
+    }
 
-	public void setSavedItem(ItemStack stack, ItemStack save)
-	{
-		if(save == null || save.isEmpty())
-		{
-			ItemDataUtils.setBoolean(stack, "hasStack", false);
-			ItemDataUtils.removeData(stack, "savedItem");
-		}
-		else {
-			ItemDataUtils.setBoolean(stack, "hasStack", true);
-			ItemDataUtils.setCompound(stack, "savedItem", save.writeToNBT(new NBTTagCompound()));
-		}
-	}
+    @Override
+    public boolean hasContainerItem(ItemStack itemStack) {
+        return !getSavedItem(itemStack).isEmpty();
+    }
 
-	public ItemStack getSavedItem(ItemStack stack)
-	{
-		if(ItemDataUtils.getBoolean(stack, "hasStack"))
-		{
-			return InventoryUtils.loadFromNBT(ItemDataUtils.getCompound(stack, "savedItem"));
-		}
+    public void setSavedItem(ItemStack stack, ItemStack save) {
+        if (save == null || save.isEmpty()) {
+            ItemDataUtils.setBoolean(stack, "hasStack", false);
+            ItemDataUtils.removeData(stack, "savedItem");
+        } else {
+            ItemDataUtils.setBoolean(stack, "hasStack", true);
+            ItemDataUtils.setCompound(stack, "savedItem", save.writeToNBT(new NBTTagCompound()));
+        }
+    }
 
-		return ItemStack.EMPTY;
-	}
+    public ItemStack getSavedItem(ItemStack stack) {
+        if (ItemDataUtils.getBoolean(stack, "hasStack")) {
+            return new ItemStack(ItemDataUtils.getCompound(stack, "savedItem"));
+        }
 
-	@Override
-	public void onUpdate(ItemStack stacks, World world, Entity entity, int j, boolean flag)
-	{
-		if(entity instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer)entity;
-			
-			for(int i = 0; i < player.inventory.mainInventory.size(); i++)
-			{
-				if(!player.inventory.mainInventory.get(i).isEmpty() && player.inventory.mainInventory.get(i).getItem() == this)
-				{
-					player.inventory.mainInventory.remove(i);
-				}
-			}
-		}
-	}
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void onUpdate(ItemStack stacks, World world, Entity entity, int j, boolean flag) {
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
+
+            for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
+                if (!player.inventory.mainInventory.get(i).isEmpty()
+                      && player.inventory.mainInventory.get(i).getItem() == this) {
+                    player.inventory.mainInventory.remove(i);
+                }
+            }
+        }
+    }
 }

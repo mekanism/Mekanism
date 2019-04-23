@@ -7,7 +7,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -24,361 +24,321 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
 import org.apache.commons.lang3.tuple.Pair;
 
-public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
-{
-	public int transferDelay = 0;
+public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> {
 
-	public boolean didTransfer;
-	public boolean prevTransfer;
+    public int transferDelay = 0;
 
-	public float fluidScale;
+    public boolean didTransfer;
+    public boolean prevTransfer;
 
-	public Fluid refFluid;
+    public float fluidScale;
 
-	public FluidStack buffer;
-	public int prevStored;
+    public Fluid refFluid;
 
-	public int prevTransferAmount = 0;
+    public FluidStack buffer;
+    public int prevStored;
 
-	public FluidNetwork() {}
+    public int prevTransferAmount = 0;
 
-	public FluidNetwork(Collection<FluidNetwork> networks)
-	{
-		for(FluidNetwork net : networks)
-		{
-			if(net != null)
-			{
-				if(net.buffer != null)
-				{
-					if(buffer == null)
-					{
-						buffer = net.buffer.copy();
-					}
-					else {
-						if(buffer.getFluid() == net.buffer.getFluid())
-						{
-							buffer.amount += net.buffer.amount;
-						}
-						else if(net.buffer.amount > buffer.amount)
-						{
-							buffer = net.buffer.copy();
-						}
+    public FluidNetwork() {
+    }
 
-					}
+    public FluidNetwork(Collection<FluidNetwork> networks) {
+        for (FluidNetwork net : networks) {
+            if (net != null) {
+                adoptTransmittersAndAcceptorsFrom(net);
+                net.deregister();
+            }
+        }
 
-					net.buffer = null;
-				}
+        fluidScale = getScale();
 
-				adoptTransmittersAndAcceptorsFrom(net);
-				net.deregister();
-			}
-		}
+        register();
+    }
 
-		fluidScale = getScale();
+    @Override
+    public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
+        if (net.buffer != null) {
+            if (buffer == null) {
+                buffer = net.buffer.copy();
+            } else {
+                if (buffer.getFluid() == net.buffer.getFluid()) {
+                    buffer.amount += net.buffer.amount;
+                } else if (net.buffer.amount > buffer.amount) {
+                    buffer = net.buffer.copy();
+                }
 
-		register();
-	}
+            }
 
-	@Override
-	public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork> transmitter)
-	{
-		Object b = transmitter.getBuffer();
+            net.buffer = null;
+        }
+        super.adoptTransmittersAndAcceptorsFrom(net);
+    }
 
-		if(!(b instanceof FluidStack) || ((FluidStack)b).getFluid() == null || ((FluidStack)b).amount == 0)
-		{
-			return;
-		}
+    @Nullable
+    public FluidStack getBuffer() {
+        return buffer;
+    }
 
-		FluidStack fluid = (FluidStack)b;
+    @Override
+    public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> transmitter) {
+        FluidStack fluid = transmitter.getBuffer();
 
-		if(buffer == null || buffer.getFluid() == null || buffer.amount == 0)
-		{
-			buffer = fluid.copy();
+        if (fluid == null || fluid.getFluid() == null || fluid.amount == 0) {
+            return;
+        }
+
+        if (buffer == null || buffer.getFluid() == null || buffer.amount == 0) {
+            buffer = fluid.copy();
             fluid.amount = 0;
-			return;
-		}
-		
-		//TODO better multiple buffer impl
-		if(buffer.isFluidEqual(fluid))
-		{
-			buffer.amount += fluid.amount;
-		}
+            return;
+        }
+
+        //TODO better multiple buffer impl
+        if (buffer.isFluidEqual(fluid)) {
+            buffer.amount += fluid.amount;
+        }
 
         fluid.amount = 0;
-	}
+    }
 
-	@Override
-	public void clampBuffer()
-	{
-		if(buffer != null && buffer.amount > getCapacity())
-		{
-			buffer.amount = capacity;
-		}
-	}
+    @Override
+    public void clampBuffer() {
+        if (buffer != null && buffer.amount > getCapacity()) {
+            buffer.amount = capacity;
+        }
+    }
 
-	@Override
-	protected void updateMeanCapacity()
-	{
-		int numCables = transmitters.size();
-		double sum = 0;
+    @Override
+    protected void updateMeanCapacity() {
+        int numCables = transmitters.size();
+        double sum = 0;
 
-		for(IGridTransmitter<IFluidHandler, FluidNetwork> pipe : transmitters)
-		{
-			sum += pipe.getCapacity();
-		}
+        for (IGridTransmitter<IFluidHandler, FluidNetwork, FluidStack> pipe : transmitters) {
+            sum += pipe.getCapacity();
+        }
 
-		meanCapacity = sum / (double)numCables;
-	}
+        meanCapacity = sum / (double) numCables;
+    }
 
-	public int getFluidNeeded()
-	{
-		return getCapacity()-(buffer != null ? buffer.amount : 0);
-	}
+    public int getFluidNeeded() {
+        return getCapacity() - (buffer != null ? buffer.amount : 0);
+    }
 
-	public int tickEmit(FluidStack fluidToSend, boolean doTransfer)
-	{
-		List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>();
-		availableAcceptors.addAll(getAcceptors(fluidToSend));
+    public int tickEmit(FluidStack fluidToSend, boolean doTransfer) {
+        List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>(getAcceptors(fluidToSend));
 
-		Collections.shuffle(availableAcceptors);
+        Collections.shuffle(availableAcceptors);
 
-		int fluidSent = 0;
+        int fluidSent = 0;
 
-		if(!availableAcceptors.isEmpty())
-		{
-			int divider = availableAcceptors.size();
-			int remaining = fluidToSend.amount % divider;
-			int sending = (fluidToSend.amount-remaining)/divider;
+        if (!availableAcceptors.isEmpty()) {
+            int divider = availableAcceptors.size();
+            int remaining = fluidToSend.amount % divider;
+            int sending = (fluidToSend.amount - remaining) / divider;
 
-			for(Pair<Coord4D, IFluidHandler> pair : availableAcceptors)
-			{
-				int currentSending = sending;
-				IFluidHandler acceptor = pair.getRight();
-				EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
+            for (Pair<Coord4D, IFluidHandler> pair : availableAcceptors) {
+                int currentSending = sending;
+                IFluidHandler acceptor = pair.getRight();
+                EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
 
-				if(remaining > 0)
-				{
-					currentSending++;
-					remaining--;
-				}
+                if (remaining > 0) {
+                    currentSending++;
+                    remaining--;
+                }
 
-				for(EnumFacing side : sides)
-				{
-					int prev = fluidSent;
+                for (EnumFacing side : sides) {
+                    int prev = fluidSent;
 
-					if(acceptor != null && fluidToSend != null)
-					{
-						fluidSent += acceptor.fill(PipeUtils.copy(fluidToSend, currentSending), doTransfer);
-					}
+                    if (acceptor != null) {
+                        fluidSent += acceptor.fill(PipeUtils.copy(fluidToSend, currentSending), doTransfer);
+                    }
 
-					if(fluidSent > prev)
-					{
-						break;
-					}
-				}
-			}
-		}
+                    if (fluidSent > prev) {
+                        break;
+                    }
+                }
+            }
+        }
 
-		if(doTransfer && fluidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			didTransfer = true;
-			transferDelay = 2;
-		}
+        if (doTransfer && fluidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            didTransfer = true;
+            transferDelay = 2;
+        }
 
-		if (fluidSent > fluidToSend.amount){
-			Mekanism.logger.error("Some fluid handler took more fluid than we gave it?!");
-			Mekanism.logger.error("Handler list:");
-			for(Pair<Coord4D, IFluidHandler> pair : availableAcceptors){
-				Mekanism.logger.error(pair.getRight().toString());
-			}
-			fluidSent = fluidToSend.amount;
-		}
+        if (fluidSent > fluidToSend.amount) {
+            Mekanism.logger.error("Some fluid handler took more fluid than we gave it?!");
+            Mekanism.logger.error("Handler list:");
+            for (Pair<Coord4D, IFluidHandler> pair : availableAcceptors) {
+                Mekanism.logger.error(pair.getRight().toString());
+            }
+            fluidSent = fluidToSend.amount;
+        }
 
-		return fluidSent;
-	}
+        return fluidSent;
+    }
 
-	public int emit(FluidStack fluidToSend, boolean doTransfer)
-	{
-		if(fluidToSend == null || (buffer != null && buffer.getFluid() != fluidToSend.getFluid()))
-		{
-			return 0;
-		}
+    public int emit(FluidStack fluidToSend, boolean doTransfer) {
+        if (fluidToSend == null || (buffer != null && buffer.getFluid() != fluidToSend.getFluid())) {
+            return 0;
+        }
 
-		int toUse = Math.min(getFluidNeeded(), fluidToSend.amount);
+        int toUse = Math.min(getFluidNeeded(), fluidToSend.amount);
 
-		if(doTransfer)
-		{
-			if(buffer == null)
-			{
-				buffer = fluidToSend.copy();
-				buffer.amount = toUse;
-			}
-			else {
-				buffer.amount += toUse;
-			}
-		}
+        if (doTransfer) {
+            if (buffer == null) {
+                buffer = fluidToSend.copy();
+                buffer.amount = toUse;
+            } else {
+                buffer.amount += toUse;
+            }
+        }
 
-		return toUse;
-	}
+        return toUse;
+    }
 
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
 
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			prevTransferAmount = 0;
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            prevTransferAmount = 0;
 
-			if(transferDelay == 0)
-			{
-				didTransfer = false;
-			}
-			else {
-				transferDelay--;
-			}
+            if (transferDelay == 0) {
+                didTransfer = false;
+            } else {
+                transferDelay--;
+            }
 
-			int stored = buffer != null ? buffer.amount : 0;
+            int stored = buffer != null ? buffer.amount : 0;
 
-			if(stored != prevStored)
-			{
-				needsUpdate = true;
-			}
+            if (stored != prevStored) {
+                needsUpdate = true;
+            }
 
-			prevStored = stored;
+            prevStored = stored;
 
-			if(didTransfer != prevTransfer || needsUpdate)
-			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer, didTransfer));
-				needsUpdate = false;
-			}
+            if (didTransfer != prevTransfer || needsUpdate) {
+                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer, didTransfer));
+                needsUpdate = false;
+            }
 
-			prevTransfer = didTransfer;
+            prevTransfer = didTransfer;
 
-			if(buffer != null)
-			{
-				prevTransferAmount = tickEmit(buffer, true);
-				
-				if(buffer != null)
-				{
-					buffer.amount -= prevTransferAmount;
+            if (buffer != null) {
+                prevTransferAmount = tickEmit(buffer, true);
 
-					if(buffer.amount <= 0)
-					{
-						buffer = null;
-					}
-				}
-			}
-		}
-	}
+                if (buffer != null) {
+                    buffer.amount -= prevTransferAmount;
 
-	@Override
-	public void clientTick()
-	{
-		super.clientTick();
+                    if (buffer.amount <= 0) {
+                        buffer = null;
+                    }
+                }
+            }
+        }
+    }
 
-		fluidScale = Math.max(fluidScale, getScale());
+    @Override
+    public void clientTick() {
+        super.clientTick();
 
-		if(didTransfer && fluidScale < 1)
-		{
-			fluidScale = Math.max(getScale(), Math.min(1, fluidScale+0.02F));
-		}
-		else if(!didTransfer && fluidScale > 0)
-		{
-			fluidScale = getScale();
+        fluidScale = Math.max(fluidScale, getScale());
 
-			if(fluidScale == 0)
-			{
-				buffer = null;
-			}
-		}
-	}
+        if (didTransfer && fluidScale < 1) {
+            fluidScale = Math.max(getScale(), Math.min(1, fluidScale + 0.02F));
+        } else if (!didTransfer && fluidScale > 0) {
+            fluidScale = getScale();
 
-	@Override
-	public Set<Pair<Coord4D, IFluidHandler>> getAcceptors(Object data)
-	{
-		FluidStack fluidToSend = (FluidStack)data;
-		Set<Pair<Coord4D, IFluidHandler>> toReturn = new HashSet<>();
-		
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return toReturn;
-		}
+            if (fluidScale == 0) {
+                buffer = null;
+            }
+        }
+    }
 
-		for(Coord4D coord : possibleAcceptors.keySet())
-		{
-			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-			TileEntity tile = coord.getTileEntity(getWorld());
+    @Override
+    public Set<Pair<Coord4D, IFluidHandler>> getAcceptors(Object data) {
+        FluidStack fluidToSend = (FluidStack) data;
+        Set<Pair<Coord4D, IFluidHandler>> toReturn = new HashSet<>();
 
-			if(sides == null || sides.isEmpty())
-			{
-				continue;
-			}
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return toReturn;
+        }
 
-			for(EnumFacing side : sides)
-			{
-				if(!CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side))
-				{
-					continue;
-				}
-				
-				IFluidHandler acceptor = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
-						
-				if(acceptor != null && PipeUtils.canFill(acceptor, fluidToSend))
-				{
-					toReturn.add(Pair.of(coord, acceptor));
-					break;
-				}
-			}
-		}
+        for (Coord4D coord : possibleAcceptors.keySet()) {
+            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            TileEntity tile = coord.getTileEntity(getWorld());
 
-		return toReturn;
-	}
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
 
-	public static class FluidTransferEvent extends Event
-	{
-		public final FluidNetwork fluidNetwork;
+            for (EnumFacing side : sides) {
+                if (!CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
+                    continue;
+                }
 
-		public final FluidStack fluidType;
-		public final boolean didTransfer;
+                IFluidHandler acceptor = CapabilityUtils
+                      .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
 
-		public FluidTransferEvent(FluidNetwork network, FluidStack type, boolean did)
-		{
-			fluidNetwork = network;
-			fluidType = type;
-			didTransfer = did;
-		}
-	}
+                if (acceptor != null && PipeUtils.canFill(acceptor, fluidToSend)) {
+                    toReturn.add(Pair.of(coord, acceptor));
+                    break;
+                }
+            }
+        }
 
-	public float getScale()
-	{
-		return Math.min(1, (buffer == null || getCapacity() == 0 ? 0 : (float)buffer.amount/getCapacity()));
-	}
+        return toReturn;
+    }
 
-	@Override
-	public String toString()
-	{
-		return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
-	}
+    public float getScale() {
+        return Math.min(1, (buffer == null || getCapacity() == 0 ? 0 : (float) buffer.amount / getCapacity()));
+    }
 
-	@Override
-	public String getNeededInfo()
-	{
-		return (float)getFluidNeeded()/1000F + " buckets";
-	}
+    @Override
+    public String toString() {
+        return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+    }
 
-	@Override
-	public String getStoredInfo()
-	{
-		return buffer != null ? LangUtils.localizeFluidStack(buffer) + " (" + buffer.amount + " mB)" : "None";
-	}
+    @Override
+    public String getNeededInfo() {
+        return (float) getFluidNeeded() / 1000F + " buckets";
+    }
 
-	@Override
-	public String getFlowInfo()
-	{
-		return Integer.toString(prevTransferAmount) + " mB/t";
-	}
+    @Override
+    public String getStoredInfo() {
+        return buffer != null ? LangUtils.localizeFluidStack(buffer) + " (" + buffer.amount + " mB)" : "None";
+    }
+
+    @Override
+    public String getFlowInfo() {
+        return prevTransferAmount + " mB/t";
+    }
+
+    @Override
+    public boolean isCompatibleWith(FluidNetwork other) {
+        return super.isCompatibleWith(other) && (this.buffer == null || other.buffer == null || this.buffer
+              .isFluidEqual(other.buffer));
+    }
+
+    @Override
+    public boolean compatibleWithBuffer(FluidStack buffer) {
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer.isFluidEqual(buffer));
+    }
+
+    public static class FluidTransferEvent extends Event {
+
+        public final FluidNetwork fluidNetwork;
+
+        public final FluidStack fluidType;
+        public final boolean didTransfer;
+
+        public FluidTransferEvent(FluidNetwork network, FluidStack type, boolean did) {
+            fluidNetwork = network;
+            fluidType = type;
+            didTransfer = did;
+        }
+    }
 }

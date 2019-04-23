@@ -2,7 +2,6 @@ package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,161 +13,150 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * An input of a gas, a fluid and an item for the pressurized reaction chamber
  */
-public class PressurizedInput extends MachineInput<PressurizedInput>
-{
-	private ItemStack theSolid = ItemStack.EMPTY;
-	private FluidStack theFluid;
-	private GasStack theGas;
+public class PressurizedInput extends MachineInput<PressurizedInput> {
 
-	public PressurizedInput(ItemStack solid, FluidStack fluid, GasStack gas)
-	{
-		theSolid = solid;
-		theFluid = fluid;
-		theGas = gas;
-	}
-	
-	public PressurizedInput() {}
-	
-	@Override
-	public void load(NBTTagCompound nbtTags)
-	{
-		theSolid = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("itemInput"));
-		theFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("fluidInput"));
-		theGas = GasStack.readFromNBT(nbtTags.getCompoundTag("gasInput"));
-	}
+    private ItemStack theSolid = ItemStack.EMPTY;
+    private FluidStack theFluid;
+    private GasStack theGas;
 
-	/**
-	 * If this is a valid PressurizedReactants
-	 */
-	@Override
-	public boolean isValid()
-	{
-		return !theSolid.isEmpty() && theFluid != null && theGas != null;
-	}
+    public PressurizedInput(ItemStack solid, FluidStack fluid, GasStack gas) {
+        theSolid = solid;
+        theFluid = fluid;
+        theGas = gas;
+    }
 
-	public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete)
-	{
-		if(meets(new PressurizedInput(inventory.get(index), fluidTank.getFluid(), gasTank.getGas())))
-		{
-			if(deplete)
-			{
-				inventory.set(index, StackUtils.subtract(inventory.get(index), theSolid));
-				fluidTank.drain(theFluid.amount, true);
-				gasTank.draw(theGas.amount, true);
-			}
-			
-			return true;
-		}
-		
-		return false;
-	}
+    public PressurizedInput() {
+    }
 
-	/**
-	 * Whether or not this PressurizedReactants's ItemStack entry's item type is equal to the item type of the given item.
-	 * @param stack - stack to check
-	 * @return if the stack's item type is contained in this PressurizedReactants
-	 */
-	public boolean containsType(ItemStack stack)
-	{
-		if(stack.isEmpty() || stack.getCount() == 0)
-		{
-			return false;
-		}
+    @Override
+    public void load(NBTTagCompound nbtTags) {
+        theSolid = new ItemStack(nbtTags.getCompoundTag("itemInput"));
+        theFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("fluidInput"));
+        theGas = GasStack.readFromNBT(nbtTags.getCompoundTag("gasInput"));
+    }
 
-		return MachineInput.inputItemMatches(stack, theSolid);
-	}
+    /**
+     * If this is a valid PressurizedReactants
+     */
+    @Override
+    public boolean isValid() {
+        return !theSolid.isEmpty() && theFluid != null && theGas != null;
+    }
 
-	/**
-	 * Whether or not this PressurizedReactants's FluidStack entry's fluid type is equal to the fluid type of the given fluid.
-	 * @param stack - stack to check
-	 * @return if the stack's fluid type is contained in this PressurizedReactants
-	 */
-	public boolean containsType(FluidStack stack)
-	{
-		if(stack == null || stack.amount == 0)
-		{
-			return false;
-		}
+    public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank,
+          boolean deplete) {
+        if (meets(new PressurizedInput(inventory.get(index), fluidTank.getFluid(), gasTank.getGas()))) {
+            if (deplete) {
+                inventory.set(index, StackUtils.subtract(inventory.get(index), theSolid));
+                fluidTank.drain(theFluid.amount, true);
+                gasTank.draw(theGas.amount, true);
+            }
 
-		return stack.isFluidEqual(theFluid);
-	}
+            return true;
+        }
 
-	/**
-	 * Whether or not this PressurizedReactants's GasStack entry's gas type is equal to the gas type of the given gas.
-	 * @param stack - stack to check
-	 * @return if the stack's gas type is contained in this PressurizedReactants
-	 */
-	public boolean containsType(GasStack stack)
-	{
-		if(stack == null || stack.amount == 0)
-		{
-			return false;
-		}
+        return false;
+    }
 
-		return stack.isGasEqual(theGas);
-	}
+    /**
+     * Whether or not this PressurizedReactants's ItemStack entry's item type is equal to the item type of the given
+     * item.
+     *
+     * @param stack - stack to check
+     * @return if the stack's item type is contained in this PressurizedReactants
+     */
+    public boolean containsType(ItemStack stack) {
+        if (stack.isEmpty() || stack.getCount() == 0) {
+            return false;
+        }
 
-	/**
-	 * Actual implementation of meetsInput(), performs the checks.
-	 * @param input - input to check
-	 * @return if the input meets this input's requirements
-	 */
-	public boolean meets(PressurizedInput input)
-	{
-		if(input == null || !input.isValid())
-		{
-			return false;
-		}
+        return MachineInput.inputItemMatches(stack, theSolid);
+    }
 
-		if(!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid) && input.theGas.isGasEqual(theGas)))
-		{
-			return false;
-		}
+    /**
+     * Whether or not this PressurizedReactants's FluidStack entry's fluid type is equal to the fluid type of the given
+     * fluid.
+     *
+     * @param stack - stack to check
+     * @return if the stack's fluid type is contained in this PressurizedReactants
+     */
+    public boolean containsType(FluidStack stack) {
+        if (stack == null || stack.amount == 0) {
+            return false;
+        }
 
-		return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
-	}
+        return stack.isFluidEqual(theFluid);
+    }
 
-	@Override
-	public PressurizedInput copy()
-	{
-		return new PressurizedInput(theSolid.copy(), theFluid.copy(), theGas.copy());
-	}
-	
-	public ItemStack getSolid()
-	{
-		return theSolid;
-	}
-	
-	public FluidStack getFluid()
-	{
-		return theFluid;
-	}
-	
-	public GasStack getGas()
-	{
-		return theGas;
-	}
+    /**
+     * Whether or not this PressurizedReactants's GasStack entry's gas type is equal to the gas type of the given gas.
+     *
+     * @param stack - stack to check
+     * @return if the stack's gas type is contained in this PressurizedReactants
+     */
+    public boolean containsType(GasStack stack) {
+        if (stack == null || stack.amount == 0) {
+            return false;
+        }
 
-	@Override
-	public int hashIngredients()
-	{
-		return StackUtils.hashItemStack(theSolid) << 16 | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
-	}
+        return stack.isGasEqual(theGas);
+    }
 
-	@Override
-	public boolean testEquality(PressurizedInput other)
-	{
-		return other.containsType(theSolid) && other.containsType(theFluid) && other.containsType(theGas);
-	}
+    /**
+     * Actual implementation of meetsInput(), performs the checks.
+     *
+     * @param input - input to check
+     * @return if the input meets this input's requirements
+     */
+    public boolean meets(PressurizedInput input) {
+        if (input == null || !input.isValid()) {
+            return false;
+        }
 
-	@Override
-	public boolean isInstance(Object other)
-	{
-		return other instanceof PressurizedInput;
-	}
+        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid)
+              && input.theGas.isGasEqual(theGas))) {
+            return false;
+        }
 
-	public PressurizedInput wildCopy()
-	{
-		return new PressurizedInput(new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
-	}
+        return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount
+              && input.theGas.amount >= theGas.amount;
+    }
+
+    @Override
+    public PressurizedInput copy() {
+        return new PressurizedInput(theSolid.copy(), theFluid.copy(), theGas.copy());
+    }
+
+    public ItemStack getSolid() {
+        return theSolid;
+    }
+
+    public FluidStack getFluid() {
+        return theFluid;
+    }
+
+    public GasStack getGas() {
+        return theGas;
+    }
+
+    @Override
+    public int hashIngredients() {
+        return StackUtils.hashItemStack(theSolid) << 16
+              | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
+    }
+
+    @Override
+    public boolean testEquality(PressurizedInput other) {
+        return other.containsType(theSolid) && other.containsType(theFluid) && other.containsType(theGas);
+    }
+
+    @Override
+    public boolean isInstance(Object other) {
+        return other instanceof PressurizedInput;
+    }
+
+    public PressurizedInput wildCopy() {
+        return new PressurizedInput(
+              new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
+    }
 }

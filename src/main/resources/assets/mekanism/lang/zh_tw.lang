@@ -713,9 +713,6 @@ dye.white=白色
 # Creative tab
 itemGroup.tabMekanism=通用機械
 
-# NEI stuff
-nei.chemicalInjectionChamber=化學壓射室
-
 #############
 # GENERATORS
 #############

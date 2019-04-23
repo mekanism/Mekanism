@@ -2,136 +2,121 @@ package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.annotation.Nonnull;
 
-public class HashList<T> implements Iterable<T>
-{
-	private ArrayList<T> list = new ArrayList<>(256);
-	
-	private HashList(ArrayList<T> newList)
-	{
-		list = newList;
-	}
-	
-	public HashList() {}
+public class HashList<T> implements Iterable<T> {
 
-	public boolean contains(T obj)
-	{
-		return list.contains(obj);
-	}
+    private ArrayList<T> list = new ArrayList<>(256);
 
-	public void clear()
-	{
-		list.clear();
-	}
+    private HashList(ArrayList<T> newList) {
+        list = newList;
+    }
 
-	public T get(int index)
-	{
-		if(index > size()-1)
-		{
-			return null;
-		}
+    public HashList() {
+    }
 
-		return list.get(index);
-	}
+    public boolean contains(T obj) {
+        return list.contains(obj);
+    }
 
-	public void add(T obj)
-	{
-		if(!list.contains(obj))
-		{
-			list.add(obj);
-		}
-	}
+    public void clear() {
+        list.clear();
+    }
 
-	public void add(int index, T obj)
-	{
-		if(!list.contains(obj))
-		{
-			if(index > size())
-			{
-				for(int i = size(); i <= index-1; i++)
-				{
-					list.add(i, null);
-				}
-			}
+    public T get(int index) {
+        if (index > size() - 1) {
+            return null;
+        }
 
-			list.add(index, obj);
-		}
-	}
+        return list.get(index);
+    }
 
-	public boolean isEmpty()
-	{
-		return list.isEmpty();
-	}
+    public void add(T obj) {
+        if (!list.contains(obj)) {
+            list.add(obj);
+        }
+    }
 
-	public void remove(int index)
-	{
-		if(isEmpty() || index > size()-1)
-		{
-			return;
-		}
+    public void add(int index, T obj) {
+        if (!list.contains(obj)) {
+            if (index > size()) {
+                for (int i = size(); i <= index - 1; i++) {
+                    list.add(i, null);
+                }
+            }
 
-		list.remove(index);
-	}
+            list.add(index, obj);
+        }
+    }
 
-	public void replace(int index, T obj)
-	{
-		if(get(index) != null)
-		{
-			remove(index);
-		}
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
 
-		add(index, obj);
-	}
+    public void remove(int index) {
+        if (isEmpty() || index > size() - 1) {
+            return;
+        }
 
-	public void remove(T obj)
-	{
-		list.remove(obj);
-	}
+        list.remove(index);
+    }
 
-	public int indexOf(T obj)
-	{
-		return list.indexOf(obj);
-	}
+    public void replace(int index, T obj) {
+        if (get(index) != null) {
+            remove(index);
+        }
 
-	public int size()
-	{
-		return list.size();
-	}
-	
-	@Override
-	public HashList<T> clone()
-	{
-		return new HashList<>(new ArrayList<>(list));
-	}
-	
-	public void swap(int source, int target)
-	{
-		// Make sure both source and target are legal values
-		if(source == target) return;
-		if(source < 0 || target < 0) return;
-		if(source >= list.size() || target >= list.size()) return;
-		
-		// Perform swap
-		T temp = list.get(source);
-		list.set(source, list.get( target));
-		list.set(target, temp);
-	}
+        add(index, obj);
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return list.hashCode();
-	}
+    public void remove(T obj) {
+        list.remove(obj);
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		return list.equals(obj);
-	}
+    public int indexOf(T obj) {
+        return list.indexOf(obj);
+    }
 
-	@Override
-	public Iterator<T> iterator()
-	{
-		return list.iterator();
-	}
+    public int size() {
+        return list.size();
+    }
+
+    @Override
+    public HashList<T> clone() {
+        return new HashList<>(new ArrayList<>(list));
+    }
+
+    public void swap(int source, int target) {
+        // Make sure both source and target are legal values
+        if (source == target) {
+            return;
+        }
+        if (source < 0 || target < 0) {
+            return;
+        }
+        if (source >= list.size() || target >= list.size()) {
+            return;
+        }
+
+        // Perform swap
+        T temp = list.get(source);
+        list.set(source, list.get(target));
+        list.set(target, temp);
+    }
+
+    @Override
+    public int hashCode() {
+        return list.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return list.equals(obj);
+    }
+
+    @Nonnull
+    @Override
+    public Iterator<T> iterator() {
+        return list.iterator();
+    }
 }

@@ -1,0 +1,9 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "layer":"SOLID",
+        "extra": {
+            "light": 15
+        }
+    }
+}

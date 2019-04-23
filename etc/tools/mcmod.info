@@ -1,24 +1,24 @@
 [
-{
-  "modid": "mekanismtools",
-  "name": "MekanismTools",
-  "description": "Tools module for Mekanism.",
-  "version": "${version}",
-  "mcversion": "${mc_version}",
-  "updateUrl": "",
-  "authors": [
-    "aidancbrady"
-  ],
-  "credits": "Thanks to everyone who has contributed to this ongoing project.",
-  "logoFile": "logo.png",
-  "screenshots": [
-  ],
-  "useDependencyInformation": true,
-  "dependencies":[
-    "mekanism@[${version}]"
-  ],
-  "requiredMods":[
-    "mekanism@[${version}]"
-  ]
-}
+  {
+    "modid": "mekanismtools",
+    "name": "Mekanism: Tools",
+    "description": "Tools module for Mekanism",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "authorList": [
+      "aidancbrady",
+      "thommy101",
+      "thiakil",
+      "pupnewfster",
+      "dizzyd"
+    ],
+    "credits": "unpairedbracket, CyanideX and many others",
+    "useDependencyInformation": true,
+    "dependencies": [
+      "mekanism@[${version}]"
+    ],
+    "requiredMods": [
+      "mekanism@[${version}]"
+    ]
+  }
 ]

@@ -2,50 +2,27 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.InventoryPlayer;
 
-public class ContainerNull extends Container
-{
-	private TileEntityContainerBlock tileEntity;
+public class ContainerNull extends ContainerMekanism<TileEntityContainerBlock> {
 
-	public ContainerNull(EntityPlayer player, TileEntityContainerBlock tile)
-	{
-		tileEntity = tile;
+    public ContainerNull(EntityPlayer player, TileEntityContainerBlock tile) {
+        super(tile, player == null ? null : player.inventory);
+    }
 
-		if(tileEntity != null)
-		{
-			tileEntity.open(player);
-			tileEntity.openInventory(player);
-		}
-	}
-	
-	public ContainerNull(TileEntityContainerBlock tile)
-	{
-		tileEntity = tile;
-	}
-	
-	public ContainerNull() {}
+    public ContainerNull(TileEntityContainerBlock tile) {
+        this(null, tile);
+    }
 
-	@Override
-	public void onContainerClosed(EntityPlayer entityplayer)
-	{
-		super.onContainerClosed(entityplayer);
+    public ContainerNull() {
+        this(null, null);
+    }
 
-		if(tileEntity != null)
-		{
-			tileEntity.close(entityplayer);
-			tileEntity.closeInventory(entityplayer);
-		}
-	}
+    @Override
+    protected void addSlots() {
+    }
 
-	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
-	{
-		if(tileEntity != null)
-		{
-			return tileEntity.isUsableByPlayer(entityplayer);
-		}
-		
-		return true;
-	}
+    @Override
+    protected void addInventorySlots(InventoryPlayer inventory) {
+    }
 }

@@ -7,116 +7,102 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiConfigTypeTab extends GuiElement
-{
-	private TileEntity tileEntity;
-	public TransmissionType transmission;
-	
-	private int yPos;
-	
-	public boolean visible;
-	public boolean left;
+public class GuiConfigTypeTab extends GuiElement {
 
-	public GuiConfigTypeTab(IGuiWrapper gui, TileEntity tile, TransmissionType type, ResourceLocation def)
-	{
-		super(getResource(type), gui, def);
+    private final TransmissionType transmission;
+    private boolean visible;
+    private boolean left;
+    private int yPos;
 
-		tileEntity = tile;
-		transmission = type;
-	}
-	
-	private static ResourceLocation getResource(TransmissionType t)
-	{
-		return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "Gui" + t.getTransmission() + "Tab.png");
-	}
-	
-	public void setY(int y)
-	{
-		yPos = y;
-	}
+    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, ResourceLocation def) {
+        super(getResource(type), gui, def);
+        transmission = type;
+    }
 
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth + getLeftBound(false)-4, guiHeight + yPos, 26, 26);
-	}
+    private static ResourceLocation getResource(TransmissionType t) {
+        return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "Gui" + t.getTransmission() + "Tab.png");
+    }
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		if(!visible)
-		{
-			return;
-		}
-		
-		mc.renderEngine.bindTexture(RESOURCE);
+    public void setY(int y) {
+        yPos = y;
+    }
 
-		guiObj.drawTexturedRect(guiWidth + getLeftBound(false)-4, guiHeight + yPos, 0, left ? 0 : 26, 26, 26);
+    public boolean isVisible() {
+        return visible;
+    }
 
-		if(xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos+4 && yAxis <= yPos+22)
-		{
-			guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos+4, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos+4, 26, 18, 18, 18);
-		}
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		if(!visible)
-		{
-			return;
-		}
-		
-		mc.renderEngine.bindTexture(RESOURCE);
+    public TransmissionType getTransmissionType() {
+        return transmission;
+    }
 
-		if(xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos+4 && yAxis <= yPos+22)
-		{
-			displayTooltip(transmission.localize(), xAxis, yAxis);
-		}
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth + getLeftBound(false) - 4, guiHeight + yPos, 26, 26);
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
-	
-	public int getLeftBound(boolean adjust)
-	{
-		return left ? -21+(adjust ? 1 : 0) : 179-(adjust ? 1 : 0);
-	}
-	
-	public int getRightBound(boolean adjust)
-	{
-		return left ? -3+(adjust ? 1 : 0) : 197-(adjust ? 1 : 0);
-	}
+    @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos + 4 && yAxis <= yPos + 22;
+    }
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        if (!visible) {
+            return;
+        }
+        mc.renderEngine.bindTexture(RESOURCE);
+        guiObj.drawTexturedRect(guiWidth + getLeftBound(false) - 4, guiHeight + yPos, 0, left ? 0 : 26, 26, 26);
+        guiObj.drawTexturedRect(guiWidth + getLeftBound(true), guiHeight + yPos + 4, 26,
+              inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(!visible)
-		{
-			return;
-		}
-		
-		if(button == 0)
-		{
-			if(xAxis >= getLeftBound(true) && xAxis <= getRightBound(true) && yAxis >= yPos+4 && yAxis <= yPos+22)
-			{
-				((GuiSideConfiguration)guiObj).currentType = transmission;
-				((GuiSideConfiguration)guiObj).updateTabs();
-				SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-			}
-		}
-	}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        if (!visible) {
+            return;
+        }
+        mc.renderEngine.bindTexture(RESOURCE);
+        if (inBounds(xAxis, yAxis)) {
+            displayTooltip(transmission.localize(), xAxis, yAxis);
+        }
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
+
+    public int getLeftBound(boolean adjust) {
+        return left ? -21 + (adjust ? 1 : 0) : 179 - (adjust ? 1 : 0);
+    }
+
+    public int getRightBound(boolean adjust) {
+        return left ? -3 + (adjust ? 1 : 0) : 197 - (adjust ? 1 : 0);
+    }
+
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (!visible) {
+            return;
+        }
+        if (button == 0 && inBounds(xAxis, yAxis)) {
+            ((GuiSideConfiguration) guiObj).setCurrentType(transmission);
+            ((GuiSideConfiguration) guiObj).updateTabs();
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+        }
+    }
 }

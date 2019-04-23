@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
-
+import javax.annotation.Nonnull;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -30,207 +30,181 @@ import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemScubaTank extends ItemArmor implements IGasItem
-{
-	public int TRANSFER_RATE = 16;
+public class ItemScubaTank extends ItemArmor implements IGasItem {
 
-	public ItemScubaTank()
-	{
-		super(EnumHelper.addArmorMaterial("SCUBATANK", "scubatank", 0, new int[] {0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), 0, EntityEquipmentSlot.CHEST);
-		setCreativeTab(Mekanism.tabMekanism);
-	}
+    public int TRANSFER_RATE = 16;
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
-	{
-		GasStack gasStack = getGas(itemstack);
-
-		if(gasStack == null)
-		{
-			list.add(LangUtils.localize("tooltip.noGas") + ".");
-		}
-		else {
-			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
-		}
-
-		list.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
-	}
-	
-	@Override
-	public boolean showDurabilityBar(ItemStack stack)
-	{
-		return true;
-	}
-	
-	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
-	{
-		return 1D-((getGas(stack) != null ? (double)getGas(stack).amount : 0D)/(double)getMaxGas(stack));
-	}
-	
-	@Override
-	public int getRGBDurabilityForDisplay(ItemStack stack)
-    {
-        return MathHelper.hsvToRGB(Math.max(0.0F, (float)(1-getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    public ItemScubaTank() {
+        super(EnumHelper.addArmorMaterial("SCUBATANK", "scubatank", 0, new int[]{0, 0, 0, 0}, 0,
+              SoundEvents.ITEM_ARMOR_EQUIP_GENERIC, 0), 0, EntityEquipmentSlot.CHEST);
+        setCreativeTab(Mekanism.tabMekanism);
     }
 
-	@Override
-	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
-	{
-		return armorType == EntityEquipmentSlot.CHEST;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+        GasStack gasStack = getGas(itemstack);
 
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
-	{
-		return "mekanism:render/NullArmor.png";
-	}
+        if (gasStack == null) {
+            list.add(LangUtils.localize("tooltip.noGas") + ".");
+        } else {
+            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
+                  + gasStack.amount);
+        }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
-	{
-		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-		model.modelType = ArmorModel.SCUBATANK;
-		return model;
-	}
+        list.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack)
+              ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
+    }
 
-	public void useGas(ItemStack itemstack)
-	{
-		setGas(itemstack, new GasStack(getGas(itemstack).getGas(), getGas(itemstack).amount-1));
-	}
-	
-	public GasStack useGas(ItemStack itemstack, int amount)
-	{
-		if(getGas(itemstack) == null)
-		{
-			return null;
-		}
+    @Override
+    public boolean showDurabilityBar(ItemStack stack) {
+        return true;
+    }
 
-		Gas type = getGas(itemstack).getGas();
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack) {
+        return 1D - ((getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) getMaxGas(stack));
+    }
 
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
+    @Override
+    public int getRGBDurabilityForDisplay(@Nonnull ItemStack stack) {
+        return MathHelper.hsvToRGB(Math.max(0.0F, (float) (1 - getDurabilityForDisplay(stack))) / 3.0F, 1.0F, 1.0F);
+    }
 
-		return new GasStack(type, gasToUse);
-	}
+    @Override
+    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
+        return armorType == EntityEquipmentSlot.CHEST;
+    }
 
-	@Override
-	public int getMaxGas(ItemStack itemstack)
-	{
-		return MekanismConfig.current().general.maxScubaGas.val();
-	}
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+        return "mekanism:render/NullArmor.png";
+    }
 
-	@Override
-	public int getRate(ItemStack itemstack)
-	{
-		return TRANSFER_RATE;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot,
+          ModelBiped _default) {
+        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
+        model.modelType = ArmorModel.SCUBATANK;
+        return model;
+    }
 
-	@Override
-	public int addGas(ItemStack itemstack, GasStack stack)
-	{
-		if(getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas())
-		{
-			return 0;
-		}
+    public void useGas(ItemStack itemstack) {
+        setGas(itemstack, new GasStack(getGas(itemstack).getGas(), getGas(itemstack).amount - 1));
+    }
 
-		if(stack.getGas() != MekanismFluids.Oxygen)
-		{
-			return 0;
-		}
+    public GasStack useGas(ItemStack itemstack, int amount) {
+        if (getGas(itemstack) == null) {
+            return null;
+        }
 
-		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
-		setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack)+toUse));
+        Gas type = getGas(itemstack).getGas();
 
-		return toUse;
-	}
+        int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
+        setGas(itemstack, new GasStack(type, getStored(itemstack) - gasToUse));
 
-	@Override
-	public GasStack removeGas(ItemStack itemstack, int amount)
-	{
-		return null;
-	}
+        return new GasStack(type, gasToUse);
+    }
 
-	public int getStored(ItemStack itemstack)
-	{
-		return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
-	}
+    @Override
+    public int getMaxGas(ItemStack itemstack) {
+        return MekanismConfig.current().general.maxScubaGas.val();
+    }
 
-	public void toggleFlowing(ItemStack stack)
-	{
-		setFlowing(stack, !getFlowing(stack));
-	}
+    @Override
+    public int getRate(ItemStack itemstack) {
+        return TRANSFER_RATE;
+    }
 
-	public boolean getFlowing(ItemStack stack)
-	{
-		return ItemDataUtils.getBoolean(stack, "flowing");
-	}
-	
-	public String getFlowingStr(ItemStack stack)
-	{
-		boolean flowing = getFlowing(stack);
-		
-		return LangUtils.localize("tooltip." + (flowing ? "yes" : "no"));
-	}
+    @Override
+    public int addGas(ItemStack itemstack, GasStack stack) {
+        if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
+            return 0;
+        }
 
-	public void setFlowing(ItemStack stack, boolean flowing)
-	{
-		ItemDataUtils.setBoolean(stack, "flowing", flowing);
-	}
+        if (stack.getGas() != MekanismFluids.Oxygen) {
+            return 0;
+        }
 
-	@Override
-	public boolean canReceiveGas(ItemStack itemstack, Gas type)
-	{
-		return type == MekanismFluids.Oxygen;
-	}
+        int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
+        setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
 
-	@Override
-	public boolean canProvideGas(ItemStack itemstack, Gas type)
-	{
-		return false;
-	}
+        return toUse;
+    }
 
-	@Override
-	public GasStack getGas(ItemStack itemstack)
-	{
-		return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
-	}
+    @Override
+    public GasStack removeGas(ItemStack itemstack, int amount) {
+        return null;
+    }
 
-	@Override
-	public void setGas(ItemStack itemstack, GasStack stack)
-	{
-		if(stack == null || stack.amount == 0)
-		{
-			ItemDataUtils.removeData(itemstack, "stored");
-		}
-		else {
-			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
-			GasStack gasStack = new GasStack(stack.getGas(), amount);
+    public int getStored(ItemStack itemstack) {
+        return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
+    }
 
-			ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
-		}
-	}
+    public void toggleFlowing(ItemStack stack) {
+        setFlowing(stack, !getFlowing(stack));
+    }
 
-	public ItemStack getEmptyItem()
-	{
-		ItemStack empty = new ItemStack(this);
-		setGas(empty, null);
-		
-		return empty;
-	}
+    public boolean getFlowing(ItemStack stack) {
+        return ItemDataUtils.getBoolean(stack, "flowing");
+    }
 
-	@Override
-	public void getSubItems(CreativeTabs tabs, NonNullList<ItemStack> list)
-	{
-		if(!isInCreativeTab(tabs)) return;
-		ItemStack empty = new ItemStack(this);
-		setGas(empty, null);
-		list.add(empty);
+    public String getFlowingStr(ItemStack stack) {
+        boolean flowing = getFlowing(stack);
 
-		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(MekanismFluids.Oxygen, ((IGasItem)filled.getItem()).getMaxGas(filled)));
-		list.add(filled);
-	}
+        return LangUtils.localize("tooltip." + (flowing ? "yes" : "no"));
+    }
+
+    public void setFlowing(ItemStack stack, boolean flowing) {
+        ItemDataUtils.setBoolean(stack, "flowing", flowing);
+    }
+
+    @Override
+    public boolean canReceiveGas(ItemStack itemstack, Gas type) {
+        return type == MekanismFluids.Oxygen;
+    }
+
+    @Override
+    public boolean canProvideGas(ItemStack itemstack, Gas type) {
+        return false;
+    }
+
+    @Override
+    public GasStack getGas(ItemStack itemstack) {
+        return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
+    }
+
+    @Override
+    public void setGas(ItemStack itemstack, GasStack stack) {
+        if (stack == null || stack.amount == 0) {
+            ItemDataUtils.removeData(itemstack, "stored");
+        } else {
+            int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
+            GasStack gasStack = new GasStack(stack.getGas(), amount);
+
+            ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
+        }
+    }
+
+    public ItemStack getEmptyItem() {
+        ItemStack empty = new ItemStack(this);
+        setGas(empty, null);
+
+        return empty;
+    }
+
+    @Override
+    public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
+        if (!isInCreativeTab(tabs)) {
+            return;
+        }
+        ItemStack empty = new ItemStack(this);
+        setGas(empty, null);
+        list.add(empty);
+
+        ItemStack filled = new ItemStack(this);
+        setGas(filled, new GasStack(MekanismFluids.Oxygen, ((IGasItem) filled.getItem()).getMaxGas(filled)));
+        list.add(filled);
+    }
 }

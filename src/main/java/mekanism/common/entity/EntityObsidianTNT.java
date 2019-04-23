@@ -1,5 +1,6 @@
 package mekanism.common.entity;
 
+import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
@@ -7,121 +8,111 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
-public class EntityObsidianTNT extends Entity
-{
-	/** How long the fuse is */
-	public int fuse;
+public class EntityObsidianTNT extends Entity {
 
-	/** Whether or not the TNT has exploded */
-	private boolean hasExploded = false;
+    /**
+     * How long the fuse is
+     */
+    public int fuse;
 
-	public EntityObsidianTNT(World world)
-	{
-		super(world);
-		fuse = 0;
-		preventEntitySpawning = true;
-		setSize(0.98F, 0.98F);
-	}
+    /**
+     * Whether or not the TNT has exploded
+     */
+    private boolean hasExploded = false;
 
-	public EntityObsidianTNT(World world, double x, double y, double z)
-	{
-		this(world);
+    public EntityObsidianTNT(World world) {
+        super(world);
+        fuse = 0;
+        preventEntitySpawning = true;
+        setSize(0.98F, 0.98F);
+    }
 
-		setPosition(x, y, z);
+    public EntityObsidianTNT(World world, double x, double y, double z) {
+        this(world);
 
-		float randPi = (float)(Math.random()*Math.PI*2);
+        setPosition(x, y, z);
 
-		motionX = -(Math.sin(randPi))*0.02F;
-		motionY = 0.2;
-		motionZ = -(Math.cos(randPi))*0.02F;
+        float randPi = (float) (Math.random() * Math.PI * 2);
 
-		fuse = MekanismConfig.current().general.obsidianTNTDelay.val();
+        motionX = -(Math.sin(randPi)) * 0.02F;
+        motionY = 0.2;
+        motionZ = -(Math.cos(randPi)) * 0.02F;
 
-		prevPosX = x;
-		prevPosY = y;
-		prevPosZ = z;
-	}
+        fuse = MekanismConfig.current().general.obsidianTNTDelay.val();
 
-	@Override
-	protected void entityInit() {}
+        prevPosX = x;
+        prevPosY = y;
+        prevPosZ = z;
+    }
 
-	@Override
-	protected boolean canTriggerWalking()
-	{
-		return false;
-	}
+    @Override
+    protected void entityInit() {
+    }
 
-	@Override
-	public boolean canBeCollidedWith()
-	{
-		return !isDead;
-	}
+    @Override
+    protected boolean canTriggerWalking() {
+        return false;
+    }
 
-	@Override
-	public boolean canBePushed()
-	{
-		return true;
-	}
+    @Override
+    public boolean canBeCollidedWith() {
+        return !isDead;
+    }
 
-	@Override
-	public void onUpdate()
-	{
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
+    @Override
+    public boolean canBePushed() {
+        return true;
+    }
 
-		motionY -= 0.04;
+    @Override
+    public void onUpdate() {
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
 
-		move(MoverType.SELF, motionX, motionY, motionZ);
+        motionY -= 0.04;
 
-		motionX *= 0.98;
-		motionY *= 0.98;
-		motionZ *= 0.98;
+        move(MoverType.SELF, motionX, motionY, motionZ);
 
-		if(onGround)
-		{
-			motionX *= 0.7;
-			motionZ *= 0.7;
-			motionY *= -0.5;
-		}
+        motionX *= 0.98;
+        motionY *= 0.98;
+        motionZ *= 0.98;
 
-		if(fuse-- <= 0)
-		{
-			if(!world.isRemote)
-			{
-				setDead();
-				explode();
-			}
-			else {
-				if(hasExploded)
-				{
-					setDead();
-				}
-				else {
-					world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
-				}
-			}
-		}
-		else {
-			world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
-		}
-	}
+        if (onGround) {
+            motionX *= 0.7;
+            motionZ *= 0.7;
+            motionY *= -0.5;
+        }
 
-	private void explode()
-	{
-		world.createExplosion(null, posX, posY, posZ, MekanismConfig.current().general.obsidianTNTBlastRadius.val(), true);
-		hasExploded = true;
-	}
+        if (fuse-- <= 0) {
+            if (!world.isRemote) {
+                setDead();
+                explode();
+            } else {
+                if (hasExploded) {
+                    setDead();
+                } else {
+                    world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
+                }
+            }
+        } else {
+            world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
+        }
+    }
 
-	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbtTags)
-	{
-		nbtTags.setByte("Fuse", (byte)fuse);
-	}
+    private void explode() {
+        world.createExplosion(null, posX, posY, posZ, MekanismConfig.current().general.obsidianTNTBlastRadius.val(),
+              true);
+        hasExploded = true;
+    }
 
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTags)
-	{
-		fuse = nbtTags.getByte("Fuse");
-	}
+    @Override
+    protected void writeEntityToNBT(@Nonnull NBTTagCompound nbtTags) {
+        nbtTags.setByte("Fuse", (byte) fuse);
+    }
+
+    @Override
+    protected void readEntityFromNBT(@Nonnull NBTTagCompound nbtTags) {
+        fuse = nbtTags.getByte("Fuse");
+    }
 }

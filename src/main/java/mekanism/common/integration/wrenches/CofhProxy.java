@@ -11,34 +11,30 @@ import net.minecraft.util.math.RayTraceResult;
 /**
  * Translates to COFH's IToolHammer
  */
-public class CofhProxy implements MekWrenchProxy, IMekWrench
-{
-	public static final String COFH_HAMMER_CLASS = "cofh.api.item.IToolHammer";
+public class CofhProxy implements MekWrenchProxy, IMekWrench {
 
-	@Override
-	public IMekWrench get(ItemStack stack)
-	{
-		return stack.getItem() instanceof IToolHammer ? this : null;
-	}
+    public static final String COFH_HAMMER_CLASS = "cofh.api.item.IToolHammer";
 
-	@Override
-	public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos)
-	{
-		return stack.getItem() instanceof IToolHammer && ((IToolHammer)stack.getItem()).isUsable(stack, player, pos);
-	}
+    @Override
+    public IMekWrench get(ItemStack stack) {
+        return stack.getItem() instanceof IToolHammer ? this : null;
+    }
 
-	// uses default method
-	//@Override
-	//public boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace) {
-	//    return false;
-	//}
+    @Override
+    public boolean canUseWrench(ItemStack stack, EntityPlayer player, BlockPos pos) {
+        return stack.getItem() instanceof IToolHammer && ((IToolHammer) stack.getItem()).isUsable(stack, player, pos);
+    }
 
-	@Override
-	public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace)
-	{
-		if(wrench.getItem() instanceof IToolHammer)
-		{
-			((IToolHammer)wrench.getItem()).toolUsed(wrench, player, rayTrace.getBlockPos() != null ? rayTrace.getBlockPos() : BlockPos.ORIGIN);
-		}
-	}
+    // uses default method
+    //@Override
+    //public boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace) {
+    //    return false;
+    //}
+
+    @Override
+    public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {
+        if (wrench.getItem() instanceof IToolHammer) {
+            ((IToolHammer) wrench.getItem()).toolUsed(wrench, player, rayTrace.getBlockPos());
+        }
+    }
 }

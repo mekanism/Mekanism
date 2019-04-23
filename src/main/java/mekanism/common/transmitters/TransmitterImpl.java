@@ -1,7 +1,7 @@
 package mekanism.common.transmitters;
 
 import java.util.Collection;
-
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -13,144 +13,147 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class TransmitterImpl<A, N extends DynamicNetwork<A,N>> extends Transmitter<A, N>
-{
-	public TileEntityTransmitter<A, N> containingTile;
+public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> extends Transmitter<ACCEPTOR, NETWORK, BUFFER> {
 
-	public TransmitterImpl(TileEntityTransmitter<A, N> multiPart)
-	{
-		setTileEntity(multiPart);
-	}
+    public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> containingTile;
 
-	@Override
-	public int getCapacity()
-	{
-		return getTileEntity().getCapacity();
-	}
-
-	@Override
-	public World world()
-	{
-		return getTileEntity().getWorld();
-	}
-
-	@Override
-	public Coord4D coord()
-	{
-		return new Coord4D(getTileEntity().getPos(), getTileEntity().getWorld());
-	}
-
-	@Override
-	public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side)
-	{
-		Coord4D sideCoord = coord().offset(side);
-
-		TileEntity potentialTransmitterTile = sideCoord.getTileEntity(world());
-
-		if(!containingTile.canConnectMutual(side))
-		{
-			return null;
-		}
-
-		if(CapabilityUtils.hasCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()))
-		{
-			IGridTransmitter transmitter = CapabilityUtils.getCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
-
-			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()) && containingTile.isValidTransmitter(potentialTransmitterTile))
-			{
-				return sideCoord;
-			}
-		}
-		
-		return null;
-	}
-
-	@Override
-	public A getAcceptor(EnumFacing side)
-	{
-		return getTileEntity().getCachedAcceptor(side);
-	}
-
-	@Override
-	public boolean isValid()
-	{
-		TileEntityTransmitter cont = getTileEntity();
-		
-		if(cont == null)
-		{
-			return false;
-		}
-
-		return !cont.isInvalid() && coord().exists(world()) && coord().getTileEntity(world()) == cont && cont.getTransmitter() == this;
-	}
-
-	@Override
-	public N createEmptyNetwork()
-	{
-		return getTileEntity().createNewNetwork();
-	}
-
-	@Override
-	public N getExternalNetwork(Coord4D from)
-	{
-		TileEntity tile = from.getTileEntity(world());
-		
-		if(CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null))
-		{
-			IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-			
-			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()))
-			{
-				return ((IGridTransmitter<A, N>)transmitter).getTransmitterNetwork();
-			}
-		}
-		
-		return null;
-	}
-
-	@Override
-	public void takeShare()
-	{
-		containingTile.takeShare();
-	}
+    public TransmitterImpl(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> multiPart) {
+        setTileEntity(multiPart);
+    }
 
     @Override
-    public void updateShare()
-    {
+    public int getCapacity() {
+        return getTileEntity().getCapacity();
+    }
+
+    @Override
+    public World world() {
+        return getTileEntity().getWorld();
+    }
+
+    @Override
+    public Coord4D coord() {
+        return new Coord4D(getTileEntity().getPos(), getTileEntity().getWorld());
+    }
+
+    @Override
+    public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side) {
+        Coord4D sideCoord = coord().offset(side);
+
+        TileEntity potentialTransmitterTile = sideCoord.getTileEntity(world());
+
+        if (!containingTile.canConnectMutual(side)) {
+            return null;
+        }
+
+        if (CapabilityUtils
+              .hasCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
+            IGridTransmitter transmitter = CapabilityUtils
+                  .getCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY,
+                        side.getOpposite());
+
+            if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType()) && containingTile
+                  .isValidTransmitter(potentialTransmitterTile)) {
+                return sideCoord;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean isCompatibleWith(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> other) {
+        if (other instanceof TransmitterImpl) {
+            return containingTile.isValidTransmitter(((TransmitterImpl) other).containingTile);
+        }
+        return true;//allow non-Transmitter impls to connect?
+    }
+
+    @Override
+    public void connectionFailed() {
+        containingTile.delayedRefresh = true;
+    }
+
+    @Override
+    public ACCEPTOR getAcceptor(EnumFacing side) {
+        return getTileEntity().getCachedAcceptor(side);
+    }
+
+    @Override
+    public boolean isValid() {
+        TileEntityTransmitter cont = getTileEntity();
+
+        if (cont == null) {
+            return false;
+        }
+
+        return !cont.isInvalid() && coord().exists(world()) && coord().getTileEntity(world()) == cont
+              && cont.getTransmitter() == this;
+    }
+
+    @Override
+    public NETWORK createEmptyNetwork() {
+        return getTileEntity().createNewNetwork();
+    }
+
+    @Override
+    public NETWORK getExternalNetwork(Coord4D from) {
+        TileEntity tile = from.getTileEntity(world());
+
+        if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
+            IGridTransmitter transmitter = CapabilityUtils
+                  .getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+
+            if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType())) {
+                return ((IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void takeShare() {
+        containingTile.takeShare();
+    }
+
+    @Override
+    public void updateShare() {
         containingTile.updateShare();
     }
 
-	@Override
-	public Object getBuffer()
-	{
-		return getTileEntity().getBuffer();
-	}
+    @Nullable
+    @Override
+    public BUFFER getBuffer() {
+        return getTileEntity().getBuffer();
+    }
 
-	@Override
-	public N mergeNetworks(Collection<N> toMerge)
-	{
-		return getTileEntity().createNetworkByMerging(toMerge);
-	}
+    @Nullable
+    @Override
+    public BUFFER getBufferWithFallback() {
+        return getTileEntity().getBufferWithFallback();
+    }
 
-	@Override
-	public TransmissionType getTransmissionType()
-	{
-		return getTileEntity().getTransmissionType();
-	}
-	
-	@Override
-	public void setRequestsUpdate()
-	{
-		containingTile.sendDesc = true;
-	}
+    @Override
+    public NETWORK mergeNetworks(Collection<NETWORK> toMerge) {
+        return getTileEntity().createNetworkByMerging(toMerge);
+    }
 
-	public TileEntityTransmitter<A, N> getTileEntity()
-	{
-		return containingTile;
-	}
+    @Override
+    public TransmissionType getTransmissionType() {
+        return getTileEntity().getTransmissionType();
+    }
 
-	public void setTileEntity(TileEntityTransmitter<A, N> containingPart)
-	{
-		this.containingTile = containingPart;
-	}
+    @Override
+    public void setRequestsUpdate() {
+        containingTile.sendDesc = true;
+    }
+
+    public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> getTileEntity() {
+        return containingTile;
+    }
+
+    public void setTileEntity(TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> containingPart) {
+        this.containingTile = containingPart;
+    }
 }

@@ -1,10 +1,8 @@
 package mekanism.common.content.transporter;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.PacketHandler;
@@ -15,339 +13,280 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TransporterStack
-{
-	public ItemStack itemStack = ItemStack.EMPTY;
+public class TransporterStack {
 
-	public int progress;
+    public ItemStack itemStack = ItemStack.EMPTY;
 
-	public EnumColor color = null;
+    public int progress;
 
-	public boolean initiatedPath = false;
-	
-	public EnumFacing idleDir = null;
+    public EnumColor color = null;
 
-	private List<Coord4D> pathToTarget = new ArrayList<>();
+    public boolean initiatedPath = false;
 
-	public Coord4D originalLocation;
-	public Coord4D homeLocation;
+    public EnumFacing idleDir = null;
+    public Coord4D originalLocation;
+    public Coord4D homeLocation;
+    public Coord4D clientNext;
+    public Coord4D clientPrev;
+    public Path pathType;
+    private List<Coord4D> pathToTarget = new ArrayList<>();
 
-	public Coord4D clientNext;
-	public Coord4D clientPrev;
+    public static TransporterStack readFromNBT(NBTTagCompound nbtTags) {
+        TransporterStack stack = new TransporterStack();
+        stack.read(nbtTags);
 
-	public Path pathType;
+        return stack;
+    }
 
-	public void write(ILogisticalTransporter transporter, TileNetworkList data)
-	{
-		if(color != null)
-		{
-			data.add(TransporterUtils.colors.indexOf(color));
-		}
-		else {
-			data.add(-1);
-		}
+    public static TransporterStack readFromPacket(ByteBuf dataStream) {
+        TransporterStack stack = new TransporterStack();
+        stack.read(dataStream);
 
-		data.add(progress);
-		originalLocation.write(data);
-		data.add(pathType.ordinal());
+        return stack;
+    }
 
-		if(pathToTarget.indexOf(transporter.coord()) > 0)
-		{
-			data.add(true);
-			getNext(transporter).write(data);
-		}
-		else {
-			data.add(false);
-		}
+    public void write(ILogisticalTransporter transporter, TileNetworkList data) {
+        if (color != null) {
+            data.add(TransporterUtils.colors.indexOf(color));
+        } else {
+            data.add(-1);
+        }
 
-		getPrev(transporter).write(data);
+        data.add(progress);
+        originalLocation.write(data);
+        data.add(pathType.ordinal());
 
-		data.add(itemStack);
-	}
+        if (pathToTarget.indexOf(transporter.coord()) > 0) {
+            data.add(true);
+            getNext(transporter).write(data);
+        } else {
+            data.add(false);
+        }
 
-	public void read(ByteBuf dataStream)
-	{
-		int c = dataStream.readInt();
+        getPrev(transporter).write(data);
 
-		if(c != -1)
-		{
-			color = TransporterUtils.colors.get(c);
-		}
-		else {
-			color = null;
-		}
+        data.add(itemStack);
+    }
 
-		progress = dataStream.readInt();
-		originalLocation = Coord4D.read(dataStream);
-		pathType = Path.values()[dataStream.readInt()];
+    public void read(ByteBuf dataStream) {
+        int c = dataStream.readInt();
 
-		if(dataStream.readBoolean())
-		{
-			clientNext = Coord4D.read(dataStream);
-		}
+        if (c != -1) {
+            color = TransporterUtils.colors.get(c);
+        } else {
+            color = null;
+        }
 
-		clientPrev = Coord4D.read(dataStream);
+        progress = dataStream.readInt();
+        originalLocation = Coord4D.read(dataStream);
+        pathType = Path.values()[dataStream.readInt()];
 
-		itemStack = PacketHandler.readStack(dataStream);
-	}
+        if (dataStream.readBoolean()) {
+            clientNext = Coord4D.read(dataStream);
+        }
 
-	public void write(NBTTagCompound nbtTags)
-	{
-		if(color != null)
-		{
-			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
-		}
+        clientPrev = Coord4D.read(dataStream);
 
-		nbtTags.setInteger("progress", progress);
-		nbtTags.setTag("originalLocation", originalLocation.write(new NBTTagCompound()));
-		
-		if(idleDir != null)
-		{
-			nbtTags.setInteger("idleDir", idleDir.ordinal());
-		}
+        itemStack = PacketHandler.readStack(dataStream);
+    }
 
-		if(homeLocation != null)
-		{
-			nbtTags.setTag("homeLocation", homeLocation.write(new NBTTagCompound()));
-		}
+    public void write(NBTTagCompound nbtTags) {
+        if (color != null) {
+            nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+        }
 
-		nbtTags.setInteger("pathType", pathType.ordinal());
-		itemStack.writeToNBT(nbtTags);
-	}
+        nbtTags.setInteger("progress", progress);
+        nbtTags.setTag("originalLocation", originalLocation.write(new NBTTagCompound()));
 
-	public void read(NBTTagCompound nbtTags)
-	{
-		if(nbtTags.hasKey("color"))
-		{
-			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
-		}
+        if (idleDir != null) {
+            nbtTags.setInteger("idleDir", idleDir.ordinal());
+        }
 
-		progress = nbtTags.getInteger("progress");
-		originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
-		
-		if(nbtTags.hasKey("idleDir"))
-		{
-			idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
-		}
+        if (homeLocation != null) {
+            nbtTags.setTag("homeLocation", homeLocation.write(new NBTTagCompound()));
+        }
 
-		if(nbtTags.hasKey("homeLocation"))
-		{
-			homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
-		}
+        nbtTags.setInteger("pathType", pathType.ordinal());
+        itemStack.writeToNBT(nbtTags);
+    }
 
-		pathType = Path.values()[nbtTags.getInteger("pathType")];
-		itemStack = InventoryUtils.loadFromNBT(nbtTags);
-	}
+    public void read(NBTTagCompound nbtTags) {
+        if (nbtTags.hasKey("color")) {
+            color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+        }
 
-	public static TransporterStack readFromNBT(NBTTagCompound nbtTags)
-	{
-		TransporterStack stack = new TransporterStack();
-		stack.read(nbtTags);
+        progress = nbtTags.getInteger("progress");
+        originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
 
-		return stack;
-	}
+        if (nbtTags.hasKey("idleDir")) {
+            idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
+        }
 
-	public static TransporterStack readFromPacket(ByteBuf dataStream)
-	{
-		TransporterStack stack = new TransporterStack();
-		stack.read(dataStream);
+        if (nbtTags.hasKey("homeLocation")) {
+            homeLocation = Coord4D.read(nbtTags.getCompoundTag("homeLocation"));
+        }
 
-		return stack;
-	}
-	
-	public void setPath(List<Coord4D> path, Path type)
-	{
-		//Make sure old path isn't null
-		if(pathType != Path.NONE)
-		{
-			TransporterManager.remove(this);
-		}
-		
-		pathToTarget = path;
-		pathType = type;
-		
-		if(pathType != Path.NONE)
-		{
-			TransporterManager.add(this);
-		}
-	}
+        pathType = Path.values()[nbtTags.getInteger("pathType")];
+        itemStack = new ItemStack(nbtTags);
+    }
 
-	public boolean hasPath()
-	{
-		return getPath() != null && getPath().size() >= 2;
-	}
-	
-	public List<Coord4D> getPath()
-	{
-		return pathToTarget;
-	}
+    public void setPath(List<Coord4D> path, Path type) {
+        //Make sure old path isn't null
+        if (pathType != Path.NONE) {
+            TransporterManager.remove(this);
+        }
 
-	public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min)
-	{
-		Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
+        pathToTarget = path;
+        pathType = type;
 
-		if(newPath == null)
-		{
-			return TransitResponse.EMPTY;
-		}
+        if (pathType != Path.NONE) {
+            TransporterManager.add(this);
+        }
+    }
 
-		idleDir = null;
-		setPath(newPath.path, Path.DEST);
-		initiatedPath = true;
+    public boolean hasPath() {
+        return getPath() != null && getPath().size() >= 2;
+    }
 
-		return newPath.response;
-	}
+    public List<Coord4D> getPath() {
+        return pathToTarget;
+    }
 
-	public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, int min)
-	{
-		Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
+    public TransitResponse recalculatePath(TransitRequest request, ILogisticalTransporter transporter, int min) {
+        Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
 
-		if(newPath == null)
-		{
-			return TransitResponse.EMPTY;
-		}
+        if (newPath == null) {
+            return TransitResponse.EMPTY;
+        }
 
-		idleDir = null;
-		setPath(newPath.path, Path.DEST);
-		initiatedPath = true;
+        idleDir = null;
+        setPath(newPath.path, Path.DEST);
+        initiatedPath = true;
 
-		return newPath.response;
-	}
+        return newPath.response;
+    }
 
-	public boolean calculateIdle(ILogisticalTransporter transporter)
-	{
-		Pair<List<Coord4D>, Path> newPath = TransporterPathfinder.getIdlePath(transporter, this);
+    public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter,
+          ILogisticalTransporter transporter, int min) {
+        Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
 
-		if(newPath == null)
-		{
-			return false;
-		}
-		
-		if(newPath.getRight() == Path.HOME)
-		{
-			idleDir = null;
-		}
-		
-		setPath(newPath.getLeft(), newPath.getRight());
+        if (newPath == null) {
+            return TransitResponse.EMPTY;
+        }
 
-		originalLocation = transporter.coord();
-		initiatedPath = true;
+        idleDir = null;
+        setPath(newPath.path, Path.DEST);
+        initiatedPath = true;
 
-		return true;
-	}
+        return newPath.response;
+    }
 
-	public boolean isFinal(ILogisticalTransporter transporter)
-	{
-		return pathToTarget.indexOf(transporter.coord()) == (pathType == Path.NONE ? 0 : 1);
-	}
+    public boolean calculateIdle(ILogisticalTransporter transporter) {
+        Pair<List<Coord4D>, Path> newPath = TransporterPathfinder.getIdlePath(transporter, this);
 
-	public Coord4D getNext(ILogisticalTransporter transporter)
-	{
-		if(!transporter.world().isRemote)
-		{
-			int index = pathToTarget.indexOf(transporter.coord())-1;
+        if (newPath == null) {
+            return false;
+        }
 
-			if(index < 0)
-			{
-				return null;
-			}
+        if (newPath.getRight() == Path.HOME) {
+            idleDir = null;
+        }
 
-			return pathToTarget.get(index);
-		}
-		else {
-			return clientNext;
-		}
-	}
+        setPath(newPath.getLeft(), newPath.getRight());
 
-	public Coord4D getPrev(ILogisticalTransporter transporter)
-	{
-		if(!transporter.world().isRemote)
-		{
-			int index = pathToTarget.indexOf(transporter.coord())+1;
+        originalLocation = transporter.coord();
+        initiatedPath = true;
 
-			if(index < pathToTarget.size())
-			{
-				return pathToTarget.get(index);
-			}
-			else {
-				return originalLocation;
-			}
-		}
-		else {
-			return clientPrev;
-		}
-	}
+        return true;
+    }
 
-	public EnumFacing getSide(ILogisticalTransporter transporter)
-	{
-		if(progress < 50)
-		{
-			if(getPrev(transporter) != null)
-			{
-				return transporter.coord().sideDifference(getPrev(transporter));
-			}
-		}
-		else if(progress == 50)
-		{
-			if(getNext(transporter) != null)
-			{
-				return getNext(transporter).sideDifference(transporter.coord());
-			}
-		}
-		else if(progress > 50)
-		{
-			if(getNext(transporter) != null)
-			{
-				return getNext(transporter).sideDifference(transporter.coord());
-			}
-		}
+    public boolean isFinal(ILogisticalTransporter transporter) {
+        return pathToTarget.indexOf(transporter.coord()) == (pathType == Path.NONE ? 0 : 1);
+    }
 
-		return EnumFacing.DOWN;
-	}
+    public Coord4D getNext(ILogisticalTransporter transporter) {
+        if (!transporter.world().isRemote) {
+            int index = pathToTarget.indexOf(transporter.coord()) - 1;
 
-	public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from)
-	{
-		if(!(CapabilityUtils.hasCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite())))
-		{
-			return false;
-		}
+            if (index < 0) {
+                return null;
+            }
 
-		ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite());
+            return pathToTarget.get(index);
+        } else {
+            return clientNext;
+        }
+    }
 
-		if(!CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, from.getOpposite()).canConnectMutual(from.getOpposite()))
-		{
-			return false;
-		}
+    public Coord4D getPrev(ILogisticalTransporter transporter) {
+        if (!transporter.world().isRemote) {
+            int index = pathToTarget.indexOf(transporter.coord()) + 1;
 
-		return transporter.getColor() == color || transporter.getColor() == null;
-	}
+            if (index < pathToTarget.size()) {
+                return pathToTarget.get(index);
+            } else {
+                return originalLocation;
+            }
+        } else {
+            return clientPrev;
+        }
+    }
 
-	public boolean canInsertToTransporter(ILogisticalTransporter transporter, EnumFacing side)
-	{
-		if(!transporter.canConnectMutual(side))
-		{
-			return false;
-		}
+    public EnumFacing getSide(ILogisticalTransporter transporter) {
+        if (progress < 50) {
+            if (getPrev(transporter) != null) {
+                return transporter.coord().sideDifference(getPrev(transporter));
+            }
+        } else if (progress == 50) {
+            if (getNext(transporter) != null) {
+                return getNext(transporter).sideDifference(transporter.coord());
+            }
+        } else {
+            if (getNext(transporter) != null) {
+                return getNext(transporter).sideDifference(transporter.coord());
+            }
+        }
 
-		return transporter.getColor() == color || transporter.getColor() == null;
-	}
+        return EnumFacing.DOWN;
+    }
 
-	public Coord4D getDest()
-	{
-		return getPath().get(0);
-	}
+    public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing from) {
+        if (!(CapabilityUtils
+              .hasCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite()))) {
+            return false;
+        }
 
-	public enum Path
-	{
-		DEST, HOME, NONE
-	}
+        ILogisticalTransporter transporter = CapabilityUtils
+              .getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, from.getOpposite());
+
+        if (!CapabilityUtils.getCapability(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, from.getOpposite())
+              .canConnectMutual(from.getOpposite())) {
+            return false;
+        }
+
+        return transporter.getColor() == color || transporter.getColor() == null;
+    }
+
+    public boolean canInsertToTransporter(ILogisticalTransporter transporter, EnumFacing side) {
+        if (!transporter.canConnectMutual(side)) {
+            return false;
+        }
+
+        return transporter.getColor() == color || transporter.getColor() == null;
+    }
+
+    public Coord4D getDest() {
+        return getPath().get(0);
+    }
+
+    public enum Path {
+        DEST, HOME, NONE
+    }
 }

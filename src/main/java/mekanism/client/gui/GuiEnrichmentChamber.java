@@ -7,16 +7,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiEnrichmentChamber extends GuiElectricMachine
-{
-	public GuiEnrichmentChamber(InventoryPlayer inventory, TileEntityElectricMachine tentity)
-	{
-		super(inventory, tentity);
-	}
-	
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.BLUE;
-	}
+public class GuiEnrichmentChamber extends GuiElectricMachine {
+
+    public GuiEnrichmentChamber(InventoryPlayer inventory, TileEntityElectricMachine tile) {
+        super(inventory, tile);
+    }
+
+    @Override
+    public ProgressBar getProgressType() {
+        return ProgressBar.BLUE;
+    }
 }

@@ -1,0 +1,37 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekanism:machine",
+    "textures": {
+      "sides": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryside",
+      "front": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryfront",
+      "south": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryback",
+      "west": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryside",
+      "east": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryside",
+      "up": "mekanism:blocks/factory/elite/sawing/elitesawingfactorytop",
+      "down": "mekanism:blocks/factory/elite/EliteFactoryBottom"
+    }
+  },
+  "variants": {
+    "facing": {
+      "north": {},
+      "south": {"y": 180},
+      "east":  {"y": 90},
+      "west":  {"y": -90}
+    },
+    "active": {
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/elite/sawing/elitesawingfactoryfronton",
+          "south": "mekanism:blocks/factory/elite/sawing/elitesawingfactorybackon",
+          "west": "mekanism:blocks/factory/elite/sawing/elitesawingfactorysideon",
+          "east": "mekanism:blocks/factory/elite/sawing/elitesawingfactorysideon",
+          "up": "mekanism:blocks/factory/elite/sawing/elitesawingfactorytopon"
+        }
+      },
+      "false": {}
+    },
+    "inventory": [{}]
+  }
+}
+

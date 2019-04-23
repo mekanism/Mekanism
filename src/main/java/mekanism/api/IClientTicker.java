@@ -1,8 +1,8 @@
 package mekanism.api;
 
-public interface IClientTicker
-{
-	void clientTick();
+public interface IClientTicker {
 
-	boolean needsTicks();
+    void clientTick();
+
+    boolean needsTicks();
 }

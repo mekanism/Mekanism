@@ -1,7 +1,7 @@
 package mekanism.common.block;
 
 import java.util.Random;
-
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -34,254 +34,231 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockGlowPanel extends Block implements ITileEntityProvider
-{
-	private static Random rand = new Random();
-	public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
+public class BlockGlowPanel extends Block implements ITileEntityProvider {
 
-	static
-	{
-		AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
-		Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
+    public static AxisAlignedBB[] bounds = new AxisAlignedBB[6];
+    private static Random rand = new Random();
 
-		for(EnumFacing side : EnumFacing.VALUES)
-		{
-			bounds[side.ordinal()] = MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side).offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z);
-		}
-	}
-	
-	public BlockGlowPanel() 
-	{
+    static {
+        AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
+        Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
+
+        for (EnumFacing side : EnumFacing.VALUES) {
+            bounds[side.ordinal()] = MultipartUtils
+                  .rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side)
+                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z);
+        }
+    }
+
+    public BlockGlowPanel() {
         super(Material.PISTON);
         setCreativeTab(Mekanism.tabMekanism);
         setHardness(1F);
         setResistance(10F);
     }
-	
-	@Override
-	public int getMetaFromState(IBlockState state)
-    {
-		return 0;
-    }
-	
-	@Override
-	public BlockStateContainer createBlockState()
-	{
-		return new BlockStateGlowPanel(this);
-	}
-	
-	@Deprecated
-	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-		return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
-	}
 
-	@SideOnly(Side.CLIENT)
+    public static boolean canStay(IBlockAccess world, BlockPos pos) {
+        boolean canStay = false;
+
+        if (Mekanism.hooks.MCMPLoaded) {
+            canStay = MultipartMekanism.hasCenterSlot(world, pos);
+        }
+
+        if (!canStay) {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityGlowPanel) {
+                TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tileEntity;
+                Coord4D adj = new Coord4D(glowPanel.getPos().offset(glowPanel.side), glowPanel.getWorld());
+                canStay = glowPanel.getWorld().isSideSolid(adj.getPos(), glowPanel.side.getOpposite());
+            }
+        }
+
+        return canStay;
+    }
+
+    private static TileEntityGlowPanel getTileEntityGlowPanel(IBlockAccess world, BlockPos pos) {
+        TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
+        TileEntityGlowPanel glowPanel = null;
+        if (tileEntity instanceof TileEntityGlowPanel) {
+            glowPanel = (TileEntityGlowPanel) tileEntity;
+        } else if (Mekanism.hooks.MCMPLoaded) {
+            TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
+            if (childEntity instanceof TileEntityGlowPanel) {
+                glowPanel = (TileEntityGlowPanel) childEntity;
+            }
+        }
+
+        return glowPanel;
+    }
+
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) 
-	{
-		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-		
-		if(tileEntity != null)
-		{
-			state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
-			
-			if(state instanceof IExtendedBlockState)
-			{
-				return ((IExtendedBlockState)state).withProperty(PropertyColor.INSTANCE, new PropertyColor(tileEntity.colour));
-			}
-		}
-		
-		return state;
-	}
-	
-	@Deprecated
-	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor)
-	{
-		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-		
-		if(tileEntity != null && !world.isRemote && !canStay(world, pos))
-		{
-			float motion = 0.7F;
-			double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-			ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, stack);
-
-			world.spawnEntity(entityItem);
-			world.setBlockToAir(pos);
-		}
-	}
-	
-	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
-	{
-		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-		
-		if(tileEntity != null && !tileEntity.getWorld().isRemote && !canStay(world, pos))
-		{
-			float motion = 0.7F;
-			double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-			ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
-			EntityItem entityItem = new EntityItem(tileEntity.getWorld(), pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, stack);
-
-			tileEntity.getWorld().spawnEntity(entityItem);
-			tileEntity.getWorld().setBlockToAir(pos);
-		}
-	}
-	
-	@Deprecated
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-		
-		if(tileEntity != null)
-		{
-			return bounds[tileEntity.side.ordinal()];
-		}
-		
-		return super.getBoundingBox(state, world, pos);
-	}
-	
-	@Override
-	public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side)
-    {
-		return world.isSideSolid(pos.offset(side.getOpposite()), side);
+    public int getMetaFromState(IBlockState state) {
+        return 0;
     }
-	
-	public static boolean canStay(IBlockAccess world, BlockPos pos)
-	{
-		boolean canStay = false;
-		
-		if(Mekanism.hooks.MCMPLoaded)
-		{
-			canStay = MultipartMekanism.hasCenterSlot(world, pos);
-		}
-		
-		if(!canStay)
-		{
-			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity instanceof TileEntityGlowPanel)
-			{
-				TileEntityGlowPanel glowPanel = (TileEntityGlowPanel)tileEntity;
-				Coord4D adj = new Coord4D(glowPanel.getPos().offset(glowPanel.side), glowPanel.getWorld());
-				canStay = glowPanel.getWorld().isSideSolid(adj.getPos(), glowPanel.side.getOpposite());
-			}
-		}
-		
-		return canStay;
-	}
-	
-	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos)
-    {
-		return 15;
+
+    @Nonnull
+    @Override
+    public BlockStateContainer createBlockState() {
+        return new BlockStateGlowPanel(this);
     }
-	
-	@Override
-	public int quantityDropped(Random random)
-    {
-		return 0;
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
+        return tileEntity != null ? state.withProperty(BlockStateFacing.facingProperty, tileEntity.side) : state;
     }
-	
-	@Override
-    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
-	{
-		TileEntityGlowPanel tileEntity = (TileEntityGlowPanel)world.getTileEntity(pos);
-		return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
-	}
 
-	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && willHarvest)
-		{
-			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+    @SideOnly(Side.CLIENT)
+    @Nonnull
+    @Override
+    public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+        if (tileEntity != null) {
+            state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
 
-			world.spawnEntity(entityItem);
-		}
+            if (state instanceof IExtendedBlockState) {
+                return ((IExtendedBlockState) state)
+                      .withProperty(PropertyColor.INSTANCE, new PropertyColor(tileEntity.colour));
+            }
+        }
 
-		return super.removedByPlayer(state, world, pos, player, willHarvest);
-	}
-	
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta)
-	{
-		return new TileEntityGlowPanel();
-	}
-	
-	@Override
-	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer)
-	{
-		return true;
-	}
-	
-	@Deprecated
-	@Override
-    public EnumBlockRenderType getRenderType(IBlockState state) 
-	{
+        return state;
+    }
+
+    @Override
+    @Deprecated
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
+        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
+
+        if (tileEntity != null && !world.isRemote && !canStay(world, pos)) {
+            float motion = 0.7F;
+            double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+            ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
+            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, stack);
+
+            world.spawnEntity(entityItem);
+            world.setBlockToAir(pos);
+        }
+    }
+
+    @Override
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
+        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
+
+        if (tileEntity != null && !tileEntity.getWorld().isRemote && !canStay(world, pos)) {
+            float motion = 0.7F;
+            double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+            ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
+            EntityItem entityItem = new EntityItem(tileEntity.getWorld(), pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, stack);
+
+            tileEntity.getWorld().spawnEntity(entityItem);
+            tileEntity.getWorld().setBlockToAir(pos);
+        }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
+
+        if (tileEntity != null) {
+            return bounds[tileEntity.side.ordinal()];
+        }
+
+        return super.getBoundingBox(state, world, pos);
+    }
+
+    @Override
+    public boolean canPlaceBlockOnSide(@Nonnull World world, @Nonnull BlockPos pos, EnumFacing side) {
+        return world.isSideSolid(pos.offset(side.getOpposite()), side);
+    }
+
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return 15;
+    }
+
+    @Override
+    public int quantityDropped(Random random) {
+        return 0;
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
+          @Nonnull BlockPos pos, EntityPlayer player) {
+        TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
+        return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
+    }
+
+    @Override
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
+          @Nonnull EntityPlayer player, boolean willHarvest) {
+        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
+            float motion = 0.7F;
+            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
+                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
+
+            world.spawnEntity(entityItem);
+        }
+
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
+        return new TileEntityGlowPanel();
+    }
+
+    @Override
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+        return true;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
 
+    @Override
     @Deprecated
-	@Override
-    public boolean isBlockNormalCube(IBlockState state) 
-    {
+    public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
+    @Override
     @Deprecated
-	@Override
-    public boolean isOpaqueCube(IBlockState state) 
-    {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
+    @Override
     @Deprecated
-	@Override
-    public boolean isFullCube(IBlockState state)
-    {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
+    @Override
     @Deprecated
-	@Override
-    public boolean isFullBlock(IBlockState state)
-    {
+    public boolean isFullBlock(IBlockState state) {
         return false;
-    }
-    
-    private static TileEntityGlowPanel getTileEntityGlowPanel(IBlockAccess world, BlockPos pos)
-    {
-    	TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-    	TileEntityGlowPanel glowPanel = null;
-    	if(tileEntity instanceof TileEntityGlowPanel)
-    	{
-    		glowPanel = (TileEntityGlowPanel)tileEntity;
-    	}
-    	else if(Mekanism.hooks.MCMPLoaded)
-    	{
-    		TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
-    		if(childEntity instanceof TileEntityGlowPanel)
-    		{
-    			glowPanel = (TileEntityGlowPanel)childEntity;
-    		}
-    	}
-    	
-    	return glowPanel;
     }
 }

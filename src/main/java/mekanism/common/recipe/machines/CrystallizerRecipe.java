@@ -7,34 +7,28 @@ import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public class CrystallizerRecipe extends MachineRecipe<GasInput, ItemStackOutput, CrystallizerRecipe>
-{
-	public CrystallizerRecipe(GasInput input, ItemStackOutput output)
-	{
-		super(input, output);
-	}
+public class CrystallizerRecipe extends MachineRecipe<GasInput, ItemStackOutput, CrystallizerRecipe> {
 
-	public CrystallizerRecipe(GasStack input, ItemStack output)
-	{
-		this(new GasInput(input), new ItemStackOutput(output));
-	}
+    public CrystallizerRecipe(GasInput input, ItemStackOutput output) {
+        super(input, output);
+    }
 
-	public boolean canOperate(GasTank gasTank, NonNullList<ItemStack> inventory)
-	{
-		return getInput().useGas(gasTank, false, 1) && getOutput().applyOutputs(inventory, 1, false);
-	}
+    public CrystallizerRecipe(GasStack input, ItemStack output) {
+        this(new GasInput(input), new ItemStackOutput(output));
+    }
 
-	public void operate(GasTank inputTank, NonNullList<ItemStack> inventory)
-	{
-		if(getInput().useGas(inputTank, true, 1))
-		{
-			getOutput().applyOutputs(inventory, 1, true);
-		}
-	}
+    public boolean canOperate(GasTank gasTank, NonNullList<ItemStack> inventory) {
+        return getInput().useGas(gasTank, false, 1) && getOutput().applyOutputs(inventory, 1, false);
+    }
 
-	@Override
-	public CrystallizerRecipe copy()
-	{
-		return new CrystallizerRecipe(getInput().copy(), getOutput().copy());
-	}
+    public void operate(GasTank inputTank, NonNullList<ItemStack> inventory) {
+        if (getInput().useGas(inputTank, true, 1)) {
+            getOutput().applyOutputs(inventory, 1, true);
+        }
+    }
+
+    @Override
+    public CrystallizerRecipe copy() {
+        return new CrystallizerRecipe(getInput().copy(), getOutput().copy());
+    }
 }

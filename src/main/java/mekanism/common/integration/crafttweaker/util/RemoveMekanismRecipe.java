@@ -1,81 +1,58 @@
 package mekanism.common.integration.crafttweaker.util;
 
-import com.blamejared.mtlib.helpers.LogHelper;
-import com.blamejared.mtlib.utils.BaseMapRemoval;
+import crafttweaker.CraftTweakerAPI;
+import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.ChanceOutput;
-import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import mekanism.common.recipe.outputs.FluidOutput;
-import mekanism.common.recipe.outputs.GasOutput;
-import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.recipe.outputs.MachineOutput;
-import mekanism.common.recipe.outputs.PressurizedOutput;
 
-import java.util.Map;
+public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
+      RecipeMapModification<INPUT, RECIPE> {
 
-public abstract class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> extends BaseMapRemoval<INPUT, RECIPE>
-{
-    private boolean hasAddedRecipes = false;
+    private final IngredientWrapper input;
+    private final IngredientWrapper output;
 
-    public RemoveMekanismRecipe(String name, Map<INPUT, RECIPE> map)
-    {
-        super(name, map);
-    }
-
-    public abstract void addRecipes();
-
-    @Override
-    public String describe()
-    {
-        if (!hasAddedRecipes){
-            addRecipes();
-            hasAddedRecipes = true;
-        }
-        return super.describe();
+    public RemoveMekanismRecipe(String name, Recipe<INPUT, OUTPUT, RECIPE> recipeType, IngredientWrapper output,
+          IngredientWrapper input) {
+        super(name, false, recipeType);
+        this.input = input;
+        this.output = output;
     }
 
     @Override
-    public void apply()
-    {
-        if (!hasAddedRecipes){
-            addRecipes();
-            hasAddedRecipes = true;
+    public void apply() {
+        //Don't move this into the constructor so that if an addon registers recipes late, we can still remove them
+        map.forEach((key, value) -> {
+            if (IngredientHelper.matches(key, input) && IngredientHelper.matches(value.getOutput(), output)) {
+                recipes.put(key, value);
+            }
+        });
+        if (recipes.isEmpty()) {
+            String warning = "";
+            if (input.isEmpty()) {
+                if (!output
+                      .isEmpty()) { //It should never be the case they both are empty but just in case they are ignore it
+                    warning = String.format("output: '%s'", output.toString());
+                }
+            } else if (output.isEmpty()) {
+                warning = String.format("input: '%s'", input.toString());
+            } else {
+                warning = String.format("input: '%s' and output: '%s'", input.toString(), output.toString());
+            }
+            if (!warning.isEmpty()) {
+                CraftTweakerAPI.logWarning(String.format("No %s recipe found for %s. Command ignored!", name, warning));
+            }
+        } else {
+            super.apply();
+            //Describe it, as we don't describe it when describe is normally used as we don't have the information yet
+            CraftTweakerAPI.logInfo(super.describe());
         }
-
-        super.apply();
     }
 
     @Override
-    protected String getRecipeInfo(Map.Entry<INPUT, RECIPE> recipe)
-    {
-        MachineOutput output = recipe.getValue().recipeOutput;
-
-        if (output instanceof ItemStackOutput)
-        {
-            return LogHelper.getStackDescription(((ItemStackOutput) output).output);
-        }
-        else if (output instanceof GasOutput)
-        {
-            return LogHelper.getStackDescription(((GasOutput) output).output);
-        }
-        else if (output instanceof FluidOutput)
-        {
-            return LogHelper.getStackDescription(((FluidOutput) output).output);
-        }
-        else if (output instanceof ChemicalPairOutput)
-        {
-            return "[" + LogHelper.getStackDescription(((ChemicalPairOutput) output).leftGas) + ", " + LogHelper.getStackDescription(((ChemicalPairOutput) output).rightGas) + "]";
-        }
-        else if (output instanceof ChanceOutput)
-        {
-            return LogHelper.getStackDescription(((ChanceOutput) output).primaryOutput);
-        }
-        else if (output instanceof PressurizedOutput)
-        {
-            return "[" + LogHelper.getStackDescription(((PressurizedOutput) output).getItemOutput()) + ", " + LogHelper.getStackDescription(((PressurizedOutput) output).getGasOutput()) + "]";
-        }
-
+    public String describe() {
+        //Don't describe anything. It is too early for us to have a full description
         return null;
     }
 }

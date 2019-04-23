@@ -1,12 +1,14 @@
 package mekanism.client.render.obj;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.annotation.Nonnull;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
-
 import mekanism.api.EnumColor;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.tile.TileEntityGlowPanel;
@@ -32,184 +34,155 @@ import net.minecraftforge.client.model.obj.OBJModel.Face;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IExtendedBlockState;
-
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+public class GlowPanelModel extends OBJBakedModelBase {
 
-public class GlowPanelModel extends OBJBakedModelBase
-{
-	private static Map<Integer, List<BakedQuad>> glowPanelCache = new HashMap<>();
-	private static Map<Integer, GlowPanelModel> glowPanelItemCache = new HashMap<>();
-	
-	private IBlockState tempState;
-	private ItemStack tempStack;
-	
-	private GlowPanelOverride override = new GlowPanelOverride();
-	
-	public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform)
-	{
-		super(base, model, state, format, textures, transform);
-	}
+    // Copy from old CTM
+    public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
+          .put(TransformType.GUI, get(0, 0, 0, 30, 225, 0, 0.625f))
+          .put(TransformType.THIRD_PERSON_RIGHT_HAND, get(0, 2.5f, 0, 75, 45, 0, 0.375f))
+          .put(TransformType.THIRD_PERSON_LEFT_HAND, get(0, 2.5f, 0, 75, 45, 0, 0.375f))
+          .put(TransformType.FIRST_PERSON_RIGHT_HAND, get(0, 0, 0, 0, 45, 0, 0.4f))
+          .put(TransformType.FIRST_PERSON_LEFT_HAND, get(0, 0, 0, 0, 225, 0, 0.4f))
+          .put(TransformType.GROUND, get(0, 2, 0, 0, 0, 0, 0.25f))
+          .put(TransformType.HEAD, get(0, 0, 0, 0, 0, 0, 1))
+          .put(TransformType.FIXED, get(0, 0, 0, 0, 0, 0, 1))
+          .put(TransformType.NONE, get(0, 0, 0, 0, 0, 0, 0))
+          .build();
+    private static Map<Integer, List<BakedQuad>> glowPanelCache = new HashMap<>();
+    private static Map<Integer, GlowPanelModel> glowPanelItemCache = new HashMap<>();
+    private IBlockState tempState;
+    private ItemStack tempStack;
+    private GlowPanelOverride override = new GlowPanelOverride();
 
-	public static void forceRebake()
-	{
-		glowPanelCache.clear();
-		glowPanelItemCache.clear();
-	}
-	
-	public EnumColor getColor()
-	{
-		if(tempStack != null && !tempStack.isEmpty())
-		{
-			return EnumColor.DYES[tempStack.getItemDamage()];
-		}
-		
-		if(tempState != null && ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE) != null)
-		{
-			return ((IExtendedBlockState)tempState).getValue(PropertyColor.INSTANCE).color;
-		}
-		
-		return EnumColor.WHITE;
-	}
-	
-    private class GlowPanelOverride extends ItemOverrideList 
-    {
-		public GlowPanelOverride() 
-		{
-			super(Lists.newArrayList());
-		}
+    public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format,
+          ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) {
+        super(base, model, state, format, textures, transform);
+    }
 
-	    @Override
-	    public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) 
-	    {
-			if(glowPanelItemCache.containsKey(stack.getItemDamage()))
-			{
-				return glowPanelItemCache.get(stack.getItemDamage());
-			}
+    public static void forceRebake() {
+        glowPanelCache.clear();
+        glowPanelItemCache.clear();
+    }
 
-			ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
-			builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
-			TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
+    private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s) {
+        return new TRSRTransformation(
+              new Vector3f(tx / 16, ty / 16, tz / 16),
+              TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
+              new Vector3f(s, s, s),
+              null);
+    }
 
-			for(String s : getModel().getMatLib().getMaterialNames())
-			{
-				TextureAtlasSprite sprite = null;
-				
-				if(sprite == null)
-				{
-					sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-				}
-				
-				if(sprite == null)
-				{
-					sprite = missing;
-				}
-				
-				builder.put(s, sprite);
-			}
-			
-			builder.put("missingno", missing);
-			GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, builder.build(), transformationMap);
-			bakedModel.tempStack = stack;
-			glowPanelItemCache.put(stack.getItemDamage(), bakedModel);
-			
-			return bakedModel;
-	    }
-	}
-	
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return override;
-	}
-	
-	@Override
-	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
-	{
-    	if(side != null) 
-    	{
-    		return ImmutableList.of();
-    	}
-    	
-    	if(state != null && tempState == null)
-    	{
-	    	int hash = TileEntityGlowPanel.hash((IExtendedBlockState)state);
-			
-			if(!glowPanelCache.containsKey(hash))
-			{
-				GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap, transformationMap);
-				model.tempState = state;
-				glowPanelCache.put(hash, model.getQuads(state, side, rand));
-			}
-			
-			return glowPanelCache.get(hash);
-    	}
-    	
-    	return super.getQuads(state, side, rand);
-	}
-	
-	@Override
-	public float[] getOverrideColor(Face f, String groupName)
-	{
-		if(groupName.equals("light"))
-		{
-			EnumColor c = getColor();
-			return new float[] {c.getColor(0), c.getColor(1), c.getColor(2), 1};
-		}
-		
-		return null;
-	}
-    
-    @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType)
-    {
-    	if(transformType == TransformType.GUI)
-    	{
-    		GlStateManager.rotate(180, 1, 0, 0);
-    		ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-    		GlStateManager.translate(0.65F, 0.45F, 0.0F);
-    		GlStateManager.rotate(90, 1, 0, 0);
-    		GlStateManager.scale(1.6F, 1.6F, 1.6F);
-    		
-    		return Pair.of(this, null);
-    	}
-    	else if(transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND)
-    	{
-    		GlStateManager.translate(0.0F, 0.2F, 0.0F);
-    	}
-    	else if(transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) 
-        {
-    		ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
-        	GlStateManager.translate(0.0F, 0.3F, 0.2F);
-        	
-        	return Pair.of(this, null);
+    public EnumColor getColor() {
+        if (tempStack != null && !tempStack.isEmpty()) {
+            return EnumColor.DYES[tempStack.getItemDamage()];
         }
-        
+
+        if (tempState != null && ((IExtendedBlockState) tempState).getValue(PropertyColor.INSTANCE) != null) {
+            return ((IExtendedBlockState) tempState).getValue(PropertyColor.INSTANCE).color;
+        }
+
+        return EnumColor.WHITE;
+    }
+
+    @Nonnull
+    @Override
+    public ItemOverrideList getOverrides() {
+        return override;
+    }
+
+    @Nonnull
+    @Override
+    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+        if (side != null) {
+            return ImmutableList.of();
+        }
+
+        if (state != null && tempState == null) {
+            int hash = TileEntityGlowPanel.hash((IExtendedBlockState) state);
+
+            if (!glowPanelCache.containsKey(hash)) {
+                GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap,
+                      transformationMap);
+                model.tempState = state;
+                glowPanelCache.put(hash, model.getQuads(state, side, rand));
+            }
+
+            return glowPanelCache.get(hash);
+        }
+
+        return super.getQuads(state, side, rand);
+    }
+
+    @Override
+    public float[] getOverrideColor(Face f, String groupName) {
+        if (groupName.equals("light")) {
+            EnumColor c = getColor();
+            return new float[]{c.getColor(0), c.getColor(1), c.getColor(2), 1};
+        }
+
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType transformType) {
+        if (transformType == TransformType.GUI) {
+            GlStateManager.rotate(180, 1, 0, 0);
+            ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
+            GlStateManager.translate(0.65F, 0.45F, 0.0F);
+            GlStateManager.rotate(90, 1, 0, 0);
+            GlStateManager.scale(1.6F, 1.6F, 1.6F);
+
+            return Pair.of(this, null);
+        } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND
+              || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
+            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+        } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND
+              || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+            ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
+            GlStateManager.translate(0.0F, 0.3F, 0.2F);
+
+            return Pair.of(this, null);
+        }
+
         return Pair.of(this, transforms.get(transformType).getMatrix());
     }
 
-	// Copy from old CTM
-	public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
-			.put(TransformType.GUI,                         get(0, 0, 0, 30, 225, 0, 0.625f))
-			.put(TransformType.THIRD_PERSON_RIGHT_HAND,     get(0, 2.5f, 0, 75, 45, 0, 0.375f))
-			.put(TransformType.THIRD_PERSON_LEFT_HAND,      get(0, 2.5f, 0, 75, 45, 0, 0.375f))
-			.put(TransformType.FIRST_PERSON_RIGHT_HAND,     get(0, 0, 0, 0, 45, 0, 0.4f))
-			.put(TransformType.FIRST_PERSON_LEFT_HAND,      get(0, 0, 0, 0, 225, 0, 0.4f))
-			.put(TransformType.GROUND,                      get(0, 2, 0, 0, 0, 0, 0.25f))
-			.put(TransformType.HEAD,                        get(0, 0, 0, 0, 0, 0, 1))
-			.put(TransformType.FIXED,                       get(0, 0, 0, 0, 0, 0, 1))
-			.put(TransformType.NONE,                        get(0, 0, 0, 0, 0, 0, 0))
-			.build();
+    private class GlowPanelOverride extends ItemOverrideList {
 
-	private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s)
-	{
-		return new TRSRTransformation(
-				new Vector3f(tx / 16, ty / 16, tz / 16),
-				TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
-				new Vector3f(s, s, s),
-				null);
-	}
+        public GlowPanelOverride() {
+            super(Lists.newArrayList());
+        }
+
+        @Nonnull
+        @Override
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world,
+              EntityLivingBase entity) {
+            if (glowPanelItemCache.containsKey(stack.getItemDamage())) {
+                return glowPanelItemCache.get(stack.getItemDamage());
+            }
+
+            ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
+            builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
+            TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks()
+                  .getAtlasSprite(new ResourceLocation("missingno").toString());
+
+            for (String s : getModel().getMatLib().getMaterialNames()) {
+                TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(
+                      getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
+
+                builder.put(s, sprite);
+            }
+
+            builder.put("missingno", missing);
+            GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat,
+                  builder.build(), transformationMap);
+            bakedModel.tempStack = stack;
+            glowPanelItemCache.put(stack.getItemDamage(), bakedModel);
+
+            return bakedModel;
+        }
+    }
 }

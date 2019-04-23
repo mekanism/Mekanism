@@ -6,88 +6,93 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
-
 import javax.sound.sampled.AudioFormat;
-
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class VoiceClient extends Thread
-{
-	public Socket socket;
+public class VoiceClient extends Thread {
 
-	public String ip;
+    private AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);
+    private VoiceOutput outputThread;
+    private VoiceInput inputThread;
+    private DataOutputStream output;
+    private DataInputStream input;
+    private boolean running;
+    private Socket socket;
+    private String ip;
 
-	public AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);
+    public VoiceClient(String s) {
+        ip = s;
+    }
 
-	public VoiceInput inputThread;
-	public VoiceOutput outputThread;
+    @Override
+    public void run() {
+        Mekanism.logger.info("VoiceServer: Starting client connection...");
 
-	public DataInputStream input;
-	public DataOutputStream output;
+        try {
+            socket = new Socket(ip, MekanismConfig.current().general.VOICE_PORT.val());
+            running = true;
 
-	public boolean running;
+            input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
-	public VoiceClient(String s)
-	{
-		ip = s;
-	}
+            (outputThread = new VoiceOutput(this)).start();
+            (inputThread = new VoiceInput(this)).start();
 
-	@Override
-	public void run()
-	{
-		Mekanism.logger.info("VoiceServer: Starting client connection...");
+            Mekanism.logger.info("VoiceServer: Successfully connected to server.");
+        } catch (ConnectException e) {
+            Mekanism.logger.error("VoiceServer: Server's VoiceServer is disabled.");
+        } catch (Exception e) {
+            Mekanism.logger.error("VoiceServer: Error while starting client connection.", e);
+        }
+    }
 
-		try {
-			socket = new Socket(ip, MekanismConfig.current().general.VOICE_PORT.val());
-			running = true;
+    public void disconnect() {
+        Mekanism.logger.info("VoiceServer: Stopping client connection...");
 
-			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+        try {
+            if (inputThread != null) {
+                inputThread.interrupt();
+                inputThread.close();
+            }
+            if (outputThread != null) {
+                outputThread.interrupt();
+                outputThread.close();
+            }
+            if (output != null) {
+                output.close();
+            }
+            if (input != null) {
+                input.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
 
-			(outputThread = new VoiceOutput(this)).start();
-			(inputThread = new VoiceInput(this)).start();
+            interrupt();
 
-			Mekanism.logger.info("VoiceServer: Successfully connected to server.");
-		} catch(ConnectException e) {
-			Mekanism.logger.error("VoiceServer: Server's VoiceServer is disabled.");
-		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while starting client connection.");
-			e.printStackTrace();
-		}
-	}
+            running = false;
+        } catch (Exception e) {
+            Mekanism.logger.error("VoiceServer: Error while stopping client connection.", e);
+        }
+    }
 
-	public void disconnect()
-	{
-		Mekanism.logger.info("VoiceServer: Stopping client connection...");
+    public boolean isRunning() {
+        return running;
+    }
 
-		try {
-			if (inputThread != null)
-			{
-				inputThread.interrupt();
-				inputThread.close();
-			}
-			if (outputThread != null)
-			{
-				outputThread.interrupt();
-				outputThread.close();
-			}
+    public DataOutputStream getOutputStream() {
+        return output;
+    }
 
-			if (output != null)
-				output.close();
-			if (input != null)
-				input.close();
-			if (socket != null)
-				socket.close();
-			
-			interrupt();
-			
-			running = false;
-		} catch(Exception e) {
-			Mekanism.logger.error("VoiceServer: Error while stopping client connection.", e);
-		}
-	}
+    public DataInputStream getInputStream() {
+        return input;
+    }
+
+    public AudioFormat getAudioFormat() {
+        return format;
+    }
 }

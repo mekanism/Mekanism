@@ -1,135 +1,112 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
 import java.util.Random;
-
+import javax.annotation.Nonnull;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ITubeConnection;
-import mekanism.api.TileNetworkList;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-import javax.annotation.Nonnull;
+public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler {
 
-public class TileEntityAmbientAccumulator extends TileEntityContainerBlock implements IGasHandler, ITubeConnection
-{
-	public GasTank collectedGas = new GasTank(1000);
+    public static Random gasRand = new Random();
+    public GasTank collectedGas = new GasTank(1000);
+    public int cachedDimensionId = 0;
+    public AmbientGasRecipe cachedRecipe;
 
-	public int cachedDimensionId = 0;
-	public AmbientGasRecipe cachedRecipe;
+    public TileEntityAmbientAccumulator() {
+        super("AmbientAccumulator");
+        inventory = NonNullList.withSize(0, ItemStack.EMPTY);
+    }
 
-	public static Random gasRand = new Random();
+    @Override
+    public void onUpdate() {
+        if (!world.isRemote) {
+            if (cachedRecipe == null || world.provider.getDimension() != cachedDimensionId) {
+                cachedDimensionId = world.provider.getDimension();
+                cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
+            }
 
-	public TileEntityAmbientAccumulator()
-	{
-		super("AmbientAccumulator");
-		inventory = NonNullList.withSize(0, ItemStack.EMPTY);
-	}
-
-	@Override
-	public void onUpdate()
-	{
-		if(!world.isRemote)
-		{
-			if(cachedRecipe == null || world.provider.getDimension() != cachedDimensionId)
-			{
-				cachedDimensionId = world.provider.getDimension();
-				cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
-			}
-
-			if(cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput().applyOutputs(collectedGas, false, 1))
-			{
-				cachedRecipe.getOutput().applyOutputs(collectedGas, true, 1);
-			}
-		}
-	}
+            if (cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput()
+                  .applyOutputs(collectedGas, false, 1)) {
+                cachedRecipe.getOutput().applyOutputs(collectedGas, true, 1);
+            }
+        }
+    }
 
 
-	@Override
-	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
-	{
-		return 0;
-	}
+    @Override
+    public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+        return 0;
+    }
 
-	@Override
-	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
-	{
-		return collectedGas.draw(amount, doTransfer);
-	}
+    @Override
+    public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+        return collectedGas.draw(amount, doTransfer);
+    }
 
-	@Override
-	public boolean canReceiveGas(EnumFacing side, Gas type)
-	{
-		return false;
-	}
+    @Override
+    public boolean canReceiveGas(EnumFacing side, Gas type) {
+        return false;
+    }
 
-	@Override
-	public boolean canDrawGas(EnumFacing side, Gas type)
-	{
-		return type == collectedGas.getGasType();
-	}
+    @Override
+    public boolean canDrawGas(EnumFacing side, Gas type) {
+        return type == collectedGas.getGasType();
+    }
 
-	@Override
-	@Nonnull
-	public GasTankInfo[] getTankInfo()
-	{
-		return new GasTankInfo[]{collectedGas};
-	}
+    @Override
+    @Nonnull
+    public GasTankInfo[] getTankInfo() {
+        return new GasTankInfo[]{collectedGas};
+    }
 
-	@Override
-	public boolean canTubeConnect(EnumFacing side)
-	{
-		return true;
-	}
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        TileUtils.addTankData(data, collectedGas);
+        return data;
+    }
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		if(collectedGas.getGasType() != null)
-		{
-			data.add(collectedGas.getGasType().getID());
-			data.add(collectedGas.getStored());
-		} 
-		else {
-			data.add(-1);
-			data.add(0);
-		}
-		
-		return data;
-	}
+    @Override
+    public void handlePacketData(ByteBuf data) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            TileUtils.readTankData(data, collectedGas);
+        }
+    }
 
-	@Override
-	public void handlePacketData(ByteBuf data)
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			int gasID = data.readInt();
-			
-			if(gasID < 0)
-			{
-				collectedGas.setGas(null);
-			} 
-			else {
-				collectedGas.setGas(new GasStack(gasID, data.readInt()));
-			}
-		}
-	}
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return InventoryUtils.EMPTY;
+    }
 
-	@Override
-	public int[] getSlotsForFace(EnumFacing side)
-	{
-		return InventoryUtils.EMPTY;
-	}
+    //Gas capability is never disabled here
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+    }
+
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
+        }
+
+        return super.getCapability(capability, side);
+    }
 }

@@ -1,194 +1,201 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.common.base.IBoundingBlock;
 import mekanism.api.TileNetworkList;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ChargeUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock
-{
-	public static final float SPEED = 32F;
-	public static final float SPEED_SCALED = 256F/SPEED;
-	public static final int[] SLOTS = {0};
-	
-	/** The angle the blades of this Wind Turbine are currently at. */
-	public double angle;
-	
-	public float currentMultiplier;
+public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
-	public TileEntityWindGenerator()
-	{
-		super("wind", "WindGenerator", 200000, (MekanismConfig.current().generators.windGenerationMax.val())*2);
-		inventory = NonNullList.withSize(1, ItemStack.EMPTY);
-	}
+    private static final int[] SLOTS = {0};
 
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
+    public static final float SPEED = 32F;
+    public static final float SPEED_SCALED = 256F / SPEED;
+    static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
+          "getMultiplier"};
 
-		if(!world.isRemote)
-		{
-			ChargeUtils.charge(0, this);
-			
-			if(ticker % 20 == 0)
-			{
-				setActive((currentMultiplier = getMultiplier()) > 0);
-			}
-			
-			if(getActive())
-			{
-				setEnergy(electricityStored + (MekanismConfig.current().generators.windGenerationMin.val()*currentMultiplier));
-			}
-		}
-		else {
-			if(getActive())
-			{
-				angle = (angle+(getPos().getY()+4F)/SPEED_SCALED) % 360;
-			}
-		}
-	}
-	
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		super.handlePacketData(dataStream);
+    private double angle;
+    private float currentMultiplier;
+    private boolean isBlacklistDimension = false;
 
-		if(world.isRemote)
-		{
-			currentMultiplier = dataStream.readFloat();
-		}
-	}
+    public TileEntityWindGenerator() {
+        super("wind", "WindGenerator", 200000, MekanismConfig.current().generators.windGenerationMax.val() * 2);
+        inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
+    }
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		super.getNetworkedData(data);
+    @Override
+    public void onLoad() {
+        super.onLoad();
 
-		data.add(currentMultiplier);
+        // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
+        // an initial activity status and the client (in MP) will show the windmills turning while not
+        // generating any power
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val()
+              .contains(world.provider.getDimension());
+        if (isBlacklistDimension) {
+            setActive(false);
+        }
+    }
 
-		return data;
-	}
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
 
-	/** Determines the current output multiplier, taking sky visibility and height into account. **/
-	public float getMultiplier()
-	{
-		if (isInBlacklistedDimension())
-		{
-			return 0;
-		}
-		if(world.canSeeSky(getPos().add(0, 4, 0)))
-		{
-			final float minY = (float) MekanismConfig.current().generators.windGenerationMinY.val();
-			final float maxY = (float) MekanismConfig.current().generators.windGenerationMaxY.val();
-			final float minG = (float) MekanismConfig.current().generators.windGenerationMin.val();
-			final float maxG = (float) MekanismConfig.current().generators.windGenerationMax.val();
+        if (!world.isRemote) {
+            ChargeUtils.charge(0, this);
 
-			final float slope = (maxG - minG) / (maxY - minY);
-			final float intercept = minG - slope * minY;
+            // If we're in a blacklisted dimension, there's nothing more to do
+            if (isBlacklistDimension) {
+                return;
+            }
 
-			final float clampedY = Math.min(maxY, Math.max(minY, (float)(getPos().getY()+4)));
-			final float toGen = slope * clampedY + intercept;
+            if (ticker % 20 == 0) {
+                // Recalculate the current multiplier once a second
+                currentMultiplier = getMultiplier();
+                setActive(currentMultiplier > 0);
+            }
 
-			return toGen / minG;
-		} 
-		else {
-			return 0;
-		}
-	}
+            if (getActive()) {
+                setEnergy(electricityStored + (MekanismConfig.current().generators.windGenerationMin.val()
+                      * currentMultiplier));
+            }
+        } else {
+            if (getActive()) {
+                angle = (angle + (getPos().getY() + 4F) / SPEED_SCALED) % 360;
+            }
+        }
+    }
 
-	public boolean isInBlacklistedDimension()
-	{
-		return MekanismConfig.current().generators.windGenerationBlacklist.val().contains(world.provider.getDimension());
-	}
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        super.handlePacketData(dataStream);
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getVolume()
-	{
-		return 1.5F*super.getVolume();
-	}
+        if (world.isRemote) {
+            currentMultiplier = dataStream.readFloat();
+            isBlacklistDimension = dataStream.readBoolean();
+        }
+    }
 
-    private static final String[] methods = new String[] {"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
 
-	@Override
-	public String[] getMethods()
-	{
-		return methods;
-	}
+        data.add(currentMultiplier);
+        data.add(isBlacklistDimension);
 
-	@Override
-	public Object[] invoke(int method, Object[] arguments) throws Exception
-	{
-		switch(method)
-		{
-			case 0:
-				return new Object[] {electricityStored};
-			case 1:
-				return new Object[] {output};
-			case 2:
-				return new Object[] {BASE_MAX_ENERGY};
-			case 3:
-				return new Object[] {(BASE_MAX_ENERGY -electricityStored)};
-			case 4:
-				return new Object[] {getMultiplier()};
-			default:
-				throw new NoSuchMethodException();
-		}
-	}
+        return data;
+    }
 
-	@Override
-	public boolean canOperate()
-	{
-		return electricityStored < BASE_MAX_ENERGY && getMultiplier() > 0 && MekanismUtils.canFunction(this);
-	}
+    /**
+     * Determines the current output multiplier, taking sky visibility and height into account.
+     **/
+    public float getMultiplier() {
+        if (world.canSeeSky(getPos().add(0, 4, 0))) {
+            final float minY = (float) MekanismConfig.current().generators.windGenerationMinY.val();
+            final float maxY = (float) MekanismConfig.current().generators.windGenerationMaxY.val();
+            final float minG = (float) MekanismConfig.current().generators.windGenerationMin.val();
+            final float maxG = (float) MekanismConfig.current().generators.windGenerationMax.val();
 
-	@Override
-	public void onPlace()
-	{
-		Coord4D current = Coord4D.get(this);
-		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 1), current);
-		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 2), current);
-		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 3), current);
-		MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 4), current);
-	}
+            final float slope = (maxG - minG) / (maxY - minY);
+            final float intercept = minG - slope * minY;
 
-	@Override
-	public void onBreak()
-	{
-		world.setBlockToAir(getPos().add(0, 1, 0));
-		world.setBlockToAir(getPos().add(0, 2, 0));
-		world.setBlockToAir(getPos().add(0, 3, 0));
-		world.setBlockToAir(getPos().add(0, 4, 0));
+            final float clampedY = Math.min(maxY, Math.max(minY, (float) (getPos().getY() + 4)));
+            final float toGen = slope * clampedY + intercept;
 
-		world.setBlockToAir(getPos());
-	}
+            return toGen / minG;
+        } else {
+            return 0;
+        }
+    }
 
-	@Override
-	public boolean renderUpdate()
-	{
-		return false;
-	}
+    @Override
+    public String[] getMethods() {
+        return methods;
+    }
 
-	@Override
-	public boolean lightUpdate()
-	{
-		return false;
-	}
+    @Override
+    public Object[] invoke(int method, Object[] arguments) throws Exception {
+        switch (method) {
+            case 0:
+                return new Object[]{electricityStored};
+            case 1:
+                return new Object[]{output};
+            case 2:
+                return new Object[]{BASE_MAX_ENERGY};
+            case 3:
+                return new Object[]{(BASE_MAX_ENERGY - electricityStored)};
+            case 4:
+                return new Object[]{getMultiplier()};
+            default:
+                throw new NoSuchMethodException();
+        }
+    }
 
-	@Override
-	public int[] getSlotsForFace(EnumFacing side)
-	{
-		return sideIsOutput(side) ? InventoryUtils.EMPTY : SLOTS;
-	}
+    @Override
+    public boolean canOperate() {
+        return electricityStored < BASE_MAX_ENERGY && getMultiplier() > 0 && MekanismUtils.canFunction(this);
+    }
+
+    @Override
+    public void onPlace() {
+        Coord4D current = Coord4D.get(this);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 1), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 2), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 3), current);
+        MekanismUtils.makeBoundingBlock(world, getPos().offset(EnumFacing.UP, 4), current);
+
+        // Check to see if the placement is happening in a blacklisted dimension
+        isBlacklistDimension = MekanismConfig.current().generators.windGenerationDimBlacklist.val()
+              .contains(world.provider.getDimension());
+    }
+
+    @Override
+    public void onBreak() {
+        world.setBlockToAir(getPos().add(0, 1, 0));
+        world.setBlockToAir(getPos().add(0, 2, 0));
+        world.setBlockToAir(getPos().add(0, 3, 0));
+        world.setBlockToAir(getPos().add(0, 4, 0));
+
+        world.setBlockToAir(getPos());
+    }
+
+    @Override
+    public boolean renderUpdate() {
+        return false;
+    }
+
+    @Override
+    public boolean lightUpdate() {
+        return false;
+    }
+
+    public float getCurrentMultiplier() {
+        return currentMultiplier;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public boolean isBlacklistDimension() {
+        return isBlacklistDimension;
+    }
+
+    @Nonnull
+    @Override
+    public int[] getSlotsForFace(@Nonnull EnumFacing side) {
+        return SLOTS;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
+        return ChargeUtils.canBeCharged(stack);
+    }
 }

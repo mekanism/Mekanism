@@ -1,131 +1,103 @@
 package mekanism.common.content.miner;
 
 import io.netty.buffer.ByteBuf;
-
 import mekanism.api.TileNetworkList;
-import mekanism.common.util.InventoryUtils;
+import mekanism.common.content.filter.IFilter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public abstract class MinerFilter
-{
-	public ItemStack replaceStack = ItemStack.EMPTY;
-	
-	public boolean requireStack;
-	
-	public abstract boolean canFilter(ItemStack itemStack);
+public abstract class MinerFilter implements IFilter {
 
-	public NBTTagCompound write(NBTTagCompound nbtTags)
-	{
-		nbtTags.setBoolean("requireStack", requireStack);
+    public ItemStack replaceStack = ItemStack.EMPTY;
 
-		if(!replaceStack.isEmpty())
-		{
-			nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
-		}
-		
-		return nbtTags;
-	}
+    public boolean requireStack;
 
-	protected void read(NBTTagCompound nbtTags)
-	{
-		requireStack = nbtTags.getBoolean("requireStack");
-		
-		if(nbtTags.hasKey("replaceStack"))
-		{
-			replaceStack = InventoryUtils.loadFromNBT(nbtTags.getCompoundTag("replaceStack"));
-		}
-	}
+    public static MinerFilter readFromNBT(NBTTagCompound nbtTags) {
+        int type = nbtTags.getInteger("type");
 
-	public void write(TileNetworkList data)
-	{
-		data.add(requireStack);
-		
-		if(!replaceStack.isEmpty())
-		{
-			data.add(true);
-			data.add(MekanismUtils.getID(replaceStack));
-			data.add(replaceStack.getItemDamage());
-		}
-		else {
-			data.add(false);
-		}
-	}
+        MinerFilter filter = null;
 
-	protected void read(ByteBuf dataStream)
-	{
-		requireStack = dataStream.readBoolean();
-		
-		if(dataStream.readBoolean())
-		{
-			replaceStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
-		}
-		else {
-			replaceStack = ItemStack.EMPTY;
-		}
-	}
+        if (type == 0) {
+            filter = new MItemStackFilter();
+        } else if (type == 1) {
+            filter = new MOreDictFilter();
+        } else if (type == 2) {
+            filter = new MMaterialFilter();
+        } else if (type == 3) {
+            filter = new MModIDFilter();
+        }
 
-	public static MinerFilter readFromNBT(NBTTagCompound nbtTags)
-	{
-		int type = nbtTags.getInteger("type");
+        filter.read(nbtTags);
 
-		MinerFilter filter = null;
+        return filter;
+    }
 
-		if(type == 0)
-		{
-			filter = new MItemStackFilter();
-		}
-		else if(type == 1)
-		{
-			filter = new MOreDictFilter();
-		}
-		else if(type == 2)
-		{
-			filter = new MMaterialFilter();
-		}
-		else if(type == 3)
-		{
-			filter = new MModIDFilter();
-		}
+    public static MinerFilter readFromPacket(ByteBuf dataStream) {
+        int type = dataStream.readInt();
 
-		filter.read(nbtTags);
+        MinerFilter filter = null;
 
-		return filter;
-	}
+        if (type == 0) {
+            filter = new MItemStackFilter();
+        } else if (type == 1) {
+            filter = new MOreDictFilter();
+        } else if (type == 2) {
+            filter = new MMaterialFilter();
+        } else if (type == 3) {
+            filter = new MModIDFilter();
+        }
 
-	public static MinerFilter readFromPacket(ByteBuf dataStream)
-	{
-		int type = dataStream.readInt();
+        filter.read(dataStream);
 
-		MinerFilter filter = null;
+        return filter;
+    }
 
-		if(type == 0)
-		{
-			filter = new MItemStackFilter();
-		}
-		else if(type == 1)
-		{
-			filter = new MOreDictFilter();
-		}
-		else if(type == 2)
-		{
-			filter = new MMaterialFilter();
-		}
-		else if(type == 3)
-		{
-			filter = new MModIDFilter();
-		}
+    public abstract boolean canFilter(ItemStack itemStack);
 
-		filter.read(dataStream);
+    public NBTTagCompound write(NBTTagCompound nbtTags) {
+        nbtTags.setBoolean("requireStack", requireStack);
 
-		return filter;
-	}
+        if (!replaceStack.isEmpty()) {
+            nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+        }
 
-	@Override
-	public boolean equals(Object filter)
-	{
-		return filter instanceof MinerFilter;
-	}
+        return nbtTags;
+    }
+
+    protected void read(NBTTagCompound nbtTags) {
+        requireStack = nbtTags.getBoolean("requireStack");
+
+        if (nbtTags.hasKey("replaceStack")) {
+            replaceStack = new ItemStack(nbtTags.getCompoundTag("replaceStack"));
+        }
+    }
+
+    public void write(TileNetworkList data) {
+        data.add(requireStack);
+
+        if (!replaceStack.isEmpty()) {
+            data.add(true);
+            data.add(MekanismUtils.getID(replaceStack));
+            data.add(replaceStack.getItemDamage());
+        } else {
+            data.add(false);
+        }
+    }
+
+    protected void read(ByteBuf dataStream) {
+        requireStack = dataStream.readBoolean();
+
+        if (dataStream.readBoolean()) {
+            replaceStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+        } else {
+            replaceStack = ItemStack.EMPTY;
+        }
+    }
+
+    @Override
+    public boolean equals(Object filter) {
+        return filter instanceof MinerFilter;
+    }
 }

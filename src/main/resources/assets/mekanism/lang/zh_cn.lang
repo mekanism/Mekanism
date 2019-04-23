@@ -965,9 +965,6 @@ reactor.depleted.desc=反应没有足够的燃料维持
 # Creative tab
 itemGroup.tabMekanism=通用机械
 
-# NEI stuff
-nei.chemicalInjectionChamber=化学压射室
-
 #############
 # GENERATORS
 #############

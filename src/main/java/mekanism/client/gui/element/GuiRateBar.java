@@ -8,74 +8,67 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRateBar extends GuiElement
-{
-	private int xLocation;
-	private int yLocation;
+public class GuiRateBar extends GuiElement {
 
-	private int width = 8;
-	private int height = 60;
+    private final int xLocation;
+    private final int yLocation;
+    private final int width = 8;
+    private final int height = 60;
+    private final IRateInfoHandler handler;
 
-	private IRateInfoHandler handler;
+    public GuiRateBar(IGuiWrapper gui, IRateInfoHandler h, ResourceLocation def, int x, int y) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRateBar.png"), gui, def);
+        handler = h;
+        xLocation = x;
+        yLocation = y;
+    }
 
-	public GuiRateBar(IGuiWrapper gui, IRateInfoHandler h, ResourceLocation def, int x, int y)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRateBar.png"), gui, def);
-		
-		handler = h;
-		
-		xLocation = x;
-		yLocation = y;
-	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
-	}
-	
-	public static abstract class IRateInfoHandler
-	{
-		public String getTooltip()
-		{
-			return null;
-		}
-		
-		public abstract double getLevel();
-	}
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
+    }
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+    @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
+              && yAxis <= yLocation + height - 1;
+    }
 
-		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
-		
-		if(handler.getLevel() > 0)
-		{
-			int displayInt = (int)(handler.getLevel()*58);
-			guiObj.drawTexturedRect(guiWidth + xLocation+1, guiHeight + yLocation + height-1 - displayInt, 8, height-2 - displayInt, width-2, displayInt);
-		}
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
+        guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
+        if (handler.getLevel() > 0) {
+            int displayInt = (int) (handler.getLevel() * 58);
+            guiObj.drawTexturedRect(guiWidth + xLocation + 1, guiHeight + yLocation + height - 1 - displayInt, 8,
+                  height - 2 - displayInt, width - 2, displayInt);
+        }
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
+        if (handler.getTooltip() != null && inBounds(xAxis, yAxis)) {
+            displayTooltip(handler.getTooltip(), xAxis, yAxis);
+        }
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
 
-		if(handler.getTooltip() != null && xAxis >= xLocation+1 && xAxis <= xLocation + width-1 && yAxis >= yLocation+1 && yAxis <= yLocation + height-1)
-		{
-			displayTooltip(handler.getTooltip(), xAxis, yAxis);
-		}
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    public static abstract class IRateInfoHandler {
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+        public String getTooltip() {
+            return null;
+        }
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button) {}
+        public abstract double getLevel();
+    }
 }

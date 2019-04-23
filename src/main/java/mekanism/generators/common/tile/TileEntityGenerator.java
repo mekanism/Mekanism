@@ -1,21 +1,16 @@
 package mekanism.generators.common.tile;
 
 import io.netty.buffer.ByteBuf;
-
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
-import mekanism.client.sound.ISoundSource;
-import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
-import mekanism.common.base.IHasSound;
-import mekanism.common.base.IRedstoneControl;
 import mekanism.api.TileNetworkList;
+import mekanism.common.Mekanism;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityNoisyBlock;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.states.BlockStateGenerator;
@@ -27,227 +22,155 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityNoisyBlock implements IComputerIntegration, IActiveState, IHasSound, ISoundSource, IRedstoneControl, ISecurityTile
-{
-	/** Output per tick this generator can transfer. */
-	public double output;
+public abstract class TileEntityGenerator extends TileEntityEffectsBlock implements IComputerIntegration,
+      IRedstoneControl, ISecurityTile {
 
-	/** Whether or not this block is in it's active state. */
-	public boolean isActive;
+    /**
+     * Output per tick this generator can transfer.
+     */
+    public double output;
 
-	/** The client's current active state. */
-	public boolean clientActive;
+    /**
+     * This machine's current RedstoneControl type.
+     */
+    public RedstoneControl controlType;
 
-	/** How many ticks must pass until this block's active state can sync with the client. */
-	public int updateDelay;
+    public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
-	/** This machine's current RedstoneControl type. */
-	public RedstoneControl controlType;
-	
-	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
+    /**
+     * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output
+     * rate.
+     *
+     * @param name - full name of this generator
+     * @param maxEnergy - how much energy this generator can store
+     */
+    public TileEntityGenerator(String soundPath, String name, double maxEnergy, double out) {
+        super("gen." + soundPath, name, maxEnergy);
 
-	/**
-	 * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
-	 * @param name - full name of this generator
-	 * @param maxEnergy - how much energy this generator can store
-	 */
-	public TileEntityGenerator(String soundPath, String name, double maxEnergy, double out)
-	{
-		super("gen." + soundPath, name, maxEnergy);
+        output = out;
+        controlType = RedstoneControl.DISABLED;
+    }
 
-		output = out;
-		isActive = false;
-		controlType = RedstoneControl.DISABLED;
-	}
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
 
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
+        if (!world.isRemote) {
+            if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
+                GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
 
-		if(world.isRemote && updateDelay > 0)
-		{
-			updateDelay--;
+                if (type != null && !type.isEnabled()) {
+                    Mekanism.logger
+                          .info("Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this)
+                                + " as according to config.");
+                    world.setBlockToAir(getPos());
+                    return;
+                }
+            }
 
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
+            if (MekanismUtils.canFunction(this)) {
+                CableUtils.emit(this);
+            }
+        }
+    }
 
-		if(!world.isRemote)
-		{
-			if(updateDelay > 0)
-			{
-				updateDelay--;
+    @Override
+    public double getMaxOutput() {
+        return output;
+    }
 
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					clientActive = isActive;
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
-				}
-			}
-			
-			if(!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val())
-			{
-				GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
-				
-				if(type != null && !type.isEnabled())
-				{
-					Mekanism.logger.info("[Mekanism] Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this) + " as according to config.");
-					world.setBlockToAir(getPos());
-					return;
-				}
-			}
+    @Override
+    public boolean sideIsConsumer(EnumFacing side) {
+        return false;
+    }
 
-			if(MekanismUtils.canFunction(this))
-			{
-				CableUtils.emit(this);
-			}
-		}
-	}
+    @Override
+    public boolean sideIsOutput(EnumFacing side) {
+        return side == facing;
+    }
 
-	@Override
-	public double getMaxOutput()
-	{
-		return output;
-	}
+    /**
+     * Whether or not this generator can operate.
+     *
+     * @return if the generator can operate
+     */
+    public abstract boolean canOperate();
 
-	@Override
-	public boolean sideIsConsumer(EnumFacing side) 
-	{
-		return false;
-	}
+    @Override
+    public boolean canSetFacing(int side) {
+        return side != 0 && side != 1;
+    }
 
-	@Override
-	public boolean sideIsOutput(EnumFacing side) {
-		return side == facing;
-	}
+    @Override
+    public void handlePacketData(ByteBuf dataStream) {
+        super.handlePacketData(dataStream);
 
-	/**
-	 * Whether or not this generator can operate.
-	 * @return if the generator can operate
-	 */
-	public abstract boolean canOperate();
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            controlType = RedstoneControl.values()[dataStream.readInt()];
+        }
+    }
 
-	@Override
-	public boolean getActive()
-	{
-		return isActive;
-	}
+    @Override
+    public TileNetworkList getNetworkedData(TileNetworkList data) {
+        super.getNetworkedData(data);
 
-	@Override
-	public void setActive(boolean active)
-	{
-		isActive = active;
+        data.add(controlType.ordinal());
 
-		if(clientActive != active && updateDelay == 0)
-		{
-			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
+        return data;
+    }
 
-			updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-			clientActive = active;
-		}
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTags) {
+        super.readFromNBT(nbtTags);
 
-	@Override
-	public boolean canSetFacing(int side)
-	{
-		return side != 0 && side != 1;
-	}
+        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+    }
 
-	@Override
-	public void handlePacketData(ByteBuf dataStream)
-	{
-		super.handlePacketData(dataStream);
+    @Nonnull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
+        super.writeToNBT(nbtTags);
 
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			clientActive = dataStream.readBoolean();
-			controlType = RedstoneControl.values()[dataStream.readInt()];
-	
-			if(updateDelay == 0 && clientActive != isActive)
-			{
-				updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
-				isActive = clientActive;
-				MekanismUtils.updateBlock(world, getPos());
-			}
-		}
-	}
+        nbtTags.setInteger("controlType", controlType.ordinal());
 
-	@Override
-	public TileNetworkList getNetworkedData(TileNetworkList data)
-	{
-		super.getNetworkedData(data);
+        return nbtTags;
+    }
 
-		data.add(isActive);
-		data.add(controlType.ordinal());
+    @Nonnull
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox() {
+        return INFINITE_EXTENT_AABB;
+    }
 
-		return data;
-	}
+    @Override
+    public boolean renderUpdate() {
+        return true;
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
+    @Override
+    public boolean lightUpdate() {
+        return true;
+    }
 
-		isActive = nbtTags.getBoolean("isActive");
-		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-	}
+    @Override
+    public RedstoneControl getControlType() {
+        return controlType;
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
+    @Override
+    public void setControlType(RedstoneControl type) {
+        controlType = type;
+        MekanismUtils.saveChunk(this);
+    }
 
-		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("controlType", controlType.ordinal());
-		
-		return nbtTags;
-	}
+    @Override
+    public boolean canPulse() {
+        return false;
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		return INFINITE_EXTENT_AABB;
-	}
-
-	@Override
-	public boolean renderUpdate()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean lightUpdate()
-	{
-		return true;
-	}
-
-	@Override
-	public RedstoneControl getControlType()
-	{
-		return controlType;
-	}
-
-	@Override
-	public void setControlType(RedstoneControl type)
-	{
-		controlType = type;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
-	
-	@Override
-	public TileComponentSecurity getSecurity()
-	{
-		return securityComponent;
-	}
+    @Override
+    public TileComponentSecurity getSecurity() {
+        return securityComponent;
+    }
 }

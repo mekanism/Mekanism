@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
+import java.util.Arrays;
 import java.util.UUID;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.MekanismClient;
@@ -16,7 +16,6 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
@@ -29,196 +28,148 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiSecurityTab extends GuiElement
-{
-	public boolean isItem;
-	public EnumHand currentHand;
-	
-	public TileEntity tileEntity;
+public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
 
-	public GuiSecurityTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def);
+    private final EnumHand currentHand;
+    private boolean isItem;
 
-		tileEntity = tile;
-	}
-	
-	public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, EnumHand hand)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def);
-		
-		isItem = true;
-		currentHand = hand;
-	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
-	{
-		return new Rectangle4i(guiWidth + 176, guiHeight + 32, 26, 26);
-	}
+    public GuiSecurityTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def, tile);
+        this.currentHand = EnumHand.MAIN_HAND;
+    }
 
-	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+    public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, EnumHand hand) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSecurityTab.png"), gui, def, null);
+        isItem = true;
+        currentHand = hand;
+    }
 
-		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
+    @Override
+    public Rectangle4i getBounds(int guiWidth, int guiHeight) {
+        return new Rectangle4i(guiWidth + 176, guiHeight + 32, 26, 26);
+    }
 
-		SecurityMode mode = getSecurity();
-		SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
-		
-		if(data != null && data.override)
-		{
-			mode = data.mode;
-		}
-		
-		int renderX = 26 + (18*mode.ordinal());
+    @Override
+    protected boolean inBounds(int xAxis, int yAxis) {
+        return xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54;
+    }
 
-		if(getOwner() != null && getOwner().equals(mc.player.getUniqueID()) && (data == null || !data.override))
-		{
-			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
-			{
-				guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 0, 18, 18);
-			}
-			else {
-				guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 18, 18, 18);
-			}
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 36, 18, 18);
-		}
+    @Override
+    public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
+        mc.renderEngine.bindTexture(RESOURCE);
+        guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 32, 0, 0, 26, 26);
+        SecurityMode mode = getSecurity();
+        SecurityData data = MekanismClient.clientSecurityMap.get(getOwner());
+        if (data != null && data.override) {
+            mode = data.mode;
+        }
+        int renderX = 26 + (18 * mode.ordinal());
+        if (getOwner() != null && getOwner().equals(mc.player.getUniqueID()) && (data == null || !data.override)) {
+            guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, inBounds(xAxis, yAxis) ? 0 : 18, 18, 18);
+        } else {
+            guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 36, renderX, 36, 18, 18);
+        }
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
+    @Override
+    public void renderForeground(int xAxis, int yAxis) {
+        mc.renderEngine.bindTexture(RESOURCE);
+        if (inBounds(xAxis, yAxis)) {
+            String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT)
+                  : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
+            String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
+            String ownerText = SecurityUtils.getOwnerDisplay(mc.player, getOwnerUsername());
+            String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 
-	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-		mc.renderEngine.bindTexture(RESOURCE);
+            if (isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT)
+                  : SecurityUtils.isOverridden(tileEntity, Side.CLIENT)) {
+                displayTooltips(Arrays.asList(securityText, ownerText, overrideText), xAxis, yAxis);
+            } else {
+                displayTooltips(Arrays.asList(securityText, ownerText), xAxis, yAxis);
+            }
+        }
+        mc.renderEngine.bindTexture(defaultLocation);
+    }
 
-		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
-		{
-			String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
-			String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
-			String ownerText = SecurityUtils.getOwnerDisplay(mc.player, getOwnerUsername());
-			String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
-			
-			if(isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT))
-			{
-				displayTooltips(ListUtils.asList(securityText, ownerText, overrideText), xAxis, yAxis); 
-			}
-			else {
-				displayTooltips(ListUtils.asList(securityText, ownerText), xAxis, yAxis); 
-			}
-		}
+    private SecurityFrequency getFrequency() {
+        if (isItem) {
+            if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
+                mc.player.closeScreen();
+                return null;
+            }
+            return SecurityUtils.getFrequency(getOwner());
+        }
+        return ((ISecurityTile) tileEntity).getSecurity().getFrequency();
+    }
 
-		mc.renderEngine.bindTexture(defaultLocation);
-	}
-	
-	private SecurityFrequency getFrequency()
-	{
-		if(isItem)
-		{
-			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
-			{
-				mc.player.closeScreen();
-				return null;
-			}
-			
-			return SecurityUtils.getFrequency(getOwner());
-		}
-		else {
-			return ((ISecurityTile)tileEntity).getSecurity().getFrequency();
-		}
-	}
-	
-	private SecurityMode getSecurity()
-	{
-		if(!MekanismConfig.current().general.allowProtection.val())
-		{
-			return SecurityMode.PUBLIC;
-		}
-		
-		if(isItem)
-		{
-			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
-			{
-				mc.player.closeScreen();
-				return SecurityMode.PUBLIC;
-			}
-			
-			return ((ISecurityItem)getItem().getItem()).getSecurity(getItem());
-		}
-		else {
-			return ((ISecurityTile)tileEntity).getSecurity().getMode();
-		}
-	}
-	
-	private UUID getOwner()
-	{
-		if(isItem)
-		{
-			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
-			{
-				mc.player.closeScreen();
-				return null;
-			}
-			
-			return ((ISecurityItem)getItem().getItem()).getOwnerUUID(getItem());
-		}
-		else {
-			return ((ISecurityTile)tileEntity).getSecurity().getOwnerUUID();
-		}
-	}
-	
-	private String getOwnerUsername()
-	{
-		if(isItem)
-		{
-			if(getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem))
-			{
-				mc.player.closeScreen();
-				return null;
-			}
-			
-			return MekanismClient.clientUUIDMap.get(((ISecurityItem)getItem().getItem()).getOwnerUUID(getItem()));
-		}
-		else {
-			return ((ISecurityTile)tileEntity).getSecurity().getClientOwner();
-		}
-	}
-	
-	private ItemStack getItem()
-	{
-		return mc.player.getHeldItem(currentHand);
-	}
+    private SecurityMode getSecurity() {
+        if (!MekanismConfig.current().general.allowProtection.val()) {
+            return SecurityMode.PUBLIC;
+        }
 
-	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+        if (isItem) {
+            if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
+                mc.player.closeScreen();
+                return SecurityMode.PUBLIC;
+            }
 
-	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(button == 0 && MekanismConfig.current().general.allowProtection.val())
-		{
-			if(getOwner() != null && mc.player.getUniqueID().equals(getOwner()))
-			{
-				if(xAxis >= 179 && xAxis <= 197 && yAxis >= 36 && yAxis <= 54)
-				{
-					SecurityMode current = getSecurity();
-					int ordinalToSet = current.ordinal() < (SecurityMode.values().length-1) ? current.ordinal()+1 : 0;
-	
-					SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-					
-					if(isItem)
-					{
-						Mekanism.packetHandler.sendToServer(new SecurityModeMessage(currentHand, SecurityMode.values()[ordinalToSet]));
-					}
-					else {
-						Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
-					}
-				}
-			}
-		}
-	}
+            return ((ISecurityItem) getItem().getItem()).getSecurity(getItem());
+        } else {
+            return ((ISecurityTile) tileEntity).getSecurity().getMode();
+        }
+    }
+
+    private UUID getOwner() {
+        if (isItem) {
+            if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
+                mc.player.closeScreen();
+                return null;
+            }
+            return ((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem());
+        }
+        return ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
+    }
+
+    private String getOwnerUsername() {
+        if (isItem) {
+            if (getItem().isEmpty() || !(getItem().getItem() instanceof ISecurityItem)) {
+                mc.player.closeScreen();
+                return null;
+            }
+            return MekanismClient.clientUUIDMap.get(((ISecurityItem) getItem().getItem()).getOwnerUUID(getItem()));
+        }
+        return ((ISecurityTile) tileEntity).getSecurity().getClientOwner();
+    }
+
+    private ItemStack getItem() {
+        return mc.player.getHeldItem(currentHand);
+    }
+
+    @Override
+    public void preMouseClicked(int xAxis, int yAxis, int button) {
+    }
+
+    @Override
+    public void mouseClicked(int xAxis, int yAxis, int button) {
+        if (button == 0 && MekanismConfig.current().general.allowProtection.val()) {
+            if (getOwner() != null && mc.player.getUniqueID().equals(getOwner())) {
+                if (inBounds(xAxis, yAxis)) {
+                    SecurityMode current = getSecurity();
+                    int ordinalToSet =
+                          current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;
+
+                    SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+
+                    if (isItem) {
+                        Mekanism.packetHandler
+                              .sendToServer(new SecurityModeMessage(currentHand, SecurityMode.values()[ordinalToSet]));
+                    } else {
+                        Mekanism.packetHandler.sendToServer(
+                              new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
+                    }
+                }
+            }
+        }
+    }
 }

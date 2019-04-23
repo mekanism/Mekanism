@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
-
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.base.ISustainedInventory;
@@ -22,92 +22,82 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemRobit extends ItemEnergized implements ISustainedInventory
-{
-	public ItemRobit()
-	{
-		super(100000);
-	}
+public class ItemRobit extends ItemEnergized implements ISustainedInventory {
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag)
-	{
-		super.addInformation(itemstack, world, list, flag);
+    public ItemRobit() {
+        super(100000);
+    }
 
-		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.name") + ": " + EnumColor.GREY + getName(itemstack));
-		list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
+        super.addInformation(itemstack, world, list, flag);
 
-	@Override
-	public EnumActionResult onItemUse(EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand, EnumFacing side, float posX, float posY, float posZ)
-	{
-		TileEntity tileEntity = world.getTileEntity(pos);
-		ItemStack itemstack = entityplayer.getHeldItem(hand);
+        list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.name") + ": " + EnumColor.GREY + getName(itemstack));
+        list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + (
+              getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+    }
 
-		if(tileEntity instanceof TileEntityChargepad)
-		{
-			TileEntityChargepad chargepad = (TileEntityChargepad)tileEntity;
-			
-			if(!chargepad.isActive)
-			{
-				if(!world.isRemote)
-				{
-					EntityRobit robit = new EntityRobit(world, pos.getX()+0.5, pos.getY()+0.1, pos.getZ()+0.5);
+    @Nonnull
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer entityplayer, World world, BlockPos pos, EnumHand hand,
+          EnumFacing side, float posX, float posY, float posZ) {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        ItemStack itemstack = entityplayer.getHeldItem(hand);
 
-					robit.setHome(Coord4D.get(chargepad));
-					robit.setEnergy(getEnergy(itemstack));
-					robit.setOwnerUUID(entityplayer.getUniqueID());
-					robit.setInventory(getInventory(itemstack));
-					robit.setCustomNameTag(getName(itemstack));
+        if (tileEntity instanceof TileEntityChargepad) {
+            TileEntityChargepad chargepad = (TileEntityChargepad) tileEntity;
 
-					world.spawnEntity(robit);
-				}
+            if (!chargepad.isActive) {
+                if (!world.isRemote) {
+                    EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
 
-				entityplayer.setHeldItem(hand, ItemStack.EMPTY);
+                    robit.setHome(Coord4D.get(chargepad));
+                    robit.setEnergy(getEnergy(itemstack));
+                    robit.setOwnerUUID(entityplayer.getUniqueID());
+                    robit.setInventory(getInventory(itemstack));
+                    robit.setCustomNameTag(getName(itemstack));
 
-				return EnumActionResult.SUCCESS;
-			}
-		}
+                    world.spawnEntity(robit);
+                }
 
-		return EnumActionResult.PASS;
-	}
+                entityplayer.setHeldItem(hand, ItemStack.EMPTY);
 
-	@Override
-	public boolean canSend(ItemStack itemStack)
-	{
-		return false;
-	}
+                return EnumActionResult.SUCCESS;
+            }
+        }
 
-	public void setName(ItemStack itemstack, String name)
-	{
-		ItemDataUtils.setString(itemstack, "name", name);
-	}
+        return EnumActionResult.PASS;
+    }
 
-	public String getName(ItemStack itemstack)
-	{
-		String name = ItemDataUtils.getString(itemstack, "name");
+    @Override
+    public boolean canSend(ItemStack itemStack) {
+        return false;
+    }
 
-		return name.isEmpty() ? "Robit" : name;
-	}
+    public void setName(ItemStack itemstack, String name) {
+        ItemDataUtils.setString(itemstack, "name", name);
+    }
 
-	@Override
-	public void setInventory(NBTTagList nbtTags, Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemDataUtils.setList((ItemStack)data[0], "Items", nbtTags);
-		}
-	}
+    public String getName(ItemStack itemstack) {
+        String name = ItemDataUtils.getString(itemstack, "name");
 
-	@Override
-	public NBTTagList getInventory(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			return ItemDataUtils.getList((ItemStack)data[0], "Items");
-		}
+        return name.isEmpty() ? "Robit" : name;
+    }
 
-		return null;
-	}
+    @Override
+    public void setInventory(NBTTagList nbtTags, Object... data) {
+        if (data[0] instanceof ItemStack) {
+            ItemDataUtils.setList((ItemStack) data[0], "Items", nbtTags);
+        }
+    }
+
+    @Override
+    public NBTTagList getInventory(Object... data) {
+        if (data[0] instanceof ItemStack) {
+            return ItemDataUtils.getList((ItemStack) data[0], "Items");
+        }
+
+        return null;
+    }
 }

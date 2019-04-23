@@ -7,16 +7,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiEnergizedSmelter extends GuiElectricMachine
-{
-	public GuiEnergizedSmelter(InventoryPlayer inventory, TileEntityElectricMachine tentity)
-	{
-		super(inventory, tentity);
-	}
-	
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.GREEN;
-	}
+public class GuiEnergizedSmelter extends GuiElectricMachine {
+
+    public GuiEnergizedSmelter(InventoryPlayer inventory, TileEntityElectricMachine tile) {
+        super(inventory, tile);
+    }
+
+    @Override
+    public ProgressBar getProgressType() {
+        return ProgressBar.GREEN;
+    }
 }

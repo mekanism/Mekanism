@@ -7,7 +7,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -19,298 +19,263 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
 import org.apache.commons.lang3.tuple.Pair;
 
-public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork>
-{
-	private double lastPowerScale = 0;
-	private double joulesTransmitted = 0;
-	private double jouleBufferLastTick = 0;
+public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> {
 
-	public double clientEnergyScale = 0;
+    public double clientEnergyScale = 0;
+    public EnergyStack buffer = new EnergyStack(0);
+    private double lastPowerScale = 0;
+    private double joulesTransmitted = 0;
+    private double jouleBufferLastTick = 0;
 
-	public EnergyStack buffer = new EnergyStack(0);
+    public EnergyNetwork() {
+    }
 
-	public EnergyNetwork() {}
-
-	public EnergyNetwork(Collection<EnergyNetwork> networks)
-	{
-		for(EnergyNetwork net : networks)
-		{
-			if(net != null)
-			{
-				if(net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale)
-				{
-					clientEnergyScale = net.clientEnergyScale;
-					jouleBufferLastTick = net.jouleBufferLastTick;
-					joulesTransmitted = net.joulesTransmitted;
-					lastPowerScale = net.lastPowerScale;
-				}
-
-				buffer.amount += net.buffer.amount;
-
-				adoptTransmittersAndAcceptorsFrom(net);
-				net.deregister();
-			}
-		}
-
-		register();
-	}
-	
-	public static double round(double d)
-	{
-		return Math.round(d * 10000)/10000;
-	}
-
-	@Override
-	public void absorbBuffer(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> transmitter)
-	{
-		EnergyStack energy = (EnergyStack)transmitter.getBuffer();
-		buffer.amount += energy.amount;
-		energy.amount = 0;
-	}
-
-	@Override
-	public void clampBuffer()
-	{
-		if(buffer.amount > getCapacity())
-		{
-			buffer.amount = getCapacity();
-		}
-
-		if(buffer.amount < 0)
-		{
-			buffer.amount = 0;
-		}
-	}
-
-	@Override
-	protected void updateMeanCapacity()
-	{
-        int numCables = transmitters.size();
-        double reciprocalSum = 0;
-        
-        for(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork> cable : transmitters)
-        {
-            reciprocalSum += 1.0/(double)cable.getCapacity();
+    public EnergyNetwork(Collection<EnergyNetwork> networks) {
+        for (EnergyNetwork net : networks) {
+            if (net != null) {
+                adoptTransmittersAndAcceptorsFrom(net);
+                net.deregister();
+            }
         }
 
-        meanCapacity = (double)numCables / reciprocalSum;            
-	}
-    
-	public double getEnergyNeeded()
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return 0;
-		}
+        register();
+    }
 
-		return getCapacity()-buffer.amount;
-	}
+    @Override
+    public void adoptTransmittersAndAcceptorsFrom(EnergyNetwork net) {
+        if (net.jouleBufferLastTick > jouleBufferLastTick || net.clientEnergyScale > clientEnergyScale) {
+            clientEnergyScale = net.clientEnergyScale;
+            jouleBufferLastTick = net.jouleBufferLastTick;
+            joulesTransmitted = net.joulesTransmitted;
+            lastPowerScale = net.lastPowerScale;
+        }
 
-	public double tickEmit(double energyToSend)
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return 0;
-		}
+        buffer.amount += net.buffer.amount;
+        super.adoptTransmittersAndAcceptorsFrom(net);
+    }
 
-		double sent = 0;
-		boolean tryAgain;
-		int i = 0;
+    public static double round(double d) {
+        return Math.round(d * 10000) / 10000;
+    }
 
-		do {
-			double prev = sent;
-			sent += doEmit(energyToSend-sent);
+    @Nullable
+    public EnergyStack getBuffer() {
+        return buffer;
+    }
 
-			tryAgain = energyToSend-sent > 0 && sent-prev > 0 && i < 100;
+    @Override
+    public void absorbBuffer(IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> transmitter) {
+        EnergyStack energy = transmitter.getBuffer();
+        buffer.amount += energy.amount;
+        energy.amount = 0;
+    }
 
-			i++;
-		} while(tryAgain);
+    @Override
+    public void clampBuffer() {
+        if (buffer.amount > getCapacity()) {
+            buffer.amount = getCapacity();
+        }
 
-		joulesTransmitted = sent;
-		
-		return sent;
-	}
+        if (buffer.amount < 0) {
+            buffer.amount = 0;
+        }
+    }
 
-	public double emit(double energyToSend, boolean doEmit)
-	{
-		double toUse = Math.min(getEnergyNeeded(), energyToSend);
-		
-		if(doEmit)
-		{
-			buffer.amount += toUse;
-		}
-		
-		return energyToSend-toUse;
-	}
+    @Override
+    protected void updateMeanCapacity() {
+        int numCables = transmitters.size();
+        double reciprocalSum = 0;
 
-	/**
-	 * @return sent
-	 */
-	public double doEmit(double energyToSend)
-	{
-		double sent = 0;
+        for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> cable : transmitters) {
+            reciprocalSum += 1.0 / (double) cable.getCapacity();
+        }
 
-		List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>();
-		availableAcceptors.addAll(getAcceptors(null));
+        meanCapacity = (double) numCables / reciprocalSum;
+    }
 
-		Collections.shuffle(availableAcceptors);
+    public double getEnergyNeeded() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return 0;
+        }
 
-		if(!availableAcceptors.isEmpty())
-		{
-			int divider = availableAcceptors.size();
-			double remaining = energyToSend % divider;
-			double sending = (energyToSend-remaining)/divider;
+        return getCapacity() - buffer.amount;
+    }
 
-			for(Pair<Coord4D, EnergyAcceptorWrapper> pair : availableAcceptors)
-			{
-				EnergyAcceptorWrapper acceptor = pair.getRight();
-				double currentSending = sending+remaining;
-				EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
+    public double tickEmit(double energyToSend) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return 0;
+        }
 
-				if(sides == null || sides.isEmpty())
-				{
-					continue;
-				}
+        double sent = 0;
+        boolean tryAgain;
+        int i = 0;
 
-				for(EnumFacing side : sides)
-				{
-					double prev = sent;
+        do {
+            double prev = sent;
+            sent += doEmit(energyToSend - sent);
 
-					sent += acceptor.acceptEnergy(side, currentSending, false);
+            tryAgain = energyToSend - sent > 0 && sent - prev > 0 && i < 100;
 
-					if(sent > prev)
-					{
-						break;
-					}
-				}
-			}
-		}
+            i++;
+        } while (tryAgain);
 
-		return sent;
-	}
+        joulesTransmitted = sent;
 
-	@Override
-	public Set<Pair<Coord4D, EnergyAcceptorWrapper>> getAcceptors(Object data)
-	{
-		Set<Pair<Coord4D, EnergyAcceptorWrapper>> toReturn = new HashSet<>();
+        return sent;
+    }
 
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			return toReturn;
-		}
+    public double emit(double energyToSend, boolean doEmit) {
+        double toUse = Math.min(getEnergyNeeded(), energyToSend);
 
-		for(Coord4D coord : possibleAcceptors.keySet())
-		{
-			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+        if (doEmit) {
+            buffer.amount += toUse;
+        }
 
-			if(sides == null || sides.isEmpty())
-			{
-				continue;
-			}
+        return energyToSend - toUse;
+    }
 
-			TileEntity tile = coord.getTileEntity(getWorld());
+    /**
+     * @return sent
+     */
+    public double doEmit(double energyToSend) {
+        double sent = 0;
 
-			for(EnumFacing side : sides)
-			{
-				EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
-				
-				if(acceptor != null)
-				{
-					if(acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side))
-					{
-						toReturn.add(Pair.of(coord, acceptor));
-						break;
-					}
-				}
-			}
-		}
+        List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>(getAcceptors(null));
 
-		return toReturn;
-	}
+        Collections.shuffle(availableAcceptors);
 
-	public static class EnergyTransferEvent extends Event
-	{
-		public final EnergyNetwork energyNetwork;
+        if (!availableAcceptors.isEmpty()) {
+            int divider = availableAcceptors.size();
+            double remaining = energyToSend % divider;
+            double sending = (energyToSend - remaining) / divider;
 
-		public final double power;
+            for (Pair<Coord4D, EnergyAcceptorWrapper> pair : availableAcceptors) {
+                EnergyAcceptorWrapper acceptor = pair.getRight();
+                double currentSending = sending + remaining;
+                EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
 
-		public EnergyTransferEvent(EnergyNetwork network, double currentPower)
-		{
-			energyNetwork = network;
-			power = currentPower;
-		}
-	}
+                if (sides == null || sides.isEmpty()) {
+                    continue;
+                }
 
-	@Override
-	public String toString()
-	{
-		return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
-	}
+                for (EnumFacing side : sides) {
+                    double prev = sent;
 
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
+                    sent += acceptor.acceptEnergy(side, currentSending, false);
 
-		clearJoulesTransmitted();
+                    if (sent > prev) {
+                        break;
+                    }
+                }
+            }
+        }
 
-		double currentPowerScale = getPowerScale();
+        return sent;
+    }
 
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			if(Math.abs(currentPowerScale-lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1)))
-			{
-				needsUpdate = true;
-			}
+    @Override
+    public Set<Pair<Coord4D, EnergyAcceptorWrapper>> getAcceptors(Object data) {
+        Set<Pair<Coord4D, EnergyAcceptorWrapper>> toReturn = new HashSet<>();
 
-			if(needsUpdate)
-			{
-				MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
-				lastPowerScale = currentPowerScale;
-				needsUpdate = false;
-			}
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            return toReturn;
+        }
 
-			if(buffer.amount > 0)
-			{
-				buffer.amount -= tickEmit(buffer.amount);
-			}
-		}
-	}
+        for (Coord4D coord : possibleAcceptors.keySet()) {
+            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
 
-	public double getPowerScale()
-	{
-		return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower())*2)/10, 1), getCapacity() == 0 ? 0 : buffer.amount/getCapacity());
-	}
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
 
-	public void clearJoulesTransmitted()
-	{
-		jouleBufferLastTick = buffer.amount;
-		joulesTransmitted = 0;
-	}
+            TileEntity tile = coord.getTileEntity(getWorld());
 
-	public double getPower()
-	{
-		return jouleBufferLastTick * 20;
-	}
+            for (EnumFacing side : sides) {
+                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
 
-	@Override
-	public String getNeededInfo()
-	{
-		return MekanismUtils.getEnergyDisplay(getEnergyNeeded());
-	}
+                if (acceptor != null) {
+                    if (acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
+                        toReturn.add(Pair.of(coord, acceptor));
+                        break;
+                    }
+                }
+            }
+        }
 
-	@Override
-	public String getStoredInfo()
-	{
-		return MekanismUtils.getEnergyDisplay(buffer.amount);
-	}
+        return toReturn;
+    }
 
-	@Override
-	public String getFlowInfo()
-	{
-		return MekanismUtils.getEnergyDisplay(joulesTransmitted) + "/t";
-	}
+    @Override
+    public String toString() {
+        return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+
+        clearJoulesTransmitted();
+
+        double currentPowerScale = getPowerScale();
+
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            if (Math.abs(currentPowerScale - lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (
+                  currentPowerScale == 0 || currentPowerScale == 1))) {
+                needsUpdate = true;
+            }
+
+            if (needsUpdate) {
+                MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
+                lastPowerScale = currentPowerScale;
+                needsUpdate = false;
+            }
+
+            if (buffer.amount > 0) {
+                buffer.amount -= tickEmit(buffer.amount);
+            }
+        }
+    }
+
+    public double getPowerScale() {
+        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1),
+              getCapacity() == 0 ? 0 : buffer.amount / getCapacity());
+    }
+
+    public void clearJoulesTransmitted() {
+        jouleBufferLastTick = buffer.amount;
+        joulesTransmitted = 0;
+    }
+
+    public double getPower() {
+        return jouleBufferLastTick * 20;
+    }
+
+    @Override
+    public String getNeededInfo() {
+        return MekanismUtils.getEnergyDisplay(getEnergyNeeded());
+    }
+
+    @Override
+    public String getStoredInfo() {
+        return MekanismUtils.getEnergyDisplay(buffer.amount);
+    }
+
+    @Override
+    public String getFlowInfo() {
+        return MekanismUtils.getEnergyDisplay(joulesTransmitted) + "/t";
+    }
+
+    public static class EnergyTransferEvent extends Event {
+
+        public final EnergyNetwork energyNetwork;
+
+        public final double power;
+
+        public EnergyTransferEvent(EnergyNetwork network, double currentPower) {
+            energyNetwork = network;
+            power = currentPower;
+        }
+    }
 }
