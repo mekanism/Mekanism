@@ -8,10 +8,7 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.block.states.BlockStateCardboardBox;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -23,9 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +28,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class BlockCardboardBox extends BlockContainer {
+public class BlockCardboardBox extends BlockMekanismContainer {
 
     private static boolean testingPlace = false;
 
@@ -123,7 +118,9 @@ public class BlockCardboardBox extends BlockContainer {
         return new TileEntityCardboardBox();
     }
 
-    private ItemStack getDropItem(IBlockState state, IBlockAccess world, BlockPos pos) {
+    @Nonnull
+    @Override
+    protected ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
 
         Item item = Item.getItemFromBlock(state.getBlock());
@@ -134,60 +131,6 @@ public class BlockCardboardBox extends BlockContainer {
         }
 
         return itemStack;
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        return getDropItem(state, world, pos);
-    }
-
-    @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos,
-          @Nonnull IBlockState state, int fortune) {
-        drops.add(getDropItem(state, world, pos));
-    }
-
-    /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
-     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
-     * TileEntity, ItemStack)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
-     */
-    @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
-    }
-
-    /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
-     * boolean)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
-     */
-    @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
-          @Nonnull IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        MekanismUtils.harvestBlockPatched(this, getDropItem(state, world, pos), world, player, pos, te);
-        world.setBlockToAir(pos);
-    }
-
-    /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
-     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
-     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
-     *
-     * @return false
-     */
-    @Override
-    @Deprecated
-    protected boolean canSilkHarvest() {
-        return false;
     }
 
     /**

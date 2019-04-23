@@ -10,6 +10,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -31,8 +32,6 @@ import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -68,7 +67,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public abstract class BlockGenerator extends BlockContainer {
+public abstract class BlockGenerator extends BlockMekanismContainer {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
     private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
@@ -487,28 +486,9 @@ public abstract class BlockGenerator extends BlockContainer {
         }
     }
 
-    /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
-     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
-     * TileEntity, ItemStack)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
-     */
-    @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
-    }
-
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        return getDropItem(state, world, pos);
-    }
-
-    private ItemStack getDropItem(IBlockState state, IBlockAccess world, BlockPos pos) {
+    protected ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         if (tileEntity == null) {
             return ItemStack.EMPTY;
@@ -557,39 +537,6 @@ public abstract class BlockGenerator extends BlockContainer {
         }
 
         return itemStack;
-    }
-
-    @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state,
-          int fortune) {
-        drops.add(getDropItem(state, world, pos));
-    }
-
-    /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
-     * boolean)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
-     */
-    @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
-          @Nonnull IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        MekanismUtils.harvestBlockPatched(this, getDropItem(state, world, pos), world, player, pos, te);
-        world.setBlockToAir(pos);
-    }
-
-    /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
-     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
-     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
-     *
-     * @return false
-     */
-    @Override
-    @Deprecated
-    protected boolean canSilkHarvest() {
-        return false;
     }
 
     @Override

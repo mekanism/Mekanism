@@ -21,8 +21,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -49,7 +47,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockContainer {
+public class BlockEnergyCube extends BlockMekanismContainer {
 
     public BlockEnergyCube() {
         super(Material.IRON);
@@ -220,20 +218,6 @@ public class BlockEnergyCube extends BlockContainer {
         return false;
     }
 
-    /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
-     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
-     * TileEntity, ItemStack)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
-     */
-    @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
-    }
-
     @Override
     public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
         return new TileEntityEnergyCube();
@@ -254,13 +238,7 @@ public class BlockEnergyCube extends BlockContainer {
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        return getDropItem(world, pos);
-    }
-
-    @Nonnull
-    private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
+    protected ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
 
@@ -292,39 +270,6 @@ public class BlockEnergyCube extends BlockContainer {
         inventory.setInventory(tileEntity.getInventory(), itemStack);
 
         return itemStack;
-    }
-
-    @Override
-    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state,
-          int fortune) {
-        drops.add(getDropItem(world, pos));
-    }
-
-    /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
-     * boolean)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
-     */
-    @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
-          @Nonnull IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        MekanismUtils.harvestBlockPatched(this, getDropItem(world, pos), world, player, pos, te);
-        world.setBlockToAir(pos);
-    }
-
-    /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
-     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
-     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
-     *
-     * @return false
-     */
-    @Override
-    @Deprecated
-    protected boolean canSilkHarvest() {
-        return false;
     }
 
     @Override

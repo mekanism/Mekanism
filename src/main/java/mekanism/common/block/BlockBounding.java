@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class BlockBounding extends Block {
@@ -148,7 +148,7 @@ public class BlockBounding extends Block {
     }
 
     @SubscribeEvent
-    public static void blockHarvested(BlockEvent.HarvestDropsEvent event) {
+    public static void blockHarvested(HarvestDropsEvent event) {
         World world = event.getWorld();
         BlockPos pos = event.getPos();
         Block block = world.getBlockState(pos).getBlock();

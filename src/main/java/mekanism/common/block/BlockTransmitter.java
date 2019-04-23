@@ -29,7 +29,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -38,7 +37,6 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -61,7 +59,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTransmitter extends Block implements ITileEntityProvider {
+public class BlockTransmitter extends BlockMekanismSimple implements ITileEntityProvider {
 
     public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
     public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];
@@ -271,13 +269,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
-        return getDropItem(world, pos);
-    }
-
-    @Nonnull
-    private ItemStack getDropItem(IBlockAccess world, BlockPos pos) {
+    protected ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         ItemStack itemStack = ItemStack.EMPTY;
         TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
         if (tileEntity != null) {
@@ -302,26 +294,6 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         }
         return MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager) ||
               super.addHitEffects(state, world, target, manager);
-    }
-
-    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
-        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
-
-        world.setBlockToAir(pos);
-
-        if (!returnBlock) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, itemStack);
-
-            world.spawnEntity(entityItem);
-        }
-
-        return itemStack;
     }
 
     @Override
@@ -409,47 +381,6 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     @Override
     @Deprecated
     public boolean isFullBlock(IBlockState state) {
-        return false;
-    }
-
-    /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
-     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
-     * TileEntity, ItemStack)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
-     */
-    @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, willHarvest);
-    }
-
-    /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
-     * boolean)}.
-     *
-     * @author Forge
-     * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
-     */
-    @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
-          @Nonnull IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        super.harvestBlock(world, player, pos, state, te, stack);
-        world.setBlockToAir(pos);
-    }
-
-    /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
-     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
-     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
-     *
-     * @return false
-     */
-    @Override
-    @Deprecated
-    protected boolean canSilkHarvest() {
         return false;
     }
 
