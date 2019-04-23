@@ -197,18 +197,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                     IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
 
                     if (storage.canExtract()) {
-                        int needed = (int) Math
-                              .round(Math.min(Integer.MAX_VALUE,
-                                    (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_FORGE.val()));
+                        int needed = MekanismUtils.clampToInt(
+                              (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_FORGE.val());
                         setEnergy(getEnergy() + storage.extractEnergy(needed, false) * MekanismConfig
                               .current().general.FROM_FORGE.val());
                     }
                 } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                     IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
 
-                    int needed = (int) Math
-                          .round(Math.min(Integer.MAX_VALUE,
-                                (MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_RF.val()));
+                    int needed = MekanismUtils
+                          .clampToInt((MAX_ELECTRICITY - getEnergy()) * MekanismConfig.current().general.TO_RF.val());
                     setEnergy(getEnergy() + (item.extractEnergy(stack, needed, false) * MekanismConfig
                           .current().general.FROM_RF.val()));
                 } else if (MekanismUtils.useIC2() && stack.getItem() instanceof IElectricItem) {
@@ -312,7 +310,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
         setFollowing(false);
 
         if (world.provider.getDimension() != homeLocation.dimensionId) {
-            changeDimension(homeLocation.dimensionId, (world1, entity, yaw) -> entity.setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, yaw, rotationPitch));
+            changeDimension(homeLocation.dimensionId, (world1, entity, yaw) -> entity
+                  .setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, yaw,
+                        rotationPitch));
         } else {
             setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
         }

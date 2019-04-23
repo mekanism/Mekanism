@@ -2,6 +2,7 @@ package mekanism.common.integration.forgeenergy;
 
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -18,8 +19,7 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        return (int) Math
-              .round(tileEntity
+        return MekanismUtils.clampToInt(tileEntity
                     .acceptEnergy(side, maxReceive * MekanismConfig.current().general.FROM_FORGE.val(), simulate)
                     * MekanismConfig.current().general.TO_FORGE.val());
     }
@@ -31,14 +31,12 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        return (int) Math.round(
-              Math.min(Integer.MAX_VALUE, tileEntity.getEnergy() * MekanismConfig.current().general.TO_FORGE.val()));
+        return MekanismUtils.clampToInt(tileEntity.getEnergy() * MekanismConfig.current().general.TO_FORGE.val());
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return (int) Math.round(
-              Math.min(Integer.MAX_VALUE, tileEntity.getMaxEnergy() * MekanismConfig.current().general.TO_FORGE.val()));
+        return MekanismUtils.clampToInt(tileEntity.getMaxEnergy() * MekanismConfig.current().general.TO_FORGE.val());
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.common.integration.ic2;
 import ic2.api.item.IElectricItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
@@ -29,7 +30,7 @@ public class IC2ItemManager implements IElectricItemManager {
                 energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) + energyToStore);
             }
 
-            return (int) Math.round(energyToStore * MekanismConfig.current().general.TO_IC2.val());
+            return MekanismUtils.clampToInt(energyToStore * MekanismConfig.current().general.TO_IC2.val());
         }
 
         return 0;
@@ -47,7 +48,7 @@ public class IC2ItemManager implements IElectricItemManager {
                 energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) - energyToGive);
             }
 
-            return (int) Math.round(energyToGive * MekanismConfig.current().general.TO_IC2.val());
+            return MekanismUtils.clampToInt(energyToGive * MekanismConfig.current().general.TO_IC2.val());
         }
 
         return 0;
@@ -60,7 +61,7 @@ public class IC2ItemManager implements IElectricItemManager {
 
     @Override
     public double getCharge(ItemStack itemStack) {
-        return (int) Math.round(energizedItem.getEnergy(itemStack) * MekanismConfig.current().general.TO_IC2.val());
+        return MekanismUtils.clampToInt(energizedItem.getEnergy(itemStack) * MekanismConfig.current().general.TO_IC2.val());
     }
 
     @Override

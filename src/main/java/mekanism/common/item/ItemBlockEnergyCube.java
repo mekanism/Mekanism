@@ -244,7 +244,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
 
-            return (int) Math.round(toReceive * MekanismConfig.current().general.TO_RF.val());
+            return MekanismUtils.clampToInt(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -261,7 +261,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IS
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
 
-            return (int) Math.round(toSend * MekanismConfig.current().general.TO_RF.val());
+            return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
