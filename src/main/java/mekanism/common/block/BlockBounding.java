@@ -21,8 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class BlockBounding extends Block {
 
@@ -33,6 +31,20 @@ public class BlockBounding extends Block {
             return ((TileEntityBoundingBlock) te).mainPos;
         }
         return null;
+    }
+
+    /**
+     * Removes the main block if it is not already air.
+     */
+    private static void removeMainBlock(World world, BlockPos thisPos) {
+        BlockPos mainPos = getMainBlockPos(world, thisPos);
+        if (mainPos != null) {
+            IBlockState state = world.getBlockState(mainPos);
+            if (!state.getBlock().isAir(state, world, mainPos)) {
+                //Set the main block to air, which will invalidate the rest of the bounding blocks
+                world.setBlockToAir(mainPos);
+            }
+        }
     }
 
     public BlockBounding() {
@@ -72,6 +84,8 @@ public class BlockBounding extends Block {
 
     @Override
     public void breakBlock(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
+        //Remove the main block if a bounding block gets broken by being directly replaced
+        removeMainBlock(world, pos);
         super.breakBlock(world, pos, state);
         world.removeTileEntity(pos);
     }
@@ -106,7 +120,6 @@ public class BlockBounding extends Block {
         if (willHarvest) {
             return true;
         }
-
         removeMainBlock(world, pos);
         return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
@@ -125,14 +138,6 @@ public class BlockBounding extends Block {
         state1.getBlock().getDrops(drops, world, mainPos, state1, fortune);
     }
 
-    private void removeMainBlock(World world, BlockPos pos) {
-        TileEntity tmpTileEntity = world.getTileEntity(pos);
-        if (tmpTileEntity instanceof TileEntityBoundingBlock) {
-            TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) tmpTileEntity;
-            world.setBlockToAir(tileEntity.mainPos);
-        }
-    }
-
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
      * boolean)}.
@@ -145,17 +150,6 @@ public class BlockBounding extends Block {
           @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.setBlockToAir(pos);
-    }
-
-    @SubscribeEvent
-    public static void blockHarvested(HarvestDropsEvent event) {
-        World world = event.getWorld();
-        BlockPos pos = event.getPos();
-        Block block = world.getBlockState(pos).getBlock();
-
-        if (block instanceof BlockBounding) {
-            ((BlockBounding) block).removeMainBlock(world, pos);
-        }
     }
 
     /**
