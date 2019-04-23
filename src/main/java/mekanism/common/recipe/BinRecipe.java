@@ -2,10 +2,10 @@ package mekanism.common.recipe;
 
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismItems;
-import mekanism.common.tier.BinTier;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemProxy;
+import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -105,6 +105,11 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
     @Override
     public ItemStack getRecipeOutput() {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return true;
     }
 
     @Nonnull
