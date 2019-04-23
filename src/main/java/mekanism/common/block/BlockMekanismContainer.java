@@ -1,7 +1,6 @@
 package mekanism.common.block;
 
 import javax.annotation.Nonnull;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFlowerPot;
@@ -9,11 +8,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatBase;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
 
 public abstract class BlockMekanismContainer extends BlockContainer {
@@ -29,6 +31,10 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
      * boolean)}.
+     * <br>
+     * This is like Vanilla's {@link BlockContainer#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity,
+     * ItemStack)} except that uses the custom {@link ItemStack} from {@link #getDropItem(IBlockState, IBlockAccess,
+     * BlockPos)}
      *
      * @author Forge
      * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
@@ -36,7 +42,16 @@ public abstract class BlockMekanismContainer extends BlockContainer {
     @Override
     public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
           @Nonnull IBlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        MekanismUtils.harvestBlockPatched(this, getDropItem(state, world, pos), world, player, pos, te);
+        StatBase blockStats = StatList.getBlockStats(this);
+        if (blockStats != null) {
+            player.addStat(blockStats);
+        }
+        player.addExhaustion(0.005F);
+        if (!world.isRemote) {
+            Block.spawnAsEntity(world, pos,
+                  getDropItem(state, world, pos).setStackDisplayName(((IWorldNameable) te).getName()));
+        }
+        //Set it to air like the flower pot's harvestBlock method
         world.setBlockToAir(pos);
     }
 

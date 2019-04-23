@@ -45,7 +45,6 @@ import mekanism.common.tile.component.SideConfig;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
@@ -58,7 +57,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -70,7 +68,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.UsernameCache;
@@ -1150,26 +1147,6 @@ public final class MekanismUtils {
     public static void dismantleBlock(Block block, IBlockState state, World world, BlockPos pos) {
         block.dropBlockAsItem(world, pos, state, 0);
         world.setBlockToAir(pos);
-    }
-
-    /**
-     * Vanilla {@link BlockContainer#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)}
-     * except that is supports a custom {@link ItemStack} from <code>getDropItem()</code>-like things.
-     *
-     * Use only for {@link BlockContainer}s.
-     */
-    @SuppressWarnings("ConstantConditions")
-    public static void harvestBlockPatched(Block block, ItemStack itemstack, World world, EntityPlayer player,
-          BlockPos pos, TileEntity te)
-    {
-        player.addStat(StatList.getBlockStats(block));
-        player.addExhaustion(0.005F);
-        if (world.isRemote) {
-            return;
-        }
-
-        itemstack.setStackDisplayName(((IWorldNameable)te).getName());
-        Block.spawnAsEntity(world, pos, itemstack);
     }
 
     /**

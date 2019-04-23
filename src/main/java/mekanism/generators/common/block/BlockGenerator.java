@@ -490,9 +490,6 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Override
     protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-        if (tileEntity == null) {
-            return ItemStack.EMPTY;
-        }
         ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
         if (itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock)) {
