@@ -120,7 +120,7 @@ public class BlockCardboardBox extends BlockMekanismContainer {
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
 
         Item item = Item.getItemFromBlock(state.getBlock());

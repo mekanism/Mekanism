@@ -218,7 +218,7 @@ public class BlockGasTank extends BlockMekanismContainer {
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
 

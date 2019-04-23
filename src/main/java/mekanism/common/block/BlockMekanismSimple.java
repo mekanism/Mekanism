@@ -21,7 +21,8 @@ public abstract class BlockMekanismSimple extends Block {
     }
 
     @Nonnull
-    protected abstract ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos);
+    protected abstract ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world,
+          @Nonnull BlockPos pos);
 
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,

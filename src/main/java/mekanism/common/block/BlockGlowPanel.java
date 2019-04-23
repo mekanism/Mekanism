@@ -159,7 +159,7 @@ public class BlockGlowPanel extends BlockMekanismSimple implements ITileEntityPr
 
     @Nonnull
     @Override
-    protected ItemStack getDropItem(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityGlowPanel tileEntity = (TileEntityGlowPanel) world.getTileEntity(pos);
         return new ItemStack(MekanismBlocks.GlowPanel, 1, tileEntity.colour.getMetaValue());
     }
