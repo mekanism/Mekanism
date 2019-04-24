@@ -102,10 +102,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     private double tickEmit(double energyToSend) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return 0;
-        }
-
         Set<EnergyAcceptorTarget> targets = new HashSet<>();
         int totalHandlers = 0;
         for (Coord4D coord : possibleAcceptors.keySet()) {
