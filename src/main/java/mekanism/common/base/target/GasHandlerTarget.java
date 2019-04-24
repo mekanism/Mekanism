@@ -2,19 +2,20 @@ package mekanism.common.base.target;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.common.base.SplitInfo;
 import net.minecraft.util.EnumFacing;
 
-public class GasHandlerTarget extends IntegerTypeTarget<IGasHandler, GasStack> {
+public class GasHandlerTarget extends Target<IGasHandler, Integer, GasStack> {
 
     public GasHandlerTarget(GasStack type) {
         this.extra = type;
     }
 
     @Override
-    protected Integer acceptAmount(EnumFacing side, Integer amount) {
+    protected void acceptAmount(EnumFacing side, SplitInfo<Integer> splitInfo, Integer amount) {
         //Give it gas and add how much actually got accepted instead of how much
         // we attempted to give it
-        return handlers.get(side).receiveGas(side, new GasStack(extra.getGas(), amount), true);
+        splitInfo.send(handlers.get(side).receiveGas(side, new GasStack(extra.getGas(), amount), true));
     }
 
     @Override

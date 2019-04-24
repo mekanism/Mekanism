@@ -5,7 +5,6 @@ import mekanism.common.base.SplitInfo;
 import mekanism.common.base.SplitInfo.DoubleSplitInfo;
 import mekanism.common.base.SplitInfo.IntegerSplitInfo;
 import mekanism.common.base.target.EnergyAcceptorTarget;
-import mekanism.common.base.target.IntegerTypeTarget;
 import mekanism.common.base.target.Target;
 
 public class EmitUtils {
@@ -20,31 +19,26 @@ public class EmitUtils {
      * targets have more than one acceptor.
      * @param splitInfo Information containing the split.
      * @param toSend Any extra information such as gas stack or fluid stack.
-     * @param zero Zero value based on the
      * @return The amount that actually got sent.
      */
     public static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>>
-    TYPE sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend,
-          TYPE zero) {
+    TYPE sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend) {
         if (availableTargets.isEmpty() || totalTargets == 0) {
-            return zero;
+            return splitInfo.getTotalSent();
         }
 
         //Simulate addition
         availableTargets.forEach(target -> target.simulate(toSend, splitInfo));
 
-        //Only run this if we changed the amountPer from when we first ran things
+        //Only run this if we changed the amountPer from when we first/last ran things
         while (splitInfo.amountPerChanged) {
             splitInfo.amountPerChanged = false;
             availableTargets.forEach(target -> target.shiftNeeded(splitInfo));
         }
 
         //Give them the amount we calculated they deserve/want
-        TYPE sent = zero;
-        for (TARGET target : availableTargets) {
-            sent = target.sendGivenWithDefault(sent, splitInfo.getAmountPer());
-        }
-        return sent;
+        availableTargets.forEach(target -> target.sendRemainingSplit(splitInfo));
+        return splitInfo.getTotalSent();
     }
 
     /**
@@ -58,13 +52,10 @@ public class EmitUtils {
      * @param toSend Any extra information such as gas stack or fluid stack.
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends IntegerTypeTarget<HANDLER, EXTRA>> int sendToAcceptors(
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(
           Set<TARGET> availableTargets, int totalTargets, int amountToSplit, EXTRA toSend) {
-        if (availableTargets.isEmpty() || totalTargets == 0) {
-            return 0;
-        }
         return sendToAcceptors(availableTargets, totalTargets, new IntegerSplitInfo(amountToSplit, totalTargets),
-              toSend, 0);
+              toSend);
     }
 
     /**
@@ -76,10 +67,7 @@ public class EmitUtils {
      */
     public static double sendToAcceptors(Set<EnergyAcceptorTarget> availableTargets, int totalTargets,
           double amountToSplit) {
-        if (availableTargets.isEmpty() || totalTargets == 0) {
-            return 0;
-        }
         return sendToAcceptors(availableTargets, totalTargets, new DoubleSplitInfo(amountToSplit, totalTargets),
-              amountToSplit, 0D);
+              amountToSplit);
     }
 }
