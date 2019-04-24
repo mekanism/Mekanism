@@ -14,8 +14,6 @@ public class FluidHandlerTarget extends Target<IFluidHandler, Integer, FluidStac
 
     @Override
     protected void acceptAmount(EnumFacing side, SplitInfo<Integer> splitInfo, Integer amount) {
-        //Give it fluid and add how much actually got accepted instead of how much
-        // we attempted to give it
         splitInfo.send(handlers.get(side).fill(PipeUtils.copy(extra, amount), true));
     }
 

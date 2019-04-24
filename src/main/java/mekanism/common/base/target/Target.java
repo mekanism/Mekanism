@@ -36,16 +36,15 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     }
 
     /**
-     * Sends the remaining amount to each handler we still have not settled on an amount for.
-     * We increment the amount sent in splitInfo as well as adjust the split as needed if one ends up accepting less
-     * than it originally wanted. (The most likely case this would
+     * Sends the remaining amount to each handler we still have not settled on an amount for. We increment the amount
+     * sent in splitInfo as well as adjust the split as needed if one ends up accepting less than it originally wanted.
+     * (The most likely case this would
      *
      * @param splitInfo Keeps track of the current amount sent and the default each one can get.
      */
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
         for (EnumFacing side : needed.keySet()) {
-            //Remove the actual amount sent from the split
             acceptAmount(side, splitInfo, splitInfo.getAmountPer());
         }
     }
@@ -54,11 +53,20 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * Gives the handler on the specified side the given amount.
      *
      * @param side Side of handler to give.
-     * @param splitInfo Sent amount is incremented by the amount actually given.
+     * @param splitInfo Information about current overall split. The given split will be increased by the actual amount
+     * accepted, in case it is less than the offered amount.
      * @param amount Amount to give.
      */
     protected abstract void acceptAmount(EnumFacing side, SplitInfo<TYPE> splitInfo, TYPE amount);
 
+    /**
+     * Simulate inserting into the handler.
+     *
+     * @param handler The handler (should correspond with the side we are simulating).
+     * @param side The side we are simulating
+     * @param extra All the information we are inserting.
+     * @return The amount it was actually willing to accept.
+     */
     protected abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
 
     public void simulate(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
@@ -74,6 +82,12 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
         }
     }
 
+    /**
+     * Rechecks to see if any of the needed amounts is able to fit under the new split and if so gives them the
+     * requested amount.
+     *
+     * @param splitInfo The new split to (re)check.
+     */
     public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
         Iterator<Entry<EnumFacing, TYPE>> iterator = needed.entrySet().iterator();
         //Use an iterator rather than a copy of the keyset of the needed submap

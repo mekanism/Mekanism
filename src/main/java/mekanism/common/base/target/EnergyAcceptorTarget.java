@@ -8,8 +8,6 @@ public class EnergyAcceptorTarget extends Target<EnergyAcceptorWrapper, Double, 
 
     @Override
     protected void acceptAmount(EnumFacing side, SplitInfo<Double> splitInfo, Double amount) {
-        //Give it power and add how much actually got accepted instead of how much
-        // we attempted to give it
         splitInfo.send(handlers.get(side).acceptEnergy(side, amount, false));
     }
 

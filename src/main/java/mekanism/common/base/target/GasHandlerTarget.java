@@ -13,8 +13,6 @@ public class GasHandlerTarget extends Target<IGasHandler, Integer, GasStack> {
 
     @Override
     protected void acceptAmount(EnumFacing side, SplitInfo<Integer> splitInfo, Integer amount) {
-        //Give it gas and add how much actually got accepted instead of how much
-        // we attempted to give it
         splitInfo.send(handlers.get(side).receiveGas(side, new GasStack(extra.getGas(), amount), true));
     }
 
