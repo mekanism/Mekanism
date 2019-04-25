@@ -644,7 +644,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
         if (machineType.isFactory()) {
             RecipeType recipeType = getRecipeTypeOrNull(itemStack);
             int tierProcess = machineType.factoryTier.processes;
-            double baseMaxEnergy = 0.5D * tierProcess * (recipeType == null ? 1 : recipeType.getEnergyStorage());
+            double baseMaxEnergy = tierProcess *
+                    (recipeType == null ? 1 :
+                            Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage())
+                    );
 
             return MekanismUtils.getMaxEnergy(itemStack, baseMaxEnergy);
         }
