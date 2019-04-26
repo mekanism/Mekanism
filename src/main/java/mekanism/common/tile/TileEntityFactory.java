@@ -438,7 +438,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
      * @param updateCache True to make the cached recipe get updated if it is out of date.
      * @return True if the recipe produces the given output.
      */
-    private boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
+    public boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
         if (output.isEmpty()) {
             return true;
         }
@@ -447,8 +447,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         MachineRecipe cached = cachedRecipe[process];
         ItemStack extra = inventory.get(4);
         if (cached == null) {
-            cached = recipeType
-                  .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+            cached = recipeType.getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
             if (updateCache) {
                 cachedRecipe[process] = cached;
             }
@@ -480,8 +479,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             // then it is an out of date cache so we compare against the new one
             // and update the cache while we are at it
             if (recipeInput.isEmpty() || !secondaryMatch || !ItemStack.areItemsEqual(recipeInput, fallbackInput)) {
-                cached = cachedRecipe[process] = recipeType
-                      .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+                cached = recipeType.getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
                 if (updateCache) {
                     cachedRecipe[process] = cached;
                 }
