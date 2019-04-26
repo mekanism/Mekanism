@@ -159,6 +159,7 @@ public interface IFactory {
             return getRecipe(new InfusionInput(storage, input));
         }
 
+        @Nullable
         public MachineRecipe getAnyRecipe(ItemStack slotStack, ItemStack extraStack, Gas gasType,
               InfuseStorage infuse) {
             if (fuelType == MachineFuelType.ADVANCED) {
@@ -183,6 +184,7 @@ public interface IFactory {
             return getRecipe(slotStack);
         }
 
+        @Nullable
         public GasStack getItemGas(ItemStack itemstack) {
             if (fuelType == MachineFuelType.ADVANCED) {
                 return getTile().getItemGas(itemstack);
