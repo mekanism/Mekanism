@@ -27,6 +27,6 @@ public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer<TileEn
         model.render(0.0625F);
         GlStateManager.popMatrix();
 
-        MekanismRenderer.machineRenderer.render(tileEntity, x, y, z, partialTick, destroyStage, alpha);
+        MekanismRenderer.machineRenderer().render(tileEntity, x, y, z, partialTick, destroyStage, alpha);
     }
 }
