@@ -59,13 +59,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         @Nonnull
         @Override
         public GasTankInfo[] getTankInfo() {
-            //Use the network's info if we have a network
-            if (getTransmitter().hasTransmitterNetwork()) {
-                GasNetwork network = getTransmitter().getTransmitterNetwork();
-                GasTank networkTank = new GasTank(network.getCapacity());
-                networkTank.setGas(network.getBuffer());
-                return new GasTankInfo[]{networkTank};
-            }
             return TileEntityPressurizedTube.this.getTankInfo();
         }
     };
@@ -294,6 +287,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     @Override
     public GasTankInfo[] getTankInfo() {
+        if (getTransmitter().hasTransmitterNetwork()) {
+            GasNetwork network = getTransmitter().getTransmitterNetwork();
+            GasTank networkTank = new GasTank(network.getCapacity());
+            networkTank.setGas(network.getBuffer());
+            return new GasTankInfo[]{networkTank};
+        }
         return new GasTankInfo[]{buffer};
     }
 
