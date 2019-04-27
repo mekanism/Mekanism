@@ -21,22 +21,26 @@ public class EmitUtils {
      * @param toSend Any extra information such as gas stack or fluid stack.
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>>
+    private static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>>
     TYPE sendToAcceptors(Set<TARGET> availableTargets, int totalTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend) {
         if (availableTargets.isEmpty() || totalTargets == 0) {
             return splitInfo.getTotalSent();
         }
 
-        //Simulate addition
-        availableTargets.forEach(target -> target.simulate(toSend, splitInfo));
+        //Simulate addition, sending when the requested amount is less than the amountPer
+        // splitInfo gets adjusted to account for how much is actually sent
+        availableTargets.forEach(target -> target.sendPossible(toSend, splitInfo));
 
         //Only run this if we changed the amountPer from when we first/last ran things
         while (splitInfo.amountPerChanged) {
             splitInfo.amountPerChanged = false;
+            //splitInfo gets adjusted to account for how much is actually sent,
+            // and if amountPer got changed again and we need to rerun this
             availableTargets.forEach(target -> target.shiftNeeded(splitInfo));
         }
 
-        //Give them the amount we calculated they deserve/want
+        //Evenly distribute the remaining amount we have to give between all targets and handlers
+        // splitInfo gets adjusted to account for how much is actually sent
         availableTargets.forEach(target -> target.sendRemainingSplit(splitInfo));
         return splitInfo.getTotalSent();
     }

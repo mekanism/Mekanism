@@ -38,7 +38,8 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     /**
      * Sends the remaining amount to each handler we still have not settled on an amount for. We increment the amount
      * sent in splitInfo as well as adjust the split as needed if one ends up accepting less than it originally wanted.
-     * (The most likely case this would
+     * (The most likely case this would change is with multi-blocks where it may return the same desire to all
+     * connections, but get satisfied by our first connection).
      *
      * @param splitInfo Keeps track of the current amount sent and the default each one can get.
      */
@@ -56,6 +57,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * @param splitInfo Information about current overall split. The given split will be increased by the actual amount
      * accepted, in case it is less than the offered amount.
      * @param amount Amount to give.
+     * @implNote Must call {@link SplitInfo#send(Number)} with the amount actually accepted.
      */
     protected abstract void acceptAmount(EnumFacing side, SplitInfo<TYPE> splitInfo, TYPE amount);
 
@@ -69,7 +71,15 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      */
     protected abstract TYPE simulate(HANDLER handler, EnumFacing side, EXTRA extra);
 
-    public void simulate(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
+    /**
+     * Calculates how much each handler can take of toSend. If the amount requested is less than the amount per
+     * handler/target in splitInfo it immediately sends the requested amount to the handler via {@link
+     * #acceptAmount(EnumFacing, SplitInfo, Number)}
+     *
+     * @param toSend The total amount getting sent.
+     * @param splitInfo Information about current overall split.
+     */
+    public void sendPossible(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
         for (Entry<EnumFacing, HANDLER> entry : handlers.entrySet()) {
             TYPE amountNeeded = simulate(entry.getValue(), entry.getKey(), toSend);
             if (amountNeeded.compareTo(splitInfo.getAmountPer()) <= 0) {
