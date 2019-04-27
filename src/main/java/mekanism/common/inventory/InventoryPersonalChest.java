@@ -10,16 +10,13 @@ import net.minecraft.util.EnumHand;
 
 public class InventoryPersonalChest extends InventoryBasic {
 
-    public EntityPlayer entityPlayer;
-    public ItemStack itemStack = ItemStack.EMPTY;
-
-    public boolean reading;
-
+    private final ItemStack itemStack;
+    private boolean reading;
     public EnumHand currentHand = EnumHand.MAIN_HAND;
 
-    public InventoryPersonalChest(EntityPlayer player, EnumHand hand) {
+    public InventoryPersonalChest(ItemStack stack, EnumHand hand) {
         super("PersonalChest", false, 55);
-        entityPlayer = player;
+        itemStack = stack;
         currentHand = hand;
 
         read();
@@ -92,6 +89,6 @@ public class InventoryPersonalChest extends InventoryBasic {
     }
 
     public ItemStack getStack() {
-        return !itemStack.isEmpty() ? itemStack : entityPlayer.getHeldItem(currentHand);
+        return itemStack;
     }
 }
