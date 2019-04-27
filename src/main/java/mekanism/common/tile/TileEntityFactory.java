@@ -67,6 +67,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration,
       IGasHandler, ISpecialConfigData, ITierUpgradeable, ISustainedData {
@@ -404,7 +405,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 for (int j = i + 1; j < inputSlots.length; j++) {
                     int checkSlotID = inputSlots[j];
                     ItemStack checkStack = inventory.get(checkSlotID);
-                    if (StackUtils.diffIgnoreEmpty(stack, checkStack) || Math.abs(count - checkStack.getCount()) < 2) {
+                    if (Math.abs(count - checkStack.getCount()) < 2) {
+                        continue;
+                    }
+                    if (!stack.isEmpty() && !checkStack.isEmpty() && !ItemHandlerHelper
+                          .canItemStacksStack(stack, checkStack)) {
                         continue;
                     }
                     //Output/Input will not match

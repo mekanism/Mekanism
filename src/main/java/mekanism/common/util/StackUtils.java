@@ -9,14 +9,6 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public final class StackUtils {
 
-    //only used in factory
-    public static boolean diffIgnoreEmpty(ItemStack stack1, ItemStack stack2) {
-        if (stack1.isEmpty() || stack2.isEmpty()) {
-            return false;
-        }
-        return stack1.getItem() != stack2.getItem() || stack1.getItemDamage() != stack2.getItemDamage();
-    }
-
     //ignores count
     public static boolean equalsWildcard(ItemStack wild, ItemStack check) {
         if (wild.isEmpty() || check.isEmpty()) {
