@@ -46,7 +46,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
         for (EnumFacing side : needed.keySet()) {
-            acceptAmount(side, splitInfo, splitInfo.getAmountPer());
+            acceptAmount(side, splitInfo, splitInfo.getAmountPerTarget());
         }
     }
 
@@ -82,7 +82,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     public void sendPossible(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
         for (Entry<EnumFacing, HANDLER> entry : handlers.entrySet()) {
             TYPE amountNeeded = simulate(entry.getValue(), entry.getKey(), toSend);
-            if (amountNeeded.compareTo(splitInfo.getAmountPer()) <= 0) {
+            if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
                 //Add the amount, in case something changed from simulation only mark actual sent amount
                 // in split info
                 acceptAmount(entry.getKey(), splitInfo, amountNeeded);
@@ -106,7 +106,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
         while (iterator.hasNext()) {
             Entry<EnumFacing, TYPE> needInfo = iterator.next();
             TYPE amountNeeded = needInfo.getValue();
-            if (amountNeeded.compareTo(splitInfo.getAmountPer()) <= 0) {
+            if (amountNeeded.compareTo(splitInfo.getAmountPerTarget()) <= 0) {
                 acceptAmount(needInfo.getKey(), splitInfo, amountNeeded);
                 //Remove it as it has now been sent
                 iterator.remove();

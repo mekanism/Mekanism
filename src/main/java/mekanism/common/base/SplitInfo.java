@@ -11,7 +11,7 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
 
     public abstract void send(TYPE amountNeeded);
 
-    public abstract TYPE getAmountPer();
+    public abstract TYPE getAmountPerTarget();
 
     public abstract TYPE getTotalSent();
 
@@ -22,14 +22,14 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
     public static class IntegerSplitInfo extends SplitInfo<Integer> {
         private int amountToSplit;
         //AmountPer is the one that needs to be int or double
-        private int amountPer;
+        private int amountPerTarget;
         private int sentSoFar;
 
         //Amount to split also should be int or double
         public IntegerSplitInfo(int amountToSplit, int totalTargets) {
             super(totalTargets);
             this.amountToSplit = amountToSplit;
-            amountPer = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
+            amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
             sentSoFar = 0;
         }
 
@@ -41,18 +41,18 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
             toSplitAmong--;
             //Only recalculate it if it is not willing to accept/doesn't want the
             // full per side split
-            if (amountNeeded != amountPer && toSplitAmong != 0) {
-                int amountPerLast = amountPer;
-                amountPer = amountToSplit / toSplitAmong;
-                if (!amountPerChanged && amountPer != amountPerLast) {
+            if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
+                int amountPerLast = amountPerTarget;
+                amountPerTarget = amountToSplit / toSplitAmong;
+                if (!amountPerChanged && amountPerTarget != amountPerLast) {
                     amountPerChanged = true;
                 }
             }
         }
 
         @Override
-        public Integer getAmountPer() {
-            return amountPer;
+        public Integer getAmountPerTarget() {
+            return amountPerTarget;
         }
 
         @Override
@@ -63,13 +63,13 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
 
     public static class DoubleSplitInfo extends SplitInfo<Double> {
         private double amountToSplit;
-        private double amountPer;
+        private double amountPerTarget;
         private double sentSoFar;
 
         public DoubleSplitInfo(double amountToSplit, int totalTargets) {
             super(totalTargets);
             this.amountToSplit = amountToSplit;
-            amountPer = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
+            amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
             sentSoFar = 0;
         }
 
@@ -81,18 +81,18 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
             toSplitAmong--;
             //Only recalculate it if it is not willing to accept/doesn't want the
             // full per side split
-            if (amountNeeded != amountPer && toSplitAmong != 0) {
-                double amountPerLast = amountPer;
-                amountPer = amountToSplit / toSplitAmong;
-                if (!amountPerChanged && amountPer != amountPerLast) {
+            if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
+                double amountPerLast = amountPerTarget;
+                amountPerTarget = amountToSplit / toSplitAmong;
+                if (!amountPerChanged && amountPerTarget != amountPerLast) {
                     amountPerChanged = true;
                 }
             }
         }
 
         @Override
-        public Double getAmountPer() {
-            return amountPer;
+        public Double getAmountPerTarget() {
+            return amountPerTarget;
         }
 
         @Override
