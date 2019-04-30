@@ -403,37 +403,66 @@ public final class MekanismHooks {
         OreDictManager.addStandardOredictMetal("Zinc");
     }
 
-    private void registerMAEnrichmentRecipe(int itemMeta, int oreType) {
-        String oreName = (oreType == 1 ? "nether_" : oreType == 2 ? "end_" : "") + (itemMeta == 5 ? "prosperity" : "inferium") + "_ore";
+    private void registerMAEnrichmentRecipe(MAOre ore, MAOreType type) {
+        String oreName = type.orePrefix + ore.name().toLowerCase() + "_ore";
         Item inputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
-        Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, "crafting"));
+        Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
         if (inputItem != null && outputItem != null) {
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(inputItem), new ItemStack(outputItem, (2 + oreType) * 2, itemMeta));
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(inputItem), new ItemStack(outputItem, type.quantity, ore.itemMeta));
         }
     }
-    
-    private void registerMACombinerRecipe(int itemMeta, int oreType) {
-        String oreName = (oreType == 1 ? "nether_" : oreType == 2 ? "end_" : "") + (itemMeta == 5 ? "prosperity" : "inferium") + "_ore";
-        Item inputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, "crafting"));
-        Block extraBlock = oreType == 1 ? Blocks.NETHERRACK : oreType == 2 ? Blocks.END_STONE : Blocks.COBBLESTONE;
+
+    private void registerMACombinerRecipe(MAOre ore, MAOreType type) {
+        String oreName = type.orePrefix + ore.name().toLowerCase() +"_ore";
+        Item inputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
         Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
-        if (inputItem != null && extraBlock != null && outputItem != null) {
-            RecipeHandler.addCombinerRecipe(new ItemStack(inputItem, (3 + oreType) * 2, itemMeta), new ItemStack(extraBlock), new ItemStack(outputItem));
+        if (inputItem != null && outputItem != null) {
+            RecipeHandler.addCombinerRecipe(new ItemStack(inputItem, type.quantity + 2, ore.itemMeta), new ItemStack(type.baseBlock), new ItemStack(outputItem));
         }
     }
 
     private void registerMysticalAgricultureRecipes() {
-        registerMAEnrichmentRecipe(0, 0);
-        registerMAEnrichmentRecipe(0, 1);
-        registerMAEnrichmentRecipe(0, 2);
-        registerMAEnrichmentRecipe(5, 0);
-        registerMAEnrichmentRecipe(5, 1);
-        registerMAEnrichmentRecipe(5, 2);
-        registerMACombinerRecipe(0, 0);
-        registerMACombinerRecipe(0, 1);
-        registerMACombinerRecipe(0, 2);
-        registerMACombinerRecipe(5, 0);
-        registerMACombinerRecipe(5, 1);
-        registerMACombinerRecipe(5, 2);
+        registerMAEnrichmentRecipe(MAOre.INFERIUM, MAOreType.OVERWORLD);
+        registerMAEnrichmentRecipe(MAOre.INFERIUM, MAOreType.NETHER);
+        registerMAEnrichmentRecipe(MAOre.INFERIUM, MAOreType.END);
+        registerMAEnrichmentRecipe(MAOre.PROSPERITY, MAOreType.OVERWORLD);
+        registerMAEnrichmentRecipe(MAOre.PROSPERITY, MAOreType.NETHER);
+        registerMAEnrichmentRecipe(MAOre.PROSPERITY, MAOreType.END);
+        registerMACombinerRecipe(MAOre.INFERIUM, MAOreType.OVERWORLD);
+        registerMACombinerRecipe(MAOre.INFERIUM, MAOreType.NETHER);
+        registerMACombinerRecipe(MAOre.INFERIUM, MAOreType.END);
+        registerMACombinerRecipe(MAOre.PROSPERITY, MAOreType.OVERWORLD);
+        registerMACombinerRecipe(MAOre.PROSPERITY, MAOreType.NETHER);
+        registerMACombinerRecipe(MAOre.PROSPERITY, MAOreType.END);
     }
+
+    private enum MAOre {
+        INFERIUM("crafting", 0),
+        PROSPERITY("crafting", 5);
+
+        private final String itemName;
+        private final int itemMeta;
+
+        private MAOre(String name, int meta) {
+            itemName = name;
+            itemMeta = meta;
+        }
+    }
+
+    private enum MAOreType {
+        OVERWORLD("", Blocks.COBBLESTONE, 4),
+        NETHER("nether_", Blocks.NETHERRACK, 6),
+        END("end_", Blocks.END_STONE, 8);
+
+        private final String orePrefix;
+        private final Block baseBlock;
+        private final int quantity;
+
+        private MAOreType(String prefix, Block base, int quantity) {
+            orePrefix = prefix;
+            baseBlock = base;
+            this.quantity = quantity;
+        }
+    }
+    
 }
