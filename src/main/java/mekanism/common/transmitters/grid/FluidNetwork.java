@@ -1,18 +1,16 @@
 package mekanism.common.transmitters.grid;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.Mekanism;
+import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +22,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> {
 
@@ -127,57 +124,38 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         return getCapacity() - (buffer != null ? buffer.amount : 0);
     }
 
-    public int tickEmit(FluidStack fluidToSend, boolean doTransfer) {
-        List<Pair<Coord4D, IFluidHandler>> availableAcceptors = new ArrayList<>(getAcceptors(fluidToSend));
+    private int tickEmit(FluidStack fluidToSend) {
+        Set<FluidHandlerTarget> availableAcceptors = new HashSet<>();
+        int totalHandlers = 0;
+        for (Coord4D coord : possibleAcceptors.keySet()) {
+            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
+            TileEntity tile = coord.getTileEntity(getWorld());
+            if (tile == null) {
+                continue;
+            }
 
-        Collections.shuffle(availableAcceptors);
+            FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
 
-        int fluidSent = 0;
-
-        if (!availableAcceptors.isEmpty()) {
-            int divider = availableAcceptors.size();
-            int remaining = fluidToSend.amount % divider;
-            int sending = (fluidToSend.amount - remaining) / divider;
-
-            for (Pair<Coord4D, IFluidHandler> pair : availableAcceptors) {
-                int currentSending = sending;
-                IFluidHandler acceptor = pair.getRight();
-                EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
-
-                if (remaining > 0) {
-                    currentSending++;
-                    remaining--;
-                }
-
-                for (EnumFacing side : sides) {
-                    int prev = fluidSent;
-
-                    if (acceptor != null) {
-                        fluidSent += acceptor.fill(PipeUtils.copy(fluidToSend, currentSending), doTransfer);
-                    }
-
-                    if (fluidSent > prev) {
-                        break;
+            for (EnumFacing side : sides) {
+                if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
+                    IFluidHandler acceptor = CapabilityUtils
+                          .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
+                    if (acceptor != null && PipeUtils.canFill(acceptor, fluidToSend)) {
+                        target.addHandler(side, acceptor);
                     }
                 }
             }
-        }
-
-        if (doTransfer && fluidSent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            didTransfer = true;
-            transferDelay = 2;
-        }
-
-        if (fluidSent > fluidToSend.amount) {
-            Mekanism.logger.error("Some fluid handler took more fluid than we gave it?!");
-            Mekanism.logger.error("Handler list:");
-            for (Pair<Coord4D, IFluidHandler> pair : availableAcceptors) {
-                Mekanism.logger.error(pair.getRight().toString());
+            int curHandlers = target.getHandlers().size();
+            if (curHandlers > 0) {
+                availableAcceptors.add(target);
+                totalHandlers += curHandlers;
             }
-            fluidSent = fluidToSend.amount;
         }
 
-        return fluidSent;
+        return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend.amount, fluidToSend);
     }
 
     public int emit(FluidStack fluidToSend, boolean doTransfer) {
@@ -228,7 +206,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             prevTransfer = didTransfer;
 
             if (buffer != null) {
-                prevTransferAmount = tickEmit(buffer, true);
+                prevTransferAmount = tickEmit(buffer);
+                if (prevTransferAmount > 0) {
+                    didTransfer = true;
+                    transferDelay = 2;
+                }
 
                 if (buffer != null) {
                     buffer.amount -= prevTransferAmount;
@@ -256,41 +238,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
                 buffer = null;
             }
         }
-    }
-
-    @Override
-    public Set<Pair<Coord4D, IFluidHandler>> getAcceptors(Object data) {
-        FluidStack fluidToSend = (FluidStack) data;
-        Set<Pair<Coord4D, IFluidHandler>> toReturn = new HashSet<>();
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return toReturn;
-        }
-
-        for (Coord4D coord : possibleAcceptors.keySet()) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-            TileEntity tile = coord.getTileEntity(getWorld());
-
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-
-            for (EnumFacing side : sides) {
-                if (!CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side)) {
-                    continue;
-                }
-
-                IFluidHandler acceptor = CapabilityUtils
-                      .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side);
-
-                if (acceptor != null && PipeUtils.canFill(acceptor, fluidToSend)) {
-                    toReturn.add(Pair.of(coord, acceptor));
-                    break;
-                }
-            }
-        }
-
-        return toReturn;
     }
 
     public float getScale() {
@@ -325,7 +272,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public boolean compatibleWithBuffer(FluidStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer.isFluidEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.buffer == null || buffer == null || this.buffer
+              .isFluidEqual(buffer));
     }
 
     public static class FluidTransferEvent extends Event {

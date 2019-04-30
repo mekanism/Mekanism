@@ -3,10 +3,7 @@ package mekanism.common.transmitters.grid;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -87,17 +84,6 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     @Override
     public void clampBuffer() {
-    }
-
-    @Override
-    public Set<Pair<Coord4D, TileEntity>> getAcceptors(Object data) {
-        Set<Pair<Coord4D, TileEntity>> toReturn = new HashSet<>();
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return toReturn;
-        }
-
-        return toReturn;
     }
 
     @Override

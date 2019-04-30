@@ -1,9 +1,8 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -50,13 +49,8 @@ public final class PipeUtils {
     /**
      * Gets all the acceptors around a tile entity.
      *
-     * @param tileEntity - center tile entity
      * @return array of IFluidHandlers
      */
-    public static IFluidHandler[] getConnectedAcceptors(TileEntity tileEntity) {
-        return getConnectedAcceptors(tileEntity.getPos(), tileEntity.getWorld());
-    }
-
     public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world) {
         IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
 
@@ -83,44 +77,34 @@ public final class PipeUtils {
      * @param from - the TileEntity to output from
      * @return the amount of gas emitted
      */
-    public static int emit(List<EnumFacing> sides, FluidStack stack, TileEntity from) {
-        if (stack == null) {
+    public static int emit(Set<EnumFacing> sides, FluidStack stack, TileEntity from) {
+        if (stack == null || stack.amount == 0) {
             return 0;
         }
-
-        List<IFluidHandler> availableAcceptors = new ArrayList<>();
-        IFluidHandler[] possibleAcceptors = getConnectedAcceptors(from);
-
-        for (IFluidHandler handler : possibleAcceptors) {
-            if (handler != null && canFill(handler, stack)) {
-                availableAcceptors.add(handler);
+        //Fake that we have one target given we know that no sides will overlap
+        // This allows us to have slightly better performance
+        FluidHandlerTarget target = new FluidHandlerTarget(stack);
+        for (EnumFacing orientation : sides) {
+            TileEntity acceptor = from.getWorld().getTileEntity(from.getPos().offset(orientation));
+            if (acceptor == null) {
+                continue;
             }
-        }
-
-        Collections.shuffle(availableAcceptors);
-
-        int toSend = stack.amount;
-        int prevSending = toSend;
-
-        if (!availableAcceptors.isEmpty()) {
-            int divider = availableAcceptors.size();
-            int remaining = toSend % divider;
-            int sending = (toSend - remaining) / divider;
-
-            for (IFluidHandler acceptor : availableAcceptors) {
-                int currentSending = sending;
-
-                if (remaining > 0) {
-                    currentSending++;
-                    remaining--;
+            EnumFacing opposite = orientation.getOpposite();
+            if (CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite)) {
+                IFluidHandler handler = CapabilityUtils.getCapability(acceptor,
+                      CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite);
+                if (handler != null && canFill(handler, stack)) {
+                    target.addHandler(opposite, handler);
                 }
-
-                EnumFacing dir = EnumFacing.byIndex(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
-                toSend -= acceptor.fill(copy(stack, currentSending), true);
             }
         }
-
-        return prevSending - toSend;
+        int curHandlers = target.getHandlers().size();
+        if (curHandlers > 0) {
+            Set<FluidHandlerTarget> targets = new HashSet<>();
+            targets.add(target);
+            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.amount, stack);
+        }
+        return 0;
     }
 
     public static FluidStack copy(FluidStack fluid, int amount) {

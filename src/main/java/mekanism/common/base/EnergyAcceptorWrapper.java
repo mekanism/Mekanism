@@ -107,7 +107,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromRF(acceptor.receiveEnergy(side, Math.min(Integer.MAX_VALUE, toRF(amount)), simulate));
+            return fromRF(acceptor.receiveEnergy(side, toRF(amount), simulate));
         }
 
         @Override
@@ -121,7 +121,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public int toRF(double joules) {
-            return (int) Math.round(joules * MekanismConfig.current().general.TO_RF.val());
+            return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_RF.val());
         }
 
         public double fromRF(int rf) {
@@ -139,7 +139,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            double toTransfer = Math.min(Math.min(acceptor.getDemandedEnergy(), toEU(amount)), Integer.MAX_VALUE);
+            double toTransfer = Math.min(acceptor.getDemandedEnergy(), toEU(amount));
+            if (simulate) {
+                //IC2 has no built in way to simulate, so we have to calculate it ourselves
+                return toTransfer;
+            }
             double rejects = acceptor.injectEnergy(side, toTransfer, 0);
 
             return fromEU(toTransfer - rejects);
@@ -174,7 +178,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromTesla(acceptor.givePower(toTesla(amount), false));
+            return fromTesla(acceptor.givePower(toTesla(amount), simulate));
         }
 
         @Override
@@ -206,7 +210,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
         @Override
         public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-            return fromForge(acceptor.receiveEnergy(Math.min(Integer.MAX_VALUE, toForge(amount)), simulate));
+            return fromForge(acceptor.receiveEnergy(toForge(amount), simulate));
         }
 
         @Override
@@ -220,7 +224,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         }
 
         public int toForge(double joules) {
-            return (int) Math.round(joules * MekanismConfig.current().general.TO_FORGE.val());
+            return MekanismUtils.clampToInt(joules * MekanismConfig.current().general.TO_FORGE.val());
         }
 
         public double fromForge(double forge) {

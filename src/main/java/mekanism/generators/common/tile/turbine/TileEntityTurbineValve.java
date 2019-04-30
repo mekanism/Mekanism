@@ -161,7 +161,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 setEnergy(getEnergy() - toSend);
             }
 
-            return (int) Math.round(Math.min(Integer.MAX_VALUE, toSend * MekanismConfig.current().general.TO_RF.val()));
+            return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -176,15 +176,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_RF.val()));
+        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_RF.val()));
+        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
@@ -231,8 +229,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getStored() {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
+        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
 
     @Override
@@ -244,15 +241,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getCapacity() {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val()));
+        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getOutput() {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getMaxOutput() * MekanismConfig.current().general.TO_IC2.val()));
+        return MekanismUtils.clampToInt(getMaxOutput() * MekanismConfig.current().general.TO_IC2.val());
     }
 
     @Override

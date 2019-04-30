@@ -14,8 +14,6 @@ import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.CableTier;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -24,6 +22,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
 import mekanism.common.integration.tesla.TeslaCableIntegration;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.CableTier;
 import mekanism.common.transmitters.grid.EnergyNetwork;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -40,7 +40,8 @@ import net.minecraftforge.fml.common.Optional;
 @Optional.InterfaceList(
       @Optional.Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
 )
-public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements
+public class TileEntityUniversalCable extends
+      TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements
       IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyReceiver {
 
     public CableTier tier = CableTier.BASIC;
@@ -106,8 +107,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                             ITeslaProducer producer = CapabilityUtils
                                   .getCapability(outputter, Capabilities.TESLA_PRODUCER_CAPABILITY, side.getOpposite());
                             double toDraw = producer
-                                  .takePower(Math.round(Math.min(Integer.MAX_VALUE,
-                                        canDraw * MekanismConfig.current().general.TO_TESLA.val())), true)
+                                  .takePower(MekanismUtils
+                                        .clampToInt(canDraw * MekanismConfig.current().general.TO_TESLA.val()), true)
                                   * MekanismConfig.current().general.FROM_TESLA.val();
 
                             if (toDraw > 0) {
@@ -121,7 +122,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                             IEnergyStorage storage = CapabilityUtils
                                   .getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite());
                             double toDraw = storage.extractEnergy(
-                                  (int) Math.round(canDraw * MekanismConfig.current().general.TO_FORGE.val()), true)
+                                  MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_FORGE.val()),
+                                  true)
                                   * MekanismConfig.current().general.FROM_FORGE.val();
 
                             if (toDraw > 0) {
@@ -129,20 +131,21 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                             }
 
                             storage.extractEnergy(
-                                  (int) Math.round(toDraw * MekanismConfig.current().general.TO_TESLA.val()), false);
+                                  MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_TESLA.val()),
+                                  false);
                         } else if (MekanismUtils.useRF() && outputter instanceof IEnergyProvider) {
                             double toDraw = ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
-                                  (int) Math.round(Math.min(Integer.MAX_VALUE,
-                                        canDraw * MekanismConfig.current().general.TO_RF.val())), true)
+                                  MekanismUtils.clampToInt(canDraw * MekanismConfig.current().general.TO_RF.val()),
+                                  true)
                                   * MekanismConfig.current().general.FROM_RF.val();
 
                             if (toDraw > 0) {
                                 toDraw -= takeEnergy(toDraw, true);
                             }
 
-                            ((IEnergyProvider) outputter)
-                                  .extractEnergy(side.getOpposite(),
-                                        (int) Math.round(toDraw * MekanismConfig.current().general.TO_RF.val()), false);
+                            ((IEnergyProvider) outputter).extractEnergy(side.getOpposite(),
+                                  MekanismUtils.clampToInt(toDraw * MekanismConfig.current().general.TO_RF.val()),
+                                  false);
                         } else if (MekanismUtils.useIC2()) {
                             IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
 
@@ -255,10 +258,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return maxReceive - (int) Math
-              .round(Math.min(Integer.MAX_VALUE,
-                    takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) * MekanismConfig
-                          .current().general.TO_RF.val()));
+        return maxReceive - MekanismUtils.clampToInt(
+              takeEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), !simulate) * MekanismConfig
+                    .current().general.TO_RF.val());
     }
 
     @Override
@@ -270,15 +272,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_RF.val()));
+        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Optional.Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_RF.val()));
+        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override

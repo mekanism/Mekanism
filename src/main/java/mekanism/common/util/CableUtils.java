@@ -3,25 +3,21 @@ package mekanism.common.util;
 import cofh.redstoneflux.api.IEnergyConnection;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Function;
+import java.util.HashSet;
+import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.ic2.IC2Integration;
-import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 
 public final class CableUtils {
 
@@ -33,29 +29,6 @@ public final class CableUtils {
         }
 
         return false;
-    }
-
-    /**
-     * Gets the adjacent connections to a TileEntity, from a subset of its sides.
-     *
-     * @param tileEntity - center TileEntity
-     * @param sideFunction - set of sides to check
-     * @return boolean[] of adjacent connections
-     */
-    public static boolean[] getConnections(TileEntity tileEntity, Function<EnumFacing, Boolean> sideFunction) {
-        boolean[] connectable = new boolean[]{false, false, false, false, false, false};
-        Coord4D coord = Coord4D.get(tileEntity);
-
-        for (EnumFacing side : EnumFacing.values()) {
-            if (sideFunction.apply(side)) {
-                TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
-
-                connectable[side.ordinal()] = isValidAcceptorOnSide(tileEntity, tile, side);
-                connectable[side.ordinal()] |= isCable(tile);
-            }
-        }
-
-        return connectable;
     }
 
     /**
@@ -159,103 +132,38 @@ public final class CableUtils {
     }
 
     public static void emit(IEnergyWrapper emitter) {
-        if (!((TileEntity) emitter).getWorld().isRemote && MekanismUtils.canFunction((TileEntity) emitter)) {
+        TileEntity tileEntity = (TileEntity) emitter;
+        if (!tileEntity.getWorld().isRemote && MekanismUtils.canFunction(tileEntity)) {
             double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 
             if (energyToSend > 0) {
-                List<EnumFacing> outputtingSides = new LinkedList<>();
-                boolean[] connectable = getConnections((TileEntity) emitter, emitter::sideIsOutput);
-
+                Coord4D coord = Coord4D.get(tileEntity);
+                //Fake that we have one target given we know that no sides will overlap
+                // This allows us to have slightly better performance
+                EnergyAcceptorTarget target = new EnergyAcceptorTarget();
                 for (EnumFacing side : EnumFacing.values()) {
-                    if (connectable[side.ordinal()]) {
-                        outputtingSides.add(side);
+                    if (emitter.sideIsOutput(side)) {
+                        TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
+                        //If it can accept energy or it is a cable
+                        if (tile != null && (isValidAcceptorOnSide(tileEntity, tile, side) || isCable(tile))) {
+                            //Get the opposite side as the current side is relative to us
+                            EnumFacing opposite = side.getOpposite();
+                            EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, opposite);
+                            if (acceptor != null && acceptor.canReceiveEnergy(opposite) && acceptor
+                                  .needsEnergy(opposite)) {
+                                target.addHandler(opposite, acceptor);
+                            }
+                        }
                     }
                 }
-
-                if (!outputtingSides.isEmpty()) {
-                    double sent = 0;
-                    boolean tryAgain = false;
-                    int i = 0;
-
-                    do {
-                        double prev = sent;
-                        sent += emit_do(emitter, outputtingSides, energyToSend - sent, tryAgain);
-
-                        tryAgain = energyToSend - sent > 0 && sent - prev > 0 && i < 100;
-
-                        i++;
-                    } while (tryAgain);
-
+                int curHandlers = target.getHandlers().size();
+                if (curHandlers > 0) {
+                    Set<EnergyAcceptorTarget> targets = new HashSet<>();
+                    targets.add(target);
+                    double sent = EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
                     emitter.setEnergy(emitter.getEnergy() - sent);
                 }
             }
         }
-    }
-
-    private static double emit_do(IEnergyWrapper emitter, List<EnumFacing> outputtingSides, double totalToSend,
-          boolean tryAgain) {
-        double remains = totalToSend % outputtingSides.size();
-        double splitSend = (totalToSend - remains) / outputtingSides.size();
-        double sent = 0;
-
-        for (Iterator<EnumFacing> it = outputtingSides.iterator(); it.hasNext(); ) {
-            EnumFacing side = it.next();
-
-            TileEntity tileEntity = Coord4D.get((TileEntity) emitter).offset(side)
-                  .getTileEntity(((TileEntity) emitter).getWorld());
-            double toSend = splitSend + remains;
-            remains = 0;
-
-            double prev = sent;
-            sent += emit_do_do(emitter, tileEntity, side, toSend, tryAgain);
-
-            if (sent - prev == 0) {
-                it.remove();
-            }
-        }
-
-        return sent;
-    }
-
-    private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, EnumFacing side, double currentSending,
-          boolean tryAgain) {
-        double sent = 0;
-
-        if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite())) {
-            IStrictEnergyAcceptor acceptor = CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side.getOpposite());
-
-            if (acceptor.canReceiveEnergy(side.getOpposite())) {
-                sent += acceptor.acceptEnergy(side.getOpposite(), currentSending, false);
-            }
-        } else if (MekanismUtils.useTesla() && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite())) {
-            ITeslaConsumer consumer = CapabilityUtils
-                  .getCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side.getOpposite());
-            sent += consumer
-                  .givePower(Math.round(currentSending * MekanismConfig.current().general.TO_TESLA.val()), false)
-                  * MekanismConfig.current().general.FROM_TESLA.val();
-        } else if (MekanismUtils.useForge() && CapabilityUtils
-              .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite())) {
-            IEnergyStorage storage = CapabilityUtils
-                  .getCapability(tileEntity, CapabilityEnergy.ENERGY, side.getOpposite());
-            sent += storage
-                  .receiveEnergy((int) Math.round(
-                        Math.min(Integer.MAX_VALUE, currentSending * MekanismConfig.current().general.TO_FORGE.val())),
-                        false) * MekanismConfig.current().general.FROM_FORGE.val();
-        } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
-            IEnergyReceiver handler = (IEnergyReceiver) tileEntity;
-
-            if (handler.canConnectEnergy(side.getOpposite())) {
-                int toSend = Math.min((int) Math.round(currentSending * MekanismConfig.current().general.TO_RF.val()),
-                      Integer.MAX_VALUE);
-                int used = handler.receiveEnergy(side.getOpposite(), toSend, false);
-                sent += used * MekanismConfig.current().general.FROM_RF.val();
-            }
-        } else if (MekanismUtils.useIC2()) {
-            sent += IC2Integration.emitEnergy(from, tileEntity, side, currentSending);
-        }
-
-        return sent;
     }
 }
