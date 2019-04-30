@@ -403,37 +403,25 @@ public final class MekanismHooks {
         OreDictManager.addStandardOredictMetal("Zinc");
     }
 
-    private void registerMAEnrichmentRecipe(MAOre ore, MAOreType type) {
+    private void registerMARecipeSet(MAOre ore, MAOreType type) {
         String oreName = type.orePrefix + ore.name().toLowerCase() + "_ore";
-        Item inputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
-        Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
-        if (inputItem != null && outputItem != null) {
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(inputItem), new ItemStack(outputItem, type.quantity, ore.itemMeta));
-        }
-    }
-
-    private void registerMACombinerRecipe(MAOre ore, MAOreType type) {
-        String oreName = type.orePrefix + ore.name().toLowerCase() +"_ore";
-        Item inputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
-        Item outputItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
-        if (inputItem != null && outputItem != null) {
-            RecipeHandler.addCombinerRecipe(new ItemStack(inputItem, type.quantity + 2, ore.itemMeta), new ItemStack(type.baseBlock), new ItemStack(outputItem));
+        Item oreItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
+        Item dropItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
+        if (oreItem != null && dropItem != null) {
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(oreItem),
+                  new ItemStack(dropItem, type.quantity, ore.itemMeta));
+            RecipeHandler.addCombinerRecipe(new ItemStack(dropItem, type.quantity + 2, ore.itemMeta),
+                  new ItemStack(type.baseBlock), new ItemStack(oreItem));
         }
     }
 
     private void registerMysticalAgricultureRecipes() {
-        registerMAEnrichmentRecipe(MAOre.INFERIUM, MAOreType.OVERWORLD);
-        registerMAEnrichmentRecipe(MAOre.INFERIUM, MAOreType.NETHER);
-        registerMAEnrichmentRecipe(MAOre.INFERIUM, MAOreType.END);
-        registerMAEnrichmentRecipe(MAOre.PROSPERITY, MAOreType.OVERWORLD);
-        registerMAEnrichmentRecipe(MAOre.PROSPERITY, MAOreType.NETHER);
-        registerMAEnrichmentRecipe(MAOre.PROSPERITY, MAOreType.END);
-        registerMACombinerRecipe(MAOre.INFERIUM, MAOreType.OVERWORLD);
-        registerMACombinerRecipe(MAOre.INFERIUM, MAOreType.NETHER);
-        registerMACombinerRecipe(MAOre.INFERIUM, MAOreType.END);
-        registerMACombinerRecipe(MAOre.PROSPERITY, MAOreType.OVERWORLD);
-        registerMACombinerRecipe(MAOre.PROSPERITY, MAOreType.NETHER);
-        registerMACombinerRecipe(MAOre.PROSPERITY, MAOreType.END);
+    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.OVERWORLD);
+    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.NETHER);
+    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.END);
+    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.OVERWORLD);
+    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.NETHER);
+    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.END);
     }
 
     private enum MAOre {
