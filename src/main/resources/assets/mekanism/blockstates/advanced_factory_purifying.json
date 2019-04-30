@@ -20,7 +20,15 @@
       "west":  {"y": -90}
     },
     "active": {
-      "true": {},
+      "true": {
+        "textures": {
+          "front": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryFrontOn",
+          "south": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryBackOn",
+          "west": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryRightOn",
+          "east": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryLeftOn",
+          "up": "mekanism:blocks/factory/advanced/purifying/AdvancedPurifyingFactoryTopOn"
+        }
+      },
       "false": {}
     },
     "inventory": [{}]

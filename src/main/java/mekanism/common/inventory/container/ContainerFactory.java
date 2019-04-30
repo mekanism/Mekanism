@@ -3,13 +3,11 @@ package mekanism.common.inventory.container;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -194,16 +192,8 @@ public class ContainerFactory extends ContainerMekanism<TileEntityFactory> {
         @Override
         public boolean isItemValid(ItemStack stack) {
             ItemStack outputSlotStack = tileEntity.inventory.get(getOutputSlotIndex(this.processNumber));
-            if (outputSlotStack.isEmpty()) {
-                return super.isItemValid(stack);
-            }
-            MachineRecipe matchingRecipe = tileEntity.getRecipeType()
-                  .getAnyRecipe(stack, inventorySlots.get(4).getStack(), tileEntity.gasTank.getGasType(),
-                        tileEntity.infuseStored);
-            if (matchingRecipe.recipeOutput instanceof ItemStackOutput) {
-                return ItemStack.areItemsEqual(((ItemStackOutput) matchingRecipe.recipeOutput).output, outputSlotStack);
-            }
-            return super.isItemValid(stack);
+            return tileEntity.inputProducesOutput(getInputSlotIndex(this.processNumber), stack, outputSlotStack, false)
+                  && super.isItemValid(stack);
         }
     }
 }

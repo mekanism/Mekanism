@@ -1,7 +1,6 @@
 package mekanism.common.block;
 
 import java.util.Random;
-import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
@@ -446,23 +445,6 @@ public abstract class BlockMachine extends BlockMekanismContainer {
                             LogisticalSorterGuiMessage
                                   .openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP) entityplayer,
                                         Coord4D.get(tileEntity), -1);
-                        } else {
-                            SecurityUtils.displayNoAccess(entityplayer);
-                        }
-
-                        return true;
-                    }
-
-                    break;
-                case TELEPORTER:
-                case QUANTUM_ENTANGLOPORTER:
-                    if (!entityplayer.isSneaking()) {
-                        UUID owner = ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
-
-                        if (MekanismUtils.isOp(entityplayer) || owner == null || entityplayer.getUniqueID()
-                              .equals(owner)) {
-                            entityplayer
-                                  .openGui(Mekanism.instance, type.guiId, world, pos.getX(), pos.getY(), pos.getZ());
                         } else {
                             SecurityUtils.displayNoAccess(entityplayer);
                         }

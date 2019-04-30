@@ -24,8 +24,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
     public IMessage onMessage(PersonalChestMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
 
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             if (message.packetType == PersonalChestPacketType.SERVER_OPEN) {
                 try {
                     if (message.isBlock) {
@@ -36,7 +35,7 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                         ItemStack stack = player.getHeldItem(message.currentHand);
 
                         if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
-                            InventoryPersonalChest inventory = new InventoryPersonalChest(player, message.currentHand);
+                            InventoryPersonalChest inventory = new InventoryPersonalChest(stack, message.currentHand);
                             MekanismUtils.openPersonalChestGui((EntityPlayerMP) player, null, inventory, false);
                         }
                     }

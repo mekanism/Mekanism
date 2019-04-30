@@ -147,7 +147,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
 
-            return (int) Math.round(toReceive * MekanismConfig.current().general.TO_RF.val());
+            return MekanismUtils.clampToInt(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -164,7 +164,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
 
-            return (int) Math.round(toSend * MekanismConfig.current().general.TO_RF.val());
+            return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -173,13 +173,13 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(ItemStack theItem) {
-        return (int) Math.round(getEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
+        return MekanismUtils.clampToInt(getEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(ItemStack theItem) {
-        return (int) Math.round(getMaxEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
+        return MekanismUtils.clampToInt(getMaxEnergy(theItem) * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override

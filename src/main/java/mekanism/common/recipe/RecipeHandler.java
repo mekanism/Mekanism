@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
@@ -67,11 +69,11 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public final class RecipeHandler {
 
-    public static void addRecipe(Recipe recipeMap, MachineRecipe recipe) {
+    public static void addRecipe(@Nonnull Recipe recipeMap, @Nonnull MachineRecipe recipe) {
         recipeMap.put(recipe);
     }
 
-    public static void removeRecipe(Recipe recipeMap, MachineRecipe recipe) {
+    public static void removeRecipe(@Nonnull Recipe recipeMap, @Nonnull MachineRecipe recipe) {
         List<MachineInput> toRemove = new ArrayList<>();
 
         for (Object o : recipeMap.get().keySet()) {
@@ -295,7 +297,8 @@ public final class RecipeHandler {
      * @param input - input Infusion
      * @return MetallurgicInfuserRecipe
      */
-    public static MetallurgicInfuserRecipe getMetallurgicInfuserRecipe(InfusionInput input) {
+    @Nullable
+    public static MetallurgicInfuserRecipe getMetallurgicInfuserRecipe(@Nonnull InfusionInput input) {
         if (input.isValid()) {
             Map<InfusionInput, MetallurgicInfuserRecipe> recipes = Recipe.METALLURGIC_INFUSER.get();
 
@@ -317,7 +320,8 @@ public final class RecipeHandler {
      * @param input - the pair of gases to infuse
      * @return ChemicalInfuserRecipe
      */
-    public static ChemicalInfuserRecipe getChemicalInfuserRecipe(ChemicalPairInput input) {
+    @Nullable
+    public static ChemicalInfuserRecipe getChemicalInfuserRecipe(@Nonnull ChemicalPairInput input) {
         if (input.isValid()) {
             Map<ChemicalPairInput, ChemicalInfuserRecipe> recipes = Recipe.CHEMICAL_INFUSER.get();
 
@@ -334,7 +338,8 @@ public final class RecipeHandler {
      * @param input - GasInput
      * @return CrystallizerRecipe
      */
-    public static CrystallizerRecipe getChemicalCrystallizerRecipe(GasInput input) {
+    @Nullable
+    public static CrystallizerRecipe getChemicalCrystallizerRecipe(@Nonnull GasInput input) {
         if (input.isValid()) {
             Map<GasInput, CrystallizerRecipe> recipes = Recipe.CHEMICAL_CRYSTALLIZER.get();
 
@@ -351,7 +356,8 @@ public final class RecipeHandler {
      * @param input - GasInput
      * @return WasherRecipe
      */
-    public static WasherRecipe getChemicalWasherRecipe(GasInput input) {
+    @Nullable
+    public static WasherRecipe getChemicalWasherRecipe(@Nonnull GasInput input) {
         if (input.isValid()) {
             Map<GasInput, WasherRecipe> recipes = Recipe.CHEMICAL_WASHER.get();
 
@@ -368,7 +374,8 @@ public final class RecipeHandler {
      * @param input - ItemStackInput
      * @return DissolutionRecipe
      */
-    public static DissolutionRecipe getDissolutionRecipe(ItemStackInput input) {
+    @Nullable
+    public static DissolutionRecipe getDissolutionRecipe(@Nonnull ItemStackInput input) {
         if (input.isValid()) {
             Map<ItemStackInput, DissolutionRecipe> recipes = Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get();
 
@@ -385,7 +392,8 @@ public final class RecipeHandler {
      * @param input - ItemStackInput
      * @return OxidationRecipe
      */
-    public static OxidationRecipe getOxidizerRecipe(ItemStackInput input) {
+    @Nullable
+    public static OxidationRecipe getOxidizerRecipe(@Nonnull ItemStackInput input) {
         if (input.isValid()) {
             Map<ItemStackInput, OxidationRecipe> recipes = Recipe.CHEMICAL_OXIDIZER.get();
 
@@ -403,8 +411,9 @@ public final class RecipeHandler {
      * @param recipes - Map of recipes
      * @return ChanceRecipe
      */
-    public static <RECIPE extends ChanceMachineRecipe<RECIPE>> RECIPE getChanceRecipe(ItemStackInput input,
-          Map<ItemStackInput, RECIPE> recipes) {
+    @Nullable
+    public static <RECIPE extends ChanceMachineRecipe<RECIPE>> RECIPE getChanceRecipe(@Nonnull ItemStackInput input,
+          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = getRecipeTryWildcard(input, recipes);
             return recipe == null ? null : recipe.copy();
@@ -420,8 +429,9 @@ public final class RecipeHandler {
      * @param recipes - Map of recipes
      * @return BasicMachineRecipe
      */
-    public static <RECIPE extends BasicMachineRecipe<RECIPE>> RECIPE getRecipe(ItemStackInput input,
-          Map<ItemStackInput, RECIPE> recipes) {
+    @Nullable
+    public static <RECIPE extends BasicMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull ItemStackInput input,
+          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = getRecipeTryWildcard(input, recipes);
             return recipe == null ? null : recipe.copy();
@@ -437,8 +447,9 @@ public final class RecipeHandler {
      * @param recipes - Map of recipes
      * @return AdvancedMachineRecipe
      */
-    public static <RECIPE extends AdvancedMachineRecipe<RECIPE>> RECIPE getRecipe(AdvancedMachineInput input,
-          Map<AdvancedMachineInput, RECIPE> recipes) {
+    @Nullable
+    public static <RECIPE extends AdvancedMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull AdvancedMachineInput input,
+          @Nonnull Map<AdvancedMachineInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = recipes.get(input);
 
@@ -460,8 +471,9 @@ public final class RecipeHandler {
      * @param recipes - Map of recipes
      * @return DoubleMachineRecipe
      */
-    public static <RECIPE extends DoubleMachineRecipe<RECIPE>> RECIPE getRecipe(DoubleMachineInput input,
-          Map<DoubleMachineInput, RECIPE> recipes) {
+    @Nullable
+    public static <RECIPE extends DoubleMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull DoubleMachineInput input,
+          @Nonnull Map<DoubleMachineInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = recipes.get(input);
 
@@ -481,7 +493,8 @@ public final class RecipeHandler {
      * @param input - the FluidInput to electrolyse fluid from
      * @return SeparatorRecipe
      */
-    public static SeparatorRecipe getElectrolyticSeparatorRecipe(FluidInput input) {
+    @Nullable
+    public static SeparatorRecipe getElectrolyticSeparatorRecipe(@Nonnull FluidInput input) {
         if (input.isValid()) {
             Map<FluidInput, SeparatorRecipe> recipes = Recipe.ELECTROLYTIC_SEPARATOR.get();
 
@@ -492,7 +505,8 @@ public final class RecipeHandler {
         return null;
     }
 
-    public static ThermalEvaporationRecipe getThermalEvaporationRecipe(FluidInput input) {
+    @Nullable
+    public static ThermalEvaporationRecipe getThermalEvaporationRecipe(@Nonnull FluidInput input) {
         if (input.isValid()) {
             Map<FluidInput, ThermalEvaporationRecipe> recipes = Recipe.THERMAL_EVAPORATION_PLANT.get();
 
@@ -503,7 +517,8 @@ public final class RecipeHandler {
         return null;
     }
 
-    public static SolarNeutronRecipe getSolarNeutronRecipe(GasInput input) {
+    @Nullable
+    public static SolarNeutronRecipe getSolarNeutronRecipe(@Nonnull GasInput input) {
         if (input.isValid()) {
             Map<GasInput, SolarNeutronRecipe> recipes = Recipe.SOLAR_NEUTRON_ACTIVATOR.get();
 
@@ -514,7 +529,8 @@ public final class RecipeHandler {
         return null;
     }
 
-    public static PressurizedRecipe getPRCRecipe(PressurizedInput input) {
+    @Nullable
+    public static PressurizedRecipe getPRCRecipe(@Nonnull PressurizedInput input) {
         if (input.isValid()) {
             Map<PressurizedInput, PressurizedRecipe> recipes = Recipe.PRESSURIZED_REACTION_CHAMBER.get();
 
@@ -530,6 +546,7 @@ public final class RecipeHandler {
         return null;
     }
 
+    @Nullable
     public static AmbientGasRecipe getDimensionGas(IntegerInput input) {
         Map<IntegerInput, AmbientGasRecipe> recipes = Recipe.AMBIENT_ACCUMULATOR.get();
         AmbientGasRecipe recipe = recipes.get(input);
@@ -544,8 +561,8 @@ public final class RecipeHandler {
      * @param recipes - Map of recipes
      * @return whether the item can be used in a recipe
      */
-    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> boolean isInRecipe(ItemStack itemstack,
-          Map<ItemStackInput, RECIPE> recipes) {
+    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> boolean isInRecipe(@Nonnull ItemStack itemstack,
+          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         if (!itemstack.isEmpty()) {
             for (RECIPE recipe : recipes.values()) {
                 ItemStackInput required = recipe.getInput();
@@ -561,7 +578,7 @@ public final class RecipeHandler {
         return false;
     }
 
-    public static boolean isInPressurizedRecipe(ItemStack stack) {
+    public static boolean isInPressurizedRecipe(@Nonnull ItemStack stack) {
         if (!stack.isEmpty()) {
             for (PressurizedInput key : Recipe.PRESSURIZED_REACTION_CHAMBER.get().keySet()) {
                 if (key.containsType(stack)) {
@@ -574,12 +591,12 @@ public final class RecipeHandler {
     }
 
     public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(ItemStack stack,
-          Map<ItemStackInput, RECIPE> recipes) {
+          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         return getRecipeTryWildcard(new ItemStackInput(stack), recipes);
     }
 
     public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(
-          ItemStackInput input, Map<ItemStackInput, RECIPE> recipes) {
+          @Nonnull ItemStackInput input, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         RECIPE recipe = recipes.get(input);
 
         if (recipe == null) {
@@ -681,6 +698,7 @@ public final class RecipeHandler {
         private final HashMap<INPUT, RECIPE> recipes = new HashMap<>();
         private final String recipeName;
         private final String oldRecipeName;
+        @Nonnull
         private final String jeiCategory;
 
         private Class<? extends MachineInput> inputClass;
@@ -700,11 +718,11 @@ public final class RecipeHandler {
             values.add(this);
         }
 
-        public void put(RECIPE recipe) {
+        public void put(@Nonnull RECIPE recipe) {
             recipes.put(recipe.getInput(), recipe);
         }
 
-        public void remove(RECIPE recipe) {
+        public void remove(@Nonnull RECIPE recipe) {
             recipes.remove(recipe.getInput());
         }
 
@@ -716,10 +734,12 @@ public final class RecipeHandler {
             return oldRecipeName;
         }
 
+        @Nonnull
         public String getJEICategory() {
             return jeiCategory;
         }
 
+        @Nullable
         public INPUT createInput(NBTTagCompound nbtTags) {
             try {
                 MachineInput input = inputClass.newInstance();
@@ -731,6 +751,7 @@ public final class RecipeHandler {
             }
         }
 
+        @Nullable
         public RECIPE createRecipe(INPUT input, NBTTagCompound nbtTags) {
             try {
                 MachineOutput output = outputClass.newInstance();
@@ -806,6 +827,7 @@ public final class RecipeHandler {
         }
 
         // N.B. Must return a HashMap, not Map as Unidict expects the stronger type
+        @Nonnull
         public HashMap<INPUT, RECIPE> get() {
             return recipes;
         }

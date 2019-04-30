@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerNull;
@@ -72,6 +73,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter> {
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
+        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
         addGuiElement(new GuiPowerBar(this, new IPowerInfoHandler() {
             @Override
             public String getTooltip() {

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -294,7 +295,13 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return world;
     }
 
-    public abstract Set<Pair<Coord4D, ACCEPTOR>> getAcceptors(Object data);
+    /**
+     * @deprecated No longer used or implemented. To be removed
+     */
+    @Deprecated
+    public Set<Pair<Coord4D, ACCEPTOR>> getAcceptors(Object data) {
+        return Collections.emptySet();
+    }
 
     public void tick() {
         onUpdate();

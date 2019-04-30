@@ -719,7 +719,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != facing && side != facing.getOpposite();
+            return side != null && side != facing && side != facing.getOpposite();
         }
         return super.isCapabilityDisabled(capability, side);
     }

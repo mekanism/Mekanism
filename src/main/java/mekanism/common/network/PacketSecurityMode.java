@@ -32,6 +32,7 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 
                     if (owner != null && player.getUniqueID().equals(owner)) {
                         ((ISecurityTile) tileEntity).getSecurity().setMode(message.value);
+                        tileEntity.markDirty();
                     }
                 }
             } else {

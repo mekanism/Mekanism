@@ -299,6 +299,21 @@ public class MekanismRenderer {
         GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
+    public static void colorFluidGLSM(FluidStack fluid) {
+        int color = fluid.getFluid().getColor(fluid);
+        if (color != -1) {
+            colorGLSM(color);
+        }
+    }
+
+    public static void colorGLSM(int color) {
+        float red = (color >> 16 & 0xFF) / 255.0F;
+        float green = (color >> 8 & 0xFF) / 255.0F;
+        float blue = (color & 0xFF) / 255.0F;
+        float alpha = (color >> 24 & 0xFF) / 255f;
+        GlStateManager.color(red, green, blue, alpha);
+    }
+
     public static void colorFluid(FluidStack fluid) {
         color(fluid.getFluid().getColor(fluid));
     }

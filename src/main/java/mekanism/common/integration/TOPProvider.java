@@ -8,6 +8,7 @@ import mcjty.theoneprobe.api.IProgressStyle;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.common.Mekanism;
@@ -48,11 +49,22 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
                     GasTankInfo[] tanks = handler.getTankInfo();
 
                     for (GasTankInfo tank : tanks) {
-                        if (tank.getGas() != null) {
-                            probeInfo.text(TextStyleClass.NAME + "Gas: " + tank.getGas().getGas().getLocalizedName());
-                        }
-
                         IProgressStyle style = probeInfo.defaultProgressStyle().suffix("mB");
+                        if (tank.getGas() != null) {
+                            Gas gas = tank.getGas().getGas();
+                            probeInfo.text(TextStyleClass.NAME + "Gas: " + gas.getLocalizedName());
+                            int tint = gas.getTint();
+                            //TOP respects transparency so we need to filter out the transparent layer
+                            // if the gas has one. (Currently they are all fully transparent)
+                            if ((tint & 0xFF000000) == 0) {
+                                tint = 0xFF000000 | tint;
+                            }
+                            if (tint != 0xFFFFFFFF) {
+                                //TOP bugs out with full white background so just use default instead
+                                // The default is a slightly off white color so is better for readability
+                                style = style.filledColor(tint).alternateFilledColor(tint);
+                            }
+                        }
                         probeInfo.progress(tank.getStored(), tank.getMaxGas(), style);
                     }
                 }

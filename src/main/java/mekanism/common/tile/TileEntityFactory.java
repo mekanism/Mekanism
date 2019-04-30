@@ -67,6 +67,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFactory extends TileEntityMachine implements IComputerIntegration, ISideConfiguration,
       IGasHandler, ISpecialConfigData, ITierUpgradeable, ISustainedData {
@@ -404,7 +405,11 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
                 for (int j = i + 1; j < inputSlots.length; j++) {
                     int checkSlotID = inputSlots[j];
                     ItemStack checkStack = inventory.get(checkSlotID);
-                    if (StackUtils.diffIgnoreEmpty(stack, checkStack) || Math.abs(count - checkStack.getCount()) < 2) {
+                    if (Math.abs(count - checkStack.getCount()) < 2) {
+                        continue;
+                    }
+                    if (!stack.isEmpty() && !checkStack.isEmpty() && !ItemHandlerHelper
+                          .canItemStacksStack(stack, checkStack)) {
                         continue;
                     }
                     //Output/Input will not match
@@ -438,7 +443,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
      * @param updateCache True to make the cached recipe get updated if it is out of date.
      * @return True if the recipe produces the given output.
      */
-    private boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
+    public boolean inputProducesOutput(int slotID, ItemStack fallbackInput, ItemStack output, boolean updateCache) {
         if (output.isEmpty()) {
             return true;
         }
@@ -447,8 +452,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         MachineRecipe cached = cachedRecipe[process];
         ItemStack extra = inventory.get(4);
         if (cached == null) {
-            cached = recipeType
-                  .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+            cached = recipeType.getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
             if (updateCache) {
                 cachedRecipe[process] = cached;
             }
@@ -480,8 +484,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
             // then it is an out of date cache so we compare against the new one
             // and update the cache while we are at it
             if (recipeInput.isEmpty() || !secondaryMatch || !ItemStack.areItemsEqual(recipeInput, fallbackInput)) {
-                cached = cachedRecipe[process] = recipeType
-                      .getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
+                cached = recipeType.getAnyRecipe(fallbackInput, extra, gasTank.getGasType(), infuseStored);
                 if (updateCache) {
                     cachedRecipe[process] = cached;
                 }
@@ -1034,6 +1037,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         if (configComponent.isCapabilityDisabled(capability, side, facing)) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            //If the gas capability is not disabled, check if this machine even actually supports gas
             return !recipeType.supportsGas();
         }
         return super.isCapabilityDisabled(capability, side);

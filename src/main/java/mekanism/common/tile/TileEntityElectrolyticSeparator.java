@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import io.netty.buffer.ByteBuf;
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -157,7 +157,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
         if (tank.getGas() != null) {
             if (mode != GasMode.DUMPING) {
                 GasStack toSend = new GasStack(tank.getGas().getGas(), Math.min(tank.getStored(), output));
-                tank.draw(GasUtils.emit(toSend, this, Collections.singletonList(side)), true);
+                tank.draw(GasUtils.emit(toSend, this, EnumSet.of(side)), true);
             } else {
                 tank.draw(dumpAmount, true);
             }
@@ -501,9 +501,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMachine implement
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
+            return side != null && side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != facing && side != facing.getOpposite() && side != MekanismUtils.getRight(facing);
+            return side != null && side != facing && side != facing.getOpposite() && side != MekanismUtils.getRight(facing);
         }
         return super.isCapabilityDisabled(capability, side);
     }

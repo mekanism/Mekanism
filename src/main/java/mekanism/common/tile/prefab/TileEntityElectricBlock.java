@@ -200,19 +200,17 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-        return (int) Math.round(
-              Math.min(Integer.MAX_VALUE,
+        return MekanismUtils.clampToInt(
                     acceptEnergy(from, maxReceive * MekanismConfig.current().general.FROM_RF.val(), simulate)
-                          * MekanismConfig.current().general.TO_RF.val()));
+                          * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-        return (int) Math.round(
-              Math.min(Integer.MAX_VALUE,
+        return MekanismUtils.clampToInt(
                     pullEnergy(from, maxExtract * MekanismConfig.current().general.FROM_RF.val(), simulate)
-                          * MekanismConfig.current().general.TO_RF.val()));
+                          * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
@@ -224,15 +222,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getEnergyStored(EnumFacing from) {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_RF.val()));
+        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int getMaxEnergyStored(EnumFacing from) {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_RF.val()));
+        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_RF.val());
     }
 
     @Override
@@ -252,8 +248,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     public int addEnergy(int amount) {
         if (!MekanismConfig.current().general.blacklistIC2.val()) {
             setEnergy(getEnergy() + amount * MekanismConfig.current().general.FROM_IC2.val());
-            return (int) Math
-                  .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
+            return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
         }
         return 0;
     }
@@ -285,8 +280,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getStored() {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getEnergy() * MekanismConfig.current().general.TO_IC2.val()));
+        return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
 
     @Override
@@ -300,15 +294,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getCapacity() {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val()));
+        return MekanismUtils.clampToInt(getMaxEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
 
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int getOutput() {
-        return (int) Math
-              .round(Math.min(Integer.MAX_VALUE, getMaxOutput() * MekanismConfig.current().general.TO_IC2.val()));
+        return MekanismUtils.clampToInt(getMaxOutput() * MekanismConfig.current().general.TO_IC2.val());
     }
 
     @Override
@@ -435,7 +427,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
-            return !sideIsConsumer(side) && !sideIsOutput(side);
+            return side != null && !sideIsConsumer(side) && !sideIsOutput(side);
         }
         return super.isCapabilityDisabled(capability, side);
     }

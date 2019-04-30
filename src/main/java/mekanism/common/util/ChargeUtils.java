@@ -44,26 +44,33 @@ public final class ChargeUtils {
             } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                 IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
                 if (storage.canExtract()) {
-                    int needed = (int) Math.round(
-                          Math.min(Integer.MAX_VALUE, (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_FORGE.val()));
-                    storer.setEnergy(storer.getEnergy() + storage.extractEnergy(needed, false) * MekanismConfig.current().general.FROM_FORGE.val());
+                    int needed = MekanismUtils.clampToInt((storer.getMaxEnergy() - storer.getEnergy()) *
+                          MekanismConfig.current().general.TO_FORGE.val());
+                    storer.setEnergy(storer.getEnergy() + storage.extractEnergy(needed, false) * MekanismConfig
+                          .current().general.FROM_FORGE.val());
                 }
             } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                 IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
-                int needed = (int) Math
-                      .round(Math.min(Integer.MAX_VALUE, (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_RF.val()));
-                storer.setEnergy(storer.getEnergy() + (item.extractEnergy(stack, needed, false) * MekanismConfig.current().general.FROM_RF.val()));
+                int needed = MekanismUtils.clampToInt((storer.getMaxEnergy() - storer.getEnergy()) *
+                      MekanismConfig.current().general.TO_RF.val());
+                storer.setEnergy(storer.getEnergy() + (item.extractEnergy(stack, needed, false) * MekanismConfig
+                      .current().general.FROM_RF.val()));
             } else if (MekanismUtils.useTesla() && stack.hasCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null)) {
                 ITeslaProducer producer = stack.getCapability(Capabilities.TESLA_PRODUCER_CAPABILITY, null);
 
-                long needed = Math.round((storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_TESLA.val());
-                storer.setEnergy(storer.getEnergy() + producer.takePower(needed, false) * MekanismConfig.current().general.FROM_TESLA.val());
+                long needed = Math.round(
+                      (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_TESLA.val());
+                storer.setEnergy(storer.getEnergy() + producer.takePower(needed, false) * MekanismConfig
+                      .current().general.FROM_TESLA.val());
             } else if (MekanismUtils.useIC2() && isIC2Dischargeable(stack)) {
                 double gain = ElectricItem.manager
-                      .discharge(stack, (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_IC2.val(), 4, true, true,
+                      .discharge(stack,
+                            (storer.getMaxEnergy() - storer.getEnergy()) * MekanismConfig.current().general.TO_IC2
+                                  .val(), 4, true, true,
                             false) * MekanismConfig.current().general.FROM_IC2.val();
                 storer.setEnergy(storer.getEnergy() + gain);
-            } else if (stack.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= storer
+            } else if (stack.getItem() == Items.REDSTONE
+                  && storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val() <= storer
                   .getMaxEnergy()) {
                 storer.setEnergy(storer.getEnergy() + MekanismConfig.current().general.ENERGY_PER_REDSTONE.val());
                 stack.shrink(1);
@@ -95,19 +102,25 @@ public final class ChargeUtils {
             } else if (MekanismUtils.useForge() && stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
                 IEnergyStorage storage = stack.getCapability(CapabilityEnergy.ENERGY, null);
                 if (storage.canReceive()) {
-                    int stored = (int) Math.round(Math.min(Integer.MAX_VALUE, storer.getEnergy() * MekanismConfig.current().general.TO_FORGE.val()));
-                    storer.setEnergy(storer.getEnergy() - storage.receiveEnergy(stored, false) * MekanismConfig.current().general.FROM_FORGE.val());
+                    int stored = MekanismUtils
+                          .clampToInt(storer.getEnergy() * MekanismConfig.current().general.TO_FORGE.val());
+                    storer.setEnergy(storer.getEnergy() - storage.receiveEnergy(stored, false) * MekanismConfig
+                          .current().general.FROM_FORGE.val());
                 }
             } else if (MekanismUtils.useRF() && stack.getItem() instanceof IEnergyContainerItem) {
                 IEnergyContainerItem item = (IEnergyContainerItem) stack.getItem();
-                int toTransfer = (int) Math.round(storer.getEnergy() * MekanismConfig.current().general.TO_RF.val());
-                storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(stack, toTransfer, false) * MekanismConfig.current().general.FROM_RF.val()));
+                int toTransfer = MekanismUtils
+                      .clampToInt(storer.getEnergy() * MekanismConfig.current().general.TO_RF.val());
+                storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(stack, toTransfer, false) * MekanismConfig
+                      .current().general.FROM_RF.val()));
             } else if (MekanismUtils.useTesla() && stack.hasCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null)) {
                 ITeslaConsumer consumer = stack.getCapability(Capabilities.TESLA_CONSUMER_CAPABILITY, null);
                 long stored = Math.round(storer.getEnergy() * MekanismConfig.current().general.TO_TESLA.val());
-                storer.setEnergy(storer.getEnergy() - consumer.givePower(stored, false) * MekanismConfig.current().general.FROM_TESLA.val());
+                storer.setEnergy(storer.getEnergy() - consumer.givePower(stored, false) * MekanismConfig
+                      .current().general.FROM_TESLA.val());
             } else if (MekanismUtils.useIC2() && isIC2Chargeable(stack)) {
-                double sent = ElectricItem.manager.charge(stack, storer.getEnergy() * MekanismConfig.current().general.TO_IC2.val(), 4, true, false)
+                double sent = ElectricItem.manager
+                      .charge(stack, storer.getEnergy() * MekanismConfig.current().general.TO_IC2.val(), 4, true, false)
                       * MekanismConfig.current().general.FROM_IC2.val();
                 storer.setEnergy(storer.getEnergy() - sent);
             }

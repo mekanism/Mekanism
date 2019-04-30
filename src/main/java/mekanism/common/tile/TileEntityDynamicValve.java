@@ -103,7 +103,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
+            return !world.isRemote ? structure == null : !clientHasStructure;
         }
         return super.isCapabilityDisabled(capability, side);
     }

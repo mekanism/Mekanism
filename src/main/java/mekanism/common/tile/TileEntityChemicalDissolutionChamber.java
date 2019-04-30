@@ -287,7 +287,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
+            return side != null && side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing);
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side == facing || side == facing.getOpposite();
         }

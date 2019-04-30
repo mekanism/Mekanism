@@ -2,11 +2,14 @@ package mekanism.common.tile.component;
 
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.transmitters.TransmissionType;
@@ -14,7 +17,6 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
@@ -65,7 +67,7 @@ public class TileComponentEjector implements ITileComponent {
         sideData = ejector.sideData;
     }
 
-    private List<EnumFacing> getTrackedOutputs(TransmissionType type, int index, List<EnumFacing> dirs) {
+    private List<EnumFacing> getTrackedOutputs(TransmissionType type, int index, Set<EnumFacing> dirs) {
         List<EnumFacing> sides = new ArrayList<>();
 
         for (int i = trackers.get(type)[index] + 1; i <= trackers.get(type)[index] + 6; i++) {
@@ -92,7 +94,7 @@ public class TileComponentEjector implements ITileComponent {
         if (!tileEntity.getWorld().isRemote) {
             if (sideData.get(TransmissionType.GAS) != null && getEjecting(TransmissionType.GAS)) {
                 SideData data = sideData.get(TransmissionType.GAS);
-                List<EnumFacing> outputSides = getOutputSides(TransmissionType.GAS, data);
+                Set<EnumFacing> outputSides = getOutputSides(TransmissionType.GAS, data);
 
                 if (((ITankManager) tileEntity).getTanks() != null) {
                     GasTank tank = (GasTank) ((ITankManager) tileEntity).getTanks()[data.availableSlots[0]];
@@ -107,7 +109,7 @@ public class TileComponentEjector implements ITileComponent {
 
             if (sideData.get(TransmissionType.FLUID) != null && getEjecting(TransmissionType.FLUID)) {
                 SideData data = sideData.get(TransmissionType.FLUID);
-                List<EnumFacing> outputSides = getOutputSides(TransmissionType.FLUID, data);
+                Set<EnumFacing> outputSides = getOutputSides(TransmissionType.FLUID, data);
 
                 if (((ITankManager) tileEntity).getTanks() != null) {
                     FluidTank tank = (FluidTank) ((ITankManager) tileEntity).getTanks()[data.availableSlots[0]];
@@ -123,18 +125,15 @@ public class TileComponentEjector implements ITileComponent {
         }
     }
 
-    public List<EnumFacing> getOutputSides(TransmissionType type, SideData data) {
-        List<EnumFacing> outputSides = new ArrayList<>();
-        ISideConfiguration configurable = (ISideConfiguration) tileEntity;
-
-        SideConfig sideConfig = configurable.getConfig().getConfig(type);
-        ArrayList<SideData> outputs = configurable.getConfig().getOutputs(type);
-
+    public Set<EnumFacing> getOutputSides(TransmissionType type, SideData data) {
+        Set<EnumFacing> outputSides = EnumSet.noneOf(EnumFacing.class);
+        TileComponentConfig config = ((ISideConfiguration) tileEntity).getConfig();
+        SideConfig sideConfig = config.getConfig(type);
+        ArrayList<SideData> outputs = config.getOutputs(type);
         EnumFacing[] facings = MekanismUtils.getBaseOrientations(tileEntity.facing);
 
         for (int i = 0; i < EnumFacing.VALUES.length; i++) {
             EnumFacing side = facings[i];
-
             if (sideConfig.get(side) == outputs.indexOf(data)) {
                 outputSides.add(EnumFacing.VALUES[i]);
             }
@@ -149,7 +148,7 @@ public class TileComponentEjector implements ITileComponent {
         }
 
         SideData data = sideData.get(TransmissionType.ITEM);
-        List<EnumFacing> outputSides = getOutputSides(TransmissionType.ITEM, data);
+        Set<EnumFacing> outputSides = getOutputSides(TransmissionType.ITEM, data);
 
         for (int index = 0; index < sideData.get(TransmissionType.ITEM).availableSlots.length; index++) {
             int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];

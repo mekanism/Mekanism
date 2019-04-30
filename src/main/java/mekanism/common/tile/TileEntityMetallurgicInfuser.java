@@ -269,7 +269,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            infuseStored.setAmount(dataStream.readInt());
+            int amount = dataStream.readInt();
+            if (amount == 0) {
+                infuseStored.setEmpty();
+            } else {
+                infuseStored.setAmount(amount);
+            }
             return;
         }
 

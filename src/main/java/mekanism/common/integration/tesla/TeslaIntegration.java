@@ -3,6 +3,7 @@ package mekanism.common.integration.tesla;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.util.MekanismUtils;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
@@ -57,8 +58,7 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
     }
 
     public int teslaToRF(long tesla) {
-        return (int) Math.round(Math.min(Integer.MAX_VALUE,
-              tesla * MekanismConfig.current().general.FROM_TESLA.val() * MekanismConfig.current().general.TO_RF
-                    .val()));
+        return MekanismUtils.clampToInt(
+              tesla * MekanismConfig.current().general.FROM_TESLA.val() * MekanismConfig.current().general.TO_RF.val());
     }
 }

@@ -1,8 +1,6 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.tile.TileEntityDynamicTank;
@@ -11,13 +9,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank> {
+public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank> {
 
     public GuiDynamicTank(InventoryPlayer inventory, TileEntityDynamicTank tile) {
         super(tile, new ContainerDynamicTank(inventory, tile));
@@ -58,9 +55,10 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank> {
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        if (tileEntity.getScaledFluidLevel(58) > 0) {
-            displayGauge(7, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 0);
-            displayGauge(23, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 1);
+        int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
+        if (scaledFluidLevel > 0) {
+            displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);
+            displayGauge(23, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 1);
         }
     }
 
@@ -69,38 +67,8 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank> {
         return MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png");
     }
 
-    public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/) {
-        if (fluid == null) {
-            return;
-        }
-
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-
-        int start = 0;
-
-        while (true) {
-            int renderRemaining;
-
-            if (scale > 16) {
-                renderRemaining = 16;
-                scale -= 16;
-            } else {
-                renderRemaining = scale;
-                scale = 0;
-            }
-
-            mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  MekanismRenderer.getFluidTexture(fluid, FluidType.STILL), 16, 16 - (16 - renderRemaining));
-            start += 16;
-
-            if (renderRemaining == 0 || scale == 0) {
-                break;
-            }
-        }
-
-        mc.renderEngine.bindTexture(getGuiLocation());
-        drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+    @Override
+    protected ResourceLocation getGaugeResource() {
+        return getGuiLocation();
     }
 }

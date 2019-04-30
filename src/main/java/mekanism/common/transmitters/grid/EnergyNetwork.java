@@ -1,11 +1,8 @@
 package mekanism.common.transmitters.grid;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -13,13 +10,14 @@ import mekanism.api.energy.EnergyStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.base.target.EnergyAcceptorTarget;
+import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> {
 
@@ -103,27 +101,33 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         return getCapacity() - buffer.amount;
     }
 
-    public double tickEmit(double energyToSend) {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return 0;
+    private double tickEmit(double energyToSend) {
+        Set<EnergyAcceptorTarget> targets = new HashSet<>();
+        int totalHandlers = 0;
+        for (Coord4D coord : possibleAcceptors.keySet()) {
+            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
+            if (sides == null || sides.isEmpty()) {
+                continue;
+            }
+            TileEntity tile = coord.getTileEntity(getWorld());
+            if (tile == null) {
+                continue;
+            }
+            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
+            for (EnumFacing side : sides) {
+                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
+                if (acceptor != null && acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
+                    target.addHandler(side, acceptor);
+                }
+            }
+            int curHandlers = target.getHandlers().size();
+            if (curHandlers > 0) {
+                targets.add(target);
+                totalHandlers += curHandlers;
+            }
         }
 
-        double sent = 0;
-        boolean tryAgain;
-        int i = 0;
-
-        do {
-            double prev = sent;
-            sent += doEmit(energyToSend - sent);
-
-            tryAgain = energyToSend - sent > 0 && sent - prev > 0 && i < 100;
-
-            i++;
-        } while (tryAgain);
-
-        joulesTransmitted = sent;
-
-        return sent;
+        return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend);
     }
 
     public double emit(double energyToSend, boolean doEmit) {
@@ -134,77 +138,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         }
 
         return energyToSend - toUse;
-    }
-
-    /**
-     * @return sent
-     */
-    public double doEmit(double energyToSend) {
-        double sent = 0;
-
-        List<Pair<Coord4D, EnergyAcceptorWrapper>> availableAcceptors = new ArrayList<>(getAcceptors(null));
-
-        Collections.shuffle(availableAcceptors);
-
-        if (!availableAcceptors.isEmpty()) {
-            int divider = availableAcceptors.size();
-            double remaining = energyToSend % divider;
-            double sending = (energyToSend - remaining) / divider;
-
-            for (Pair<Coord4D, EnergyAcceptorWrapper> pair : availableAcceptors) {
-                EnergyAcceptorWrapper acceptor = pair.getRight();
-                double currentSending = sending + remaining;
-                EnumSet<EnumFacing> sides = acceptorDirections.get(pair.getLeft());
-
-                if (sides == null || sides.isEmpty()) {
-                    continue;
-                }
-
-                for (EnumFacing side : sides) {
-                    double prev = sent;
-
-                    sent += acceptor.acceptEnergy(side, currentSending, false);
-
-                    if (sent > prev) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return sent;
-    }
-
-    @Override
-    public Set<Pair<Coord4D, EnergyAcceptorWrapper>> getAcceptors(Object data) {
-        Set<Pair<Coord4D, EnergyAcceptorWrapper>> toReturn = new HashSet<>();
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
-            return toReturn;
-        }
-
-        for (Coord4D coord : possibleAcceptors.keySet()) {
-            EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
-
-            if (sides == null || sides.isEmpty()) {
-                continue;
-            }
-
-            TileEntity tile = coord.getTileEntity(getWorld());
-
-            for (EnumFacing side : sides) {
-                EnergyAcceptorWrapper acceptor = EnergyAcceptorWrapper.get(tile, side);
-
-                if (acceptor != null) {
-                    if (acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side)) {
-                        toReturn.add(Pair.of(coord, acceptor));
-                        break;
-                    }
-                }
-            }
-        }
-
-        return toReturn;
     }
 
     @Override
@@ -233,7 +166,8 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             }
 
             if (buffer.amount > 0) {
-                buffer.amount -= tickEmit(buffer.amount);
+                joulesTransmitted = tickEmit(buffer.amount);
+                buffer.amount -= joulesTransmitted;
             }
         }
     }

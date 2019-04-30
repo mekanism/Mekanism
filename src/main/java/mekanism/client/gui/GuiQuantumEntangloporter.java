@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerQuantumEntangloporter;
@@ -48,6 +49,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addGuiElement(new GuiSideConfigurationTab(this, tileEntity, resource));
         addGuiElement(new GuiTransporterConfigTab(this, 34, tileEntity, resource));
         addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
+        addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
         if (tileEntity.frequency != null) {
             privateMode = !tileEntity.frequency.publicFreq;
         }

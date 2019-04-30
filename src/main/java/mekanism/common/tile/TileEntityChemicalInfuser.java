@@ -247,7 +247,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != MekanismUtils.getLeft(facing) && side != MekanismUtils.getRight(facing) && side != facing;
+            return side == EnumFacing.UP || side == EnumFacing.DOWN || side == facing.getOpposite();
         }
         return super.isCapabilityDisabled(capability, side);
     }
