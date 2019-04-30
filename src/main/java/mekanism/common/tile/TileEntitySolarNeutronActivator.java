@@ -266,7 +266,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != facing && side != EnumFacing.DOWN;
+            return side != null && side != facing && side != EnumFacing.DOWN;
         }
         return super.isCapabilityDisabled(capability, side);
     }

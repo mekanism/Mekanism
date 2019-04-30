@@ -280,7 +280,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != MekanismUtils.getLeft(facing);
+            return side != null && side != MekanismUtils.getLeft(facing);
         }
         return super.isCapabilityDisabled(capability, side);
     }

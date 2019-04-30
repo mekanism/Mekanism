@@ -645,8 +645,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             //TODO: Figure out if checking ioState even needed
-            return !hasFrequency()
-                  || configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OFF;
+            return side != null && (!hasFrequency()
+                  || configComponent.getOutput(TransmissionType.GAS, side, facing).ioState == IOState.OFF);
         }
         return super.isCapabilityDisabled(capability, side);
     }

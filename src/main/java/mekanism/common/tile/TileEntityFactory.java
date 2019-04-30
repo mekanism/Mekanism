@@ -1037,6 +1037,7 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
         if (configComponent.isCapabilityDisabled(capability, side, facing)) {
             return true;
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            //If the gas capability is not disabled, check if this machine even actually supports gas
             return !recipeType.supportsGas();
         }
         return super.isCapabilityDisabled(capability, side);

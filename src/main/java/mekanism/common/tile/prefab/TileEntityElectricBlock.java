@@ -435,7 +435,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY || isTesla(capability, side)) {
-            return !sideIsConsumer(side) && !sideIsOutput(side);
+            return side != null && !sideIsConsumer(side) && !sideIsOutput(side);
         }
         return super.isCapabilityDisabled(capability, side);
     }

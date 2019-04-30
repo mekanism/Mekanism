@@ -512,7 +512,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return false;
+            return !world.isRemote ? structure == null : !clientHasStructure;
         }
         return super.isCapabilityDisabled(capability, side);
     }

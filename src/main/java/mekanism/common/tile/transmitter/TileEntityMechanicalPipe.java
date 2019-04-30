@@ -247,7 +247,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
         if (from != null && getConnectionType(from) != ConnectionType.NONE) {
-            return new FluidTankInfo[]{buffer.getInfo()};
+            //Our buffer or the network's buffer if we have a network
+            return getAllTanks();
         }
 
         return PipeUtils.EMPTY;
@@ -255,6 +256,10 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public FluidTankInfo[] getAllTanks() {
+        if (getTransmitter().hasTransmitterNetwork()) {
+            FluidNetwork network = getTransmitter().getTransmitterNetwork();
+            return new FluidTankInfo[]{new FluidTankInfo(network.getBuffer(), network.getCapacity())};
+        }
         return new FluidTankInfo[]{buffer.getInfo()};
     }
 
@@ -277,9 +282,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public int takeFluid(FluidStack fluid, boolean doEmit) {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(fluid, doEmit);
-        } else {
-            return buffer.fill(fluid, doEmit);
         }
+        return buffer.fill(fluid, doEmit);
     }
 
     @Override

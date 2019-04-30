@@ -34,6 +34,35 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     public GasStack lastWrite;
 
+    //Read only handler for support with TOP and getting network data instead of this tube's data
+    private IGasHandler nullHandler = new IGasHandler() {
+        @Override
+        public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
+            return 0;
+        }
+
+        @Override
+        public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer) {
+            return null;
+        }
+
+        @Override
+        public boolean canReceiveGas(EnumFacing side, Gas type) {
+            return false;
+        }
+
+        @Override
+        public boolean canDrawGas(EnumFacing side, Gas type) {
+            return false;
+        }
+
+        @Nonnull
+        @Override
+        public GasTankInfo[] getTankInfo() {
+            return TileEntityPressurizedTube.this.getTankInfo();
+        }
+    };
+
     @Override
     public BaseTier getBaseTier() {
         return tier.getBaseTier();
@@ -258,6 +287,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     @Override
     public GasTankInfo[] getTankInfo() {
+        if (getTransmitter().hasTransmitterNetwork()) {
+            GasNetwork network = getTransmitter().getTransmitterNetwork();
+            GasTank networkTank = new GasTank(network.getCapacity());
+            networkTank.setGas(network.getBuffer());
+            return new GasTankInfo[]{networkTank};
+        }
         return new GasTankInfo[]{buffer};
     }
 
@@ -310,6 +345,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+            if (side == null) {
+                return Capabilities.GAS_HANDLER_CAPABILITY.cast(nullHandler);
+            }
             return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
 

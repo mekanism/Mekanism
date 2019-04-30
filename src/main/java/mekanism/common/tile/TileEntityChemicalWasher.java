@@ -301,7 +301,7 @@ public class TileEntityChemicalWasher extends TileEntityMachine implements IGasH
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return getTank(side) == null;
+            return side != null && getTank(side) == null;
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side == facing || side == facing.getOpposite();
         }
