@@ -530,13 +530,14 @@ public final class MekanismUtils {
      * @param pos Position of the block
      */
     public static void updateBlock(World world, BlockPos pos) {
-        if (!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState) world.getTileEntity(pos))
-              .renderUpdate()) {
-            world.markBlockRangeForRenderUpdate(pos, pos);
-        }
+        //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
+        // This is because that is mainly used for rendering machine effects, but we need to run a render update
+        // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
+        // For example the laser, or charge pad.
+        world.markBlockRangeForRenderUpdate(pos, pos);
 
-        if (!(world.getTileEntity(pos) instanceof IActiveState)
-              || ((IActiveState) world.getTileEntity(pos)).lightUpdate() && MekanismConfig
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig
               .current().client.machineEffects.val()) {
             updateAllLightTypes(world, pos);
         }
