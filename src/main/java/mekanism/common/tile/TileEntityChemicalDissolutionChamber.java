@@ -15,7 +15,6 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
@@ -42,7 +41,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
-    public final double BASE_ENERGY_USAGE = MekanismConfig.current().usage.chemicalDissolutionChamberUsage.val();
+    public final double BASE_ENERGY_USAGE = MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getUsage();
     public GasTank injectTank = new GasTank(MAX_GAS);
     public GasTank outputTank = new GasTank(MAX_GAS);
     public double injectUsage = BASE_INJECT_USAGE;
@@ -54,8 +53,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     public TileEntityChemicalDissolutionChamber() {
         super("machine.dissolution", "ChemicalDissolutionChamber",
-              MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy,
-              MekanismConfig.current().usage.chemicalDissolutionChamberUsage.val(), 4);
+                MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getStorage(),
+                MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getUsage(), 4);
 
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
         upgradeComponent.setSupported(Upgrade.GAS);

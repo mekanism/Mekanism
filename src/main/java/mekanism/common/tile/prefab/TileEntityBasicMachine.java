@@ -33,12 +33,12 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
      *
      * @param soundPath - location of the sound effect
      * @param name - full name of this machine
-     * @param maxEnergy - how much energy this machine can store
+     * @param baseMaxEnergy - how much energy this machine can store
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityBasicMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage,
+    public TileEntityBasicMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
           int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super("machine." + soundPath, name, maxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired);
+        super("machine." + soundPath, name, baseMaxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired);
 
         guiLocation = location;
     }

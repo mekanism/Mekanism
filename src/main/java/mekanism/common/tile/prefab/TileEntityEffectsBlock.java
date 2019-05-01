@@ -42,10 +42,10 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
      *
      * @param sound - the sound path of this block
      * @param name - full name of this block
-     * @param maxEnergy - how much energy this block can store
+     * @param baseMaxEnergy - how much energy this block can store
      */
-    public TileEntityEffectsBlock(String sound, String name, double maxEnergy) {
-        super(name, maxEnergy);
+    public TileEntityEffectsBlock(String sound, String name, double baseMaxEnergy) {
+        super(name, baseMaxEnergy);
 
         // TODO: Have subclasses pass in a static SoundEvent so we avoid per-instance # of SoundEvents for same sound
         // TODO: Factories don't currently pass in the right value for sound ID of wrapped machine; overhaul this.

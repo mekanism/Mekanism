@@ -276,6 +276,10 @@ public interface IFactory {
             return 200;
         }
 
+        public double getEnergyStorage() {
+            return type.getStorage();
+        }
+
         public ItemStack getStack() {
             return type.getStack();
         }

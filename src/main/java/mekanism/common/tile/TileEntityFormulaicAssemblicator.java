@@ -15,7 +15,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.security.ISecurityTile;
@@ -41,7 +40,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     public InventoryCrafting dummyInv = MekanismUtils.getDummyCraftingInv();
 
-    public double BASE_ENERGY_PER_TICK = MekanismConfig.current().usage.metallurgicInfuserUsage.val();
+    public double BASE_ENERGY_PER_TICK = MachineType.FORMULAIC_ASSEMBLICATOR.getUsage();
 
     public double energyPerTick = BASE_ENERGY_PER_TICK;
 
@@ -74,7 +73,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
     public ItemStack lastOutputStack = ItemStack.EMPTY;
 
     public TileEntityFormulaicAssemblicator() {
-        super("FormulaicAssemblicator", MachineType.FORMULAIC_ASSEMBLICATOR.baseEnergy);
+        super("FormulaicAssemblicator", MachineType.FORMULAIC_ASSEMBLICATOR.getStorage());
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 

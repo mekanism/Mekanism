@@ -38,6 +38,7 @@ public class MekanismConfig {
     public GeneralConfig general = new GeneralConfig();
     public ClientConfig client = new ClientConfig();
     public UsageConfig usage = new UsageConfig();
+    public StorageConfig storage = new StorageConfig();
 
     public GeneratorsConfig generators = Loader.isModLoaded(MekanismGenerators.MODID) ? new GeneratorsConfig() : null;
 

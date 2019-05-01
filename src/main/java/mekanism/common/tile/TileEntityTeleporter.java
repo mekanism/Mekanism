@@ -82,7 +82,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     public TileComponentUpgrade upgradeComponent;
 
     public TileEntityTeleporter() {
-        super("Teleporter", MachineType.TELEPORTER.baseEnergy);
+        super("Teleporter", MachineType.TELEPORTER.getStorage());
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
         securityComponent = new TileComponentSecurity(this);
@@ -398,13 +398,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements ICo
     }
 
     public int calculateEnergyCost(Entity entity, Coord4D coords) {
-        int energyCost = MekanismConfig.current().usage.teleporterBaseUsage.val();
+        int energyCost = MekanismConfig.current().usage.teleporterBase.val();
 
         if (entity.world.provider.getDimension() != coords.dimensionId) {
             energyCost += MekanismConfig.current().usage.teleporterDimensionPenalty.val();
         } else {
             int distance = (int) entity.getDistance(coords.x, coords.y, coords.z);
-            energyCost += (distance * MekanismConfig.current().usage.teleporterDistanceUsage.val());
+            energyCost += (distance * MekanismConfig.current().usage.teleporterDistance.val());
         }
 
         return energyCost;

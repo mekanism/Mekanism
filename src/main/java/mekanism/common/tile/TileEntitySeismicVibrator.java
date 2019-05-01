@@ -39,12 +39,14 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
     public int clientPiston;
 
+    public double BASE_ENERGY_PER_TICK = MachineType.SEISMIC_VIBRATOR.getUsage();
+
     public RedstoneControl controlType = RedstoneControl.DISABLED;
 
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntitySeismicVibrator() {
-        super("SeismicVibrator", MachineType.SEISMIC_VIBRATOR.baseEnergy);
+        super("SeismicVibrator", MachineType.SEISMIC_VIBRATOR.getStorage());
 
         inventory = NonNullList.withSize(SLOTS .length, ItemStack.EMPTY);
     }
@@ -79,10 +81,9 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
             ChargeUtils.discharge(0, this);
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= MekanismConfig.current().usage.seismicVibratorUsage
-                  .val()) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= BASE_ENERGY_PER_TICK) {
                 setActive(true);
-                setEnergy(getEnergy() - MekanismConfig.current().usage.seismicVibratorUsage.val());
+                setEnergy(getEnergy() - BASE_ENERGY_PER_TICK);
             } else {
                 setActive(false);
             }

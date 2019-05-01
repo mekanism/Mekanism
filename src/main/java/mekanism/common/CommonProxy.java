@@ -161,6 +161,7 @@ public class CommonProxy implements IGuiProvider {
     public void loadConfiguration() {
         MekanismConfig.local().general.load(Mekanism.configuration);
         MekanismConfig.local().usage.load(Mekanism.configuration);
+        MekanismConfig.local().storage.load(Mekanism.configuration);
 
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
@@ -398,8 +399,6 @@ public class CommonProxy implements IGuiProvider {
         } else {
             MekanismAPI.addBoxBlacklist(Blocks.MOB_SPAWNER, OreDictionary.WILDCARD_VALUE);
         }
-
-        BlockStateMachine.MachineType.updateAllUsages();
 
         if (MekanismConfig.current().general.voiceServerEnabled.val() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();

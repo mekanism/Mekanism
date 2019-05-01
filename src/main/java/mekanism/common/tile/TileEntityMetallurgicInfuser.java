@@ -58,8 +58,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine i
     public TileComponentConfig configComponent;
 
     public TileEntityMetallurgicInfuser() {
-        super("machine.metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy,
-              MekanismConfig.current().usage.metallurgicInfuserUsage.val(), 0, 200);
+        super("machine.metalinfuser", "MetallurgicInfuser",
+              MekanismConfig.current().storage.metallurgicInfuser.val(),
+              MekanismConfig.current().usage.metallurgicInfuser.val(), 0, 200);
 
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 

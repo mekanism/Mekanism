@@ -56,7 +56,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     public TileEntityResistiveHeater() {
-        super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.baseEnergy);
+        super("machine.resistiveheater", "ResistiveHeater", MachineType.RESISTIVE_HEATER.getStorage());
         inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 

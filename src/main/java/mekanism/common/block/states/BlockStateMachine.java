@@ -195,7 +195,6 @@ public class BlockStateMachine extends ExtendedBlockState {
         public int meta;
         public String blockName;
         public int guiId;
-        public double baseEnergy;
         public Class<? extends TileEntity> tileEntityClass;
         public boolean isElectric;
         public boolean hasModel;
@@ -253,11 +252,6 @@ public class BlockStateMachine extends ExtendedBlockState {
             return null;
         }
 
-        public static void updateAllUsages() {
-            for (MachineType type : values()) {
-                type.updateUsage();
-            }
-        }
 
         public static MachineType get(ItemStack stack) {
             return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
@@ -287,31 +281,28 @@ public class BlockStateMachine extends ExtendedBlockState {
             }
         }
 
-        /**
-         * Used for getting the base energy storage.
-         */
         public double getUsage() {
             switch (this) {
                 case ENRICHMENT_CHAMBER:
-                    return MekanismConfig.current().usage.enrichmentChamberUsage.val();
+                    return MekanismConfig.current().usage.enrichmentChamber.val();
                 case OSMIUM_COMPRESSOR:
-                    return MekanismConfig.current().usage.osmiumCompressorUsage.val();
+                    return MekanismConfig.current().usage.osmiumCompressor.val();
                 case COMBINER:
-                    return MekanismConfig.current().usage.combinerUsage.val();
+                    return MekanismConfig.current().usage.combiner.val();
                 case CRUSHER:
-                    return MekanismConfig.current().usage.crusherUsage.val();
+                    return MekanismConfig.current().usage.crusher.val();
                 case DIGITAL_MINER:
-                    return MekanismConfig.current().usage.digitalMinerUsage.val();
+                    return MekanismConfig.current().usage.digitalMiner.val();
                 case METALLURGIC_INFUSER:
-                    return MekanismConfig.current().usage.metallurgicInfuserUsage.val();
+                    return MekanismConfig.current().usage.metallurgicInfuser.val();
                 case PURIFICATION_CHAMBER:
-                    return MekanismConfig.current().usage.purificationChamberUsage.val();
+                    return MekanismConfig.current().usage.purificationChamber.val();
                 case ENERGIZED_SMELTER:
-                    return MekanismConfig.current().usage.energizedSmelterUsage.val();
+                    return MekanismConfig.current().usage.energizedSmelter.val();
                 case TELEPORTER:
                     return 12500;
                 case ELECTRIC_PUMP:
-                    return MekanismConfig.current().usage.electricPumpUsage.val();
+                    return MekanismConfig.current().usage.electricPump.val();
                 case PERSONAL_CHEST:
                     return 30;
                 case CHARGEPAD:
@@ -319,33 +310,33 @@ public class BlockStateMachine extends ExtendedBlockState {
                 case LOGISTICAL_SORTER:
                     return 0;
                 case ROTARY_CONDENSENTRATOR:
-                    return MekanismConfig.current().usage.rotaryCondensentratorUsage.val();
+                    return MekanismConfig.current().usage.rotaryCondensentrator.val();
                 case CHEMICAL_OXIDIZER:
-                    return MekanismConfig.current().usage.oxidationChamberUsage.val();
+                    return MekanismConfig.current().usage.oxidationChamber.val();
                 case CHEMICAL_INFUSER:
-                    return MekanismConfig.current().usage.chemicalInfuserUsage.val();
+                    return MekanismConfig.current().usage.chemicalInfuser.val();
                 case CHEMICAL_INJECTION_CHAMBER:
-                    return MekanismConfig.current().usage.chemicalInjectionChamberUsage.val();
+                    return MekanismConfig.current().usage.chemicalInjectionChamber.val();
                 case ELECTROLYTIC_SEPARATOR:
                     return MekanismConfig.current().general.FROM_H2.val() * 2;
                 case PRECISION_SAWMILL:
-                    return MekanismConfig.current().usage.precisionSawmillUsage.val();
+                    return MekanismConfig.current().usage.precisionSawmill.val();
                 case CHEMICAL_DISSOLUTION_CHAMBER:
-                    return MekanismConfig.current().usage.chemicalDissolutionChamberUsage.val();
+                    return MekanismConfig.current().usage.chemicalDissolutionChamber.val();
                 case CHEMICAL_WASHER:
-                    return MekanismConfig.current().usage.chemicalWasherUsage.val();
+                    return MekanismConfig.current().usage.chemicalWasher.val();
                 case CHEMICAL_CRYSTALLIZER:
-                    return MekanismConfig.current().usage.chemicalCrystallizerUsage.val();
+                    return MekanismConfig.current().usage.chemicalCrystallizer.val();
                 case SEISMIC_VIBRATOR:
-                    return MekanismConfig.current().usage.seismicVibratorUsage.val();
+                    return MekanismConfig.current().usage.seismicVibrator.val();
                 case PRESSURIZED_REACTION_CHAMBER:
-                    return MekanismConfig.current().usage.pressurizedReactionBaseUsage.val();
+                    return MekanismConfig.current().usage.pressurizedReactionBase.val();
                 case FLUID_TANK:
                     return 0;
                 case FLUIDIC_PLENISHER:
-                    return MekanismConfig.current().usage.fluidicPlenisherUsage.val();
+                    return MekanismConfig.current().usage.fluidicPlenisher.val();
                 case LASER:
-                    return MekanismConfig.current().usage.laserUsage.val();
+                    return MekanismConfig.current().usage.laser.val();
                 case LASER_AMPLIFIER:
                     return 0;
                 case LASER_TRACTOR_BEAM:
@@ -359,15 +350,71 @@ public class BlockStateMachine extends ExtendedBlockState {
                 case RESISTIVE_HEATER:
                     return 100;
                 case FORMULAIC_ASSEMBLICATOR:
-                    return MekanismConfig.current().usage.formulaicAssemblicatorUsage.val();
+                    return MekanismConfig.current().usage.formulaicAssemblicator.val();
                 default:
                     return 0;
-
+            }
+        }
+        
+        private double getConfigStorage() {
+            switch (this) {
+                case ENRICHMENT_CHAMBER:
+                    return MekanismConfig.current().storage.enrichmentChamber.val();
+                case OSMIUM_COMPRESSOR:
+                    return MekanismConfig.current().storage.osmiumCompressor.val();
+                case COMBINER:
+                    return MekanismConfig.current().storage.combiner.val();
+                case CRUSHER:
+                    return MekanismConfig.current().storage.crusher.val();
+                case DIGITAL_MINER:
+                    return MekanismConfig.current().storage.digitalMiner.val();
+                case METALLURGIC_INFUSER:
+                    return MekanismConfig.current().storage.metallurgicInfuser.val();
+                case PURIFICATION_CHAMBER:
+                    return MekanismConfig.current().storage.purificationChamber.val();
+                case ENERGIZED_SMELTER:
+                    return MekanismConfig.current().storage.energizedSmelter.val();
+                case TELEPORTER:
+                    return MekanismConfig.current().storage.teleporter.val();
+                case ELECTRIC_PUMP:
+                    return MekanismConfig.current().storage.electricPump.val();
+                case CHARGEPAD:
+                    return MekanismConfig.current().storage.chargePad.val();
+                case ROTARY_CONDENSENTRATOR:
+                    return MekanismConfig.current().storage.rotaryCondensentrator.val();
+                case CHEMICAL_OXIDIZER:
+                    return MekanismConfig.current().storage.oxidationChamber.val();
+                case CHEMICAL_INFUSER:
+                    return MekanismConfig.current().storage.chemicalInfuser.val();
+                case CHEMICAL_INJECTION_CHAMBER:
+                    return MekanismConfig.current().storage.chemicalInjectionChamber.val();
+                case ELECTROLYTIC_SEPARATOR:
+                    return MekanismConfig.current().storage.electrolyticSeparator.val();
+                case PRECISION_SAWMILL:
+                    return MekanismConfig.current().storage.precisionSawmill.val();
+                case CHEMICAL_DISSOLUTION_CHAMBER:
+                    return MekanismConfig.current().storage.chemicalDissolutionChamber.val();
+                case CHEMICAL_WASHER:
+                    return MekanismConfig.current().storage.chemicalWasher.val();
+                case CHEMICAL_CRYSTALLIZER:
+                    return MekanismConfig.current().storage.chemicalCrystallizer.val();
+                case SEISMIC_VIBRATOR:
+                    return MekanismConfig.current().storage.seismicVibrator.val();
+                case PRESSURIZED_REACTION_CHAMBER:
+                    return MekanismConfig.current().storage.pressurizedReactionBase.val();
+                case FLUIDIC_PLENISHER:
+                    return MekanismConfig.current().storage.fluidicPlenisher.val();
+                case LASER:
+                    return MekanismConfig.current().storage.laser.val();
+                case FORMULAIC_ASSEMBLICATOR:
+                    return MekanismConfig.current().storage.formulaicAssemblicator.val();
+                default:
+                    return 400 * getUsage();
             }
         }
 
-        public void updateUsage() {
-            baseEnergy = 400 * getUsage();
+        public double getStorage() {
+            return Math.max(getConfigStorage(), getUsage());
         }
 
         public String getDescription() {

@@ -21,12 +21,12 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
      *
      * @param soundPath - location of the sound effect
      * @param name - full name of this machine
-     * @param maxEnergy - how much energy this machine can store
+     * @param baseMaxEnergy - how much energy this machine can store
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityUpgradeableMachine(String soundPath, String name, double maxEnergy, double baseEnergyUsage,
+    public TileEntityUpgradeableMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
           int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
-        super(soundPath, name, maxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired, location);
+        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired, location);
     }
 
     @Override

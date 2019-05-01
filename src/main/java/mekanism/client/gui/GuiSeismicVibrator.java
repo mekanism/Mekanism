@@ -31,7 +31,7 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addGuiElement(new GuiEnergyInfo(() -> {
             String multiplier = MekanismUtils
-                  .getEnergyDisplay(MekanismConfig.current().usage.seismicVibratorUsage.val());
+                  .getEnergyDisplay(MekanismConfig.current().usage.seismicVibrator.val());
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
                   LangUtils.localize("gui.needed") + ": " + MekanismUtils
                         .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
