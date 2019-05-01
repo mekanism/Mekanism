@@ -26,6 +26,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -60,6 +61,7 @@ public final class MekanismHooks {
     public static final String TOP_MOD_ID = "theoneprobe";
     public static final String BUILDCRAFT_MOD_ID = "BuildCraft";
     public static final String CYCLIC_MOD_ID = "cyclicmagic";
+    public static final String MYSTICALAGRICULTURE_MOD_ID = "mysticalagriculture";
     public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
 
     public boolean IC2Loaded = false;
@@ -70,8 +72,9 @@ public final class MekanismHooks {
     public boolean RFLoaded = false;
     public boolean MetallurgyLoaded = false;
     public boolean CyclicLoaded = false;
-    public boolean CraftTweakerLoaded = false;
     public boolean OCLoaded = false;
+    public boolean MALoaded = false;
+    public boolean CraftTweakerLoaded = false;
 
     public void hookPreInit() {
         if (Loader.isModLoaded(IC2_MOD_ID)) {
@@ -100,6 +103,9 @@ public final class MekanismHooks {
         }
         if (Loader.isModLoaded(METALLURGY_MOD_ID)) {
             MetallurgyLoaded = true;
+        }
+        if (Loader.isModLoaded(MYSTICALAGRICULTURE_MOD_ID)) {
+            MALoaded = true;
         }
         if (Loader.isModLoaded(CRAFTTWEAKER_MOD_ID)) {
             CraftTweakerLoaded = true;
@@ -142,6 +148,9 @@ public final class MekanismHooks {
         if (MetallurgyLoaded) {
             addMetallurgy();
             Mekanism.logger.info("Hooked into Metallurgy successfully.");
+        }
+        if (MALoaded) {
+            registerMysticalAgricultureRecipes();
         }
 
         if (CraftTweakerLoaded) {
@@ -379,7 +388,6 @@ public final class MekanismHooks {
         OreDictManager.addStandardOredictMetal("Manganese");
         OreDictManager.addStandardOredictMetal("Meutoite");
         OreDictManager.addStandardOredictMetal("Midasium");
-        OreDictManager.addStandardOredictMetal("Mithril");
         OreDictManager.addStandardOredictMetal("Orichalcum");
         OreDictManager.addStandardOredictMetal("Oureclase");
         OreDictManager.addStandardOredictMetal("Prometheum");
@@ -393,4 +401,55 @@ public final class MekanismHooks {
         OreDictManager.addStandardOredictMetal("Vyroxeres");
         OreDictManager.addStandardOredictMetal("Zinc");
     }
+
+    private void registerMARecipeSet(MAOre ore, MAOreType type) {
+        String oreName = type.orePrefix + ore.name().toLowerCase() + "_ore";
+        Item oreItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
+        Item dropItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
+        if (oreItem != null && dropItem != null) {
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(oreItem),
+                  new ItemStack(dropItem, type.quantity, ore.itemMeta));
+            RecipeHandler.addCombinerRecipe(new ItemStack(dropItem, type.quantity + 2, ore.itemMeta),
+                  new ItemStack(type.baseBlock), new ItemStack(oreItem));
+        }
+    }
+
+    private void registerMysticalAgricultureRecipes() {
+    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.OVERWORLD);
+    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.NETHER);
+    	registerMARecipeSet(MAOre.INFERIUM, MAOreType.END);
+    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.OVERWORLD);
+    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.NETHER);
+    	registerMARecipeSet(MAOre.PROSPERITY, MAOreType.END);
+    }
+
+    private enum MAOre {
+        INFERIUM("crafting", 0),
+        PROSPERITY("crafting", 5);
+
+        private final String itemName;
+        private final int itemMeta;
+
+        private MAOre(String name, int meta) {
+            itemName = name;
+            itemMeta = meta;
+        }
+    }
+
+    private enum MAOreType {
+        OVERWORLD("", Blocks.COBBLESTONE, 4),
+        NETHER("nether_", Blocks.NETHERRACK, 6),
+        END("end_", Blocks.END_STONE, 8);
+
+        private final String orePrefix;
+        private final Block baseBlock;
+        private final int quantity;
+
+        private MAOreType(String prefix, Block base, int quantity) {
+            orePrefix = prefix;
+            baseBlock = base;
+            this.quantity = quantity;
+        }
+    }
+    
 }
