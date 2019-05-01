@@ -60,13 +60,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     public EnumColor color;
     public boolean autoEject;
     public boolean roundRobin;
+    public boolean singleItem;
     public int rrIndex = 0;
     public int delayTicks;
     public boolean isActive;
     public boolean clientActive;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter",
-          "addOreFilter", "removeOreFilter"};
+          "addOreFilter", "removeOreFilter", "setSingleItem"};
 
     public TileEntityLogisticalSorter() {
         super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.getStorage());
@@ -91,11 +92,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
                 boolean sentItems = false;
                 int min = 0;
-
+                int amount = singleItem ? 1 : 64;
                 outer:
                 for (TransporterFilter filter : filters) {
                     for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.getSlotCount() >= 0; ) {
-                        InvStack invStack = filter.getStackFromInventory(search);
+                        InvStack invStack = filter.getItemAmountFromInventory(search, amount);
 
                         if (invStack == null || invStack.getStack().isEmpty()) {
                             break;
@@ -127,7 +128,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
                 if (!sentItems && autoEject) {
                     TransitRequest request = TransitRequest
-                          .buildInventoryMap(back, facing.getOpposite(), 64, new StrictFilterFinder());
+                          .buildInventoryMap(back, facing.getOpposite(), amount, new StrictFilterFinder());
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
 
                     if (!response.isEmpty()) {
@@ -180,6 +181,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         nbtTags.setBoolean("autoEject", autoEject);
         nbtTags.setBoolean("roundRobin", roundRobin);
+        nbtTags.setBoolean("singleItem", singleItem);
 
         nbtTags.setInteger("rrIndex", rrIndex);
 
@@ -210,6 +212,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         autoEject = nbtTags.getBoolean("autoEject");
         roundRobin = nbtTags.getBoolean("roundRobin");
+        singleItem = nbtTags.getBoolean("singleItem");
 
         rrIndex = nbtTags.getInteger("rrIndex");
 
@@ -256,6 +259,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                 for (EntityPlayer player : playersUsing) {
                     openInventory(player);
                 }
+            } else if (type == 5) {
+                singleItem = !singleItem;
             }
             return;
         }
@@ -294,6 +299,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         autoEject = dataStream.readBoolean();
         roundRobin = dataStream.readBoolean();
+        singleItem = dataStream.readBoolean();
     }
 
     private void readFilters(ByteBuf dataStream) {
@@ -323,6 +329,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         data.add(autoEject);
         data.add(roundRobin);
+        data.add(singleItem);
 
         data.add(filters.size());
 
@@ -349,6 +356,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         data.add(autoEject);
         data.add(roundRobin);
+        data.add(singleItem);
 
         return data;
 
@@ -488,6 +496,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         nbtTags.setBoolean("autoEject", autoEject);
         nbtTags.setBoolean("roundRobin", roundRobin);
+        nbtTags.setBoolean("singleItem", singleItem);
 
         nbtTags.setInteger("rrIndex", rrIndex);
 
@@ -514,6 +523,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         autoEject = nbtTags.getBoolean("autoEject");
         roundRobin = nbtTags.getBoolean("roundRobin");
+        singleItem = nbtTags.getBoolean("singleItem");
 
         rrIndex = nbtTags.getInteger("rrIndex");
 
@@ -541,6 +551,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         ItemDataUtils.setBoolean(itemStack, "autoEject", autoEject);
         ItemDataUtils.setBoolean(itemStack, "roundRobin", roundRobin);
+        ItemDataUtils.setBoolean(itemStack, "singleItem", singleItem);
 
         NBTTagList filterTags = new NBTTagList();
 
@@ -564,6 +575,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
             autoEject = ItemDataUtils.getBoolean(itemStack, "autoEject");
             roundRobin = ItemDataUtils.getBoolean(itemStack, "roundRobin");
+            singleItem = ItemDataUtils.getBoolean(itemStack, "singleItem");
 
             if (ItemDataUtils.hasData(itemStack, "filters")) {
                 NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
@@ -681,6 +693,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                 }
 
                 return new Object[]{"Couldn't find filter."};
+            } else if (method == 7) {
+                if (!(arguments[0] instanceof Boolean)) {
+                    return new Object[]{"Invalid parameters."};
+                }
+
+                singleItem = (Boolean) arguments[0];
+
+                return new Object[]{"Single-item mode set to " + singleItem};
             }
         }
 

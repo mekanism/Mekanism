@@ -669,8 +669,12 @@ gui.password.invalid=Invalid
 gui.password=Password
 
 gui.logisticalSorter.default=Default
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round-robin
+gui.logisticalSorter.autoEject=Auto
+gui.logisticalSorter.autoEject.tooltip=Ejects items automatically to connected inventories.
+gui.logisticalSorter.roundRobin=RR
+gui.logisticalSorter.roundRobin.tooltip=Cycles between all connected inventories when sending items.
+gui.logisticalSorter.singleItem=Single
+gui.logisticalSorter.singleItem.tooltip=Sends a single item instead of a whole stack each time.
 
 gui.teleporter.notReady=Not ready
 gui.teleporter.ready=Ready
