@@ -388,7 +388,6 @@ public final class MekanismHooks {
         OreDictManager.addStandardOredictMetal("Manganese");
         OreDictManager.addStandardOredictMetal("Meutoite");
         OreDictManager.addStandardOredictMetal("Midasium");
-        OreDictManager.addStandardOredictMetal("Mithril");
         OreDictManager.addStandardOredictMetal("Orichalcum");
         OreDictManager.addStandardOredictMetal("Oureclase");
         OreDictManager.addStandardOredictMetal("Prometheum");
