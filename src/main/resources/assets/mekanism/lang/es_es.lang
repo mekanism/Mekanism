@@ -1335,11 +1335,13 @@ gui.password=Contraseña
 
 
 
-gui.logisticalSorter.default=Por defecto
+mekanism.gui.logisticalSorter.default=Por defecto
 
-gui.logisticalSorter.auto=Auto
+mekanism.gui.logisticalSorter.autoEject=Auto
 
-gui.logisticalSorter.roundRobin=Round-robin
+mekanism.gui.logisticalSorter.roundRobin=RR
+
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Round-robin
 
 
 

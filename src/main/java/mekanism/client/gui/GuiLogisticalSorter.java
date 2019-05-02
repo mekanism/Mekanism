@@ -385,16 +385,16 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
         fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 
-        fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.singleItem ? "on" : "off")), 27, 60, 0x00CD00);
 
-        fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
 
-        fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
 
-        fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 
         // Draw filters
         for (int i = 0; i < 4; i++) {
@@ -522,15 +522,24 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
-            drawHoveringText(LangUtils.localize("gui.logisticalSorter.autoEject.tooltip"), xAxis, yAxis);
+            drawHoveringText(
+                    MekanismUtils.splitTooltip(
+                            LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY
+                    ), xAxis, yAxis);
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
-            drawHoveringText(LangUtils.localize("gui.logisticalSorter.roundRobin.tooltip"), xAxis, yAxis);
+            drawHoveringText(
+                    MekanismUtils.splitTooltip(
+                            LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY
+                    ), xAxis, yAxis);
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
-            drawHoveringText(LangUtils.localize("gui.logisticalSorter.singleItem.tooltip"), xAxis, yAxis);
+            drawHoveringText(
+                    MekanismUtils.splitTooltip(
+                            LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY
+                    ), xAxis, yAxis);
         }
 
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

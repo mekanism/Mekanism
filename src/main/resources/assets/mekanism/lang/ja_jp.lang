@@ -662,9 +662,9 @@ gui.password.identical=同じ
 gui.password.invalid=無効
 gui.password=パスワード
 
-gui.logisticalSorter.default=デフォルト
-gui.logisticalSorter.auto=自動
-gui.logisticalSorter.roundRobin=ラウンドロビン
+mekanism.gui.logisticalSorter.default=デフォルト
+mekanism.gui.logisticalSorter.autoEject=自動
+mekanism.gui.logisticalSorter.roundRobin=ラウンドロビン
 
 gui.teleporter.notReady=準備が出来ていません
 gui.teleporter.ready=準備完了

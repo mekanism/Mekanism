@@ -624,9 +624,10 @@ gui.password.identical=Idenstisk
 gui.password.invalid=Ugyldig
 gui.password=Adgangskode
 
-gui.logisticalSorter.default=Standard
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round-robin
+mekanism.gui.logisticalSorter.default=Standard
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.roundRobin=RR
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Round-robin
 
 gui.teleporter.notReady=Ikke klar
 gui.teleporter.ready=Klar

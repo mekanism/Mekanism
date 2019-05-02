@@ -490,9 +490,9 @@ gui.password.identical=恒等
 gui.password.invalid=無效
 gui.password=密碼
 
-gui.logisticalSorter.default=默認
-gui.logisticalSorter.auto=自動
-gui.logisticalSorter.roundRobin=循環模式
+mekanism.gui.logisticalSorter.default=默認
+mekanism.gui.logisticalSorter.autoEject=自動
+mekanism.gui.logisticalSorter.roundRobin=循環模式
 
 gui.teleporter.notReady=未準備
 gui.teleporter.ready=已準備

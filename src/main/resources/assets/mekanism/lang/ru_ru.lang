@@ -666,9 +666,9 @@ gui.password.identical=Идентичный
 gui.password.invalid=Неверный
 gui.password=Пароль
 
-gui.logisticalSorter.default=По умолчанию
-gui.logisticalSorter.auto=Авто
-gui.logisticalSorter.roundRobin=Цикл
+mekanism.gui.logisticalSorter.default=По умолчанию
+mekanism.gui.logisticalSorter.autoEject=Авто
+mekanism.gui.logisticalSorter.roundRobin=Цикл
 
 gui.teleporter.notReady=Не готов
 gui.teleporter.ready=Готов

@@ -663,9 +663,9 @@ gui.password.identical=Identyczne
 gui.password.invalid=Błędne
 gui.password=Hasło
 
-gui.logisticalSorter.default=Domyślnie
-gui.logisticalSorter.auto=Aut.wys.
-gui.logisticalSorter.roundRobin=Okrężnie
+mekanism.gui.logisticalSorter.default=Domyślnie
+mekanism.gui.logisticalSorter.autoEject=Aut.wys.
+mekanism.gui.logisticalSorter.roundRobin=Okrężnie
 
 gui.teleporter.notReady=Nie gotowy
 gui.teleporter.ready=Gotowy

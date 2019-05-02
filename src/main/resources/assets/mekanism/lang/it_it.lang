@@ -553,9 +553,10 @@ gui.password.identical=Identico
 gui.password.invalid=Invalido
 gui.password=Password
 
-gui.logisticalSorter.default=Predefinito
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Circolare
+mekanism.gui.logisticalSorter.default=Predefinito
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.roundRobin=Cir
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Circolare
 
 gui.teleporter.notReady=Non pronto
 gui.teleporter.ready=Pronto
