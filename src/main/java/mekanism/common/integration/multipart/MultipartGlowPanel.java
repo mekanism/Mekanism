@@ -1,6 +1,5 @@
 package mekanism.common.integration.multipart;
 
-import java.util.Random;
 import mcmultipart.api.container.IPartInfo;
 import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumFaceSlot;
@@ -13,7 +12,6 @@ import mekanism.common.tile.TileEntityGlowPanel;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -23,8 +21,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class MultipartGlowPanel implements IMultipart {
-
-    private static Random rand = new Random();
 
     @Override
     public IPartSlot getSlotForPlacement(World world, BlockPos pos, IBlockState state, EnumFacing facing, float hitX,
@@ -54,18 +50,10 @@ public class MultipartGlowPanel implements IMultipart {
     public void onPartRemoved(IPartInfo part, IPartInfo otherPart) {
         TileEntity tile = part.getTile().getTileEntity();
         if (tile instanceof TileEntityGlowPanel && !BlockGlowPanel.canStay(part.getPartWorld(), part.getPartPos())) {
-            float motion = 0.7F;
-            double motionX = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
             BlockPos pos = part.getPartPos();
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
             ItemStack stack = new ItemStack(MekanismBlocks.GlowPanel, 1, glowPanel.colour.getMetaValue());
-            EntityItem entityItem = new EntityItem(glowPanel.getWorld(), pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, stack);
-
-            part.getActualWorld().spawnEntity(entityItem);
+            Block.spawnAsEntity(part.getActualWorld(), pos, stack);
             part.remove();
         }
     }

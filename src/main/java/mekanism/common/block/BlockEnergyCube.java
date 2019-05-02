@@ -1,12 +1,10 @@
 package mekanism.common.block;
 
-import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ITierItem;
@@ -16,22 +14,19 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -52,7 +47,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockContainer {
+public class BlockEnergyCube extends BlockMekanismContainer {
 
     public BlockEnergyCube() {
         super(Material.IRON);
@@ -147,17 +142,6 @@ public class BlockEnergyCube extends BlockContainer {
     }
 
     @Override
-    public int quantityDropped(Random random) {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return Items.AIR;
-    }
-
-    @Override
     public void getSubBlocks(CreativeTabs creativetabs, NonNullList<ItemStack> list) {
         for (EnergyCubeTier tier : EnergyCubeTier.values()) {
             ItemStack discharged = new ItemStack(this);
@@ -200,8 +184,7 @@ public class BlockEnergyCube extends BlockContainer {
                         wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
 
                         if (entityplayer.isSneaking()) {
-                            dismantleBlock(state, world, pos, false);
-
+                            MekanismUtils.dismantleBlock(this, state, world, pos);
                             return true;
                         }
 
@@ -236,23 +219,6 @@ public class BlockEnergyCube extends BlockContainer {
     }
 
     @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-            world.spawnEntity(entityItem);
-        }
-
-        return world.setBlockToAir(pos);
-    }
-
-    @Override
     public TileEntity createNewTileEntity(@Nonnull World world, int meta) {
         return new TileEntityEnergyCube();
     }
@@ -272,8 +238,7 @@ public class BlockEnergyCube extends BlockContainer {
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityEnergyCube tileEntity = (TileEntityEnergyCube) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
 
@@ -303,26 +268,6 @@ public class BlockEnergyCube extends BlockContainer {
 
         ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
         inventory.setInventory(tileEntity.getInventory(), itemStack);
-
-        return itemStack;
-    }
-
-    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
-        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
-
-        world.setBlockToAir(pos);
-
-        if (!returnBlock) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, itemStack);
-
-            world.spawnEntity(entityItem);
-        }
 
         return itemStack;
     }

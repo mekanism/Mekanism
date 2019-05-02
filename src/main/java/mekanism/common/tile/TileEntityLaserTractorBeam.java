@@ -17,8 +17,8 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -162,18 +162,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
                 }
             }
 
-            dropItem(drop);
+            Block.spawnAsEntity(world, pos, drop);
         }
-    }
-
-    public void dropItem(ItemStack stack) {
-        EntityItem item = new EntityItem(world, getPos().getX() + 0.5, getPos().getY() + 1, getPos().getZ() + 0.5,
-              stack);
-        item.motionX = world.rand.nextGaussian() * 0.05;
-        item.motionY = world.rand.nextGaussian() * 0.05 + 0.2;
-        item.motionZ = world.rand.nextGaussian() * 0.05;
-        item.setPickupDelay(10);
-        world.spawnEntity(item);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.api.gas.IGasItem;
@@ -20,15 +19,11 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +38,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockContainer {
+public class BlockGasTank extends BlockMekanismContainer {
 
     private static final AxisAlignedBB TANK_BOUNDS = new AxisAlignedBB(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
 
@@ -162,8 +157,7 @@ public class BlockGasTank extends BlockContainer {
                         wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
 
                         if (entityplayer.isSneaking()) {
-                            dismantleBlock(state, world, pos, false);
-
+                            MekanismUtils.dismantleBlock(this, state, world, pos);
                             return true;
                         }
 
@@ -198,55 +192,6 @@ public class BlockGasTank extends BlockContainer {
     }
 
     @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-
-            world.spawnEntity(entityItem);
-        }
-
-        return world.setBlockToAir(pos);
-    }
-
-    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
-        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
-
-        world.setBlockToAir(pos);
-
-        if (!returnBlock) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, itemStack);
-
-            world.spawnEntity(entityItem);
-        }
-
-        return itemStack;
-    }
-
-    @Override
-    public int quantityDropped(Random random) {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return Items.AIR;
-    }
-
-    @Override
     @Deprecated
     public boolean isOpaqueCube(IBlockState state) {
         return false;
@@ -273,8 +218,7 @@ public class BlockGasTank extends BlockContainer {
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityGasTank tileEntity = (TileEntityGasTank) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
 

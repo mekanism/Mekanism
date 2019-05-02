@@ -10,6 +10,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.block.BlockMekanismContainer;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
@@ -31,7 +32,6 @@ import mekanism.generators.common.block.states.BlockStateGenerator.GeneratorType
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -39,10 +39,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -70,7 +67,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public abstract class BlockGenerator extends BlockContainer {
+public abstract class BlockGenerator extends BlockMekanismContainer {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
     private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
@@ -320,15 +317,7 @@ public abstract class BlockGenerator extends BlockContainer {
             int amount = ((TileEntityTurbineRotor) tileEntity).getHousedBlades();
 
             if (amount > 0) {
-                float motion = 0.7F;
-                double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-                double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-                double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-                EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                      pos.getZ() + motionZ, new ItemStack(GeneratorsItems.TurbineBlade, amount));
-
-                world.spawnEntity(entityItem);
+                spawnAsEntity(world, pos, new ItemStack(GeneratorsItems.TurbineBlade, amount));
             }
         }
 
@@ -359,8 +348,7 @@ public abstract class BlockGenerator extends BlockContainer {
                         wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
 
                         if (entityplayer.isSneaking()) {
-                            dismantleBlock(state, world, pos, false);
-
+                            MekanismUtils.dismantleBlock(this, state, world, pos);
                             return true;
                         }
 
@@ -440,11 +428,6 @@ public abstract class BlockGenerator extends BlockContainer {
     }
 
     @Override
-    public int quantityDropped(Random random) {
-        return 0;
-    }
-
-    @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         int metadata = state.getBlock().getMetaFromState(state);
 
@@ -453,12 +436,6 @@ public abstract class BlockGenerator extends BlockContainer {
         }
 
         return GeneratorType.get(getGeneratorBlock(), metadata).create();
-    }
-
-    @Nonnull
-    @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return Items.AIR;
     }
 
     @Nonnull
@@ -509,28 +486,9 @@ public abstract class BlockGenerator extends BlockContainer {
         }
     }
 
-    @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-
-            world.spawnEntity(entityItem);
-        }
-
-        return world.setBlockToAir(pos);
-    }
-
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, state.getBlock().getMetaFromState(state));
 
@@ -573,26 +531,6 @@ public abstract class BlockGenerator extends BlockContainer {
                           .setFluidStack(((ISustainedTank) tileEntity).getFluidStack(), itemStack);
                 }
             }
-        }
-
-        return itemStack;
-    }
-
-    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
-        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
-
-        world.setBlockToAir(pos);
-
-        if (!returnBlock) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, itemStack);
-
-            world.spawnEntity(entityItem);
         }
 
         return itemStack;

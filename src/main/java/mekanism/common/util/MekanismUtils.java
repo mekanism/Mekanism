@@ -19,9 +19,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismFluids;
 import mekanism.common.SideData;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.FactoryTier;
-import mekanism.common.tier.GasTankTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory;
@@ -38,6 +35,9 @@ import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockTransmitter;
 import mekanism.common.network.PacketPersonalChest.PersonalChestMessage;
 import mekanism.common.network.PacketPersonalChest.PersonalChestPacketType;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.FactoryTier;
+import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -1140,6 +1140,14 @@ public final class MekanismUtils {
     public static TileEntity getTileEntitySafe(IBlockAccess worldIn, BlockPos pos) {
         return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn)
               .getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
+    }
+
+    /**
+     * Dismantles a block, dropping it and removing it from the world.
+     */
+    public static void dismantleBlock(Block block, IBlockState state, World world, BlockPos pos) {
+        block.dropBlockAsItem(world, pos, state, 0);
+        world.setBlockToAir(pos);
     }
 
     /**

@@ -2,7 +2,6 @@ package mekanism.common.block;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IMekWrench;
@@ -38,7 +37,6 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -61,7 +59,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTransmitter extends Block implements ITileEntityProvider {
+public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvider {
 
     public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
     public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];
@@ -259,7 +257,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
             RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), facing, pos);
             if (wrenchHandler.canUseWrench(player, hand, stack, raytrace) && player.isSneaking()) {
                 if (!world.isRemote) {
-                    dismantleBlock(state, world, pos, false);
+                    MekanismUtils.dismantleBlock(this, state, world, pos);
                 }
 
                 return true;
@@ -271,8 +269,7 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
+    protected ItemStack getDropItem(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos) {
         ItemStack itemStack = ItemStack.EMPTY;
         TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
         if (tileEntity != null) {
@@ -297,26 +294,6 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
         }
         return MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager) ||
               super.addHitEffects(state, world, target, manager);
-    }
-
-    public ItemStack dismantleBlock(IBlockState state, World world, BlockPos pos, boolean returnBlock) {
-        ItemStack itemStack = getPickBlock(state, null, world, pos, null);
-
-        world.setBlockToAir(pos);
-
-        if (!returnBlock) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, itemStack);
-
-            world.spawnEntity(entityItem);
-        }
-
-        return itemStack;
     }
 
     @Override
@@ -405,29 +382,6 @@ public class BlockTransmitter extends Block implements ITileEntityProvider {
     @Deprecated
     public boolean isFullBlock(IBlockState state) {
         return false;
-    }
-
-    @Override
-    public int quantityDropped(Random random) {
-        return 0;
-    }
-
-    @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
-        if (!player.capabilities.isCreativeMode && !world.isRemote && willHarvest) {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-
-            EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY,
-                  pos.getZ() + motionZ, getPickBlock(state, null, world, pos, player));
-
-            world.spawnEntity(entityItem);
-        }
-
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
     @Override
