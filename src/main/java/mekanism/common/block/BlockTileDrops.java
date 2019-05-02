@@ -14,9 +14,12 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public abstract class BlockMekanismSimple extends Block {
+/**
+ * Special handling for block drops that need TileEntity data
+ */
+public abstract class BlockTileDrops extends Block {
 
-    protected BlockMekanismSimple(Material materialIn) {
+    protected BlockTileDrops(Material materialIn) {
         super(materialIn);
     }
 

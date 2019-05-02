@@ -59,7 +59,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTransmitter extends BlockMekanismSimple implements ITileEntityProvider {
+public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvider {
 
     public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
     public static AxisAlignedBB[] largeSides = new AxisAlignedBB[7];

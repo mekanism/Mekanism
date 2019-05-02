@@ -82,7 +82,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author AidanBrady
  */
-public abstract class BlockBasic extends BlockMekanismSimple {
+public abstract class BlockBasic extends BlockTileDrops {
 
     public BlockBasic() {
         super(Material.IRON);
