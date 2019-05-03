@@ -48,8 +48,11 @@ public abstract class BlockMekanismContainer extends BlockContainer {
         }
         player.addExhaustion(0.005F);
         if (!world.isRemote) {
-            Block.spawnAsEntity(world, pos,
-                  getDropItem(state, world, pos).setStackDisplayName(((IWorldNameable) te).getName()));
+            ItemStack dropItem = getDropItem(state, world, pos);
+            if (te instanceof IWorldNameable) {
+                dropItem.setStackDisplayName(((IWorldNameable) te).getName());
+            }
+            Block.spawnAsEntity(world, pos, dropItem);
         }
         //Set it to air like the flower pot's harvestBlock method
         world.setBlockToAir(pos);
