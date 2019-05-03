@@ -27,6 +27,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
@@ -239,7 +240,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     world.spawnEntity(item);
                 }
 
-                world.playEvent(null, 2001, block.getPos(), Block.getStateId(state));
+                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, block.getPos(), Block.getStateId(state));
             }
 
             spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));

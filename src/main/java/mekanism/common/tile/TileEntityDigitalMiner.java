@@ -70,6 +70,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -264,7 +265,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                                     it.remove();
                                 }
 
-                                world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
+                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(),
+                                      Block.getStateId(state));
 
                                 missingStack = ItemStack.EMPTY;
                             }
