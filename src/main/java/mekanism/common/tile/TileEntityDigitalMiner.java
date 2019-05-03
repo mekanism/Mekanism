@@ -76,6 +76,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IUpgradeTile, IRedstoneControl,
       IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock {
@@ -473,15 +474,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             }
 
             for (int i = 0; i < 27; i++) {
-                if (testInv.get(i).isEmpty()) {
+                ItemStack existingStack = testInv.get(i);
+                if (existingStack.isEmpty()) {
                     testInv.set(i, stack);
                     added++;
 
                     continue stacks;
-                } else if (testInv.get(i).isItemEqual(stack)
-                      && testInv.get(i).getCount() + stack.getCount() <= stack
+                } else if (ItemHandlerHelper.canItemStacksStack(existingStack, stack)
+                      && existingStack.getCount() + stack.getCount() <= stack
                       .getMaxStackSize()) {
-                    testInv.get(i).grow(stack.getCount());
+                    existingStack.grow(stack.getCount());
                     added++;
 
                     continue stacks;
