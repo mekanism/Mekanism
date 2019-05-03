@@ -58,6 +58,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = MekanismHooks.GALACTICRAFT_MOD_ID)
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable {
@@ -282,8 +283,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                               ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
                         break;
-                    } else if (itemStack.isItemEqual(item.getItem()) && itemStack.getCount() < itemStack
-                          .getMaxStackSize()) {
+                    } else if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem())
+                          && itemStack.getCount() < itemStack.getMaxStackSize()) {
                         int needed = itemStack.getMaxStackSize() - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
 
