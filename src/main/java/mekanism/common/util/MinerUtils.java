@@ -46,29 +46,25 @@ public final class MinerUtils {
 
         if (silk && (block.canSilkHarvest(world, coord.getPos(), state,
               Mekanism.proxy.getDummyPlayer((WorldServer) world).get()) || specialSilkIDs.contains(block))) {
-            List<ItemStack> ret = new ArrayList<>();
+            Object it = null;
             if (getSilkTouchDrop != null) {
                 try {
-                    Object it = getSilkTouchDrop.invoke(block, state);
-                    if (it instanceof ItemStack) {
-                        //Should always be an ItemStack
-                        ItemStack silkDrop = (ItemStack) it;
-                        if (!silkDrop.isEmpty()) {
-                            ret.add(silkDrop);
-                        } else {
-                            //silk touch drop is empty, fallback to grabbing an itemblock
-                            fallbackGetSilkTouch(block, state, ret);
-                        }
-                    }
+                    it = getSilkTouchDrop.invoke(block, state);
                 } catch (InvocationTargetException | IllegalAccessException e) {
                     Mekanism.logger.error("Block.getSilkTouchDrop errored", e);
-                    fallbackGetSilkTouch(block, state, ret);
                 }
-            } else {
-                //fallback to old method
-                fallbackGetSilkTouch(block, state, ret);
             }
-
+            List<ItemStack> ret = new ArrayList<>();
+            if (it instanceof ItemStack && !((ItemStack) it).isEmpty()) {
+                ret.add((ItemStack) it);
+            } else {
+                //silk touch drop is empty or failed to call/find getSilkTouchDrop method
+                // Fallback to grabbing an itemblock
+                Item item = Item.getItemFromBlock(block);
+                if (item != Items.AIR) {
+                    ret.add(new ItemStack(item, 1, item.getHasSubtypes() ? block.getMetaFromState(state) : 0));
+                }
+            }
             if (ret.size() > 0) {
                 ForgeEventFactory.fireBlockHarvesting(ret, world, coord.getPos(), state, 0, 1.0F, true, null);
                 return ret;
@@ -86,13 +82,5 @@ public final class MinerUtils {
         }
 
         return Collections.emptyList();
-    }
-
-    private static void fallbackGetSilkTouch(Block block, IBlockState state, List<ItemStack> ret) {
-        Item item = Item.getItemFromBlock(block);
-        if (item != Items.AIR) {
-            int meta = item.getHasSubtypes() ? block.getMetaFromState(state) : 0;
-            ret.add(new ItemStack(item, 1, meta));
-        }
     }
 }
