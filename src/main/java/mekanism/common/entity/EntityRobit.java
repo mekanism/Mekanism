@@ -324,35 +324,38 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     private boolean canSmelt() {
-        if (inventory.get(28).isEmpty()) {
+        ItemStack input = inventory.get(28);
+        if (input.isEmpty()) {
             return false;
-        } else {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory.get(28));
-            if (itemstack.isEmpty()) {
-                return false;
-            }
-            if (inventory.get(30).isEmpty()) {
-                return true;
-            }
-            if (!inventory.get(30).isItemEqual(itemstack)) {
-                return false;
-            }
-            int result = inventory.get(30).getCount() + itemstack.getCount();
-            return (result <= getInventoryStackLimit() && result <= itemstack.getMaxStackSize());
         }
+        ItemStack result = FurnaceRecipes.instance().getSmeltingResult(input);
+        if (result.isEmpty()) {
+            return false;
+        }
+        ItemStack currentOutput = inventory.get(30);
+        if (currentOutput.isEmpty()) {
+            return true;
+        }
+        if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
+            return false;
+        }
+        int newAmount = currentOutput.getCount() + result.getCount();
+        return newAmount <= getInventoryStackLimit() && newAmount <= result.getMaxStackSize();
     }
 
     public void smeltItem() {
         if (canSmelt()) {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory.get(28));
+            ItemStack input = inventory.get(28);
+            ItemStack result = FurnaceRecipes.instance().getSmeltingResult(input);
 
-            if (inventory.get(30).isEmpty()) {
-                inventory.set(30, itemstack.copy());
-            } else if (inventory.get(30).isItemEqual(itemstack)) {
-                inventory.get(30).grow(itemstack.getCount());
+            ItemStack currentOutput = inventory.get(30);
+            if (currentOutput.isEmpty()) {
+                inventory.set(30, result.copy());
+            } else if (ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
+                currentOutput.grow(result.getCount());
             }
-
-            inventory.get(28).shrink(1);
+            //There shouldn't be any other case where the item doesn't stack but should we double check it anyways
+            input.shrink(1);
         }
     }
 
