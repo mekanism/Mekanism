@@ -100,7 +100,7 @@ public final class InventoryUtils {
         for (int i = inventory.getSlots() - 1; i >= 0; i--) {
             ItemStack stack = inventory.extractItem(i, max, true);
 
-            if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
+            if (!stack.isEmpty() && StackUtils.equalsWildcardWithNBT(stack, type)) {
                 int current = ret.getStack().getCount();
 
                 if (current + stack.getCount() <= max) {
