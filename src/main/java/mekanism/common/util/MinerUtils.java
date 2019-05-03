@@ -14,9 +14,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 
 public final class MinerUtils {
 
@@ -28,54 +31,55 @@ public final class MinerUtils {
         try {
             getSilkTouchDrop = ReflectionHelper
                   .findMethod(Block.class, "getSilkTouchDrop", "func_180643_i", IBlockState.class);
-        } catch (ReflectionHelper.UnableToFindMethodException e) {
+        } catch (UnableToFindMethodException e) {
             Mekanism.logger.error("Unable to find method Block.getSilkTouchDrop");
         }
     }
 
-    public static List<ItemStack> getDrops(World world, Coord4D obj, boolean silk) {
-        IBlockState state = obj.getBlockState(world);
+    public static List<ItemStack> getDrops(World world, Coord4D coord, boolean silk) {
+        IBlockState state = coord.getBlockState(world);
         Block block = state.getBlock();
 
-        if (block.isAir(state, world, obj.getPos())) {
-            return Collections.EMPTY_LIST;
+        if (block.isAir(state, world, coord.getPos())) {
+            return Collections.emptyList();
         }
 
-        if (silk && (
-              block.canSilkHarvest(world, obj.getPos(), state, Mekanism.proxy.getDummyPlayer((WorldServer) world).get())
-                    || specialSilkIDs.contains(block))) {
+        if (silk && (block.canSilkHarvest(world, coord.getPos(), state,
+              Mekanism.proxy.getDummyPlayer((WorldServer) world).get()) || specialSilkIDs.contains(block))) {
             List<ItemStack> ret = new ArrayList<>();
             if (getSilkTouchDrop != null) {
                 try {
                     Object it = getSilkTouchDrop.invoke(block, state);
-                    if (it instanceof ItemStack && !((ItemStack) it).isEmpty()) {
-                        ret.add((ItemStack) it);
-                    } else if (it instanceof ItemStack && ((ItemStack) it)
-                          .isEmpty()) {//silk touch drop is empty, fallback to grabbing an itemblock
-                        fallbackGetSilkTouch(block, state, ret);
+                    if (it instanceof ItemStack) {
+                        //Should always be an ItemStack
+                        ItemStack silkDrop = (ItemStack) it;
+                        if (!silkDrop.isEmpty()) {
+                            ret.add(silkDrop);
+                        } else {
+                            //silk touch drop is empty, fallback to grabbing an itemblock
+                            fallbackGetSilkTouch(block, state, ret);
+                        }
                     }
                 } catch (InvocationTargetException | IllegalAccessException e) {
                     Mekanism.logger.error("Block.getSilkTouchDrop errored", e);
                     fallbackGetSilkTouch(block, state, ret);
                 }
-            } else//fallback to old method
-            {
+            } else {
+                //fallback to old method
                 fallbackGetSilkTouch(block, state, ret);
             }
 
             if (ret.size() > 0) {
-                net.minecraftforge.event.ForgeEventFactory
-                      .fireBlockHarvesting(ret, world, obj.getPos(), state, 0, 1.0f, true, null);
+                ForgeEventFactory.fireBlockHarvesting(ret, world, coord.getPos(), state, 0, 1.0F, true, null);
                 return ret;
             }
         } else {
-            @SuppressWarnings("deprecation")
-            List<ItemStack> blockDrops = block.getDrops(world, obj.getPos(), state, 0);
+            NonNullList<ItemStack> blockDrops = NonNullList.create();
+            block.getDrops(blockDrops, world, coord.getPos(), state, 0);
             if (blockDrops.size() > 0) {
-                net.minecraftforge.event.ForgeEventFactory
-                      .fireBlockHarvesting(blockDrops, world, obj.getPos(), state, 0, 1.0f, false, null);
-            } else if (block
-                  == Blocks.CHORUS_FLOWER) {//Chorus flower returns AIR for itemDropped... and for silkTouchDrop.
+                ForgeEventFactory.fireBlockHarvesting(blockDrops, world, coord.getPos(), state, 0, 1.0F, false, null);
+            } else if (block == Blocks.CHORUS_FLOWER) {
+                //Chorus flower returns AIR for itemDropped... and for silkTouchDrop.
                 blockDrops.add(new ItemStack(Blocks.CHORUS_FLOWER));
             }
             return blockDrops;
