@@ -14,7 +14,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -70,8 +69,8 @@ public final class MinerUtils {
                 return ret;
             }
         } else {
-            NonNullList<ItemStack> blockDrops = NonNullList.create();
-            block.getDrops(blockDrops, world, coord.getPos(), state, 0);
+            @SuppressWarnings("deprecation")//needed for backwards compatibility
+            List<ItemStack> blockDrops = block.getDrops(world, coord.getPos(), state, 0);
             if (blockDrops.size() > 0) {
                 ForgeEventFactory.fireBlockHarvesting(blockDrops, world, coord.getPos(), state, 0, 1.0F, false, null);
             } else if (block == Blocks.CHORUS_FLOWER) {
