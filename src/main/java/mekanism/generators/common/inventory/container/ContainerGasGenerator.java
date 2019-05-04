@@ -1,7 +1,8 @@
 package mekanism.generators.common.inventory.container;
 
+import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.MekanismFluids;
+import mekanism.common.FuelHandler;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -22,21 +23,10 @@ public class ContainerGasGenerator extends ContainerFuelGenerator<TileEntityGasG
 
     @Override
     protected boolean tryFuel(ItemStack slotStack) {
-        return slotStack.getItem() instanceof IGasItem;
-    }
-
-    @Override
-    protected ItemStack handleFuel(ItemStack slotStack, int slotID) {
-        if (slotID != 0 && slotID != 1) {
-            if (((IGasItem) slotStack.getItem()).getGas(slotStack) != null
-                  && ((IGasItem) slotStack.getItem()).getGas(slotStack).getGas() == MekanismFluids.Hydrogen) {
-                if (!mergeItemStack(slotStack, 0, 1, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-        } else if (!mergeItemStack(slotStack, 2, inventorySlots.size(), true)) {
-            return ItemStack.EMPTY;
+        if (slotStack.getItem() instanceof IGasItem) {
+            GasStack gasStack = ((IGasItem) slotStack.getItem()).getGas(slotStack);
+            return gasStack != null && FuelHandler.getFuel(gasStack.getGas()) != null;
         }
-        return slotStack;
+        return false;
     }
 }
