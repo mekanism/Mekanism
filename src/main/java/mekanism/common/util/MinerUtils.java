@@ -9,11 +9,15 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -43,7 +47,32 @@ public final class MinerUtils {
             return Collections.emptyList();
         }
 
-        if (silk && (block.canSilkHarvest(world, coord.getPos(), state,
+        if (block instanceof BlockShulkerBox){
+            //special case Shulker Boxes because bad Mojang code / no forge patch
+            ItemStack shulkerBoxItem = new ItemStack(Item.getItemFromBlock(block));
+
+            TileEntity tileentity = world.getTileEntity(coord.getPos());
+
+            //copied from BlockShulkerBox.breakBlock
+            if (tileentity instanceof TileEntityShulkerBox)
+            {
+                TileEntityShulkerBox tileentityshulkerbox = (TileEntityShulkerBox)tileentity;
+
+                if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop())
+                {
+                    NBTTagCompound itemTag = new NBTTagCompound();
+                    NBTTagCompound nbtBlockEntity = new NBTTagCompound();
+                    itemTag.setTag("BlockEntityTag", ((TileEntityShulkerBox)tileentity).saveToNbt(nbtBlockEntity));
+                    shulkerBoxItem.setTagCompound(itemTag);
+
+                    if (tileentityshulkerbox.hasCustomName())
+                    {
+                        shulkerBoxItem.setStackDisplayName(tileentityshulkerbox.getName());
+                    }
+                }
+            }
+            return Collections.singletonList(shulkerBoxItem);
+        } else if (silk && (block.canSilkHarvest(world, coord.getPos(), state,
               Mekanism.proxy.getDummyPlayer((WorldServer) world).get()) || specialSilkIDs.contains(block))) {
             Object it = null;
             if (getSilkTouchDrop != null) {

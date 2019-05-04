@@ -52,6 +52,7 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -60,6 +61,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -361,16 +363,25 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
      */
     public boolean setReplace(Coord4D obj, int index) {
         ItemStack stack = getReplace(index);
+        BlockPos pos = obj.getPos();
+
+        //if its a shulker box, remove it TE so it can't drop itself in breakBlock - we've already captured its itemblock
+        TileEntity te = world.getTileEntity(pos);
+        TileEntityShulkerBox tileEntityShulkerBox = null;
+        if (te instanceof TileEntityShulkerBox) {
+            tileEntityShulkerBox = (TileEntityShulkerBox) te;
+            world.removeTileEntity(pos);
+        }
 
         if (!stack.isEmpty()) {
-            world.setBlockState(obj.getPos(),
+            world.setBlockState(pos,
                   Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
 
             IBlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock())
-                  .canBlockStay(world, obj.getPos(), s)) {
-                s.getBlock().dropBlockAsItem(world, obj.getPos(), s, 1);
-                world.setBlockToAir(obj.getPos());
+                  .canBlockStay(world, pos, s)) {
+                s.getBlock().dropBlockAsItem(world, pos, s, 1);
+                world.setBlockToAir(pos);
             }
 
             return true;
@@ -378,12 +389,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             MinerFilter filter = replaceMap.get(index);
 
             if (filter == null || (filter.replaceStack.isEmpty() || !filter.requireStack)) {
-                world.setBlockToAir(obj.getPos());
+                world.setBlockToAir(pos);
 
                 return true;
             }
 
             missingStack = filter.replaceStack;
+
+            // something failed, so put that thing back where it came from
+            if (tileEntityShulkerBox != null) {
+                tileEntityShulkerBox.validate();
+                world.setTileEntity(pos, tileEntityShulkerBox);
+            }
 
             return false;
         }
