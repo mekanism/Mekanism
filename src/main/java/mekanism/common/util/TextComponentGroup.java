@@ -56,8 +56,20 @@ public class TextComponentGroup extends TextComponentString {
         return this;
     }
 
+    public TextComponentGroup translation(String key, Object... args) {
+        this.appendSibling(new TextComponentTranslation(key, args));
+        return this;
+    }
+
     public TextComponentGroup translation(String key, TextFormatting color) {
         ITextComponent t = new TextComponentTranslation(key);
+        t.getStyle().setColor(color);
+        this.appendSibling(t);
+        return this;
+    }
+
+    public TextComponentGroup translation(String key, TextFormatting color, Object... args) {
+        ITextComponent t = new TextComponentTranslation(key, args);
         t.getStyle().setColor(color);
         this.appendSibling(t);
         return this;

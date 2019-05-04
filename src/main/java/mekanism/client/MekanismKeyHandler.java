@@ -102,9 +102,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 player.sendMessage(
                     new TextComponentGroup(TextFormatting.GRAY)
                     .string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                    .translation("tooltip.configureState")
-                    .string(": ")
-                    .component(configuratorMode.getNameComponent(), configuratorMode.getColor().textFormatting)
+                    .translation("mekanism.tooltip.configureState", LangUtils.withColor(configuratorMode.getNameComponent(), configuratorMode.getColor().textFormatting))
                 );
             } else if (player.isSneaking() && item instanceof ItemElectricBow) {
                 ItemElectricBow bow = (ItemElectricBow) item;

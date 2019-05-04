@@ -1543,7 +1543,7 @@ tooltip.noKey=Sin Entrada
 
 tooltip.hp=HP
 
-tooltip.configureState=Configurar Estado
+mekanism.tooltip.configureState=Configurar Estado: %s
 
 tooltip.outputRate=Tasa de Salida
 
