@@ -52,7 +52,7 @@ public class StackSearcher {
         for (slotCount = slotCount - 1; slotCount >= 0; slotCount--) {
             ItemStack stack = inventory.extractItem(slotCount, max, true);
 
-            if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
+            if (!stack.isEmpty() && StackUtils.equalsWildcardWithNBT(stack, type)) {
                 int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
 
                 if (current + stack.getCount() <= max) {

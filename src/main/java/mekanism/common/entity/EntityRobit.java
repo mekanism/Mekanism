@@ -58,6 +58,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = MekanismHooks.GALACTICRAFT_MOD_ID)
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable {
@@ -282,8 +283,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
                               ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
                         break;
-                    } else if (itemStack.isItemEqual(item.getItem()) && itemStack.getCount() < itemStack
-                          .getMaxStackSize()) {
+                    } else if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem())
+                          && itemStack.getCount() < itemStack.getMaxStackSize()) {
                         int needed = itemStack.getMaxStackSize() - itemStack.getCount();
                         int toAdd = Math.min(needed, item.getItem().getCount());
 
@@ -323,35 +324,38 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     }
 
     private boolean canSmelt() {
-        if (inventory.get(28).isEmpty()) {
+        ItemStack input = inventory.get(28);
+        if (input.isEmpty()) {
             return false;
-        } else {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory.get(28));
-            if (itemstack.isEmpty()) {
-                return false;
-            }
-            if (inventory.get(30).isEmpty()) {
-                return true;
-            }
-            if (!inventory.get(30).isItemEqual(itemstack)) {
-                return false;
-            }
-            int result = inventory.get(30).getCount() + itemstack.getCount();
-            return (result <= getInventoryStackLimit() && result <= itemstack.getMaxStackSize());
         }
+        ItemStack result = FurnaceRecipes.instance().getSmeltingResult(input);
+        if (result.isEmpty()) {
+            return false;
+        }
+        ItemStack currentOutput = inventory.get(30);
+        if (currentOutput.isEmpty()) {
+            return true;
+        }
+        if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
+            return false;
+        }
+        int newAmount = currentOutput.getCount() + result.getCount();
+        return newAmount <= getInventoryStackLimit() && newAmount <= result.getMaxStackSize();
     }
 
     public void smeltItem() {
         if (canSmelt()) {
-            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(inventory.get(28));
+            ItemStack input = inventory.get(28);
+            ItemStack result = FurnaceRecipes.instance().getSmeltingResult(input);
 
-            if (inventory.get(30).isEmpty()) {
-                inventory.set(30, itemstack.copy());
-            } else if (inventory.get(30).isItemEqual(itemstack)) {
-                inventory.get(30).grow(itemstack.getCount());
+            ItemStack currentOutput = inventory.get(30);
+            if (currentOutput.isEmpty()) {
+                inventory.set(30, result.copy());
+            } else if (ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
+                currentOutput.grow(result.getCount());
             }
-
-            inventory.get(28).shrink(1);
+            //There shouldn't be any other case where the item doesn't stack but should we double check it anyways
+            input.shrink(1);
         }
     }
 

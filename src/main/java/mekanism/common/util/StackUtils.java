@@ -19,8 +19,8 @@ public final class StackUtils {
 
     //ignores count
     public static boolean equalsWildcard(ItemStack wild, ItemStack check) {
-        if (wild.isEmpty() || check.isEmpty()) {
-            return check == wild;
+        if (wild.isEmpty() && check.isEmpty()) {
+            return true;
         }
 
         return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE
