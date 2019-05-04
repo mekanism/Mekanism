@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -18,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityShulkerBox;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -26,7 +28,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodExce
 
 public final class MinerUtils {
 
-    public static List<Block> specialSilkIDs = Arrays.asList(Blocks.ICE, Blocks.CHORUS_FLOWER);
+    public static final List<Block> specialSilkIDs = Arrays.asList(Blocks.ICE, Blocks.CHORUS_FLOWER);
 
     private static Method getSilkTouchDrop = null;
 
@@ -39,9 +41,10 @@ public final class MinerUtils {
         }
     }
 
-    public static List<ItemStack> getDrops(World world, Coord4D coord, boolean silk) {
+    public static List<ItemStack> getDrops(World world, Coord4D coord, boolean silk, BlockPos minerPosition) {
         IBlockState state = coord.getBlockState(world);
         Block block = state.getBlock();
+        EntityPlayer fakePlayer = Mekanism.proxy.getDummyPlayer((WorldServer) world, minerPosition).get();
 
         if (block.isAir(state, world, coord.getPos())) {
             return Collections.emptyList();
@@ -72,8 +75,7 @@ public final class MinerUtils {
                 }
             }
             return Collections.singletonList(shulkerBoxItem);
-        } else if (silk && (block.canSilkHarvest(world, coord.getPos(), state,
-              Mekanism.proxy.getDummyPlayer((WorldServer) world).get()) || specialSilkIDs.contains(block))) {
+        } else if (silk && (block.canSilkHarvest(world, coord.getPos(), state, fakePlayer) || specialSilkIDs.contains(block))) {
             Object it = null;
             if (getSilkTouchDrop != null) {
                 try {
@@ -94,14 +96,14 @@ public final class MinerUtils {
                 }
             }
             if (ret.size() > 0) {
-                ForgeEventFactory.fireBlockHarvesting(ret, world, coord.getPos(), state, 0, 1.0F, true, null);
+                ForgeEventFactory.fireBlockHarvesting(ret, world, coord.getPos(), state, 0, 1.0F, true, fakePlayer);
                 return ret;
             }
         } else {
             @SuppressWarnings("deprecation")//needed for backwards compatibility
             List<ItemStack> blockDrops = block.getDrops(world, coord.getPos(), state, 0);
             if (blockDrops.size() > 0) {
-                ForgeEventFactory.fireBlockHarvesting(blockDrops, world, coord.getPos(), state, 0, 1.0F, false, null);
+                ForgeEventFactory.fireBlockHarvesting(blockDrops, world, coord.getPos(), state, 0, 1.0F, false, fakePlayer);
             } else if (block == Blocks.CHORUS_FLOWER) {
                 //Chorus flower returns AIR for itemDropped... and for silkTouchDrop.
                 blockDrops.add(new ItemStack(Blocks.CHORUS_FLOWER));

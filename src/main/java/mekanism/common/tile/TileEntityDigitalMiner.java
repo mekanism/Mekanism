@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -63,6 +64,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -256,7 +258,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                                 continue;
                             }
 
-                            List<ItemStack> drops = MinerUtils.getDrops(world, coord, silkTouch);
+                            List<ItemStack> drops = MinerUtils.getDrops(world, coord, silkTouch, this.pos);
 
                             if (canInsert(drops) && setReplace(coord, index)) {
                                 did = true;
@@ -364,6 +366,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     public boolean setReplace(Coord4D obj, int index) {
         ItemStack stack = getReplace(index);
         BlockPos pos = obj.getPos();
+        EntityPlayer fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, this.pos).get());
 
         //if its a shulker box, remove it TE so it can't drop itself in breakBlock - we've already captured its itemblock
         TileEntity te = world.getTileEntity(pos);
@@ -374,8 +377,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         }
 
         if (!stack.isEmpty()) {
-            world.setBlockState(pos,
-                  Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
+            world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer), 3);
 
             IBlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock())
@@ -409,7 +411,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     private boolean canMine(Coord4D coord) {
         IBlockState state = coord.getBlockState(world);
 
-        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get();
+        EntityPlayer dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get());
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
 
