@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import java.util.Map;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
@@ -70,12 +71,21 @@ public final class InventoryUtils {
         return TransitResponse.EMPTY;
     }
 
+    /**
+     * Like {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} but empty stacks mean equal (either param).
+     * Thiakil: not sure why.
+     *
+     * @param toInsert stack a
+     * @param inSlot stack b
+     * @return true if they are compatible
+     */
     public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) {
         if (toInsert.isEmpty() || inSlot.isEmpty()) {
             return true;
         }
 
-        return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
+        return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
+        //return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
     }
 
     public static InvStack takeDefinedItem(TileEntity tile, EnumFacing side, ItemStack type, int min, int max) {
@@ -90,7 +100,7 @@ public final class InventoryUtils {
         for (int i = inventory.getSlots() - 1; i >= 0; i--) {
             ItemStack stack = inventory.extractItem(i, max, true);
 
-            if (!stack.isEmpty() && StackUtils.equalsWildcard(stack, type)) {
+            if (!stack.isEmpty() && StackUtils.equalsWildcardWithNBT(stack, type)) {
                 int current = ret.getStack().getCount();
 
                 if (current + stack.getCount() <= max) {
