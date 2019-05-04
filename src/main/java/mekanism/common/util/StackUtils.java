@@ -147,6 +147,6 @@ public final class StackUtils {
     @Nonnull
     public static IBlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, EntityPlayer player) {
         Block blockFromItem = Block.getBlockFromItem(stack.getItem());
-        return blockFromItem.getStateForPlacement(world, pos, EnumFacing.NORTH, 0,0,0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
+        return blockFromItem.getStateForPlacement(world, pos, EnumFacing.UP, 0,0,0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
     }
 }
