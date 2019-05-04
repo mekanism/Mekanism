@@ -21,6 +21,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.world.BlockEvent;
 
 public class LaserManager {
@@ -94,7 +95,7 @@ public class LaserManager {
 
         blockHit.breakBlock(world, blockCoord.getPos(), state);
         world.setBlockToAir(blockCoord.getPos());
-        world.playEvent(2001, blockCoord.getPos(), Block.getStateId(state));
+        world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockCoord.getPos(), Block.getStateId(state));
 
         return ret;
     }

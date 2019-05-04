@@ -2,9 +2,17 @@ package mekanism.common.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 public final class StackUtils {
@@ -125,5 +133,20 @@ public final class StackUtils {
         ResourceLocation registryName = stack.getItem().getRegistryName();
         int nameHash = registryName == null ? 0 : registryName.hashCode();
         return nameHash << 8 | stack.getMetadata();
+    }
+
+    /**
+     * Get state for placement for a generic item, with our fake player
+     *
+     * @param stack the item to place
+     * @param world which universe
+     * @param pos where
+     * @param player our fake player, usually
+     * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing, float, float, float, int, net.minecraft.entity.EntityLivingBase, net.minecraft.util.EnumHand)}
+     */
+    @Nonnull
+    public static IBlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, EntityPlayer player) {
+        Block blockFromItem = Block.getBlockFromItem(stack.getItem());
+        return blockFromItem.getStateForPlacement(world, pos, EnumFacing.UP, 0,0,0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
     }
 }

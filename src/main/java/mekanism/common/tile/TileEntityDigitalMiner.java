@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -52,6 +53,7 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBush;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -60,7 +62,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -70,6 +74,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -254,7 +259,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                                 continue;
                             }
 
-                            List<ItemStack> drops = MinerUtils.getDrops(world, coord, silkTouch);
+                            List<ItemStack> drops = MinerUtils.getDrops(world, coord, silkTouch, this.pos);
 
                             if (canInsert(drops) && setReplace(coord, index)) {
                                 did = true;
@@ -265,7 +270,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
                                     it.remove();
                                 }
 
-                                world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
+                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(),
+                                      Block.getStateId(state));
 
                                 missingStack = ItemStack.EMPTY;
                             }
@@ -360,16 +366,25 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
      */
     public boolean setReplace(Coord4D obj, int index) {
         ItemStack stack = getReplace(index);
+        BlockPos pos = obj.getPos();
+        EntityPlayer fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, this.pos).get());
+
+        //if its a shulker box, remove it TE so it can't drop itself in breakBlock - we've already captured its itemblock
+        TileEntity te = world.getTileEntity(pos);
+        TileEntityShulkerBox tileEntityShulkerBox = null;
+        if (te instanceof TileEntityShulkerBox) {
+            tileEntityShulkerBox = (TileEntityShulkerBox) te;
+            world.removeTileEntity(pos);
+        }
 
         if (!stack.isEmpty()) {
-            world.setBlockState(obj.getPos(),
-                  Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()), 3);
+            world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer), 3);
 
             IBlockState s = obj.getBlockState(world);
             if (s.getBlock() instanceof BlockBush && !((BlockBush) s.getBlock())
-                  .canBlockStay(world, obj.getPos(), s)) {
-                s.getBlock().dropBlockAsItem(world, obj.getPos(), s, 1);
-                world.setBlockToAir(obj.getPos());
+                  .canBlockStay(world, pos, s)) {
+                s.getBlock().dropBlockAsItem(world, pos, s, 1);
+                world.setBlockToAir(pos);
             }
 
             return true;
@@ -377,12 +392,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
             MinerFilter filter = replaceMap.get(index);
 
             if (filter == null || (filter.replaceStack.isEmpty() || !filter.requireStack)) {
-                world.setBlockToAir(obj.getPos());
+                world.setBlockToAir(pos);
 
                 return true;
             }
 
             missingStack = filter.replaceStack;
+
+            // something failed, so put that thing back where it came from
+            if (tileEntityShulkerBox != null) {
+                tileEntityShulkerBox.validate();
+                world.setTileEntity(pos, tileEntityShulkerBox);
+            }
 
             return false;
         }
@@ -391,7 +412,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
     private boolean canMine(Coord4D coord) {
         IBlockState state = coord.getBlockState(world);
 
-        EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get();
+        EntityPlayer dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get());
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
 

@@ -38,6 +38,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -157,7 +158,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                     Block block2 = coord.getBlock(player.world);
 
                     block2.onBlockHarvested(player.world, coord.getPos(), state, player);
-                    player.world.playEvent(null, 2001, coord.getPos(), Block.getStateId(state));
+                    player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coord.getPos(), Block.getStateId(state));
                     player.world.setBlockToAir(coord.getPos());
                     block2.breakBlock(player.world, coord.getPos(), state);
                     block2.dropBlockAsItem(player.world, coord.getPos(), state, 0);
