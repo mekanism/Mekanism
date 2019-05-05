@@ -60,4 +60,10 @@ public final class LangUtils {
         component.getStyle().setColor(color);
         return component;
     }
+
+    public static TextComponentTranslation onOffColoured(boolean isOn) {
+        TextComponentTranslation translation = new TextComponentTranslation(transOnOffKey(isOn));
+        translation.getStyle().setColor(isOn ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
+        return translation;
+    }
 }

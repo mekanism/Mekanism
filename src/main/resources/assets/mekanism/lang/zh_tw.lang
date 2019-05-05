@@ -548,7 +548,7 @@ tooltip.recipeType=合成類型
 tooltip.hold=按住
 tooltip.forDesc=查看描述
 tooltip.forDetails=查看詳情
-tooltip.fireMode=火焰模式
+mekanism.tooltip.fireMode=火焰模式: %s
 tooltip.capacity=容量
 tooltip.pumpRate=泵速
 tooltip.items=物品
@@ -581,7 +581,7 @@ tooltip.outputRate=輸出速率
 tooltip.insufficientFuel=燃料不足
 tooltip.readyForReaction=已準備好反應
 
-tooltip.portableTank.bucketMode=水桶模式
+mekanism.tooltip.portableTank.bucketMode=水桶模式: %s
 
 tooltip.disassembler.normal=正常
 tooltip.disassembler.slow=慢

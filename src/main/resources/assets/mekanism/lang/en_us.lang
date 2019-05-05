@@ -744,7 +744,7 @@ tooltip.recipeType=Recipe type
 tooltip.hold=Hold
 tooltip.forDesc=for a description
 tooltip.forDetails=for details
-tooltip.fireMode=Fire Mode
+mekanism.tooltip.fireMode=Fire Mode: %s
 tooltip.capacity=Capacity
 tooltip.pumpRate=Pump Rate
 tooltip.items=Items
@@ -788,7 +788,7 @@ tooltip.conduction=Conduction
 tooltip.insulation=Insulation
 tooltip.heatCapacity=Heat Capacity
 
-tooltip.portableTank.bucketMode=Bucket Mode
+mekanism.tooltip.portableTank.bucketMode=Bucket Mode: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=slow
@@ -812,7 +812,7 @@ tooltip.freerunner.disabled=Disabled
 tooltip.flamethrower.combat=Combat
 tooltip.flamethrower.heat=Heat
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Flamethrower mode bumped to
+mekanism.tooltip.flamethrower.modeBump=Flamethrower mode bumped to %s
 
 tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations

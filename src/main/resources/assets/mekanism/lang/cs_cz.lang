@@ -703,7 +703,7 @@ tooltip.recipeType=Typ receptu
 tooltip.hold=Drž
 tooltip.forDesc=pro popis
 tooltip.forDetails=pro detaily
-tooltip.fireMode=Ohnivý Mód
+mekanism.tooltip.fireMode=Ohnivý Mód: %s
 tooltip.capacity=Kapacita
 tooltip.pumpRate=Rychlost Pumpy
 tooltip.items=Předměty
@@ -743,7 +743,7 @@ tooltip.invalid=Neplatný
 tooltip.encoded=Zakódovaný
 tooltip.ingredients=Ingredience
 
-tooltip.portableTank.bucketMode=Kyblíkový Mód
+mekanism.tooltip.portableTank.bucketMode=Kyblíkový Mód: %s
 # totally legit and not funny sounding :D
 tooltip.disassembler.normal=normální
 tooltip.disassembler.slow=pomalý
@@ -764,7 +764,7 @@ tooltip.jetpack.disabled=Deaktivovaný
 tooltip.flamethrower.combat=Souboj
 tooltip.flamethrower.heat=Teplo
 tooltip.flamethrower.inferno=Peklo
-tooltip.flamethrower.modeBump=Mód plamenometu změněn na
+mekanism.tooltip.flamethrower.modeBump=Mód plamenometu změněn na %s
 
 tooltip.seismicReader.needsEnergy=Nedostatek energie na interpretaci vibrací
 tooltip.seismicReader.noVibrations=Nenalezeny žádné vibrace

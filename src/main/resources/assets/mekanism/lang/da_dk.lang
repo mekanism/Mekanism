@@ -692,7 +692,7 @@ tooltip.recipeType=Opskriftstype
 tooltip.hold=Hold
 tooltip.forDesc=for en beskrivelse
 tooltip.forDetails=for detaljer
-tooltip.fireMode=Enffyringsmodus
+mekanism.tooltip.fireMode=Enffyringsmodus: %s
 tooltip.capacity=Kapacitet
 tooltip.pumpRate=Pumpningssats
 tooltip.items=Genstande
@@ -732,7 +732,7 @@ tooltip.invalid=Invalid
 tooltip.encoded=Enkodet
 tooltip.ingredients=Ingredienser
 
-tooltip.portableTank.bucketMode=Spand-modus
+mekanism.tooltip.portableTank.bucketMode=Spand-modus: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=langsom
@@ -753,7 +753,7 @@ tooltip.jetpack.disabled=Deaktiveret
 tooltip.flamethrower.combat=Kamp
 tooltip.flamethrower.heat=Opvarm
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Flammekastermodus skiftet til
+mekanism.tooltip.flamethrower.modeBump=Flammekastermodus skiftet til %s
 
 tooltip.seismicReader.needsEnergy=Ikke nok energi til at læse vibration
 tooltip.seismicReader.noVibrations=Ikke i stand til at opdage nogen vibrationer

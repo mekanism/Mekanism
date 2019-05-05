@@ -113,9 +113,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 player.sendMessage(
                     new TextComponentGroup(TextFormatting.GRAY)
                     .string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                    .translation("tooltip.fireMode")
-                    .string(": ")
-                    .translation(LangUtils.transOnOffKey(newBowState), newBowState ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED)
+                    .translation("mekanism.tooltip.fireMode", LangUtils.onOffColoured(newBowState))
                 );
             } else if (player.isSneaking() && item instanceof ItemBlockMachine) {
                 ItemBlockMachine machine = (ItemBlockMachine) item;
@@ -127,9 +125,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     player.sendMessage(
                           new TextComponentGroup(TextFormatting.GRAY)
                           .string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                          .translation("tooltip.portableTank.bucketMode")
-                          .string(": ")
-                          .translation(LangUtils.transOnOffKey(newBucketMode), newBucketMode ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED)
+                          .translation("mekanism.tooltip.portableTank.bucketMode", LangUtils.onOffColoured(newBucketMode))
                     );
                 }
             } else if (player.isSneaking() && item instanceof ItemWalkieTalkie) {
@@ -151,9 +147,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 player.sendMessage(
                       new TextComponentGroup(TextFormatting.GRAY)
                       .string(Mekanism.LOG_TAG, TextFormatting.DARK_BLUE).string(" ")
-                      .translation("tooltip.flamethrower.modeBump")
-                      .string(": ")
-                      .component(flamethrower.getMode(toolStack).getTextComponent())
+                      .translation("mekanism.tooltip.flamethrower.modeBump", flamethrower.getMode(toolStack).getTextComponent())
                 );
             }
         } else if (kb == armorModeSwitchKey) {

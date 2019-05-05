@@ -618,7 +618,7 @@ tooltip.recipeType=Tipo di ricetta
 tooltip.hold=Tieni premuto
 tooltip.forDesc=per una descrizione
 tooltip.forDetails=per dettagli
-tooltip.fireMode=Fire Mode
+mekanism.tooltip.fireMode=Fire Mode: %s
 tooltip.capacity=Capacità
 tooltip.pumpRate=Ritmo della pompa
 tooltip.items=Oggetti
@@ -651,7 +651,7 @@ tooltip.outputRate=Ritmo di uscita
 tooltip.insufficientFuel=Carburante insufficiente
 tooltip.readyForReaction=Pronto per Reazione
 
-tooltip.portableTank.bucketMode=Modalità secchio
+mekanism.tooltip.portableTank.bucketMode=Modalità secchio: %s
 
 tooltip.disassembler.normal=normale
 tooltip.disassembler.slow=lento

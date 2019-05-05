@@ -703,7 +703,7 @@ tooltip.recipeType=Tipo de Receita
 tooltip.hold=Segure
 tooltip.forDesc=para uma descrição
 tooltip.forDetails=para mais detalhes
-tooltip.fireMode=Modo Fogo
+mekanism.tooltip.fireMode=Modo Fogo: %s
 tooltip.capacity=Capacidade
 tooltip.pumpRate=Taxa de Bombeio
 tooltip.items=Itens
@@ -743,7 +743,7 @@ tooltip.invalid=Inválido
 tooltip.encoded=Codificado
 tooltip.ingredients=Ingredientes
 
-tooltip.portableTank.bucketMode=Modo Balde
+mekanism.tooltip.portableTank.bucketMode=Modo Balde: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=lento
@@ -764,7 +764,7 @@ tooltip.jetpack.disabled=Desativado
 tooltip.flamethrower.combat=Combate
 tooltip.flamethrower.heat=Calor
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Modo do Lança-Chamas mudado para
+mekanism.tooltip.flamethrower.modeBump=Modo do Lança-Chamas mudado para %s
 
 tooltip.seismicReader.needsEnergy=Energia não suficiente para interpretar a vibração
 tooltip.seismicReader.noVibrations=Incapaz de descobrir quaisquer vibrações

@@ -738,7 +738,7 @@ tooltip.recipeType=レシピタイプ
 tooltip.hold=押下§7:
 tooltip.forDesc=説明
 tooltip.forDetails=詳細
-tooltip.fireMode=ファイヤーモード
+mekanism.tooltip.fireMode=ファイヤーモード: %s
 tooltip.capacity=容量
 tooltip.pumpRate=転送速度
 tooltip.items=アイテム
@@ -780,7 +780,7 @@ tooltip.conduction=伝導
 tooltip.insulation=絶縁
 tooltip.heatCapacity=熱容量
 
-tooltip.portableTank.bucketMode=バケツモード
+mekanism.tooltip.portableTank.bucketMode=バケツモード: %s
 
 tooltip.disassembler.normal=通常
 tooltip.disassembler.slow=遅い
@@ -804,7 +804,7 @@ tooltip.freerunner.disabled=無効
 tooltip.flamethrower.combat=実戦
 tooltip.flamethrower.heat=加熱
 tooltip.flamethrower.inferno=焦熱
-tooltip.flamethrower.modeBump=火炎放射器のモードを変更
+mekanism.tooltip.flamethrower.modeBump=火炎放射器のモードを変更 %s
 
 tooltip.seismicReader.needsEnergy=弾性波の解析に必要なエネルギーがありません
 tooltip.seismicReader.noVibrations=弾性波を検出できません

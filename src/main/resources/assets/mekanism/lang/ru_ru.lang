@@ -742,7 +742,7 @@ tooltip.recipeType=Тип рецепта
 tooltip.hold=Зажмите
 tooltip.forDesc=для описания
 tooltip.forDetails=для подробностей
-tooltip.fireMode=Режим огня
+mekanism.tooltip.fireMode=Режим огня: %s
 tooltip.capacity=Ёмкость
 tooltip.pumpRate=Скорость откачки
 tooltip.items=Предметы
@@ -785,7 +785,7 @@ tooltip.conduction=Проводимость
 tooltip.insulation=Изоляция
 tooltip.heatCapacity=Теплоемкость
 
-tooltip.portableTank.bucketMode=Режим ведра
+mekanism.tooltip.portableTank.bucketMode=Режим ведра: %s
 
 tooltip.disassembler.normal=нормальный
 tooltip.disassembler.slow=медленный
@@ -809,7 +809,7 @@ tooltip.freerunner.disabled=Отключен
 tooltip.flamethrower.combat=Бой
 tooltip.flamethrower.heat=Нагрев
 tooltip.flamethrower.inferno=Перегрев
-tooltip.flamethrower.modeBump=Режим огнемета изменен на
+mekanism.tooltip.flamethrower.modeBump=Режим огнемета изменен на %s
 
 tooltip.seismicReader.needsEnergy=Недостаточно энергии, чтобы интерпретировать вибрацию
 tooltip.seismicReader.noVibrations=Не удаётся обнаружить вибрации

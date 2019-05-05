@@ -491,7 +491,7 @@ tooltip.recipeType=Oppskrift type
 tooltip.hold=Hold
 tooltip.forDesc=for en beskrivelse
 tooltip.forDetails=for detaljer
-tooltip.fireMode=Avfyringsmodus
+mekanism.tooltip.fireMode=Avfyringsmodus: %s
 tooltip.capacity=Kapasitet
 tooltip.pumpRate=Pumpe Sats
 tooltip.items=Gjenstander
@@ -524,7 +524,7 @@ tooltip.outputRate=Utgans Sats
 tooltip.insufficientFuel=Utilstrekkelig Brensel
 tooltip.readyForReaction=Klar for Reaksjon
 
-tooltip.portableTank.bucketMode=Bøttemodus
+mekanism.tooltip.portableTank.bucketMode=Bøttemodus: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=treg

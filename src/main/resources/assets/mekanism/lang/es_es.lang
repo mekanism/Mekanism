@@ -1487,7 +1487,7 @@ tooltip.forDesc=para una descripcion
 
 tooltip.forDetails=para detalles
 
-tooltip.fireMode=Modo fuego
+mekanism.tooltip.fireMode=Modo fuego: %s
 
 tooltip.capacity=Capacidad
 
@@ -1573,7 +1573,7 @@ tooltip.heatCapacity=Capacidad Calorifica
 
 
 
-tooltip.portableTank.bucketMode=Modo Cubeta
+mekanism.tooltip.portableTank.bucketMode=Modo Cubeta: %s
 
 
 
@@ -1621,7 +1621,7 @@ tooltip.flamethrower.heat=Calor
 
 tooltip.flamethrower.inferno=Infierno
 
-tooltip.flamethrower.modeBump=Lanzallamas Modo:
+mekanism.tooltip.flamethrower.modeBump=Lanzallamas Modo: %s
 
 
 

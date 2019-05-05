@@ -695,7 +695,7 @@ tooltip.recipeType=type de recette
 tooltip.hold=Tenir
 tooltip.forDesc=pour une description
 tooltip.forDetails=pour les détails
-tooltip.fireMode=Mode lancement
+mekanism.tooltip.fireMode=Mode lancement: %s
 tooltip.capacity=Capacité
 tooltip.pumpRate=Taux de pompe
 tooltip.items=Éléments
@@ -735,7 +735,7 @@ tooltip.invalid=Invalide
 tooltip.encoded=Encodé
 tooltip.ingredients=Ingrédients
 
-tooltip.portableTank.bucketMode=Mode de seau
+mekanism.tooltip.portableTank.bucketMode=Mode de seau: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=lent
@@ -756,7 +756,7 @@ tooltip.jetpack.disabled=Désactivé
 tooltip.flamethrower.combat=Combat
 tooltip.flamethrower.heat=Chaleur
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Mode Lance-flamme buté à
+mekanism.tooltip.flamethrower.modeBump=Mode Lance-flamme buté à %s
 
 tooltip.seismicReader.needsEnergy=Pas assez d'énergie pour interpréter les vibrations
 tooltip.seismicReader.noVibrations=Impossible de découvrir des vibrations
