@@ -8,12 +8,13 @@ import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.datafix.IFixableData;
 
-public class TEFixer implements IFixableData {
+public class TEFixer extends BaseMekanismFixer {
 
     private final Map<String, String> tileEntityNames = new HashMap<>();
     private final String modid;
 
-    protected TEFixer(String modid) {
+    protected TEFixer(String modid, MekFixers fixer) {
+        super(fixer);
         this.modid = modid;
     }
 
@@ -22,11 +23,6 @@ public class TEFixer implements IFixableData {
         //Fix both the old name (without "minecraft:" for multiparts), and the one with "minecraft:" for in world TEs
         tileEntityNames.put(oldName, newLocation);
         tileEntityNames.put("minecraft:" + oldName.toLowerCase(), newLocation);
-    }
-
-    @Override
-    public int getFixVersion() {
-        return MekFixers.KEYBINDINGS.getFixVersion();
     }
 
     @Override

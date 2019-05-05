@@ -16,8 +16,7 @@ public class MekanismDataFixers {
         CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
         ModFixs fixes = fixer.init(Mekanism.MODID, DATA_VERSION);
         //Fix old tile entity names
-        fixes.registerFix(FixTypes.BLOCK_ENTITY, new MekanismTEFixer());
-        fixes.registerFix(FixTypes.OPTIONS, new KeybindingFixer());
+        fixes.registerFix(FixTypes.BLOCK_ENTITY, new MekanismTEFixer(MekFixers.TILE_ENTITIES));
     }
 
     /**
@@ -25,7 +24,6 @@ public class MekanismDataFixers {
      */
     public enum MekFixers {
         TILE_ENTITIES,
-        KEYBINDINGS,
         ;
 
         /**
