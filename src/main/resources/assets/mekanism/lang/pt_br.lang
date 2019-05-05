@@ -379,9 +379,9 @@ upgrade.muffling=Silenc.
 upgrade.muffling.desc=Reduz ruídos causados por maquinários.
 
 # Key description text
-key.mode=Alternar Modo de Ferramenta
-key.armorMode=Alternar Modo de Armadura
-key.voice=Voz
+mekanism.key.mode=Alternar Modo de Ferramenta
+mekanism.key.armorMode=Alternar Modo de Armadura
+mekanism.key.voice=Voz
 
 # Entities
 entity.Robit.name=Robit

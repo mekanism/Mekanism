@@ -399,10 +399,10 @@ upgrade.anchor=アンカー
 upgrade.anchor.desc=マシンの置かれているチャンクを読み込みます。
 
 # Key description text
-key.mode=アイテムモード切り替え
-key.armorMode=アーマーモード切り替え
-key.feetMode=足装備モードの切り替え
-key.voice=周波数
+mekanism.key.mode=アイテムモード切り替え
+mekanism.key.armorMode=アーマーモード切り替え
+mekanism.key.feetMode=足装備モードの切り替え
+mekanism.key.voice=周波数
 
 # Entities
 entity.Robit.name=ロビット

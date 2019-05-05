@@ -214,8 +214,8 @@ update.toDownload=다운로드 하러가기
 update.devBuild=개발버전이 빌드되었습니다
 
 # Key description text
-key.mode=모드 스위치
-key.voice=소리
+mekanism.key.mode=모드 스위치
+mekanism.key.voice=소리
 
 # Item and block tooltip text
 tooltip.configurator.empty=비어있음

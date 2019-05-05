@@ -400,10 +400,10 @@ upgrade.anchor=Якорь
 upgrade.anchor.desc=Сохраняет чанк с машиной загруженным.
 
 # Key description text
-key.mode=Переключить режим предмета
-key.armorMode=Переключить режим брони
-key.feetMode=Переключить режим бегунков
-key.voice=Голос
+mekanism.key.mode=Переключить режим предмета
+mekanism.key.armorMode=Переключить режим брони
+mekanism.key.feetMode=Переключить режим бегунков
+mekanism.key.voice=Голос
 
 # Entities
 entity.Robit.name=Робит

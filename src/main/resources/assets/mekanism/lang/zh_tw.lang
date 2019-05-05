@@ -319,8 +319,8 @@ upgrade.filter=過濾
 upgrade.filter.desc=將重水從普通水中!n分離出來的過濾器.
 
 # Key description text
-key.mode=模式切換
-key.voice=聲音
+mekanism.key.mode=模式切換
+mekanism.key.voice=聲音
 
 # Entities
 entity.Robit.name=機器人

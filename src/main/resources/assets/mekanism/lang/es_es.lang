@@ -801,13 +801,13 @@ upgrade.anchor.desc=Mantiene el area cargada (Chunk) para el funcionamiento de l
 
 # Key description text
 
-key.mode=Cambiar modo de Objetos
+mekanism.key.mode=Cambiar modo de Objetos
 
-key.armorMode=Cambiar modo de Percheras
+mekanism.key.armorMode=Cambiar modo de Percheras
 
-key.feetMode=Cambiar modo de Zapatos
+mekanism.key.feetMode=Cambiar modo de Zapatos
 
-key.voice=Voz
+mekanism.key.voice=Voz
 
 
 

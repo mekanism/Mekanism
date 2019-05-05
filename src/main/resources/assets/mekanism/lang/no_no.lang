@@ -288,8 +288,8 @@ upgrade.filter=Filter
 upgrade.filter.desc=Et filer som separerer !ntungtvann fra vanlig vann.
 
 # Key description text
-key.mode=Endre modus
-key.voice=Stemme
+mekanism.key.mode=Endre modus
+mekanism.key.voice=Stemme
 
 # Config Gui
 mekanism.configgui.ctgy.general=Mekanism Generelle Innstillinger

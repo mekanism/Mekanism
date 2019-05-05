@@ -374,9 +374,9 @@ upgrade.muffling=Dæmpning
 upgrade.muffling.desc=Reducérer støj genereret af maskineri.
 
 # Key description text
-key.mode=Ændr Genstandsmodus
-key.armorMode=Ændr Armormodus
-key.voice=Stemme
+mekanism.key.mode=Ændr Genstandsmodus
+mekanism.key.armorMode=Ændr Armormodus
+mekanism.key.voice=Stemme
 
 # Entities
 entity.Robit.name=Robit

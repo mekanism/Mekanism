@@ -400,10 +400,10 @@ upgrade.anchor=Mocowanie
 upgrade.anchor.desc=Utrzymuje ładunek maszyny.
 
 # Key description text
-key.mode=Przełącznik trybu przedmiotu
-key.armorMode=Przełącznik trybu zbroi
-key.feetMode=Przełącznik trybu ruchu
-key.voice=Głos
+mekanism.key.mode=Przełącznik trybu przedmiotu
+mekanism.key.armorMode=Przełącznik trybu zbroi
+mekanism.key.feetMode=Przełącznik trybu ruchu
+mekanism.key.voice=Głos
 
 # Entities
 entity.Robit.name=Robit

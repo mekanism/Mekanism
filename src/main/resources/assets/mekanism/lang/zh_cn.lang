@@ -400,9 +400,9 @@ upgrade.anchor=锚
 upgrade.anchor.desc=保存机器的载入.
 
 # Key description text
-key.mode=模式切换
-key.armorMode=装甲模式切换
-key.voice=声音
+mekanism.key.mode=模式切换
+mekanism.key.armorMode=装甲模式切换
+mekanism.key.voice=声音
 
 # Entities
 entity.Robit.name=机器人

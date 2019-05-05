@@ -400,10 +400,10 @@ upgrade.anchor=Anchor
 upgrade.anchor.desc=Keeps a machine's chunk loaded.
 
 # Key description text
-key.mode=Item Mode Switch
-key.armorMode=Armor Mode Switch
-key.feetMode=Feet Mode Switch
-key.voice=Voice
+mekanism.key.mode=Item Mode Switch
+mekanism.key.armorMode=Armor Mode Switch
+mekanism.key.feetMode=Feet Mode Switch
+mekanism.key.voice=Voice
 
 # Entities
 entity.Robit.name=Robit

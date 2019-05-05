@@ -385,9 +385,9 @@ upgrade.muffling=Dämpfung
 upgrade.muffling.desc=Verringert den von Maschinen produzierten Schall.
 
 # Key description text
-key.mode=Moduswechsel
-key.armorMode=Küstungsmoduswechsel
-key.voice=Stimme
+mekanism.key.mode=Moduswechsel
+mekanism.key.armorMode=Küstungsmoduswechsel
+mekanism.key.voice=Stimme
 
 # Entities
 entity.Robit.name=Robit

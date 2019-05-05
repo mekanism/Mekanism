@@ -376,9 +376,9 @@ upgrade.muffling=Insonorisant
 upgrade.muffling.desc=Reduit le bruit généré par la machine.
 
 # Key description text
-key.mode=Bascule de mode d'éléments
-key.armorMode=Bascule de mode d'armure
-key.voice=Voix
+mekanism.key.mode=Bascule de mode d'éléments
+mekanism.key.armorMode=Bascule de mode d'armure
+mekanism.key.voice=Voix
 
 # Entities
 entity.Robit.name=Robit

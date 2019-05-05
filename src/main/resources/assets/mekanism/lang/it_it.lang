@@ -347,9 +347,9 @@ upgrade.gas=Gas
 upgrade.gas.desc=Aumenta l'efficienza dei !nmacchinari che vanno a gas.
 
 # Key description text
-key.mode=Scambia modalità oggetto
-key.armorMode=Scambia modalità armatura
-key.voice=Voce
+mekanism.key.mode=Scambia modalità oggetto
+mekanism.key.armorMode=Scambia modalità armatura
+mekanism.key.voice=Voce
 
 # Entities
 entity.Robit.name=Robit

@@ -379,9 +379,9 @@ upgrade.muffling=Dušení
 upgrade.muffling.desc=Snižuje hluk generovaný strojem.
 
 # Key description text
-key.mode=Přepínání Módů Předmětů
-key.armorMode=Přepínání Módů Brnění
-key.voice=Hlas
+mekanism.key.mode=Přepínání Módů Předmětů
+mekanism.key.armorMode=Přepínání Módů Brnění
+mekanism.key.voice=Hlas
 
 # Entities
 entity.Robit.name=Robit
