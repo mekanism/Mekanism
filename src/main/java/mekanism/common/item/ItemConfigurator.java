@@ -304,11 +304,19 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
         }
 
         public String getName() {
-            return LangUtils.localize("tooltip.configurator." + name) + " (" + transmissionType.localize() + ")";
+            String name = LangUtils.localize("tooltip.configurator." + this.name);
+            if (this.transmissionType != null){
+                name += " (" + transmissionType.localize() + ")";
+            }
+            return name;
         }
 
         public ITextComponent getNameComponent() {
-            return new TextComponentGroup().translation("tooltip.configurator." + name).string(" (").translation(transmissionType.getTranslationKey()).string(")");
+            TextComponentGroup translation = new TextComponentGroup().translation("tooltip.configurator." + name);
+            if (this.transmissionType != null) {
+                translation.string(" (").translation(transmissionType.getTranslationKey()).string(")");
+            }
+            return translation;
         }
 
         public EnumColor getColor() {
