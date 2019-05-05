@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
+import java.util.Objects;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -44,11 +46,12 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         ItemStack itemStack = player.inventory.getCurrentItem();
         RayTraceResult pos = player.rayTrace(8.0D, 1.0F);
 
-        if (pos != null && !itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator
-              && ((ItemConfigurator) itemStack.getItem()).getState(itemStack).isConfigurating()) {
+        Item item = itemStack.getItem();
+        if (pos != null && !itemStack.isEmpty() && item instanceof ItemConfigurator
+              && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
             BlockPos bp = pos.getBlockPos();
 
-            TransmissionType type = ((ItemConfigurator) itemStack.getItem()).getState(itemStack).getTransmission();
+            TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
 
             if (configurable.getConfig().supports(type)) {
                 if (bp.equals(configurable.getPos())) {

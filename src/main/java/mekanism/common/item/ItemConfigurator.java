@@ -6,8 +6,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -26,6 +30,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.FieldsAreNonnullByDefault;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -91,29 +96,30 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
             if (getState(stack).isConfigurating()) //Configurate
             {
+                TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(), "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig()
-                      .supports(getState(stack).getTransmission())) {
+                      .supports(transmissionType)) {
                     ISideConfiguration config = (ISideConfiguration) tile;
                     SideData initial = config.getConfig()
-                          .getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+                          .getOutput(transmissionType, side, config.getOrientation());
 
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
                             player.sendMessage(new TextComponentString(
                                   EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
-                                        getState(stack).getTransmission()) + ": " + initial.color + initial.localize()
+                                        transmissionType) + ": " + initial.color + initial.localize()
                                         + " (" + initial.color.getColoredName() + ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-                                    MekanismUtils.incrementOutput(config, getState(stack).getTransmission(),
+                                    MekanismUtils.incrementOutput(config, transmissionType,
                                           MekanismUtils.getBaseOrientation(side, config.getOrientation()));
                                     SideData data = config.getConfig()
-                                          .getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+                                          .getOutput(transmissionType, side, config.getOrientation());
                                     player.sendMessage(new TextComponentString(
                                           EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
-                                                + getToggleModeText(getState(stack).getTransmission()) + ": "
+                                                + getToggleModeText(transmissionType) + ": "
                                                 + data.color + data.localize() + " (" + data.color.getColoredName()
                                                 + ")"));
 
@@ -281,6 +287,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
         }
     }
 
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    @FieldsAreNonnullByDefault
     public enum ConfiguratorMode {
         CONFIGURATE_ITEMS("configurate", TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
         CONFIGURATE_FLUIDS("configurate", TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
@@ -292,11 +301,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
         WRENCH("wrench", null, EnumColor.PINK, false);
 
         private String name;
+        @Nullable
         private final TransmissionType transmissionType;
         private EnumColor color;
         private boolean configurating;
 
-        ConfiguratorMode(String s, TransmissionType s1, EnumColor c, boolean b) {
+        ConfiguratorMode(String s, @Nullable TransmissionType s1, EnumColor c, boolean b) {
             name = s;
             transmissionType = s1;
             color = c;
@@ -327,6 +337,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             return configurating;
         }
 
+        @Nullable
         public TransmissionType getTransmission() {
             switch (this) {
                 case CONFIGURATE_ITEMS:
