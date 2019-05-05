@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
+import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.datafix.IFixableData;
 
@@ -25,7 +26,7 @@ public class TEFixer implements IFixableData {
 
     @Override
     public int getFixVersion() {
-        return 1;
+        return MekFixers.KEYBINDINGS.getFixVersion();
     }
 
     @Override

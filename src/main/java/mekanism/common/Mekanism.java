@@ -44,6 +44,7 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.fixers.MekanismDataFixers;
 import mekanism.common.fixers.MekanismTEFixer;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -278,7 +279,6 @@ public class Mekanism {
           Mekanism.LOG_TAG);
     public static KeySync keyMap = new KeySync();
     public static Set<Coord4D> activeVibrators = new HashSet<>();
-    public static final int DATA_VERSION = 1;
 
     static {
         MekanismFluids.register();
@@ -846,10 +846,7 @@ public class Mekanism {
         //Register the TESRs
         proxy.registerTESRs();
 
-        CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
-        ModFixs fixes = fixer.init(MODID, DATA_VERSION);
-        //Fix old tile entity names
-        fixes.registerFix(FixTypes.BLOCK_ENTITY, new MekanismTEFixer());
+        MekanismDataFixers.register();
     }
 
     @EventHandler
