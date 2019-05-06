@@ -42,7 +42,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             TileEntity acceptor = coord.getTileEntity(getWorld());
 
-            if (sides == null || sides.isEmpty()) {
+            if (acceptor == null || sides == null || sides.isEmpty()) {
                 continue;
             }
 
