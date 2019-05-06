@@ -125,7 +125,7 @@ public class ItemNetworkReader extends ItemEnergized {
                                         iterSide.getOpposite());
 
                             if (transmitter.getTransmitterNetwork().possibleAcceptors
-                                  .containsKey(coord.offset(iterSide.getOpposite())) && !iteratedNetworks
+                                  .contains(coord.offset(iterSide.getOpposite())) && !iteratedNetworks
                                   .contains(transmitter.getTransmitterNetwork())) {
                                 player.sendMessage(new TextComponentString(
                                       EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" + transmitter

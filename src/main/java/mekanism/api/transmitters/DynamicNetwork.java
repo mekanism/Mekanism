@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map.Entry;
@@ -31,7 +32,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = Sets.newLinkedHashSet();
     public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = Sets.newLinkedHashSet();
 
-    public HashMap<Coord4D, ACCEPTOR> possibleAcceptors = new HashMap<>();
+    public Set<Coord4D> possibleAcceptors = new HashSet<>();
     public HashMap<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
     public HashMap<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = Maps
           .newHashMap();
@@ -96,7 +97,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         EnumSet<EnumFacing> directions = acceptorDirections.get(acceptorCoord);
 
         if (acceptor != null) {
-            possibleAcceptors.put(acceptorCoord, acceptor);
+            possibleAcceptors.add(acceptorCoord);
 
             if (directions != null) {
                 directions.add(side.getOpposite());
@@ -178,7 +179,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
         transmittersToAdd.addAll(net.transmittersToAdd);
 
-        possibleAcceptors.putAll(net.possibleAcceptors);
+        possibleAcceptors.addAll(net.possibleAcceptors);
 
         for (Entry<Coord4D, EnumSet<EnumFacing>> entry : net.acceptorDirections.entrySet()) {
             Coord4D coord = entry.getKey();

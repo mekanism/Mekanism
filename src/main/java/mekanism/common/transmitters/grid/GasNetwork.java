@@ -132,7 +132,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         Set<GasHandlerTarget> availableAcceptors = new HashSet<>();
         int totalHandlers = 0;
         Gas type = stack.getGas();
-        for (Coord4D coord : possibleAcceptors.keySet()) {
+        for (Coord4D coord : possibleAcceptors) {
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
                 continue;
