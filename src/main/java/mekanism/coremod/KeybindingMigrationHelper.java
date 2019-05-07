@@ -15,8 +15,12 @@ import org.objectweb.asm.commons.Method;
 
 /**
  * Allows us to run a mini datafixer on the GameSettings to migrate the old keybind options
- * (before we correctly used the translation key)
+ * (before we correctly used the translation key).
+ *
+ * Hooks into {@link net.minecraft.client.settings.GameSettings#dataFix(net.minecraft.nbt.NBTTagCompound)} and always
+ * calls our static method datafixer {@link mekanism.common.fixers.KeybindingFixer#runFix(net.minecraft.nbt.NBTTagCompound)}
  */
+@SuppressWarnings("unused")//coremod land
 public class KeybindingMigrationHelper implements IClassTransformer {
     private static final Logger LOGGER = LogManager.getLogger("Mekanism KeybindingMigrationHelper");
 
