@@ -74,14 +74,9 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
             TileEntity tile = coord.getTileEntity(pointer.getWorld());
 
             if (tile instanceof TileEntityInductionCell) {
-                TileEntityInductionCell cell = (TileEntityInductionCell) tile;
-                structure.cells.add(coord);
-                structure.storageCap += cell.tier.getMaxEnergy();
-
-                structure.cachedTotal += cell.getEnergy();
+                structure.addCell(coord, (TileEntityInductionCell) tile);
             } else if (tile instanceof TileEntityInductionProvider) {
-                structure.providers.add(coord);
-                structure.transferCap += ((TileEntityInductionProvider) tile).tier.getOutput();
+                structure.addProvider(coord, (TileEntityInductionProvider) tile);
             }
         }
 

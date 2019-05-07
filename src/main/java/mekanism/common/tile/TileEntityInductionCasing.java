@@ -34,8 +34,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput",
           "getTransferCap"};
-    public int clientCells;
-    public int clientProviders;
 
     public TileEntityInductionCasing() {
         this("InductionCasing");
@@ -52,11 +50,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
         if (!world.isRemote) {
             if (structure != null && isRendering) {
-                structure.lastInput = structure.transferCap - structure.remainingInput;
-                structure.remainingInput = structure.transferCap;
+                structure.lastInput = structure.getTransferCap() - structure.remainingInput;
+                structure.remainingInput = structure.getTransferCap();
 
-                structure.lastOutput = structure.transferCap - structure.remainingOutput;
-                structure.remainingOutput = structure.transferCap;
+                structure.lastOutput = structure.getTransferCap() - structure.remainingOutput;
+                structure.remainingOutput = structure.getTransferCap();
 
                 ChargeUtils.charge(0, this);
                 ChargeUtils.discharge(1, this);
@@ -83,18 +81,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         super.getNetworkedData(data);
 
         if (structure != null) {
-            data.add(structure.getEnergy(world));
-            data.add(structure.storageCap);
-            data.add(structure.transferCap);
-            data.add(structure.lastInput);
-            data.add(structure.lastOutput);
-
-            data.add(structure.volWidth);
-            data.add(structure.volHeight);
-            data.add(structure.volLength);
-
-            data.add(structure.cells.size());
-            data.add(structure.providers.size());
+            structure.addStructureData(data);
         }
 
         return data;
@@ -106,18 +93,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (clientHasStructure) {
-                structure.clientEnergy = dataStream.readDouble();
-                structure.storageCap = dataStream.readDouble();
-                structure.transferCap = dataStream.readDouble();
-                structure.lastInput = dataStream.readDouble();
-                structure.lastOutput = dataStream.readDouble();
-
-                structure.volWidth = dataStream.readInt();
-                structure.volHeight = dataStream.readInt();
-                structure.volLength = dataStream.readInt();
-
-                clientCells = dataStream.readInt();
-                clientProviders = dataStream.readInt();
+                structure.readStructureData(dataStream);
             }
         }
     }
@@ -155,7 +131,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public double getEnergy() {
         if (!world.isRemote) {
-            return structure != null ? structure.getEnergy(world) : 0;
+            return structure != null ? structure.getEnergy() : 0;
         } else {
             return structure != null ? structure.clientEnergy : 0;
         }
@@ -186,7 +162,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Override
     public double getMaxEnergy() {
-        return structure != null ? structure.storageCap : 0;
+        return structure != null ? structure.getStorageCap() : 0;
     }
 
     @Override
@@ -210,7 +186,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             case 3:
                 return new Object[]{structure.lastOutput};
             case 4:
-                return new Object[]{structure.transferCap};
+                return new Object[]{structure.getTransferCap()};
             default:
                 throw new NoSuchMethodException();
         }

@@ -1,10 +1,13 @@
 package mekanism.common.content.matrix;
 
+import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,9 +18,12 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 
     public NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
-    public Set<Coord4D> cells = new HashSet<>();
+    public int clientCells;
+    public int clientProviders;
+    public double clientEnergy;
 
-    public Set<Coord4D> providers = new HashSet<>();
+    private Set<Coord4D> cells = new HashSet<>();
+    private Set<Coord4D> providers = new HashSet<>();
 
     public double remainingInput;
     public double lastInput;
@@ -25,20 +31,70 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     public double remainingOutput;
     public double lastOutput;
 
-    public double clientEnergy;
-    public double storageCap;
-    public double transferCap;
+    private double storageCap;
+    private double transferCap;
 
     //TODO: Do something better for purposes of double precision such as BigInt
-    public double cachedTotal = 0;
+    private double cachedTotal = 0;
 
     @Override
     public NonNullList<ItemStack> getInventory() {
         return inventory;
     }
 
-    public double getEnergy(World world) {
+    public void addCell(Coord4D coord, TileEntityInductionCell cell) {
+        //As we already have the two different variables just pass them instead of accessing world to get tile again
+        cells.add(coord);
+        storageCap += cell.tier.getMaxEnergy();
+        cachedTotal += cell.getEnergy();
+    }
+
+    public void addProvider(Coord4D coord, TileEntityInductionProvider provider) {
+        providers.add(coord);
+        transferCap += provider.tier.getOutput();
+    }
+
+    public double getStorageCap() {
+        return storageCap;
+    }
+
+    public double getTransferCap() {
+        return transferCap;
+    }
+
+    public double getEnergy() {
         return cachedTotal;
+    }
+
+    public TileNetworkList addStructureData(TileNetworkList data) {
+        data.add(cachedTotal);
+        data.add(storageCap);
+        data.add(transferCap);
+        data.add(lastInput);
+        data.add(lastOutput);
+
+        data.add(volWidth);
+        data.add(volHeight);
+        data.add(volLength);
+
+        data.add(cells.size());
+        data.add(providers.size());
+        return data;
+    }
+
+    public void readStructureData(ByteBuf dataStream) {
+        clientEnergy = dataStream.readDouble();
+        storageCap = dataStream.readDouble();
+        transferCap = dataStream.readDouble();
+        lastInput = dataStream.readDouble();
+        lastOutput = dataStream.readDouble();
+
+        volWidth = dataStream.readInt();
+        volHeight = dataStream.readInt();
+        volLength = dataStream.readInt();
+
+        clientCells = dataStream.readInt();
+        clientProviders = dataStream.readInt();
     }
 
     public void setEnergy(World world, double energy) {
@@ -54,31 +110,6 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             //we are adding energy
             addEnergy(world, difference);
         }
-
-        /*double energyToSet = energy;
-        Set<Coord4D> invalidCells = new HashSet<>();
-        for (Coord4D coord : cells) {
-            TileEntity tile = coord.getTileEntity(world);
-
-            if (tile instanceof TileEntityInductionCell) {
-                TileEntityInductionCell cell = (TileEntityInductionCell) tile;
-                if (energyToSet > 0) {
-                    double toAdd = Math.min(cell.getMaxEnergy(), energyToSet);
-                    cell.setEnergy(toAdd);
-                    energyToSet -= toAdd;
-                    //This cells data changed, so mark it for saving
-                    MekanismUtils.saveChunk(cell);
-                } else if (cell.getEnergy() > 0) {
-                    cell.setEnergy(0);
-                    //This cells data changed, so mark it for saving
-                    MekanismUtils.saveChunk(cell);
-                }
-            } else {
-                invalidCells.add(coord);
-            }
-        }
-        cells.removeAll(invalidCells);
-        cachedTotal = energy;*/
     }
 
     public double addEnergy(World world, double energy) {
