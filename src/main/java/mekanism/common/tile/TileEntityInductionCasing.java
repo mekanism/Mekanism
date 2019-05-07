@@ -17,7 +17,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -166,8 +165,23 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     public void setEnergy(double energy) {
         if (structure != null) {
             structure.setEnergy(world, Math.max(Math.min(energy, getMaxEnergy()), 0));
-            MekanismUtils.saveChunk(this);
         }
+    }
+
+    public double addEnergy(double energy) {
+        double actual = 0;
+        if (structure != null) {
+            actual = structure.addEnergy(world, energy);
+        }
+        return actual;
+    }
+
+    public double removeEnergy(double energy) {
+        double actual = 0;
+        if (structure != null) {
+            actual = structure.removeEnergy(world, energy);
+        }
+        return actual;
     }
 
     @Override

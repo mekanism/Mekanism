@@ -214,7 +214,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
                         maxReceive * MekanismConfig.current().general.FROM_RF.val());
 
             if (!simulate) {
-                setEnergy(getEnergy() + toAdd);
+                //Amount actually added
+                toAdd = addEnergy(toAdd);
                 structure.remainingInput -= toAdd;
             }
 
@@ -232,7 +233,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
                   Math.min(getMaxOutput(), maxExtract * MekanismConfig.current().general.FROM_RF.val()));
 
             if (!simulate) {
-                setEnergy(getEnergy() - toSend);
+                //Amount actually removed
+                toSend = removeEnergy(toSend);
                 structure.remainingOutput -= toSend;
             }
 
@@ -277,7 +279,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public int addEnergy(int amount) {
         double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()),
               amount * MekanismConfig.current().general.FROM_IC2.val());
-        setEnergy(getEnergy() + toUse);
+        //Amount actually added
+        toUse = addEnergy(toUse);
         structure.remainingInput -= toUse;
         return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
@@ -370,21 +373,30 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public void drawEnergy(double amount) {
         if (structure != null) {
             double toDraw = Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(), getMaxOutput());
-            setEnergy(Math.max(getEnergy() - toDraw, 0));
+            double curEnergy = getEnergy();
+            if (curEnergy < toDraw) {
+                toDraw = curEnergy;
+            }
+            //Amount actually drawn
+            toDraw = removeEnergy(toDraw);
             structure.remainingOutput -= toDraw;
         }
     }
 
     @Override
     public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
+        if (side != null && !sideIsConsumer(side)) {
+            return 0;
+        }
         double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()), amount);
 
-        if (toUse < 0.0001 || (side != null && !sideIsConsumer(side))) {
+        if (toUse < 0.0001) {
             return 0;
         }
 
         if (!simulate) {
-            setEnergy(getEnergy() + toUse);
+            //Amount actually used
+            toUse = addEnergy(toUse);
             structure.remainingInput -= toUse;
         }
 
@@ -393,14 +405,19 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
+        if (side != null && !sideIsOutput(side)) {
+            return 0;
+        }
         double toGive = Math.min(getEnergy(), amount);
+        //TODO: Does this need to check the max output rate
 
-        if (toGive < 0.0001 || (side != null && !sideIsOutput(side))) {
+        if (toGive < 0.0001) {
             return 0;
         }
 
         if (!simulate) {
-            setEnergy(getEnergy() - toGive);
+            //Amount actually given
+            toGive = removeEnergy(toGive);
         }
 
         return toGive;
