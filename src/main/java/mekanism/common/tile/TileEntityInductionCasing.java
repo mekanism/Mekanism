@@ -137,19 +137,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     }
 
     public double addEnergy(double energy) {
-        double actual = 0;
-        if (structure != null) {
-            actual = structure.addEnergy(world, energy);
-        }
-        return actual;
+        return structure != null ? structure.addEnergy(world, energy) : 0;
     }
 
     public double removeEnergy(double energy) {
-        double actual = 0;
-        if (structure != null) {
-            actual = structure.removeEnergy(world, energy);
-        }
-        return actual;
+        return structure != null ? structure.removeEnergy(world, energy) : 0;
     }
 
     @Override
