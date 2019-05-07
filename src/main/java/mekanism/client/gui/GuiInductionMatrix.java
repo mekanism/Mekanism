@@ -26,9 +26,9 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
               LangUtils.localize("gui.storing") + ": " + MekanismUtils
                     .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput)
+              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput())
                     + "/t",
-              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput)
+              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput())
                     + "/t"), this, resource));
     }
 
@@ -40,10 +40,10 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x00CD00);
         fontRenderer
-              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastInput) + "/t", 53, 35, 0x00CD00);
+              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t", 53, 35, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
         fontRenderer
-              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t", 53, 53, 0x00CD00);
+              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t", 53, 53, 0x00CD00);
         int xAxis = (mouseX - (width - xSize) / 2);
         int yAxis = (mouseY - (height - ySize) / 2);
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {

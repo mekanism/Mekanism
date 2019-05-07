@@ -50,11 +50,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
         if (!world.isRemote) {
             if (structure != null && isRendering) {
-                structure.lastInput = structure.getTransferCap() - structure.remainingInput;
-                structure.remainingInput = structure.getTransferCap();
-
-                structure.lastOutput = structure.getTransferCap() - structure.remainingOutput;
-                structure.remainingOutput = structure.getTransferCap();
+                structure.resetRemaining();
 
                 ChargeUtils.charge(0, this);
                 ChargeUtils.discharge(1, this);
@@ -130,11 +126,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Override
     public double getEnergy() {
-        if (!world.isRemote) {
-            return structure != null ? structure.getEnergy() : 0;
-        } else {
-            return structure != null ? structure.clientEnergy : 0;
-        }
+        return structure != null ? structure.getEnergy() : 0;
     }
 
     @Override
@@ -182,9 +174,9 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             case 1:
                 return new Object[]{getMaxEnergy()};
             case 2:
-                return new Object[]{structure.lastInput};
+                return new Object[]{structure.getLastInput()};
             case 3:
-                return new Object[]{structure.lastOutput};
+                return new Object[]{structure.getLastOutput()};
             case 4:
                 return new Object[]{structure.getTransferCap()};
             default:

@@ -79,9 +79,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
         if (!world.isRemote) {
             if (structure != null && mode) {
-                double prev = getEnergy();
                 CableUtils.emit(this);
-                structure.remainingOutput -= (prev - getEnergy());
             }
         }
     }
@@ -131,11 +129,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public double getMaxOutput() {
-        return structure != null ? structure.remainingOutput : 0;
+        return structure != null ? structure.getRemainingOutput() : 0;
     }
 
     private double getMaxInput() {
-        return structure != null ? structure.remainingInput : 0;
+        return structure != null ? structure.getRemainingInput() : 0;
     }
 
     @Override
@@ -216,7 +214,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             if (!simulate) {
                 //Amount actually added
                 toAdd = addEnergy(toAdd);
-                structure.remainingInput -= toAdd;
             }
 
             return MekanismUtils.clampToInt(toAdd * MekanismConfig.current().general.TO_RF.val());
@@ -235,7 +232,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             if (!simulate) {
                 //Amount actually removed
                 toSend = removeEnergy(toSend);
-                structure.remainingOutput -= toSend;
             }
 
             return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
@@ -281,7 +277,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
               amount * MekanismConfig.current().general.FROM_IC2.val());
         //Amount actually added
         toUse = addEnergy(toUse);
-        structure.remainingInput -= toUse;
         return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
 
@@ -378,8 +373,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
                 toDraw = curEnergy;
             }
             //Amount actually drawn
-            toDraw = removeEnergy(toDraw);
-            structure.remainingOutput -= toDraw;
+            removeEnergy(toDraw);
         }
     }
 
@@ -397,7 +391,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         if (!simulate) {
             //Amount actually used
             toUse = addEnergy(toUse);
-            structure.remainingInput -= toUse;
         }
 
         return toUse;

@@ -63,7 +63,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
         if (!world.isRemote) {
             if (structure != null) {
-                double prev = getEnergy();
                 CableUtils.emit(this);
             }
         }
