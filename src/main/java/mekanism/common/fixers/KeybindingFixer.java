@@ -1,41 +1,43 @@
 package mekanism.common.fixers;
 
 import javax.annotation.Nonnull;
-import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import mekanism.common.util.LangUtils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.datafix.IFixableData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Attempt top remap old localised names to lang key based names
+ * Attempt to remap old localised names to lang key based names
  */
-public class KeybindingFixer implements IFixableData {
+@SuppressWarnings("unused")//from Coremod via reflection
+public class KeybindingFixer {
 
-    @Override
-    public int getFixVersion() {
-        return MekFixers.KEYBINDINGS.getFixVersion();
-    }
+    private static final Logger LOGGER = LogManager.getLogger("Mekanism KeybindingFixer");
 
-    @Nonnull
-    @Override
-    public NBTTagCompound fixTagCompound(@Nonnull NBTTagCompound compound) {
+    public static void runFix(NBTTagCompound compound) {
         remapKey(compound, "key_Mekanism Item Mode Switch", "mekanism.key.mode");
         remapKey(compound, "key_Mekanism Armor Mode Switch", "mekanism.key.armorMode");
         remapKey(compound, "key_Mekanism Feet Mode Switch", "mekanism.key.feetMode");
         remapKey(compound, "key_Mekanism Voice", "mekanism.key.voice");
-        return compound;
     }
 
-    private void remapKey(@Nonnull NBTTagCompound compound, String oldKey, String langKey) {
+    private static void remapKey(@Nonnull NBTTagCompound compound, String oldKey, String langKey) {
+        String newKey = "key_" + langKey;
         if (compound.hasKey(oldKey)) {
-            compound.setInteger(langKey, compound.getInteger(oldKey));
+            LOGGER.info("Remapping {} to {}", oldKey, langKey);
+            compound.setString(newKey, compound.getString(oldKey));
             compound.removeTag(oldKey);
         }
         //Not sure if translations loaded yet, but try anyway
-        String translated = "key_Mekanism "+LangUtils.localize(langKey);
-        if (compound.hasKey(translated)) {
-            compound.setInteger(langKey, compound.getInteger(translated));
-            compound.removeTag(translated);
+        try {
+            String translated = "key_Mekanism " + LangUtils.localize(langKey);
+            if (compound.hasKey(translated)) {
+                LOGGER.info("Remapping {} to {}", translated, langKey);
+                compound.setString(newKey, compound.getString(translated));
+                compound.removeTag(translated);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Remap error", e);
         }
     }
 }
