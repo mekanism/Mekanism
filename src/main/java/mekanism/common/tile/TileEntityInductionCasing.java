@@ -50,7 +50,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
         if (!world.isRemote) {
             if (structure != null && isRendering) {
-                structure.resetRemaining(world);
+                structure.tick(world);
 
                 ChargeUtils.charge(0, this);
                 ChargeUtils.discharge(1, this);

@@ -19,6 +19,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     private Set<Coord4D> providers = new HashSet<>();
+    //TODO: Ensure cells (and providers) are properly removed from when destroyed
     private Set<Coord4D> cells = new HashSet<>();
     private double remainingOutput;
     private double remainingInput;
@@ -54,13 +55,21 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     private double getEnergyPostQueue() {
+        //TODO: Decide if this comment should be here or in tick or both
+        //The reason we do remainingOutput - remainingInput when it logically appears that
+        // it should be the other way around, is because in reality our value is
+        // (transferCap - remainingInput) - (transferCap - remainingOutput)
+        // which simplifies to remainingOutput - remainingInput
+        // This is because remainingInput and remainingOutput go down if we have
+        // the corresponding one queued.
         //TODO: Does this need to have a Math.max(0, ); So that if a cell is removed midway through it can never be negative
-        return cachedTotal - remainingOutput + remainingInput;
+        return cachedTotal - remainingInput + remainingOutput;
     }
 
-    //TODO: Rename to reset and send or something like that
-    public void resetRemaining(World world) {
-        double lastChange = remainingInput - remainingOutput;
+    public void tick(World world) {
+        double lastChange = remainingOutput - remainingInput;
+        //TODO: When cells are removed make sure it gets updated properly so that we are not trying to
+        // remove more energy than we have, or add more energy than we have space for
         if (lastChange < 0) {
             //We are removing energy
             removeEnergy(world, -lastChange);
@@ -68,6 +77,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             //we are adding energy
             addEnergy(world, lastChange);
         }
+        cachedTotal += lastChange;
 
         lastInput = transferCap - remainingInput;
         remainingInput = transferCap;
@@ -79,11 +89,14 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         if (energy > remainingInput) {
             energy = remainingInput;
         }
-
+        //Check to see if we are trying to add more energy than we have room for,
+        // as we want to be as accurate as possible with the values we return
+        // It is possible that the energy we have space for is a lot less than the amount we
+        // can input at once such as if the matrix is almost full.
         double availableEnergy = storageCap - getEnergyPostQueue();
         if (energy > availableEnergy) {
+            //Only allow addition of
             energy = availableEnergy;
-            //TODO: write description of why checking just the > remainingInput is not enough
         }
         //Lower amount remaining input rate by the amount we accepted
         remainingInput -= energy;
@@ -95,12 +108,14 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             //If it is more than we can output lower it further
             energy = remainingOutput;
         }
-
+        //Check to see if we are trying to remove more energy than we have to remove,
+        // as we want to be as accurate as possible with the values we return
+        // It is possible that the energy we have stored is a lot less than the amount we
+        // can output at once such as if the matrix is almost empty.
         double availableEnergy = getEnergyPostQueue();
         if (energy > availableEnergy) {
             //If it is more than we have lower it further
             energy = availableEnergy;
-            //TODO: write description of why checking just the > remainingOutput is not enough
         }
         //Lower amount remaining output rate by the amount we accepted
         remainingOutput -= energy;
@@ -121,16 +136,9 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         }
     }
 
-    private double addEnergy(World world, double energy) {
-        if (energy > storageCap - cachedTotal) {
-            energy = storageCap - cachedTotal;
-            //TODO: Is this needed anymore? Maybe because of the if cells change
-        }
-        double energyToAdd = energy;
-        Set<Coord4D> invalidCells = new HashSet<>();
+    private void addEnergy(World world, double energy) {
         for (Coord4D coord : cells) {
             TileEntity tile = coord.getTileEntity(world);
-
             if (tile instanceof TileEntityInductionCell) {
                 TileEntityInductionCell cell = (TileEntityInductionCell) tile;
                 double cellEnergy = cell.getEnergy();
@@ -141,71 +149,48 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
                     continue;
                 }
                 double cellSpace = cellMax - cellEnergy;
-                if (cellSpace >= energyToAdd) {
+                if (cellSpace >= energy) {
                     //All fits
-                    cell.setEnergy(cellEnergy + energyToAdd);
-                    energyToAdd = 0;
+                    cell.setEnergy(cellEnergy + energy);
                     //This cells data changed, so mark it for saving
                     MekanismUtils.saveChunk(cell);
                     break;
                 } else {
                     //We have left over so
                     cell.setEnergy(cellMax);
-                    energyToAdd -= cellSpace;
+                    energy -= cellSpace;
                     //This cells data changed, so mark it for saving
                     MekanismUtils.saveChunk(cell);
                 }
-            } else {
-                invalidCells.add(coord);
             }
         }
-        cells.removeAll(invalidCells);
-        //Amount actually added
-        energy = energy - energyToAdd;
-        cachedTotal += energy;
-        return energy;
     }
 
-    private double removeEnergy(World world, double energy) {
-        if (energy > cachedTotal) {
-            energy = cachedTotal;
-            //TODO: Is this needed anymore? Maybe because of the if cells change
-        }
-        double energyToRemove = energy;
-        Set<Coord4D> invalidCells = new HashSet<>();
+    private void removeEnergy(World world, double energy) {
         for (Coord4D coord : cells) {
             TileEntity tile = coord.getTileEntity(world);
-
             if (tile instanceof TileEntityInductionCell) {
                 TileEntityInductionCell cell = (TileEntityInductionCell) tile;
                 double cellEnergy = cell.getEnergy();
                 if (cellEnergy == 0) {
-                    //Is empty
+                    //It is already empty
                     continue;
                 }
-                if (cellEnergy >= energyToRemove) {
+                if (cellEnergy >= energy) {
                     //Can supply it all
-                    cell.setEnergy(cellEnergy - energyToRemove);
-                    energyToRemove = 0;
+                    cell.setEnergy(cellEnergy - energy);
                     //This cells data changed, so mark it for saving
                     MekanismUtils.saveChunk(cell);
                     break;
                 } else {
                     //We need to keep removing from other ones
                     cell.setEnergy(0);
-                    energyToRemove -= cellEnergy;
+                    energy -= cellEnergy;
                     //This cells data changed, so mark it for saving
                     MekanismUtils.saveChunk(cell);
                 }
-            } else {
-                invalidCells.add(coord);
             }
         }
-        cells.removeAll(invalidCells);
-        //Amount actually removed
-        energy = energy - energyToRemove;
-        cachedTotal -= energy;
-        return energy;
     }
 
     public TileNetworkList addStructureData(TileNetworkList data) {
