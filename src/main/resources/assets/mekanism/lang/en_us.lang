@@ -582,6 +582,7 @@ gui.maxWaterOutput=Max Water Output
 gui.stockControl=Stock Control
 gui.allowDefault=Allow Default
 gui.sizeMode=Size Mode
+mekanism.gui.sizeModeConflict=has no effect currently, because single item mode is turned on.
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -674,7 +675,7 @@ mekanism.gui.logisticalSorter.autoEject.tooltip=Ejects items automatically to co
 mekanism.gui.logisticalSorter.roundRobin=RR
 mekanism.gui.logisticalSorter.roundRobin.tooltip=Cycles between all connected inventories when sending items.
 mekanism.gui.logisticalSorter.singleItem=Single
-mekanism.gui.logisticalSorter.singleItem.tooltip=Sends a single item instead of a whole stack each time.
+mekanism.gui.logisticalSorter.singleItem.tooltip=Sends a single item instead of a whole stack each time (overrides min and max set in ItemStack filters).
 
 gui.teleporter.notReady=Not ready
 gui.teleporter.ready=Ready

@@ -128,7 +128,11 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         fontRenderer.drawString(LangUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
+        String sizeModeString = LangUtils.localize("gui." + (filter.sizeMode ? "on" : "off"));
+        if (tileEntity.singleItem && filter.sizeMode)
+            sizeModeString = EnumColor.RED + sizeModeString + "!";
+
+        fontRenderer.drawString(sizeModeString, 141, 46, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui." + (filter.allowDefault ? "on" : "off")), 24, 66, 0x404040);
         if (!filter.itemType.isEmpty()) {
             renderScaledText(filter.itemType.getDisplayName(), 35, 41, 0x00CD00, 89);
@@ -151,7 +155,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         int xAxis = (mouseX - (width - xSize) / 2);
         int yAxis = (mouseY - (height - ySize) / 2);
         if (xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55) {
-            drawHoveringText(LangUtils.localize("gui.sizeMode"), xAxis, yAxis);
+            String sizeModeTooltip = LangUtils.localize("gui.sizeMode");
+            if (tileEntity.singleItem && filter.sizeMode)
+                sizeModeTooltip += " - " + LangUtils.localize("mekanism.gui.sizeModeConflict");
+            drawHoveringText(MekanismUtils.splitTooltip(sizeModeTooltip, ItemStack.EMPTY), xAxis, yAxis);
         }
         if (xAxis >= 11 && xAxis <= 22 && yAxis >= 64 && yAxis <= 75) {
             drawHoveringText(LangUtils.localize("gui.allowDefault"), xAxis, yAxis);

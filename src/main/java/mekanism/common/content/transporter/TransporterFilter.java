@@ -60,7 +60,9 @@ public abstract class TransporterFilter implements IFilter {
         return filter;
     }
 
-    public abstract boolean canFilter(ItemStack itemStack, boolean strict);
+    public boolean canFilter(ItemStack itemStack, boolean strict) {
+        return !itemStack.isEmpty();
+    }
 
     public abstract Finder getFinder();
 

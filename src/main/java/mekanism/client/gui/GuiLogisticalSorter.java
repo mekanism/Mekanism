@@ -115,29 +115,11 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         // Update displayed stacks
         if (stackSwitch == 0) {
             for (final Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1
-                          || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex = 0;
-                    } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex++;
-                    }
-
-                    entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
-                }
+                setNextRenderStack(entry.getValue());
             }
 
             for (final Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1
-                          || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex = 0;
-                    } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex++;
-                    }
-
-                    entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
-                }
+                setNextRenderStack(entry.getValue());
             }
 
             stackSwitch = 20;
@@ -172,6 +154,19 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             } else if (filter instanceof TModIDFilter && !modIDFilters.contains(filter)) {
                 modIDStacks.remove(filter);
             }
+        }
+    }
+
+    private void setNextRenderStack(StackData value) {
+        if (value.iterStacks != null && value.iterStacks.size() > 0) {
+            if (value.stackIndex == -1
+                  || value.stackIndex == value.iterStacks.size() - 1) {
+                value.stackIndex = 0;
+            } else if (value.stackIndex < value.iterStacks.size() - 1) {
+                value.stackIndex++;
+            }
+
+            value.renderStack = value.iterStacks.get(value.stackIndex);
         }
     }
 

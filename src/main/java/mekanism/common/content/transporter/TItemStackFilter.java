@@ -20,18 +20,10 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
-        if (itemStack.isEmpty()) {
-            return false;
-        }
-
-        if (strict && sizeMode) {
-            if (max == 0 || itemStack.getCount() < min) {
-                return false;
-            }
-        }
-
-        return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack)
-              : itemType.getItem() == itemStack.getItem());
+        return super.canFilter(itemStack, strict) &&
+                !(strict && sizeMode && (max == 0 || itemStack.getCount() < min)) &&
+                (itemType.getHasSubtypes() ?
+                        itemType.isItemEqual(itemStack) : itemType.getItem() == itemStack.getItem());
     }
 
     @Override

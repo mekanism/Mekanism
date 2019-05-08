@@ -92,18 +92,21 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
                 boolean sentItems = false;
                 int min = 0;
-                int amount = singleItem ? 1 : 64;
+
                 outer:
                 for (TransporterFilter filter : filters) {
                     for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.getSlotCount() >= 0; ) {
-                        InvStack invStack = filter.getItemAmountFromInventory(search, amount);
+                        InvStack invStack = singleItem ? filter.getItemAmountFromInventory(search, 1)
+                                : filter.getStackFromInventory(search);
 
-                        if (invStack == null || invStack.getStack().isEmpty()) {
+                        if (invStack == null) {
                             break;
                         }
 
-                        if (filter.canFilter(invStack.getStack(), true)) {
-                            if (filter instanceof TItemStackFilter) {
+                        ItemStack itemStack = invStack.getStack();
+
+                        if (filter.canFilter(itemStack, !singleItem)) {
+                            if (!singleItem && filter instanceof TItemStackFilter) {
                                 TItemStackFilter itemFilter = (TItemStackFilter) filter;
 
                                 if (itemFilter.sizeMode) {
@@ -111,7 +114,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                                 }
                             }
 
-                            TransitRequest request = TransitRequest.getFromStack(invStack.getStack());
+                            TransitRequest request = TransitRequest.getFromStack(itemStack);
                             TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
 
                             if (!response.isEmpty()) {
@@ -128,7 +131,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
                 if (!sentItems && autoEject) {
                     TransitRequest request = TransitRequest
-                          .buildInventoryMap(back, facing.getOpposite(), amount, new StrictFilterFinder());
+                          .buildInventoryMap(back, facing.getOpposite(), singleItem ? 1 : 64, new StrictFilterFinder());
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
 
                     if (!response.isEmpty()) {
