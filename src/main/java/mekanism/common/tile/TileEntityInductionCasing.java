@@ -50,7 +50,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
         if (!world.isRemote) {
             if (structure != null && isRendering) {
-                structure.resetRemaining();
+                structure.resetRemaining(world);
 
                 ChargeUtils.charge(0, this);
                 ChargeUtils.discharge(1, this);
@@ -132,16 +132,16 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public void setEnergy(double energy) {
         if (structure != null) {
-            structure.setEnergy(world, Math.max(Math.min(energy, getMaxEnergy()), 0));
+            structure.queueSetEnergy(Math.max(Math.min(energy, getMaxEnergy()), 0));
         }
     }
 
     public double addEnergy(double energy) {
-        return structure != null ? structure.addEnergy(world, energy) : 0;
+        return structure != null ? structure.queueEnergyAddition(energy) : 0;
     }
 
     public double removeEnergy(double energy) {
-        return structure != null ? structure.removeEnergy(world, energy) : 0;
+        return structure != null ? structure.queueEnergyRemoval(energy) : 0;
     }
 
     @Override

@@ -53,23 +53,78 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         transferCap += provider.tier.getOutput();
     }
 
-    public void setEnergy(World world, double energy) {
+    private double getEnergyPostQueue() {
+        //TODO: Does this need to have a Math.max(0, ); So that if a cell is removed midway through it can never be negative
+        return cachedTotal - remainingOutput + remainingInput;
+    }
+
+    //TODO: Rename to reset and send or something like that
+    public void resetRemaining(World world) {
+        double lastChange = remainingInput - remainingOutput;
+        if (lastChange < 0) {
+            //We are removing energy
+            removeEnergy(world, -lastChange);
+        } else if (lastChange > 0) {
+            //we are adding energy
+            addEnergy(world, lastChange);
+        }
+
+        lastInput = transferCap - remainingInput;
+        remainingInput = transferCap;
+        lastOutput = transferCap - remainingOutput;
+        remainingOutput = transferCap;
+    }
+
+    public double queueEnergyAddition(double energy) {
+        if (energy > remainingInput) {
+            energy = remainingInput;
+        }
+
+        double availableEnergy = storageCap - getEnergyPostQueue();
+        if (energy > availableEnergy) {
+            energy = availableEnergy;
+            //TODO: write description of why checking just the > remainingInput is not enough
+        }
+        //Lower amount remaining input rate by the amount we accepted
+        remainingInput -= energy;
+        return energy;
+    }
+
+    public double queueEnergyRemoval(double energy) {
+        if (energy > remainingOutput) {
+            //If it is more than we can output lower it further
+            energy = remainingOutput;
+        }
+
+        double availableEnergy = getEnergyPostQueue();
+        if (energy > availableEnergy) {
+            //If it is more than we have lower it further
+            energy = availableEnergy;
+            //TODO: write description of why checking just the > remainingOutput is not enough
+        }
+        //Lower amount remaining output rate by the amount we accepted
+        remainingOutput -= energy;
+        return energy;
+    }
+
+    public void queueSetEnergy(double energy) {
         if (energy > storageCap) {
             energy = storageCap;
         }
-        double difference = energy - cachedTotal;
+        double difference = energy - getEnergyPostQueue();
         if (difference < 0) {
             //We are removing energy
-            removeEnergy(world, -difference);
+            queueEnergyRemoval(-difference);
         } else if (difference > 0) {
             //we are adding energy
-            addEnergy(world, difference);
+            queueEnergyAddition(difference);
         }
     }
 
-    public double addEnergy(World world, double energy) {
+    private double addEnergy(World world, double energy) {
         if (energy > storageCap - cachedTotal) {
             energy = storageCap - cachedTotal;
+            //TODO: Is this needed anymore? Maybe because of the if cells change
         }
         double energyToAdd = energy;
         Set<Coord4D> invalidCells = new HashSet<>();
@@ -108,15 +163,13 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         //Amount actually added
         energy = energy - energyToAdd;
         cachedTotal += energy;
-
-        //Lower amount remaining input rate by the amount we accepted
-        remainingInput -= energy;
         return energy;
     }
 
-    public double removeEnergy(World world, double energy) {
+    private double removeEnergy(World world, double energy) {
         if (energy > cachedTotal) {
             energy = cachedTotal;
+            //TODO: Is this needed anymore? Maybe because of the if cells change
         }
         double energyToRemove = energy;
         Set<Coord4D> invalidCells = new HashSet<>();
@@ -152,17 +205,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         //Amount actually removed
         energy = energy - energyToRemove;
         cachedTotal -= energy;
-
-        //Lower amount remaining output rate by the amount we accepted
-        remainingOutput -= energy;
         return energy;
-    }
-
-    public void resetRemaining() {
-        lastInput = transferCap - remainingInput;
-        remainingInput = transferCap;
-        lastOutput = transferCap - remainingOutput;
-        remainingOutput = transferCap;
     }
 
     public TileNetworkList addStructureData(TileNetworkList data) {
