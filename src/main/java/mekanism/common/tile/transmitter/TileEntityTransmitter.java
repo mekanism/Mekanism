@@ -153,16 +153,16 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         // and to update the rendering of them
         N network = getTransmitter().getTransmitterNetwork();
         network.queueClientUpdate(network.getTransmitters());
-        //Copy values into a set so that we don't risk a CME
-        Set<IGridTransmitter<A, N, BUFFER>> transmitters = new HashSet<>(network.getTransmitters());
+        //Copy values into an array so that we don't risk a CME
+       IGridTransmitter[] transmitters = network.getTransmitters().toArray(new IGridTransmitter[network.transmittersSize()]);
         //TODO: Make some better way of refreshing the connections, given we only need to refresh
         // connections to ourself anyways
         // The best way to do this is probably by making a method that updates the values for
         // the valid transmitters manually if the network is the same object.
-        for (IGridTransmitter<A, N, BUFFER> transmitter : transmitters) {
+        for (IGridTransmitter transmitter : transmitters) {
             if (transmitter instanceof TransmitterImpl) {
                 //Refresh the connections because otherwise sometimes they need to wait for a block update
-                ((TransmitterImpl<A, N, BUFFER>) transmitter).containingTile.refreshConnections();
+                ((TransmitterImpl) transmitter).containingTile.refreshConnections();
             }
         }
     }
