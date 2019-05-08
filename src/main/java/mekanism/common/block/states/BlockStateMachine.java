@@ -142,7 +142,7 @@ public class BlockStateMachine extends ExtendedBlockState {
               false, Plane.HORIZONTAL, false),
         CHARGEPAD(MachineBlock.MACHINE_BLOCK_1, 14, "Chargepad", -1, TileEntityChargepad.class, true, true, false,
               Plane.HORIZONTAL, false),
-        LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", -1, TileEntityLogisticalSorter.class,
+        LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", 59, TileEntityLogisticalSorter.class,
               false, true, false, Predicates.alwaysTrue(), true),
         ROTARY_CONDENSENTRATOR(MachineBlock.MACHINE_BLOCK_2, 0, "RotaryCondensentrator", 7,
               TileEntityRotaryCondensentrator.class, true, true, false, Plane.HORIZONTAL, false),

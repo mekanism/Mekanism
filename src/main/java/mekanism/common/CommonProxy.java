@@ -368,6 +368,8 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerSecurityDesk(player.inventory, (TileEntitySecurityDesk) tileEntity);
             case 58:
                 return new ContainerFuelwoodHeater(player.inventory, (TileEntityFuelwoodHeater) tileEntity);
+            case 59:
+                return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
         }
 
         return null;

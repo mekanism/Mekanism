@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -85,6 +86,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         // Add common Mekanism gui elements
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
+        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
     }
 

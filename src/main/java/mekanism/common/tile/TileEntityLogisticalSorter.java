@@ -10,14 +10,13 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismSounds;
-import mekanism.common.base.IActiveState;
+import mekanism.common.Upgrade;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
@@ -30,7 +29,8 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -46,14 +46,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState,
-      ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration {
+public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implements IRedstoneControl,
+      ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration, IUpgradeTile {
 
     public HashList<TransporterFilter> filters = new HashList<>();
     public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -63,16 +62,21 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     public boolean singleItem;
     public int rrIndex = 0;
     public int delayTicks;
-    public boolean isActive;
     public boolean clientActive;
+    public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter",
           "addOreFilter", "removeOreFilter", "setSingleItem"};
 
     public TileEntityLogisticalSorter() {
-        super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.getStorage());
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+        super("machine.logisticalsorter", "LogisticalSorter",
+                MachineType.LOGISTICAL_SORTER.getStorage(), 3);
+        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
+
+        upgradeComponent = new TileComponentUpgrade(this, 1);
+        upgradeComponent.clearSupportedTypes();
+        upgradeComponent.setSupported(Upgrade.MUFFLING);
     }
 
     @Override
@@ -457,11 +461,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                   .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                         new Range4D(Coord4D.get(this)));
 
-            if (active && MekanismConfig.current().client.enableMachineSounds.val()) {
-                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK,
-                      SoundCategory.BLOCKS, 0.3F, 1);
-            }
-
             clientActive = active;
         }
     }
@@ -745,6 +744,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
             return side != null && side != facing && side != facing.getOpposite();
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public TileComponentUpgrade getComponent() {
+        return upgradeComponent;
     }
 
     private class StrictFilterFinder extends Finder {
