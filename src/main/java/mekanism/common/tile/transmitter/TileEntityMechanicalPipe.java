@@ -89,17 +89,16 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     private FluidStack getSaveShare() {
-        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null) {
-            int remain = getTransmitter().getTransmitterNetwork().buffer.amount % getTransmitter()
-                  .getTransmitterNetwork().transmitters.size();
-            int toSave = getTransmitter().getTransmitterNetwork().buffer.amount / getTransmitter()
-                  .getTransmitterNetwork().transmitters.size();
+        FluidNetwork transmitterNetwork = getTransmitter().getTransmitterNetwork();
+        if (getTransmitter().hasTransmitterNetwork() && transmitterNetwork.buffer != null) {
+            int remain = transmitterNetwork.buffer.amount % transmitterNetwork.transmittersSize();
+            int toSave = transmitterNetwork.buffer.amount / transmitterNetwork.transmittersSize();
 
-            if (getTransmitter().getTransmitterNetwork().transmitters.iterator().next().equals(getTransmitter())) {
+            if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
                 toSave += remain;
             }
 
-            return PipeUtils.copy(getTransmitter().getTransmitterNetwork().buffer, toSave);
+            return PipeUtils.copy(transmitterNetwork.buffer, toSave);
         }
 
         return null;

@@ -124,11 +124,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     private GasStack getSaveShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null) {
             int remain = getTransmitter().getTransmitterNetwork().buffer.amount % getTransmitter()
-                  .getTransmitterNetwork().transmitters.size();
+                  .getTransmitterNetwork().transmittersSize();
             int toSave = getTransmitter().getTransmitterNetwork().buffer.amount / getTransmitter()
-                  .getTransmitterNetwork().transmitters.size();
+                  .getTransmitterNetwork().transmittersSize();
 
-            if (getTransmitter().getTransmitterNetwork().transmitters.iterator().next().equals(getTransmitter())) {
+            if (getTransmitter().getTransmitterNetwork().firstTransmitter().equals(getTransmitter())) {
                 toSave += remain;
             }
 

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -28,13 +29,13 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements
       IClientTicker, INetworkDataHandler {
 
-    public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = Sets.newLinkedHashSet();
-    public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = Sets.newLinkedHashSet();
-    public LinkedHashSet<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = Sets.newLinkedHashSet();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = Sets.newLinkedHashSet();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = Sets.newLinkedHashSet();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = Sets.newLinkedHashSet();
 
-    public Set<Coord4D> possibleAcceptors = new HashSet<>();
-    public HashMap<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
-    public HashMap<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = Maps
+    protected Set<Coord4D> possibleAcceptors = new HashSet<>();
+    protected Map<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<>();
+    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> changedAcceptors = Maps
           .newHashMap();
     protected Range4D packetRange = null;
     protected int capacity = 0;
@@ -365,6 +366,50 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public boolean compatibleWithBuffer(BUFFER buffer) {
         return true;
+    }
+
+    public Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmitters() {
+        return transmitters;
+    }
+
+    public boolean addTransmitter(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+        return transmitters.add(transmitter);
+    }
+
+    public boolean removeTransmitter(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter) {
+        boolean removed = transmitters.remove(transmitter);
+        if (transmitters.isEmpty()) {
+            deregister();
+        }
+        return removed;
+    }
+
+    public IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> firstTransmitter() {
+        return transmitters.iterator().next();
+    }
+
+    public int transmittersSize() {
+        return transmitters.size();
+    }
+
+    public Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmittersToAdd() {
+        return transmittersToAdd;
+    }
+
+    public Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> getTransmittersAdded() {
+        return transmittersAdded;
+    }
+
+    public Set<Coord4D> getPossibleAcceptors() {
+        return possibleAcceptors;
+    }
+
+    public Map<Coord4D, EnumSet<EnumFacing>> getAcceptorDirections() {
+        return acceptorDirections;
+    }
+
+    public Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<EnumFacing>> getChangedAcceptors() {
+        return changedAcceptors;
     }
 
     public static class TransmittersAddedEvent extends Event {

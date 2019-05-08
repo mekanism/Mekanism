@@ -21,18 +21,14 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
 
         if (world().isRemote && theNetwork != null) {
-            theNetwork.transmitters.remove(this);
-
-            if (theNetwork.transmitters.isEmpty()) {
-                theNetwork.deregister();
-            }
+            theNetwork.removeTransmitter(this);
         }
 
         theNetwork = network;
         orphaned = theNetwork == null;
 
         if (world().isRemote && theNetwork != null) {
-            theNetwork.transmitters.add(this);
+            theNetwork.addTransmitter(this);
         }
 
         setRequestsUpdate();
