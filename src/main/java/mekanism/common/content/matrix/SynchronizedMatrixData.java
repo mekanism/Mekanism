@@ -19,7 +19,6 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 
     private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     private Set<Coord4D> providers = new HashSet<>();
-    //TODO: Ensure cells (and providers) are properly removed from when destroyed
     private Set<Coord4D> cells = new HashSet<>();
     private double remainingOutput;
     private double remainingInput;
@@ -55,21 +54,18 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     public double getEnergyPostQueue() {
-        //TODO: Decide if this comment should be here or in tick or both
         //The reason we do remainingOutput - remainingInput when it logically appears that
         // it should be the other way around, is because in reality our value is
         // (transferCap - remainingInput) - (transferCap - remainingOutput)
         // which simplifies to remainingOutput - remainingInput
         // This is because remainingInput and remainingOutput go down if we have
         // the corresponding one queued.
-        //TODO: Does this need to have a Math.max(0, ); So that if a cell is removed midway through it can never be negative
         return cachedTotal - remainingInput + remainingOutput;
     }
 
     public void tick(World world) {
+        //See comment in getEnergyPostQueue for explanation of how lastChange is calculated.
         double lastChange = remainingOutput - remainingInput;
-        //TODO: When cells are removed make sure it gets updated properly so that we are not trying to
-        // remove more energy than we have, or add more energy than we have space for
         if (lastChange < 0) {
             //We are removing energy
             removeEnergy(world, -lastChange);
