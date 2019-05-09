@@ -54,7 +54,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable,
       IActiveState {
 
-    public boolean ic2Registered = false;
+    private boolean ic2Registered = false;
 
     /**
      * false = input, true = output
@@ -203,10 +203,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         if (sideIsConsumer(from)) {
-            double toAdd = maxReceive * MekanismConfig.current().general.FROM_RF.val();
-            //Amount actually added
-            toAdd = addEnergy(toAdd, simulate);
-            return MekanismUtils.clampToInt(toAdd * MekanismConfig.current().general.TO_RF.val());
+            double received = addEnergy(maxReceive * MekanismConfig.current().general.FROM_RF.val(), simulate);
+            return MekanismUtils.clampToInt(received * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -216,10 +214,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         if (sideIsOutput(from)) {
-            double toSend = maxExtract * MekanismConfig.current().general.FROM_RF.val();
-            //Amount actually removed
-            toSend = removeEnergy(toSend, simulate);
-            return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
+            double sent = removeEnergy(maxExtract * MekanismConfig.current().general.FROM_RF.val(), simulate);
+            return MekanismUtils.clampToInt(sent * MekanismConfig.current().general.TO_RF.val());
         }
 
         return 0;
@@ -258,10 +254,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
-        double toUse = amount * MekanismConfig.current().general.FROM_IC2.val();
-        //Amount actually added
-        toUse = addEnergy(toUse, false);
-        //TODO: Should this be amount added? Or does IC2 actually return total amount
+        addEnergy(amount * MekanismConfig.current().general.FROM_IC2.val(), false);
+        //IC2 returns the amount of energy inside after the value, instead of amount actually added/removed
         return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
 
@@ -351,27 +345,17 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
-        if (structure != null) {
-            removeEnergy(amount * MekanismConfig.current().general.FROM_IC2.val(), false);
-        }
+        removeEnergy(amount * MekanismConfig.current().general.FROM_IC2.val(), false);
     }
 
     @Override
     public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-        if (side != null && !sideIsConsumer(side) || amount < 0.0001) {
-            return 0;
-        }
-        //Amount actually being added
-        return addEnergy(amount, simulate);
+        return side == null || sideIsConsumer(side) ? addEnergy(amount, simulate) : 0;
     }
 
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
-        if (side != null && !sideIsOutput(side) || amount < 0.0001) {
-            return 0;
-        }
-        //Amount actually removed
-        return removeEnergy(amount, simulate);
+        return side == null || sideIsOutput(side) ? removeEnergy(amount, simulate) : 0;
     }
 
     @Override

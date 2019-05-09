@@ -86,6 +86,10 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     public double queueEnergyAddition(double energy, boolean simulate) {
+        if (energy < 0) {
+            //Ensure that the correct queue type gets called
+            return queueEnergyRemoval(-energy, simulate);
+        }
         if (energy > remainingInput) {
             energy = remainingInput;
         }
@@ -106,6 +110,10 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     }
 
     public double queueEnergyRemoval(double energy, boolean simulate) {
+        if (energy < 0) {
+            //Ensure that the correct queue type gets called
+            return queueEnergyAddition(-energy, simulate);
+        }
         if (energy > remainingOutput) {
             //If it is more than we can output lower it further
             energy = remainingOutput;
@@ -133,11 +141,13 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         //TODO: Potentially should allow setting it directly to something bypassing rate limit
         // API wise that makes sense, however this is only *really* used by IC2's setStored
         double difference = energy - getEnergyPostQueue();
-        if (difference < 0) {
-            //We are removing energy
-            queueEnergyRemoval(-difference, false);
-        } else if (difference > 0) {
-            //we are adding energy
+        if (difference != 0) {
+            //We call addition as values greater than zero are for addition
+            // The queue methods also ensure that it is using the correct method
+            // as IC2 changes energy by passing negative values for removal.
+            // This also adds extra safety in case a mod ends up using the wrong
+            // method for adding/removing energy. So when it is negative
+            // queueEnergyAddition will pass it to queueEnergyRemoval
             queueEnergyAddition(difference, false);
         }
     }
