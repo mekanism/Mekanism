@@ -126,7 +126,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Override
     public double getEnergy() {
-        return structure != null ? structure.getEnergy() : 0;
+        //Uses post queue as that is the actual total we just haven't saved it yet
+        return structure != null ? structure.getEnergyPostQueue() : 0;
     }
 
     @Override
@@ -136,12 +137,12 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         }
     }
 
-    public double addEnergy(double energy) {
-        return structure != null ? structure.queueEnergyAddition(energy) : 0;
+    public double addEnergy(double energy, boolean simulate) {
+        return structure != null ? structure.queueEnergyAddition(energy, simulate) : 0;
     }
 
-    public double removeEnergy(double energy) {
-        return structure != null ? structure.queueEnergyRemoval(energy) : 0;
+    public double removeEnergy(double energy, boolean simulate) {
+        return structure != null ? structure.queueEnergyRemoval(energy, simulate) : 0;
     }
 
     @Override

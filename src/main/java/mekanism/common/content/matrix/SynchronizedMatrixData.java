@@ -54,7 +54,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         transferCap += provider.tier.getOutput();
     }
 
-    private double getEnergyPostQueue() {
+    public double getEnergyPostQueue() {
         //TODO: Decide if this comment should be here or in tick or both
         //The reason we do remainingOutput - remainingInput when it logically appears that
         // it should be the other way around, is because in reality our value is
@@ -85,7 +85,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         remainingOutput = transferCap;
     }
 
-    public double queueEnergyAddition(double energy) {
+    public double queueEnergyAddition(double energy, boolean simulate) {
         if (energy > remainingInput) {
             energy = remainingInput;
         }
@@ -98,12 +98,14 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             //Only allow addition of
             energy = availableEnergy;
         }
-        //Lower amount remaining input rate by the amount we accepted
-        remainingInput -= energy;
+        if (!simulate) {
+            //Lower amount remaining input rate by the amount we accepted
+            remainingInput -= energy;
+        }
         return energy;
     }
 
-    public double queueEnergyRemoval(double energy) {
+    public double queueEnergyRemoval(double energy, boolean simulate) {
         if (energy > remainingOutput) {
             //If it is more than we can output lower it further
             energy = remainingOutput;
@@ -117,8 +119,10 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
             //If it is more than we have lower it further
             energy = availableEnergy;
         }
-        //Lower amount remaining output rate by the amount we accepted
-        remainingOutput -= energy;
+        if (!simulate) {
+            //Lower amount remaining output rate by the amount we accepted
+            remainingOutput -= energy;
+        }
         return energy;
     }
 
@@ -126,13 +130,15 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         if (energy > storageCap) {
             energy = storageCap;
         }
+        //TODO: Potentially should allow setting it directly to something bypassing rate limit
+        // API wise that makes sense, however this is only *really* used by IC2's setStored
         double difference = energy - getEnergyPostQueue();
         if (difference < 0) {
             //We are removing energy
-            queueEnergyRemoval(-difference);
+            queueEnergyRemoval(-difference, false);
         } else if (difference > 0) {
             //we are adding energy
-            queueEnergyAddition(difference);
+            queueEnergyAddition(difference, false);
         }
     }
 

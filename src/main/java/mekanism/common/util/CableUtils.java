@@ -13,6 +13,7 @@ import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.target.EnergyAcceptorTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.tile.TileEntityInductionPort;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -161,7 +162,12 @@ public final class CableUtils {
                     Set<EnergyAcceptorTarget> targets = new HashSet<>();
                     targets.add(target);
                     double sent = EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
-                    emitter.setEnergy(emitter.getEnergy() - sent);
+                    if (emitter instanceof TileEntityInductionPort) {
+                        //Streamline sideless removal method for induction port.
+                        ((TileEntityInductionPort) emitter).removeEnergy(sent, false);
+                    } else {
+                        emitter.setEnergy(emitter.getEnergy() - sent);
+                    }
                 }
             }
         }

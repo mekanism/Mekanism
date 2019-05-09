@@ -132,10 +132,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         return structure != null ? structure.getRemainingOutput() : 0;
     }
 
-    private double getMaxInput() {
-        return structure != null ? structure.getRemainingInput() : 0;
-    }
-
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
@@ -207,15 +203,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
         if (sideIsConsumer(from)) {
-            double toAdd = (int) Math
-                  .min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()),
-                        maxReceive * MekanismConfig.current().general.FROM_RF.val());
-
-            if (!simulate) {
-                //Amount actually added
-                toAdd = addEnergy(toAdd);
-            }
-
+            double toAdd = maxReceive * MekanismConfig.current().general.FROM_RF.val();
+            //Amount actually added
+            toAdd = addEnergy(toAdd, simulate);
             return MekanismUtils.clampToInt(toAdd * MekanismConfig.current().general.TO_RF.val());
         }
 
@@ -226,14 +216,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Method(modid = MekanismHooks.REDSTONEFLUX_MOD_ID)
     public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         if (sideIsOutput(from)) {
-            double toSend = Math.min(getEnergy(),
-                  Math.min(getMaxOutput(), maxExtract * MekanismConfig.current().general.FROM_RF.val()));
-
-            if (!simulate) {
-                //Amount actually removed
-                toSend = removeEnergy(toSend);
-            }
-
+            double toSend = maxExtract * MekanismConfig.current().general.FROM_RF.val();
+            //Amount actually removed
+            toSend = removeEnergy(toSend, simulate);
             return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
 
@@ -273,10 +258,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public int addEnergy(int amount) {
-        double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()),
-              amount * MekanismConfig.current().general.FROM_IC2.val());
+        double toUse = amount * MekanismConfig.current().general.FROM_IC2.val();
         //Amount actually added
-        toUse = addEnergy(toUse);
+        toUse = addEnergy(toUse, false);
+        //TODO: Should this be amount added? Or does IC2 actually return total amount
         return MekanismUtils.clampToInt(getEnergy() * MekanismConfig.current().general.TO_IC2.val());
     }
 
@@ -367,53 +352,26 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Method(modid = MekanismHooks.IC2_MOD_ID)
     public void drawEnergy(double amount) {
         if (structure != null) {
-            double toDraw = Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(), getMaxOutput());
-            double curEnergy = getEnergy();
-            if (curEnergy < toDraw) {
-                toDraw = curEnergy;
-            }
-            //Amount actually drawn
-            removeEnergy(toDraw);
+            removeEnergy(amount * MekanismConfig.current().general.FROM_IC2.val(), false);
         }
     }
 
     @Override
     public double acceptEnergy(EnumFacing side, double amount, boolean simulate) {
-        if (side != null && !sideIsConsumer(side)) {
+        if (side != null && !sideIsConsumer(side) || amount < 0.0001) {
             return 0;
         }
-        double toUse = Math.min(Math.min(getMaxInput(), getMaxEnergy() - getEnergy()), amount);
-
-        if (toUse < 0.0001) {
-            return 0;
-        }
-
-        if (!simulate) {
-            //Amount actually used
-            toUse = addEnergy(toUse);
-        }
-
-        return toUse;
+        //Amount actually being added
+        return addEnergy(amount, simulate);
     }
 
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
-        if (side != null && !sideIsOutput(side)) {
+        if (side != null && !sideIsOutput(side) || amount < 0.0001) {
             return 0;
         }
-        double toGive = Math.min(getEnergy(), amount);
-        //TODO: Does this need to check the max output rate
-
-        if (toGive < 0.0001) {
-            return 0;
-        }
-
-        if (!simulate) {
-            //Amount actually given
-            toGive = removeEnergy(toGive);
-        }
-
-        return toGive;
+        //Amount actually removed
+        return removeEnergy(amount, simulate);
     }
 
     @Override
