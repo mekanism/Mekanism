@@ -68,6 +68,13 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     }
 
     @Override
+    protected void onStructureDestroyed(SynchronizedMatrixData structure) {
+        //Save all energy changes before destroying the structure
+        structure.tick(pointer.getWorld());
+        super.onStructureDestroyed(structure);
+    }
+
+    @Override
     protected boolean canForm(SynchronizedMatrixData structure) {
         for (Coord4D coord : innerNodes) {
             TileEntity tile = coord.getTileEntity(pointer.getWorld());
