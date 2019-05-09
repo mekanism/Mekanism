@@ -30,14 +30,13 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 
     @Override
     public boolean isValidInnerNode(int x, int y, int z) {
+        if (super.isValidInnerNode(x, y, z)) {
+            return true;
+        }
         TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension())
               .getTileEntity(pointer.getWorld());
 
-        if (tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider) {
-            return true;
-        }
-
-        return isAir(x, y, z);
+        return tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider;
     }
 
     @Override
