@@ -104,7 +104,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     private double tickEmit(double energyToSend) {
         Set<EnergyAcceptorTarget> targets = new HashSet<>();
         int totalHandlers = 0;
-        for (Coord4D coord : possibleAcceptors.keySet()) {
+        for (Coord4D coord : possibleAcceptors) {
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
                 continue;

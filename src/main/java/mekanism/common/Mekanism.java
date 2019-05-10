@@ -1033,7 +1033,7 @@ public class Mekanism {
     public void onEnergyTransferred(EnergyTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.ENERGY,
-                        event.energyNetwork.transmitters.iterator().next().coord(), event.power),
+                        event.energyNetwork.firstTransmitter().coord(), event.power),
                   event.energyNetwork.getPacketRange());
         } catch (Exception ignored) {
         }
@@ -1043,7 +1043,7 @@ public class Mekanism {
     public void onGasTransferred(GasTransferEvent event) {
         try {
             packetHandler.sendToReceivers(
-                  new TransmitterUpdateMessage(PacketType.GAS, event.gasNetwork.transmitters.iterator().next().coord(),
+                  new TransmitterUpdateMessage(PacketType.GAS, event.gasNetwork.firstTransmitter().coord(),
                         event.transferType, event.didTransfer), event.gasNetwork.getPacketRange());
         } catch (Exception ignored) {
         }
@@ -1053,7 +1053,7 @@ public class Mekanism {
     public void onLiquidTransferred(FluidTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.FLUID,
-                        event.fluidNetwork.transmitters.iterator().next().coord(), event.fluidType, event.didTransfer),
+                        event.fluidNetwork.firstTransmitter().coord(), event.fluidType, event.didTransfer),
                   event.fluidNetwork.getPacketRange());
         } catch (Exception ignored) {
         }
@@ -1063,7 +1063,7 @@ public class Mekanism {
     public void onTransmittersAddedEvent(TransmittersAddedEvent event) {
         try {
             packetHandler.sendToReceivers(
-                  new TransmitterUpdateMessage(PacketType.UPDATE, event.network.transmitters.iterator().next().coord(),
+                  new TransmitterUpdateMessage(PacketType.UPDATE, event.network.firstTransmitter().coord(),
                         event.newNetwork, event.newTransmitters), event.network.getPacketRange());
         } catch (Exception ignored) {
         }
