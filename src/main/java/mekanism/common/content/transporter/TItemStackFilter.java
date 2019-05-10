@@ -8,6 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TItemStackFilter extends TransporterFilter implements IItemStackFilter {
 
@@ -22,16 +23,15 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     public boolean canFilter(ItemStack itemStack, boolean strict) {
         return super.canFilter(itemStack, strict) &&
                 !(strict && sizeMode && (max == 0 || itemStack.getCount() < min)) &&
-                (itemType.getHasSubtypes() ?
-                        itemType.isItemEqual(itemStack) : itemType.getItem() == itemStack.getItem());
+                ItemHandlerHelper.canItemStacksStackRelaxed(itemType, itemStack);
     }
 
     @Override
-    public InvStack getStackFromInventory(StackSearcher searcher) {
-        if (sizeMode) {
+    public InvStack getStackFromInventory(StackSearcher searcher, boolean singleItem) {
+        if (sizeMode && !singleItem) {
             return searcher.takeDefinedItem(itemType, min, max);
         } else {
-            return super.getStackFromInventory(searcher);
+            return super.getStackFromInventory(searcher, singleItem);
         }
     }
 

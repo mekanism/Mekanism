@@ -66,12 +66,8 @@ public abstract class TransporterFilter implements IFilter {
 
     public abstract Finder getFinder();
 
-    public InvStack getStackFromInventory(StackSearcher searcher) {
-        return getItemAmountFromInventory(searcher, 64);
-    }
-
-    public InvStack getItemAmountFromInventory(StackSearcher searcher, int amount) {
-        return searcher.takeTopStack(getFinder(), amount);
+    public InvStack getStackFromInventory(StackSearcher searcher, boolean singleItem) {
+        return searcher.takeTopStack(getFinder(), singleItem ? 1 : 64);
     }
 
     public void write(NBTTagCompound nbtTags) {

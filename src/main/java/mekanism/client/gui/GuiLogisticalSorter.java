@@ -383,13 +383,13 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.singleItem ? "on" : "off")), 27, 60, 0x00CD00);
+        fontRenderer.drawString(LangUtils.transOnOff(tileEntity.singleItem), 27, 60, 0x00CD00);
 
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
+        fontRenderer.drawString(LangUtils.transOnOff(tileEntity.roundRobin), 27, 86, 0x00CD00);
 
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
+        fontRenderer.drawString(LangUtils.transOnOff(tileEntity.autoEject), 27, 112, 0x00CD00);
 
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 

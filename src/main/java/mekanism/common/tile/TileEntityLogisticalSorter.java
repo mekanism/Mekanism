@@ -62,7 +62,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     public boolean singleItem;
     public int rrIndex = 0;
     public int delayTicks;
-    public boolean clientActive;
     public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter",
@@ -100,8 +99,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                 outer:
                 for (TransporterFilter filter : filters) {
                     for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.getSlotCount() >= 0; ) {
-                        InvStack invStack = singleItem ? filter.getItemAmountFromInventory(search, 1)
-                                : filter.getStackFromInventory(search);
+                        InvStack invStack = filter.getStackFromInventory(search, singleItem);
 
                         if (invStack == null) {
                             break;
@@ -285,15 +283,10 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             } else if (type == 2) {
                 readFilters(dataStream);
             }
-            if (clientActive != isActive) {
-                isActive = clientActive;
-                MekanismUtils.updateBlock(world, getPos());
-            }
         }
     }
 
     private void readState(ByteBuf dataStream) {
-        clientActive = dataStream.readBoolean();
         controlType = RedstoneControl.values()[dataStream.readInt()];
 
         int c = dataStream.readInt();
@@ -325,7 +318,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
 
         data.add(0);
 
-        data.add(isActive);
         data.add(controlType.ordinal());
 
         if (color != null) {
@@ -352,7 +344,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
 
         data.add(1);
 
-        data.add(isActive);
         data.add(controlType.ordinal());
 
         if (color != null) {
@@ -445,24 +436,6 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
     @Override
     public boolean canPulse() {
         return true;
-    }
-
-    @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-
-        if (clientActive != active) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
-            clientActive = active;
-        }
     }
 
     @Override
