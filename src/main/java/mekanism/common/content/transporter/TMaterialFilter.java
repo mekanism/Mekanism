@@ -23,11 +23,9 @@ public class TMaterialFilter extends TransporterFilter implements IMaterialFilte
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
-        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock)) {
-            return false;
-        }
-
-        return new MaterialFinder(getMaterial()).modifies(itemStack);
+        return super.canFilter(itemStack, strict) &&
+                (itemStack.getItem() instanceof ItemBlock) &&
+                new MaterialFinder(getMaterial()).modifies(itemStack);
     }
 
     @Override

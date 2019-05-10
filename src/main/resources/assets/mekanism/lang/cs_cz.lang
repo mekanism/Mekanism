@@ -616,7 +616,7 @@ gui.portableTeleporter=Přenosný Teleportér
 
 gui.robit=Robit
 gui.robit.smelting=Robit Výpalovna
-gui.robit.inventory=Robit Onventář
+gui.robit.inventory=Robit Inventář
 gui.robit.crafting=Robit Výroba
 gui.robit.greeting=Ahoj, jsem
 gui.robit.toggleFollow=Sepnout 'následovat' mód
@@ -635,9 +635,14 @@ gui.password.identical=Identické
 gui.password.invalid=Neplatné
 gui.password=Heslo
 
-gui.logisticalSorter.default=Výchozí
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Zaoblená-červenka
+mekanism.gui.logisticalSorter.default=Výchozí
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.autoEject.tooltip=Automaticky posílá všem připojeným inventářům.
+mekanism.gui.logisticalSorter.roundRobin=Střídat
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Střídat mezi všemi připojenými inventáři.
+mekanism.gui.logisticalSorter.singleItem=Single
+mekanism.gui.logisticalSorter.singleItem.tooltip=Posílat prředměty po jednom..
+
 # previous DEFINITELLY wrong, dunno what the original means
 gui.teleporter.notReady=Nepřipraven
 gui.teleporter.ready=Připraven

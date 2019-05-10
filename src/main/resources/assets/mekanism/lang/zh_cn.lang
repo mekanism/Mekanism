@@ -658,9 +658,9 @@ gui.password.identical=恒等
 gui.password.invalid=无效
 gui.password=密码
 
-gui.logisticalSorter.default=默认
-gui.logisticalSorter.auto=自动
-gui.logisticalSorter.roundRobin=循环模式
+mekanism.gui.logisticalSorter.default=默认
+mekanism.gui.logisticalSorter.autoEject=自动
+mekanism.gui.logisticalSorter.roundRobin=循环模式
 
 gui.teleporter.notReady=未准备
 gui.teleporter.ready=已准备

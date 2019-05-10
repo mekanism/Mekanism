@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -85,6 +86,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         // Add common Mekanism gui elements
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
+        addGuiElement(new GuiUpgradeTab(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
     }
 
@@ -115,29 +117,11 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         // Update displayed stacks
         if (stackSwitch == 0) {
             for (final Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1
-                          || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex = 0;
-                    } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex++;
-                    }
-
-                    entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
-                }
+                setNextRenderStack(entry.getValue());
             }
 
             for (final Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
-                if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0) {
-                    if (entry.getValue().stackIndex == -1
-                          || entry.getValue().stackIndex == entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex = 0;
-                    } else if (entry.getValue().stackIndex < entry.getValue().iterStacks.size() - 1) {
-                        entry.getValue().stackIndex++;
-                    }
-
-                    entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
-                }
+                setNextRenderStack(entry.getValue());
             }
 
             stackSwitch = 20;
@@ -172,6 +156,19 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             } else if (filter instanceof TModIDFilter && !modIDFilters.contains(filter)) {
                 modIDStacks.remove(filter);
             }
+        }
+    }
+
+    private void setNextRenderStack(StackData value) {
+        if (value.iterStacks != null && value.iterStacks.size() > 0) {
+            if (value.stackIndex == -1
+                  || value.stackIndex == value.iterStacks.size() - 1) {
+                value.stackIndex = 0;
+            } else if (value.stackIndex < value.iterStacks.size() - 1) {
+                value.stackIndex++;
+            }
+
+            value.renderStack = value.iterStacks.get(value.stackIndex);
         }
     }
 
@@ -269,6 +266,14 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             // Check for round robin button
             if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
                 final TileNetworkList data = TileNetworkList.withContents(2);
+
+                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+            }
+
+            // Check for single item button
+            if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
+                final TileNetworkList data = TileNetworkList.withContents(5);
 
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -377,13 +382,16 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
         fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 
-        fontRenderer.drawString("RR:", 12, 74, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
+        fontRenderer.drawString(LangUtils.transOnOff(tileEntity.singleItem), 27, 60, 0x00CD00);
 
-        fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
+        fontRenderer.drawString(LangUtils.transOnOff(tileEntity.roundRobin), 27, 86, 0x00CD00);
 
-        fontRenderer.drawString(LangUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
+        fontRenderer.drawString(LangUtils.transOnOff(tileEntity.autoEject), 27, 112, 0x00CD00);
+
+        fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 
         // Draw filters
         for (int i = 0; i < 4; i++) {
@@ -511,11 +519,24 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
-            drawHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
+            drawHoveringText(
+                    MekanismUtils.splitTooltip(
+                            LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY
+                    ), xAxis, yAxis);
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
-            drawHoveringText(LangUtils.localize("gui.logisticalSorter.roundRobin"), xAxis, yAxis);
+            drawHoveringText(
+                    MekanismUtils.splitTooltip(
+                            LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY
+                    ), xAxis, yAxis);
+        }
+
+        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
+            drawHoveringText(
+                    MekanismUtils.splitTooltip(
+                            LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY
+                    ), xAxis, yAxis);
         }
 
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -589,6 +610,12 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             drawTexturedModalRect(guiLeft + 12, guiTop + 84, 176 + 14, 0, 14, 14);
         } else {
             drawTexturedModalRect(guiLeft + 12, guiTop + 84, 176 + 14, 14, 14, 14);
+        }
+
+        if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
+            drawTexturedModalRect(guiLeft + 12, guiTop + 58, 176 + 28, 0, 14, 14);
+        } else {
+            drawTexturedModalRect(guiLeft + 12, guiTop + 58, 176 + 28, 14, 14, 14);
         }
     }
 

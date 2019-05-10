@@ -10,14 +10,13 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismSounds;
-import mekanism.common.base.IActiveState;
+import mekanism.common.Upgrade;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
@@ -30,7 +29,8 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
-import mekanism.common.tile.prefab.TileEntityElectricBlock;
+import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.prefab.TileEntityEffectsBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -46,32 +46,36 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState,
-      ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration {
+public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implements IRedstoneControl,
+      ISpecialConfigData, ISustainedData, ISecurityTile, IComputerIntegration, IUpgradeTile {
 
     public HashList<TransporterFilter> filters = new HashList<>();
     public RedstoneControl controlType = RedstoneControl.DISABLED;
     public EnumColor color;
     public boolean autoEject;
     public boolean roundRobin;
+    public boolean singleItem;
     public int rrIndex = 0;
     public int delayTicks;
-    public boolean isActive;
-    public boolean clientActive;
+    public TileComponentUpgrade upgradeComponent;
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter",
-          "addOreFilter", "removeOreFilter"};
+          "addOreFilter", "removeOreFilter", "setSingleItem"};
 
     public TileEntityLogisticalSorter() {
-        super("LogisticalSorter", MachineType.LOGISTICAL_SORTER.getStorage());
-        inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+        super("machine.logisticalsorter", "LogisticalSorter",
+                MachineType.LOGISTICAL_SORTER.getStorage(), 3);
+        inventory = NonNullList.withSize(2, ItemStack.EMPTY);
         doAutoSync = false;
+
+        upgradeComponent = new TileComponentUpgrade(this, 1);
+        upgradeComponent.clearSupportedTypes();
+        upgradeComponent.setSupported(Upgrade.MUFFLING);
     }
 
     @Override
@@ -95,14 +99,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                 outer:
                 for (TransporterFilter filter : filters) {
                     for (StackSearcher search = new StackSearcher(back, facing.getOpposite()); search.getSlotCount() >= 0; ) {
-                        InvStack invStack = filter.getStackFromInventory(search);
+                        InvStack invStack = filter.getStackFromInventory(search, singleItem);
 
-                        if (invStack == null || invStack.getStack().isEmpty()) {
+                        if (invStack == null) {
                             break;
                         }
 
-                        if (filter.canFilter(invStack.getStack(), true)) {
-                            if (filter instanceof TItemStackFilter) {
+                        ItemStack itemStack = invStack.getStack();
+
+                        if (filter.canFilter(itemStack, !singleItem)) {
+                            if (!singleItem && filter instanceof TItemStackFilter) {
                                 TItemStackFilter itemFilter = (TItemStackFilter) filter;
 
                                 if (itemFilter.sizeMode) {
@@ -110,7 +116,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                                 }
                             }
 
-                            TransitRequest request = TransitRequest.getFromStack(invStack.getStack());
+                            TransitRequest request = TransitRequest.getFromStack(itemStack);
                             TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
 
                             if (!response.isEmpty()) {
@@ -127,7 +133,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
                 if (!sentItems && autoEject) {
                     TransitRequest request = TransitRequest
-                          .buildInventoryMap(back, facing.getOpposite(), 64, new StrictFilterFinder());
+                          .buildInventoryMap(back, facing.getOpposite(), singleItem ? 1 : 64, new StrictFilterFinder());
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
 
                     if (!response.isEmpty()) {
@@ -180,6 +186,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         nbtTags.setBoolean("autoEject", autoEject);
         nbtTags.setBoolean("roundRobin", roundRobin);
+        nbtTags.setBoolean("singleItem", singleItem);
 
         nbtTags.setInteger("rrIndex", rrIndex);
 
@@ -210,6 +217,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         autoEject = nbtTags.getBoolean("autoEject");
         roundRobin = nbtTags.getBoolean("roundRobin");
+        singleItem = nbtTags.getBoolean("singleItem");
 
         rrIndex = nbtTags.getInteger("rrIndex");
 
@@ -256,10 +264,13 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                 for (EntityPlayer player : playersUsing) {
                     openInventory(player);
                 }
+            } else if (type == 5) {
+                singleItem = !singleItem;
             }
             return;
         }
 
+        boolean wasActive = isActive;
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
@@ -273,15 +284,20 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
             } else if (type == 2) {
                 readFilters(dataStream);
             }
-            if (clientActive != isActive) {
-                isActive = clientActive;
+            if (wasActive != isActive) {
+                //TileEntityEffectsBlock only updates it if it was not recently turned off.
+                // (This is soo that lighting updates do not cause lag)
+                // The sorter gets toggled a lot we need to make sure to update it anyways
+                // so that the light on the side of it (the texture) updates properly.
+                // We do not need to worry about block lighting updates causing lag as
+                // #lightUpdate() returns false meaning that logistical sorters do not give
+                // off actual light.
                 MekanismUtils.updateBlock(world, getPos());
             }
         }
     }
 
     private void readState(ByteBuf dataStream) {
-        clientActive = dataStream.readBoolean();
         controlType = RedstoneControl.values()[dataStream.readInt()];
 
         int c = dataStream.readInt();
@@ -294,6 +310,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         autoEject = dataStream.readBoolean();
         roundRobin = dataStream.readBoolean();
+        singleItem = dataStream.readBoolean();
     }
 
     private void readFilters(ByteBuf dataStream) {
@@ -312,7 +329,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         data.add(0);
 
-        data.add(isActive);
         data.add(controlType.ordinal());
 
         if (color != null) {
@@ -323,6 +339,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         data.add(autoEject);
         data.add(roundRobin);
+        data.add(singleItem);
 
         data.add(filters.size());
 
@@ -338,7 +355,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         data.add(1);
 
-        data.add(isActive);
         data.add(controlType.ordinal());
 
         if (color != null) {
@@ -349,6 +365,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         data.add(autoEject);
         data.add(roundRobin);
+        data.add(singleItem);
 
         return data;
 
@@ -433,29 +450,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
     }
 
     @Override
-    public boolean getActive() {
-        return isActive;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        isActive = active;
-
-        if (clientActive != active) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
-            if (active && MekanismConfig.current().client.enableMachineSounds.val()) {
-                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), MekanismSounds.CLICK,
-                      SoundCategory.BLOCKS, 0.3F, 1);
-            }
-
-            clientActive = active;
-        }
-    }
-
-    @Override
     public boolean renderUpdate() {
         return true;
     }
@@ -488,6 +482,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         nbtTags.setBoolean("autoEject", autoEject);
         nbtTags.setBoolean("roundRobin", roundRobin);
+        nbtTags.setBoolean("singleItem", singleItem);
 
         nbtTags.setInteger("rrIndex", rrIndex);
 
@@ -514,6 +509,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         autoEject = nbtTags.getBoolean("autoEject");
         roundRobin = nbtTags.getBoolean("roundRobin");
+        singleItem = nbtTags.getBoolean("singleItem");
 
         rrIndex = nbtTags.getInteger("rrIndex");
 
@@ -541,6 +537,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
         ItemDataUtils.setBoolean(itemStack, "autoEject", autoEject);
         ItemDataUtils.setBoolean(itemStack, "roundRobin", roundRobin);
+        ItemDataUtils.setBoolean(itemStack, "singleItem", singleItem);
 
         NBTTagList filterTags = new NBTTagList();
 
@@ -564,6 +561,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
             autoEject = ItemDataUtils.getBoolean(itemStack, "autoEject");
             roundRobin = ItemDataUtils.getBoolean(itemStack, "roundRobin");
+            singleItem = ItemDataUtils.getBoolean(itemStack, "singleItem");
 
             if (ItemDataUtils.hasData(itemStack, "filters")) {
                 NBTTagList tagList = ItemDataUtils.getList(itemStack, "filters");
@@ -681,6 +679,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
                 }
 
                 return new Object[]{"Couldn't find filter."};
+            } else if (method == 7) {
+                if (!(arguments[0] instanceof Boolean)) {
+                    return new Object[]{"Invalid parameters."};
+                }
+
+                singleItem = (Boolean) arguments[0];
+
+                return new Object[]{"Single-item mode set to " + singleItem};
             }
         }
 
@@ -722,6 +728,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
             return side != null && side != facing && side != facing.getOpposite();
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public TileComponentUpgrade getComponent() {
+        return upgradeComponent;
     }
 
     private class StrictFilterFinder extends Finder {

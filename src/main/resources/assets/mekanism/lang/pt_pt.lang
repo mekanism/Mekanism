@@ -635,9 +635,9 @@ gui.password.identical=Idêntica
 gui.password.invalid=Inválida
 gui.password=Senha
 
-gui.logisticalSorter.default=Padrão
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Rodízio
+mekanism.gui.logisticalSorter.default=Padrão
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.roundRobin=Rodízio
 
 gui.teleporter.notReady=Não Pronto
 gui.teleporter.ready=Pronto

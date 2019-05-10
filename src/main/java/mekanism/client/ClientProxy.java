@@ -33,6 +33,7 @@ import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiInductionMatrix;
 import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiLaserTractorBeam;
+import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiMatrixStats;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOredictionificator;
@@ -175,6 +176,7 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
@@ -934,6 +936,8 @@ public class ClientProxy extends CommonProxy {
                 return new GuiSecurityDesk(player.inventory, (TileEntitySecurityDesk) tileEntity);
             case 58:
                 return new GuiFuelwoodHeater(player.inventory, (TileEntityFuelwoodHeater) tileEntity);
+            case 59:
+                return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter) tileEntity);
         }
 
         return null;

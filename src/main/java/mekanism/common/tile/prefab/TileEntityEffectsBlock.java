@@ -29,6 +29,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @SideOnly(Side.CLIENT)
     private ISound activeSound;
     private int playSoundCooldown = 0;
+    private int rapidChangeThreshold = 10;
 
     protected boolean isActive;
     private long lastActive = -1;
@@ -52,6 +53,11 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         if (!sound.equals("null")) {
             soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile." + sound));
         }
+    }
+
+    public TileEntityEffectsBlock(String sound, String name, double baseMaxEnergy, int rapidChangeThreshold) {
+        this(sound, name, baseMaxEnergy);
+        this.rapidChangeThreshold = rapidChangeThreshold;
     }
 
 
@@ -98,8 +104,10 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
             // Determine how long the machine has been stopped (ala lighting changes). Don't try and stop the sound
             // unless machine has been stopped at least half-a-second, so that machines which are rapidly flipping on/off
             // just sound like they are continuously on.
+            // Some machines call the constructor where they can change rapidChangeThreshold,
+            // because their sound is intended to be turned on/off rapidly, eg. the clicking of LogisticalSorter.
             long downtime = world.getTotalWorldTime() - lastActive;
-            if (activeSound != null && downtime > 10) {
+            if (activeSound != null && downtime > rapidChangeThreshold) {
                 SoundHandler.stopTileSound(getPos());
                 activeSound = null;
                 playSoundCooldown = 0;

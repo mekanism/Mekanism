@@ -642,9 +642,10 @@ gui.password.identical=Identisch
 gui.password.invalid=Ungültig
 gui.password=Passwort
 
-gui.logisticalSorter.default=Standard
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round-Robin
+mekanism.gui.logisticalSorter.default=Standard
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.roundRobin=RR
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Round-Robin
 
 gui.teleporter.notReady=Nicht bereit
 gui.teleporter.ready=Bereit
