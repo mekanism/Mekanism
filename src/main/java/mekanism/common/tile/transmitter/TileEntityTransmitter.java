@@ -1,11 +1,8 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -154,7 +151,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         N network = getTransmitter().getTransmitterNetwork();
         network.queueClientUpdate(network.getTransmitters());
         //Copy values into an array so that we don't risk a CME
-       IGridTransmitter[] transmitters = network.getTransmitters().toArray(new IGridTransmitter[network.transmittersSize()]);
+        IGridTransmitter[] transmitters = network.getTransmitters().toArray(new IGridTransmitter[0]);
         //TODO: Make some better way of refreshing the connections, given we only need to refresh
         // connections to ourself anyways
         // The best way to do this is probably by making a method that updates the values for
@@ -229,10 +226,9 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal) {
         if (getTransmitter().hasTransmitterNetwork()) {
             int upgraded = 0;
-            ArrayList<IGridTransmitter<A,N,BUFFER>> list = new ArrayList<>(getTransmitter().getTransmitterNetwork().getTransmitters());
+            List<IGridTransmitter<A, N, BUFFER>> list = new ArrayList<>(getTransmitter().getTransmitterNetwork().getTransmitters());
 
-            list.sort((o1, o2) ->
-            {
+            list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
                     Coord4D thisCoord = new Coord4D(getPos(), getWorld());
 
@@ -245,7 +241,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 return 0;
             });
 
-            for (IGridTransmitter<A,N,BUFFER> iter : list) {
+            for (IGridTransmitter<A, N, BUFFER> iter : list) {
                 if (iter instanceof TransmitterImpl) {
                     TileEntityTransmitter t = ((TransmitterImpl) iter).containingTile;
 
