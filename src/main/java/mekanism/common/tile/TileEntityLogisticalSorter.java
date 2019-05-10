@@ -270,6 +270,7 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
             return;
         }
 
+        boolean wasActive = isActive;
         super.handlePacketData(dataStream);
 
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
@@ -282,6 +283,16 @@ public class TileEntityLogisticalSorter extends TileEntityEffectsBlock implement
                 readState(dataStream);
             } else if (type == 2) {
                 readFilters(dataStream);
+            }
+            if (wasActive != isActive) {
+                //TileEntityEffectsBlock only updates it if it was not recently turned off.
+                // (This is soo that lighting updates do not cause lag)
+                // The sorter gets toggled a lot we need to make sure to update it anyways
+                // so that the light on the side of it (the texture) updates properly.
+                // We do not need to worry about block lighting updates causing lag as
+                // #lightUpdate() returns false meaning that logistical sorters do not give
+                // off actual light.
+                MekanismUtils.updateBlock(world, getPos());
             }
         }
     }
