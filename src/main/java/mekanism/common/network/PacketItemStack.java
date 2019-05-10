@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IItemNetwork;

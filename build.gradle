@@ -240,7 +240,7 @@ task fullBuild(type: Delete) {
 }
 
 runClient {
-    jvmArgs "--Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
+    jvmArgs "-Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
 }
 
 runServer {

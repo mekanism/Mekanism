@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -69,8 +68,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
     public final int ENERGY_PER_CONFIGURE = 400;
     public final int ENERGY_PER_ITEM_DUMP = 8;
 
-    private Random random = new Random();
-
     public ItemConfigurator() {
         super(60000);
     }
@@ -96,12 +93,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
             if (getState(stack).isConfigurating()) //Configurate
             {
-                TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(), "Configurating state requires transmission type");
+                TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(),
+                      "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig()
                       .supports(transmissionType)) {
                     ISideConfiguration config = (ISideConfiguration) tile;
-                    SideData initial = config.getConfig()
-                          .getOutput(transmissionType, side, config.getOrientation());
+                    SideData initial = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
 
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
@@ -315,7 +312,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
         public String getName() {
             String name = LangUtils.localize("tooltip.configurator." + this.name);
-            if (this.transmissionType != null){
+            if (this.transmissionType != null) {
                 name += " (" + transmissionType.localize() + ")";
             }
             return name;
