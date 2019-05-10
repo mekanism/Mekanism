@@ -400,10 +400,10 @@ upgrade.anchor=Mocowanie
 upgrade.anchor.desc=Utrzymuje ładunek maszyny.
 
 # Key description text
-key.mode=Przełącznik trybu przedmiotu
-key.armorMode=Przełącznik trybu zbroi
-key.feetMode=Przełącznik trybu ruchu
-key.voice=Głos
+mekanism.key.mode=Przełącznik trybu przedmiotu
+mekanism.key.armorMode=Przełącznik trybu zbroi
+mekanism.key.feetMode=Przełącznik trybu ruchu
+mekanism.key.voice=Głos
 
 # Entities
 entity.Robit.name=Robit
@@ -731,7 +731,7 @@ tooltip.recipeType=Rodzaj receptury
 tooltip.hold=Wstrzymaj
 tooltip.forDesc=do opisu
 tooltip.forDetails=do szczegółów
-tooltip.fireMode=Tryb ognia
+mekanism.tooltip.fireMode=Tryb ognia: %s
 tooltip.capacity=Pojemność
 tooltip.pumpRate=Prędkość pompy
 tooltip.items=Przedmioty
@@ -759,7 +759,7 @@ tooltip.tile=Tile
 tooltip.keysFound=Znaleziono klucz(e)
 tooltip.noKey=Brak klucza
 tooltip.hp=HP
-tooltip.configureState=Ustaw stan
+mekanism.tooltip.configureState=Ustaw stan: %s
 tooltip.outputRate=Wydajność
 tooltip.insufficientFuel=Niewystarczająca ilość paliwa
 tooltip.readyForReaction=Gotowy do reakcji
@@ -774,7 +774,7 @@ tooltip.conduction=Przewodzenie
 tooltip.insulation=Izolacja
 tooltip.heatCapacity=Pojemność cieplna
 
-tooltip.portableTank.bucketMode=Tryb czerpania
+mekanism.tooltip.portableTank.bucketMode=Tryb czerpania: %s
 
 tooltip.disassembler.normal=normalnie
 tooltip.disassembler.slow=powoli
@@ -798,7 +798,7 @@ tooltip.freerunner.disabled=Wyłączony
 tooltip.flamethrower.combat=Walka
 tooltip.flamethrower.heat=Żar
 tooltip.flamethrower.inferno=Piekło
-tooltip.flamethrower.modeBump=Zmieniono tryb miotacza płomienia:
+mekanism.tooltip.flamethrower.modeBump=Zmieniono tryb miotacza płomienia: %s
 
 tooltip.seismicReader.needsEnergy=Brak wystarczającej energii, aby określić drgania
 tooltip.seismicReader.noVibrations=Nie można wykryć drgań

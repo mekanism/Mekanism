@@ -400,10 +400,10 @@ upgrade.anchor=Anchor
 upgrade.anchor.desc=Keeps a machine's chunk loaded.
 
 # Key description text
-key.mode=Item Mode Switch
-key.armorMode=Armor Mode Switch
-key.feetMode=Feet Mode Switch
-key.voice=Voice
+mekanism.key.mode=Item Mode Switch
+mekanism.key.armorMode=Armor Mode Switch
+mekanism.key.feetMode=Feet Mode Switch
+mekanism.key.voice=Voice
 
 # Entities
 entity.Robit.name=Robit
@@ -749,7 +749,7 @@ tooltip.recipeType=Recipe type
 tooltip.hold=Hold
 tooltip.forDesc=for a description
 tooltip.forDetails=for details
-tooltip.fireMode=Fire Mode
+mekanism.tooltip.fireMode=Fire Mode: %s
 tooltip.capacity=Capacity
 tooltip.pumpRate=Pump Rate
 tooltip.items=Items
@@ -778,7 +778,7 @@ tooltip.tile=Tile
 tooltip.keysFound=Key(s) found
 tooltip.noKey=No key
 tooltip.hp=HP
-tooltip.configureState=Configure State
+mekanism.tooltip.configureState=Configure State: %s
 tooltip.outputRate=Output Rate
 tooltip.insufficientFuel=Insufficient Fuel
 tooltip.readyForReaction=Ready for Reaction
@@ -793,7 +793,7 @@ tooltip.conduction=Conduction
 tooltip.insulation=Insulation
 tooltip.heatCapacity=Heat Capacity
 
-tooltip.portableTank.bucketMode=Bucket Mode
+mekanism.tooltip.portableTank.bucketMode=Bucket Mode: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=slow
@@ -817,7 +817,7 @@ tooltip.freerunner.disabled=Disabled
 tooltip.flamethrower.combat=Combat
 tooltip.flamethrower.heat=Heat
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Flamethrower mode bumped to
+mekanism.tooltip.flamethrower.modeBump=Flamethrower mode bumped to %s
 
 tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations

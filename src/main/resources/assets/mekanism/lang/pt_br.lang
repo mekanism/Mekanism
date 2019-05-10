@@ -379,9 +379,9 @@ upgrade.muffling=Silenc.
 upgrade.muffling.desc=Reduz ruídos causados por maquinários.
 
 # Key description text
-key.mode=Alternar Modo de Ferramenta
-key.armorMode=Alternar Modo de Armadura
-key.voice=Voz
+mekanism.key.mode=Alternar Modo de Ferramenta
+mekanism.key.armorMode=Alternar Modo de Armadura
+mekanism.key.voice=Voz
 
 # Entities
 entity.Robit.name=Robit
@@ -703,7 +703,7 @@ tooltip.recipeType=Tipo de Receita
 tooltip.hold=Segure
 tooltip.forDesc=para uma descrição
 tooltip.forDetails=para mais detalhes
-tooltip.fireMode=Modo Fogo
+mekanism.tooltip.fireMode=Modo Fogo: %s
 tooltip.capacity=Capacidade
 tooltip.pumpRate=Taxa de Bombeio
 tooltip.items=Itens
@@ -731,7 +731,7 @@ tooltip.tile=Telha
 tooltip.keysFound=Chave(s) encontradas
 tooltip.noKey=Sem chave
 tooltip.hp=HP
-tooltip.configureState=Configurar Estado
+mekanism.tooltip.configureState=Configurar Estado: %s
 tooltip.outputRate=Taxa de Emissão
 tooltip.insufficientFuel=Pouco Combustível
 tooltip.readyForReaction=Pronto para Reação
@@ -743,7 +743,7 @@ tooltip.invalid=Inválido
 tooltip.encoded=Codificado
 tooltip.ingredients=Ingredientes
 
-tooltip.portableTank.bucketMode=Modo Balde
+mekanism.tooltip.portableTank.bucketMode=Modo Balde: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=lento
@@ -764,7 +764,7 @@ tooltip.jetpack.disabled=Desativado
 tooltip.flamethrower.combat=Combate
 tooltip.flamethrower.heat=Calor
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Modo do Lança-Chamas mudado para
+mekanism.tooltip.flamethrower.modeBump=Modo do Lança-Chamas mudado para %s
 
 tooltip.seismicReader.needsEnergy=Energia não suficiente para interpretar a vibração
 tooltip.seismicReader.noVibrations=Incapaz de descobrir quaisquer vibrações

@@ -1,13 +1,20 @@
 package mekanism.common.util;
 
 import java.util.IllegalFormatException;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.FluidStack;
 
 public final class LangUtils {
 
     public static String transOnOff(boolean b) {
-        return LangUtils.localize("gui." + (b ? "on" : "off"));
+        return LangUtils.localize(transOnOffKey(b));
+    }
+
+    public static String transOnOffKey(boolean b) {
+        return "gui." + (b ? "on" : "off");
     }
 
     public static String transYesNo(boolean b) {
@@ -41,5 +48,22 @@ public final class LangUtils {
         } catch (IllegalFormatException e) {
             return "Format error: " + s;
         }
+    }
+
+    public static TextComponentTranslation translationWithColour(String langKey, TextFormatting color) {
+        TextComponentTranslation translation = new TextComponentTranslation(langKey);
+        translation.getStyle().setColor(color);
+        return translation;
+    }
+
+    public static <T extends ITextComponent> T withColor(T component, TextFormatting color) {
+        component.getStyle().setColor(color);
+        return component;
+    }
+
+    public static TextComponentTranslation onOffColoured(boolean isOn) {
+        TextComponentTranslation translation = new TextComponentTranslation(transOnOffKey(isOn));
+        translation.getStyle().setColor(isOn ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
+        return translation;
     }
 }

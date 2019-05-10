@@ -78,6 +78,7 @@ public class RenderTickHandler {
                     }
                 }
 
+                //todo use vanilla status bar text?
                 if (modeSwitchTimer > 1 && mc.currentScreen == null && player.getHeldItemMainhand()
                       .getItem() instanceof ItemConfigurator) {
                     ItemStack stack = player.getHeldItemMainhand();

@@ -44,7 +44,7 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.fixers.MekanismTEFixer;
+import mekanism.common.fixers.MekanismDataFixers;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
@@ -151,7 +151,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -160,15 +159,12 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.util.CompoundDataFixer;
-import net.minecraftforge.common.util.ModFixs;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -278,7 +274,6 @@ public class Mekanism {
           Mekanism.LOG_TAG);
     public static KeySync keyMap = new KeySync();
     public static Set<Coord4D> activeVibrators = new HashSet<>();
-    public static final int DATA_VERSION = 1;
 
     static {
         MekanismFluids.register();
@@ -846,10 +841,7 @@ public class Mekanism {
         //Register the TESRs
         proxy.registerTESRs();
 
-        CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
-        ModFixs fixes = fixer.init(MODID, DATA_VERSION);
-        //Fix old tile entity names
-        fixes.registerFix(FixTypes.BLOCK_ENTITY, new MekanismTEFixer());
+        MekanismDataFixers.register();
     }
 
     @EventHandler

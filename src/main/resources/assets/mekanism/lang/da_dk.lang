@@ -374,9 +374,9 @@ upgrade.muffling=Dæmpning
 upgrade.muffling.desc=Reducérer støj genereret af maskineri.
 
 # Key description text
-key.mode=Ændr Genstandsmodus
-key.armorMode=Ændr Armormodus
-key.voice=Stemme
+mekanism.key.mode=Ændr Genstandsmodus
+mekanism.key.armorMode=Ændr Armormodus
+mekanism.key.voice=Stemme
 
 # Entities
 entity.Robit.name=Robit
@@ -693,7 +693,7 @@ tooltip.recipeType=Opskriftstype
 tooltip.hold=Hold
 tooltip.forDesc=for en beskrivelse
 tooltip.forDetails=for detaljer
-tooltip.fireMode=Enffyringsmodus
+mekanism.tooltip.fireMode=Enffyringsmodus: %s
 tooltip.capacity=Kapacitet
 tooltip.pumpRate=Pumpningssats
 tooltip.items=Genstande
@@ -721,7 +721,7 @@ tooltip.tile=Tile
 tooltip.keysFound=Tast(er) fundet
 tooltip.noKey=Ingen tast
 tooltip.hp=HP
-tooltip.configureState=Konfigurér tilstand
+mekanism.tooltip.configureState=Konfigurér tilstand: %s
 tooltip.outputRate=Output Sats
 tooltip.insufficientFuel=Utilstrækkelig Brændsel
 tooltip.readyForReaction=Klar til Reaktion
@@ -733,7 +733,7 @@ tooltip.invalid=Invalid
 tooltip.encoded=Enkodet
 tooltip.ingredients=Ingredienser
 
-tooltip.portableTank.bucketMode=Spand-modus
+mekanism.tooltip.portableTank.bucketMode=Spand-modus: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=langsom
@@ -754,7 +754,7 @@ tooltip.jetpack.disabled=Deaktiveret
 tooltip.flamethrower.combat=Kamp
 tooltip.flamethrower.heat=Opvarm
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Flammekastermodus skiftet til
+mekanism.tooltip.flamethrower.modeBump=Flammekastermodus skiftet til %s
 
 tooltip.seismicReader.needsEnergy=Ikke nok energi til at læse vibration
 tooltip.seismicReader.noVibrations=Ikke i stand til at opdage nogen vibrationer

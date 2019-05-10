@@ -288,8 +288,8 @@ upgrade.filter=Filter
 upgrade.filter.desc=Et filer som separerer !ntungtvann fra vanlig vann.
 
 # Key description text
-key.mode=Endre modus
-key.voice=Stemme
+mekanism.key.mode=Endre modus
+mekanism.key.voice=Stemme
 
 # Config Gui
 mekanism.configgui.ctgy.general=Mekanism Generelle Innstillinger
@@ -491,7 +491,7 @@ tooltip.recipeType=Oppskrift type
 tooltip.hold=Hold
 tooltip.forDesc=for en beskrivelse
 tooltip.forDetails=for detaljer
-tooltip.fireMode=Avfyringsmodus
+mekanism.tooltip.fireMode=Avfyringsmodus: %s
 tooltip.capacity=Kapasitet
 tooltip.pumpRate=Pumpe Sats
 tooltip.items=Gjenstander
@@ -519,12 +519,12 @@ tooltip.tile=Tile
 tooltip.keysFound=Tast(er) funnet
 tooltip.noKey=Ingen tast
 tooltip.hp=HP
-tooltip.configureState=Konfigurer tilstand
+mekanism.tooltip.configureState=Konfigurer tilstand: %s
 tooltip.outputRate=Utgans Sats
 tooltip.insufficientFuel=Utilstrekkelig Brensel
 tooltip.readyForReaction=Klar for Reaksjon
 
-tooltip.portableTank.bucketMode=Bøttemodus
+mekanism.tooltip.portableTank.bucketMode=Bøttemodus: %s
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=treg

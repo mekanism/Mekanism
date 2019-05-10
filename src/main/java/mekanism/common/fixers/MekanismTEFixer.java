@@ -1,11 +1,12 @@
 package mekanism.common.fixers;
 
 import mekanism.common.Mekanism;
+import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 
 public class MekanismTEFixer extends TEFixer {
 
-    public MekanismTEFixer() {
-        super(Mekanism.MODID);
+    public MekanismTEFixer(MekFixers fixer) {
+        super(Mekanism.MODID, fixer);
         putEntry("AdvancedBoundingBlock", "advanced_bounding_block");
         putEntry("AdvancedSmeltingFactory", "advanced_smelting_factory");
         putEntry("AmbientAccumulator", "ambient_accumulator");

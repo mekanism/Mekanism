@@ -1,12 +1,13 @@
 package mekanism.generators.common.fixers;
 
+import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import mekanism.common.fixers.TEFixer;
 import mekanism.generators.common.MekanismGenerators;
 
 public class GeneratorTEFixer extends TEFixer {
 
-    public GeneratorTEFixer() {
-        super(MekanismGenerators.MODID);
+    public GeneratorTEFixer(MekFixers fixer) {
+        super(MekanismGenerators.MODID, fixer);
         putEntry("AdvancedSolarGenerator", "advanced_solar_generator");
         putEntry("BioGenerator", "bio_generator");
         putEntry("ElectromagneticCoil", "electromagnetic_coil");

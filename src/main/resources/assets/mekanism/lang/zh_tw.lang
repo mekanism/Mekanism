@@ -319,8 +319,8 @@ upgrade.filter=過濾
 upgrade.filter.desc=將重水從普通水中!n分離出來的過濾器.
 
 # Key description text
-key.mode=模式切換
-key.voice=聲音
+mekanism.key.mode=模式切換
+mekanism.key.voice=聲音
 
 # Entities
 entity.Robit.name=機器人
@@ -548,7 +548,7 @@ tooltip.recipeType=合成類型
 tooltip.hold=按住
 tooltip.forDesc=查看描述
 tooltip.forDetails=查看詳情
-tooltip.fireMode=火焰模式
+mekanism.tooltip.fireMode=火焰模式: %s
 tooltip.capacity=容量
 tooltip.pumpRate=泵速
 tooltip.items=物品
@@ -576,12 +576,12 @@ tooltip.tile=Tile
 tooltip.keysFound=找到關鍵字
 tooltip.noKey=無關鍵字
 tooltip.hp=HP
-tooltip.configureState=配置狀態
+mekanism.tooltip.configureState=配置狀態%s
 tooltip.outputRate=輸出速率
 tooltip.insufficientFuel=燃料不足
 tooltip.readyForReaction=已準備好反應
 
-tooltip.portableTank.bucketMode=水桶模式
+mekanism.tooltip.portableTank.bucketMode=水桶模式: %s
 
 tooltip.disassembler.normal=正常
 tooltip.disassembler.slow=慢
