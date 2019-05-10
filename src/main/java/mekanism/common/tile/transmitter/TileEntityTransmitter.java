@@ -1,10 +1,8 @@
 package mekanism.common.tile.transmitter;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -151,17 +149,17 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         //Queue an update for all the transmitters in the network just in case something went wrong
         // and to update the rendering of them
         N network = getTransmitter().getTransmitterNetwork();
-        network.queueClientUpdate(network.transmitters);
-        //Copy values into a set so that we don't risk a CME
-        Set<IGridTransmitter<A, N, BUFFER>> transmitters = new HashSet<>(network.transmitters);
+        network.queueClientUpdate(network.getTransmitters());
+        //Copy values into an array so that we don't risk a CME
+        IGridTransmitter[] transmitters = network.getTransmitters().toArray(new IGridTransmitter[0]);
         //TODO: Make some better way of refreshing the connections, given we only need to refresh
         // connections to ourself anyways
         // The best way to do this is probably by making a method that updates the values for
         // the valid transmitters manually if the network is the same object.
-        for (IGridTransmitter<A, N, BUFFER> transmitter : transmitters) {
+        for (IGridTransmitter transmitter : transmitters) {
             if (transmitter instanceof TransmitterImpl) {
                 //Refresh the connections because otherwise sometimes they need to wait for a block update
-                ((TransmitterImpl<A, N, BUFFER>) transmitter).containingTile.refreshConnections();
+                ((TransmitterImpl) transmitter).containingTile.refreshConnections();
             }
         }
     }
@@ -228,15 +226,14 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public void onAlloyInteraction(EntityPlayer player, EnumHand hand, ItemStack stack, int tierOrdinal) {
         if (getTransmitter().hasTransmitterNetwork()) {
             int upgraded = 0;
-            Object[] array = ((LinkedHashSet) getTransmitter().getTransmitterNetwork().transmitters.clone()).toArray();
+            List<IGridTransmitter<A, N, BUFFER>> list = new ArrayList<>(getTransmitter().getTransmitterNetwork().getTransmitters());
 
-            Arrays.sort(array, (o1, o2) ->
-            {
-                if (o1 instanceof IGridTransmitter && o2 instanceof IGridTransmitter) {
+            list.sort((o1, o2) -> {
+                if (o1 != null && o2 != null) {
                     Coord4D thisCoord = new Coord4D(getPos(), getWorld());
 
-                    Coord4D o1Coord = ((IGridTransmitter) o1).coord();
-                    Coord4D o2Coord = ((IGridTransmitter) o2).coord();
+                    Coord4D o1Coord = o1.coord();
+                    Coord4D o2Coord = o2.coord();
 
                     return Integer.compare(o1Coord.distanceTo(thisCoord), o2Coord.distanceTo(thisCoord));
                 }
@@ -244,7 +241,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 return 0;
             });
 
-            for (Object iter : array) {
+            for (IGridTransmitter<A, N, BUFFER> iter : list) {
                 if (iter instanceof TransmitterImpl) {
                     TileEntityTransmitter t = ((TransmitterImpl) iter).containingTile;
 

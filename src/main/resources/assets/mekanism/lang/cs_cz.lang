@@ -379,9 +379,9 @@ upgrade.muffling=Dušení
 upgrade.muffling.desc=Snižuje hluk generovaný strojem.
 
 # Key description text
-key.mode=Přepínání Módů Předmětů
-key.armorMode=Přepínání Módů Brnění
-key.voice=Hlas
+mekanism.key.mode=Přepínání Módů Předmětů
+mekanism.key.armorMode=Přepínání Módů Brnění
+mekanism.key.voice=Hlas
 
 # Entities
 entity.Robit.name=Robit
@@ -616,7 +616,7 @@ gui.portableTeleporter=Přenosný Teleportér
 
 gui.robit=Robit
 gui.robit.smelting=Robit Výpalovna
-gui.robit.inventory=Robit Onventář
+gui.robit.inventory=Robit Inventář
 gui.robit.crafting=Robit Výroba
 gui.robit.greeting=Ahoj, jsem
 gui.robit.toggleFollow=Sepnout 'následovat' mód
@@ -635,9 +635,14 @@ gui.password.identical=Identické
 gui.password.invalid=Neplatné
 gui.password=Heslo
 
-gui.logisticalSorter.default=Výchozí
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Zaoblená-červenka
+mekanism.gui.logisticalSorter.default=Výchozí
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.autoEject.tooltip=Automaticky posílá všem připojeným inventářům.
+mekanism.gui.logisticalSorter.roundRobin=Střídat
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Střídat mezi všemi připojenými inventáři.
+mekanism.gui.logisticalSorter.singleItem=Single
+mekanism.gui.logisticalSorter.singleItem.tooltip=Posílat prředměty po jednom..
+
 # previous DEFINITELLY wrong, dunno what the original means
 gui.teleporter.notReady=Nepřipraven
 gui.teleporter.ready=Připraven
@@ -703,7 +708,7 @@ tooltip.recipeType=Typ receptu
 tooltip.hold=Drž
 tooltip.forDesc=pro popis
 tooltip.forDetails=pro detaily
-tooltip.fireMode=Ohnivý Mód
+mekanism.tooltip.fireMode=Ohnivý Mód: %s
 tooltip.capacity=Kapacita
 tooltip.pumpRate=Rychlost Pumpy
 tooltip.items=Předměty
@@ -731,7 +736,7 @@ tooltip.tile=Dlaždice
 tooltip.keysFound=Klíč(e) nalezen(y)
 tooltip.noKey=Žádný klíč
 tooltip.hp=HP
-tooltip.configureState=Konfigurovat Stav
+mekanism.tooltip.configureState=Konfigurovat Stav: %s
 tooltip.outputRate=Rychlost Výstupu
 tooltip.insufficientFuel=Nedostatek Paliva
 tooltip.readyForReaction=Připraven na Reakci
@@ -743,7 +748,7 @@ tooltip.invalid=Neplatný
 tooltip.encoded=Zakódovaný
 tooltip.ingredients=Ingredience
 
-tooltip.portableTank.bucketMode=Kyblíkový Mód
+mekanism.tooltip.portableTank.bucketMode=Kyblíkový Mód: %s
 # totally legit and not funny sounding :D
 tooltip.disassembler.normal=normální
 tooltip.disassembler.slow=pomalý
@@ -764,7 +769,7 @@ tooltip.jetpack.disabled=Deaktivovaný
 tooltip.flamethrower.combat=Souboj
 tooltip.flamethrower.heat=Teplo
 tooltip.flamethrower.inferno=Peklo
-tooltip.flamethrower.modeBump=Mód plamenometu změněn na
+mekanism.tooltip.flamethrower.modeBump=Mód plamenometu změněn na %s
 
 tooltip.seismicReader.needsEnergy=Nedostatek energie na interpretaci vibrací
 tooltip.seismicReader.noVibrations=Nenalezeny žádné vibrace

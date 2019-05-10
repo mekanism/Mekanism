@@ -124,8 +124,8 @@ public class ItemNetworkReader extends ItemEnergized {
                                   .getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY,
                                         iterSide.getOpposite());
 
-                            if (transmitter.getTransmitterNetwork().possibleAcceptors
-                                  .containsKey(coord.offset(iterSide.getOpposite())) && !iteratedNetworks
+                            if (transmitter.getTransmitterNetwork().getPossibleAcceptors()
+                                  .contains(coord.offset(iterSide.getOpposite())) && !iteratedNetworks
                                   .contains(transmitter.getTransmitterNetwork())) {
                                 player.sendMessage(new TextComponentString(
                                       EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" + transmitter
@@ -133,7 +133,7 @@ public class ItemNetworkReader extends ItemEnergized {
                                             + " -------------"));
                                 player.sendMessage(new TextComponentString(
                                       EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter
-                                            .getTransmitterNetwork().acceptorDirections
+                                            .getTransmitterNetwork().getAcceptorDirections()
                                             .get(coord.offset(iterSide.getOpposite()))));
                                 player.sendMessage(new TextComponentString(
                                       EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]"

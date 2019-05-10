@@ -347,9 +347,9 @@ upgrade.gas=Gas
 upgrade.gas.desc=Aumenta l'efficienza dei !nmacchinari che vanno a gas.
 
 # Key description text
-key.mode=Scambia modalità oggetto
-key.armorMode=Scambia modalità armatura
-key.voice=Voce
+mekanism.key.mode=Scambia modalità oggetto
+mekanism.key.armorMode=Scambia modalità armatura
+mekanism.key.voice=Voce
 
 # Entities
 entity.Robit.name=Robit
@@ -553,9 +553,10 @@ gui.password.identical=Identico
 gui.password.invalid=Invalido
 gui.password=Password
 
-gui.logisticalSorter.default=Predefinito
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Circolare
+mekanism.gui.logisticalSorter.default=Predefinito
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.roundRobin=Cir
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Circolare
 
 gui.teleporter.notReady=Non pronto
 gui.teleporter.ready=Pronto
@@ -618,7 +619,7 @@ tooltip.recipeType=Tipo di ricetta
 tooltip.hold=Tieni premuto
 tooltip.forDesc=per una descrizione
 tooltip.forDetails=per dettagli
-tooltip.fireMode=Fire Mode
+mekanism.tooltip.fireMode=Fire Mode: %s
 tooltip.capacity=Capacità
 tooltip.pumpRate=Ritmo della pompa
 tooltip.items=Oggetti
@@ -646,12 +647,12 @@ tooltip.tile=Tile
 tooltip.keysFound=Parola chiave trovato/i
 tooltip.noKey=Nessuna parola chiave
 tooltip.hp=HP
-tooltip.configureState=Configura stato
+mekanism.tooltip.configureState=Configura stato è ora %s
 tooltip.outputRate=Ritmo di uscita
 tooltip.insufficientFuel=Carburante insufficiente
 tooltip.readyForReaction=Pronto per Reazione
 
-tooltip.portableTank.bucketMode=Modalità secchio
+mekanism.tooltip.portableTank.bucketMode=Modalità secchio: %s
 
 tooltip.disassembler.normal=normale
 tooltip.disassembler.slow=lento

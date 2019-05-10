@@ -14,11 +14,8 @@ public class TOreDictFilter extends TransporterFilter implements IOreDictFilter 
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
-        if (itemStack.isEmpty()) {
-            return false;
-        }
-
-        return new OreDictFinder(oreDictName).modifies(itemStack);
+        return super.canFilter(itemStack, strict) &&
+                new OreDictFinder(oreDictName).modifies(itemStack);
     }
 
     @Override

@@ -385,9 +385,9 @@ upgrade.muffling=Dämpfung
 upgrade.muffling.desc=Verringert den von Maschinen produzierten Schall.
 
 # Key description text
-key.mode=Moduswechsel
-key.armorMode=Küstungsmoduswechsel
-key.voice=Stimme
+mekanism.key.mode=Moduswechsel
+mekanism.key.armorMode=Küstungsmoduswechsel
+mekanism.key.voice=Stimme
 
 # Entities
 entity.Robit.name=Robit
@@ -642,9 +642,10 @@ gui.password.identical=Identisch
 gui.password.invalid=Ungültig
 gui.password=Passwort
 
-gui.logisticalSorter.default=Standard
-gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round-Robin
+mekanism.gui.logisticalSorter.default=Standard
+mekanism.gui.logisticalSorter.autoEject=Auto
+mekanism.gui.logisticalSorter.roundRobin=RR
+mekanism.gui.logisticalSorter.roundRobin.tooltip=Round-Robin
 
 gui.teleporter.notReady=Nicht bereit
 gui.teleporter.ready=Bereit
@@ -710,7 +711,7 @@ tooltip.recipeType=Rezeptart
 tooltip.hold=Halte
 tooltip.forDesc=für eine Beschreibung
 tooltip.forDetails=für Details
-tooltip.fireMode=Feuermodus
+mekanism.tooltip.fireMode=Feuermodus: %s
 tooltip.capacity=Kapazität
 tooltip.pumpRate=Pumprate
 tooltip.items=Items
@@ -738,7 +739,7 @@ tooltip.tile=Tile
 tooltip.keysFound=Key(s) gefunden
 tooltip.noKey=Kein key
 tooltip.hp=HP
-tooltip.configureState=Status Konfigurieren
+mekanism.tooltip.configureState=Status Konfigurieren: %s
 tooltip.outputRate=Output-Rate
 tooltip.insufficientFuel=Nicht genügend Treibstoff
 tooltip.readyForReaction=Bereit für Reaktion
@@ -749,8 +750,6 @@ tooltip.itemAmount=Item-Menge
 tooltip.invalid=Ungültig
 tooltip.encoded=Codiert
 tooltip.ingredients=Bestandteile
-
-tooltip.portableTank.bucketMode=Bucket Mode
 
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=slow
@@ -771,7 +770,7 @@ tooltip.jetpack.disabled=Deaktiviert
 tooltip.flamethrower.combat=Kampf
 tooltip.flamethrower.heat=Hitze
 tooltip.flamethrower.inferno=Inferno
-tooltip.flamethrower.modeBump=Flammenwerfermodus geändert:
+mekanism.tooltip.flamethrower.modeBump=Flammenwerfermodus geändert: %s
 
 tooltip.seismicReader.needsEnergy=Nicht genügend Energie, um Erschütterung zu bestimmen
 tooltip.seismicReader.noVibrations=Nicht fähig, Vibrationen zu erkennen

@@ -399,10 +399,10 @@ upgrade.anchor=アンカー
 upgrade.anchor.desc=マシンの置かれているチャンクを読み込みます。
 
 # Key description text
-key.mode=アイテムモード切り替え
-key.armorMode=アーマーモード切り替え
-key.feetMode=足装備モードの切り替え
-key.voice=周波数
+mekanism.key.mode=アイテムモード切り替え
+mekanism.key.armorMode=アーマーモード切り替え
+mekanism.key.feetMode=足装備モードの切り替え
+mekanism.key.voice=周波数
 
 # Entities
 entity.Robit.name=ロビット
@@ -662,9 +662,9 @@ gui.password.identical=同じ
 gui.password.invalid=無効
 gui.password=パスワード
 
-gui.logisticalSorter.default=デフォルト
-gui.logisticalSorter.auto=自動
-gui.logisticalSorter.roundRobin=ラウンドロビン
+mekanism.gui.logisticalSorter.default=デフォルト
+mekanism.gui.logisticalSorter.autoEject=自動
+mekanism.gui.logisticalSorter.roundRobin=ラウンドロビン
 
 gui.teleporter.notReady=準備が出来ていません
 gui.teleporter.ready=準備完了
@@ -738,7 +738,7 @@ tooltip.recipeType=レシピタイプ
 tooltip.hold=押下§7:
 tooltip.forDesc=説明
 tooltip.forDetails=詳細
-tooltip.fireMode=ファイヤーモード
+mekanism.tooltip.fireMode=ファイヤーモード: %s
 tooltip.capacity=容量
 tooltip.pumpRate=転送速度
 tooltip.items=アイテム
@@ -765,7 +765,7 @@ tooltip.meta=メタデータ
 tooltip.tile=タイル
 tooltip.keysFound=割り当てられている鉱石辞書名
 tooltip.noKey=該当なし
-tooltip.configureState=コンフィグの設定
+mekanism.tooltip.configureState=コンフィグの設定: %s
 tooltip.outputRate=出力量
 tooltip.insufficientFuel=燃料不足
 tooltip.readyForReaction=起動準備完了
@@ -780,7 +780,7 @@ tooltip.conduction=伝導
 tooltip.insulation=絶縁
 tooltip.heatCapacity=熱容量
 
-tooltip.portableTank.bucketMode=バケツモード
+mekanism.tooltip.portableTank.bucketMode=バケツモード: %s
 
 tooltip.disassembler.normal=通常
 tooltip.disassembler.slow=遅い
@@ -804,7 +804,7 @@ tooltip.freerunner.disabled=無効
 tooltip.flamethrower.combat=実戦
 tooltip.flamethrower.heat=加熱
 tooltip.flamethrower.inferno=焦熱
-tooltip.flamethrower.modeBump=火炎放射器のモードを変更
+mekanism.tooltip.flamethrower.modeBump=火炎放射器のモードを変更 %s
 
 tooltip.seismicReader.needsEnergy=弾性波の解析に必要なエネルギーがありません
 tooltip.seismicReader.noVibrations=弾性波を検出できません

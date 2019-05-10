@@ -22,7 +22,7 @@ public class StackSearcher {
         }
     }
 
-    public InvStack takeTopStack(Finder id) {
+    public InvStack takeTopStack(Finder id, int amount) {
         if (!InventoryUtils.assertItemHandler("StackSearcher", tileEntity, side.getOpposite())) {
             return null;
         }
@@ -30,7 +30,7 @@ public class StackSearcher {
         IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
 
         for (slotCount = slotCount - 1; slotCount >= 0; slotCount--) {
-            ItemStack stack = inventory.extractItem(slotCount, 64, true);
+            ItemStack stack = inventory.extractItem(slotCount, amount, true);
 
             if (!stack.isEmpty() && id.modifies(stack)) {
                 return new InvStack(tileEntity, slotCount, stack, side.getOpposite());

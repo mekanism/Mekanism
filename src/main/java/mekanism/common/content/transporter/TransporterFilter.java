@@ -60,12 +60,14 @@ public abstract class TransporterFilter implements IFilter {
         return filter;
     }
 
-    public abstract boolean canFilter(ItemStack itemStack, boolean strict);
+    public boolean canFilter(ItemStack itemStack, boolean strict) {
+        return !itemStack.isEmpty();
+    }
 
     public abstract Finder getFinder();
 
-    public InvStack getStackFromInventory(StackSearcher searcher) {
-        return searcher.takeTopStack(getFinder());
+    public InvStack getStackFromInventory(StackSearcher searcher, boolean singleItem) {
+        return searcher.takeTopStack(getFinder(), singleItem ? 1 : 64);
     }
 
     public void write(NBTTagCompound nbtTags) {

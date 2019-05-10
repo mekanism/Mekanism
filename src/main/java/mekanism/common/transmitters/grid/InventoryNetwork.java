@@ -34,7 +34,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack) {
         List<AcceptorData> toReturn = new ArrayList<>();
 
-        for (Coord4D coord : possibleAcceptors.keySet()) {
+        for (Coord4D coord : possibleAcceptors) {
             if (coord == null || coord.equals(stack.homeLocation)) {
                 continue;
             }
@@ -42,7 +42,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             TileEntity acceptor = coord.getTileEntity(getWorld());
 
-            if (sides == null || sides.isEmpty()) {
+            if (acceptor == null || sides == null || sides.isEmpty()) {
                 continue;
             }
 

@@ -14,11 +14,8 @@ public class TModIDFilter extends TransporterFilter implements IModIDFilter {
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
-        if (itemStack.isEmpty()) {
-            return false;
-        }
-
-        return new ModIDFinder(modID).modifies(itemStack);
+        return super.canFilter(itemStack, strict) &&
+                new ModIDFinder(modID).modifies(itemStack);
     }
 
     @Override

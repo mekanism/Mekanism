@@ -233,8 +233,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
             if (type == MachineType.FLUID_TANK) {
                 list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + EnumColor.GREY
-                            + LangUtils.transYesNo(getBucketMode(itemstack)));
+                      EnumColor.INDIGO + LangUtils.localizeWithFormat("mekanism.tooltip.portableTank.bucketMode", LangUtils.transYesNo(getBucketMode(itemstack))));
             }
 
             if (type.isElectric) {

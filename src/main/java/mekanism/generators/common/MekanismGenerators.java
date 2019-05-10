@@ -14,6 +14,7 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.recipe.RecipeHandler;
@@ -110,7 +111,7 @@ public class MekanismGenerators implements IModule {
         CompoundDataFixer fixer = FMLCommonHandler.instance().getDataFixer();
         ModFixs fixes = fixer.init(MODID, DATA_VERSION);
         //Fix old tile entity names
-        fixes.registerFix(FixTypes.BLOCK_ENTITY, new GeneratorTEFixer());
+        fixes.registerFix(FixTypes.BLOCK_ENTITY, new GeneratorTEFixer(MekFixers.TILE_ENTITIES));
 
         //Finalization
         Mekanism.logger.info("Loaded MekanismGenerators module.");

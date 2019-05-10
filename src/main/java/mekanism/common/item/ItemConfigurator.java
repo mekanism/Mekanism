@@ -6,8 +6,11 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
+import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
@@ -26,10 +29,12 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.FieldsAreNonnullByDefault;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.TextComponentGroup;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -43,6 +48,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -61,8 +67,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
     public final int ENERGY_PER_CONFIGURE = 400;
     public final int ENERGY_PER_ITEM_DUMP = 8;
-
-    private Random random = new Random();
 
     public ItemConfigurator() {
         super(60000);
@@ -89,29 +93,30 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
             if (getState(stack).isConfigurating()) //Configurate
             {
+                TransmissionType transmissionType = Objects.requireNonNull(getState(stack).getTransmission(),
+                      "Configurating state requires transmission type");
                 if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig()
-                      .supports(getState(stack).getTransmission())) {
+                      .supports(transmissionType)) {
                     ISideConfiguration config = (ISideConfiguration) tile;
-                    SideData initial = config.getConfig()
-                          .getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+                    SideData initial = config.getConfig().getOutput(transmissionType, side, config.getOrientation());
 
                     if (initial != TileComponentConfig.EMPTY) {
                         if (!player.isSneaking()) {
                             player.sendMessage(new TextComponentString(
                                   EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " " + getViewModeText(
-                                        getState(stack).getTransmission()) + ": " + initial.color + initial.localize()
+                                        transmissionType) + ": " + initial.color + initial.localize()
                                         + " (" + initial.color.getColoredName() + ")"));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-                                    MekanismUtils.incrementOutput(config, getState(stack).getTransmission(),
+                                    MekanismUtils.incrementOutput(config, transmissionType,
                                           MekanismUtils.getBaseOrientation(side, config.getOrientation()));
                                     SideData data = config.getConfig()
-                                          .getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+                                          .getOutput(transmissionType, side, config.getOrientation());
                                     player.sendMessage(new TextComponentString(
                                           EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " "
-                                                + getToggleModeText(getState(stack).getTransmission()) + ": "
+                                                + getToggleModeText(transmissionType) + ": "
                                                 + data.color + data.localize() + " (" + data.color.getColoredName()
                                                 + ")"));
 
@@ -279,30 +284,46 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
         }
     }
 
+    @ParametersAreNonnullByDefault
+    @MethodsReturnNonnullByDefault
+    @FieldsAreNonnullByDefault
     public enum ConfiguratorMode {
-        CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_GASES("configurate", "(" + TransmissionType.GAS.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_ENERGY("configurate", "(" + TransmissionType.ENERGY.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_HEAT("configurate", "(" + TransmissionType.HEAT.localize() + ")", EnumColor.BRIGHT_GREEN, true),
-        EMPTY("empty", "", EnumColor.DARK_RED, false),
-        ROTATE("rotate", "", EnumColor.YELLOW, false),
-        WRENCH("wrench", "", EnumColor.PINK, false);
+        CONFIGURATE_ITEMS("configurate", TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_FLUIDS("configurate", TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_GASES("configurate", TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_ENERGY("configurate", TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_HEAT("configurate", TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true),
+        EMPTY("empty", null, EnumColor.DARK_RED, false),
+        ROTATE("rotate", null, EnumColor.YELLOW, false),
+        WRENCH("wrench", null, EnumColor.PINK, false);
 
         private String name;
-        private String info;
+        @Nullable
+        private final TransmissionType transmissionType;
         private EnumColor color;
         private boolean configurating;
 
-        ConfiguratorMode(String s, String s1, EnumColor c, boolean b) {
+        ConfiguratorMode(String s, @Nullable TransmissionType s1, EnumColor c, boolean b) {
             name = s;
-            info = s1;
+            transmissionType = s1;
             color = c;
             configurating = b;
         }
 
         public String getName() {
-            return LangUtils.localize("tooltip.configurator." + name) + " " + info;
+            String name = LangUtils.localize("tooltip.configurator." + this.name);
+            if (this.transmissionType != null) {
+                name += " (" + transmissionType.localize() + ")";
+            }
+            return name;
+        }
+
+        public ITextComponent getNameComponent() {
+            TextComponentGroup translation = new TextComponentGroup().translation("tooltip.configurator." + name);
+            if (this.transmissionType != null) {
+                translation.string(" (").translation(transmissionType.getTranslationKey()).string(")");
+            }
+            return translation;
         }
 
         public EnumColor getColor() {
@@ -313,6 +334,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
             return configurating;
         }
 
+        @Nullable
         public TransmissionType getTransmission() {
             switch (this) {
                 case CONFIGURATE_ITEMS:

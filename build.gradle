@@ -159,10 +159,16 @@ processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
+def setMainManifestProps = { Manifest manifest->
+    manifest.attributes (
+            'FMLAT': 'mekanism_at.cfg',
+            'FMLCorePluginContainsFMLMod': 'true',
+            'FMLCorePlugin': 'mekanism.coremod.MekanismCoremod'
+    )
+}
+
 jar {
-    manifest {
-        attributes 'FMLAT': 'mekanism_at.cfg'
-    }
+    manifest(setMainManifestProps)
 }
 
 task coreJar(type: Jar) {
@@ -179,9 +185,7 @@ task coreJar(type: Jar) {
         exclude 'mekanism/tools/**', 'mekanism/generators/**', 'assets/mekanismtools/**', 'assets/mekanismgenerators/**', 'mcmod.info'
     }
 
-    manifest {
-        attributes 'FMLAT': 'mekanism_at.cfg'
-    }
+    manifest(setMainManifestProps)
 }
 
 task toolsJar(type: Jar) {
@@ -233,6 +237,14 @@ artifacts {
 task fullBuild(type: Delete) {
     delete jar
     dependsOn "build"
+}
+
+runClient {
+    jvmArgs "-Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
+}
+
+runServer {
+    jvmArgs "-Dfml.coreMods.load=mekanism.coremod.MekanismCoremod"
 }
 
 apply plugin: 'maven'

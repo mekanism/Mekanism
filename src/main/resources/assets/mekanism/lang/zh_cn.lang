@@ -400,9 +400,9 @@ upgrade.anchor=锚
 upgrade.anchor.desc=保存机器的载入.
 
 # Key description text
-key.mode=模式切换
-key.armorMode=装甲模式切换
-key.voice=声音
+mekanism.key.mode=模式切换
+mekanism.key.armorMode=装甲模式切换
+mekanism.key.voice=声音
 
 # Entities
 entity.Robit.name=机器人
@@ -658,9 +658,9 @@ gui.password.identical=恒等
 gui.password.invalid=无效
 gui.password=密码
 
-gui.logisticalSorter.default=默认
-gui.logisticalSorter.auto=自动
-gui.logisticalSorter.roundRobin=循环模式
+mekanism.gui.logisticalSorter.default=默认
+mekanism.gui.logisticalSorter.autoEject=自动
+mekanism.gui.logisticalSorter.roundRobin=循环模式
 
 gui.teleporter.notReady=未准备
 gui.teleporter.ready=已准备
@@ -732,7 +732,7 @@ tooltip.recipeType=合成类型
 tooltip.hold=按住
 tooltip.forDesc=查看描述
 tooltip.forDetails=查看详情
-tooltip.fireMode=火焰模式
+mekanism.tooltip.fireMode=火焰模式: %s
 tooltip.capacity=容量
 tooltip.pumpRate=泵速
 tooltip.items=物品
@@ -760,7 +760,7 @@ tooltip.tile=Tile
 tooltip.keysFound=找到关键字
 tooltip.noKey=无关键字
 tooltip.hp=HP
-tooltip.configureState=配置状态
+mekanism.tooltip.configureState=配置状态%s
 tooltip.outputRate=输出速率
 tooltip.insufficientFuel=燃料不足
 tooltip.readyForReaction=已准备好反应
@@ -775,7 +775,7 @@ tooltip.conduction=传导性
 tooltip.insulation=隔热性
 tooltip.heatCapacity=热容量
 
-tooltip.portableTank.bucketMode=水桶模式
+mekanism.tooltip.portableTank.bucketMode=水桶模式: %s
 
 tooltip.disassembler.normal=正常
 tooltip.disassembler.slow=慢
@@ -799,7 +799,7 @@ tooltip.freerunner.disabled=禁用
 tooltip.flamethrower.combat=战斗
 tooltip.flamethrower.heat=热量
 tooltip.flamethrower.inferno=地狱
-tooltip.flamethrower.modeBump=火焰喷射器模式切换为
+mekanism.tooltip.flamethrower.modeBump=火焰喷射器模式切换为%s
 
 tooltip.seismicReader.needsEnergy=能量不足无法诠释振动
 tooltip.seismicReader.noVibrations=未能发现任何振动

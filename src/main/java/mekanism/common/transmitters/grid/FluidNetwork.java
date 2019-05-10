@@ -127,7 +127,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private int tickEmit(FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new HashSet<>();
         int totalHandlers = 0;
-        for (Coord4D coord : possibleAcceptors.keySet()) {
+        for (Coord4D coord : possibleAcceptors) {
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
                 continue;
