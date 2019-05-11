@@ -69,7 +69,7 @@ public class PlayerState {
     }
 
     public boolean isJetpackOn(EntityPlayer p) {
-        return activeJetpacks.contains(p.getName());
+        return activeJetpacks.contains(p.getUniqueID());
     }
 
     public Set<UUID> getActiveJetpacks() {
