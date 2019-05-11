@@ -36,7 +36,6 @@ public enum Wrenches {
                 w.itemClass = null;
                 continue;
             }
-
             try {
                 w.provider = w.mekProxy.get();
             } catch (Exception e) {
@@ -54,7 +53,6 @@ public enum Wrenches {
                 return w.provider.get(it);
             }
         }
-
         return null;
     }
 

@@ -25,9 +25,7 @@ public class RecipeFormula {
         for (int i = 0; i < 9; i++) {
             input.set(i, StackUtils.size(inv.get(start + i), 1));
         }
-
         resetToRecipe();
-
         recipe = RecipeUtils.getRecipeFromGrid(dummy, world);
     }
 
@@ -41,44 +39,35 @@ public class RecipeFormula {
         for (int i = 0; i < 9; i++) {
             dummy.setInventorySlotContents(i, newInput.get(start + i));
         }
-
         return recipe.matches(dummy, world);
     }
 
     public boolean isIngredientInPos(World world, ItemStack stack, int i) {
         resetToRecipe();
         dummy.setInventorySlotContents(i, stack);
-
         return recipe.matches(dummy, world);
     }
 
     public boolean isIngredient(World world, ItemStack stack) {
         for (int i = 0; i < 9; i++) {
             dummy.setInventorySlotContents(i, stack);
-
             if (recipe.matches(dummy, world)) {
                 return true;
             }
-
             dummy.setInventorySlotContents(i, input.get(i));
         }
-
         return false;
     }
 
     public List<Integer> getIngredientIndices(World world, ItemStack stack) {
         List<Integer> ret = new ArrayList<>();
-
         for (int i = 0; i < 9; i++) {
             dummy.setInventorySlotContents(i, stack);
-
             if (recipe.matches(dummy, world)) {
                 ret.add(i);
             }
-
             dummy.setInventorySlotContents(i, input.get(i));
         }
-
         return ret;
     }
 

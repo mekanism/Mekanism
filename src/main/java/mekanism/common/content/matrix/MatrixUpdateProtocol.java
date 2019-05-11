@@ -30,13 +30,10 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 
     @Override
     public boolean isValidInnerNode(int x, int y, int z) {
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension())
-              .getTileEntity(pointer.getWorld());
-
+        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
         if (tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider) {
             return true;
         }
-
         return isAir(x, y, z);
     }
 
@@ -58,13 +55,10 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     @Override
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedMatrixData> cache,
           MultiblockCache<SynchronizedMatrixData> merge) {
-        List<ItemStack> rejects = StackUtils
-              .getMergeRejects(((MatrixCache) cache).inventory, ((MatrixCache) merge).inventory);
-
+        List<ItemStack> rejects = StackUtils.getMergeRejects(((MatrixCache) cache).inventory, ((MatrixCache) merge).inventory);
         if (!rejects.isEmpty()) {
             rejectedItems.addAll(rejects);
         }
-
         StackUtils.merge(((MatrixCache) cache).inventory, ((MatrixCache) merge).inventory);
     }
 
@@ -72,7 +66,6 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     protected boolean canForm(SynchronizedMatrixData structure) {
         for (Coord4D coord : innerNodes) {
             TileEntity tile = coord.getTileEntity(pointer.getWorld());
-
             if (tile instanceof TileEntityInductionCell) {
                 structure.cells.add(coord);
                 structure.storageCap += ((TileEntityInductionCell) tile).tier.getMaxEnergy();
@@ -81,7 +74,6 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
                 structure.transferCap += ((TileEntityInductionProvider) tile).tier.getOutput();
             }
         }
-
         return true;
     }
 }

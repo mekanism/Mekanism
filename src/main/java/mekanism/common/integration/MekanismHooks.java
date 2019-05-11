@@ -114,12 +114,10 @@ public final class MekanismHooks {
 
     public void hookInit() {
         //Integrate with Waila
-        FMLInterModComms
-              .sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
+        FMLInterModComms.sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
 
         //Register TOP handler
-        FMLInterModComms
-              .sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
+        FMLInterModComms.sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
         if (OCLoaded) {
             loadOCDrivers();
         }
@@ -152,13 +150,11 @@ public final class MekanismHooks {
         if (MALoaded) {
             registerMysticalAgricultureRecipes();
         }
-
         if (CraftTweakerLoaded) {
             //CraftTweaker must be ran after all other recipe changes
             CrafttweakerIntegration.registerCommands();
             CrafttweakerIntegration.applyRecipeChanges();
         }
-
         Wrenches.initialise();
     }
 
@@ -168,11 +164,9 @@ public final class MekanismHooks {
             if (!entry.getInput().getInputs().isEmpty()) {
                 if (!RecipeHandler.Recipe.CRUSHER.containsRecipe(entry.getInput().getInputs().get(0))) {
                     List<String> names = OreDictCache.getOreDictName(entry.getInput().getInputs().get(0));
-
                     for (String name : names) {
                         if (name.startsWith("ingot") || name.startsWith("crystal")) {
-                            RecipeHandler.addCrusherRecipe(entry.getInput().getInputs().get(0),
-                                  entry.getOutput().iterator().next());
+                            RecipeHandler.addCrusherRecipe(entry.getInput().getInputs().get(0), entry.getOutput().iterator().next());
                             break;
                         }
                     }
@@ -262,14 +256,11 @@ public final class MekanismHooks {
     private void registerAE2P2P() {
         for (TransmitterType type : TransmitterType.values()) {
             if (type.getTransmission().equals(TransmissionType.ITEM)) {
-                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item",
-                      new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
+                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-item", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
             } else if (type.getTransmission().equals(TransmissionType.FLUID)) {
-                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid",
-                      new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
+                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fluid", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
             } else if (type.getTransmission().equals(TransmissionType.ENERGY)) {
-                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power",
-                      new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
+                FMLInterModComms.sendMessage(APPLIED_ENERGISTICS_2_MOD_ID, "add-p2p-attunement-fe-power", new ItemStack(MekanismBlocks.Transmitter, 1, type.ordinal()));
             }
         }
     }
@@ -339,8 +330,7 @@ public final class MekanismHooks {
                 //there appears to be no way to get this via api, so fall back to unloc names
                 crystalSeed.get().getSubItems(CreativeTabs.SEARCH, seeds);
                 //Crystal seeds use a meta AND NBT to determine growth state, so we need to ignore the NBT, and use the meta which should be fixed on what stage it's at
-                MachineInput.addCustomItemMatcher(crystalSeed.get().getClass(),
-                      (def, test) -> def.getItem() == test.getItem() && def.getMetadata() == test.getMetadata());
+                MachineInput.addCustomItemMatcher(crystalSeed.get().getClass(), (def, test) -> def.getItem() == test.getItem() && def.getMetadata() == test.getMetadata());
                 for (ItemStack stack : seeds) {
                     String unloc = crystalSeed.get().getTranslationKey(stack);
                     if (unloc.endsWith("certus") && pureCertus.isPresent()) {
@@ -352,7 +342,6 @@ public final class MekanismHooks {
                     }
                 }
             }
-
         } catch (Exception e) {
             Mekanism.logger.error("Something went wrong with ae2 integration", e);
         } catch (IncompatibleClassChangeError e) {
@@ -407,10 +396,8 @@ public final class MekanismHooks {
         Item oreItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, oreName));
         Item dropItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(MYSTICALAGRICULTURE_MOD_ID, ore.itemName));
         if (oreItem != null && dropItem != null) {
-            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(oreItem),
-                  new ItemStack(dropItem, type.quantity, ore.itemMeta));
-            RecipeHandler.addCombinerRecipe(new ItemStack(dropItem, type.quantity + 2, ore.itemMeta),
-                  new ItemStack(type.baseBlock), new ItemStack(oreItem));
+            RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(oreItem), new ItemStack(dropItem, type.quantity, ore.itemMeta));
+            RecipeHandler.addCombinerRecipe(new ItemStack(dropItem, type.quantity + 2, ore.itemMeta), new ItemStack(type.baseBlock), new ItemStack(oreItem));
         }
     }
 
@@ -451,5 +438,4 @@ public final class MekanismHooks {
             this.quantity = quantity;
         }
     }
-
 }

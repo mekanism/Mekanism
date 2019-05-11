@@ -21,8 +21,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public static double CASING_INSULATION_COEFFICIENT = 1;
     public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
-    public static double BASE_BOIL_TEMP =
-          100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset);
+    public static double BASE_BOIL_TEMP = 100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset);
 
     public FluidStack waterStored;
     public FluidStack prevWater;
@@ -58,35 +57,29 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
      * @return how much heat energy is needed to convert one unit of water into steam
      */
     public static double getHeatEnthalpy() {
-        return MekanismConfig.current().general.maxEnergyPerSteam.val() / MekanismConfig.current().general.energyPerHeat
-              .val();
+        return MekanismConfig.current().general.maxEnergyPerSteam.val() / MekanismConfig.current().general.energyPerHeat.val();
     }
 
     public double getHeatAvailable() {
         double heatAvailable = (temperature - BASE_BOIL_TEMP) * locations.size();
-        return Math.min(heatAvailable,
-              superheatingElements * MekanismConfig.current().general.superheatingHeatTransfer.val());
+        return Math.min(heatAvailable, superheatingElements * MekanismConfig.current().general.superheatingHeatTransfer.val());
     }
 
     public boolean needsRenderUpdate() {
         if ((waterStored == null && prevWater != null) || (waterStored != null && prevWater == null)) {
             return true;
         }
-
         if (waterStored != null) {
             if ((waterStored.getFluid() != prevWater.getFluid()) || (waterStored.amount != prevWater.amount)) {
                 return true;
             }
         }
-
         if ((steamStored == null && prevSteam != null) || (steamStored != null && prevSteam == null)) {
             return true;
         }
-
         if (steamStored != null) {
             return (steamStored.getFluid() != prevSteam.getFluid()) || (steamStored.amount != prevSteam.amount);
         }
-
         return false;
     }
 
@@ -117,11 +110,9 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     @Override
     public double[] simulateHeat() {
-        double invConduction = IHeatTransfer.AIR_INVERSE_COEFFICIENT
-                               + (CASING_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
+        double invConduction = IHeatTransfer.AIR_INVERSE_COEFFICIENT + (CASING_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT) * locations.size();
         double heatToTransfer = temperature / invConduction;
         transferHeatTo(-heatToTransfer);
-
         return new double[]{0, heatToTransfer};
     }
 
@@ -129,7 +120,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public double applyTemperatureChange() {
         temperature += heatToAbsorb / locations.size();
         heatToAbsorb = 0;
-
         return temperature;
     }
 

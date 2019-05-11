@@ -18,40 +18,33 @@ public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
         if (itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock)) {
             return false;
         }
-
         return new OreDictFinder(oreDictName).modifies(itemStack);
     }
 
     @Override
     public NBTTagCompound write(NBTTagCompound nbtTags) {
         super.write(nbtTags);
-
         nbtTags.setInteger("type", 1);
         nbtTags.setString("oreDictName", oreDictName);
-
         return nbtTags;
     }
 
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-
         oreDictName = nbtTags.getString("oreDictName");
     }
 
     @Override
     public void write(TileNetworkList data) {
         data.add(1);
-
         super.write(data);
-
         data.add(oreDictName);
     }
 
     @Override
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
-
         oreDictName = PacketHandler.readString(dataStream);
     }
 
@@ -64,8 +57,7 @@ public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MOreDictFilter && ((MOreDictFilter) filter).oreDictName
-              .equals(oreDictName);
+        return super.equals(filter) && filter instanceof MOreDictFilter && ((MOreDictFilter) filter).oreDictName.equals(oreDictName);
     }
 
     @Override
@@ -74,7 +66,6 @@ public class MOreDictFilter extends MinerFilter implements IOreDictFilter {
         filter.replaceStack = replaceStack;
         filter.requireStack = requireStack;
         filter.oreDictName = oreDictName;
-
         return filter;
     }
 

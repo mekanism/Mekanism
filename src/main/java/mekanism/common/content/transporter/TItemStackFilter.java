@@ -30,9 +30,8 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     public InvStack getStackFromInventory(StackSearcher searcher, boolean singleItem) {
         if (sizeMode && !singleItem) {
             return searcher.takeDefinedItem(itemType, min, max);
-        } else {
-            return super.getStackFromInventory(searcher, singleItem);
         }
+        return super.getStackFromInventory(searcher, singleItem);
     }
 
     public Finder getFinder() {
@@ -42,7 +41,6 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     @Override
     public void write(NBTTagCompound nbtTags) {
         super.write(nbtTags);
-
         nbtTags.setInteger("type", 0);
         nbtTags.setBoolean("sizeMode", sizeMode);
         nbtTags.setInteger("min", min);
@@ -53,11 +51,9 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-
         sizeMode = nbtTags.getBoolean("sizeMode");
         min = nbtTags.getInteger("min");
         max = nbtTags.getInteger("max");
-
         itemType = new ItemStack(nbtTags);
     }
 
@@ -79,11 +75,9 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
     @Override
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
-
         sizeMode = dataStream.readBoolean();
         min = dataStream.readInt();
         max = dataStream.readInt();
-
         itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
     }
 
@@ -102,10 +96,8 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof TItemStackFilter && ((TItemStackFilter) filter).itemType
-              .isItemEqual(itemType)
-               && ((TItemStackFilter) filter).sizeMode == sizeMode && ((TItemStackFilter) filter).min == min
-               && ((TItemStackFilter) filter).max == max;
+        return super.equals(filter) && filter instanceof TItemStackFilter && ((TItemStackFilter) filter).itemType.isItemEqual(itemType)
+               && ((TItemStackFilter) filter).sizeMode == sizeMode && ((TItemStackFilter) filter).min == min && ((TItemStackFilter) filter).max == max;
     }
 
     @Override
@@ -117,7 +109,6 @@ public class TItemStackFilter extends TransporterFilter implements IItemStackFil
         filter.sizeMode = sizeMode;
         filter.min = min;
         filter.max = max;
-
         return filter;
     }
 }

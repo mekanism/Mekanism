@@ -21,9 +21,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class FrequencyManager {
 
     public static final int MAX_FREQ_LENGTH = 16;
-    public static final List<Character> SPECIAL_CHARS = Arrays
-          .asList('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')',
-                '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
+    public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', '?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
 
     public static boolean loaded;
 
@@ -42,19 +40,16 @@ public class FrequencyManager {
     public FrequencyManager(Class<? extends Frequency> c, String n) {
         frequencyClass = c;
         name = n;
-
         managers.add(this);
     }
 
     public FrequencyManager(Class<? extends Frequency> c, String n, UUID uuid) {
         this(c, n);
-
         ownerUUID = uuid;
     }
 
     public static void load(World world) {
         loaded = true;
-
         for (FrequencyManager manager : managers) {
             manager.createOrLoad(world);
         }
@@ -64,7 +59,6 @@ public class FrequencyManager {
         if (!loaded) {
             load(world);
         }
-
         for (FrequencyManager manager : managers) {
             manager.tickSelf(world);
         }
@@ -75,7 +69,6 @@ public class FrequencyManager {
             manager.frequencies.clear();
             manager.dataHandler = null;
         }
-
         loaded = false;
     }
 
@@ -84,20 +77,16 @@ public class FrequencyManager {
             if (freq.equals(iterFreq)) {
                 iterFreq.activeCoords.add(coord);
                 dataHandler.markDirty();
-
                 return iterFreq;
             }
         }
-
         deactivate(coord);
-
         return null;
     }
 
     public void remove(String name, UUID owner) {
         for (Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext(); ) {
             Frequency iterFreq = iter.next();
-
             if (iterFreq.name.equals(name) && iterFreq.ownerUUID.equals(owner)) {
                 iter.remove();
                 dataHandler.markDirty();
@@ -108,7 +97,6 @@ public class FrequencyManager {
     public void remove(String name) {
         for (Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext(); ) {
             Frequency iterFreq = iter.next();
-
             if (iterFreq.name.equals(name)) {
                 iter.remove();
                 dataHandler.markDirty();
@@ -128,7 +116,6 @@ public class FrequencyManager {
             if (freq.equals(iterFreq)) {
                 iterFreq.activeCoords.add(coord);
                 dataHandler.markDirty();
-
                 return iterFreq;
             }
         }
@@ -138,20 +125,15 @@ public class FrequencyManager {
             freq.valid = true;
             frequencies.add(freq);
             dataHandler.markDirty();
-
             return freq;
         }
-
         return null;
     }
 
     public void createOrLoad(World world) {
         String name = getName();
-
         if (dataHandler == null) {
-            dataHandler = (FrequencyDataHandler) world.getPerWorldStorage()
-                  .getOrLoadData(FrequencyDataHandler.class, name);
-
+            dataHandler = (FrequencyDataHandler) world.getPerWorldStorage().getOrLoadData(FrequencyDataHandler.class, name);
             if (dataHandler == null) {
                 dataHandler = new FrequencyDataHandler(name);
                 dataHandler.setManager(this);
@@ -178,7 +160,6 @@ public class FrequencyManager {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -186,18 +167,15 @@ public class FrequencyManager {
         for (Frequency iterFreq : frequencies) {
             for (Iterator<Coord4D> iter = iterFreq.activeCoords.iterator(); iter.hasNext(); ) {
                 Coord4D coord = iter.next();
-
                 if (coord.dimensionId == world.provider.getDimension()) {
                     if (!coord.exists(world)) {
                         iter.remove();
                     } else {
                         TileEntity tile = coord.getTileEntity(world);
-
                         if (!(tile instanceof IFrequencyHandler)) {
                             iter.remove();
                         } else {
                             Frequency freq = ((IFrequencyHandler) tile).getFrequency(this);
-
                             if (freq == null || !freq.equals(iterFreq)) {
                                 iter.remove();
                             }
@@ -210,7 +188,6 @@ public class FrequencyManager {
 
     public void writeFrequencies(TileNetworkList data) {
         data.add(frequencies.size());
-
         for (Frequency freq : frequencies) {
             freq.write(data);
         }
@@ -219,7 +196,6 @@ public class FrequencyManager {
     public Set<Frequency> readFrequencies(ByteBuf dataStream) {
         Set<Frequency> ret = new HashSet<>();
         int size = dataStream.readInt();
-
         try {
             for (int i = 0; i < size; i++) {
                 Frequency freq = frequencyClass.getConstructor(new Class[]{ByteBuf.class}).newInstance(dataStream);
@@ -229,13 +205,11 @@ public class FrequencyManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return ret;
     }
 
     public String getName() {
-        return ownerUUID != null ? (ownerUUID.toString() + "_" + name + "FrequencyHandler")
-                                 : (name + "FrequencyHandler");
+        return ownerUUID != null ? (ownerUUID.toString() + "_" + name + "FrequencyHandler") : (name + "FrequencyHandler");
     }
 
     public static class FrequencyDataHandler extends WorldSavedData {
@@ -264,21 +238,15 @@ public class FrequencyManager {
         public void readFromNBT(@Nonnull NBTTagCompound nbtTags) {
             try {
                 String frequencyClass = nbtTags.getString("frequencyClass");
-
                 if (nbtTags.hasKey("ownerUUID")) {
                     loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
                 }
-
                 NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
-
                 loadedFrequencies = new HashSet<>();
-
                 for (int i = 0; i < list.tagCount(); i++) {
                     NBTTagCompound compound = list.getCompoundTagAt(i);
-
                     Constructor<?> c = Class.forName(frequencyClass).getConstructor(NBTTagCompound.class);
                     Frequency freq = (Frequency) c.newInstance(compound);
-
                     loadedFrequencies.add(freq);
                 }
             } catch (Exception e) {
@@ -290,21 +258,16 @@ public class FrequencyManager {
         @Override
         public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound nbtTags) {
             nbtTags.setString("frequencyClass", manager.frequencyClass.getName());
-
             if (manager.ownerUUID != null) {
                 nbtTags.setString("ownerUUID", manager.ownerUUID.toString());
             }
-
             NBTTagList list = new NBTTagList();
-
             for (Frequency freq : manager.getFrequencies()) {
                 NBTTagCompound compound = new NBTTagCompound();
                 freq.write(compound);
                 list.appendTag(compound);
             }
-
             nbtTags.setTag("freqList", list);
-
             return nbtTags;
         }
     }

@@ -44,8 +44,7 @@ public class EnergizedSmelter {
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
                 recipes.add(new SmeltingRecipe(stack, output));
             }
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.ENERGIZED_SMELTER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.ENERGIZED_SMELTER, recipes));
             addedRecipe = true;
         }
     }
@@ -53,9 +52,8 @@ public class EnergizedSmelter {
     @ZenMethod
     public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.ENERGIZED_SMELTER, new IngredientWrapper(itemOutput),
-                        new IngredientWrapper(itemInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.ENERGIZED_SMELTER, new IngredientWrapper(itemOutput),
+                  new IngredientWrapper(itemInput)));
             removedRecipe = true;
         }
     }

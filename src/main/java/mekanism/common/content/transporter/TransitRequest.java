@@ -105,7 +105,6 @@ public class TransitRequest {
                 return true;
             }
         }
-
         return false;
     }
 

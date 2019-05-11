@@ -16,9 +16,7 @@ public abstract class MinerFilter implements IFilter {
 
     public static MinerFilter readFromNBT(NBTTagCompound nbtTags) {
         int type = nbtTags.getInteger("type");
-
         MinerFilter filter = null;
-
         if (type == 0) {
             filter = new MItemStackFilter();
         } else if (type == 1) {
@@ -28,17 +26,13 @@ public abstract class MinerFilter implements IFilter {
         } else if (type == 3) {
             filter = new MModIDFilter();
         }
-
         filter.read(nbtTags);
-
         return filter;
     }
 
     public static MinerFilter readFromPacket(ByteBuf dataStream) {
         int type = dataStream.readInt();
-
         MinerFilter filter = null;
-
         if (type == 0) {
             filter = new MItemStackFilter();
         } else if (type == 1) {
@@ -48,9 +42,7 @@ public abstract class MinerFilter implements IFilter {
         } else if (type == 3) {
             filter = new MModIDFilter();
         }
-
         filter.read(dataStream);
-
         return filter;
     }
 
@@ -58,17 +50,14 @@ public abstract class MinerFilter implements IFilter {
 
     public NBTTagCompound write(NBTTagCompound nbtTags) {
         nbtTags.setBoolean("requireStack", requireStack);
-
         if (!replaceStack.isEmpty()) {
             nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
         }
-
         return nbtTags;
     }
 
     protected void read(NBTTagCompound nbtTags) {
         requireStack = nbtTags.getBoolean("requireStack");
-
         if (nbtTags.hasKey("replaceStack")) {
             replaceStack = new ItemStack(nbtTags.getCompoundTag("replaceStack"));
         }
@@ -76,7 +65,6 @@ public abstract class MinerFilter implements IFilter {
 
     public void write(TileNetworkList data) {
         data.add(requireStack);
-
         if (!replaceStack.isEmpty()) {
             data.add(true);
             data.add(MekanismUtils.getID(replaceStack));
@@ -88,7 +76,6 @@ public abstract class MinerFilter implements IFilter {
 
     protected void read(ByteBuf dataStream) {
         requireStack = dataStream.readBoolean();
-
         if (dataStream.readBoolean()) {
             replaceStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
         } else {

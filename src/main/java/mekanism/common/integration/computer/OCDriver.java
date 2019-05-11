@@ -29,11 +29,9 @@ public class OCDriver extends DriverSidedTileEntity {
     @Override
     public ManagedEnvironment createEnvironment(World world, BlockPos pos, EnumFacing side) {
         TileEntity tile = world.getTileEntity(pos);
-
         if (tile instanceof IComputerIntegration) {
             return new OCManagedEnvironment((IComputerIntegration) tile);
         }
-
         return null;
     }
 
@@ -46,7 +44,6 @@ public class OCDriver extends DriverSidedTileEntity {
         public OCManagedEnvironment(IComputerIntegration tile) {
             computerTile = tile;
             name = tile.getName().toLowerCase(Locale.ENGLISH).replace(" ", "_");
-
             setNode(Network.newNode(this, Visibility.Network).withComponent(name, Visibility.Network).create());
         }
 

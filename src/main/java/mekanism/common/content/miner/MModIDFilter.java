@@ -18,40 +18,33 @@ public class MModIDFilter extends MinerFilter implements IModIDFilter {
         if (itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock)) {
             return false;
         }
-
         return new ModIDFinder(modID).modifies(itemStack);
     }
 
     @Override
     public NBTTagCompound write(NBTTagCompound nbtTags) {
         super.write(nbtTags);
-
         nbtTags.setInteger("type", 3);
         nbtTags.setString("modID", modID);
-
         return nbtTags;
     }
 
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-
         modID = nbtTags.getString("modID");
     }
 
     @Override
     public void write(TileNetworkList data) {
         data.add(3);
-
         super.write(data);
-
         data.add(modID);
     }
 
     @Override
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
-
         modID = PacketHandler.readString(dataStream);
     }
 
@@ -73,7 +66,6 @@ public class MModIDFilter extends MinerFilter implements IModIDFilter {
         filter.replaceStack = replaceStack;
         filter.requireStack = requireStack;
         filter.modID = modID;
-
         return filter;
     }
 

@@ -44,7 +44,6 @@ public class Frequency {
 
     public Frequency setPublic(boolean isPublic) {
         publicFreq = isPublic;
-
         return this;
     }
 
@@ -54,12 +53,10 @@ public class Frequency {
 
     public Coord4D getClosestCoords(Coord4D coord) {
         Coord4D closest = null;
-
         for (Coord4D iterCoord : activeCoords) {
             if (iterCoord.equals(coord)) {
                 continue;
             }
-
             if (closest == null) {
                 closest = iterCoord;
                 continue;
@@ -73,7 +70,6 @@ public class Frequency {
                 }
             }
         }
-
         return closest;
     }
 
@@ -114,8 +110,7 @@ public class Frequency {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Frequency && ((Frequency) obj).name.equals(name)
-               && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
+        return obj instanceof Frequency && ((Frequency) obj).name.equals(name) && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
     }
 
     public Identity getIdentity() {
@@ -137,7 +132,6 @@ public class Frequency {
             if (!data.getString("name").isEmpty()) {
                 return new Identity(data.getString("name"), data.getBoolean("publicFreq"));
             }
-
             return null;
         }
 

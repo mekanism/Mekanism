@@ -28,15 +28,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
 
-    public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack,
-          TransitRequest request, int min) {
+    public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, int min) {
         List<Destination> paths = new ArrayList<>();
         InventoryNetwork network = start.getTransmitterNetwork();
-
         if (network == null) {
             return paths;
         }
-
         List<AcceptorData> acceptors = network.calculateAcceptors(request, stack);
 
         for (AcceptorData entry : acceptors) {
@@ -46,76 +43,57 @@ public final class TransporterPathfinder {
                     return InventoryUtils.canInsert(tile, stack.color, entry.response.getStack(), dir, false);
                 }
             };
-
             Destination d = getPath(checker, entry.sides, start, entry.location, stack, entry.response, min);
-
             if (d != null) {
                 paths.add(d);
             }
         }
-
         Collections.sort(paths);
-
         return paths;
     }
 
     public static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack) {
         for (int i = path.size() - 1; i > 0; i--) {
             TileEntity tile = path.get(i).getTileEntity(world);
-
             if (!CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)) {
                 return false;
             }
-
-            ILogisticalTransporter transporter = CapabilityUtils
-                  .getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-
+            ILogisticalTransporter transporter = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
             if (transporter == null || (transporter.getColor() != null && transporter.getColor() != stack.color)) {
                 return false;
             }
         }
-
         return true;
     }
 
-    public static Destination getPath(DestChecker checker, EnumSet<EnumFacing> sides, ILogisticalTransporter start,
-          Coord4D dest, TransporterStack stack, TransitResponse response, int min) {
+    public static Destination getPath(DestChecker checker, EnumSet<EnumFacing> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack,
+          TransitResponse response, int min) {
         if (response.getStack().getCount() >= min) {
             List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
-
             if (test != null && checkPath(start.world(), test, stack)) {
                 return new Destination(test, false, response, 0).calculateScore(start.world());
             }
 
             Pathfinder p = new Pathfinder(checker, start.world(), dest, start.coord(), stack);
-
             if (p.getPath().size() >= 2) {
                 PathfinderCache.cachedPaths.put(new PathData(start.coord(), dest, p.side), p.getPath());
-
                 return new Destination(p.getPath(), false, response, p.finalScore);
             }
         }
-
         return null;
     }
 
-    public static Destination getNewBasePath(ILogisticalTransporter start, TransporterStack stack,
-          TransitRequest request, int min) {
+    public static Destination getNewBasePath(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, int min) {
         List<Destination> paths = getPaths(start, stack, request, min);
-
         if (paths.isEmpty()) {
             return null;
         }
-
         return paths.get(0);
     }
 
-    public static Destination getNewRRPath(ILogisticalTransporter start, TransporterStack stack, TransitRequest request,
-          TileEntityLogisticalSorter outputter, int min) {
+    public static Destination getNewRRPath(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, TileEntityLogisticalSorter outputter, int min) {
         List<Destination> paths = getPaths(start, stack, request, min);
-
         Map<Coord4D, Destination> destPaths = new HashMap<>();
-
         for (Destination d : paths) {
             if (destPaths.get(d.path.get(0)) == null || destPaths.get(d.path.get(0)).path.size() < d.path.size()) {
                 destPaths.put(d.path.get(0), d);
@@ -123,15 +101,11 @@ public final class TransporterPathfinder {
         }
 
         List<Destination> dests = new ArrayList<>(destPaths.values());
-
         Collections.sort(dests);
-
         Destination closest = null;
-
         if (!dests.isEmpty()) {
             if (outputter.rrIndex <= dests.size() - 1) {
                 closest = dests.get(outputter.rrIndex);
-
                 if (outputter.rrIndex == dests.size() - 1) {
                     outputter.rrIndex = 0;
                 } else if (outputter.rrIndex < dests.size() - 1) {
@@ -146,7 +120,6 @@ public final class TransporterPathfinder {
         if (closest == null) {
             return null;
         }
-
         return closest;
     }
 
@@ -158,10 +131,8 @@ public final class TransporterPathfinder {
                     return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
             };
-
             Pathfinder p = new Pathfinder(checker, start.world(), stack.homeLocation, start.coord(), stack);
             List<Coord4D> path = p.getPath();
-
             if (path.size() >= 2) {
                 return Pair.of(path, Path.HOME);
             } else {
@@ -171,11 +142,9 @@ public final class TransporterPathfinder {
 
         IdlePath d = new IdlePath(start.world(), start.coord(), stack);
         Destination dest = d.find();
-
         if (dest == null) {
             return null;
         }
-
         return Pair.of(dest.path, dest.pathType);
     }
 
@@ -196,46 +165,35 @@ public final class TransporterPathfinder {
         public Destination find() {
             ArrayList<Coord4D> ret = new ArrayList<>();
             ret.add(start);
-
             if (transportStack.idleDir == null) {
                 EnumFacing newSide = findSide();
-
                 if (newSide == null) {
                     return null;
                 }
-
                 transportStack.idleDir = newSide;
                 loopSide(ret, newSide);
-
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             } else {
                 TileEntity tile = start.offset(transportStack.idleDir).getTileEntity(worldObj);
-
                 if (transportStack.canInsertToTransporter(tile, transportStack.idleDir)) {
                     loopSide(ret, transportStack.idleDir);
-
                     return new Destination(ret, true, null, 0).setPathType(Path.NONE);
                 } else {
                     TransitRequest request = TransitRequest.getFromTransport(transportStack);
-                    Destination newPath = TransporterPathfinder.getNewBasePath(CapabilityUtils
-                          .getCapability(start.getTileEntity(worldObj), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
-                                null), transportStack, request, 0);
+                    Destination newPath = TransporterPathfinder.getNewBasePath(CapabilityUtils.getCapability(start.getTileEntity(worldObj),
+                          Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null), transportStack, request, 0);
 
                     if (newPath != null && newPath.response != null) {
                         transportStack.idleDir = null;
                         newPath.setPathType(Path.DEST);
-
                         return newPath;
                     } else {
                         EnumFacing newSide = findSide();
-
                         if (newSide == null) {
                             return null;
                         }
-
                         transportStack.idleDir = newSide;
                         loopSide(ret, newSide);
-
                         return new Destination(ret, true, null, 0).setPathType(Path.NONE);
                     }
                 }
@@ -244,16 +202,13 @@ public final class TransporterPathfinder {
 
         private void loopSide(List<Coord4D> list, EnumFacing side) {
             int count = 1;
-
             while (true) {
                 Coord4D coord = start.offset(side, count);
-
-                if (transportStack.canInsertToTransporter(coord.getTileEntity(worldObj), side)) {
-                    list.add(coord);
-                    count++;
-                } else {
+                if (!transportStack.canInsertToTransporter(coord.getTileEntity(worldObj), side)) {
                     break;
                 }
+                list.add(coord);
+                count++;
             }
         }
 
@@ -261,7 +216,6 @@ public final class TransporterPathfinder {
             if (transportStack.idleDir == null) {
                 for (EnumFacing side : EnumFacing.VALUES) {
                     TileEntity tile = start.offset(side).getTileEntity(worldObj);
-
                     if (transportStack.canInsertToTransporter(tile, side)) {
                         return side;
                     }
@@ -269,19 +223,15 @@ public final class TransporterPathfinder {
             } else {
                 for (EnumFacing side : EnumSet.complementOf(EnumSet.of(transportStack.idleDir.getOpposite()))) {
                     TileEntity tile = start.offset(side).getTileEntity(worldObj);
-
                     if (transportStack.canInsertToTransporter(tile, side)) {
                         return side;
                     }
                 }
-
                 TileEntity tile = start.offset(transportStack.idleDir.getOpposite()).getTileEntity(worldObj);
-
                 if (transportStack.canInsertToTransporter(tile, transportStack.idleDir.getOpposite())) {
                     return transportStack.idleDir.getOpposite();
                 }
             }
-
             return null;
         }
     }
@@ -295,11 +245,9 @@ public final class TransporterPathfinder {
 
         public Destination(List<Coord4D> list, boolean inv, TransitResponse ret, double gScore) {
             path = new ArrayList<>(list);
-
             if (inv) {
                 Collections.reverse(path);
             }
-
             response = ret;
             score = gScore;
         }
@@ -311,16 +259,12 @@ public final class TransporterPathfinder {
 
         public Destination calculateScore(World world) {
             score = 0;
-
             for (Coord4D location : path) {
                 TileEntity tile = location.getTileEntity(world);
-
                 if (CapabilityUtils.hasCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)) {
-                    score += CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)
-                          .getCost();
+                    score += CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).getCost();
                 }
             }
-
             return this;
         }
 
@@ -342,9 +286,8 @@ public final class TransporterPathfinder {
                 return -1;
             } else if (score > dest.score) {
                 return 1;
-            } else {
-                return path.size() - dest.path.size();
             }
+            return path.size() - dest.path.size();
         }
     }
 
@@ -372,8 +315,7 @@ public final class TransporterPathfinder {
 
         private World worldObj;
 
-        public Pathfinder(DestChecker checker, World world, Coord4D finishObj, Coord4D startObj,
-              TransporterStack stack) {
+        public Pathfinder(DestChecker checker, World world, Coord4D finishObj, Coord4D startObj, TransporterStack stack) {
             destChecker = checker;
             worldObj = world;
 
@@ -404,14 +346,11 @@ public final class TransporterPathfinder {
 
             for (EnumFacing direction : EnumFacing.VALUES) {
                 Coord4D neighbor = start.offset(direction);
-
-                if (!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (
-                      !neighbor.equals(finalNode) || !destChecker
-                            .isValid(transportStack, direction, neighbor.getTileEntity(worldObj)))) {
+                if (!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) &&
+                    (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, direction, neighbor.getTileEntity(worldObj)))) {
                     blockCount++;
                 }
             }
-
             if (blockCount >= 6) {
                 return false;
             }
@@ -420,18 +359,15 @@ public final class TransporterPathfinder {
             ArrayList<EnumFacing> directionsToCheck = new ArrayList<>();
             Coord4D[] neighbors = new Coord4D[EnumFacing.VALUES.length];
             TileEntity[] neighborEntities = new TileEntity[neighbors.length];
-
             while (!openSet.isEmpty()) {
                 Coord4D currentNode = null;
                 double lowestFScore = 0;
-
                 for (Coord4D node : openSet) {
                     if (currentNode == null || fScore.get(node) < lowestFScore) {
                         currentNode = node;
                         lowestFScore = fScore.get(node);
                     }
                 }
-
                 if (currentNode == null || start.distanceTo(currentNode) > maxSearchDistance) {
                     break;
                 }
@@ -442,9 +378,7 @@ public final class TransporterPathfinder {
                 TileEntity currentNodeTile = currentNode.getTileEntity(worldObj);
                 ILogisticalTransporter currentNodeTransporter = null;
                 if (currentNodeTile.hasCapability(Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)) {
-                    currentNodeTransporter =
-                          CapabilityUtils
-                                .getCapability(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+                    currentNodeTransporter = CapabilityUtils.getCapability(currentNodeTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
                 }
 
                 directionsToCheck.clear();
@@ -454,20 +388,16 @@ public final class TransporterPathfinder {
                     TileEntity neighborEntity = neighbor.getTileEntity(worldObj);
                     neighborEntities[direction.ordinal()] = neighborEntity;
                     if (currentNodeTransporter == null || currentNodeTransporter.canEmitTo(neighborEntity, direction) ||
-                        (neighbor.equals(finalNode) && destChecker
-                              .isValid(transportStack, direction, neighborEntities[direction.ordinal()]))) {
+                        (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntities[direction.ordinal()]))) {
                         directionsToCheck.add(direction);
                     }
                 }
 
                 for (EnumFacing direction : directionsToCheck) {
                     Coord4D neighbor = neighbors[direction.ordinal()];
-
                     if (transportStack.canInsertToTransporter(neighborEntities[direction.ordinal()], direction)) {
                         TileEntity tile = neighborEntities[direction.ordinal()];
-                        double tentativeG = gScore.get(currentNode) + CapabilityUtils
-                              .getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY,
-                                    direction.getOpposite()).getCost();
+                        double tentativeG = gScore.get(currentNode) + CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()).getCost();
 
                         if (closedSet.contains(neighbor)) {
                             if (tentativeG >= gScore.get(neighbor)) {
@@ -481,29 +411,23 @@ public final class TransporterPathfinder {
                             fScore.put(neighbor, gScore.get(neighbor) + getEstimate(neighbor, finalNode));
                             openSet.add(neighbor);
                         }
-                    } else if (neighbor.equals(finalNode) && destChecker
-                          .isValid(transportStack, direction, neighborEntities[direction.ordinal()])) {
+                    } else if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntities[direction.ordinal()])) {
                         side = direction;
                         results = reconstructPath(navMap, currentNode);
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
         private ArrayList<Coord4D> reconstructPath(HashMap<Coord4D, Coord4D> naviMap, Coord4D currentNode) {
             ArrayList<Coord4D> path = new ArrayList<>();
-
             path.add(currentNode);
-
             if (naviMap.containsKey(currentNode)) {
                 path.addAll(reconstructPath(naviMap, naviMap.get(currentNode)));
             }
-
             finalScore = gScore.get(currentNode) + currentNode.distanceTo(finalNode);
-
             return path;
         }
 
@@ -511,7 +435,6 @@ public final class TransporterPathfinder {
             ArrayList<Coord4D> path = new ArrayList<>();
             path.add(finalNode);
             path.addAll(results);
-
             return path;
         }
 

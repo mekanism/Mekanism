@@ -2,6 +2,7 @@ package mekanism.common.content.transporter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -49,8 +50,7 @@ public final class InvStack {
         tileEntity = inv;
         side = facing;
         itemMap = idMap;
-
-        for (Map.Entry<Integer, Integer> entry : idMap.entrySet()) {
+        for (Entry<Integer, Integer> entry : idMap.entrySet()) {
             appendStack(entry.getKey(), StackUtils.size(stack, entry.getValue()));
         }
     }
@@ -64,7 +64,6 @@ public final class InvStack {
         if (itemType == null || itemCount == 0) {
             return ItemStack.EMPTY;
         }
-
         return StackUtils.size(itemType.getStack(), itemCount);
     }
 
@@ -78,7 +77,6 @@ public final class InvStack {
         if (itemType == null) {
             itemType = new HashedItem(stack);
         }
-
         itemMap.put(id, stack.getCount());
         itemCount += stack.getCount();
     }
@@ -92,24 +90,18 @@ public final class InvStack {
         if (!InventoryUtils.assertItemHandler("InvStack", tileEntity, side)) {
             return;
         }
-
         IItemHandler handler = InventoryUtils.getItemHandler(tileEntity, side);
-
-        for (Map.Entry<Integer, Integer> entry : itemMap.entrySet()) {
+        for (Entry<Integer, Integer> entry : itemMap.entrySet()) {
             int toUse = Math.min(amount, entry.getValue());
             ItemStack ret = handler.extractItem(entry.getKey(), toUse, false);
             boolean stackable = InventoryUtils.areItemsStackable(itemType.getStack(), ret);
-
             if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
-                Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count")
-                                     + " does not line up with InvStack's prediction.");
-
+                Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
                 Mekanism.logger.warn("InvStack item: " + itemType.getStack() + ", ret: " + ret);
                 Mekanism.logger.warn("Tile: " + tileEntity + " " + tileEntity.getPos());
             }
 
             amount -= toUse;
-
             if (amount == 0) {
                 return;
             }

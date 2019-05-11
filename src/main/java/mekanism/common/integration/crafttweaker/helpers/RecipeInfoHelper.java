@@ -43,8 +43,7 @@ public class RecipeInfoHelper {
     }
 
     public static String getGasName(GasStack stack) {
-        return stack.amount > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.amount)
-                                : getGasName(stack.getGas());
+        return stack.amount > 1 ? String.format("<gas:%s> * %s", stack.getGas().getName(), stack.amount) : getGasName(stack.getGas());
     }
 
     public static String getGasName(Gas gas) {
@@ -52,8 +51,7 @@ public class RecipeInfoHelper {
     }
 
     public static String getFluidName(FluidStack stack) {
-        return stack.amount > 1 ? String.format("<liquid:%s> * %s", stack.getFluid().getName(), stack.amount)
-                                : getFluidName(stack.getFluid());
+        return stack.amount > 1 ? String.format("<liquid:%s> * %s", stack.getFluid().getName(), stack.amount) : getFluidName(stack.getFluid());
     }
 
     public static String getFluidName(Fluid fluid) {

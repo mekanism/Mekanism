@@ -77,8 +77,7 @@ public class IngredientWrapper {
     }
 
     public boolean isEmpty() {
-        return left.equals(IngredientAny.INSTANCE) && middle.equals(IngredientAny.INSTANCE) && right
-              .equals(IngredientAny.INSTANCE) && infuseType.isEmpty();
+        return left.equals(IngredientAny.INSTANCE) && middle.equals(IngredientAny.INSTANCE) && right.equals(IngredientAny.INSTANCE) && infuseType.isEmpty();
     }
 
     private String getDescriptor(IIngredient ingredient) {

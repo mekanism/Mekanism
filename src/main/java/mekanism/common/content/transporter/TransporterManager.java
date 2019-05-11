@@ -33,7 +33,6 @@ public class TransporterManager {
     public static void add(TransporterStack stack) {
         Set<TransporterStack> set = new HashSet<>();
         set.add(stack);
-
         if (flowingStacks.get(stack.getDest()) == null) {
             flowingStacks.put(stack.getDest(), set);
         } else {
@@ -49,7 +48,6 @@ public class TransporterManager {
 
     public static List<TransporterStack> getStacksToDest(Coord4D dest) {
         List<TransporterStack> ret = new ArrayList<>();
-
         if (flowingStacks.containsKey(dest)) {
             for (TransporterStack stack : flowingStacks.get(dest)) {
                 if (stack != null && stack.pathType != Path.NONE && stack.hasPath()) {
@@ -59,7 +57,6 @@ public class TransporterManager {
                 }
             }
         }
-
         return ret;
     }
 
@@ -120,7 +117,6 @@ public class TransporterManager {
                 stack.setCount(0);
             }
         }
-
         return stack;
     }
 
@@ -132,24 +128,20 @@ public class TransporterManager {
         if (returned.isEmpty() || returned.getCount() == 0) {
             return stack;
         }
-
         return StackUtils.size(stack, stack.getCount() - returned.getCount());
     }
 
     /**
      * @return TransitResponse of expected items to use
      */
-    public static TransitResponse getPredictedInsert(TileEntity tileEntity, EnumColor color, TransitRequest request,
-          EnumFacing side) {
+    public static TransitResponse getPredictedInsert(TileEntity tileEntity, EnumColor color, TransitRequest request, EnumFacing side) {
 
         // If the TE in question implements the mekanism interface, check that the color matches and bail
         // fast if it doesn't
         if (tileEntity instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tileEntity;
             EnumFacing tileSide = config.getOrientation();
-            EnumColor configColor = config.getEjector()
-                  .getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
-
+            EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
             if (config.getEjector().hasStrictInput() && configColor != null && configColor != color) {
                 return TransitResponse.EMPTY;
             }
@@ -167,7 +159,6 @@ public class TransporterManager {
             Mekanism.logger.error("Failed to predict insert; not an IItemHandler: {}", tileEntity);
             return TransitResponse.EMPTY;
         }
-
         InventoryCopy invCopy = new InventoryCopy(handler);
 
         // For each of the in-flight stacks, simulate their insert into the tile entity. Note that the invCopy
@@ -197,7 +188,6 @@ public class TransporterManager {
             toSend.setCount(toSend.getCount() - leftovers.getCount());
             return new TransitResponse(toSend, requestEntry.getValue().getRight());
         }
-
         return TransitResponse.EMPTY;
     }
 

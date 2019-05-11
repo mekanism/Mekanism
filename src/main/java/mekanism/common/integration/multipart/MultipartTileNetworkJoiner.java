@@ -48,7 +48,6 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
                 container = (IMultipartContainer) worldTile;
             }
         }
-
         if (container != null) {
             for (IPartSlot slot : container.getParts().keySet()) {
                 Optional<IMultipartTile> partTile = container.getPartTile(slot);
@@ -75,10 +74,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
         IMultipartContainer container = MultipartMekanism.getContainer(entity.getWorld(), entity.getPos());
         if (container != null) {
             for (IPartSlot slot : container.getParts().keySet()) {
-                TileEntity part = container.getPartTile(slot)
-                      .map(IMultipartTile::getTileEntity)
-                      .orElse(null);
-
+                TileEntity part = container.getPartTile(slot).map(IMultipartTile::getTileEntity).orElse(null);
                 if (part instanceof ITileNetwork) {
                     tileNetworkParts++;
                     if (tileNetworkParts > 1) {
@@ -87,7 +83,6 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
                 }
             }
         }
-
         if (tileNetworkParts > 1) {
             data.add(0, (byte) (facing == null ? 6 : facing.ordinal()));
         }
@@ -97,12 +92,10 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
     public void handlePacketData(ByteBuf dataStream) throws Exception {
         while (dataStream.readableBytes() > 0) {
             byte side = dataStream.readByte();
-
             ITileNetwork networkTile = tileSideMap.get(side);
             if (networkTile == null) {
                 break;
             }
-
             networkTile.handlePacketData(dataStream);
         }
     }
@@ -115,7 +108,6 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
             data.addAll(childData);
             childData.clear();
         }
-
         return data;
     }
 }

@@ -31,7 +31,6 @@ public class HashedItem {
             HashedItem other = (HashedItem) obj;
             return InventoryUtils.areItemsStackable(itemStack, other.itemStack);
         }
-
         return false;
     }
 

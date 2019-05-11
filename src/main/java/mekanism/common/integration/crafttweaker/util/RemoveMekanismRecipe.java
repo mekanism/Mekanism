@@ -13,8 +13,7 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
     private final IngredientWrapper input;
     private final IngredientWrapper output;
 
-    public RemoveMekanismRecipe(String name, Recipe<INPUT, OUTPUT, RECIPE> recipeType, IngredientWrapper output,
-          IngredientWrapper input) {
+    public RemoveMekanismRecipe(String name, Recipe<INPUT, OUTPUT, RECIPE> recipeType, IngredientWrapper output, IngredientWrapper input) {
         super(name, false, recipeType);
         this.input = input;
         this.output = output;
@@ -31,8 +30,8 @@ public class RemoveMekanismRecipe<INPUT extends MachineInput<INPUT>, OUTPUT exte
         if (recipes.isEmpty()) {
             String warning = "";
             if (input.isEmpty()) {
-                if (!output
-                      .isEmpty()) { //It should never be the case they both are empty but just in case they are ignore it
+                if (!output.isEmpty()) {
+                    //It should never be the case they both are empty but just in case they are ignore it
                     warning = String.format("output: '%s'", output.toString());
                 }
             } else if (output.isEmpty()) {

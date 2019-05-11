@@ -17,17 +17,13 @@ public class PathfinderCache {
 
     public static List<Coord4D> getCache(Coord4D start, Coord4D end, EnumSet<EnumFacing> sides) {
         List<Coord4D> ret = null;
-
         for (EnumFacing side : sides) {
             PathData data = new PathData(start, end, side);
-
             List<Coord4D> test = cachedPaths.get(data);
-
             if (ret == null || (test != null && test.size() < ret.size())) {
                 ret = test;
             }
         }
-
         return ret;
     }
 
@@ -44,17 +40,13 @@ public class PathfinderCache {
 
         public PathData(Coord4D s, Coord4D e, EnumFacing es) {
             startTransporter = s;
-
             end = e;
             endSide = es;
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof PathData &&
-                   ((PathData) obj).startTransporter.equals(startTransporter) &&
-                   ((PathData) obj).end.equals(end) &&
-                   ((PathData) obj).endSide.equals(endSide);
+            return obj instanceof PathData && ((PathData) obj).startTransporter.equals(startTransporter) && ((PathData) obj).end.equals(end) && ((PathData) obj).endSide.equals(endSide);
         }
 
         @Override

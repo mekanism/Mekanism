@@ -61,25 +61,19 @@ public class MultipartMekanism implements IMCMPAddon {
     public static boolean hasConnectionWith(TileEntity tile, EnumFacing side) {
         if (tile != null && tile.hasCapability(MCMPCapabilities.MULTIPART_TILE, null)) {
             IMultipartTile multipartTile = tile.getCapability(MCMPCapabilities.MULTIPART_TILE, null);
-
-            if (multipartTile instanceof MultipartTile && ((MultipartTile) multipartTile).getID()
-                  .equals("transmitter")) {
+            if (multipartTile instanceof MultipartTile && ((MultipartTile) multipartTile).getID().equals("transmitter")) {
                 IPartInfo partInfo = ((MultipartTile) multipartTile).getInfo();
-
                 if (partInfo != null) {
                     for (IPartInfo info : partInfo.getContainer().getParts().values()) {
                         IMultipart multipart = info.getPart();
                         Collection<AxisAlignedBB> origBounds = getTransmitterSideBounds(multipartTile, side);
-
-                        if (MultipartOcclusionHelper
-                              .testBoxIntersection(origBounds, multipart.getOcclusionBoxes(info))) {
+                        if (MultipartOcclusionHelper.testBoxIntersection(origBounds, multipart.getOcclusionBoxes(info))) {
                             return false;
                         }
                     }
                 }
             }
         }
-
         return true;
     }
 
@@ -87,11 +81,9 @@ public class MultipartMekanism implements IMCMPAddon {
         if (tile.getTileEntity() instanceof TileEntityTransmitter) {
             TileEntityTransmitter transmitter = (TileEntityTransmitter) tile.getTileEntity();
             boolean large = transmitter.getTransmitterType().getSize() == Size.LARGE;
-            AxisAlignedBB ret =
-                  large ? BlockTransmitter.largeSides[side.ordinal()] : BlockTransmitter.smallSides[side.ordinal()];
+            AxisAlignedBB ret = large ? BlockTransmitter.largeSides[side.ordinal()] : BlockTransmitter.smallSides[side.ordinal()];
             return Collections.singletonList(ret);
         }
-
         return Collections.emptyList();
     }
 
@@ -105,7 +97,6 @@ public class MultipartMekanism implements IMCMPAddon {
                 container = (IMultipartContainer) possibleContainer;
             }
         }
-
         return container;
     }
 
@@ -115,7 +106,6 @@ public class MultipartMekanism implements IMCMPAddon {
         if (container != null) {
             hasCenterSlot = container.getPart(EnumCenterSlot.CENTER).isPresent();
         }
-
         return hasCenterSlot;
     }
 
@@ -127,8 +117,8 @@ public class MultipartMekanism implements IMCMPAddon {
         return tile;
     }
 
-    public static boolean placeMultipartBlock(Block block, ItemStack is, EntityPlayer player, World world, BlockPos pos,
-          EnumFacing side, float hitX, float hitY, float hitZ, IBlockState state) {
+    public static boolean placeMultipartBlock(Block block, ItemStack is, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY,
+          float hitZ, IBlockState state) {
         return ItemBlockMultipart.placeAt(is, player, player.getActiveHand(), world, pos, side, hitX, hitY, hitZ,
               block::getStateForPlacement, is.getMetadata(), MultipartRegistry.INSTANCE.getPart(block),
               ((ItemBlock) is.getItem())::placeBlockAt, ItemBlockMultipart::placePartAt);
@@ -137,7 +127,6 @@ public class MultipartMekanism implements IMCMPAddon {
     @SubscribeEvent
     public void onAttachTile(AttachCapabilitiesEvent<TileEntity> event) {
         TileEntity tile = event.getObject();
-
         if (tile instanceof TileEntityTransmitter) {
             register(event, "transmitter");
         } else if (tile instanceof TileEntityGlowPanel) {
@@ -148,13 +137,11 @@ public class MultipartMekanism implements IMCMPAddon {
     @Override
     public void registerParts(IMultipartRegistry registry) {
         MinecraftForge.EVENT_BUS.register(this);
-
         registry.registerPartWrapper(MekanismBlocks.Transmitter, TRANSMITTER_MP = new MultipartTransmitter());
         //registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.Transmitter), s -> true, MekanismBlocks.Transmitter);
         registry.registerPartWrapper(MekanismBlocks.GlowPanel, GLOWPANEL_MP = new MultipartGlowPanel());
         //registry.registerStackWrapper(Item.getItemFromBlock(MekanismBlocks.GlowPanel), s -> true, MekanismBlocks.GlowPanel);
-        MultipartCapabilityHelper
-              .registerCapabilityJoiner(Capabilities.TILE_NETWORK_CAPABILITY, MultipartTileNetworkJoiner::new);
+        MultipartCapabilityHelper.registerCapabilityJoiner(Capabilities.TILE_NETWORK_CAPABILITY, MultipartTileNetworkJoiner::new);
     }
 
     private void register(AttachCapabilitiesEvent<TileEntity> e, String id) {
@@ -173,10 +160,8 @@ public class MultipartMekanism implements IMCMPAddon {
                     if (tile == null) {
                         tile = new MultipartTile(e.getObject(), id);
                     }
-
                     return MCMPCapabilities.MULTIPART_TILE.cast(tile);
                 }
-
                 return null;
             }
         });
@@ -188,22 +173,18 @@ public class MultipartMekanism implements IMCMPAddon {
 
     public void registerMicroMaterials() {
         for (int i = 0; i < 16; i++) {
-            FMLInterModComms
-                  .sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock, 1, i));
+            FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock, 1, i));
 
             if (!MachineType.get(MACHINE_BLOCK_1, i).hasModel) {
-                FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial",
-                      new ItemStack(MekanismBlocks.MachineBlock, 1, i));
+                FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock, 1, i));
             }
 
             if (!MachineType.get(MACHINE_BLOCK_2, i).hasModel) {
-                FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial",
-                      new ItemStack(MekanismBlocks.MachineBlock2, 1, i));
+                FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock2, 1, i));
             }
         }
 
-        FMLInterModComms
-              .sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock2, 1, 0));
+        FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock2, 1, 0));
         FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.CardboardBox));
     }
 
@@ -215,13 +196,11 @@ public class MultipartMekanism implements IMCMPAddon {
         if (state.getBlock() == MekanismBlocks.GlowPanel || state.getBlock() == MekanismBlocks.Transmitter) {
             EntityPlayer player = ev.getPlayer();
             @SuppressWarnings("deprecation")
-            AxisAlignedBB bb = state.getBlock()
-                  .getSelectedBoundingBox(state, ev.getPartInfo().getPartWorld(), ev.getPartInfo().getPartPos());
+            AxisAlignedBB bb = state.getBlock().getSelectedBoundingBox(state, ev.getPartInfo().getPartWorld(), ev.getPartInfo().getPartPos());
             //NB rendering code copied from MCMultipart
             GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                  GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
-                  GlStateManager.DestFactor.ZERO);
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                  GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.glLineWidth(2.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);

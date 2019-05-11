@@ -63,9 +63,8 @@ public class Combiner {
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
           @Optional IIngredient extraInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.COMBINER, new IngredientWrapper(itemOutput),
-                        new IngredientWrapper(itemInput, extraInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.COMBINER, new IngredientWrapper(itemOutput),
+                  new IngredientWrapper(itemInput, extraInput)));
         }
     }
 

@@ -29,9 +29,7 @@ public class EntityObsidianTNT extends Entity {
 
     public EntityObsidianTNT(World world, double x, double y, double z) {
         this(world);
-
         setPosition(x, y, z);
-
         float randPi = (float) (Math.random() * Math.PI * 2);
 
         motionX = -Math.sin(randPi) * 0.02F;
@@ -101,8 +99,7 @@ public class EntityObsidianTNT extends Entity {
     }
 
     private void explode() {
-        world.createExplosion(null, posX, posY, posZ, MekanismConfig.current().general.obsidianTNTBlastRadius.val(),
-              true);
+        world.createExplosion(null, posX, posY, posZ, MekanismConfig.current().general.obsidianTNTBlastRadius.val(), true);
         hasExploded = true;
     }
 
