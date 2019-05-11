@@ -23,8 +23,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         super(tile, new ContainerInductionMatrix(inventory, tile));
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, 6, resource));
-        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
-              LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+        addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
               LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t",
               LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t"), this, resource));
     }
@@ -37,8 +36,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t", 53, 35, 0x00CD00);
         fontRenderer.drawString(LangUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
         fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t", 53, 53, 0x00CD00);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
             drawHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), xAxis, yAxis);
         }
