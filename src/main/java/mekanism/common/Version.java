@@ -44,11 +44,9 @@ public class Version {
      */
     public static Version get(String s) {
         String[] split = s.replace('.', ':').split(":");
-
         if (split.length != 3) {
             return null;
         }
-
         for (String i : split) {
             for (Character c : i.toCharArray()) {
                 if (!Character.isDigit(c)) {
@@ -58,11 +56,9 @@ public class Version {
         }
 
         int[] digits = new int[3];
-
         for (int i = 0; i < 3; i++) {
             digits[i] = Integer.parseInt(split[i]);
         }
-
         return new Version(digits[0], digits[1], digits[2]);
     }
 
@@ -88,31 +84,26 @@ public class Version {
                 return -1;
             } else if (version.minor == minor) {
                 return (byte) Integer.compare(build, version.build);
-            } else {
-                return 1;
             }
-        } else {
             return 1;
         }
+        return 1;
     }
 
     @Override
     public String toString() {
         if (major == 0 && minor == 0 && build == 0) {
             return "";
-        } else {
-            return major + "." + minor + "." + build;
         }
+        return major + "." + minor + "." + build;
     }
 
     @Override
     public int hashCode() {
         int result = 1;
-
         result = 31 * result + build;
         result = 31 * result + major;
         result = 31 * result + minor;
-
         return result;
     }
 
@@ -121,9 +112,7 @@ public class Version {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-
         Version other = (Version) obj;
-
         return build == other.build && major == other.major && minor == other.minor;
     }
 }

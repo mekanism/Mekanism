@@ -19,8 +19,7 @@ public class MekanismFluids {
     public static final Gas SulfuricAcid = new Gas("sulfuricacid", 0x82802B);
     public static final Gas HydrogenChloride = new Gas("hydrogenchloride", 0xA8F1E9);
 
-    public static final Fluid HeavyWater = new Fluid("heavywater",
-          new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"),
+    public static final Fluid HeavyWater = new Fluid("heavywater", new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"),
           new ResourceLocation("mekanism:blocks/liquid/LiquidHeavyWater"));
     public static final Fluid Steam = new Fluid("steam", new ResourceLocation("mekanism:blocks/liquid/LiquidSteam"),
           new ResourceLocation("mekanism:blocks/liquid/LiquidSteam")).setGaseous(true);

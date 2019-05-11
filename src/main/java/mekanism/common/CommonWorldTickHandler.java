@@ -24,15 +24,12 @@ public class CommonWorldTickHandler {
         if (chunkRegenMap == null) {
             chunkRegenMap = new HashMap<>();
         }
-
         if (!chunkRegenMap.containsKey(dimensionId)) {
             LinkedList<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);
             chunkRegenMap.put(dimensionId, list);
-        } else {
-            if (!chunkRegenMap.get(dimensionId).contains(chunkCoord)) {
-                chunkRegenMap.get(dimensionId).add(chunkCoord);
-            }
+        } else if (!chunkRegenMap.get(dimensionId).contains(chunkCoord)) {
+            chunkRegenMap.get(dimensionId).add(chunkCoord);
         }
     }
 
@@ -65,13 +62,11 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             MultiblockManager.tick(world);
             FrequencyManager.tick(world);
-
             if (chunkRegenMap == null) {
                 return;
             }
 
             int dimensionId = world.provider.getDimension();
-
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionId)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionId);
@@ -79,7 +74,6 @@ public class CommonWorldTickHandler {
 
                 while (System.nanoTime() - startTime < maximumDeltaTimeNanoSecs && !chunksToGen.isEmpty()) {
                     ChunkPos nextChunk = chunksToGen.poll();
-
                     if (nextChunk == null) {
                         break;
                     }
@@ -88,12 +82,9 @@ public class CommonWorldTickHandler {
                     long xSeed = fmlRandom.nextLong() >> 2 + 1L;
                     long zSeed = fmlRandom.nextLong() >> 2 + 1L;
                     fmlRandom.setSeed((xSeed * nextChunk.x + zSeed * nextChunk.z) ^ world.getSeed());
-
-                    Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world,
-                          ((ChunkProviderServer) world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
+                    Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world, ((ChunkProviderServer) world.getChunkProvider()).chunkGenerator, world.getChunkProvider());
                     Mekanism.logger.info("Regenerating ores at chunk " + nextChunk);
                 }
-
                 if (chunksToGen.isEmpty()) {
                     chunkRegenMap.remove(dimensionId);
                 }

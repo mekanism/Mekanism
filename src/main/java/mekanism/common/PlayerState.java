@@ -45,7 +45,6 @@ public class PlayerState {
     public void setJetpackState(UUID uuid, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeJetpacks.contains(uuid);
         boolean changed = alreadyActive != isActive;
-
         if (alreadyActive && !isActive) {
             // On -> off
             activeJetpacks.remove(uuid);
@@ -91,7 +90,6 @@ public class PlayerState {
     public void setGasmaskState(UUID uuid, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeGasmasks.contains(uuid);
         boolean changed = alreadyActive != isActive;
-
         if (alreadyActive && !isActive) {
             activeGasmasks.remove(uuid); // On -> off
         } else if (!alreadyActive && isActive) {
@@ -102,8 +100,7 @@ public class PlayerState {
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler
-                      .sendToServer(PacketScubaTankData.ScubaTankDataMessage.UPDATE(uuid, isActive));
+                Mekanism.packetHandler.sendToServer(PacketScubaTankData.ScubaTankDataMessage.UPDATE(uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a gasmask
@@ -136,7 +133,6 @@ public class PlayerState {
     public void setFlamethrowerState(UUID uuid, boolean isActive, boolean isLocal) {
         boolean alreadyActive = activeFlamethrowers.contains(uuid);
         boolean changed = alreadyActive != isActive;
-
         if (alreadyActive && !isActive) {
             activeFlamethrowers.remove(uuid); // On -> off
         } else if (!alreadyActive && isActive) {
@@ -147,8 +143,7 @@ public class PlayerState {
         if (changed && world.isRemote) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, null,
-                      uuid, isActive));
+                Mekanism.packetHandler.sendToServer(new FlamethrowerDataMessage(FlamethrowerPacket.UPDATE, null, uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a flamethrower

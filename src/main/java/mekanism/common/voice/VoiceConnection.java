@@ -34,20 +34,15 @@ public class VoiceConnection extends Thread {
         try {
             input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
             output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-
             synchronized (Mekanism.voiceManager) {
                 int retryCount = 0;
-
                 while (uuid == null && retryCount <= 100) {
                     try {
-                        List<EntityPlayerMP> l = Collections
-                              .synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
+                        List<EntityPlayerMP> l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
                         for (EntityPlayerMP playerMP : l) {
                             String playerIP = playerMP.getPlayerIP();
-
-                            if (!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager
-                                  .isFoundLocal()) {
+                            if (!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.isFoundLocal()) {
                                 Mekanism.voiceManager.setFoundLocal(true);
                                 uuid = playerMP.getUniqueID();
                                 break;
@@ -56,7 +51,6 @@ public class VoiceConnection extends Thread {
                                 break;
                             }
                         }
-
                         retryCount++;
                         Thread.sleep(50);
                     } catch (Exception ignored) {
@@ -83,7 +77,6 @@ public class VoiceConnection extends Thread {
                     short byteCount = VoiceConnection.this.input.readShort();
                     byte[] audioData = new byte[byteCount];
                     VoiceConnection.this.input.readFully(audioData);
-
                     if (byteCount > 0) {
                         Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
                     }
@@ -91,7 +84,6 @@ public class VoiceConnection extends Thread {
                     open = false;
                 }
             }
-
             if (!open) {
                 kill();
             }
@@ -119,11 +111,9 @@ public class VoiceConnection extends Thread {
         if (!open) {
             kill();
         }
-
         try {
             output.writeShort(byteCount);
             output.write(audioData);
-
             output.flush();
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while sending data to player.", e);
@@ -140,20 +130,17 @@ public class VoiceConnection extends Thread {
             ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
             return walkieTalkie.getOn(itemStack) && walkieTalkie.getChannel(itemStack) == channel;
         }
-
         return false;
     }
 
     public int getCurrentChannel() {
         ItemStack itemStack = getPlayer().inventory.getCurrentItem();
-
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
             ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
             if (walkieTalkie.getOn(itemStack)) {
                 return walkieTalkie.getChannel(itemStack);
             }
         }
-
         return 0;
     }
 

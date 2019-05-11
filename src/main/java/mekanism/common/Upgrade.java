@@ -35,39 +35,31 @@ public enum Upgrade {
 
     public static Map<Upgrade, Integer> buildMap(@Nullable NBTTagCompound nbtTags) {
         Map<Upgrade, Integer> upgrades = new HashMap<>();
-
         if (nbtTags != null) {
             if (nbtTags.hasKey("upgrades")) {
                 NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
-
                 for (int tagCount = 0; tagCount < list.tagCount(); tagCount++) {
                     NBTTagCompound compound = list.getCompoundTagAt(tagCount);
-
                     Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
                     upgrades.put(upgrade, compound.getInteger("amount"));
                 }
             }
         }
-
         return upgrades;
     }
 
     public static void saveMap(Map<Upgrade, Integer> upgrades, NBTTagCompound nbtTags) {
         NBTTagList list = new NBTTagList();
-
         for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             list.appendTag(getTagFor(entry.getKey(), entry.getValue()));
         }
-
         nbtTags.setTag("upgrades", list);
     }
 
     public static NBTTagCompound getTagFor(Upgrade upgrade, int amount) {
         NBTTagCompound compound = new NBTTagCompound();
-
         compound.setInteger("type", upgrade.ordinal());
         compound.setInteger("amount", amount);
-
         return compound;
     }
 
@@ -106,13 +98,11 @@ public enum Upgrade {
             case ANCHOR:
                 return new ItemStack(MekanismItems.AnchorUpgrade);
         }
-
         return ItemStack.EMPTY;
     }
 
     public List<String> getInfo(TileEntity tile) {
         List<String> ret = new ArrayList<>();
-
         if (tile instanceof IUpgradeTile) {
             if (tile instanceof IUpgradeInfoHandler) {
                 return ((IUpgradeInfoHandler) tile).getInfo(this);
@@ -120,32 +110,24 @@ public enum Upgrade {
                 ret = getMultScaledInfo((IUpgradeTile) tile);
             }
         }
-
         return ret;
     }
 
     public List<String> getMultScaledInfo(IUpgradeTile tile) {
         List<String> ret = new ArrayList<>();
-
         if (canMultiply()) {
-            double effect = Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(),
-                  (float) tile.getComponent().getUpgrades(this) / (float) getMax());
-
+            double effect = Math.pow(MekanismConfig.current().general.maxUpgradeMultiplier.val(), (float) tile.getComponent().getUpgrades(this) / (float) getMax());
             ret.add(LangUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect * 100) / 100F) + "x");
         }
-
         return ret;
     }
 
     public List<String> getExpScaledInfo(IUpgradeTile tile) {
         List<String> ret = new ArrayList<>();
-
         if (canMultiply()) {
             double effect = Math.pow(2, (float) tile.getComponent().getUpgrades(this));
-
             ret.add(LangUtils.localize("gui.upgrades.effect") + ": " + effect + "x");
         }
-
         return ret;
     }
 

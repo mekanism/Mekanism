@@ -32,40 +32,31 @@ public class LaserManager {
 
     public static LaserInfo fireLaser(Pos3D from, EnumFacing direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
-
         RayTraceResult mop = world.rayTraceBlocks(from, to);
-
         if (mop != null) {
             to = new Pos3D(mop.hitVec);
             Coord4D toCoord = new Coord4D(mop.getBlockPos(), world);
             TileEntity tile = toCoord.getTileEntity(world);
-
             if (isReceptor(tile, mop.sideHit)) {
                 ILaserReceptor receptor = getReceptor(tile, mop.sideHit);
-
                 if (!receptor.canLasersDig()) {
                     receptor.receiveLaserEnergy(energy, mop.sideHit);
                 }
             }
         }
-
         from.translateExcludingSide(direction, -0.1);
         to.translateExcludingSide(direction, 0.1);
 
         boolean foundEntity = false;
-
         for (Entity e : world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to))) {
             foundEntity = true;
-
             if (!e.isImmuneToFire()) {
                 e.setFire((int) (energy / 1000));
             }
-
             if (energy > 256) {
                 e.attackEntityFrom(DamageSource.GENERIC, (float) energy / 1000F);
             }
         }
-
         return new LaserInfo(mop, foundEntity);
     }
 
@@ -76,15 +67,12 @@ public class LaserManager {
 
         IBlockState state = blockCoord.getBlockState(world);
         Block blockHit = state.getBlock();
-
         EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer) world, laserPos).get();
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, blockCoord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
-
         if (event.isCanceled()) {
             return null;
         }
-
         NonNullList<ItemStack> ret = null;
         if (dropAtBlock) {
             blockHit.dropBlockAsItem(world, blockCoord.getPos(), state, 0);
@@ -92,11 +80,9 @@ public class LaserManager {
             ret = NonNullList.create();
             blockHit.getDrops(ret, world, blockCoord.getPos(), state, 0);
         }
-
         blockHit.breakBlock(world, blockCoord.getPos(), state);
         world.setBlockToAir(blockCoord.getPos());
         world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockCoord.getPos(), Block.getStateId(state));
-
         return ret;
     }
 
@@ -107,14 +93,11 @@ public class LaserManager {
     public static RayTraceResult fireLaserClient(Pos3D from, EnumFacing direction, double energy, World world) {
         Pos3D to = from.clone().translate(direction, MekanismConfig.current().general.laserRange.val() - 0.002);
         RayTraceResult mop = world.rayTraceBlocks(from, to);
-
         if (mop != null) {
             to = new Pos3D(mop.hitVec);
         }
-
         from.translate(direction, -0.501);
         Mekanism.proxy.renderLaser(world, from, to, direction, energy);
-
         return mop;
     }
 

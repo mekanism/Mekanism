@@ -134,9 +134,7 @@ public class PacketHandler {
                 } else if (data instanceof NonNullList) {
                     encode(((NonNullList) data).toArray(), output);
                 } else {
-                    throw new RuntimeException(
-                          "Un-encodable data passed to encode(): " + data + ", full data: " + Arrays
-                                .toString(dataValues));
+                    throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
                 }
             }
         } catch (Exception e) {
@@ -193,10 +191,8 @@ public class PacketHandler {
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.SERVER);
         netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Side.CLIENT);
         netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
-        netHandler
-              .registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
-        netHandler
-              .registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
+        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
+        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
         netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Side.SERVER);
         netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
         netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
@@ -226,10 +222,8 @@ public class PacketHandler {
         netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
         netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
         netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31,
-              Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31,
-              Side.SERVER);
+        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.CLIENT);
+        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.SERVER);
     }
 
     /**
@@ -249,7 +243,6 @@ public class PacketHandler {
      */
     public void sendToAll(IMessage message) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
         for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
             sendTo(message, player);
         }
@@ -293,7 +286,6 @@ public class PacketHandler {
      */
     public void sendToCuboid(IMessage message, AxisAlignedBB cuboid, int dimId) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
         if (server != null && cuboid != null) {
             for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == dimId && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ))) {
@@ -305,7 +297,6 @@ public class PacketHandler {
 
     public void sendToReceivers(IMessage message, Range4D range) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
         if (server != null) {
             for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range)) {

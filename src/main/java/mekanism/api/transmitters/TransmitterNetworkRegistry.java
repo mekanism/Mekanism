@@ -22,9 +22,9 @@ public class TransmitterNetworkRegistry {
     private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
     private static Logger logger = LogManager.getLogger("MekanismTransmitters");
-    private Set<DynamicNetwork> networks =  new HashSet<>();
-    private Set<DynamicNetwork> networksToChange =  new HashSet<>();
-    private Set<IGridTransmitter> invalidTransmitters =  new HashSet<>();
+    private Set<DynamicNetwork> networks = new HashSet<>();
+    private Set<DynamicNetwork> networksToChange = new HashSet<>();
+    private Set<IGridTransmitter> invalidTransmitters = new HashSet<>();
     private Map<Coord4D, IGridTransmitter> orphanTransmitters = new HashMap<>();
     private Map<Coord4D, IGridTransmitter> newOrphanTransmitters = new HashMap<>();
 
@@ -189,10 +189,10 @@ public class TransmitterNetworkRegistry {
 
         public IGridTransmitter<A, N, BUFFER> startPoint;
 
-        public HashSet<Coord4D> iterated =  new HashSet<>();
+        public HashSet<Coord4D> iterated = new HashSet<>();
 
-        public HashSet<IGridTransmitter<A, N, BUFFER>> connectedTransmitters =  new HashSet<>();
-        public HashSet<N> networksFound =  new HashSet<>();
+        public HashSet<IGridTransmitter<A, N, BUFFER>> connectedTransmitters = new HashSet<>();
+        public HashSet<N> networksFound = new HashSet<>();
 
         private Deque<Coord4D> queue = new LinkedList<>();
 
