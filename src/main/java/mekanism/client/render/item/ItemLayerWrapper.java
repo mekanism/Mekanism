@@ -9,6 +9,7 @@ import javax.vecmath.Vector3f;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -61,11 +62,12 @@ public class ItemLayerWrapper implements IBakedModel {
         return internal.getParticleTexture();
     }
 
-    //TODO: Is this needed
-    /*@Nonnull
+    @Nonnull
+    @Deprecated
+    @Override
     public ItemCameraTransforms getItemCameraTransforms() {
         return internal.getItemCameraTransforms();
-    }*/
+    }
 
     @Nonnull
     @Override
@@ -105,5 +107,4 @@ public class ItemLayerWrapper implements IBakedModel {
         return new TRSRTransformation(new Vector3f(tx / 16, ty / 16, tz / 16),
               TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)), new Vector3f(s, s, s), null);
     }
-
 }

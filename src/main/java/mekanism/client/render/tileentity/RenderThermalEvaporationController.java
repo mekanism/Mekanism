@@ -18,8 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderThermalEvaporationController extends
-      TileEntitySpecialRenderer<TileEntityThermalEvaporationController> {
+public class RenderThermalEvaporationController extends TileEntitySpecialRenderer<TileEntityThermalEvaporationController> {
 
     private static final int LEVELS = 16;
     private static final int ALL_LEVELS = LEVELS + 2;
@@ -32,12 +31,9 @@ public class RenderThermalEvaporationController extends
     }
 
     @Override
-    public void render(TileEntityThermalEvaporationController tileEntity, double x, double y, double z,
-          float partialTick, int destroyStage, float alpha) {
+    public void render(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.structured && tileEntity.inputTank.getFluid() != null) {
-
             bindTexture(MekanismRenderer.getBlocksTexture());
-
             if (tileEntity.height - 2 >= 1 && tileEntity.inputTank.getCapacity() > 0) {
                 push();
 
@@ -46,12 +42,9 @@ public class RenderThermalEvaporationController extends
                 MekanismRenderer.colorFluid(tileEntity.inputTank.getFluid());
                 DisplayInteger[] displayList = getListAndRender(tileEntity.inputTank.getFluid());
 
-                float levels = Math
-                      .min(((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity()), 1);
-                levels *= (tileEntity.height - 2);
-
+                float levels = Math.min((float) tileEntity.inputTank.getFluidAmount() / tileEntity.inputTank.getCapacity(), 1);
+                levels *= tileEntity.height - 2;
                 int partialLevels = (int) ((levels - (int) levels) * 16);
-
                 switch (tileEntity.facing) {
                     case SOUTH:
                         GlStateManager.translate(-1, 0, -1);
@@ -67,11 +60,9 @@ public class RenderThermalEvaporationController extends
                 }
 
                 GlStateManager.translate(0, 0.01, 0);
-
                 if ((int) levels > 0) {
                     displayList[CONCAVE_INDEX].render();
                     GlStateManager.translate(0, 1, 0);
-
                     for (int i = 1; i < (int) levels; i++) {
                         displayList[RING_INDEX].render();
                         GlStateManager.translate(0, 1, 0);

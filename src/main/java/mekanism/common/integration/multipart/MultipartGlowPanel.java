@@ -23,8 +23,7 @@ import net.minecraft.world.World;
 public class MultipartGlowPanel implements IMultipart {
 
     @Override
-    public IPartSlot getSlotForPlacement(World world, BlockPos pos, IBlockState state, EnumFacing facing, float hitX,
-          float hitY, float hitZ, EntityLivingBase placer) {
+    public IPartSlot getSlotForPlacement(World world, BlockPos pos, IBlockState state, EnumFacing facing, float hitX, float hitY, float hitZ, EntityLivingBase placer) {
         return EnumFaceSlot.values()[facing.ordinal()];
     }
 
@@ -39,7 +38,6 @@ public class MultipartGlowPanel implements IMultipart {
         if (tile instanceof TileEntityGlowPanel) {
             EnumFacing facing = EnumFacing.values()[((EnumFaceSlot) part.getSlot()).ordinal()];
             EnumColor col = EnumColor.DYES[stack.getItemDamage()];
-
             TileEntityGlowPanel glowPanel = (TileEntityGlowPanel) tile;
             glowPanel.setOrientation(facing);
             glowPanel.setColour(col);
@@ -61,13 +59,10 @@ public class MultipartGlowPanel implements IMultipart {
     @Override
     public void onPartHarvested(IPartInfo part, EntityPlayer player) {
         TileEntity tile = part.getTile().getTileEntity();
-
         if (tile instanceof TileEntityGlowPanel) {
             IBlockState partState = part.getState();
-            partState.getBlock().removedByPlayer(partState, part.getPartWorld(),
-                  part.getContainer().getPartPos(), player, true);
+            partState.getBlock().removedByPlayer(partState, part.getPartWorld(), part.getContainer().getPartPos(), player, true);
         }
-
         IMultipart.super.onPartHarvested(part, player);
     }
 

@@ -29,8 +29,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityContainerBlock> ext
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (tileEntity instanceof ISideConfiguration) {
             Slot hovering = null;
             for (int i = 0; i < inventorySlots.inventorySlots.size(); i++) {
@@ -45,8 +45,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityContainerBlock> ext
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && hovering != null) {
                 SideData data = getFromSlot(hovering);
                 if (data != null) {
-                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis,
-                          yAxis);
+                    drawHoveringText(data.color + data.localize() + " (" + data.color.getColoredName() + ")", xAxis, yAxis);
                 }
             }
         }
@@ -66,7 +65,6 @@ public abstract class GuiMekanismTile<TILE extends TileEntityContainerBlock> ext
                 }
             }
         }
-
         return null;
     }
 }

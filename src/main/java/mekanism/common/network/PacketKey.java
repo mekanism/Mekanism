@@ -17,7 +17,6 @@ public class PacketKey implements IMessageHandler<KeyMessage, IMessage> {
         } else {
             Mekanism.keyMap.remove(PacketHandler.getPlayer(context), message.key);
         }
-
         return null;
     }
 

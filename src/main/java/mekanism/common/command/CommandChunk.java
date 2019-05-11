@@ -2,9 +2,9 @@ package mekanism.common.command;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.common.command.CommandMek.Cmd;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
@@ -24,17 +24,18 @@ public class CommandChunk extends CommandTreeBase {
         addSubcommand(new Cmd("unwatch", "cmd.mek.chunk.unwatch", this::removeWatcher));
         addSubcommand(new Cmd("clear", "cmd.mek.chunk.clear", this::clearWatchers));
         addSubcommand(new Cmd("flush", "cmd.mek.chunk.flush", this::flushChunks));
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return "chunk";
     }
 
+    @Nonnull
     @Override
-    public String getUsage(ICommandSender sender) {
+    public String getUsage(@Nonnull ICommandSender sender) {
         return "cmd.mek.chunk.usage";
     }
 
@@ -52,39 +53,40 @@ public class CommandChunk extends CommandTreeBase {
         if (event.getWorld().isRemote) {
             return;
         }
-
         ChunkPos pos = event.getChunk().getPos();
         long key = ChunkPos.asLong(pos.x, pos.z);
         if (chunkWatchers.contains(key)) {
             String msg = String.format("%s chunk %d, %d", direction, pos.x, pos.z);
-            event.getWorld().getMinecraftServer().getPlayerList().sendMessage(new TextComponentString(msg));
+            MinecraftServer server = event.getWorld().getMinecraftServer();
+            if (server != null) {
+                server.getPlayerList().sendMessage(new TextComponentString(msg));
+            }
         }
     }
 
-    public void addWatcher(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void addWatcher(MinecraftServer server, ICommandSender sender, String[] args) {
         ChunkPos cpos = new ChunkPos(sender.getPosition());
         chunkWatchers.add(ChunkPos.asLong(cpos.x, cpos.z));
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.chunk.watch", cpos.x, cpos.z);
     }
 
-    public void removeWatcher(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void removeWatcher(MinecraftServer server, ICommandSender sender, String[] args) {
         ChunkPos cpos = new ChunkPos(sender.getPosition());
         chunkWatchers.remove(ChunkPos.asLong(cpos.x, cpos.z));
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.chunk.unwatch", cpos.x, cpos.z);
     }
 
-    public void clearWatchers(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void clearWatchers(MinecraftServer server, ICommandSender sender, String[] args) {
         int count = chunkWatchers.size();
         chunkWatchers.clear();
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.chunk.clear", count);
     }
 
-    public void flushChunks(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void flushChunks(MinecraftServer server, ICommandSender sender, String[] args) {
         if (sender.getEntityWorld().isRemote) {
             return;
         }
-
-        ChunkProviderServer sp = (ChunkProviderServer)sender.getEntityWorld().getChunkProvider();
+        ChunkProviderServer sp = (ChunkProviderServer) sender.getEntityWorld().getChunkProvider();
         int startCount = sp.getLoadedChunkCount();
         sp.queueUnloadAll();
         sp.tick();

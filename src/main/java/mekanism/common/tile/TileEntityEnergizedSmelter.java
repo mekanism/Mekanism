@@ -9,12 +9,8 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<SmeltingRecipe> {
 
-    private static Map<ItemStackInput, SmeltingRecipe> cachedRecipes;
-
     public TileEntityEnergizedSmelter() {
-        super("smelter", "EnergizedSmelter",
-                MachineType.ENERGIZED_SMELTER.getStorage(),
-                MachineType.ENERGIZED_SMELTER.getUsage(), 200);
+        super("smelter", "EnergizedSmelter", MachineType.ENERGIZED_SMELTER.getStorage(), MachineType.ENERGIZED_SMELTER.getUsage(), 200);
     }
 
     @Override

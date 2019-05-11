@@ -39,24 +39,18 @@ public class ItemBlockCardboardBox extends ItemBlock {
         super(block);
         setMaxStackSize(16);
         metaBlock = block;
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
-          @Nonnull ITooltipFlag flag) {
-        list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils
-              .transYesNo(getBlockData(itemstack) != null));
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
+        list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
         BlockData data = getBlockData(itemstack);
-
         if (data != null) {
             try {
-                list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta)
-                      .getDisplayName());
+                list.add(LangUtils.localize("tooltip.block") + ": " + new ItemStack(data.block, 1, data.meta).getDisplayName());
                 list.add(LangUtils.localize("tooltip.meta") + ": " + data.meta);
-
                 if (data.tileTag != null) {
                     list.add(LangUtils.localize("tooltip.tile") + ": " + data.tileTag.getString("id"));
                 }
@@ -72,31 +66,23 @@ public class ItemBlockCardboardBox extends ItemBlock {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
-          float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-
         if (!player.isSneaking() && !world.isAirBlock(pos) && stack.getItemDamage() == 0) {
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             int meta = block.getMetaFromState(state);
-
-            if (!world.isRemote && MekanismAPI.isBlockCompatible(block, meta)
-                  && state.getBlockHardness(world, pos) != -1) {
+            if (!world.isRemote && MekanismAPI.isBlockCompatible(block, meta) && state.getBlockHardness(world, pos) != -1) {
                 BlockData data = new BlockData();
                 data.block = block;
                 data.meta = meta;
-
                 isMonitoring = true;
-
                 if (world.getTileEntity(pos) != null) {
                     TileEntity tile = world.getTileEntity(pos);
                     NBTTagCompound tag = new NBTTagCompound();
-
                     tile.writeToNBT(tag);
                     data.tileTag = tag;
                 }
-
                 if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
                 }
@@ -107,39 +93,30 @@ public class ItemBlockCardboardBox extends ItemBlock {
                 // we need to make sure it has a chance to update.
                 world.setBlockToAir(pos);
                 world.setBlockState(pos, MekanismBlocks.CardboardBox.getStateFromMeta(1));
-
                 isMonitoring = false;
-
                 TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
-
                 if (tileEntity != null) {
                     tileEntity.storedData = data;
                 }
-
                 return EnumActionResult.SUCCESS;
             }
         }
-
         return EnumActionResult.PASS;
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
-          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
+          float hitZ, @Nonnull IBlockState state) {
         if (world.isRemote) {
             return true;
         }
-
         boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
-
         if (place) {
             TileEntityCardboardBox tileEntity = (TileEntityCardboardBox) world.getTileEntity(pos);
-
             if (tileEntity != null) {
                 tileEntity.storedData = getBlockData(stack);
             }
         }
-
         return place;
     }
 
@@ -151,7 +128,6 @@ public class ItemBlockCardboardBox extends ItemBlock {
         if (!ItemDataUtils.hasData(itemstack, "blockData")) {
             return null;
         }
-
         return BlockData.read(ItemDataUtils.getCompound(itemstack, "blockData"));
     }
 

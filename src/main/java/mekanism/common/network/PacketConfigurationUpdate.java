@@ -38,8 +38,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                 ISideConfiguration config = (ISideConfiguration) tile;
 
                 if (message.packetType == ConfigurationPacket.EJECT) {
-                    config.getConfig()
-                          .setEjecting(message.transmission, !config.getConfig().isEjecting(message.transmission));
+                    config.getConfig().setEjecting(message.transmission, !config.getConfig().isEjecting(message.transmission));
                 } else if (message.packetType == ConfigurationPacket.SIDE_DATA) {
                     if (message.clickType == 0) {
                         MekanismUtils.incrementOutput(config, message.transmission, message.configIndex);
@@ -50,9 +49,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                     }
 
                     tile.markDirty();
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(message.coord4D, network.getNetworkedData(new TileNetworkList())),
-                          new Range4D(message.coord4D));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, network.getNetworkedData(new TileNetworkList())), new Range4D(message.coord4D));
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), message.configIndex, tile.getPos());
                 } else if (message.packetType == ConfigurationPacket.EJECT_COLOR) {
@@ -66,7 +63,6 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                     }
                 } else if (message.packetType == ConfigurationPacket.INPUT_COLOR) {
                     EnumFacing side = EnumFacing.byIndex(message.inputSide);
-
                     TileComponentEjector ejector = config.getEjector();
                     if (message.clickType == 0) {
                         ejector.setInputColor(side, TransporterUtils.increment(ejector.getInputColor(side)));
@@ -78,20 +74,20 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
-
                 for (EntityPlayer p : ((TileEntityBasicBlock) config).playersUsing) {
-                    Mekanism.packetHandler.sendTo(
-                          new TileEntityMessage(message.coord4D, network.getNetworkedData(new TileNetworkList())),
-                          (EntityPlayerMP) p);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(message.coord4D, network.getNetworkedData(new TileNetworkList())), (EntityPlayerMP) p);
                 }
             }
         }, player);
-
         return null;
     }
 
     public enum ConfigurationPacket {
-        EJECT, SIDE_DATA, EJECT_COLOR, INPUT_COLOR, STRICT_INPUT
+        EJECT,
+        SIDE_DATA,
+        EJECT_COLOR,
+        INPUT_COLOR,
+        STRICT_INPUT
     }
 
     public static class ConfigurationUpdateMessage implements IMessage {
@@ -111,26 +107,21 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
         public ConfigurationUpdateMessage() {
         }
 
-        public ConfigurationUpdateMessage(ConfigurationPacket type, Coord4D coord, int click, int extra,
-              TransmissionType trans) {
+        public ConfigurationUpdateMessage(ConfigurationPacket type, Coord4D coord, int click, int extra, TransmissionType trans) {
             packetType = type;
-
             coord4D = coord;
 
             if (packetType == ConfigurationPacket.EJECT) {
                 transmission = trans;
             }
-
             if (packetType == ConfigurationPacket.EJECT_COLOR) {
                 clickType = click;
             }
-
             if (packetType == ConfigurationPacket.SIDE_DATA) {
                 clickType = click;
                 configIndex = EnumFacing.byIndex(extra);
                 transmission = trans;
             }
-
             if (packetType == ConfigurationPacket.INPUT_COLOR) {
                 clickType = click;
                 inputSide = extra;
@@ -140,22 +131,18 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             coord4D.write(dataStream);
 
             if (packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT) {
                 dataStream.writeInt(clickType);
             }
-
             if (packetType == ConfigurationPacket.EJECT) {
                 dataStream.writeInt(transmission.ordinal());
             }
-
             if (packetType == ConfigurationPacket.SIDE_DATA) {
                 dataStream.writeInt(configIndex.ordinal());
                 dataStream.writeInt(transmission.ordinal());
             }
-
             if (packetType == ConfigurationPacket.INPUT_COLOR) {
                 dataStream.writeInt(inputSide);
             }
@@ -164,7 +151,6 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = ConfigurationPacket.values()[dataStream.readInt()];
-
             coord4D = Coord4D.read(dataStream);
 
             if (packetType == ConfigurationPacket.EJECT) {

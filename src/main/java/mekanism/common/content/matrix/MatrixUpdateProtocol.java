@@ -33,9 +33,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension())
-              .getTileEntity(pointer.getWorld());
-
+        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
         return tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider;
     }
 
@@ -55,8 +53,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     }
 
     @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedMatrixData> cache,
-          MultiblockCache<SynchronizedMatrixData> merge) {
+    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedMatrixData> cache, MultiblockCache<SynchronizedMatrixData> merge) {
         MatrixCache matrixCache = (MatrixCache) cache;
         MatrixCache mergeCache = (MatrixCache) merge;
         List<ItemStack> rejects = StackUtils.getMergeRejects(matrixCache.inventory, mergeCache.inventory);
@@ -77,14 +74,12 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     protected boolean canForm(SynchronizedMatrixData structure) {
         for (Coord4D coord : innerNodes) {
             TileEntity tile = coord.getTileEntity(pointer.getWorld());
-
             if (tile instanceof TileEntityInductionCell) {
                 structure.addCell(coord, (TileEntityInductionCell) tile);
             } else if (tile instanceof TileEntityInductionProvider) {
                 structure.addProvider(coord, (TileEntityInductionProvider) tile);
             }
         }
-
         return true;
     }
 }

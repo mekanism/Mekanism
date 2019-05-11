@@ -47,15 +47,13 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
 
             @Override
             public double getLevel() {
-                double cap = (tileEntity.structure.superheatingElements * MekanismConfig
-                      .current().general.superheatingHeatTransfer.val()) / SynchronizedBoilerData.getHeatEnthalpy();
+                double cap = (tileEntity.structure.superheatingElements * MekanismConfig.current().general.superheatingHeatTransfer.val()) / SynchronizedBoilerData.getHeatEnthalpy();
                 return (double) tileEntity.structure.lastMaxBoil / cap;
             }
         }, resource, 144, 13));
         addGuiElement(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
-            String environment = UnitDisplayUtils
-                  .getDisplayShort(tileEntity.structure.lastEnvironmentLoss * unit.intervalSize, false, unit);
+            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, resource));
     }
@@ -63,28 +61,22 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-        fontRenderer
-              .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
-                    5, 0x404040);
-        renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils
-              .getTemperatureDisplay(tileEntity.structure.temperature, TemperatureUnit.AMBIENT), 43, 30, 0x00CD00, 90);
-        renderScaledText(LangUtils.localize("gui.boilRate") + ": " + tileEntity.structure.lastBoilRate + " mB/t", 43,
-              39, 0x00CD00, 90);
-        renderScaledText(LangUtils.localize("gui.maxBoil") + ": " + tileEntity.structure.lastMaxBoil + " mB/t", 43, 48,
-              0x00CD00, 90);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
+        renderScaledText(LangUtils.localize("gui.temp") + ": " +
+                         MekanismUtils.getTemperatureDisplay(tileEntity.structure.temperature, TemperatureUnit.AMBIENT), 43, 30, 0x00CD00, 90);
+        renderScaledText(LangUtils.localize("gui.boilRate") + ": " + tileEntity.structure.lastBoilRate + " mB/t", 43, 39, 0x00CD00, 90);
+        renderScaledText(LangUtils.localize("gui.maxBoil") + ": " + tileEntity.structure.lastMaxBoil + " mB/t", 43, 48, 0x00CD00, 90);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
-            drawHoveringText(tileEntity.structure.waterStored != null ?
-                        LangUtils.localizeFluidStack(tileEntity.structure.waterStored) + ": "
-                              + tileEntity.structure.waterStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis,
-                  yAxis);
+            drawHoveringText(tileEntity.structure.waterStored != null
+                             ? LangUtils.localizeFluidStack(tileEntity.structure.waterStored) + ": " + tileEntity.structure.waterStored.amount + "mB"
+                             : LangUtils.localize("gui.empty"), xAxis, yAxis);
         }
         if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
-            drawHoveringText(tileEntity.structure.steamStored != null ?
-                        LangUtils.localizeFluidStack(tileEntity.structure.steamStored) + ": "
-                              + tileEntity.structure.steamStored.amount + "mB" : LangUtils.localize("gui.empty"), xAxis,
-                  yAxis);
+            drawHoveringText(tileEntity.structure.steamStored != null
+                             ? LangUtils.localizeFluidStack(tileEntity.structure.steamStored) + ": " + tileEntity.structure.steamStored.amount + "mB"
+                             : LangUtils.localize("gui.empty"), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

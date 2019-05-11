@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
 import mekanism.api.TileNetworkList;
+import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -44,7 +44,6 @@ public class Frequency {
 
     public Frequency setPublic(boolean isPublic) {
         publicFreq = isPublic;
-
         return this;
     }
 
@@ -54,12 +53,10 @@ public class Frequency {
 
     public Coord4D getClosestCoords(Coord4D coord) {
         Coord4D closest = null;
-
         for (Coord4D iterCoord : activeCoords) {
             if (iterCoord.equals(coord)) {
                 continue;
             }
-
             if (closest == null) {
                 closest = iterCoord;
                 continue;
@@ -67,19 +64,12 @@ public class Frequency {
 
             if (coord.dimensionId != closest.dimensionId && coord.dimensionId == iterCoord.dimensionId) {
                 closest = iterCoord;
-                continue;
-            } else if (coord.dimensionId == closest.dimensionId && coord.dimensionId != iterCoord.dimensionId) {
-                continue;
-            } else {
+            } else if (coord.dimensionId != closest.dimensionId || coord.dimensionId == iterCoord.dimensionId) {
                 if (coord.distanceTo(closest) > coord.distanceTo(iterCoord)) {
                     closest = iterCoord;
-                    continue;
-                } else {
-                    continue;
                 }
             }
         }
-
         return closest;
     }
 
@@ -120,8 +110,7 @@ public class Frequency {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Frequency && ((Frequency) obj).name.equals(name)
-              && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
+        return obj instanceof Frequency && ((Frequency) obj).name.equals(name) && ((Frequency) obj).ownerUUID.equals(ownerUUID) && ((Frequency) obj).publicFreq == publicFreq;
     }
 
     public Identity getIdentity() {
@@ -143,7 +132,6 @@ public class Frequency {
             if (!data.getString("name").isEmpty()) {
                 return new Identity(data.getString("name"), data.getBoolean("publicFreq"));
             }
-
             return null;
         }
 

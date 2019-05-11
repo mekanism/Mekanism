@@ -18,8 +18,7 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     private IInventory itemInventory;
     private boolean isBlock;
 
-    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile, IInventory inv,
-          boolean b) {
+    public ContainerPersonalChest(InventoryPlayer inventory, TileEntityPersonalChest tile, IInventory inv, boolean b) {
         super(tile, inventory);
         itemInventory = inv;
         isBlock = b;
@@ -72,9 +71,8 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     public IInventory getInv() {
         if (isBlock) {
             return tileEntity;
-        } else {
-            return itemInventory;
         }
+        return itemInventory;
     }
 
     @Override
@@ -90,11 +88,9 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
             if (slotID < 54) {
                 if (!mergeItemStack(slotStack, 54, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
@@ -102,20 +98,16 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
             } else if (!mergeItemStack(slotStack, 0, 54, false)) {
                 return ItemStack.EMPTY;
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 
@@ -123,16 +115,13 @@ public class ContainerPersonalChest extends ContainerMekanism<TileEntityPersonal
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
         int hotbarSlotId = slotId - 81;
-
         //Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
         if (!isBlock && hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId) {
             ItemStack itemStack = player.inventory.getStackInSlot(hotbarSlotId);
-
             if (!itemStack.isEmpty() && MachineType.get(itemStack) == MachineType.PERSONAL_CHEST) {
                 return ItemStack.EMPTY;
             }
         }
-
         return super.slotClick(slotId, dragType, clickType, player);
     }
 }

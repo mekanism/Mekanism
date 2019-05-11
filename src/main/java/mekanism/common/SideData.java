@@ -55,34 +55,28 @@ public class SideData {
                 }
             }
         }
-
         return false;
     }
 
     public FluidTankInfo[] getFluidTankInfo(ITankManager manager) {
         Object[] tanks = manager.getTanks();
         List<FluidTankInfo> infos = new ArrayList<>();
-
         if (tanks == null) {
             return infos.toArray(new FluidTankInfo[]{});
         }
-
         for (int slot : availableSlots) {
             if (slot <= tanks.length - 1 && tanks[slot] instanceof IFluidTank) {
                 infos.add(((IFluidTank) tanks[slot]).getInfo());
             }
         }
-
         return infos.toArray(new FluidTankInfo[]{});
     }
 
     public GasTank getGasTank(ITankManager manager) {
         Object[] tanks = manager.getTanks();
-
         if (tanks == null || tanks.length < 1 || !(tanks[0] instanceof GasTank)) {
             return null;
         }
-
         return (GasTank) tanks[0];
     }
 

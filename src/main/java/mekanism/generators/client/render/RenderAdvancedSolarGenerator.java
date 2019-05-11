@@ -15,8 +15,7 @@ public class RenderAdvancedSolarGenerator extends TileEntitySpecialRenderer<Tile
     private ModelAdvancedSolarGenerator model = new ModelAdvancedSolarGenerator();
 
     @Override
-    public void render(TileEntityAdvancedSolarGenerator tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityAdvancedSolarGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));

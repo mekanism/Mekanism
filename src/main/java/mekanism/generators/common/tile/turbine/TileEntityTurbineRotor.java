@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.common.Mekanism;
 import mekanism.api.TileNetworkList;
+import mekanism.common.Mekanism;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.block.Block;
@@ -61,7 +61,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         // Pass the scan along to next rotor up, along with their new index
         TileEntityTurbineRotor rotor = nextRotor(getPos().up());
         if (rotor != null) {
-            rotor.scanRotors(index+1);
+            rotor.scanRotors(index + 1);
         }
     }
 
@@ -74,10 +74,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         } else if (blades < 2) {
             // Add the blades to this rotor
             blades++;
-
             // Update client state
             sendUpdatePacket();
-
             return true;
         }
 
@@ -86,9 +84,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         next = nextRotor(getPos().up());
         if (next != null) {
             return next.addBlade();
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean removeBlade() {
@@ -102,7 +99,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
             // Update client state
             sendUpdatePacket();
-
             return true;
         }
 
@@ -111,9 +107,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         next = nextRotor(getPos().down());
         if (next != null) {
             return next.removeBlade();
-        } else {
-            return false;
         }
+        return false;
     }
 
 
@@ -128,25 +123,21 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     private TileEntityTurbineRotor nextRotor(BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityTurbineRotor) {
-            return (TileEntityTurbineRotor)tile;
+            return (TileEntityTurbineRotor) tile;
         }
         return null;
     }
 
     private void sendUpdatePacket() {
-        Mekanism.packetHandler
-              .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                    new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             int prevBlades = blades;
             int prevPosition = position;
-
             blades = dataStream.readInt();
             position = dataStream.readInt();
 
@@ -160,17 +151,14 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(blades);
         data.add(position);
-
         return data;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         blades = nbtTags.getInteger("blades");
     }
 
@@ -178,9 +166,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("blades", getHousedBlades());
-
         return nbtTags;
     }
 
@@ -192,7 +178,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void onUpdate() {}
+    public void onUpdate() {
+    }
 
     @Override
     public void setMultiblock(String id) {

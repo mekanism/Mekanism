@@ -361,6 +361,7 @@ mekanism.configgui.ctgy.machines=Impostazioni dei macchinario
 mekanism.configgui.ctgy.tier=Impostazioni dei livelli
 mekanism.configgui.ctgy.usage=Impostazioni dell'uso
 mekanism.configgui.ctgy.client=Impostazioni del client
+mekanism.configgui.ctgy.storage=Impostazioni del accumulo di energia
 
 # Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Impostazioni generali riguardo a Mekanism e ai suoi moduli
@@ -368,6 +369,7 @@ mekanism.configgui.ctgy.machines.tooltip=Impostazioni riguardo all'attivare e di
 mekanism.configgui.ctgy.tier.tooltip=Impostazioni riguardo ai livelli di Mekanism e i loro valori corrispondenti
 mekanism.configgui.ctgy.usage.tooltip=Impostazioni riguardo ai macchinari e al loro uso di energia
 mekanism.configgui.ctgy.client.tooltip=Impostazioni specifici del Client riguardo a Mekanism e ai suoi moduli
+mekanism.configgui.ctgy.storage.tooltip=Impostazioni riguardo ai macchinari e al loro accumulo di energia
 
 # Gui text
 gui.remove=Rimuovi

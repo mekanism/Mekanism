@@ -1,8 +1,8 @@
 package mekanism.common.inventory;
 
-import mekanism.common.tier.BinTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.tier.BinTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -23,21 +23,17 @@ public class InventoryBin {
 
             return ret;
         }
-
         return ItemStack.EMPTY;
     }
 
     public ItemStack removeStack() {
         ItemStack stack = getStack();
-
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-
         if (getTier() != BinTier.CREATIVE) {
             setItemCount(getItemCount() - stack.getCount());
         }
-
         return stack.copy();
     }
 
@@ -46,7 +42,6 @@ public class InventoryBin {
             if (getItemType().isEmpty()) {
                 setItemType(stack);
             }
-
             if (getTier() != BinTier.CREATIVE) {
                 if (getItemCount() + stack.getCount() <= getMaxStorage()) {
                     setItemCount(getItemCount() + stack.getCount());
@@ -54,32 +49,23 @@ public class InventoryBin {
                 } else {
                     ItemStack rejects = getItemType().copy();
                     rejects.setCount((getItemCount() + stack.getCount()) - getMaxStorage());
-
                     setItemCount(getMaxStorage());
-
                     return rejects;
                 }
             } else {
                 setItemCount(Integer.MAX_VALUE);
             }
         }
-
         return stack;
     }
 
     public boolean isValid(ItemStack stack) {
-        if (stack.isEmpty() || stack.getCount() <= 0) {
+        if (stack.isEmpty() || stack.getCount() <= 0 || BasicBlockType.get(stack) == BasicBlockType.BIN) {
             return false;
         }
-
-        if (BasicBlockType.get(stack) == BasicBlockType.BIN) {
-            return false;
-        }
-
         if (getItemType().isEmpty()) {
             return true;
         }
-
         return stack.isItemEqual(getItemType()) && ItemStack.areItemStackTagsEqual(stack, getItemType());
     }
 
@@ -97,7 +83,6 @@ public class InventoryBin {
 
     public void setItemCount(int count) {
         ItemDataUtils.setInt(bin, "itemCount", Math.max(0, count));
-
         if (getItemCount() == 0) {
             setItemType(ItemStack.EMPTY);
         }
@@ -107,7 +92,6 @@ public class InventoryBin {
         if (getItemCount() == 0) {
             return ItemStack.EMPTY;
         }
-
         return new ItemStack(ItemDataUtils.getCompound(bin, "storedItem"));
     }
 
@@ -116,7 +100,6 @@ public class InventoryBin {
             ItemDataUtils.removeData(bin, "storedItem");
             return;
         }
-
         ItemDataUtils.setCompound(bin, "storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
     }
 }

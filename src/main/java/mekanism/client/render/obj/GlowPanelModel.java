@@ -2,7 +2,7 @@ package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +56,8 @@ public class GlowPanelModel extends OBJBakedModelBase {
     private ItemStack tempStack;
     private GlowPanelOverride override = new GlowPanelOverride();
 
-    public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format,
-          ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) {
+    public GlowPanelModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures,
+          Map<TransformType, Matrix4f> transform) {
         super(base, model, state, format, textures, transform);
     }
 
@@ -67,11 +67,8 @@ public class GlowPanelModel extends OBJBakedModelBase {
     }
 
     private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s) {
-        return new TRSRTransformation(
-              new Vector3f(tx / 16, ty / 16, tz / 16),
-              TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
-              new Vector3f(s, s, s),
-              null);
+        return new TRSRTransformation(new Vector3f(tx / 16, ty / 16, tz / 16), TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
+              new Vector3f(s, s, s), null);
     }
 
     public EnumColor getColor() {
@@ -101,17 +98,13 @@ public class GlowPanelModel extends OBJBakedModelBase {
 
         if (state != null && tempState == null) {
             int hash = TileEntityGlowPanel.hash((IExtendedBlockState) state);
-
             if (!glowPanelCache.containsKey(hash)) {
-                GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap,
-                      transformationMap);
+                GlowPanelModel model = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, textureMap, transformationMap);
                 model.tempState = state;
                 glowPanelCache.put(hash, model.getQuads(state, side, rand));
             }
-
             return glowPanelCache.get(hash);
         }
-
         return super.getQuads(state, side, rand);
     }
 
@@ -121,7 +114,6 @@ public class GlowPanelModel extends OBJBakedModelBase {
             EnumColor c = getColor();
             return new float[]{c.getColor(0), c.getColor(1), c.getColor(2), 1};
         }
-
         return null;
     }
 
@@ -134,54 +126,41 @@ public class GlowPanelModel extends OBJBakedModelBase {
             GlStateManager.translate(0.65F, 0.45F, 0.0F);
             GlStateManager.rotate(90, 1, 0, 0);
             GlStateManager.scale(1.6F, 1.6F, 1.6F);
-
             return Pair.of(this, null);
-        } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND
-              || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
+        } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
             GlStateManager.translate(0.0F, 0.2F, 0.0F);
-        } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND
-              || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+        } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             ForgeHooksClient.multiplyCurrentGlMatrix(transforms.get(transformType).getMatrix());
             GlStateManager.translate(0.0F, 0.3F, 0.2F);
-
             return Pair.of(this, null);
         }
-
         return Pair.of(this, transforms.get(transformType).getMatrix());
     }
 
     private class GlowPanelOverride extends ItemOverrideList {
 
         public GlowPanelOverride() {
-            super(Lists.newArrayList());
+            super(new ArrayList<>());
         }
 
         @Nonnull
         @Override
-        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world,
-              EntityLivingBase entity) {
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
             if (glowPanelItemCache.containsKey(stack.getItemDamage())) {
                 return glowPanelItemCache.get(stack.getItemDamage());
             }
-
             ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
             builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
-            TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks()
-                  .getAtlasSprite(new ResourceLocation("missingno").toString());
+            TextureAtlasSprite missing = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(new ResourceLocation("missingno").toString());
 
             for (String s : getModel().getMatLib().getMaterialNames()) {
-                TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(
-                      getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-
-                builder.put(s, sprite);
+                builder.put(s, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString()));
             }
 
             builder.put("missingno", missing);
-            GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat,
-                  builder.build(), transformationMap);
+            GlowPanelModel bakedModel = new GlowPanelModel(baseModel, getModel(), getState(), vertexFormat, builder.build(), transformationMap);
             bakedModel.tempStack = stack;
             glowPanelItemCache.put(stack.getItemDamage(), bakedModel);
-
             return bakedModel;
         }
     }

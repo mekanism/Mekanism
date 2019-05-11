@@ -1,6 +1,6 @@
 package mekanism.client;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,24 +75,20 @@ public class ClientTickHandler {
                 ItemJetpack jetpack = (ItemJetpack) stack.getItem();
 
                 if (jetpack.getGas(stack) != null) {
-                    if ((mc.gameSettings.keyBindJump.isKeyDown() && jetpack.getMode(stack) == JetpackMode.NORMAL)
-                          && mc.currentScreen == null) {
+                    if (mc.gameSettings.keyBindJump.isKeyDown() && jetpack.getMode(stack) == JetpackMode.NORMAL && mc.currentScreen == null) {
                         return true;
                     } else if (jetpack.getMode(stack) == JetpackMode.HOVER) {
-                        if ((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (
-                              mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown())
-                              || mc.currentScreen != null) {
+                        if ((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) ||
+                            (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null) {
                             return !CommonPlayerTickHandler.isOnGround(player);
                         } else if (mc.gameSettings.keyBindSneak.isKeyDown() && mc.currentScreen == null) {
                             return !CommonPlayerTickHandler.isOnGround(player);
                         }
-
                         return true;
                     }
                 }
             }
         }
-
         return false;
     }
 
@@ -100,20 +96,16 @@ public class ClientTickHandler {
         if (player != mc.player) {
             return Mekanism.playerState.isGasmaskOn(player);
         }
-
         ItemStack tank = player.inventory.armorInventory.get(2);
         ItemStack mask = player.inventory.armorInventory.get(3);
-
         if (!tank.isEmpty() && !mask.isEmpty()) {
             if (tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemGasMask) {
                 ItemScubaTank scubaTank = (ItemScubaTank) tank.getItem();
-
                 if (scubaTank.getGas(tank) != null) {
                     return scubaTank.getFlowing(tank);
                 }
             }
         }
-
         return false;
     }
 
@@ -123,14 +115,11 @@ public class ClientTickHandler {
         }
 
         ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
-
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
             ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
-
             /*freeRunners.getEnergy(stack) > 0 && */
             return freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL;
         }
-
         return false;
     }
 
@@ -138,32 +127,25 @@ public class ClientTickHandler {
         if (player != mc.player) {
             return Mekanism.playerState.isFlamethrowerOn(player);
         }
-
         if (hasFlamethrower(player)) {
             return mc.gameSettings.keyBindUseItem.isKeyDown();
         }
-
         return false;
     }
 
     public static boolean hasFlamethrower(EntityPlayer player) {
-        if (!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem()
-              .getItem() instanceof ItemFlamethrower) {
+        if (!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemFlamethrower) {
             ItemFlamethrower flamethrower = (ItemFlamethrower) player.inventory.getCurrentItem().getItem();
-
             return flamethrower.getGas(player.inventory.getCurrentItem()) != null;
         }
-
         return false;
     }
 
     public static void portableTeleport(EntityPlayer player, EnumHand hand, Frequency freq) {
         if (MekanismConfig.current().general.portableTeleporterDelay.val() == 0) {
-            Mekanism.packetHandler
-                  .sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
+            Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, hand, freq));
         } else {
-            portableTeleports.put(player, new TeleportData(hand, freq,
-                  mc.world.getWorldTime() + MekanismConfig.current().general.portableTeleporterDelay.val()));
+            portableTeleports.put(player, new TeleportData(hand, freq, mc.world.getWorldTime() + MekanismConfig.current().general.portableTeleporterDelay.val()));
         }
     }
 
@@ -209,15 +191,13 @@ public class ClientTickHandler {
                     Mekanism.freeRunnerOn.remove(mc.player.getUniqueID());
                 }
 
-                Mekanism.packetHandler.sendToServer(
-                      new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.UPDATE,
-                            mc.player.getUniqueID(), isFreeRunnerOn(mc.player)));
+                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.UPDATE,
+                      mc.player.getUniqueID(), isFreeRunnerOn(mc.player)));
             }
 
             ItemStack bootStack = mc.player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && isFreeRunnerOn(mc.player)
-                  && !mc.player.isSneaking()) {
+            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && isFreeRunnerOn(mc.player) && !mc.player.isSneaking()) {
                 mc.player.stepHeight = 1.002F;
             } else if (mc.player.stepHeight == 1.002F) {
                 mc.player.stepHeight = 0.6F;
@@ -229,8 +209,7 @@ public class ClientTickHandler {
             Mekanism.playerState.setGasmaskState(mc.player.getUniqueID(), isGasMaskOn(mc.player), true);
             Mekanism.playerState.setFlamethrowerState(mc.player.getUniqueID(), isFlamethrowerOn(mc.player), true);
 
-            for (Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator();
-                  iter.hasNext(); ) {
+            for (Iterator<Entry<EntityPlayer, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
                 Entry<EntityPlayer, TeleportData> entry = iter.next();
 
                 for (int i = 0; i < 100; i++) {
@@ -242,9 +221,7 @@ public class ClientTickHandler {
                 }
 
                 if (mc.world.getWorldTime() == entry.getValue().teleportTime) {
-                    Mekanism.packetHandler.sendToServer(
-                          new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand,
-                                entry.getValue().freq));
+                    Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
                     iter.remove();
                 }
             }
@@ -258,7 +235,6 @@ public class ClientTickHandler {
 
             if (isFlamethrowerOn(mc.player)) {
                 ItemFlamethrower flamethrower = (ItemFlamethrower) mc.player.inventory.getCurrentItem().getItem();
-
                 if (!(mc.player.isCreative() || mc.player.isSpectator())) {
                     flamethrower.useGas(mc.player.inventory.getCurrentItem());
                 }
@@ -271,9 +247,8 @@ public class ClientTickHandler {
                     mc.player.motionY = Math.min(mc.player.motionY + 0.15D, 0.5D);
                     mc.player.fallDistance = 0.0F;
                 } else if (jetpack.getMode(chestStack) == JetpackMode.HOVER) {
-                    if ((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) || (
-                          mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown())
-                          || mc.currentScreen != null) {
+                    if ((!mc.gameSettings.keyBindJump.isKeyDown() && !mc.gameSettings.keyBindSneak.isKeyDown()) ||
+                        (mc.gameSettings.keyBindJump.isKeyDown() && mc.gameSettings.keyBindSneak.isKeyDown()) || mc.currentScreen != null) {
                         if (mc.player.motionY > 0) {
                             mc.player.motionY = Math.max(mc.player.motionY - 0.15D, 0);
                         } else if (mc.player.motionY < 0) {
@@ -290,25 +265,20 @@ public class ClientTickHandler {
                             }
                         }
                     }
-
                     mc.player.fallDistance = 0.0F;
                 }
-
                 jetpack.useGas(chestStack);
             }
 
             if (isGasMaskOn(mc.player)) {
                 ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
-
                 final int max = 300;
-
                 tank.useGas(chestStack);
                 GasStack received = tank.useGas(chestStack, max - mc.player.getAir());
 
                 if (received != null) {
                     mc.player.setAir(mc.player.getAir() + received.amount);
                 }
-
                 if (mc.player.getAir() == max) {
                     for (Object obj : mc.player.getActivePotionEffects()) {
                         if (obj instanceof PotionEffect) {
@@ -324,8 +294,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onMouseEvent(MouseEvent event) {
-        if (MekanismConfig.current().client.allowConfiguratorModeScroll.val() && mc.player != null && mc.player
-              .isSneaking()) {
+        if (MekanismConfig.current().client.allowConfiguratorModeScroll.val() && mc.player != null && mc.player.isSneaking()) {
             ItemStack stack = mc.player.getHeldItemMainhand();
             int delta = event.getDwheel();
 
@@ -343,10 +312,8 @@ public class ClientTickHandler {
                 } else if (newVal < 0) {
                     newVal = ConfiguratorMode.values().length + newVal;
                 }
-
                 configurator.setState(stack, ConfiguratorMode.values()[newVal]);
-                Mekanism.packetHandler
-                      .sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, Lists.newArrayList(newVal)));
+                Mekanism.packetHandler.sendToServer(new ItemStackMessage(EnumHand.MAIN_HAND, new ArrayList<>(newVal)));
                 event.setCanceled(true);
             }
         }

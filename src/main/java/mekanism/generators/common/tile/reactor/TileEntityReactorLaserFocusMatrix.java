@@ -35,7 +35,6 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
         if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
             return Capabilities.LASER_RECEPTOR_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 }

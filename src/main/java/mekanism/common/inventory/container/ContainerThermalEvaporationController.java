@@ -23,12 +23,10 @@ public class ContainerThermalEvaporationController extends ContainerMekanism<Til
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
             FluidStack fluidContained = FluidUtil.getFluidContained(slotStack);
-
             if (slotID == 1 || slotID == 3) {
                 if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
@@ -38,50 +36,38 @@ public class ContainerThermalEvaporationController extends ContainerMekanism<Til
                     if (!mergeItemStack(slotStack, 2, 3, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else {
-                    if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+                } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
                 }
             } else if (fluidContained != null && tileEntity.hasRecipe(fluidContained.getFluid())) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else {
-                    if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+                } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
                 }
-            } else {
-                if (slotID >= 4 && slotID <= 30) {
-                    if (!mergeItemStack(slotStack, 31, inventorySlots.size(), false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (slotID > 30) {
-                    if (!mergeItemStack(slotStack, 4, 30, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-                    if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+            } else if (slotID >= 4 && slotID <= 30) {
+                if (!mergeItemStack(slotStack, 31, inventorySlots.size(), false)) {
+                    return ItemStack.EMPTY;
                 }
+            } else if (slotID > 30) {
+                if (!mergeItemStack(slotStack, 4, 30, false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                return ItemStack.EMPTY;
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 

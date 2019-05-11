@@ -28,8 +28,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
         IBlockState state = pointer.getWorld().getBlockState(new BlockPos(x, y, z));
-        return state.getBlock() == MekanismBlocks.BasicBlock
-              && state.getValue(((BlockBasic) state.getBlock()).getTypeProperty()) == BasicBlockType.DYNAMIC_TANK;
+        return state.getBlock() == MekanismBlocks.BasicBlock && state.getValue(((BlockBasic) state.getBlock()).getTypeProperty()) == BasicBlockType.DYNAMIC_TANK;
     }
 
     @Override
@@ -48,8 +47,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     }
 
     @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache,
-          MultiblockCache<SynchronizedTankData> merge) {
+    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache, MultiblockCache<SynchronizedTankData> merge) {
         TankCache tankCache = (TankCache) cache;
         TankCache mergeCache = (TankCache) merge;
         if (tankCache.fluid == null) {
@@ -58,7 +56,6 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
             tankCache.fluid.amount += mergeCache.fluid.amount;
         }
         tankCache.editMode = mergeCache.editMode;
-
         List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.inventory, mergeCache.inventory);
         if (!rejects.isEmpty()) {
             rejectedItems.addAll(rejects);
@@ -69,23 +66,18 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     @Override
     protected void onFormed() {
         super.onFormed();
-
         if (structureFound.fluidStored != null) {
-            structureFound.fluidStored.amount = Math
-                  .min(structureFound.fluidStored.amount, structureFound.volume * FLUID_PER_TANK);
+            structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume * FLUID_PER_TANK);
         }
     }
 
     @Override
-    protected void onStructureCreated(SynchronizedTankData structure, int origX, int origY, int origZ, int xmin,
-          int xmax, int ymin, int ymax, int zmin, int zmax) {
+    protected void onStructureCreated(SynchronizedTankData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
             if (obj.getTileEntity(pointer.getWorld()) instanceof TileEntityDynamicValve) {
                 ValveData data = new ValveData();
                 data.location = obj;
-                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin,
-                      origZ + zmax);
-
+                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);
                 structure.valves.add(data);
             }
         }

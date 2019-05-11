@@ -39,15 +39,12 @@ public class Reaction {
         if (IngredientHelper.checkNotNull(NAME, ingredientInput, liquidInput, gasInput, itemOutput, gasOutput)) {
             FluidStack fluidInput = IngredientHelper.toFluid(liquidInput);
             GasStack gas = GasHelper.toGas(gasInput);
-            PressurizedOutput output = new PressurizedOutput(CraftTweakerMC.getItemStack(itemOutput),
-                  GasHelper.toGas(gasOutput));
+            PressurizedOutput output = new PressurizedOutput(CraftTweakerMC.getItemStack(itemOutput), GasHelper.toGas(gasOutput));
             List<PressurizedRecipe> recipes = new ArrayList<>();
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
-                recipes.add(new PressurizedRecipe(
-                      new PressurizedInput(stack, fluidInput, gas), output, energy, duration));
+                recipes.add(new PressurizedRecipe(new PressurizedInput(stack, fluidInput, gas), output, energy, duration));
             }
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER, recipes));
         }
     }
 
@@ -55,16 +52,13 @@ public class Reaction {
     public static void removeRecipe(IIngredient itemOutput, IIngredient gasOutput, @Optional IIngredient itemInput,
           @Optional IIngredient liquidInput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput, gasOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER,
-                        new IngredientWrapper(itemOutput, gasOutput),
-                        new IngredientWrapper(itemInput, liquidInput, gasInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER, new IngredientWrapper(itemOutput, gasOutput),
+                  new IngredientWrapper(itemInput, liquidInput, gasInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.PRESSURIZED_REACTION_CHAMBER));
     }
 }

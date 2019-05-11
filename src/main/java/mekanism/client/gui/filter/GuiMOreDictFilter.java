@@ -51,15 +51,13 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
 
     @Override
     protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler
-              .sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
+        Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer.drawString(
-              (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils
-                    .localize("gui.oredictFilter"), 43, 6, 0x404040);
+        fontRenderer.drawString((isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " +
+                                LangUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
         renderScaledText(LangUtils.localize("gui.key") + ": " + filter.getOreDictName(), 35, 32, 0x00CD00, 107);
         if (!renderStack.isEmpty()) {
@@ -79,8 +77,8 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
             RenderHelper.disableStandardItemLighting();
             GlStateManager.popMatrix();
         }
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59) {
             drawHoveringText(LangUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils
                   .transYesNo(filter.requireStack), xAxis, yAxis);
@@ -95,8 +93,8 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
             drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
         } else {
@@ -134,8 +132,8 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
         super.mouseClicked(mouseX, mouseY, button);
         oreDictText.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 Mekanism.packetHandler.sendToServer(

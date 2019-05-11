@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
-import mekanism.api.TileNetworkList;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.prefab.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,10 +40,8 @@ public class TileComponentUpgrade implements ITileComponent {
     public TileComponentUpgrade(TileEntityContainerBlock tile, int slot) {
         tileEntity = tile;
         upgradeSlot = slot;
-
         setSupported(Upgrade.SPEED);
         setSupported(Upgrade.ENERGY);
-
         tile.components.add(this);
     }
 
@@ -58,10 +56,8 @@ public class TileComponentUpgrade implements ITileComponent {
     @Override
     public void tick() {
         if (!tileEntity.getWorld().isRemote) {
-            if (!tileEntity.inventory.get(upgradeSlot).isEmpty() && tileEntity.inventory.get(upgradeSlot)
-                  .getItem() instanceof IUpgradeItem) {
-                Upgrade type = ((IUpgradeItem) tileEntity.inventory.get(upgradeSlot).getItem())
-                      .getUpgradeType(tileEntity.inventory.get(upgradeSlot));
+            if (!tileEntity.inventory.get(upgradeSlot).isEmpty() && tileEntity.inventory.get(upgradeSlot).getItem() instanceof IUpgradeItem) {
+                Upgrade type = ((IUpgradeItem) tileEntity.inventory.get(upgradeSlot).getItem()).getUpgradeType(tileEntity.inventory.get(upgradeSlot));
 
                 if (supports(type) && getUpgrades(type) < type.getMax()) {
                     if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
@@ -69,11 +65,8 @@ public class TileComponentUpgrade implements ITileComponent {
                     } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
                         upgradeTicks = 0;
                         addUpgrade(type);
-
                         tileEntity.inventory.get(upgradeSlot).shrink(1);
-
-                        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
-                                    tileEntity.getNetworkedData(new TileNetworkList())),
+                        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
                               new Range4D(Coord4D.get(tileEntity)));
                         tileEntity.markDirty();
                     }
@@ -102,23 +95,19 @@ public class TileComponentUpgrade implements ITileComponent {
         if (upgrades.get(upgrade) == null) {
             return 0;
         }
-
         return upgrades.get(upgrade);
     }
 
     public void addUpgrade(Upgrade upgrade) {
         upgrades.put(upgrade, Math.min(upgrade.getMax(), getUpgrades(upgrade) + 1));
-
         tileEntity.recalculateUpgradables(upgrade);
     }
 
     public void removeUpgrade(Upgrade upgrade) {
         upgrades.put(upgrade, Math.max(0, getUpgrades(upgrade) - 1));
-
         if (upgrades.get(upgrade) == 0) {
             upgrades.remove(upgrade);
         }
-
         tileEntity.recalculateUpgradables(upgrade);
     }
 
@@ -153,15 +142,12 @@ public class TileComponentUpgrade implements ITileComponent {
     @Override
     public void read(ByteBuf dataStream) {
         upgrades.clear();
-
         int amount = dataStream.readInt();
 
         for (int i = 0; i < amount; i++) {
             upgrades.put(Upgrade.values()[dataStream.readInt()], dataStream.readInt());
         }
-
         upgradeTicks = dataStream.readInt();
-
         for (Upgrade upgrade : getSupportedTypes()) {
             tileEntity.recalculateUpgradables(upgrade);
         }
@@ -170,19 +156,16 @@ public class TileComponentUpgrade implements ITileComponent {
     @Override
     public void write(TileNetworkList data) {
         data.add(upgrades.size());
-
         for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             data.add(entry.getKey().ordinal());
             data.add(entry.getValue());
         }
-
         data.add(upgradeTicks);
     }
 
     @Override
     public void read(NBTTagCompound nbtTags) {
         upgrades = Upgrade.buildMap(nbtTags);
-
         for (Upgrade upgrade : getSupportedTypes()) {
             tileEntity.recalculateUpgradables(upgrade);
         }

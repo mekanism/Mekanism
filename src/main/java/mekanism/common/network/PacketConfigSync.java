@@ -40,7 +40,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             config.general.write(dataStream);
             config.usage.write(dataStream);
             config.storage.write(dataStream);
-
             try {
                 for (IModule module : Mekanism.modulesLoaded) {
                     module.writeConfig(dataStream, config);
@@ -55,7 +54,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
             config.general.read(dataStream);
             config.usage.read(dataStream);
             config.storage.read(dataStream);
-
             try {
                 for (IModule module : Mekanism.modulesLoaded) {
                     module.readConfig(dataStream, config);

@@ -17,15 +17,11 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
     @Override
     public IMessage onMessage(DropperUseMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-
             if (tileEntity instanceof ITankManager) {
                 try {
                     Object tank = ((ITankManager) tileEntity).getTanks()[message.tankId];
-
                     if (tank != null) {
                         DropperHandler.useDropper(player, tank, message.mouseButton);
                     }
@@ -34,7 +30,6 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
                 }
             }
         }, player);
-
         return null;
     }
 
@@ -57,7 +52,6 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
         @Override
         public void toBytes(ByteBuf dataStream) {
             coord4D.write(dataStream);
-
             dataStream.writeInt(mouseButton);
             dataStream.writeInt(tankId);
         }

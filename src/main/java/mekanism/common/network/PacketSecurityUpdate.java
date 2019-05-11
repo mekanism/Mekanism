@@ -25,7 +25,6 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
                 MekanismClient.clientSecurityMap.put(message.playerUUID, message.securityData);
             }
         }
-
         return null;
     }
 
@@ -47,7 +46,6 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
 
         public SecurityUpdateMessage(SecurityPacket type, UUID uuid, SecurityData data) {
             packetType = type;
-
             if (packetType == SecurityPacket.UPDATE) {
                 playerUUID = uuid;
                 playerUsername = MekanismUtils.getLastKnownUsername(uuid);
@@ -58,11 +56,9 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             if (packetType == SecurityPacket.UPDATE) {
                 PacketHandler.writeString(dataStream, playerUUID.toString());
                 PacketHandler.writeString(dataStream, playerUsername);
-
                 if (securityData != null) {
                     dataStream.writeBoolean(true);
                     securityData.write(dataStream);
@@ -71,15 +67,12 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
                 }
             } else if (packetType == SecurityPacket.FULL) {
                 List<SecurityFrequency> frequencies = new ArrayList<>();
-
                 for (Frequency frequency : Mekanism.securityFrequencies.getFrequencies()) {
                     if (frequency instanceof SecurityFrequency) {
                         frequencies.add((SecurityFrequency) frequency);
                     }
                 }
-
                 dataStream.writeInt(frequencies.size());
-
                 for (SecurityFrequency frequency : frequencies) {
                     PacketHandler.writeString(dataStream, frequency.ownerUUID.toString());
                     PacketHandler.writeString(dataStream, MekanismUtils.getLastKnownUsername(frequency.ownerUUID));
@@ -91,21 +84,16 @@ public class PacketSecurityUpdate implements IMessageHandler<SecurityUpdateMessa
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = SecurityPacket.values()[dataStream.readInt()];
-
             if (packetType == SecurityPacket.UPDATE) {
                 playerUUID = UUID.fromString(PacketHandler.readString(dataStream));
                 playerUsername = PacketHandler.readString(dataStream);
-
                 if (dataStream.readBoolean()) {
                     securityData = SecurityData.read(dataStream);
                 }
-
                 MekanismClient.clientUUIDMap.put(playerUUID, playerUsername);
             } else if (packetType == SecurityPacket.FULL) {
                 MekanismClient.clientSecurityMap.clear();
-
                 int amount = dataStream.readInt();
-
                 for (int i = 0; i < amount; i++) {
                     UUID uuid = UUID.fromString(PacketHandler.readString(dataStream));
                     String username = PacketHandler.readString(dataStream);

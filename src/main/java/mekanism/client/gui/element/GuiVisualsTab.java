@@ -43,14 +43,10 @@ public class GuiVisualsTab extends GuiTileEntityElement<TileEntityDigitalMiner> 
         mc.renderEngine.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
             if (tileEntity.getRadius() <= 64) {
-                displayTooltip(
-                      LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
-                      xAxis, yAxis);
+                displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
             } else {
-                displayTooltips(Arrays.asList(
-                      LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
-                      TextFormatting.RED.toString() + LangUtils.localize("mekanism.gui.visuals.toobig")
-                ), xAxis, yAxis);
+                displayTooltips(Arrays.asList(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering),
+                      TextFormatting.RED.toString() + LangUtils.localize("mekanism.gui.visuals.toobig")), xAxis, yAxis);
             }
         }
         mc.renderEngine.bindTexture(defaultLocation);

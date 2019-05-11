@@ -13,8 +13,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 
-public abstract class RecipeMapModification<INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> implements
-      IAction {
+public abstract class RecipeMapModification<INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> implements IAction {
 
     protected final HashMap<INPUT, RECIPE> recipes;
     protected final Map<INPUT, RECIPE> map;
@@ -52,15 +51,13 @@ public abstract class RecipeMapModification<INPUT extends MachineInput<INPUT>, R
 
     private String getRecipeInfo() {
         if (!recipes.isEmpty()) {
-            return recipes.entrySet().stream().filter(Objects::nonNull).map(RecipeInfoHelper::getRecipeInfo)
-                  .collect(Collectors.joining(", "));
+            return recipes.entrySet().stream().filter(Objects::nonNull).map(RecipeInfoHelper::getRecipeInfo).collect(Collectors.joining(", "));
         }
         return "Unknown item";
     }
 
     @Override
     public String describe() {
-        return String
-              .format("%s %d %s Recipe(s) for %s", add ? "Adding" : "Removing", recipes.size(), name, getRecipeInfo());
+        return String.format("%s %d %s Recipe(s) for %s", add ? "Adding" : "Removing", recipes.size(), name, getRecipeInfo());
     }
 }

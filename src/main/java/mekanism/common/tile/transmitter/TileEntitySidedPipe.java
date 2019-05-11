@@ -51,8 +51,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection,
-      IConfigurable, ITransmitter, ITickable {
+public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickable {
 
     public int delayTicks;
 
@@ -69,7 +68,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     private boolean redstoneSet = false;
 
     public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
-          ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
+                                               ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
     public TileEntity[] cachedAcceptors = new TileEntity[6];
 
     public static boolean connectionMapContainsSide(byte connections, EnumFacing side) {
@@ -81,14 +80,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         return (byte) ((connections & ~(byte) (1 << side.ordinal())) | (byte) ((toSet ? 1 : 0) << side.ordinal()));
     }
 
-    public static ConnectionType getConnectionType(EnumFacing side, byte allConnections, byte transmitterConnections,
-          ConnectionType[] types) {
+    public static ConnectionType getConnectionType(EnumFacing side, byte allConnections, byte transmitterConnections, ConnectionType[] types) {
         if (!connectionMapContainsSide(allConnections, side)) {
             return ConnectionType.NONE;
         } else if (connectionMapContainsSide(transmitterConnections, side)) {
             return ConnectionType.NORMAL;
         }
-
         return types[side.ordinal()];
     }
 
@@ -101,16 +98,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             } else if (delayTicks < 5) {
                 delayTicks++;
             }
-        } else  {
+        } else {
             if (forceUpdate) {
                 refreshConnections();
                 forceUpdate = false;
             }
-
             if (sendDesc) {
-                Mekanism.packetHandler.sendToReceivers(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
                 sendDesc = false;
             }
         }
@@ -133,25 +127,19 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public byte getPossibleTransmitterConnections() {
         byte connections = 0x00;
-
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return connections;
         }
-
         for (EnumFacing side : EnumFacing.values()) {
             if (canConnectMutual(side)) {
                 TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
-
-                if (CapabilityUtils
-                      .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-                      && TransmissionType.checkTransmissionType(CapabilityUtils
-                            .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
+                if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+                    && TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
                       getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)) {
                     connections |= 1 << side.ordinal();
                 }
             }
         }
-
         return connections;
     }
 
@@ -159,25 +147,20 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
-
         if (canConnectMutual(side)) {
             TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
-
             if (isValidAcceptor(tileEntity, side)) {
                 if (cachedAcceptors[side.ordinal()] != tileEntity) {
                     cachedAcceptors[side.ordinal()] = tileEntity;
                     markDirtyAcceptor(side);
                 }
-
                 return true;
             }
         }
-
         if (cachedAcceptors[side.ordinal()] != null) {
             cachedAcceptors[side.ordinal()] = null;
             markDirtyAcceptor(side);
         }
-
         return false;
     }
 
@@ -185,17 +168,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
-
         if (canConnectMutual(side)) {
             TileEntity tileEntity = getWorld().getTileEntity(getPos().offset(side));
-
-            return CapabilityUtils
-                  .hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
-                  && TransmissionType.checkTransmissionType(CapabilityUtils
-                        .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
+            return CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())
+                   && TransmissionType.checkTransmissionType(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()),
                   getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity);
         }
-
         return false;
     }
 
@@ -209,31 +187,26 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         for (EnumFacing side : EnumFacing.values()) {
             if (canConnectMutual(side)) {
                 Coord4D coord = new Coord4D(getPos(), getWorld()).offset(side);
-
                 if (!getWorld().isRemote && !coord.exists(getWorld())) {
                     forceUpdate = true;
                     continue;
                 }
 
                 TileEntity tileEntity = coord.getTileEntity(getWorld());
-
                 if (isValidAcceptor(tileEntity, side)) {
                     if (cachedAcceptors[side.ordinal()] != tileEntity) {
                         cachedAcceptors[side.ordinal()] = tileEntity;
                         markDirtyAcceptor(side);
                     }
-
                     connections |= 1 << side.ordinal();
                     continue;
                 }
             }
-
             if (cachedAcceptors[side.ordinal()] != null) {
                 cachedAcceptors[side.ordinal()] = null;
                 markDirtyAcceptor(side);
             }
         }
-
         return connections;
     }
 
@@ -250,15 +223,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         for (EnumFacing side : EnumFacing.values()) {
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
-
             if (connectionMapContainsSide(connections, side)) {
-                list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord]
-                      : BlockTransmitter.largeSides[ord]);
+                list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord]);
             }
         }
-
-        list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6]
-              : BlockTransmitter.largeSides[6]);
+        list.add(getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6]);
         return list;
     }
 
@@ -266,22 +235,17 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<AxisAlignedBB> getCollisionBoxes(AxisAlignedBB entityBox) {
         List<AxisAlignedBB> list = new ArrayList<>();
-
         for (EnumFacing side : EnumFacing.values()) {
             int ord = side.ordinal();
             byte connections = getAllCurrentConnections();
-
             if (connectionMapContainsSide(connections, side)) {
-                AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord]
-                      : BlockTransmitter.largeSides[ord];
+                AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[ord] : BlockTransmitter.largeSides[ord];
                 if (box.intersects(entityBox)) {
                     list.add(box);
                 }
             }
         }
-
-        AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6]
-              : BlockTransmitter.largeSides[6];
+        AxisAlignedBB box = getTransmitterType().getSize() == Size.SMALL ? BlockTransmitter.smallSides[6] : BlockTransmitter.largeSides[6];
         if (box.intersects(entityBox)) {
             list.add(box);
         }
@@ -295,20 +259,16 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (!canConnect(side)) {
             return false;
         }
-
         TileEntity tile = getWorld().getTileEntity(getPos().offset(side));
-
         if (!CapabilityUtils.hasCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())) {
             return true;
         }
-
-        return CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite())
-              .canConnect(side.getOpposite());
+        return CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()).canConnect(side.getOpposite());
     }
 
     @Override
     public boolean canConnect(EnumFacing side) {
-        if(connectionTypes[side.ordinal()] == ConnectionType.NONE) {
+        if (connectionTypes[side.ordinal()] == ConnectionType.NONE) {
             return false;
         }
         if (handlesRedstone()) {
@@ -318,19 +278,15 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 } else {
                     redstonePowered = false;
                 }
-
                 redstoneSet = true;
             }
-
             if (redstoneReactive && redstonePowered) {
                 return false;
             }
         }
-
         if (Mekanism.hooks.MCMPLoaded) {
             return MultipartMekanism.hasConnectionWith(this, side);
         }
-
         return true;
     }
 
@@ -339,11 +295,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             currentTransmitterConnections = dataStream.readByte();
             currentAcceptorConnections = dataStream.readByte();
-
             for (int i = 0; i < 6; i++) {
                 connectionTypes[i] = ConnectionType.values()[dataStream.readInt()];
             }
-
             markDirty();
             MekanismUtils.updateBlock(world, pos);
         }
@@ -354,23 +308,18 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
         }
-
         data.add(currentTransmitterConnections);
         data.add(currentAcceptorConnections);
-
         for (int i = 0; i < 6; i++) {
             data.add(connectionTypes[i].ordinal());
         }
-
         return data;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         redstoneReactive = nbtTags.getBoolean("redstoneReactive");
-
         for (int i = 0; i < 6; i++) {
             connectionTypes[i] = ConnectionType.values()[nbtTags.getInteger("connection" + i)];
         }
@@ -380,13 +329,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setBoolean("redstoneReactive", redstoneReactive);
-
         for (int i = 0; i < 6; i++) {
             nbtTags.setInteger("connection" + i, connectionTypes[i].ordinal());
         }
-
         return nbtTags;
     }
 
@@ -416,7 +362,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 // it is no longer valid
                 markDirtyTransmitters();
             }
-
             redstoneSet = true;
         }
 
@@ -427,7 +372,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
             if ((possibleTransmitters | possibleAcceptors) != getAllCurrentConnections()) {
                 sendDesc = true;
-
                 if (possibleTransmitters != currentTransmitterConnections) {
                     //If they don't match get the difference
                     newlyEnabledTransmitters = (byte) (possibleTransmitters ^ currentTransmitterConnections);
@@ -440,7 +384,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
             currentTransmitterConnections = possibleTransmitters;
             currentAcceptorConnections = possibleAcceptors;
-
             if (newlyEnabledTransmitters != 0) {
                 //If any sides are now valid transmitters that were not before recheck the connection
                 recheckConnections(newlyEnabledTransmitters);
@@ -454,10 +397,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             boolean possibleAcceptor = getPossibleAcceptorConnection(side);
             boolean transmitterChanged = false;
 
-            if ((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(),
-                  side)) {
+            if ((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side)) {
                 sendDesc = true;
-
                 if (possibleTransmitter != connectionMapContainsSide(currentTransmitterConnections, side)) {
                     //If it doesn't match check if it is now enabled, as we don't care about it changing to disabled
                     transmitterChanged = possibleTransmitter;
@@ -466,7 +407,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
             currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
             currentAcceptorConnections = setConnectionBit(currentAcceptorConnections, possibleAcceptor, side);
-
             if (transmitterChanged) {
                 //If this side is now a valid transmitter and it wasn't before recheck the connection
                 recheckConnection(side);
@@ -476,6 +416,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     /**
      * Only call this from server side
+     *
      * @param newlyEnabledTransmitters The transmitters that are now enabled and were not before.
      */
     protected void recheckConnections(byte newlyEnabledTransmitters) {
@@ -483,6 +424,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     /**
      * Only call this from server side
+     *
      * @param side The side that a transmitter is now enabled on after having been disabled.
      */
     protected void recheckConnection(EnumFacing side) {
@@ -551,7 +493,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public void onPartChanged(IMultipart part) {
         byte transmittersBefore = currentTransmitterConnections;
         refreshConnections();
-
         if (transmittersBefore != currentTransmitterConnections) {
             markDirtyTransmitters();
         }
@@ -563,13 +504,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public List<EnumFacing> getConnections(ConnectionType type) {
         List<EnumFacing> sides = new ArrayList<>();
-
         for (EnumFacing side : EnumFacing.values()) {
             if (getConnectionType(side) == type) {
                 sides.add(side);
             }
         }
-
         return sides;
     }
 
@@ -577,13 +516,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public EnumActionResult onSneakRightClick(EntityPlayer player, EnumFacing side) {
         if (!getWorld().isRemote) {
             RayTraceResult hit = reTrace(getWorld(), getPos(), player);
-
             if (hit == null) {
                 return EnumActionResult.PASS;
             } else {
                 EnumFacing hitSide = sideHit(hit.subHit + 1);
-
-                if(hitSide == null) {
+                if (hitSide == null) {
                     if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == EnumActionResult.SUCCESS) {
                         return EnumActionResult.SUCCESS;
                     }
@@ -593,49 +530,37 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 if (hitSide != null) {
                     connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].next();
                     sendDesc = true;
-
                     onModeChange(EnumFacing.byIndex(hitSide.ordinal()));
 
                     refreshConnections();
                     notifyTileChange();
-
-                    player.sendMessage(
-                          new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ")
-                                .translation(connectionTypes[hitSide.ordinal()].translationKey()));
-
+                    player.sendMessage(new TextComponentGroup().translation("tooltip.configurator.modeChange").string(" ").translation(connectionTypes[hitSide.ordinal()].translationKey()));
                     return EnumActionResult.SUCCESS;
                 } else {
                     return EnumActionResult.PASS;
                 }
             }
         }
-
         return EnumActionResult.SUCCESS;
     }
 
     private RayTraceResult reTrace(World world, BlockPos pos, EntityPlayer player) {
         Pair<Vec3d, Vec3d> vecs = MultipartUtils.getRayTraceVectors(player);
-        AdvancedRayTraceResult result = MultipartUtils
-              .collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
-
+        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
         return result == null ? null : result.hit;
     }
 
     protected EnumFacing sideHit(int boxIndex) {
         List<EnumFacing> list = new ArrayList<>();
-
         for (EnumFacing side : EnumFacing.values()) {
             byte connections = getAllCurrentConnections();
-
             if (connectionMapContainsSide(connections, side)) {
                 list.add(side);
             }
         }
-
         if (boxIndex < list.size()) {
             return list.get(boxIndex);
         }
-
         return null;
     }
 
@@ -653,31 +578,23 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();
-
-            player.sendMessage(new TextComponentString(
-                  EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Redstone sensitivity turned "
-                        + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+            player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO
+                                                       + (redstoneReactive ? "on." : "off.")));
         }
-
         return EnumActionResult.SUCCESS;
     }
 
     public List<String> getVisibleGroups() {
         List<String> visible = new ArrayList<>();
-
         for (EnumFacing side : EnumFacing.values()) {
             visible.add(side.getName() + getConnectionType(side).getName().toUpperCase());
         }
-
         return visible;
     }
 
     public IBlockState getExtendedState(IBlockState state) {
-        PropertyConnection connectionProp = new PropertyConnection(getAllCurrentConnections(),
-              currentTransmitterConnections, connectionTypes, renderCenter());
-
-        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true))
-              .withProperty(PropertyConnection.INSTANCE, connectionProp);
+        PropertyConnection connectionProp = new PropertyConnection(getAllCurrentConnections(), currentTransmitterConnections, connectionTypes, renderCenter());
+        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(getVisibleGroups(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
     }
 
     public void notifyTileChange() {
@@ -692,16 +609,15 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY
-              || capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
+               || capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == Capabilities.TILE_NETWORK_CAPABILITY
-              || capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY) {
+            || capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY) {
             return (T) this;
         }
-
         return super.getCapability(capability, facing);
     }
 
@@ -715,7 +631,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             if (ordinal() == values().length - 1) {
                 return NORMAL;
             }
-
             return values()[ordinal() + 1];
         }
 

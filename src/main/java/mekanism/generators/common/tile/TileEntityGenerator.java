@@ -22,8 +22,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityGenerator extends TileEntityEffectsBlock implements IComputerIntegration,
-      IRedstoneControl, ISecurityTile {
+public abstract class TileEntityGenerator extends TileEntityEffectsBlock implements IComputerIntegration, IRedstoneControl, ISecurityTile {
 
     /**
      * Output per tick this generator can transfer.
@@ -38,15 +37,13 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
     public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 
     /**
-     * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output
-     * rate.
+     * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
      *
-     * @param name - full name of this generator
+     * @param name      - full name of this generator
      * @param maxEnergy - how much energy this generator can store
      */
     public TileEntityGenerator(String soundPath, String name, double maxEnergy, double out) {
         super("gen." + soundPath, name, maxEnergy);
-
         output = out;
         controlType = RedstoneControl.DISABLED;
     }
@@ -54,20 +51,15 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
-            if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
+            if (MekanismConfig.current().general.destroyDisabledBlocks.val()) {
                 GeneratorType type = BlockStateGenerator.GeneratorType.get(getBlockType(), getBlockMetadata());
-
                 if (type != null && !type.isEnabled()) {
-                    Mekanism.logger
-                          .info("Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this)
-                                + " as according to config.");
+                    Mekanism.logger.info("Destroying generator of type '" + type.blockName + "' at coords " + Coord4D.get(this) + " as according to config.");
                     world.setBlockToAir(getPos());
                     return;
                 }
             }
-
             if (MekanismUtils.canFunction(this)) {
                 CableUtils.emit(this);
             }
@@ -113,16 +105,13 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(controlType.ordinal());
-
         return data;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
@@ -130,9 +119,7 @@ public abstract class TileEntityGenerator extends TileEntityEffectsBlock impleme
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("controlType", controlType.ordinal());
-
         return nbtTags;
     }
 

@@ -37,50 +37,38 @@ public class ContainerChanceMachine extends ContainerMekanism<TileEntityChanceMa
                     if (!mergeItemStack(slotStack, 1, 2, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else {
-                    if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+                } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
                 }
             } else if (RecipeHandler.getChanceRecipe(new ItemStackInput(slotStack), tileEntity.getRecipes()) != null) {
                 if (slotID != 0 && slotID != 1) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else {
-                    if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+                } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
                 }
-            } else {
-                if (slotID >= 4 && slotID <= 30) {
-                    if (!mergeItemStack(slotStack, 31, inventorySlots.size(), false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (slotID > 30) {
-                    if (!mergeItemStack(slotStack, 4, 30, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else {
-                    if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
+            } else if (slotID >= 4 && slotID <= 30) {
+                if (!mergeItemStack(slotStack, 31, inventorySlots.size(), false)) {
+                    return ItemStack.EMPTY;
                 }
+            } else if (slotID > 30) {
+                if (!mergeItemStack(slotStack, 4, 30, false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                return ItemStack.EMPTY;
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 

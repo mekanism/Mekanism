@@ -18,8 +18,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         super(helper, "mekanism:gui/nei/GuiRotaryCondensentrator.png",
-              condensentrating ? "mekanism.rotary_condensentrator_condensentrating"
-                    : "mekanism.rotary_condensentrator_decondensentrating",
+              condensentrating ? "mekanism.rotary_condensentrator_condensentrating" : "mekanism.rotary_condensentrator_decondensentrating",
               condensentrating ? "gui.condensentrating" : "gui.decondensentrating", null, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
     }
@@ -36,15 +35,12 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory {
             RotaryCondensentratorRecipeWrapper tempRecipe = (RotaryCondensentratorRecipeWrapper) recipeWrapper;
             IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
             IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-            fluidStacks.init(0, !condensentrating, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.FLUID_AMOUNT,
-                  false, fluidOverlayLarge);
+            fluidStacks.init(0, !condensentrating, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.FLUID_AMOUNT, false, fluidOverlayLarge);
             if (condensentrating) {
-                initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58,
-                      new GasStack(tempRecipe.getGasType(), tempRecipe.GAS_AMOUNT), true);
+                initGas(gasStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.getGasType(), tempRecipe.GAS_AMOUNT), true);
                 fluidStacks.set(0, ingredients.getOutputs(VanillaTypes.FLUID).get(0));
             } else {
-                initGas(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58,
-                      new GasStack(tempRecipe.getGasType(), tempRecipe.GAS_AMOUNT), true);
+                initGas(gasStacks, 0, false, 26 - xOffset, 14 - yOffset, 16, 58, new GasStack(tempRecipe.getGasType(), tempRecipe.GAS_AMOUNT), true);
                 fluidStacks.set(0, ingredients.getInputs(VanillaTypes.FLUID).get(0));
             }
         }

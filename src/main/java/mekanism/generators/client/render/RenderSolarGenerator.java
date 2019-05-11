@@ -12,8 +12,7 @@ public class RenderSolarGenerator extends TileEntitySpecialRenderer<TileEntitySo
     private ModelSolarGenerator model = new ModelSolarGenerator();
 
     @Override
-    public void render(TileEntitySolarGenerator tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntitySolarGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
 

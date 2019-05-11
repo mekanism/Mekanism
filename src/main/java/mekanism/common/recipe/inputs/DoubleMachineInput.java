@@ -40,10 +40,8 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> {
             if (deplete) {
                 inventory.set(index, StackUtils.subtract(inventory.get(index), stack));
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -56,10 +54,8 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> {
     }
 
     public boolean matches(DoubleMachineInput input) {
-        return StackUtils.equalsWildcard(itemStack, input.itemStack) && input.itemStack.getCount() >= itemStack
-              .getCount()
-              && StackUtils.equalsWildcard(extraStack, input.extraStack) && input.extraStack.getCount() >= extraStack
-              .getCount();
+        return StackUtils.equalsWildcard(itemStack, input.itemStack) && input.itemStack.getCount() >= itemStack.getCount()
+               && StackUtils.equalsWildcard(extraStack, input.extraStack) && input.extraStack.getCount() >= extraStack.getCount();
     }
 
     @Override
@@ -72,9 +68,7 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> {
         if (!isValid()) {
             return !other.isValid();
         }
-
-        return MachineInput.inputItemMatches(itemStack, other.itemStack) && MachineInput
-              .inputItemMatches(extraStack, other.extraStack);
+        return MachineInput.inputItemMatches(itemStack, other.itemStack) && MachineInput.inputItemMatches(extraStack, other.extraStack);
     }
 
     @Override
@@ -83,8 +77,7 @@ public class DoubleMachineInput extends MachineInput<DoubleMachineInput> {
     }
 
     public DoubleMachineInput wildCopy() {
-        return new DoubleMachineInput(
-              new ItemStack(itemStack.getItem(), itemStack.getCount(), OreDictionary.WILDCARD_VALUE),
+        return new DoubleMachineInput(new ItemStack(itemStack.getItem(), itemStack.getCount(), OreDictionary.WILDCARD_VALUE),
               new ItemStack(extraStack.getItem(), extraStack.getCount(), OreDictionary.WILDCARD_VALUE));
     }
 }

@@ -3,4 +3,3 @@ package mekanism.api.infuse;
 
 import mekanism.api.MekanismAPI;
 import net.minecraftforge.fml.common.API;
-

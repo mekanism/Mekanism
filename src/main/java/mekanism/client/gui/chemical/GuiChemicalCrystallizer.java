@@ -59,8 +59,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addGuiElement(new GuiEnergyInfo(() -> {
             String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
-                  LangUtils.localize("gui.needed") + ": " + MekanismUtils
-                        .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
+                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
         }, this, resource));
         addGuiElement(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
         addGuiElement(new GuiSlot(SlotType.EXTRA, this, resource, 5, 64).with(SlotOverlay.PLUS));
@@ -80,9 +79,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         if (tileEntity.inputTank.getGas() != null) {
             fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
             if (tileEntity.inputTank.getGas().getGas() instanceof OreGas) {
-                fontRenderer
-                      .drawString("(" + ((OreGas) tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24,
-                            0x00CD00);
+                fontRenderer.drawString("(" + ((OreGas) tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
             } else {
                 CrystallizerRecipe recipe = tileEntity.getRecipe();
                 if (recipe == null) {

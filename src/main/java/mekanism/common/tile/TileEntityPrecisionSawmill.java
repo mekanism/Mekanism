@@ -11,10 +11,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 public class TileEntityPrecisionSawmill extends TileEntityChanceMachine<SawmillRecipe> {
 
     public TileEntityPrecisionSawmill() {
-        super("sawmill", "PrecisionSawmill",
-                MachineType.PRECISION_SAWMILL.getStorage(),
-                MachineType.PRECISION_SAWMILL.getUsage(), 200,
-                MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
+        super("sawmill", "PrecisionSawmill", MachineType.PRECISION_SAWMILL.getStorage(), MachineType.PRECISION_SAWMILL.getUsage(), 200,
+              MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"));
     }
 
     @Override

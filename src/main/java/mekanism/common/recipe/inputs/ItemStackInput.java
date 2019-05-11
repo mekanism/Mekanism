@@ -40,8 +40,7 @@ public class ItemStackInput extends MachineInput<ItemStackInput> {
     public ItemStackInput wildCopy() {
         if (wildVersion == null) {
             if (ingredient.getMetadata() != OreDictionary.WILDCARD_VALUE) {
-                this.wildVersion = new ItemStackInput(
-                      new ItemStack(ingredient.getItem(), ingredient.getCount(), OreDictionary.WILDCARD_VALUE));
+                this.wildVersion = new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.getCount(), OreDictionary.WILDCARD_VALUE));
             } else {
                 this.wildVersion = this;
             }
@@ -54,10 +53,8 @@ public class ItemStackInput extends MachineInput<ItemStackInput> {
             if (deplete) {
                 inventory.set(index, StackUtils.subtract(inventory.get(index), ingredient));
             }
-
             return true;
         }
-
         return false;
     }
 

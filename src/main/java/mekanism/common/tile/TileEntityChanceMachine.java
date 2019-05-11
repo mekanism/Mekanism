@@ -21,16 +21,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends
-      TileEntityUpgradeableMachine<ItemStackInput, ChanceOutput, RECIPE> {
+public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityUpgradeableMachine<ItemStackInput, ChanceOutput, RECIPE> {
 
-    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate",
-          "getMaxEnergy", "getEnergyNeeded"};
+    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
-    public TileEntityChanceMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
-          int ticksRequired, ResourceLocation location) {
+    public TileEntityChanceMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int ticksRequired, ResourceLocation location) {
         super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 3, ticksRequired, location);
-
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -61,34 +57,24 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.discharge(1, this);
-
             RECIPE recipe = getRecipe();
-
             if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick) {
                 setActive(true);
-
                 electricityStored -= energyPerTick;
-
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
                     operate(recipe);
-
                     operatingTicks = 0;
                 }
-            } else {
-                if (prevEnergy >= getEnergy()) {
-                    setActive(false);
-                }
+            } else if (prevEnergy >= getEnergy()) {
+                setActive(false);
             }
-
             if (!canOperate(recipe)) {
                 operatingTicks = 0;
             }
-
             prevEnergy = getEnergy();
         }
     }
@@ -96,14 +82,12 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     @Override
     public boolean isItemValidForSlot(int slotID, @Nonnull ItemStack itemstack) {
         if (slotID == 3) {
-            return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                  || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+            return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             return RecipeHandler.isInRecipe(itemstack, getRecipes());
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
-
         return false;
     }
 
@@ -115,7 +99,6 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     @Override
     public void operate(RECIPE recipe) {
         recipe.operate(inventory, 0, 2, 4);
-
         markDirty();
         ejectorComponent.outputItems();
     }
@@ -129,20 +112,16 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 1) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else {
-            return slotID == 2 || slotID == 4;
         }
-
+        return slotID == 2 || slotID == 4;
     }
 
     @Override
     public RECIPE getRecipe() {
         ItemStackInput input = getInput();
-
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getChanceRecipe(input, getRecipes());
         }
-
         return cachedRecipe;
     }
 

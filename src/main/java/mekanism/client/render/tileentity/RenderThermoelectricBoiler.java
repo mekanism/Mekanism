@@ -28,15 +28,14 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
     private FluidStack WATER = new FluidStack(FluidRegistry.WATER, 1);
 
     @Override
-    public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null
-              && tileEntity.structure.renderLocation != null && tileEntity.structure.upperRenderLocation != null) {
+            && tileEntity.structure.renderLocation != null && tileEntity.structure.upperRenderLocation != null) {
             if (tileEntity.structure.waterStored != null && tileEntity.structure.waterStored.amount != 0) {
                 RenderData data = new RenderData();
 
                 data.location = tileEntity.structure.renderLocation;
-                data.height = (tileEntity.structure.upperRenderLocation.y - 1) - tileEntity.structure.renderLocation.y;
+                data.height = tileEntity.structure.upperRenderLocation.y - 1 - tileEntity.structure.renderLocation.y;
                 data.length = tileEntity.structure.volLength;
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = WATER;
@@ -52,9 +51,8 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                     MekanismRenderer.colorFluid(tileEntity.structure.waterStored);
 
                     if (tileEntity.structure.waterStored.getFluid().isGaseous()) {
-                        GL11.glColor4f(1F, 1F, 1F, Math.min(1,
-                              ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity)
-                                    + MekanismRenderer.GAS_RENDER_BASE));
+                        GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.waterStored.amount / (float) tileEntity.clientWaterCapacity)
+                                                               + MekanismRenderer.GAS_RENDER_BASE));
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
                         FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
@@ -86,8 +84,7 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
                 RenderData data = new RenderData();
 
                 data.location = tileEntity.structure.upperRenderLocation;
-                data.height = (tileEntity.structure.renderLocation.y + tileEntity.structure.volHeight - 2)
-                      - (tileEntity.structure.upperRenderLocation.y);
+                data.height = tileEntity.structure.renderLocation.y + tileEntity.structure.volHeight - 2 - tileEntity.structure.upperRenderLocation.y;
                 data.length = tileEntity.structure.volLength;
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
@@ -104,9 +101,8 @@ public class RenderThermoelectricBoiler extends TileEntitySpecialRenderer<TileEn
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
 
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1,
-                          ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity)
-                                + MekanismRenderer.GAS_RENDER_BASE));
+                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.steamStored.amount / (float) tileEntity.clientSteamCapacity)
+                                                           + MekanismRenderer.GAS_RENDER_BASE));
                     display.render();
 
                     MekanismRenderer.glowOff();

@@ -19,8 +19,7 @@ public class ChemicalWasherRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients
-              .setInput(VanillaTypes.FLUID, new FluidStack(FluidRegistry.WATER, TileEntityChemicalWasher.WATER_USAGE));
+        ingredients.setInput(VanillaTypes.FLUID, new FluidStack(FluidRegistry.WATER, TileEntityChemicalWasher.WATER_USAGE));
         ingredients.setInput(MekanismJEI.TYPE_GAS, recipe.recipeInput.ingredient);
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
     }

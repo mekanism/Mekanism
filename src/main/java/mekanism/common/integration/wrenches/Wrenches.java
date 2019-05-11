@@ -6,8 +6,8 @@ import mekanism.api.IMekWrench;
 import net.minecraft.item.ItemStack;
 
 /**
- * Generic handler for wrenches, exposed as {@link IMekWrench}. Generally you don't want to use the enum directly,
- * instead use {@link Wrenches#getHandler(ItemStack)}, and check for nullability.
+ * Generic handler for wrenches, exposed as {@link IMekWrench}. Generally you don't want to use the enum directly, instead use {@link Wrenches#getHandler(ItemStack)}, and
+ * check for nullability.
  */
 public enum Wrenches {
     MEKANISM_PASSTHROUGH(IMekWrench.class.getName(), MekPassthrough::new),
@@ -36,7 +36,6 @@ public enum Wrenches {
                 w.itemClass = null;
                 continue;
             }
-
             try {
                 w.provider = w.mekProxy.get();
             } catch (Exception e) {
@@ -54,11 +53,10 @@ public enum Wrenches {
                 return w.provider.get(it);
             }
         }
-
         return null;
     }
 
     private boolean canHandle(ItemStack it) {
-        return (enabled && provider != null && itemClass != null && itemClass.isInstance(it.getItem()));
+        return enabled && provider != null && itemClass != null && itemClass.isInstance(it.getItem());
     }
 }

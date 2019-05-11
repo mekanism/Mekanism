@@ -27,13 +27,11 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
                 net.deregister();
             }
         }
-
         register();
     }
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack) {
         List<AcceptorData> toReturn = new ArrayList<>();
-
         for (Coord4D coord : possibleAcceptors) {
             if (coord == null || coord.equals(stack.homeLocation)) {
                 continue;
@@ -41,17 +39,13 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
             EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
             TileEntity acceptor = coord.getTileEntity(getWorld());
-
             if (acceptor == null || sides == null || sides.isEmpty()) {
                 continue;
             }
 
             AcceptorData data = null;
-
             for (EnumFacing side : sides) {
-                TransitResponse response = TransporterManager
-                      .getPredictedInsert(acceptor, stack.color, request, side.getOpposite());
-
+                TransitResponse response = TransporterManager.getPredictedInsert(acceptor, stack.color, request, side.getOpposite());
                 if (!response.isEmpty()) {
                     if (data == null) {
                         data = new AcceptorData(coord, response, side.getOpposite());
@@ -60,19 +54,16 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
                     }
                 }
             }
-
             if (data != null) {
                 toReturn.add(data);
             }
         }
-
         return toReturn;
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             //Future!
         }
@@ -88,8 +79,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
 
     @Override
     public String toString() {
-        return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size()
-              + " acceptors.";
+        return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
     }
 
     @Override

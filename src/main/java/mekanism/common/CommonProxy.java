@@ -8,7 +8,6 @@ import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.EntityRobit;
@@ -119,7 +118,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class CommonProxy implements IGuiProvider {
 
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
-          "please delete it from your mods folder and restart the game."};
+                                                    "please delete it from your mods folder and restart the game."};
 
     /**
      * Register tile entities that have special models. Overwritten in client to register TESRs.
@@ -134,13 +133,12 @@ public class CommonProxy implements IGuiProvider {
      * Handles an PERSONAL_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
      *
      * @param entityplayer - player the packet was sent from
-     * @param id - the gui ID to open
-     * @param windowId - the container-specific window ID
-     * @param isBlock - if the chest is a block
-     * @param pos - coordinates
+     * @param id           - the gui ID to open
+     * @param windowId     - the container-specific window ID
+     * @param isBlock      - if the chest is a block
+     * @param pos          - coordinates
      */
-    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos,
-          EnumHand hand) {
+    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand) {
     }
 
     /**
@@ -162,7 +160,6 @@ public class CommonProxy implements IGuiProvider {
         MekanismConfig.local().general.load(Mekanism.configuration);
         MekanismConfig.local().usage.load(Mekanism.configuration);
         MekanismConfig.local().storage.load(Mekanism.configuration);
-
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
         }
@@ -197,8 +194,7 @@ public class CommonProxy implements IGuiProvider {
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height,
-          INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
     }
 
     @Override
@@ -209,7 +205,6 @@ public class CommonProxy implements IGuiProvider {
     @Override
     public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-
         switch (ID) {
             case 0:
                 return new ContainerDictionary(player.inventory);
@@ -218,16 +213,13 @@ public class CommonProxy implements IGuiProvider {
             case 3:
                 return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 4:
-                return new ContainerAdvancedElectricMachine(player.inventory,
-                      (TileEntityAdvancedElectricMachine) tileEntity);
+                return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 5:
-                return new ContainerDoubleElectricMachine(player.inventory,
-                      (TileEntityDoubleElectricMachine) tileEntity);
+                return new ContainerDoubleElectricMachine(player.inventory, (TileEntityDoubleElectricMachine) tileEntity);
             case 6:
                 return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 7:
-                return new ContainerRotaryCondensentrator(player.inventory,
-                      (TileEntityRotaryCondensentrator) tileEntity);
+                return new ContainerRotaryCondensentrator(player.inventory, (TileEntityRotaryCondensentrator) tileEntity);
             case 8:
                 return new ContainerEnergyCube(player.inventory, (TileEntityEnergyCube) tileEntity);
             case 9:
@@ -242,15 +234,12 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
             case 14:
                 ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
-
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter) {
                     return new ContainerNull();
                 }
-
                 return null;
             case 15:
-                return new ContainerAdvancedElectricMachine(player.inventory,
-                      (TileEntityAdvancedElectricMachine) tileEntity);
+                return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 16:
                 return new ContainerElectricMachine(player.inventory, (TileEntityElectricMachine) tileEntity);
             case 17:
@@ -259,43 +248,33 @@ public class CommonProxy implements IGuiProvider {
                 return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank) tileEntity);
             case 21:
                 EntityRobit robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new ContainerRobitMain(player.inventory, robit);
                 }
-
                 return null;
             case 22:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new ContainerRobitCrafting(player.inventory, robit);
                 }
-
                 return null;
             case 23:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new ContainerRobitInventory(player.inventory, robit);
                 }
-
                 return null;
             case 24:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new ContainerRobitSmelting(player.inventory, robit);
                 }
-
                 return null;
             case 25:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new ContainerRobitRepair(player.inventory, robit);
                 }
-
                 return null;
             case 26:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
@@ -308,19 +287,15 @@ public class CommonProxy implements IGuiProvider {
             case 30:
                 return new ContainerChemicalInfuser(player.inventory, (TileEntityChemicalInfuser) tileEntity);
             case 31:
-                return new ContainerAdvancedElectricMachine(player.inventory,
-                      (TileEntityAdvancedElectricMachine) tileEntity);
+                return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 32:
-                return new ContainerElectrolyticSeparator(player.inventory,
-                      (TileEntityElectrolyticSeparator) tileEntity);
+                return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator) tileEntity);
             case 33:
-                return new ContainerThermalEvaporationController(player.inventory,
-                      (TileEntityThermalEvaporationController) tileEntity);
+                return new ContainerThermalEvaporationController(player.inventory, (TileEntityThermalEvaporationController) tileEntity);
             case 34:
                 return new ContainerChanceMachine(player.inventory, (TileEntityChanceMachine) tileEntity);
             case 35:
-                return new ContainerChemicalDissolutionChamber(player.inventory,
-                      (TileEntityChemicalDissolutionChamber) tileEntity);
+                return new ContainerChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber) tileEntity);
             case 36:
                 return new ContainerChemicalWasher(player.inventory, (TileEntityChemicalWasher) tileEntity);
             case 37:
@@ -340,11 +315,9 @@ public class CommonProxy implements IGuiProvider {
             case 45:
                 return new ContainerLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam) tileEntity);
             case 46:
-                return new ContainerQuantumEntangloporter(player.inventory,
-                      (TileEntityQuantumEntangloporter) tileEntity);
+                return new ContainerQuantumEntangloporter(player.inventory, (TileEntityQuantumEntangloporter) tileEntity);
             case 47:
-                return new ContainerSolarNeutronActivator(player.inventory,
-                      (TileEntitySolarNeutronActivator) tileEntity);
+                return new ContainerSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator) tileEntity);
             case 48:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
             case 49:
@@ -362,8 +335,7 @@ public class CommonProxy implements IGuiProvider {
             case 55:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
             case 56:
-                return new ContainerFormulaicAssemblicator(player.inventory,
-                      (TileEntityFormulaicAssemblicator) tileEntity);
+                return new ContainerFormulaicAssemblicator(player.inventory, (TileEntityFormulaicAssemblicator) tileEntity);
             case 57:
                 return new ContainerSecurityDesk(player.inventory, (TileEntitySecurityDesk) tileEntity);
             case 58:
@@ -371,7 +343,6 @@ public class CommonProxy implements IGuiProvider {
             case 59:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
         }
-
         return null;
     }
 
@@ -382,7 +353,6 @@ public class CommonProxy implements IGuiProvider {
         if (player instanceof EntityPlayerMP) {
             return player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
         }
-
         return 0;
     }
 
@@ -401,7 +371,6 @@ public class CommonProxy implements IGuiProvider {
         } else {
             MekanismAPI.addBoxBlacklist(Blocks.MOB_SPAWNER, OreDictionary.WILDCARD_VALUE);
         }
-
         if (MekanismConfig.current().general.voiceServerEnabled.val() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();
         }
@@ -440,7 +409,6 @@ public class CommonProxy implements IGuiProvider {
         } else if (block == MekanismBlocks.EnergyCube) {
             return 8;
         }
-
         return -1;
     }
 

@@ -19,28 +19,21 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
     @Override
     public IMessage onMessage(ItemStackMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
         if (player == null) {
             return null;
         }
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             ItemStack stack = player.getHeldItem(message.currentHand);
-
             if (!stack.isEmpty() && stack.getItem() instanceof IItemNetwork) {
                 IItemNetwork network = (IItemNetwork) stack.getItem();
-
                 try {
                     network.handlePacketData(stack, message.storedBuffer);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 message.storedBuffer.release();
             }
         }, player);
-
         return null;
     }
 
@@ -63,20 +56,16 @@ public class PacketItemStack implements IMessageHandler<ItemStackMessage, IMessa
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(currentHand.ordinal());
-
             MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
             if (server != null) {
                 PacketHandler.log("Sending ItemStack packet");
             }
-
             PacketHandler.encode(parameters.toArray(), dataStream);
         }
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
             currentHand = EnumHand.values()[dataStream.readInt()];
-
             storedBuffer = dataStream.copy();
         }
     }

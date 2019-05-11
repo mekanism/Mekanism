@@ -23,11 +23,9 @@ public class ContainerElectricPump extends ContainerMekanism<TileEntityElectricP
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
             if (ChargeUtils.canBeDischarged(slotStack)) {
                 if (slotID != 2) {
                     if (!mergeItemStack(slotStack, 2, 3, false)) {
@@ -38,8 +36,7 @@ public class ContainerElectricPump extends ContainerMekanism<TileEntityElectricP
                         return ItemStack.EMPTY;
                     }
                 }
-            } else if (FluidContainerUtils.isFluidContainer(slotStack)
-                  && FluidUtil.getFluidContained(slotStack) == null) {
+            } else if (FluidContainerUtils.isFluidContainer(slotStack) && FluidUtil.getFluidContained(slotStack) == null) {
                 if (slotID != 0) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
@@ -68,20 +65,16 @@ public class ContainerElectricPump extends ContainerMekanism<TileEntityElectricP
                     }
                 }
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 

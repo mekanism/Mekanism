@@ -25,12 +25,6 @@ public class CofhProxy implements MekWrenchProxy, IMekWrench {
         return stack.getItem() instanceof IToolHammer && ((IToolHammer) stack.getItem()).isUsable(stack, player, pos);
     }
 
-    // uses default method
-    //@Override
-    //public boolean canUseWrench(EntityPlayer player, EnumHand hand, ItemStack stack, RayTraceResult rayTrace) {
-    //    return false;
-    //}
-
     @Override
     public void wrenchUsed(EntityPlayer player, EnumHand hand, ItemStack wrench, RayTraceResult rayTrace) {
         if (wrench.getItem() instanceof IToolHammer) {

@@ -33,8 +33,7 @@ public abstract class Option<THISTYPE extends Option> {
     }
 
     /**
-     * Loads this option from the config file NB: saving back is handled by the config system / GUIs, load will be
-     * re-called
+     * Loads this option from the config file NB: saving back is handled by the config system / GUIs, load will be re-called
      *
      * @param config where to load from
      */

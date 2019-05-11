@@ -1,8 +1,8 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IMetaItem;
+import mekanism.common.tier.BaseTier;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -26,12 +26,11 @@ public class ItemControlCircuit extends ItemMekanism implements IMetaItem {
 
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
-        if (!isInCreativeTab(tabs)) {
-            return;
-        }
-        for (BaseTier tier : BaseTier.values()) {
-            if (tier.isObtainable()) {
-                itemList.add(new ItemStack(this, 1, tier.ordinal()));
+        if (isInCreativeTab(tabs)) {
+            for (BaseTier tier : BaseTier.values()) {
+                if (tier.isObtainable()) {
+                    itemList.add(new ItemStack(this, 1, tier.ordinal()));
+                }
             }
         }
     }

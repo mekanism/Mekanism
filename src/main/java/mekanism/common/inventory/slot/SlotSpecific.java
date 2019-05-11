@@ -11,7 +11,6 @@ public class SlotSpecific extends Slot {
 
     public SlotSpecific(IInventory inventory, int index, int x, int y, Class<? extends Item> c) {
         super(inventory, index, x, y);
-
         itemClass = c;
     }
 

@@ -29,8 +29,7 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
         GlStateManager.scale(1.4F, 1.4F, 1.4F);
         GlStateManager.rotate(180, 0.0F, 0.0F, 1.0F);
 
-        if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND
-              || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+        if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
                 GlStateManager.rotate(-90, 0.0F, 1.0F, 0.0F);
             }
@@ -48,7 +47,6 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
                 GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);
             }
-
             GlStateManager.rotate(45, 0.0F, 1.0F, 0.0F);
             GlStateManager.translate(0.0F, -0.7F, 0.0F);
         }

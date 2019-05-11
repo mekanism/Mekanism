@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSecurityTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
@@ -16,7 +17,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismSounds;
 import mekanism.common.OreDictCache;
-import mekanism.api.TileNetworkList;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.content.transporter.TMaterialFilter;
 import mekanism.common.content.transporter.TModIDFilter;
@@ -101,7 +101,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             final int scrollSize = tileEntity.filters.size() - 4;
             return (int) ((scrollSize + 0.5) * scroll);
         }
-
         return 0;
     }
 
@@ -119,11 +118,9 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             for (final Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
                 setNextRenderStack(entry.getValue());
             }
-
             for (final Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
                 setNextRenderStack(entry.getValue());
             }
-
             stackSwitch = 20;
         } else {
             for (final Map.Entry<TOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
@@ -131,7 +128,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     entry.getValue().renderStack = ItemStack.EMPTY;
                 }
             }
-
             for (final Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet()) {
                 if (entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0) {
                     entry.getValue().renderStack = ItemStack.EMPTY;
@@ -162,12 +158,11 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
     private void setNextRenderStack(StackData value) {
         if (value.iterStacks != null && value.iterStacks.size() > 0) {
             if (value.stackIndex == -1
-                  || value.stackIndex == value.iterStacks.size() - 1) {
+                || value.stackIndex == value.iterStacks.size() - 1) {
                 value.stackIndex = 0;
             } else if (value.stackIndex < value.iterStacks.size() - 1) {
                 value.stackIndex++;
             }
-
             value.renderStack = value.iterStacks.get(value.stackIndex);
         }
     }
@@ -195,61 +190,48 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             for (int i = 0; i < 4; i++) {
                 if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                     final int yStart = i * 29 + 18;
-
                     if (xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart + 29) {
                         // Check for sorting button
                         final int arrowX = filterX + filterW - 12;
 
                         if (getFilterIndex() + i > 0) {
                             if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14
-                                  && yAxis <= yStart + 20) {
+                                && yAxis <= yStart + 20) {
                                 // Process up button click
                                 final TileNetworkList data = TileNetworkList.withContents(3, getFilterIndex() + i);
-
-                                Mekanism.packetHandler
-                                      .sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                                 return;
                             }
                         }
-
                         if (getFilterIndex() + i < tileEntity.filters.size() - 1) {
                             if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21
-                                  && yAxis <= yStart + 27) {
+                                && yAxis <= yStart + 27) {
                                 // Process down button click
                                 final TileNetworkList data = TileNetworkList.withContents(4, getFilterIndex() + i);
-
-                                Mekanism.packetHandler
-                                      .sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+                                Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                                 return;
                             }
                         }
 
                         final TransporterFilter filter = tileEntity.filters.get(getFilterIndex() + i);
-
                         if (filter instanceof TItemStackFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             Mekanism.packetHandler.sendToServer(
-                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity),
-                                        1, getFilterIndex() + i, 0));
+                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                         } else if (filter instanceof TOreDictFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             Mekanism.packetHandler.sendToServer(
-                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity),
-                                        2, getFilterIndex() + i, 0));
+                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex() + i, 0));
                         } else if (filter instanceof TMaterialFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             Mekanism.packetHandler.sendToServer(
-                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity),
-                                        3, getFilterIndex() + i, 0));
+                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex() + i, 0));
                         } else if (filter instanceof TModIDFilter) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                             Mekanism.packetHandler.sendToServer(
-                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity),
-                                        5, getFilterIndex() + i, 0));
+                                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 5, getFilterIndex() + i, 0));
                         }
                     }
                 }
@@ -258,7 +240,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             // Check for auto eject button
             if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
                 final TileNetworkList data = TileNetworkList.withContents(1);
-
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
@@ -266,7 +247,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             // Check for round robin button
             if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
                 final TileNetworkList data = TileNetworkList.withContents(2);
-
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
@@ -274,7 +254,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             // Check for single item button
             if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
                 final TileNetworkList data = TileNetworkList.withContents(5);
-
                 Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
             }
@@ -287,7 +266,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         // Check for default colour button
         if (xAxis >= 13 && xAxis <= 29 && yAxis >= 137 && yAxis <= 153) {
             final TileNetworkList data = TileNetworkList.withContents(0, mouseBtn);
-
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
             SoundHandler.playSound(MekanismSounds.DING);
         }
@@ -306,7 +284,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int type) {
         super.mouseReleased(mouseX, mouseY, type);
-
         if (type == 0 && isDragging) {
             dragOffset = 0;
             isDragging = false;
@@ -319,26 +296,19 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-
         int i = Mouse.getEventDWheel();
-
         if (i != 0 && needsScrollBars()) {
             final int j = tileEntity.filters.size() - 4;
-
             if (i > 0) {
                 i = 1;
             }
-
             if (i < 0) {
                 i = -1;
             }
-
             scroll = (float) (scroll - (double) i / (double) j);
-
             if (scroll < 0.0F) {
                 scroll = 0.0F;
             }
-
             if (scroll > 1.0F) {
                 scroll = 1.0F;
             }
@@ -356,17 +326,14 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
         // Add buttons to gui
         buttonList.clear();
-        buttonList
-              .add(new GuiButton(BUTTON_NEW, guiLeft + 56, guiTop + 136, 96, 20, LangUtils.localize("gui.newFilter")));
+        buttonList.add(new GuiButton(BUTTON_NEW, guiLeft + 56, guiTop + 136, 96, 20, LangUtils.localize("gui.newFilter")));
     }
 
     @Override
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
-
         if (guibutton.id == BUTTON_NEW) {
-            Mekanism.packetHandler.sendToServer(
-                  new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
+            Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
         }
     }
 
@@ -378,19 +345,14 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
 
         // Write to info display
         fontRenderer.drawString(tileEntity.getName(), 43, 6, 0x404040);
-
         fontRenderer.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
         fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
-
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem") + ":", 12, 48, 0x00CD00);
         fontRenderer.drawString(LangUtils.transOnOff(tileEntity.singleItem), 27, 60, 0x00CD00);
-
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin") + ":", 12, 74, 0x00CD00);
         fontRenderer.drawString(LangUtils.transOnOff(tileEntity.roundRobin), 27, 86, 0x00CD00);
-
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject") + ":", 12, 100, 0x00CD00);
         fontRenderer.drawString(LangUtils.transOnOff(tileEntity.autoEject), 27, 112, 0x00CD00);
-
         fontRenderer.drawString(LangUtils.localize("mekanism.gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 
         // Draw filters
@@ -398,7 +360,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                 final TransporterFilter filter = tileEntity.filters.get(getFilterIndex() + i);
                 final int yStart = i * filterH + filterY;
-
                 if (filter instanceof TItemStackFilter) {
                     final TItemStackFilter itemFilter = (TItemStackFilter) filter;
 
@@ -411,18 +372,14 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     }
 
                     fontRenderer.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-                    fontRenderer.drawString(
-                          filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78,
-                          yStart + 11, 0x404040);
+                    fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof TOreDictFilter) {
                     final TOreDictFilter oreFilter = (TOreDictFilter) filter;
-
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
 
                     ItemStack renderStack = oreDictStacks.get(filter).renderStack;
-
                     if (!renderStack.isEmpty()) {
                         try {
                             GlStateManager.pushMatrix();
@@ -435,12 +392,9 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     }
 
                     fontRenderer.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-                    fontRenderer.drawString(
-                          filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78,
-                          yStart + 11, 0x404040);
+                    fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof TMaterialFilter) {
                     final TMaterialFilter itemFilter = (TMaterialFilter) filter;
-
                     if (!itemFilter.getMaterialItem().isEmpty()) {
                         GlStateManager.pushMatrix();
                         RenderHelper.enableGUIStandardItemLighting();
@@ -450,9 +404,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     }
 
                     fontRenderer.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-                    fontRenderer.drawString(
-                          filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78,
-                          yStart + 11, 0x404040);
+                    fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 } else if (filter instanceof TModIDFilter) {
                     final TModIDFilter modFilter = (TModIDFilter) filter;
 
@@ -474,9 +426,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                     }
 
                     fontRenderer.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
-                    fontRenderer.drawString(
-                          filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78,
-                          yStart + 11, 0x404040);
+                    fontRenderer.drawString(filter.color != null ? filter.color.getColoredName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
                 }
 
                 // Draw hovertext for sorting buttons
@@ -487,7 +437,6 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                         drawHoveringText(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
                     }
                 }
-
                 if (getFilterIndex() + i < tileEntity.filters.size() - 1) {
                     if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
                         drawHoveringText(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
@@ -519,24 +468,15 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124) {
-            drawHoveringText(
-                    MekanismUtils.splitTooltip(
-                            LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY
-                    ), xAxis, yAxis);
+            drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.autoEject.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98) {
-            drawHoveringText(
-                    MekanismUtils.splitTooltip(
-                            LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY
-                    ), xAxis, yAxis);
+            drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.roundRobin.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
 
         if (xAxis >= 12 && xAxis <= 26 && yAxis >= 58 && yAxis <= 72) {
-            drawHoveringText(
-                    MekanismUtils.splitTooltip(
-                            LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY
-                    ), xAxis, yAxis);
+            drawHoveringText(MekanismUtils.splitTooltip(LangUtils.localize("mekanism.gui.logisticalSorter.singleItem.tooltip"), ItemStack.EMPTY), xAxis, yAxis);
         }
 
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -552,8 +492,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Draw scrollbar
-        drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0,
-              12, 15);
+        drawTexturedModalRect(guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         // Get mouse position relative to gui
         final int xAxis = mouseX - guiLeft;
@@ -566,8 +505,7 @@ public class GuiLogisticalSorter extends GuiMekanismTile<TileEntityLogisticalSor
                 final int yStart = i * filterH + filterY;
 
                 // Flag for mouse over this filter
-                boolean mouseOver =
-                      xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
+                boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
 
                 // Change colour based on filter type
                 if (filter instanceof TItemStackFilter) {

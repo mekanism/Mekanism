@@ -33,8 +33,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return GeneratorType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z)))
-              == GeneratorType.TURBINE_CASING;
+        return GeneratorType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z))) == GeneratorType.TURBINE_CASING;
     }
 
     @Override
@@ -42,11 +41,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-
         TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
-        return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex ||
-              tile instanceof TileEntityPressureDisperser || tile instanceof TileEntityElectromagneticCoil ||
-              tile instanceof TileEntitySaturatingCondenser;
+        return tile instanceof TileEntityTurbineRotor || tile instanceof TileEntityRotationalComplex || tile instanceof TileEntityPressureDisperser ||
+               tile instanceof TileEntityElectromagneticCoil || tile instanceof TileEntitySaturatingCondenser;
     }
 
     @Override
@@ -122,7 +119,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         }
 
         structure.condensers = condensers.size();
-
         int turbineHeight = 0;
         int blades = 0;
 
@@ -130,7 +126,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         for (int y = complex.y - 1; y > structure.minLocation.y; y--) {
             TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(centerX, y, centerZ));
             if (tile instanceof TileEntityTurbineRotor) {
-                TileEntityTurbineRotor rotor = (TileEntityTurbineRotor)tile;
+                TileEntityTurbineRotor rotor = (TileEntityTurbineRotor) tile;
                 turbineHeight++;
                 blades += rotor.getHousedBlades();
                 structure.internalLocations.add(Coord4D.get(tile));
@@ -150,7 +146,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         structure.blades = blades;
 
         Coord4D startCoord = complex.offset(EnumFacing.UP);
-
         if (startCoord.getTileEntity(pointer.getWorld()) instanceof TileEntityElectromagneticCoil) {
             structure.coils = new NodeCounter(new NodeChecker() {
                 @Override
@@ -172,7 +167,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
                 structure.vents++;
             }
         }
-
         structure.lowerVolume = structure.volLength * structure.volWidth * turbineHeight;
         structure.complex = complex;
         return true;
@@ -194,8 +188,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     }
 
     @Override
-    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTurbineData> cache,
-          MultiblockCache<SynchronizedTurbineData> merge) {
+    protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTurbineData> cache, MultiblockCache<SynchronizedTurbineData> merge) {
         TurbineCache turbineCache = (TurbineCache) cache;
         TurbineCache mergeCache = (TurbineCache) merge;
         if (turbineCache.fluid == null) {
@@ -203,7 +196,6 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         } else if (mergeCache.fluid != null && turbineCache.fluid.isFluidEqual(mergeCache.fluid)) {
             turbineCache.fluid.amount += mergeCache.fluid.amount;
         }
-
         turbineCache.electricity += mergeCache.electricity;
         turbineCache.dumpMode = mergeCache.dumpMode;
     }
@@ -211,13 +203,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     @Override
     protected void onFormed() {
         super.onFormed();
-
         if (structureFound.fluidStored != null) {
-            structureFound.fluidStored.amount = Math
-                  .min(structureFound.fluidStored.amount, structureFound.getFluidCapacity());
+            structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.getFluidCapacity());
         }
-
-        structureFound.electricityStored = Math
-              .min(structureFound.electricityStored, structureFound.getEnergyCapacity());
+        structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
     }
 }

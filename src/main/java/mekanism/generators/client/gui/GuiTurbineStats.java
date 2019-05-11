@@ -27,16 +27,11 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
         ResourceLocation resource = getGuiLocation();
         addGuiElement(new GuiTurbineTab(this, tileEntity, TurbineTab.MAIN, 6, resource));
         addGuiElement(new GuiEnergyInfo(() -> {
-            double energyMultiplier =
-                  (MekanismConfig.current().general.maxEnergyPerSteam.val() / TurbineUpdateProtocol.MAX_BLADES) * Math
-                        .min(tileEntity.structure.blades,
-                              tileEntity.structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil
-                                    .val());
+            double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val() / TurbineUpdateProtocol.MAX_BLADES) *
+                                      Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());
             return Arrays.asList(
-                  LangUtils.localize("gui.storing") + ": " + MekanismUtils
-                        .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-                  LangUtils.localize("gui.producing") + ": " + MekanismUtils
-                        .getEnergyDisplay(tileEntity.structure.clientFlow * energyMultiplier) + "/t");
+                  LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+                  LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.clientFlow * energyMultiplier) + "/t");
         }, this, resource));
     }
 
@@ -45,44 +40,27 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing> {
         String stats = LangUtils.localize("gui.turbineStats");
         String limiting = EnumColor.DARK_RED + " (" + LangUtils.localize("gui.limiting") + ")";
         fontRenderer.drawString(stats, (xSize / 2) - (fontRenderer.getStringWidth(stats) / 2), 6, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("gui.tankVolume") + ": " + tileEntity.structure.lowerVolume, 8, 26,
-              0x404040);
-        boolean dispersersLimiting = tileEntity.structure.lowerVolume * tileEntity.structure.clientDispersers
-              * MekanismConfig.current().generators.turbineDisperserGasFlow.val() <
-              tileEntity.structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val();
-        boolean ventsLimiting = tileEntity.structure.lowerVolume * tileEntity.structure.clientDispersers
-              * MekanismConfig.current().generators.turbineDisperserGasFlow.val() >
-              tileEntity.structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val();
+        fontRenderer.drawString(LangUtils.localize("gui.tankVolume") + ": " + tileEntity.structure.lowerVolume, 8, 26, 0x404040);
+        boolean dispersersLimiting = tileEntity.structure.lowerVolume * tileEntity.structure.clientDispersers * MekanismConfig.current().generators.turbineDisperserGasFlow.val()
+                                     < tileEntity.structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val();
+        boolean ventsLimiting = tileEntity.structure.lowerVolume * tileEntity.structure.clientDispersers * MekanismConfig.current().generators.turbineDisperserGasFlow.val()
+                                > tileEntity.structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val();
         fontRenderer.drawString(LangUtils.localize("gui.steamFlow"), 8, 40, 0x797979);
-        fontRenderer.drawString(
-              LangUtils.localize("gui.dispersers") + ": " + tileEntity.structure.clientDispersers + (dispersersLimiting
-                    ? limiting : ""), 14, 49, 0x404040);
-        fontRenderer.drawString(
-              LangUtils.localize("gui.vents") + ": " + tileEntity.structure.vents + (ventsLimiting ? limiting : ""), 14,
-              58, 0x404040);
+        fontRenderer.drawString(LangUtils.localize("gui.dispersers") + ": " + tileEntity.structure.clientDispersers + (dispersersLimiting ? limiting : ""), 14, 49, 0x404040);
+        fontRenderer.drawString(LangUtils.localize("gui.vents") + ": " + tileEntity.structure.vents + (ventsLimiting ? limiting : ""), 14, 58, 0x404040);
         boolean bladesLimiting = tileEntity.structure.coils * 4 > tileEntity.structure.blades;
         boolean coilsLimiting = tileEntity.structure.coils * 4 < tileEntity.structure.blades;
         fontRenderer.drawString(LangUtils.localize("gui.production"), 8, 72, 0x797979);
-        fontRenderer.drawString(
-              LangUtils.localize("gui.blades") + ": " + tileEntity.structure.blades + (bladesLimiting ? limiting : ""),
-              14, 81, 0x404040);
-        fontRenderer.drawString(
-              LangUtils.localize("gui.coils") + ": " + tileEntity.structure.coils + (coilsLimiting ? limiting : ""), 14,
-              90, 0x404040);
-        double energyMultiplier =
-              (MekanismConfig.current().general.maxEnergyPerSteam.val() / TurbineUpdateProtocol.MAX_BLADES) * Math
-                    .min(tileEntity.structure.blades,
-                          tileEntity.structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());
+        fontRenderer.drawString(LangUtils.localize("gui.blades") + ": " + tileEntity.structure.blades + (bladesLimiting ? limiting : ""), 14, 81, 0x404040);
+        fontRenderer.drawString(LangUtils.localize("gui.coils") + ": " + tileEntity.structure.coils + (coilsLimiting ? limiting : ""), 14, 90, 0x404040);
+        double energyMultiplier = (MekanismConfig.current().general.maxEnergyPerSteam.val() / TurbineUpdateProtocol.MAX_BLADES) *
+                                  Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismConfig.current().generators.turbineBladesPerCoil.val());
         double rate = tileEntity.structure.lowerVolume * (tileEntity.structure.clientDispersers
-              * MekanismConfig.current().generators.turbineDisperserGasFlow.val());
-        rate = Math
-              .min(rate, tileEntity.structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
-        fontRenderer.drawString(
-              LangUtils.localize("gui.maxProduction") + ": " + MekanismUtils.getEnergyDisplay(rate * energyMultiplier),
-              8, 104, 0x404040);
-        fontRenderer.drawString(LangUtils.localize("gui.maxWaterOutput") + ": "
-                    + tileEntity.structure.condensers * MekanismConfig.current().generators.condenserRate.val() + " mB/t", 8,
-              113, 0x404040);
+                                                          * MekanismConfig.current().generators.turbineDisperserGasFlow.val());
+        rate = Math.min(rate, tileEntity.structure.vents * MekanismConfig.current().generators.turbineVentGasFlow.val());
+        fontRenderer.drawString(LangUtils.localize("gui.maxProduction") + ": " + MekanismUtils.getEnergyDisplay(rate * energyMultiplier), 8, 104, 0x404040);
+        fontRenderer.drawString(LangUtils.localize("gui.maxWaterOutput") + ": " +
+                                tileEntity.structure.condensers * MekanismConfig.current().generators.condenserRate.val() + " mB/t", 8, 113, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -29,20 +29,16 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater>
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
         addGuiElement(new GuiHeatInfo(() -> {
             TemperatureUnit unit = TemperatureUnit.values()[MekanismConfig.current().general.tempUnit.val().ordinal()];
-            String environment = UnitDisplayUtils
-                  .getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
+            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
         }, this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer
-              .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
-                    6, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils
-              .getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT), 50, 25, 0x00CD00, 76);
+        renderScaledText(LangUtils.localize("gui.temp") + ": " + MekanismUtils.getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT), 50, 25, 0x00CD00, 76);
         renderScaledText(LangUtils.localize("gui.fuel") + ": " + tileEntity.burnTime, 50, 41, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -56,8 +52,7 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater>
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         if (tileEntity.burnTime > 0) {
             int displayInt = tileEntity.burnTime * 13 / tileEntity.maxBurnTime;
-            drawTexturedModalRect(guiWidth + 143, guiHeight + 30 + 12 - displayInt, 176, 12 - displayInt, 14,
-                  displayInt + 1);
+            drawTexturedModalRect(guiWidth + 143, guiHeight + 30 + 12 - displayInt, 176, 12 - displayInt, 14, displayInt + 1);
         }
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }

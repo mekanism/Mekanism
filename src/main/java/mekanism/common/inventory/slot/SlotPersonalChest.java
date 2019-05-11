@@ -17,7 +17,6 @@ public class SlotPersonalChest extends Slot {
         if (inventory.getStackInSlot(getSlotIndex()).isEmpty()) {
             return false;
         }
-
         return MachineType.get(inventory.getStackInSlot(getSlotIndex())) != MachineType.PERSONAL_CHEST;
     }
 
@@ -26,7 +25,6 @@ public class SlotPersonalChest extends Slot {
         if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
             return false;
         }
-
         return super.isItemValid(stack);
     }
 }

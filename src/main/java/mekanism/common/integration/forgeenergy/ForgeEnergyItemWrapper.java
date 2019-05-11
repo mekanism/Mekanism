@@ -24,15 +24,11 @@ public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergySto
         if (getItem().canReceive(getStack())) {
             int energyNeeded = getMaxEnergyStored() - getEnergyStored();
             int toReceive = Math.min(maxReceive, energyNeeded);
-
             if (!simulate) {
-                getItem().setEnergy(getStack(),
-                      getItem().getEnergy(getStack()) + toReceive * MekanismConfig.current().general.FROM_TESLA.val());
+                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) + toReceive * MekanismConfig.current().general.FROM_TESLA.val());
             }
-
             return toReceive;
         }
-
         return 0;
     }
 
@@ -41,28 +37,22 @@ public class ForgeEnergyItemWrapper extends ItemCapability implements IEnergySto
         if (getItem().canSend(getStack())) {
             int energyRemaining = getEnergyStored();
             int toSend = Math.min(maxExtract, energyRemaining);
-
             if (!simulate) {
-                getItem().setEnergy(getStack(),
-                      getItem().getEnergy(getStack()) - toSend * MekanismConfig.current().general.FROM_TESLA.val());
+                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) - toSend * MekanismConfig.current().general.FROM_TESLA.val());
             }
-
             return toSend;
         }
-
         return 0;
     }
 
     @Override
     public int getEnergyStored() {
-        return MekanismUtils.clampToInt(
-              Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_FORGE.val()));
+        return MekanismUtils.clampToInt(Math.round(getItem().getEnergy(getStack()) * MekanismConfig.current().general.TO_FORGE.val()));
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return MekanismUtils.clampToInt(
-              Math.round(getItem().getMaxEnergy(getStack()) * MekanismConfig.current().general.TO_FORGE.val()));
+        return MekanismUtils.clampToInt(Math.round(getItem().getMaxEnergy(getStack()) * MekanismConfig.current().general.TO_FORGE.val()));
     }
 
     @Override

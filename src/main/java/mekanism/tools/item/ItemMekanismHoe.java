@@ -44,15 +44,13 @@ public class ItemMekanismHoe extends ItemMekanism {
 
     @Override
     public boolean getIsRepairable(ItemStack stack1, ItemStack stack2) {
-        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super
-              .getIsRepairable(stack1, stack2);
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) || super.getIsRepairable(stack1, stack2);
     }
 
     @Nonnull
     @Override
     @SuppressWarnings("incomplete-switch")
-    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
-          EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack stack = playerIn.getHeldItem(hand);
 
         if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack)) {
@@ -71,27 +69,23 @@ public class ItemMekanismHoe extends ItemMekanism {
                     setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
                     return EnumActionResult.SUCCESS;
                 }
-
                 if (block == Blocks.DIRT) {
                     switch (iblockstate.getValue(BlockDirt.VARIANT)) {
                         case DIRT:
                             setBlock(stack, playerIn, worldIn, pos, Blocks.FARMLAND.getDefaultState());
                             return EnumActionResult.SUCCESS;
                         case COARSE_DIRT:
-                            setBlock(stack, playerIn, worldIn, pos, Blocks.DIRT.getDefaultState()
-                                  .withProperty(BlockDirt.VARIANT, BlockDirt.DirtType.DIRT));
+                            setBlock(stack, playerIn, worldIn, pos, Blocks.DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, BlockDirt.DirtType.DIRT));
                             return EnumActionResult.SUCCESS;
                     }
                 }
             }
-
             return EnumActionResult.PASS;
         }
     }
 
     protected void setBlock(ItemStack stack, EntityPlayer player, World worldIn, BlockPos pos, IBlockState state) {
         worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-
         if (!worldIn.isRemote) {
             worldIn.setBlockState(pos, state, 11);
             stack.damageItem(1, player);
@@ -100,24 +94,18 @@ public class ItemMekanismHoe extends ItemMekanism {
 
     @Nonnull
     @Override
-    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot equipmentSlot,
-          ItemStack stack) {
+    public Multimap<String, AttributeModifier> getAttributeModifiers(@Nonnull EntityEquipmentSlot equipmentSlot, ItemStack stack) {
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(equipmentSlot, stack);
-
         if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(),
-                  new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 0.0D, 0));
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(),
-                  new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double) (this.speed - 4.0F), 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", 0.0D, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", (double) (this.speed - 4.0F), 0));
         }
-
         return multimap;
     }
 
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         stack.damageItem(1, attacker);
-
         return true;
     }
 

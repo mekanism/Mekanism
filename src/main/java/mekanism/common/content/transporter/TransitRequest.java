@@ -2,7 +2,6 @@ package mekanism.common.content.transporter;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -10,12 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TransitRequest {
 
     /**
-     * Complicated map- associates item types with both total available item count and slot IDs and
-     * available item amounts for each slot.
+     * Complicated map- associates item types with both total available item count and slot IDs and available item amounts for each slot.
      */
     private Map<HashedItem, Pair<Integer, Map<Integer, Integer>>> itemMap = new HashMap<>();
 
@@ -34,11 +33,9 @@ public class TransitRequest {
     }
 
     /**
-     * Creates a TransitRequest based on a full inspection of an entire specified inventory from a given
-     * side. The algorithm will use the specified Finder to ensure the resulting map will only capture
-     * desired items. The amount of each item type present in the resulting item type will cap at the
-     * given 'amount' parameter.
-     * 
+     * Creates a TransitRequest based on a full inspection of an entire specified inventory from a given side. The algorithm will use the specified Finder to ensure the
+     * resulting map will only capture desired items. The amount of each item type present in the resulting item type will cap at the given 'amount' parameter.
+     *
      * @param side - the side from an adjacent connected inventory, *not* the inventory itself.
      */
     public static TransitRequest buildInventoryMap(TileEntity tile, EnumFacing side, int amount, Finder finder) {
@@ -60,8 +57,9 @@ public class TransitRequest {
                 HashedItem hashed = new HashedItem(stack);
                 int currentCount = itemCountMap.getOrDefault(hashed, -1);
                 int toUse = currentCount != -1 ? Math.min(stack.getCount(), amount - currentCount) : stack.getCount();
-                if (toUse == 0)
+                if (toUse == 0) {
                     continue; // continue if we don't need anymore of this item type
+                }
                 ret.addItem(StackUtils.size(stack, toUse), i);
 
                 if (currentCount != -1) {
@@ -107,17 +105,14 @@ public class TransitRequest {
                 return true;
             }
         }
-
         return false;
     }
 
     /**
-     * A TransitResponse contains information regarding the partial ItemStacks which were allowed entry
-     * into a destination inventory. Note that a TransitResponse should only contain a single item type,
-     * although it may be spread out across multiple slots.
-     * 
-     * @author aidancbrady
+     * A TransitResponse contains information regarding the partial ItemStacks which were allowed entry into a destination inventory. Note that a TransitResponse should
+     * only contain a single item type, although it may be spread out across multiple slots.
      *
+     * @author aidancbrady
      */
     public static class TransitResponse {
 
@@ -127,7 +122,8 @@ public class TransitRequest {
         private Map<Integer, Integer> idMap = new HashMap<>();
         private ItemStack toSend = ItemStack.EMPTY;
 
-        private TransitResponse() {}
+        private TransitResponse() {
+        }
 
         public TransitResponse(ItemStack i, Map<Integer, Integer> slots) {
             toSend = i;
@@ -138,8 +134,9 @@ public class TransitRequest {
                 int toUse = Math.min(amount, entry.getValue());
                 idMap.put(entry.getKey(), toUse);
                 amount -= toUse;
-                if (amount == 0)
+                if (amount == 0) {
                     break;
+                }
             }
         }
 

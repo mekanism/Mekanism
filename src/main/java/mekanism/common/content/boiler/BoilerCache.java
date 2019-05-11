@@ -8,7 +8,6 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
 
     public FluidStack water;
     public FluidStack steam;
-
     public double temperature;
 
     @Override
@@ -30,11 +29,9 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
         if (nbtTags.hasKey("cachedWater")) {
             water = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedWater"));
         }
-
         if (nbtTags.hasKey("cachedSteam")) {
             steam = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedSteam"));
         }
-
         temperature = nbtTags.getDouble("temperature");
     }
 
@@ -43,11 +40,9 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
         if (water != null) {
             nbtTags.setTag("cachedWater", water.writeToNBT(new NBTTagCompound()));
         }
-
         if (steam != null) {
             nbtTags.setTag("cachedSteam", steam.writeToNBT(new NBTTagCompound()));
         }
-
         nbtTags.setDouble("temperature", temperature);
     }
 }

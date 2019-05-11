@@ -10,8 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock,
-      IEvaporationSolar {
+public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
     public TileEntityAdvancedSolarGenerator() {
         super("AdvancedSolarGenerator", 200000, MekanismConfig.current().generators.advancedSolarGeneration.val() * 2);
@@ -31,7 +30,6 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     public void onPlace() {
         Coord4D current = Coord4D.get(this);
         MekanismUtils.makeBoundingBlock(world, getPos().add(0, 1, 0), current);
-
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
                 MekanismUtils.makeBoundingBlock(world, getPos().add(x, 2, z), current);
@@ -42,13 +40,11 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     @Override
     public void onBreak() {
         world.setBlockToAir(getPos().add(0, 1, 0));
-
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
                 world.setBlockToAir(getPos().add(x, 2, z));
             }
         }
-
         invalidate();
         world.setBlockToAir(getPos());
     }
@@ -63,7 +59,6 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         if (capability == Capabilities.EVAPORATION_SOLAR_CAPABILITY) {
             return Capabilities.EVAPORATION_SOLAR_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 }

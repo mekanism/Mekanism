@@ -36,8 +36,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, IRedstoneControl,
-      ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager, ISecurityTile {
+public class TileEntityChemicalInfuser extends TileEntityMachine implements IGasHandler, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler,
+      ITankManager, ISecurityTile {
 
     public static final int MAX_GAS = 10000;
     public GasTank leftTank = new GasTank(MAX_GAS);
@@ -50,31 +50,23 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     public double clientEnergyUsed;
 
     public TileEntityChemicalInfuser() {
-        super("machine.cheminfuser", "ChemicalInfuser",
-                MachineType.CHEMICAL_INFUSER.getStorage(),
-                MachineType.CHEMICAL_INFUSER.getUsage(), 4);
-
+        super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.getStorage(), MachineType.CHEMICAL_INFUSER.getUsage(), 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             TileUtils.receiveGas(inventory.get(0), leftTank);
             TileUtils.receiveGas(inventory.get(1), rightTank);
             TileUtils.drawGas(inventory.get(2), centerTank);
-
             ChemicalInfuserRecipe recipe = getRecipe();
-
             if (canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
-
                 int operations = operate(recipe);
                 double prev = getEnergy();
-
                 setEnergy(getEnergy() - energyPerTick * operations);
                 clientEnergyUsed = prev - getEnergy();
             } else {
@@ -89,7 +81,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     public int getUpgradedUsage(ChemicalInfuserRecipe recipe) {
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-
         if (leftTank.getGasType() == recipe.recipeInput.leftGas.getGas()) {
             possibleProcess = Math.min(leftTank.getStored() / recipe.recipeInput.leftGas.amount, possibleProcess);
             possibleProcess = Math.min(rightTank.getStored() / recipe.recipeInput.rightGas.amount, possibleProcess);
@@ -97,10 +88,8 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
             possibleProcess = Math.min(leftTank.getStored() / recipe.recipeInput.rightGas.amount, possibleProcess);
             possibleProcess = Math.min(rightTank.getStored() / recipe.recipeInput.leftGas.amount, possibleProcess);
         }
-
         possibleProcess = Math.min(centerTank.getNeeded() / recipe.recipeOutput.output.amount, possibleProcess);
         possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
-
         return possibleProcess;
     }
 
@@ -110,11 +99,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     public ChemicalInfuserRecipe getRecipe() {
         ChemicalPairInput input = getInput();
-
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getChemicalInfuserRecipe(getInput());
         }
-
         return cachedRecipe;
     }
 
@@ -124,17 +111,14 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     public int operate(ChemicalInfuserRecipe recipe) {
         int operations = getUpgradedUsage(recipe);
-
         recipe.operate(leftTank, rightTank, centerTank, operations);
         markDirty();
-
         return operations;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             clientEnergyUsed = dataStream.readDouble();
             TileUtils.readTankData(dataStream, leftTank);
@@ -156,7 +140,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         leftTank.read(nbtTags.getCompoundTag("leftTank"));
         rightTank.read(nbtTags.getCompoundTag("rightTank"));
         centerTank.read(nbtTags.getCompoundTag("centerTank"));
@@ -166,11 +149,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
         nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
         nbtTags.setTag("centerTank", centerTank.write(new NBTTagCompound()));
-
         return nbtTags;
     }
 
@@ -187,7 +168,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         } else if (side == facing) {
             return centerTank;
         }
-
         return null;
     }
 
@@ -199,7 +179,7 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return (getTank(side) != null && getTank(side) != centerTank) && getTank(side).canReceive(type);
+        return getTank(side) != null && getTank(side) != centerTank && getTank(side).canReceive(type);
     }
 
     @Override
@@ -207,7 +187,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         if (canReceiveGas(side, stack != null ? stack.getGas() : null)) {
             return getTank(side).receive(stack, doTransfer);
         }
-
         return 0;
     }
 
@@ -216,13 +195,12 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         if (canDrawGas(side, null)) {
             return getTank(side).draw(amount, doTransfer);
         }
-
         return null;
     }
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return (getTank(side) != null && getTank(side) == centerTank) && getTank(side).canDraw(type);
+        return getTank(side) != null && getTank(side) == centerTank && getTank(side).canDraw(type);
     }
 
     @Override
@@ -240,7 +218,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -260,15 +237,12 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 0 || slotID == 2) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem())
-                  .canReceiveGas(itemstack, null);
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canReceiveGas(itemstack, null);
         } else if (slotID == 1) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem())
-                  .canProvideGas(itemstack, null);
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, null);
         } else if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
         }
-
         return false;
     }
 
@@ -284,7 +258,6 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         } else if (side.getAxis() == Axis.Y) {
             return new int[3];
         }
-
         return InventoryUtils.EMPTY;
     }
 
@@ -293,11 +266,9 @@ public class TileEntityChemicalInfuser extends TileEntityMachine implements IGas
         if (leftTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getGas().write(new NBTTagCompound()));
         }
-
         if (rightTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getGas().write(new NBTTagCompound()));
         }
-
         if (centerTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "centerTank", centerTank.getGas().write(new NBTTagCompound()));
         }

@@ -29,8 +29,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public String getTooltip() {
-                return LangUtils.localize("gui.receiving") + ": " + MekanismUtils
-                      .getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t";
+                return LangUtils.localize("gui.receiving") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t";
             }
 
             @Override
@@ -41,8 +40,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
         addGuiElement(new GuiRateBar(this, new IRateInfoHandler() {
             @Override
             public String getTooltip() {
-                return LangUtils.localize("gui.outputting") + ": " + MekanismUtils
-                      .getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t";
+                return LangUtils.localize("gui.outputting") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t";
             }
 
             @Override
@@ -51,12 +49,9 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
             }
         }, resource, 38, 13));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
-              LangUtils.localize("gui.storing") + ": " + MekanismUtils
-                    .getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
-              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput())
-                    + "/t",
-              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput())
-                    + "/t"), this, resource));
+              LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()),
+              LangUtils.localize("gui.input") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/t",
+              LangUtils.localize("gui.output") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/t"), this, resource));
     }
 
     @Override
@@ -64,18 +59,16 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing> {
         String stats = LangUtils.localize("gui.matrixStats");
         fontRenderer.drawString(stats, (xSize / 2) - (fontRenderer.getStringWidth(stats) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.input") + ":", 53, 26, 0x797979);
-        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/" + MekanismUtils
-              .getEnergyDisplay(tileEntity.structure.getTransferCap()), 59, 35, 0x404040);
+        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastInput()) + "/" +
+                                MekanismUtils.getEnergyDisplay(tileEntity.structure.getTransferCap()), 59, 35, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.output") + ":", 53, 46, 0x797979);
-        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/" + MekanismUtils
-              .getEnergyDisplay(tileEntity.structure.getTransferCap()), 59, 55, 0x404040);
+        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.getLastOutput()) + "/" +
+                                MekanismUtils.getEnergyDisplay(tileEntity.structure.getTransferCap()), 59, 55, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.dimensions") + ":", 8, 82, 0x797979);
-        fontRenderer.drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x "
-              + tileEntity.structure.volLength, 14, 91, 0x404040);
+        fontRenderer.drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x " + tileEntity.structure.volLength, 14, 91, 0x404040);
         fontRenderer.drawString(LangUtils.localize("gui.constituents") + ":", 8, 102, 0x797979);
         fontRenderer.drawString(tileEntity.structure.getCellCount() + " " + LangUtils.localize("gui.cells"), 14, 111, 0x404040);
-        fontRenderer
-              .drawString(tileEntity.structure.getProviderCount() + " " + LangUtils.localize("gui.providers"), 14, 120, 0x404040);
+        fontRenderer.drawString(tileEntity.structure.getProviderCount() + " " + LangUtils.localize("gui.providers"), 14, 120, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

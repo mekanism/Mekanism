@@ -25,8 +25,7 @@ public class RenderObsidianTNTPrimed extends Render<EntityObsidianTNT> {
     }
 
     @Override
-    public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw,
-          float partialTicks) {
+    public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y + 0.5F, (float) z);

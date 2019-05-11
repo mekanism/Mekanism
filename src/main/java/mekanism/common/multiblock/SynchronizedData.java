@@ -55,17 +55,13 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> {
         if (obj == null || obj.getClass() != getClass()) {
             return false;
         }
-
         SynchronizedData<T> data = (SynchronizedData<T>) obj;
-
         if (!data.locations.equals(locations)) {
             return false;
         }
-
         if (data.volLength != volLength || data.volWidth != volWidth || data.volHeight != volHeight) {
             return false;
         }
-
         return data.volume == volume;
     }
 }

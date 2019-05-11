@@ -39,9 +39,8 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
     public int TRANSFER_RATE = 16;
 
     public ItemJetpack() {
-        super(EnumHelper
-              .addArmorMaterial("JETPACK", "jetpack", 0, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
-                    0), 0, EntityEquipmentSlot.CHEST);
+        super(EnumHelper.addArmorMaterial("JETPACK", "jetpack", 0, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_GENERIC,
+              0), 0, EntityEquipmentSlot.CHEST);
         setCreativeTab(Mekanism.tabMekanism);
     }
 
@@ -68,12 +67,9 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
         if (gasStack == null) {
             list.add(LangUtils.localize("tooltip.noGas") + ".");
         } else {
-            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
-                  + gasStack.amount);
+            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
         }
-
-        list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack)
-              .getName());
+        list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
     }
 
     @Override
@@ -88,16 +84,13 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot,
-          ModelBiped _default) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-
         if (this == MekanismItems.Jetpack) {
             model.modelType = ArmorModel.JETPACK;
         } else if (this == MekanismItems.ArmoredJetpack) {
             model.modelType = ArmorModel.ARMOREDJETPACK;
         }
-
         return model;
     }
 
@@ -124,14 +117,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-
         if (stack.getGas() != MekanismFluids.Hydrogen) {
             return 0;
         }
-
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
         setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
-
         return toUse;
     }
 
@@ -174,7 +164,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
         } else {
             int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
             GasStack gasStack = new GasStack(stack.getGas(), amount);
-
             ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
         }
     }
@@ -208,7 +197,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
             return new ArmorProperties(1, MekanismConfig.current().general.armoredJetpackDamageRatio.val(),
                   MekanismConfig.current().general.armoredJetpackDamageMax.val());
         }
-
         return new ArmorProperties(0, 0, 0);
     }
 
@@ -219,13 +207,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor {
         } else if (armor.getItem() == MekanismItems.ArmoredJetpack) {
             return 12;
         }
-
         return 0;
     }
 
     @Override
-    public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage,
-          int slot) {
+    public void damageArmor(EntityLivingBase entity, @Nonnull ItemStack stack, DamageSource source, int damage, int slot) {
     }
 
     public enum JetpackMode {

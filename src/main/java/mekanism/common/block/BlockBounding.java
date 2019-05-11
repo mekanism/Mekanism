@@ -72,8 +72,7 @@ public class BlockBounding extends Block {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-          EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return false;
@@ -91,13 +90,11 @@ public class BlockBounding extends Block {
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getPickBlock(IBlockState, RayTraceResult, World, BlockPos,
-     * EntityPlayer)}.
+     * {@inheritDoc} Delegate to main {@link Block#getPickBlock(IBlockState, RayTraceResult, World, BlockPos, EntityPlayer)}.
      */
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world,
-          @Nonnull BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(@Nonnull IBlockState state, RayTraceResult target, @Nonnull World world, @Nonnull BlockPos pos, EntityPlayer player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
@@ -107,16 +104,14 @@ public class BlockBounding extends Block {
     }
 
     /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos,
-     * IBlockState, int)}. Used together with {@link Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState,
-     * TileEntity, ItemStack)}.
+     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)}. Used together with {@link
+     * Block#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)}.
      *
      * @author Forge
      * @see BlockFlowerPot#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)
      */
     @Override
-    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos,
-          @Nonnull EntityPlayer player, boolean willHarvest) {
+    public boolean removedByPlayer(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, @Nonnull EntityPlayer player, boolean willHarvest) {
         if (willHarvest) {
             return true;
         }
@@ -128,8 +123,7 @@ public class BlockBounding extends Block {
      * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)}.
      */
     @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos,
-          @Nonnull IBlockState state, int fortune) {
+    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, @Nonnull IBlockState state, int fortune) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return;
@@ -139,23 +133,21 @@ public class BlockBounding extends Block {
     }
 
     /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer,
-     * boolean)}.
+     * {@inheritDoc} Used together with {@link Block#removedByPlayer(IBlockState, World, BlockPos, EntityPlayer, boolean)}.
      *
      * @author Forge
      * @see BlockFlowerPot#harvestBlock(World, EntityPlayer, BlockPos, IBlockState, TileEntity, ItemStack)
      */
     @Override
-    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos,
-          @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
+    public void harvestBlock(@Nonnull World world, EntityPlayer player, @Nonnull BlockPos pos, @Nonnull IBlockState state, TileEntity te, ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.setBlockToAir(pos);
     }
 
     /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not
-     * called, because only {@link Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile
-     * entities. Our blocks keep their inventory and other behave like they are being silk touched by default anyway.
+     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(IBlockState)} is not called, because only {@link
+     * Block#getDrops(NonNullList, IBlockAccess, BlockPos, IBlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
+     * silk touched by default anyway.
      *
      * @return false
      */
@@ -167,8 +159,7 @@ public class BlockBounding extends Block {
 
     @Override
     @Deprecated
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
-          BlockPos neighborPos) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock) world.getTileEntity(pos);
         if (tileEntity != null) {
             tileEntity.onNeighborChange(state.getBlock());
@@ -182,8 +173,7 @@ public class BlockBounding extends Block {
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
-          @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getPlayerRelativeBlockHardness(state, player, world, pos);

@@ -33,7 +33,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntitySecurityDesk extends TileEntityContainerBlock implements IBoundingBlock {
 
-    private static final int[] SLOTS = {0,1};
+    private static final int[] SLOTS = {0, 1};
 
     public UUID ownerUUID;
     public String clientOwner;
@@ -42,7 +42,6 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 
     public TileEntitySecurityDesk() {
         super("SecurityDesk");
-
         inventory = NonNullList.withSize(SLOTS.length, ItemStack.EMPTY);
     }
 
@@ -52,11 +51,9 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
             if (ownerUUID != null && frequency != null) {
                 if (!inventory.get(0).isEmpty() && inventory.get(0).getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) inventory.get(0).getItem();
-
                     if (item.hasOwner(inventory.get(0)) && item.getOwnerUUID(inventory.get(0)) != null) {
                         if (item.getOwnerUUID(inventory.get(0)).equals(ownerUUID)) {
                             item.setOwnerUUID(inventory.get(0), null);
-
                             if (item instanceof ISecurityItem && ((ISecurityItem) item).hasSecurity(inventory.get(0))) {
                                 ((ISecurityItem) item).setSecurity(inventory.get(0), SecurityMode.PUBLIC);
                             }
@@ -66,12 +63,10 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 
                 if (!inventory.get(1).isEmpty() && inventory.get(1).getItem() instanceof IOwnerItem) {
                     IOwnerItem item = (IOwnerItem) inventory.get(1).getItem();
-
                     if (item.hasOwner(inventory.get(1))) {
                         if (item.getOwnerUUID(inventory.get(1)) == null) {
                             item.setOwnerUUID(inventory.get(1), ownerUUID);
                         }
-
                         if (item.getOwnerUUID(inventory.get(1)).equals(ownerUUID)) {
                             if (item instanceof ISecurityItem && ((ISecurityItem) item).hasSecurity(inventory.get(1))) {
                                 ((ISecurityItem) item).setSecurity(inventory.get(1), frequency.securityMode);
@@ -86,12 +81,10 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
             }
 
             FrequencyManager manager = getManager(frequency);
-
             if (manager != null) {
                 if (frequency != null && !frequency.valid) {
                     frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(this), frequency);
                 }
-
                 if (frequency != null) {
                     frequency = (SecurityFrequency) manager.update(Coord4D.get(this), frequency);
                 }
@@ -105,19 +98,16 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
         if (ownerUUID == null || freq == null) {
             return null;
         }
-
         return Mekanism.securityFrequencies;
     }
 
     public void setFrequency(UUID owner) {
         FrequencyManager manager = Mekanism.securityFrequencies;
         manager.deactivate(Coord4D.get(this));
-
         for (Frequency freq : manager.getFrequencies()) {
             if (freq.ownerUUID.equals(owner)) {
                 frequency = (SecurityFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(this));
-
                 return;
             }
         }
@@ -126,7 +116,6 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (SecurityFrequency) freq;
-
         MekanismUtils.saveChunk(this);
         markDirty();
     }
@@ -135,7 +124,6 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
-
             if (type == 0) {
                 if (frequency != null) {
                     frequency.trusted.add(PacketHandler.readString(dataStream));
@@ -147,21 +135,15 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
             } else if (type == 2) {
                 if (frequency != null) {
                     frequency.override = !frequency.override;
-
-                    Mekanism.packetHandler.sendToAll(
-                          new SecurityUpdateMessage(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
+                    Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
                 }
             } else if (type == 3) {
                 if (frequency != null) {
                     frequency.securityMode = SecurityMode.values()[dataStream.readInt()];
-
-                    Mekanism.packetHandler.sendToAll(
-                          new SecurityUpdateMessage(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
+                    Mekanism.packetHandler.sendToAll(new SecurityUpdateMessage(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
                 }
             }
-
             MekanismUtils.saveChunk(this);
-
             return;
         }
 
@@ -173,7 +155,6 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
             } else {
                 clientOwner = null;
             }
-
             if (dataStream.readBoolean()) {
                 frequency = new SecurityFrequency(dataStream);
             } else {
@@ -185,11 +166,9 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         if (nbtTags.hasKey("ownerUUID")) {
             ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
         }
-
         if (nbtTags.hasKey("frequency")) {
             frequency = new SecurityFrequency(nbtTags.getCompoundTag("frequency"));
             frequency.valid = false;
@@ -200,49 +179,41 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         if (ownerUUID != null) {
             nbtTags.setString("ownerUUID", ownerUUID.toString());
         }
-
         if (frequency != null) {
             NBTTagCompound frequencyTag = new NBTTagCompound();
             frequency.write(frequencyTag);
             nbtTags.setTag("frequency", frequencyTag);
         }
-
         return nbtTags;
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         if (ownerUUID != null) {
             data.add(true);
             data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
         } else {
             data.add(false);
         }
-
         if (frequency != null) {
             data.add(true);
             frequency.write(data);
         } else {
             data.add(false);
         }
-
         return data;
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-
         if (!world.isRemote) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
-
                 if (manager != null) {
                     manager.deactivate(Coord4D.get(this));
                 }
@@ -266,7 +237,6 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
         if (manager == Mekanism.securityFrequencies) {
             return frequency;
         }
-
         return null;
     }
 

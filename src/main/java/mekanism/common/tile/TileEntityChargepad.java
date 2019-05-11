@@ -44,43 +44,33 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             isActive = false;
             List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                  new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX() + 1,
-                        getPos().getY() + 0.2, getPos().getZ() + 1));
+                  new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX() + 1, getPos().getY() + 0.2, getPos().getZ() + 1));
 
             for (EntityLivingBase entity : entities) {
                 if (entity instanceof EntityPlayer || entity instanceof EntityRobit) {
                     isActive = true;
                 }
-
                 if (getEnergy() > 0) {
                     if (entity instanceof EntityRobit) {
                         EntityRobit robit = (EntityRobit) entity;
-
                         double canGive = Math.min(getEnergy(), 1000);
                         double toGive = Math.min(robit.MAX_ELECTRICITY - robit.getEnergy(), canGive);
-
                         robit.setEnergy(robit.getEnergy() + toGive);
                         setEnergy(getEnergy() - toGive);
                     } else if (entity instanceof EntityPlayer) {
                         EntityPlayer player = (EntityPlayer) entity;
-
                         double prevEnergy = getEnergy();
-
                         for (ItemStack itemstack : player.inventory.armorInventory) {
                             ChargeUtils.charge(itemstack, this);
-
                             if (prevEnergy != getEnergy()) {
                                 break;
                             }
                         }
-
                         for (ItemStack itemstack : player.inventory.mainInventory) {
                             ChargeUtils.charge(itemstack, this);
-
                             if (prevEnergy != getEnergy()) {
                                 break;
                             }
@@ -97,12 +87,11 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
                     world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
                           SoundEvents.BLOCK_STONE_PRESSPLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
                 }
-
                 setActive(isActive);
             }
         } else if (isActive) {
-            world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(),
-                  getPos().getY() + 0.15, getPos().getZ() + random.nextDouble(), 0, 0, 0);
+            world.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX() + random.nextDouble(), getPos().getY() + 0.15,
+                  getPos().getZ() + random.nextDouble(), 0, 0, 0);
         }
     }
 
@@ -119,20 +108,15 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     @Override
     public void setActive(boolean active) {
         isActive = active;
-
         if (clientActive != active) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         }
-
         clientActive = active;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         clientActive = isActive = nbtTags.getBoolean("isActive");
     }
 
@@ -140,19 +124,15 @@ public class TileEntityChargepad extends TileEntityEffectsBlock {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setBoolean("isActive", isActive);
-
         return nbtTags;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             clientActive = dataStream.readBoolean();
-
             if (clientActive != isActive) {
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());

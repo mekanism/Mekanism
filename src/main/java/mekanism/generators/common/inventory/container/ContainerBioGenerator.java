@@ -6,6 +6,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 public class ContainerBioGenerator extends ContainerFuelGenerator<TileEntityBioGenerator> {
@@ -26,8 +27,8 @@ public class ContainerBioGenerator extends ContainerFuelGenerator<TileEntityBioG
             return true;
         }
         if (FluidRegistry.isFluidRegistered("bioethanol")) {
-            return FluidUtil.getFluidContained(slotStack) != null
-                  && FluidUtil.getFluidContained(slotStack).getFluid() == FluidRegistry.getFluid("bioethanol");
+            FluidStack fluidContained = FluidUtil.getFluidContained(slotStack);
+            return fluidContained != null && fluidContained.getFluid() == FluidRegistry.getFluid("bioethanol");
         }
         return false;
     }

@@ -47,7 +47,6 @@ public final class InfuseType {
 
     public InfuseType setTranslationKey(String name) {
         unlocalizedName = "infuse." + name;
-
         return this;
     }
 

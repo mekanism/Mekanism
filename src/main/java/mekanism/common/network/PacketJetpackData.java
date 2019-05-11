@@ -23,31 +23,29 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
         // Queue up the processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
-                  if (message.packetType == JetpackPacket.UPDATE) {
-                      Mekanism.playerState.setJetpackState(message.uuid, message.value, false);
-
-                      // If we got this packet on the server, propagate it out to all players in the same
-                      // dimension
-                      // TODO: Why is this a dimensional thing?!
-                      if (!player.world.isRemote) {
-                          Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
-                      }
-                  } else if (message.packetType == JetpackPacket.MODE) {
-                      // Use has changed the mode of their jetpack; update it
-                      ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-                      if (!stack.isEmpty() && stack.getItem() instanceof ItemJetpack) {
-                          if (!message.value) {
-                              ((ItemJetpack) stack.getItem()).incrementMode(stack);
-                          } else {
-                              ((ItemJetpack) stack.getItem()).setMode(stack, JetpackMode.DISABLED);
-                          }
-                      }
-                  } else if (message.packetType == JetpackPacket.FULL) {
-                      // This is a full sync; merge it into our player state
-                      Mekanism.playerState.setActiveJetpacks(message.activeJetpacks);
-                  }
-              },
-              player);
+            if (message.packetType == JetpackPacket.UPDATE) {
+                Mekanism.playerState.setJetpackState(message.uuid, message.value, false);
+                // If we got this packet on the server, propagate it out to all players in the same
+                // dimension
+                // TODO: Why is this a dimensional thing?!
+                if (!player.world.isRemote) {
+                    Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+                }
+            } else if (message.packetType == JetpackPacket.MODE) {
+                // Use has changed the mode of their jetpack; update it
+                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+                if (!stack.isEmpty() && stack.getItem() instanceof ItemJetpack) {
+                    if (!message.value) {
+                        ((ItemJetpack) stack.getItem()).incrementMode(stack);
+                    } else {
+                        ((ItemJetpack) stack.getItem()).setMode(stack, JetpackMode.DISABLED);
+                    }
+                }
+            } else if (message.packetType == JetpackPacket.FULL) {
+                // This is a full sync; merge it into our player state
+                Mekanism.playerState.setActiveJetpacks(message.activeJetpacks);
+            }
+        }, player);
         return null;
     }
 
@@ -95,7 +93,6 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             if (packetType == JetpackPacket.MODE) {
                 dataStream.writeBoolean(value);
             } else if (packetType == JetpackPacket.UPDATE) {
@@ -112,7 +109,6 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = JetpackPacket.values()[dataStream.readInt()];
-
             if (packetType == JetpackPacket.MODE) {
                 value = dataStream.readBoolean();
             } else if (packetType == JetpackPacket.UPDATE) {

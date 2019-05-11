@@ -27,17 +27,12 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final double offset = 0.015;
     private static HashMap<Integer, FluidRenderMap<DisplayInteger[]>> cachedLiquids = new HashMap<>();
 
-    public RenderMechanicalPipe() {
-        super();
-    }
-
     public static void onStitch() {
         cachedLiquids.clear();
     }
 
     @Override
-    public void render(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage,
-          float alpha) {
+    public void render(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }

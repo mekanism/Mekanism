@@ -53,19 +53,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Item class for handling multiple generator block IDs. 0: Heat Generator 1: Solar Generator 3: Hydrogen Generator 4:
- * Bio-Generator 5: Advanced Solar Generator 6: Wind Generator 7: Turbine Rotor 8: Rotational Complex 9: Electromagnetic
- * Coil 10: Turbine Casing 11: Turbine Valve 12: Turbine Vent 13: Saturating Condenser
+ * Item class for handling multiple generator block IDs. 0: Heat Generator 1: Solar Generator 3: Hydrogen Generator 4: Bio-Generator 5: Advanced Solar Generator 6: Wind
+ * Generator 7: Turbine Rotor 8: Rotational Complex 9: Electromagnetic Coil 10: Turbine Casing 11: Turbine Valve 12: Turbine Vent 13: Saturating Condenser
  *
  * @author AidanBrady
  */
-
 @InterfaceList({
       @Interface(iface = "cofh.redstoneflux.api.IEnergyContainerItem", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
       @Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory,
-      ISustainedTank, IEnergyContainerItem, ISecurityItem {
+public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem, ISecurityItem {
 
     public Block metaBlock;
 
@@ -78,12 +75,10 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     @Override
     public int getItemStackLimit(ItemStack stack) {
         GeneratorType type = GeneratorType.get(stack);
-
         if (type != null && type.maxEnergy == -1) {
             return 64;
-        } else {
-            return 1;
         }
+        return 1;
     }
 
     @Override
@@ -98,61 +93,50 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
         if (generatorType == null) {
             return "KillMe!";
         }
-
         return getTranslationKey() + "." + generatorType.blockName;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
-          @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         GeneratorType type = GeneratorType.get(itemstack);
         if (type == null) {
             return;
         }
-
         if (type.maxEnergy > -1) {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings
-                      .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                      .localize("tooltip.forDetails") + ".");
-                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
-                      .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                      .localize("tooltip.and") + " " + EnumColor.AQUA + GameSettings
-                      .getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " "
-                      + LangUtils.localize("tooltip.forDesc") + ".");
+                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
+                         EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
+                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
+                         EnumColor.GREY + " " + LangUtils.localize("tooltip.and") + " " + EnumColor.AQUA +
+                         GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDesc") + ".");
             } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
                 if (hasSecurity(itemstack)) {
-                    list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player,
-                          MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
-                    list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils
-                          .getSecurityDisplay(itemstack, Side.CLIENT));
-
+                    list.add(SecurityUtils.getOwnerDisplay(Minecraft.getMinecraft().player, MekanismClient.clientUUIDMap.get(getOwnerUUID(itemstack))));
+                    list.add(EnumColor.GREY + LangUtils.localize("gui.security") + ": " + SecurityUtils.getSecurityDisplay(itemstack, Side.CLIENT));
                     if (SecurityUtils.isOverridden(itemstack, Side.CLIENT)) {
                         list.add(EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")");
                     }
                 }
 
                 list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY
-                      + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
+                         + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
 
                 if (hasTank(itemstack)) {
                     if (getFluidStack(itemstack) != null) {
-                        list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": "
-                              + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
+                        list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
                     }
                 }
 
-                list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils
-                      .transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+                list.add(EnumColor.AQUA + LangUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY +
+                         LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
             } else {
                 list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
             }
         } else {
             if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings
-                      .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                      .localize("tooltip.forDetails") + ".");
+                list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
+                         EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
             } else {
                 list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
             }
@@ -160,8 +144,8 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
-          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
+          float hitZ, @Nonnull IBlockState state) {
         boolean place = true;
         Block block = world.getBlockState(pos).getBlock();
 
@@ -169,7 +153,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
             if (!(block.isReplaceable(world, pos) && world.isAirBlock(pos.add(0, 1, 0)))) {
                 return false;
             }
-
             outer:
             for (int xPos = -1; xPos <= 1; xPos++) {
                 for (int zPos = -1; zPos <= 1; zPos++) {
@@ -183,7 +166,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
             if (!block.isReplaceable(world, pos)) {
                 return false;
             }
-
             for (int yPos = 1; yPos <= 4; yPos++) {
                 if (!world.isAirBlock(pos.add(0, yPos, 0)) || pos.getY() + yPos > 255) {
                     place = false;
@@ -194,15 +176,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 
         if (place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state)) {
             TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-
             if (tileEntity instanceof ISecurityTile) {
                 ISecurityTile security = (ISecurityTile) tileEntity;
                 security.getSecurity().setOwnerUUID(getOwnerUUID(stack));
-
                 if (hasSecurity(stack)) {
                     security.getSecurity().setMode(getSecurity(stack));
                 }
-
                 if (getOwnerUUID(stack) == null) {
                     security.getSecurity().setOwnerUUID(player.getUniqueID());
                 }
@@ -211,26 +190,21 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
             if (tileEntity instanceof TileEntityElectricBlock) {
                 ((TileEntityElectricBlock) tileEntity).electricityStored = getEnergy(stack);
             }
-
             if (tileEntity instanceof ISustainedInventory) {
                 ((ISustainedInventory) tileEntity).setInventory(getInventory(stack));
             }
-
             if (tileEntity instanceof ISustainedData) {
                 if (stack.getTagCompound() != null) {
                     ((ISustainedData) tileEntity).readSustainedData(stack);
                 }
             }
-
             if (tileEntity instanceof ISustainedTank) {
                 if (hasTank(stack) && getFluidStack(stack) != null) {
                     ((ISustainedTank) tileEntity).setFluidStack(getFluidStack(stack), stack);
                 }
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -246,7 +220,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
         if (data[0] instanceof ItemStack) {
             return ItemDataUtils.getList((ItemStack) data[0], "Items");
         }
-
         return null;
     }
 
@@ -254,7 +227,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     public void setFluidStack(FluidStack fluidStack, Object... data) {
         if (data[0] instanceof ItemStack) {
             ItemStack itemStack = (ItemStack) data[0];
-
             if (fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluid() == null) {
                 ItemDataUtils.removeData(itemStack, "fluidTank");
             } else {
@@ -267,21 +239,17 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     public FluidStack getFluidStack(Object... data) {
         if (data[0] instanceof ItemStack) {
             ItemStack itemStack = (ItemStack) data[0];
-
             if (!ItemDataUtils.hasData(itemStack, "fluidTank")) {
                 return null;
             }
-
             return FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank"));
         }
-
         return null;
     }
 
     @Override
     public boolean hasTank(Object... data) {
-        return data[0] instanceof ItemStack && ((ItemStack) data[0]).getItem() instanceof ISustainedTank && (
-              ((ItemStack) data[0]).getItemDamage() == 2);
+        return data[0] instanceof ItemStack && ((ItemStack) data[0]).getItem() instanceof ISustainedTank && (((ItemStack) data[0]).getItemDamage() == 2);
     }
 
     @Override
@@ -322,14 +290,11 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
             double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
-
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
-
             return MekanismUtils.clampToInt(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
-
         return 0;
     }
 
@@ -338,15 +303,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min((energy * MekanismConfig.current().general.FROM_RF.val()), energyRemaining);
-
+            double toSend = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyRemaining);
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
-
             return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
-
         return 0;
     }
 
@@ -373,7 +335,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
         if (ItemDataUtils.hasData(stack, "ownerUUID")) {
             return UUID.fromString(ItemDataUtils.getString(stack, "ownerUUID"));
         }
-
         return null;
     }
 
@@ -383,7 +344,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
             ItemDataUtils.removeData(stack, "ownerUUID");
             return;
         }
-
         ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
     }
 
@@ -392,7 +352,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
         if (!MekanismConfig.current().general.allowProtection.val()) {
             return SecurityMode.PUBLIC;
         }
-
         return SecurityMode.values()[ItemDataUtils.getInt(stack, "security")];
     }
 
@@ -404,7 +363,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
     @Override
     public boolean hasSecurity(ItemStack stack) {
         GeneratorType type = GeneratorType.get(stack);
-
         return type != null && type.hasModel;
     }
 

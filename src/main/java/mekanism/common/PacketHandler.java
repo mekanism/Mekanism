@@ -94,7 +94,7 @@ public class PacketHandler {
      * Encodes an Object[] of data into a DataOutputStream.
      *
      * @param dataValues - an Object[] of data to encode
-     * @param output - the output stream to write to
+     * @param output     - the output stream to write to
      */
     public static void encode(Object[] dataValues, ByteBuf output) {
         try {
@@ -134,14 +134,11 @@ public class PacketHandler {
                 } else if (data instanceof NonNullList) {
                     encode(((NonNullList) data).toArray(), output);
                 } else {
-                    throw new RuntimeException(
-                          "Un-encodable data passed to encode(): " + data + ", full data: " + Arrays
-                                .toString(dataValues));
+                    throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
                 }
             }
         } catch (Exception e) {
-            Mekanism.logger.error("Error while encoding packet data.");
-            e.printStackTrace();
+            Mekanism.logger.error("Error while encoding packet data.", e);
         }
     }
 
@@ -194,10 +191,8 @@ public class PacketHandler {
         netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.SERVER);
         netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Side.CLIENT);
         netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
-        netHandler
-              .registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
-        netHandler
-              .registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
+        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
+        netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
         netHandler.registerMessage(PacketSecurityMode.class, SecurityModeMessage.class, 9, Side.SERVER);
         netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
         netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
@@ -227,17 +222,15 @@ public class PacketHandler {
         netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
         netHandler.registerMessage(PacketEntityMove.class, EntityMoveMessage.class, 29, Side.CLIENT);
         netHandler.registerMessage(PacketSecurityUpdate.class, SecurityUpdateMessage.class, 30, Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31,
-              Side.CLIENT);
-        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31,
-              Side.SERVER);
+        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.CLIENT);
+        netHandler.registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData.FreeRunnerDataMessage.class, 31, Side.SERVER);
     }
 
     /**
      * Send this message to the specified player.
      *
      * @param message - the message to send
-     * @param player - the player to send it to
+     * @param player  - the player to send it to
      */
     public void sendTo(IMessage message, EntityPlayerMP player) {
         netHandler.sendTo(message, player);
@@ -250,7 +243,6 @@ public class PacketHandler {
      */
     public void sendToAll(IMessage message) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
         for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
             sendTo(message, player);
         }
@@ -260,7 +252,7 @@ public class PacketHandler {
      * Send this message to everyone within a certain range of a point.
      *
      * @param message - the message to send
-     * @param point - the TargetPoint around which to send
+     * @param point   - the TargetPoint around which to send
      */
     public void sendToAllAround(IMessage message, NetworkRegistry.TargetPoint point) {
         netHandler.sendToAllAround(message, point);
@@ -269,7 +261,7 @@ public class PacketHandler {
     /**
      * Send this message to everyone within the supplied dimension.
      *
-     * @param message - the message to send
+     * @param message     - the message to send
      * @param dimensionId - the dimension id to target
      */
     public void sendToDimension(IMessage message, int dimensionId) {
@@ -289,12 +281,11 @@ public class PacketHandler {
      * Send this message to all players within a defined AABB cuboid.
      *
      * @param message - the message to send
-     * @param cuboid - the AABB cuboid to send the packet in
-     * @param dimId - the dimension the cuboid is in
+     * @param cuboid  - the AABB cuboid to send the packet in
+     * @param dimId   - the dimension the cuboid is in
      */
     public void sendToCuboid(IMessage message, AxisAlignedBB cuboid, int dimId) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
         if (server != null && cuboid != null) {
             for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == dimId && cuboid.contains(new Vec3d(player.posX, player.posY, player.posZ))) {
@@ -306,7 +297,6 @@ public class PacketHandler {
 
     public void sendToReceivers(IMessage message, Range4D range) {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
         if (server != null) {
             for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
                 if (player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range)) {

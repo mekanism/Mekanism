@@ -43,8 +43,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper,
-      IGasHandler, IUpgradeInfoHandler, ITankManager {
+public class TileEntityRotaryCondensentrator extends TileEntityMachine implements ISustainedData, IFluidHandlerWrapper, IGasHandler, IUpgradeInfoHandler, ITankManager {
 
     private static final int[] GAS_SLOTS = {0, 1};
     private static final int[] LIQUID_SLOTS = {2, 3};
@@ -63,8 +62,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     public double clientEnergyUsed;
 
     public TileEntityRotaryCondensentrator() {
-        super("machine.rotarycondensentrator", "RotaryCondensentrator",
-              MachineType.ROTARY_CONDENSENTRATOR.getStorage(),
+        super("machine.rotarycondensentrator", "RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.getStorage(),
               MachineType.ROTARY_CONDENSENTRATOR.getUsage(), 5);
         inventory = NonNullList.withSize(6, ItemStack.EMPTY);
     }
@@ -78,14 +76,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
             if (mode == 0) {
                 TileUtils.receiveGas(inventory.get(1), gasTank);
-
                 if (FluidContainerUtils.isFluidContainer(inventory.get(2))) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, 2, 3);
                 }
 
-                if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (
-                      fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(
-                            gasTank.getGas(), fluidTank.getFluid())))) {
+                if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) &&
+                    (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
@@ -94,10 +90,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     gasTank.draw(operations, true);
                     setEnergy(getEnergy() - energyPerTick * operations);
                     clientEnergyUsed = prev - getEnergy();
-                } else {
-                    if (prevEnergy >= getEnergy()) {
-                        setActive(false);
-                    }
+                } else if (prevEnergy >= getEnergy()) {
+                    setActive(false);
                 }
             } else if (mode == 1) {
                 TileUtils.drawGas(inventory.get(0), gasTank);
@@ -107,43 +101,32 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
                     FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 2, 3);
                 }
 
-                if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(
-                      fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID
-                      && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
+                if (getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&
+                    (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid())))) {
                     int operations = getUpgradedUsage();
                     double prev = getEnergy();
 
                     setActive(true);
-                    gasTank
-                          .receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
+                    gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
                     fluidTank.drain(operations, true);
                     setEnergy(getEnergy() - energyPerTick * operations);
                     clientEnergyUsed = prev - getEnergy();
-                } else {
-                    if (prevEnergy >= getEnergy()) {
-                        setActive(false);
-                    }
+                } else if (prevEnergy >= getEnergy()) {
+                    setActive(false);
                 }
             }
-
             prevEnergy = getEnergy();
         }
     }
 
     public int getUpgradedUsage() {
         int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-
-        if (mode == 0) //Gas to fluid
-        {
-            possibleProcess = Math
-                  .min(Math.min(gasTank.getStored(), fluidTank.getCapacity() - fluidTank.getFluidAmount()),
-                        possibleProcess);
+        if (mode == 0) { //Gas to fluid
+            possibleProcess = Math.min(Math.min(gasTank.getStored(), fluidTank.getCapacity() - fluidTank.getFluidAmount()), possibleProcess);
         } else { //Fluid to gas
             possibleProcess = Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
         }
-
         possibleProcess = Math.min((int) (getEnergy() / energyPerTick), possibleProcess);
-
         return possibleProcess;
     }
 
@@ -166,22 +149,17 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
-
             if (type == 0) {
                 mode = mode == 0 ? 1 : 0;
             }
-
             for (EntityPlayer player : playersUsing) {
-                Mekanism.packetHandler
-                      .sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                            (EntityPlayerMP) player);
+                Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
             }
 
             return;
         }
 
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             mode = dataStream.readInt();
             clientEnergyUsed = dataStream.readDouble();
@@ -193,7 +171,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(mode);
         data.add(clientEnergyUsed);
         TileUtils.addTankData(data, fluidTank);
@@ -204,10 +181,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         mode = nbtTags.getInteger("mode");
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
-
         if (nbtTags.hasKey("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
         }
@@ -217,14 +192,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("mode", mode);
         nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
-
         if (fluidTank.getFluid() != null) {
             nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
         }
-
         return nbtTags;
     }
 
@@ -240,12 +212,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
 
     @Override
     public boolean canDrawGas(EnumFacing side, Gas type) {
-        return (mode == 1 && side == MekanismUtils.getLeft(facing)) && gasTank.canDraw(type);
+        return mode == 1 && side == MekanismUtils.getLeft(facing) && gasTank.canDraw(type);
     }
 
     @Override
     public boolean canReceiveGas(EnumFacing side, Gas type) {
-        return (mode == 0 && side == MekanismUtils.getLeft(facing)) && gasTank.canReceive(type);
+        return mode == 0 && side == MekanismUtils.getLeft(facing) && gasTank.canReceive(type);
     }
 
     @Nonnull
@@ -259,8 +231,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         if (isCapabilityDisabled(capability, side)) {
             return false;
         }
-        return capability == Capabilities.GAS_HANDLER_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+        return capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
@@ -272,7 +243,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -289,7 +259,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         if (fluidTank.getFluid() != null) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
         }
-
         if (gasTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getGas().write(new NBTTagCompound()));
         }
@@ -306,24 +275,21 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         if (canFill(from, resource)) {
             return fluidTank.fill(resource, doFill);
         }
-
         return 0;
     }
 
     @Override
     public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource
-              .getFluid()) {
+        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()) {
             return drain(from, resource.amount, doDrain);
         }
-
         return null;
     }
 
     @Override
     public boolean canFill(EnumFacing from, @Nullable FluidStack fluid) {
-        return fluid != null && mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null
-              ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
+        return fluid != null && mode == 1 && from == MekanismUtils.getRight(facing) &&
+               (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override
@@ -336,7 +302,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         if (from == MekanismUtils.getRight(facing)) {
             return new FluidTankInfo[]{fluidTank.getInfo()};
         }
-
         return PipeUtils.EMPTY;
     }
 
@@ -350,7 +315,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMachine implement
         if (canDrain(from, null)) {
             return fluidTank.drain(maxDrain, doDrain);
         }
-
         return null;
     }
 

@@ -344,9 +344,9 @@ public class ModelEnergyCube extends ModelBase {
         leds2 = new ModelRenderer[]{ledBottom2, ledTop2, ledFront2, ledBack2, ledLeft2, ledRight2};
 
         ports = new ModelRenderer[]{portBottomToggle, portTopToggle, portFrontToggle, portBackToggle, portLeftToggle,
-              portRightToggle};
+                                    portRightToggle};
         connectors = new ModelRenderer[]{connectorBottomToggle, connectorTopToggle, connectorFrontToggle,
-              connectorBackToggle, connectorLeftToggle, connectorRightToggle};
+                                         connectorBackToggle, connectorLeftToggle, connectorRightToggle};
     }
 
     public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean renderMain) {
@@ -401,9 +401,7 @@ public class ModelEnergyCube extends ModelBase {
             if (state == IOState.OUTPUT) {
                 MekanismRenderer.glowOn();
                 renderer.bindTexture(RenderEnergyCube.resources.get(tier));
-
                 ports[side.ordinal()].render(size);
-
                 MekanismRenderer.glowOff();
             }
         }

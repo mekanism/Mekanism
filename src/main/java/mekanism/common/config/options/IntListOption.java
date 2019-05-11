@@ -33,8 +33,7 @@ public class IntListOption extends Option<IntListOption> {
         this(owner, category, key, new int[0], null);
     }
 
-    public IntListOption(BaseConfig owner, String category, String key, int[] defaultValue, @Nullable String comment,
-          int min, int max) {
+    public IntListOption(BaseConfig owner, String category, String key, int[] defaultValue, @Nullable String comment, int min, int max) {
         this(owner, category, key, defaultValue, comment);
         this.hasRange = true;
         this.min = min;
@@ -53,16 +52,13 @@ public class IntListOption extends Option<IntListOption> {
     @Override
     public void load(Configuration config) {
         Property prop;
-
         if (hasRange) {
             prop = config.get(this.category, this.key, this.defaultValue, this.comment, this.min, this.max);
         } else {
             prop = config.get(this.category, this.key, this.defaultValue, this.comment);
         }
-
         prop.setRequiresMcRestart(this.requiresGameRestart);
         prop.setRequiresWorldRestart(this.requiresWorldRestart);
-
         this.value = prop.getIntList();
     }
 

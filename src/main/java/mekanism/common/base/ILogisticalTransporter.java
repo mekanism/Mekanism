@@ -16,8 +16,7 @@ public interface ILogisticalTransporter extends IGridTransmitter<TileEntity, Inv
 
     TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min);
 
-    TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color,
-          boolean doEmit, int min);
+    TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min);
 
     void entityEntering(TransporterStack stack, int progress);
 

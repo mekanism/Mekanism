@@ -75,15 +75,12 @@ public final class RecipeHandler {
 
     public static void removeRecipe(@Nonnull Recipe recipeMap, @Nonnull MachineRecipe recipe) {
         List<MachineInput> toRemove = new ArrayList<>();
-
         for (Object o : recipeMap.get().keySet()) {
             MachineInput iterInput = (MachineInput) o;
-
             if (iterInput.testEquality(recipe.getInput())) {
                 toRemove.add(iterInput);
             }
         }
-
         for (MachineInput iterInput : toRemove) {
             recipeMap.get().remove(iterInput);
         }
@@ -92,7 +89,7 @@ public final class RecipeHandler {
     /**
      * Add an Enrichment Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addEnrichmentChamberRecipe(ItemStack input, ItemStack output) {
@@ -102,7 +99,7 @@ public final class RecipeHandler {
     /**
      * Add an Osmium Compressor recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addOsmiumCompressorRecipe(ItemStack input, ItemStack output) {
@@ -112,10 +109,10 @@ public final class RecipeHandler {
     /**
      * Add a Combiner recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
-     * @deprecated Replaced by {@link #addCombinerRecipe(ItemStack, ItemStack, ItemStack)}. May be removed with
-     * Minecraft 1.13.
+     *
+     * @deprecated Replaced by {@link #addCombinerRecipe(ItemStack, ItemStack, ItemStack)}. May be removed with Minecraft 1.13.
      */
     @Deprecated
     public static void addCombinerRecipe(ItemStack input, ItemStack output) {
@@ -125,8 +122,8 @@ public final class RecipeHandler {
     /**
      * Add a Combiner recipe.
      *
-     * @param input - input ItemStack
-     * @param extra - extra ItemStack
+     * @param input  - input ItemStack
+     * @param extra  - extra ItemStack
      * @param output - output ItemStack
      */
     public static void addCombinerRecipe(ItemStack input, ItemStack extra, ItemStack output) {
@@ -136,7 +133,7 @@ public final class RecipeHandler {
     /**
      * Add a Crusher recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addCrusherRecipe(ItemStack input, ItemStack output) {
@@ -146,7 +143,7 @@ public final class RecipeHandler {
     /**
      * Add a Purification Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addPurificationChamberRecipe(ItemStack input, ItemStack output) {
@@ -158,20 +155,19 @@ public final class RecipeHandler {
      *
      * @param infuse - which Infuse to use
      * @param amount - how much of the Infuse to use
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addMetallurgicInfuserRecipe(InfuseType infuse, int amount, ItemStack input, ItemStack output) {
-        addRecipe(Recipe.METALLURGIC_INFUSER,
-              new MetallurgicInfuserRecipe(new InfusionInput(infuse, amount, input), output));
+        addRecipe(Recipe.METALLURGIC_INFUSER, new MetallurgicInfuserRecipe(new InfusionInput(infuse, amount, input), output));
     }
 
     /**
      * Add a Chemical Infuser recipe.
      *
-     * @param leftInput - left GasStack to input
+     * @param leftInput  - left GasStack to input
      * @param rightInput - right GasStack to input
-     * @param output - output GasStack
+     * @param output     - output GasStack
      */
     public static void addChemicalInfuserRecipe(GasStack leftInput, GasStack rightInput, GasStack output) {
         addRecipe(Recipe.CHEMICAL_INFUSER, new ChemicalInfuserRecipe(leftInput, rightInput, output));
@@ -180,7 +176,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Oxidizer recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output GasStack
      */
     public static void addChemicalOxidizerRecipe(ItemStack input, GasStack output) {
@@ -190,7 +186,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Injection Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output ItemStack
      */
     public static void addChemicalInjectionChamberRecipe(ItemStack input, Gas gas, ItemStack output) {
@@ -200,32 +196,30 @@ public final class RecipeHandler {
     /**
      * Add an Electrolytic Separator recipe.
      *
-     * @param fluid - FluidStack to electrolyze
-     * @param leftOutput - left gas to produce when the fluid is electrolyzed
+     * @param fluid       - FluidStack to electrolyze
+     * @param leftOutput  - left gas to produce when the fluid is electrolyzed
      * @param rightOutput - right gas to produce when the fluid is electrolyzed
      */
-    public static void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput,
-          GasStack rightOutput) {
+    public static void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
         addRecipe(Recipe.ELECTROLYTIC_SEPARATOR, new SeparatorRecipe(fluid, energy, leftOutput, rightOutput));
     }
 
     /**
      * Add a Precision Sawmill recipe.
      *
-     * @param input - input ItemStack
-     * @param primaryOutput - guaranteed output
+     * @param input           - input ItemStack
+     * @param primaryOutput   - guaranteed output
      * @param secondaryOutput - possible extra output
-     * @param chance - probability of obtaining extra output
+     * @param chance          - probability of obtaining extra output
      */
-    public static void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput,
-          double chance) {
+    public static void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput, double chance) {
         addRecipe(Recipe.PRECISION_SAWMILL, new SawmillRecipe(input, primaryOutput, secondaryOutput, chance));
     }
 
     /**
      * Add a Precision Sawmill recipe with no chance output
      *
-     * @param input - input ItemStack
+     * @param input         - input ItemStack
      * @param primaryOutput - guaranteed output
      */
     public static void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput) {
@@ -235,7 +229,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Dissolution Chamber recipe.
      *
-     * @param input - input ItemStack
+     * @param input  - input ItemStack
      * @param output - output GasStack
      */
     public static void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output) {
@@ -245,7 +239,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Washer recipe.
      *
-     * @param input - input GasStack
+     * @param input  - input GasStack
      * @param output - output GasStack
      */
     public static void addChemicalWasherRecipe(GasStack input, GasStack output) {
@@ -255,7 +249,7 @@ public final class RecipeHandler {
     /**
      * Add a Chemical Crystallizer recipe.
      *
-     * @param input - input GasStack
+     * @param input  - input GasStack
      * @param output - output ItemStack
      */
     public static void addChemicalCrystallizerRecipe(GasStack input, ItemStack output) {
@@ -265,18 +259,16 @@ public final class RecipeHandler {
     /**
      * Add a Pressurized Reaction Chamber recipe.
      *
-     * @param inputSolid - input ItemStack
-     * @param inputFluid - input FluidStack
-     * @param inputGas - input GasStack
+     * @param inputSolid  - input ItemStack
+     * @param inputFluid  - input FluidStack
+     * @param inputGas    - input GasStack
      * @param outputSolid - output ItemStack
-     * @param outputGas - output GasStack
+     * @param outputGas   - output GasStack
      * @param extraEnergy - extra energy needed by the recipe
-     * @param ticks - amount of ticks it takes for this recipe to complete
+     * @param ticks       - amount of ticks it takes for this recipe to complete
      */
-    public static void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas,
-          ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
-        addRecipe(Recipe.PRESSURIZED_REACTION_CHAMBER,
-              new PressurizedRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks));
+    public static void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
+        addRecipe(Recipe.PRESSURIZED_REACTION_CHAMBER, new PressurizedRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks));
     }
 
     public static void addThermalEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid) {
@@ -295,22 +287,19 @@ public final class RecipeHandler {
      * Gets the Metallurgic Infuser Recipe for the InfusionInput in the parameters.
      *
      * @param input - input Infusion
+     *
      * @return MetallurgicInfuserRecipe
      */
     @Nullable
     public static MetallurgicInfuserRecipe getMetallurgicInfuserRecipe(@Nonnull InfusionInput input) {
         if (input.isValid()) {
             Map<InfusionInput, MetallurgicInfuserRecipe> recipes = Recipe.METALLURGIC_INFUSER.get();
-
             MetallurgicInfuserRecipe recipe = recipes.get(input);
-
             if (recipe == null) {
                 recipe = recipes.get(input.wildCopy());
             }
-
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -318,17 +307,16 @@ public final class RecipeHandler {
      * Gets the Chemical Infuser Recipe of the ChemicalPairInput in the parameters.
      *
      * @param input - the pair of gases to infuse
+     *
      * @return ChemicalInfuserRecipe
      */
     @Nullable
     public static ChemicalInfuserRecipe getChemicalInfuserRecipe(@Nonnull ChemicalPairInput input) {
         if (input.isValid()) {
             Map<ChemicalPairInput, ChemicalInfuserRecipe> recipes = Recipe.CHEMICAL_INFUSER.get();
-
             ChemicalInfuserRecipe recipe = recipes.get(input);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -336,17 +324,16 @@ public final class RecipeHandler {
      * Gets the Chemical Crystallizer Recipe for the defined Gas input.
      *
      * @param input - GasInput
+     *
      * @return CrystallizerRecipe
      */
     @Nullable
     public static CrystallizerRecipe getChemicalCrystallizerRecipe(@Nonnull GasInput input) {
         if (input.isValid()) {
             Map<GasInput, CrystallizerRecipe> recipes = Recipe.CHEMICAL_CRYSTALLIZER.get();
-
             CrystallizerRecipe recipe = recipes.get(input);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -354,17 +341,16 @@ public final class RecipeHandler {
      * Gets the Chemical Washer Recipe for the defined Gas input.
      *
      * @param input - GasInput
+     *
      * @return WasherRecipe
      */
     @Nullable
     public static WasherRecipe getChemicalWasherRecipe(@Nonnull GasInput input) {
         if (input.isValid()) {
             Map<GasInput, WasherRecipe> recipes = Recipe.CHEMICAL_WASHER.get();
-
             WasherRecipe recipe = recipes.get(input);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -372,17 +358,16 @@ public final class RecipeHandler {
      * Gets the Chemical Dissolution Chamber of the ItemStackInput in the parameters
      *
      * @param input - ItemStackInput
+     *
      * @return DissolutionRecipe
      */
     @Nullable
     public static DissolutionRecipe getDissolutionRecipe(@Nonnull ItemStackInput input) {
         if (input.isValid()) {
             Map<ItemStackInput, DissolutionRecipe> recipes = Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get();
-
             DissolutionRecipe recipe = getRecipeTryWildcard(input, recipes);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -390,76 +375,70 @@ public final class RecipeHandler {
      * Gets the Chemical Oxidizer Recipe for the ItemStackInput in the parameters.
      *
      * @param input - ItemStackInput
+     *
      * @return OxidationRecipe
      */
     @Nullable
     public static OxidationRecipe getOxidizerRecipe(@Nonnull ItemStackInput input) {
         if (input.isValid()) {
             Map<ItemStackInput, OxidationRecipe> recipes = Recipe.CHEMICAL_OXIDIZER.get();
-
             OxidationRecipe recipe = getRecipeTryWildcard(input, recipes);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
     /**
      * Gets the ChanceMachineRecipe of the ItemStackInput in the parameters, using the map in the parameters.
      *
-     * @param input - ItemStackInput
+     * @param input   - ItemStackInput
      * @param recipes - Map of recipes
+     *
      * @return ChanceRecipe
      */
     @Nullable
-    public static <RECIPE extends ChanceMachineRecipe<RECIPE>> RECIPE getChanceRecipe(@Nonnull ItemStackInput input,
-          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
+    public static <RECIPE extends ChanceMachineRecipe<RECIPE>> RECIPE getChanceRecipe(@Nonnull ItemStackInput input, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = getRecipeTryWildcard(input, recipes);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
     /**
      * Gets the BasicMachineRecipe of the ItemStackInput in the parameters, using the map in the parameters.
      *
-     * @param input - ItemStackInput
+     * @param input   - ItemStackInput
      * @param recipes - Map of recipes
+     *
      * @return BasicMachineRecipe
      */
     @Nullable
-    public static <RECIPE extends BasicMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull ItemStackInput input,
-          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
+    public static <RECIPE extends BasicMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull ItemStackInput input, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = getRecipeTryWildcard(input, recipes);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
     /**
      * Gets the AdvancedMachineRecipe of the AdvancedInput in the parameters, using the map in the paramaters.
      *
-     * @param input - AdvancedInput
+     * @param input   - AdvancedInput
      * @param recipes - Map of recipes
+     *
      * @return AdvancedMachineRecipe
      */
     @Nullable
-    public static <RECIPE extends AdvancedMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull AdvancedMachineInput input,
-          @Nonnull Map<AdvancedMachineInput, RECIPE> recipes) {
+    public static <RECIPE extends AdvancedMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull AdvancedMachineInput input, @Nonnull Map<AdvancedMachineInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = recipes.get(input);
-
             if (recipe == null) {
                 recipe = recipes.get(input.wildCopy());
             }
-
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -467,23 +446,20 @@ public final class RecipeHandler {
     /**
      * Gets the DoubleMachineRecipe of the DoubleInput in the parameters, using the map in the paramaters.
      *
-     * @param input - DoubleInput
+     * @param input   - DoubleInput
      * @param recipes - Map of recipes
+     *
      * @return DoubleMachineRecipe
      */
     @Nullable
-    public static <RECIPE extends DoubleMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull DoubleMachineInput input,
-          @Nonnull Map<DoubleMachineInput, RECIPE> recipes) {
+    public static <RECIPE extends DoubleMachineRecipe<RECIPE>> RECIPE getRecipe(@Nonnull DoubleMachineInput input, @Nonnull Map<DoubleMachineInput, RECIPE> recipes) {
         if (input.isValid()) {
             RECIPE recipe = recipes.get(input);
-
             if (recipe == null) {
                 recipe = recipes.get(input.wildCopy());
             }
-
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -491,17 +467,16 @@ public final class RecipeHandler {
      * Get the Electrolytic Separator Recipe corresponding to electrolysing a given fluid.
      *
      * @param input - the FluidInput to electrolyse fluid from
+     *
      * @return SeparatorRecipe
      */
     @Nullable
     public static SeparatorRecipe getElectrolyticSeparatorRecipe(@Nonnull FluidInput input) {
         if (input.isValid()) {
             Map<FluidInput, SeparatorRecipe> recipes = Recipe.ELECTROLYTIC_SEPARATOR.get();
-
             SeparatorRecipe recipe = recipes.get(input);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -509,11 +484,9 @@ public final class RecipeHandler {
     public static ThermalEvaporationRecipe getThermalEvaporationRecipe(@Nonnull FluidInput input) {
         if (input.isValid()) {
             Map<FluidInput, ThermalEvaporationRecipe> recipes = Recipe.THERMAL_EVAPORATION_PLANT.get();
-
             ThermalEvaporationRecipe recipe = recipes.get(input);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -521,11 +494,9 @@ public final class RecipeHandler {
     public static SolarNeutronRecipe getSolarNeutronRecipe(@Nonnull GasInput input) {
         if (input.isValid()) {
             Map<GasInput, SolarNeutronRecipe> recipes = Recipe.SOLAR_NEUTRON_ACTIVATOR.get();
-
             SolarNeutronRecipe recipe = recipes.get(input);
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -533,16 +504,12 @@ public final class RecipeHandler {
     public static PressurizedRecipe getPRCRecipe(@Nonnull PressurizedInput input) {
         if (input.isValid()) {
             Map<PressurizedInput, PressurizedRecipe> recipes = Recipe.PRESSURIZED_REACTION_CHAMBER.get();
-
             PressurizedRecipe recipe = recipes.get(input);
-
             if (recipe == null) {
                 recipe = recipes.get(input.wildCopy());
             }
-
             return recipe == null ? null : recipe.copy();
         }
-
         return null;
     }
 
@@ -550,7 +517,6 @@ public final class RecipeHandler {
     public static AmbientGasRecipe getDimensionGas(IntegerInput input) {
         Map<IntegerInput, AmbientGasRecipe> recipes = Recipe.AMBIENT_ACCUMULATOR.get();
         AmbientGasRecipe recipe = recipes.get(input);
-
         return recipe == null ? null : recipe.copy();
     }
 
@@ -558,23 +524,21 @@ public final class RecipeHandler {
      * Gets the whether the input ItemStack is in a recipe
      *
      * @param itemstack - input ItemStack
-     * @param recipes - Map of recipes
+     * @param recipes   - Map of recipes
+     *
      * @return whether the item can be used in a recipe
      */
-    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> boolean isInRecipe(@Nonnull ItemStack itemstack,
-          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
+    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> boolean isInRecipe(@Nonnull ItemStack itemstack, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         if (!itemstack.isEmpty()) {
             for (RECIPE recipe : recipes.values()) {
                 ItemStackInput required = recipe.getInput();
                 NonNullList<ItemStack> list = NonNullList.create();
                 list.add(itemstack);
-
                 if (required.useItemStackFromInventory(list, 0, false)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 
@@ -586,23 +550,18 @@ public final class RecipeHandler {
                 }
             }
         }
-
         return false;
     }
 
-    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(ItemStack stack,
-          @Nonnull Map<ItemStackInput, RECIPE> recipes) {
+    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(ItemStack stack, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         return getRecipeTryWildcard(new ItemStackInput(stack), recipes);
     }
 
-    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(
-          @Nonnull ItemStackInput input, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
+    public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(@Nonnull ItemStackInput input, @Nonnull Map<ItemStackInput, RECIPE> recipes) {
         RECIPE recipe = recipes.get(input);
-
         if (recipe == null) {
             recipe = recipes.get(input.wildCopy());
         }
-
         return recipe;
     }
 
@@ -611,80 +570,61 @@ public final class RecipeHandler {
         private static List<Recipe> values = new ArrayList<>();
 
         public static final Recipe<ItemStackInput, ItemStackOutput, SmeltingRecipe> ENERGIZED_SMELTER = new Recipe<>(
-              MachineType.ENERGIZED_SMELTER.blockName, "ENERGIZED_SMELTER", ItemStackInput.class, ItemStackOutput.class,
-              SmeltingRecipe.class);
+              MachineType.ENERGIZED_SMELTER.blockName, "ENERGIZED_SMELTER", ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class);
 
         public static final Recipe<ItemStackInput, ItemStackOutput, EnrichmentRecipe> ENRICHMENT_CHAMBER = new Recipe<>(
-              MachineType.ENRICHMENT_CHAMBER.blockName, "ENRICHMENT_CHAMBER", ItemStackInput.class,
-              ItemStackOutput.class, EnrichmentRecipe.class);
+              MachineType.ENRICHMENT_CHAMBER.blockName, "ENRICHMENT_CHAMBER", ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class);
 
         public static final Recipe<AdvancedMachineInput, ItemStackOutput, OsmiumCompressorRecipe> OSMIUM_COMPRESSOR = new Recipe<>(
-              MachineType.OSMIUM_COMPRESSOR.blockName, "OSMIUM_COMPRESSOR", AdvancedMachineInput.class,
-              ItemStackOutput.class, OsmiumCompressorRecipe.class);
+              MachineType.OSMIUM_COMPRESSOR.blockName, "OSMIUM_COMPRESSOR", AdvancedMachineInput.class, ItemStackOutput.class, OsmiumCompressorRecipe.class);
 
         public static final Recipe<DoubleMachineInput, ItemStackOutput, CombinerRecipe> COMBINER = new Recipe<>(
-              MachineType.COMBINER.blockName, "COMBINER", DoubleMachineInput.class, ItemStackOutput.class,
-              CombinerRecipe.class);
+              MachineType.COMBINER.blockName, "COMBINER", DoubleMachineInput.class, ItemStackOutput.class, CombinerRecipe.class);
 
         public static final Recipe<ItemStackInput, ItemStackOutput, CrusherRecipe> CRUSHER = new Recipe<>(
-              MachineType.CRUSHER.blockName, "CRUSHER", ItemStackInput.class, ItemStackOutput.class,
-              CrusherRecipe.class);
+              MachineType.CRUSHER.blockName, "CRUSHER", ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class);
 
         public static final Recipe<AdvancedMachineInput, ItemStackOutput, PurificationRecipe> PURIFICATION_CHAMBER = new Recipe<>(
-              MachineType.PURIFICATION_CHAMBER.blockName, "PURIFICATION_CHAMBER", AdvancedMachineInput.class,
-              ItemStackOutput.class, PurificationRecipe.class);
+              MachineType.PURIFICATION_CHAMBER.blockName, "PURIFICATION_CHAMBER", AdvancedMachineInput.class, ItemStackOutput.class, PurificationRecipe.class);
 
         public static final Recipe<InfusionInput, ItemStackOutput, MetallurgicInfuserRecipe> METALLURGIC_INFUSER = new Recipe<>(
-              MachineType.METALLURGIC_INFUSER.blockName, "METALLURGIC_INFUSER", InfusionInput.class,
-              ItemStackOutput.class, MetallurgicInfuserRecipe.class);
+              MachineType.METALLURGIC_INFUSER.blockName, "METALLURGIC_INFUSER", InfusionInput.class, ItemStackOutput.class, MetallurgicInfuserRecipe.class);
 
         public static final Recipe<ChemicalPairInput, GasOutput, ChemicalInfuserRecipe> CHEMICAL_INFUSER = new Recipe<>(
-              MachineType.CHEMICAL_INFUSER.blockName, "CHEMICAL_INFUSER", ChemicalPairInput.class, GasOutput.class,
-              ChemicalInfuserRecipe.class);
+              MachineType.CHEMICAL_INFUSER.blockName, "CHEMICAL_INFUSER", ChemicalPairInput.class, GasOutput.class, ChemicalInfuserRecipe.class);
 
         public static final Recipe<ItemStackInput, GasOutput, OxidationRecipe> CHEMICAL_OXIDIZER = new Recipe<>(
-              MachineType.CHEMICAL_OXIDIZER.blockName, "CHEMICAL_OXIDIZER", ItemStackInput.class, GasOutput.class,
-              OxidationRecipe.class);
+              MachineType.CHEMICAL_OXIDIZER.blockName, "CHEMICAL_OXIDIZER", ItemStackInput.class, GasOutput.class, OxidationRecipe.class);
 
         public static final Recipe<AdvancedMachineInput, ItemStackOutput, InjectionRecipe> CHEMICAL_INJECTION_CHAMBER = new Recipe<>(
-              MachineType.CHEMICAL_INJECTION_CHAMBER.blockName, "CHEMICAL_INJECTION_CHAMBER",
-              AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class);
+              MachineType.CHEMICAL_INJECTION_CHAMBER.blockName, "CHEMICAL_INJECTION_CHAMBER", AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class);
 
         public static final Recipe<FluidInput, ChemicalPairOutput, SeparatorRecipe> ELECTROLYTIC_SEPARATOR = new Recipe<>(
-              MachineType.ELECTROLYTIC_SEPARATOR.blockName, "ELECTROLYTIC_SEPARATOR", FluidInput.class,
-              ChemicalPairOutput.class, SeparatorRecipe.class);
+              MachineType.ELECTROLYTIC_SEPARATOR.blockName, "ELECTROLYTIC_SEPARATOR", FluidInput.class, ChemicalPairOutput.class, SeparatorRecipe.class);
 
         public static final Recipe<ItemStackInput, ChanceOutput, SawmillRecipe> PRECISION_SAWMILL = new Recipe<>(
-              MachineType.PRECISION_SAWMILL.blockName, "PRECISION_SAWMILL", ItemStackInput.class, ChanceOutput.class,
-              SawmillRecipe.class);
+              MachineType.PRECISION_SAWMILL.blockName, "PRECISION_SAWMILL", ItemStackInput.class, ChanceOutput.class, SawmillRecipe.class);
 
         public static final Recipe<ItemStackInput, GasOutput, DissolutionRecipe> CHEMICAL_DISSOLUTION_CHAMBER = new Recipe<>(
-              MachineType.CHEMICAL_DISSOLUTION_CHAMBER.blockName, "CHEMICAL_DISSOLUTION_CHAMBER", ItemStackInput.class,
-              GasOutput.class, DissolutionRecipe.class);
+              MachineType.CHEMICAL_DISSOLUTION_CHAMBER.blockName, "CHEMICAL_DISSOLUTION_CHAMBER", ItemStackInput.class, GasOutput.class, DissolutionRecipe.class);
 
         public static final Recipe<GasInput, GasOutput, WasherRecipe> CHEMICAL_WASHER = new Recipe<>(
-              MachineType.CHEMICAL_WASHER.blockName, "CHEMICAL_WASHER", GasInput.class, GasOutput.class,
-              WasherRecipe.class);
+              MachineType.CHEMICAL_WASHER.blockName, "CHEMICAL_WASHER", GasInput.class, GasOutput.class, WasherRecipe.class);
 
         public static final Recipe<GasInput, ItemStackOutput, CrystallizerRecipe> CHEMICAL_CRYSTALLIZER = new Recipe<>(
-              MachineType.CHEMICAL_CRYSTALLIZER.blockName, "CHEMICAL_CRYSTALLIZER", GasInput.class,
-              ItemStackOutput.class, CrystallizerRecipe.class);
+              MachineType.CHEMICAL_CRYSTALLIZER.blockName, "CHEMICAL_CRYSTALLIZER", GasInput.class, ItemStackOutput.class, CrystallizerRecipe.class);
 
         public static final Recipe<PressurizedInput, PressurizedOutput, PressurizedRecipe> PRESSURIZED_REACTION_CHAMBER = new Recipe<>(
-              MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, "PRESSURIZED_REACTION_CHAMBER",
-              PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class);
+              MachineType.PRESSURIZED_REACTION_CHAMBER.blockName, "PRESSURIZED_REACTION_CHAMBER", PressurizedInput.class, PressurizedOutput.class, PressurizedRecipe.class);
 
         public static final Recipe<IntegerInput, GasOutput, AmbientGasRecipe> AMBIENT_ACCUMULATOR = new Recipe<>(
-              MachineType.AMBIENT_ACCUMULATOR.blockName, "AMBIENT_ACCUMULATOR", IntegerInput.class, GasOutput.class,
-              AmbientGasRecipe.class);
+              MachineType.AMBIENT_ACCUMULATOR.blockName, "AMBIENT_ACCUMULATOR", IntegerInput.class, GasOutput.class, AmbientGasRecipe.class);
 
         public static final Recipe<FluidInput, FluidOutput, ThermalEvaporationRecipe> THERMAL_EVAPORATION_PLANT = new Recipe<>(
-              "ThermalEvaporationPlant", "THERMAL_EVAPORATION_PLANT", FluidInput.class, FluidOutput.class,
-              ThermalEvaporationRecipe.class);
+              "ThermalEvaporationPlant", "THERMAL_EVAPORATION_PLANT", FluidInput.class, FluidOutput.class, ThermalEvaporationRecipe.class);
 
         public static final Recipe<GasInput, GasOutput, SolarNeutronRecipe> SOLAR_NEUTRON_ACTIVATOR = new Recipe<>(
-              MachineType.SOLAR_NEUTRON_ACTIVATOR.blockName, "SOLAR_NEUTRON_ACTIVATOR", GasInput.class, GasOutput.class,
-              SolarNeutronRecipe.class);
+              MachineType.SOLAR_NEUTRON_ACTIVATOR.blockName, "SOLAR_NEUTRON_ACTIVATOR", GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
 
         static {
             values = ImmutableList.copyOf(values);
@@ -744,7 +684,6 @@ public final class RecipeHandler {
             try {
                 MachineInput input = inputClass.newInstance();
                 input.load(nbtTags);
-
                 return (INPUT) input;
             } catch (Exception e) {
                 return null;
@@ -756,14 +695,11 @@ public final class RecipeHandler {
             try {
                 MachineOutput output = outputClass.newInstance();
                 output.load(nbtTags);
-
                 try {
-                    Constructor<? extends MachineRecipe> construct = recipeClass
-                          .getDeclaredConstructor(inputClass, outputClass);
+                    Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
                     return (RECIPE) construct.newInstance(input, output);
                 } catch (Exception e) {
-                    Constructor<? extends MachineRecipe> construct = recipeClass
-                          .getDeclaredConstructor(inputClass, outputClass, NBTTagCompound.class);
+                    Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass, NBTTagCompound.class);
                     return (RECIPE) construct.newInstance(input, output, nbtTags);
                 }
             } catch (Exception e) {
@@ -776,7 +712,6 @@ public final class RecipeHandler {
             for (Entry<INPUT, RECIPE> entry : recipes.entrySet()) {
                 if (entry.getKey() instanceof ItemStackInput) {
                     ItemStack stack = ((ItemStackInput) entry.getKey()).ingredient;
-
                     if (StackUtils.equalsWildcard(stack, input)) {
                         return true;
                     }
@@ -786,13 +721,11 @@ public final class RecipeHandler {
                     }
                 } else if (entry.getKey() instanceof AdvancedMachineInput) {
                     ItemStack stack = ((AdvancedMachineInput) entry.getKey()).itemStack;
-
                     if (StackUtils.equalsWildcard(stack, input)) {
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
@@ -805,7 +738,6 @@ public final class RecipeHandler {
                     }
                 }
             }
-
             return false;
         }
 
@@ -822,7 +754,6 @@ public final class RecipeHandler {
                     return true;
                 }
             }
-
             return false;
         }
 

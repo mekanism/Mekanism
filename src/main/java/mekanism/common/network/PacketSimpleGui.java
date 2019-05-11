@@ -27,29 +27,20 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
     @Override
     public IMessage onMessage(SimpleGuiMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             if (!player.world.isRemote) {
-                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance()
-                      .getWorld(message.coord4D.dimensionId);
-
+                World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(message.coord4D.dimensionId);
                 if (message.coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock) {
                     if (message.guiId == -1) {
                         return;
                     }
-
-                    SimpleGuiMessage
-                          .openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP) player, player.world,
-                                message.coord4D);
+                    SimpleGuiMessage.openServerGui(message.guiHandler, message.guiId, (EntityPlayerMP) player, player.world, message.coord4D);
                 }
             } else {
-                FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage
-                      .getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
+                FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiHandler, message.guiId, player, player.world, message.coord4D));
                 player.openContainer.windowId = message.windowId;
             }
         }, player);
-
         return null;
     }
 
@@ -80,11 +71,8 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
         public static void openServerGui(int handler, int id, EntityPlayerMP playerMP, World world, Coord4D obj) {
             playerMP.closeContainer();
             playerMP.getNextWindowId();
-
             int window = playerMP.currentWindowId;
-
             Mekanism.packetHandler.sendTo(new SimpleGuiMessage(obj, handler, id, window), playerMP);
-
             playerMP.openContainer = handlers.get(handler).getServerGui(id, playerMP, world, obj.getPos());
             playerMP.openContainer.windowId = window;
             playerMP.openContainer.addListener(playerMP);
@@ -98,7 +86,6 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
         @Override
         public void toBytes(ByteBuf dataStream) {
             coord4D.write(dataStream);
-
             dataStream.writeInt(guiHandler);
             dataStream.writeInt(guiId);
             dataStream.writeInt(windowId);
@@ -107,7 +94,6 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
         @Override
         public void fromBytes(ByteBuf dataStream) {
             coord4D = Coord4D.read(dataStream);
-
             guiHandler = dataStream.readInt();
             guiId = dataStream.readInt();
             windowId = dataStream.readInt();

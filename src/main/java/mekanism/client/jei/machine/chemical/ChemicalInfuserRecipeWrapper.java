@@ -16,8 +16,7 @@ public class ChemicalInfuserRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients
-              .setInputs(MekanismJEI.TYPE_GAS, Arrays.asList(recipe.recipeInput.leftGas, recipe.recipeInput.rightGas));
+        ingredients.setInputs(MekanismJEI.TYPE_GAS, Arrays.asList(recipe.recipeInput.leftGas, recipe.recipeInput.rightGas));
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
     }
 

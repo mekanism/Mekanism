@@ -40,25 +40,20 @@ public class MekRecipesCommand extends CraftTweakerCommand {
 
     public MekRecipesCommand() {
         super("mekrecipes");
-        subCommands = Stream.of("crystallizer", "dissolution", "chemicalInfuser", "injection", "oxidizer", "washer",
-              "combiner", "crusher", "separator", "smelter", "enrichment", "metallurgicInfuser", "compressor",
-              "sawmill", "prc", "purification", "solarneutronactivator", "thermalevaporation")
-              .collect(Collectors.toList());
+        subCommands = Stream.of("crystallizer", "dissolution", "chemicalInfuser", "injection", "oxidizer", "washer", "combiner", "crusher", "separator", "smelter",
+              "enrichment", "metallurgicInfuser", "compressor", "sawmill", "prc", "purification", "solarneutronactivator", "thermalevaporation").collect(Collectors.toList());
     }
 
     @Override
     protected void init() {
-        setDescription(SpecialMessagesChat.getClickableCommandText(
-              TextFormatting.DARK_GREEN + "/ct " + subCommandName + "<type>", "/ct " + subCommandName, true),
-              SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA +
-                    "Outputs a list of all registered Mekanism Machine recipes to the crafttweaker.log for the given machine type."));
+        setDescription(SpecialMessagesChat.getClickableCommandText(TextFormatting.DARK_GREEN + "/ct " + subCommandName + "<type>", "/ct " + subCommandName, true),
+              SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA + "Outputs a list of all registered Mekanism Machine recipes to the crafttweaker.log for the given machine type."));
     }
 
     @Override
     public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length == 0 || !subCommands.contains(args[0])) {
-            sender.sendMessage(SpecialMessagesChat.getNormalMessage(
-                  "Recipe Type required, pick one of the following: " + Arrays.toString(subCommands.toArray())));
+            sender.sendMessage(SpecialMessagesChat.getNormalMessage("Recipe Type required, pick one of the following: " + Arrays.toString(subCommands.toArray())));
             return;
         }
         String subCommand = args[0];
@@ -245,14 +240,11 @@ public class MekRecipesCommand extends CraftTweakerCommand {
                 }
                 break;
             default:
-                sender.sendMessage(SpecialMessagesChat.getNormalMessage(
-                      "Recipe Type required, pick one of the following: " + Arrays.toString(subCommands.toArray())));
+                sender.sendMessage(SpecialMessagesChat.getNormalMessage("Recipe Type required, pick one of the following: " + Arrays.toString(subCommands.toArray())));
                 return;
         }
 
-        sender.sendMessage(SpecialMessagesChat
-              .getLinkToCraftTweakerLog("List of " + type.get().size() + " " + subCommand + " recipes generated;",
-                    sender));
+        sender.sendMessage(SpecialMessagesChat.getLinkToCraftTweakerLog("List of " + type.get().size() + " " + subCommand + " recipes generated;", sender));
     }
 
     @Override
@@ -262,7 +254,6 @@ public class MekRecipesCommand extends CraftTweakerCommand {
             return Collections.emptyList();
         }
         String start = args[0].toLowerCase();
-        return subCommands.stream().filter(command -> command.toLowerCase().startsWith(start))
-              .collect(Collectors.toList());
+        return subCommands.stream().filter(command -> command.toLowerCase().startsWith(start)).collect(Collectors.toList());
     }
 }

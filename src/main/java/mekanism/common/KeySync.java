@@ -22,7 +22,6 @@ public class KeySync {
             keys.put(player, new KeySet(key));
             return;
         }
-
         keys.get(player).keysActive.add(key);
     }
 
@@ -30,7 +29,6 @@ public class KeySync {
         if (!keys.containsKey(player)) {
             return;
         }
-
         keys.get(player).keysActive.remove(key);
     }
 
@@ -38,7 +36,6 @@ public class KeySync {
         if (!keys.containsKey(player)) {
             return false;
         }
-
         return keys.get(player).keysActive.contains(key);
     }
 

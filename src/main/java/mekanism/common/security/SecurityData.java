@@ -18,10 +18,8 @@ public class SecurityData {
 
     public static SecurityData read(ByteBuf dataStream) {
         SecurityData data = new SecurityData();
-
         data.mode = SecurityMode.values()[dataStream.readInt()];
         data.override = dataStream.readBoolean();
-
         return data;
     }
 

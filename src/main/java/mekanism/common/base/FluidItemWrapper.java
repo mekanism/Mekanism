@@ -13,8 +13,7 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandlerIte
 
     @Override
     public FluidTankProperties[] getTankProperties() {
-        return new FluidTankProperties[]{
-              new FluidTankProperties(getItem().getFluid(getStack()), getItem().getCapacity(getStack()))};
+        return new FluidTankProperties[]{new FluidTankProperties(getItem().getFluid(getStack()), getItem().getCapacity(getStack()))};
     }
 
     @Override
@@ -22,7 +21,6 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandlerIte
         if (getStack().getCount() != 1) {
             return 0;
         }
-
         return getItem().fill(getStack(), resource, doFill);
     }
 
@@ -31,15 +29,12 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandlerIte
         if (getStack().getCount() != 1 || resource == null) {
             return null;
         }
-
         FluidStack canDrain = drain(resource.amount, false);
-
         if (canDrain != null) {
             if (canDrain.isFluidEqual(resource)) {
                 return drain(resource.amount, doDrain);
             }
         }
-
         return null;
     }
 
@@ -48,7 +43,6 @@ public class FluidItemWrapper extends ItemCapability implements IFluidHandlerIte
         if (getStack().getCount() != 1) {
             return null;
         }
-
         return getItem().drain(getStack(), maxDrain, doDrain);
     }
 

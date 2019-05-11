@@ -95,7 +95,6 @@ public class MekanismTools implements IModule {
     public void preInit(FMLPreInitializationEvent event) {
         //Load the config
         proxy.loadConfiguration();
-
         addItems();
     }
 
@@ -134,18 +133,12 @@ public class MekanismTools implements IModule {
         setAxeSpeedDamage(toolSTEEL, MekanismConfig.current().tools.toolSTEEL);
 
         //Armors
-        armorOBSIDIAN = getArmorMaterial("OBSIDIAN", MekanismConfig.current().tools.armorOBSIDIAN,
-              SoundEvents.ITEM_ARMOR_EQUIP_IRON);
-        armorLAZULI = getArmorMaterial("LAZULI", MekanismConfig.current().tools.armorLAZULI,
-              SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND);
-        armorOSMIUM = getArmorMaterial("OSMIUM", MekanismConfig.current().tools.armorOSMIUM,
-              SoundEvents.ITEM_ARMOR_EQUIP_IRON);
-        armorBRONZE = getArmorMaterial("BRONZE", MekanismConfig.current().tools.armorBRONZE,
-              SoundEvents.ITEM_ARMOR_EQUIP_IRON);
-        armorGLOWSTONE = getArmorMaterial("GLOWSTONE", MekanismConfig.current().tools.armorGLOWSTONE,
-              SoundEvents.ITEM_ARMOR_EQUIP_IRON);
-        armorSTEEL = getArmorMaterial("STEEL", MekanismConfig.current().tools.armorSTEEL,
-              SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+        armorOBSIDIAN = getArmorMaterial("OBSIDIAN", MekanismConfig.current().tools.armorOBSIDIAN, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+        armorLAZULI = getArmorMaterial("LAZULI", MekanismConfig.current().tools.armorLAZULI, SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND);
+        armorOSMIUM = getArmorMaterial("OSMIUM", MekanismConfig.current().tools.armorOSMIUM, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+        armorBRONZE = getArmorMaterial("BRONZE", MekanismConfig.current().tools.armorBRONZE, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+        armorGLOWSTONE = getArmorMaterial("GLOWSTONE", MekanismConfig.current().tools.armorGLOWSTONE, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
+        armorSTEEL = getArmorMaterial("STEEL", MekanismConfig.current().tools.armorSTEEL, SoundEvents.ITEM_ARMOR_EQUIP_IRON);
 
         ToolsItems.initializeItems();
         ToolsItems.setHarvestLevels();
@@ -168,7 +161,7 @@ public class MekanismTools implements IModule {
               settings.legsProtection.val(),
               settings.chestProtection.val(),
               settings.headProtection.val(),
-        }, settings.enchantability.val(), equipSoundEvent, settings.toughness.val());
+              }, settings.enchantability.val(), equipSoundEvent, settings.toughness.val());
     }
 
     @SubscribeEvent
@@ -239,8 +232,7 @@ public class MekanismTools implements IModule {
         }
     }
 
-    private void setEntityArmorWithChance(Random random, EntityLivingBase entity, Item sword, Item helmet,
-          Item chestplate, Item leggings, Item boots) {
+    private void setEntityArmorWithChance(Random random, EntityLivingBase entity, Item sword, Item helmet, Item chestplate, Item leggings, Item boots) {
         if (entity instanceof EntityZombie && random.nextInt(100) < 50) {
             setStackIfEmpty(entity, EntityEquipmentSlot.MAINHAND, new ItemStack(sword));
         }
@@ -270,20 +262,20 @@ public class MekanismTools implements IModule {
 
             if (entity instanceof EntityZombie || entity instanceof EntitySkeleton) {
                 if (armorType == 0) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.GlowstoneSword, ToolsItems.GlowstoneHelmet,
-                          ToolsItems.GlowstoneChestplate, ToolsItems.GlowstoneLeggings, ToolsItems.GlowstoneBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItems.GlowstoneSword, ToolsItems.GlowstoneHelmet, ToolsItems.GlowstoneChestplate,
+                          ToolsItems.GlowstoneLeggings, ToolsItems.GlowstoneBoots);
                 } else if (armorType == 1) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.LazuliSword, ToolsItems.LazuliHelmet,
-                          ToolsItems.LazuliChestplate, ToolsItems.LazuliLeggings, ToolsItems.LazuliBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItems.LazuliSword, ToolsItems.LazuliHelmet, ToolsItems.LazuliChestplate,
+                          ToolsItems.LazuliLeggings, ToolsItems.LazuliBoots);
                 } else if (armorType == 2) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.OsmiumSword, ToolsItems.OsmiumHelmet,
-                          ToolsItems.OsmiumChestplate, ToolsItems.OsmiumLeggings, ToolsItems.OsmiumBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItems.OsmiumSword, ToolsItems.OsmiumHelmet, ToolsItems.OsmiumChestplate,
+                          ToolsItems.OsmiumLeggings, ToolsItems.OsmiumBoots);
                 } else if (armorType == 3) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.SteelSword, ToolsItems.SteelHelmet,
-                          ToolsItems.SteelChestplate, ToolsItems.SteelLeggings, ToolsItems.SteelBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItems.SteelSword, ToolsItems.SteelHelmet, ToolsItems.SteelChestplate,
+                          ToolsItems.SteelLeggings, ToolsItems.SteelBoots);
                 } else if (armorType == 4) {
-                    setEntityArmorWithChance(random, entity, ToolsItems.BronzeSword, ToolsItems.BronzeHelmet,
-                          ToolsItems.BronzeChestplate, ToolsItems.BronzeLeggings, ToolsItems.BronzeBoots);
+                    setEntityArmorWithChance(random, entity, ToolsItems.BronzeSword, ToolsItems.BronzeHelmet, ToolsItems.BronzeChestplate,
+                          ToolsItems.BronzeLeggings, ToolsItems.BronzeBoots);
                 }
             }
         }

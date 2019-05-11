@@ -51,8 +51,7 @@ public class GuiSlot extends GuiElement {
             int h = overlay.height;
             int xLocationOverlay = xLocation + (width - w) / 2;
             int yLocationOverlay = yLocation + (height - h) / 2;
-            guiObj.drawTexturedRect(guiWidth + xLocationOverlay, guiHeight + yLocationOverlay, overlay.textureX,
-                  overlay.textureY, w, h);
+            guiObj.drawTexturedRect(guiWidth + xLocationOverlay, guiHeight + yLocationOverlay, overlay.textureX, overlay.textureY, w, h);
         }
         mc.renderEngine.bindTexture(defaultLocation);
     }

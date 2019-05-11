@@ -50,7 +50,6 @@ public class ModelCustomArmor extends ModelBiped {
         } else if (type.armorSlot == 3) {
             return partRender == biped.bipedLeftLeg || partRender == biped.bipedRightLeg;
         }
-
         return false;
     }
 
@@ -64,11 +63,10 @@ public class ModelCustomArmor extends ModelBiped {
         biped.bipedLeftArm.showModel = index == EntityEquipmentSlot.CHEST;
         biped.bipedRightLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
         biped.bipedLeftLeg.showModel = index == EntityEquipmentSlot.LEGS || index == EntityEquipmentSlot.FEET;
-
         return biped;
     }
 
-    public void init(Entity entity, float f, float f1, float f2, float f3, float f4, float size) {
+    public void init(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float size) {
         reset();
 
         isSneak = entity.isSneaking();
@@ -91,7 +89,7 @@ public class ModelCustomArmor extends ModelBiped {
             bipedRightLeg.showModel = true;
         }
 
-        setRotationAngles(f, f1, f2, f3, f4, size, entity);
+        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, size, entity);
     }
 
     public void reset() {
@@ -124,9 +122,9 @@ public class ModelCustomArmor extends ModelBiped {
     }
 
     @Override
-    public void render(@Nonnull Entity entity, float par2, float par3, float par4, float par5, float par6, float par7) {
-        init(entity, par2, par3, par4, par5, par6, par7);
-        super.render(entity, par2, par3, par4, par5, par6, par7);
+    public void render(@Nonnull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        init(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+        super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
     }
 
     public enum ArmorModel {
@@ -157,19 +155,16 @@ public class ModelCustomArmor extends ModelBiped {
         }
 
         @Override
-        public void render(@Nonnull Entity entity, float par2, float par3, float par4, float par5, float par6,
-              float par7) {
+        public void render(@Nonnull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             isSneak = entity.isSneaking();
             isRiding = entity.isRiding();
-
             if (entity instanceof EntityLivingBase) {
                 isChild = ((EntityLivingBase) entity).isChild();
             }
 
-            setRotationAngles(par2, par3, par4, par5, par6, par7, entity);
-
+            setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
             MekanismRenderer.glowOn();
-            super.render(entity, par2, par3, par4, par5, par6, par7);
+            super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             MekanismRenderer.glowOff();
         }
     }
@@ -190,9 +185,7 @@ public class ModelCustomArmor extends ModelBiped {
             if (ModelCustomArmor.this.modelType != null) {
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0, 0, 0.06F);
-
                 mc.renderEngine.bindTexture(modelType.resource);
-
                 if (useModel(biped.modelType, partRender, biped)) {
                     if (biped.modelType == ArmorModel.JETPACK) {
                         ArmorModel.jetpackModel.render(0.0625F);
@@ -205,7 +198,6 @@ public class ModelCustomArmor extends ModelBiped {
                         ArmorModel.gasMaskModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
                         GlStateManager.scale(1.02F, 1.02F, 1.02F);
-
                         if (partRender == biped.bipedLeftLeg) {
                             GlStateManager.translate(-0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderLeft(0.0625F);
@@ -215,7 +207,6 @@ public class ModelCustomArmor extends ModelBiped {
                         }
                     }
                 }
-
                 GlStateManager.popMatrix();
             }
         }

@@ -34,7 +34,6 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     public GuiGauge(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, def);
-
         xLocation = x;
         yLocation = y;
 
@@ -95,8 +94,7 @@ public abstract class GuiGauge<T> extends GuiElement {
             }
 
             for (int i = 0; i < number; i++) {
-                guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1,
-                      guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
+                guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16 * i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
             }
 
             MekanismRenderer.resetColor();
@@ -114,27 +112,21 @@ public abstract class GuiGauge<T> extends GuiElement {
 
     @Override
     public void renderForeground(int xAxis, int yAxis) {
-        if (xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1
-              && yAxis <= yLocation + height - 1) {
+        if (xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1) {
             ItemStack stack = mc.player.inventory.getItemStack();
-
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
                 if (guiObj instanceof GuiMekanismTile && ((GuiMekanismTile) guiObj).getTileEntity() != null) {
                     TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
-
                     if (tile instanceof ISideConfiguration && getTransmission() != null) {
                         SideData data = null;
-
-                        for (SideData iterData : ((ISideConfiguration) tile).getConfig()
-                              .getOutputs(getTransmission())) {
+                        for (SideData iterData : ((ISideConfiguration) tile).getConfig().getOutputs(getTransmission())) {
                             if (iterData.color == color) {
                                 data = iterData;
                                 break;
                             }
                         }
                         String localized = data == null ? "" : data.localize();
-                        guiObj.displayTooltip(color + localized + " (" + color.getColoredName() + ")", xAxis,
-                              yAxis);
+                        guiObj.displayTooltip(color + localized + " (" + color.getColoredName() + ")", xAxis, yAxis);
                     }
                 }
             } else {

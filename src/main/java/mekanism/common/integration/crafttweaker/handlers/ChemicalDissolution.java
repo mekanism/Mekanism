@@ -36,23 +36,20 @@ public class ChemicalDissolution {
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
                 recipes.add(new DissolutionRecipe(stack, output));
             }
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, recipes));
         }
     }
 
     @ZenMethod
     public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient itemInput) {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER,
-                        new IngredientWrapper(gasOutput), new IngredientWrapper(itemInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, new IngredientWrapper(gasOutput),
+                  new IngredientWrapper(itemInput)));
         }
     }
 
     @ZenMethod
     public static void removeAllRecipes() {
-        CrafttweakerIntegration.LATE_REMOVALS
-              .add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER));
+        CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveAllMekanismRecipe<>(NAME, Recipe.CHEMICAL_DISSOLUTION_CHAMBER));
     }
 }

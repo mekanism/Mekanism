@@ -26,14 +26,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements
-      IStrictEnergyStorage, IComputerIntegration {
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration {
 
     protected static final int[] CHARGE_SLOT = {0};
     protected static final int[] DISCHARGE_SLOT = {1};
 
-    public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput",
-          "getTransferCap"};
+    public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
     public TileEntityInductionCasing() {
         this("InductionCasing");
@@ -47,11 +45,9 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             if (structure != null && isRendering) {
                 structure.tick(world);
-
                 ChargeUtils.charge(0, this);
                 ChargeUtils.discharge(1, this);
             }
@@ -61,32 +57,25 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             player.openGui(Mekanism.instance, 49, world, getPos().getX(), getPos().getY(), getPos().getZ());
-
             return true;
         }
-
         return false;
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         if (structure != null) {
             structure.addStructureData(data);
         }
-
         return data;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (clientHasStructure) {
                 structure.readStructureData(dataStream);
@@ -160,7 +149,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         if (structure == null) {
             return new Object[]{"Unformed."};
         }
-
         switch (method) {
             case 0:
                 return new Object[]{getEnergy()};

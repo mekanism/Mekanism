@@ -19,8 +19,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
 
     public ChemicalDissolutionChamberRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiChemicalDissolutionChamber.png",
-              Recipe.CHEMICAL_DISSOLUTION_CHAMBER.getJEICategory(), "gui.chemicalDissolutionChamber.short", null, 3, 3,
-              170, 79);
+              Recipe.CHEMICAL_DISSOLUTION_CHAMBER.getJEICategory(), "gui.chemicalDissolutionChamber.short", null, 3, 3, 170, 79);
     }
 
     @Override
@@ -38,8 +37,7 @@ public class ChemicalDissolutionChamberRecipeCategory extends BaseRecipeCategory
             itemStacks.set(0, tempRecipe.getInput().ingredient);
             IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
             initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58,
-                  new GasStack(MekanismFluids.SulfuricAcid, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE
-                        * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED),
+                  new GasStack(MekanismFluids.SulfuricAcid, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED),
                   true);
             initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, tempRecipe.getOutput().output, true);
         }

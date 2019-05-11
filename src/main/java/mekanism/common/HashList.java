@@ -27,7 +27,6 @@ public class HashList<T> implements Iterable<T> {
         if (index > size() - 1) {
             return null;
         }
-
         return list.get(index);
     }
 
@@ -44,7 +43,6 @@ public class HashList<T> implements Iterable<T> {
                     list.add(i, null);
                 }
             }
-
             list.add(index, obj);
         }
     }
@@ -57,7 +55,6 @@ public class HashList<T> implements Iterable<T> {
         if (isEmpty() || index > size() - 1) {
             return;
         }
-
         list.remove(index);
     }
 
@@ -65,7 +62,6 @@ public class HashList<T> implements Iterable<T> {
         if (get(index) != null) {
             remove(index);
         }
-
         add(index, obj);
     }
 
@@ -97,7 +93,6 @@ public class HashList<T> implements Iterable<T> {
         if (source >= list.size() || target >= list.size()) {
             return;
         }
-
         // Perform swap
         T temp = list.get(source);
         list.set(source, list.get(target));

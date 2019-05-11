@@ -14,15 +14,12 @@ import net.minecraft.world.World;
 public class EntityBabySkeleton extends EntitySkeleton {
 
     private static final UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID,
-          "Baby speed boost", 0.5D, 1);
+    private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, 1);
 
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager
-          .createKey(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
 
     public EntityBabySkeleton(World world) {
         super(world);
-
         dataManager.register(IS_CHILD, false);
         setChild(true);
     }
@@ -34,16 +31,13 @@ public class EntityBabySkeleton extends EntitySkeleton {
 
     public void setChild(boolean child) {
         dataManager.set(IS_CHILD, child);
-
         if (world != null && !world.isRemote) {
             IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
             iattributeinstance.removeModifier(babySpeedBoostModifier);
-
             if (child) {
                 iattributeinstance.applyModifier(babySpeedBoostModifier);
             }
         }
-
         updateChildSize(child);
     }
 
@@ -52,7 +46,6 @@ public class EntityBabySkeleton extends EntitySkeleton {
         if (isChild()) {
             experienceValue = (int) ((float) experienceValue * 2.5F);
         }
-
         return super.getExperiencePoints(p_70693_1_);
     }
 

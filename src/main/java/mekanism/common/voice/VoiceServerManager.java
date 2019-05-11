@@ -18,7 +18,6 @@ public class VoiceServerManager {
 
     public void start() {
         Mekanism.logger.info("VoiceServer: Starting up server...");
-
         try {
             running = true;
             serverSocket = new ServerSocket(MekanismConfig.current().general.VOICE_PORT.val());
@@ -30,14 +29,11 @@ public class VoiceServerManager {
     public void stop() {
         try {
             Mekanism.logger.info("VoiceServer: Shutting down server...");
-
             try {
                 listenThread.interrupt();
             } catch (Exception ignored) {
             }
-
             foundLocal = false;
-
             try {
                 serverSocket.close();
                 serverSocket = null;
@@ -46,7 +42,6 @@ public class VoiceServerManager {
         } catch (Exception e) {
             Mekanism.logger.error("VoiceServer: Error while shutting down server.", e);
         }
-
         running = false;
     }
 
@@ -66,13 +61,10 @@ public class VoiceServerManager {
         if (connection.getPlayer() == null) {
             return;
         }
-
         int channel = connection.getCurrentChannel();
-
         if (channel == 0) {
             return;
         }
-
         for (VoiceConnection iterConn : connections) {
             if (iterConn.getPlayer() != null && iterConn != connection && iterConn.canListen(channel)) {
                 iterConn.sendToPlayer(byteCount, audioData, connection);
@@ -95,7 +87,6 @@ public class VoiceServerManager {
                     VoiceConnection connection = new VoiceConnection(s);
                     connection.start();
                     connections.add(connection);
-
                     Mekanism.logger.info("VoiceServer: Accepted new connection.");
                 } catch (SocketException | NullPointerException ignored) {
                 } catch (Exception e) {

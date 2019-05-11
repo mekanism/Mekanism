@@ -19,22 +19,17 @@ public final class PipeUtils {
     public static final FluidTankInfo[] EMPTY = new FluidTankInfo[]{};
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side) {
-        if (tile == null || CapabilityUtils
-              .hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) ||
-              !CapabilityUtils
-                    .hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
+        if (tile == null || CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()) ||
+            !CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
             return false;
         }
 
-        IFluidHandler container = CapabilityUtils
-              .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-
+        IFluidHandler container = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
         if (container == null) {
             return false;
         }
 
         IFluidTankProperties[] infoArray = container.getTankProperties();
-
         if (infoArray != null && infoArray.length > 0) {
             for (IFluidTankProperties info : infoArray) {
                 if (info != null) {
@@ -42,7 +37,6 @@ public final class PipeUtils {
                 }
             }
         }
-
         return false;
     }
 
@@ -56,16 +50,11 @@ public final class PipeUtils {
 
         for (EnumFacing orientation : EnumFacing.VALUES) {
             TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
-
-            if (CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                  orientation.getOpposite())) {
-                IFluidHandler handler = CapabilityUtils
-                      .getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
-                            orientation.getOpposite());
+            if (CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite())) {
+                IFluidHandler handler = CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, orientation.getOpposite());
                 acceptors[orientation.ordinal()] = handler;
             }
         }
-
         return acceptors;
     }
 
@@ -74,7 +63,8 @@ public final class PipeUtils {
      *
      * @param sides - the list of sides to output from
      * @param stack - the stack to output
-     * @param from - the TileEntity to output from
+     * @param from  - the TileEntity to output from
+     *
      * @return the amount of gas emitted
      */
     public static int emit(Set<EnumFacing> sides, FluidStack stack, TileEntity from) {
@@ -91,8 +81,7 @@ public final class PipeUtils {
             }
             EnumFacing opposite = orientation.getOpposite();
             if (CapabilityUtils.hasCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite)) {
-                IFluidHandler handler = CapabilityUtils.getCapability(acceptor,
-                      CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite);
+                IFluidHandler handler = CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, opposite);
                 if (handler != null && canFill(handler, stack)) {
                     target.addHandler(opposite, handler);
                 }
@@ -110,7 +99,6 @@ public final class PipeUtils {
     public static FluidStack copy(FluidStack fluid, int amount) {
         FluidStack ret = fluid.copy();
         ret.amount = amount;
-
         return ret;
     }
 
@@ -120,7 +108,6 @@ public final class PipeUtils {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -130,7 +117,6 @@ public final class PipeUtils {
                 return true;
             }
         }
-
         return false;
     }
 }

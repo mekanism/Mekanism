@@ -18,8 +18,7 @@ public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, 
     }
 
     public boolean canOperate(NonNullList<ItemStack> inventory, GasTank outputTank) {
-        return getInput().useItemStackFromInventory(inventory, 1, false) && getOutput()
-              .applyOutputs(outputTank, false, 1);
+        return getInput().useItemStackFromInventory(inventory, 1, false) && getOutput().applyOutputs(outputTank, false, 1);
     }
 
     public void operate(NonNullList<ItemStack> inventory, GasTank outputTank) {

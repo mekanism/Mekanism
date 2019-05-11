@@ -23,25 +23,20 @@ public class FuelHandler {
         if (fuels.containsKey(gas.getName())) {
             return fuels.get(gas.getName());
         }
-
         if (BCPresent() && gas.hasFluid() && BuildcraftFuelRegistry.fuel != null) {
             IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(new FluidStack(gas.getFluid(), 1));
-
             if (bcFuel != null) {
                 FuelGas fuel = new FuelGas(bcFuel);
                 fuels.put(gas.getName(), fuel);
-
                 return fuel;
             }
         }
-
         return null;
     }
 
     public static boolean BCPresent() {
-        return ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && MekanismUtils
-              .classExists("buildcraft.api.fuels.BuildcraftFuelRegistry") && MekanismUtils
-              .classExists("buildcraft.api.fuels.IFuel");
+        return ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && MekanismUtils.classExists("buildcraft.api.fuels.BuildcraftFuelRegistry") &&
+               MekanismUtils.classExists("buildcraft.api.fuels.IFuel");
     }
 
     public static class FuelGas {
@@ -59,8 +54,7 @@ public class FuelHandler {
 
             // getPowerPerCycle returns value in 1 BuildCraft micro MJ
             // 1 BuildCraft MJ equals 20 RF
-            energyPerTick =
-                  bcFuel.getPowerPerCycle() / (double) MjAPI.MJ * 20 * MekanismConfig.current().general.FROM_RF.val();
+            energyPerTick = bcFuel.getPowerPerCycle() / (double) MjAPI.MJ * 20 * MekanismConfig.current().general.FROM_RF.val();
         }
     }
 }

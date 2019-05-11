@@ -22,9 +22,8 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
 
     @Override
     public boolean canProcess(Capability<?> capability) {
-        return capability == Capabilities.TESLA_HOLDER_CAPABILITY ||
-              capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getItem().canReceive(getStack()) ||
-              capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getItem().canSend(getStack());
+        return capability == Capabilities.TESLA_HOLDER_CAPABILITY || capability == Capabilities.TESLA_CONSUMER_CAPABILITY && getItem().canReceive(getStack()) ||
+               capability == Capabilities.TESLA_PRODUCER_CAPABILITY && getItem().canSend(getStack());
     }
 
     public IEnergizedItem getItem() {
@@ -37,15 +36,11 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
         if (getItem().canSend(getStack())) {
             long energyRemaining = getStoredPower();
             long toSend = Math.min(power, energyRemaining);
-
             if (!simulated) {
-                getItem().setEnergy(getStack(),
-                      getItem().getEnergy(getStack()) - toSend * MekanismConfig.current().general.FROM_TESLA.val());
+                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) - toSend * MekanismConfig.current().general.FROM_TESLA.val());
             }
-
             return toSend;
         }
-
         return 0;
     }
 
@@ -55,15 +50,11 @@ public class TeslaItemWrapper extends ItemCapability implements ITeslaHolder, IT
         if (getItem().canReceive(getStack())) {
             long energyNeeded = getCapacity() - getStoredPower();
             long toReceive = Math.min(power, energyNeeded);
-
             if (!simulated) {
-                getItem().setEnergy(getStack(),
-                      getItem().getEnergy(getStack()) + toReceive * MekanismConfig.current().general.FROM_TESLA.val());
+                getItem().setEnergy(getStack(), getItem().getEnergy(getStack()) + toReceive * MekanismConfig.current().general.FROM_TESLA.val());
             }
-
             return toReceive;
         }
-
         return 0;
     }
 

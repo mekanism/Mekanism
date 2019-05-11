@@ -17,16 +17,12 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
     @Override
     public IMessage onMessage(ContainerEditModeMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-
             if (tileEntity instanceof IFluidContainerManager) {
                 ((IFluidContainerManager) tileEntity).setContainerEditMode(message.value);
             }
         }, player);
-
         return null;
     }
 
@@ -46,7 +42,6 @@ public class PacketContainerEditMode implements IMessageHandler<ContainerEditMod
         @Override
         public void toBytes(ByteBuf dataStream) {
             coord4D.write(dataStream);
-
             dataStream.writeInt(value.ordinal());
         }
 

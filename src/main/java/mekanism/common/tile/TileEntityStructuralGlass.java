@@ -19,14 +19,11 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (master != null) {
             TileEntity masterTile = master.getTileEntity(world);
-
             if (masterTile instanceof IMultiblock) {
                 return ((IMultiblock<?>) masterTile).onActivate(player, hand, stack);
-            } else {
-                master = null;
             }
+            master = null;
         }
-
         return false;
     }
 
@@ -34,7 +31,6 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
     public void doUpdate() {
         if (master != null) {
             TileEntity masterTile = master.getTileEntity(world);
-
             if (masterTile instanceof IMultiblock) {
                 ((IMultiblock<?>) masterTile).doUpdate();
             } else {
@@ -42,7 +38,6 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
             }
         } else {
             IMultiblock<?> multiblock = new ControllerFinder().find();
-
             if (multiblock != null) {
                 multiblock.doUpdate();
             }
@@ -69,13 +64,10 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
             if (iterated.size() > 2048 || found != null) {
                 return;
             }
-
             iterated.add(pos);
-
             for (EnumFacing side : EnumFacing.VALUES) {
                 Coord4D coord = pos.offset(side);
                 TileEntity tile = coord.getTileEntity(world);
-
                 if (!iterated.contains(coord)) {
                     if (tile instanceof IMultiblock) {
                         found = (IMultiblock<?>) tile;
@@ -89,7 +81,6 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 
         public IMultiblock<?> find() {
             loop(Coord4D.get(TileEntityStructuralGlass.this));
-
             return found;
         }
     }

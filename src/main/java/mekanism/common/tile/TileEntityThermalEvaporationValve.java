@@ -15,28 +15,23 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements
-      IFluidHandlerWrapper, IHeatTransfer {
+public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandlerWrapper, IHeatTransfer {
 
     public boolean prevMaster = false;
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             if ((master == null) == prevMaster) {
                 for (EnumFacing side : EnumFacing.VALUES) {
                     Coord4D obj = Coord4D.get(this).offset(side);
-
-                    if (obj.exists(world) && !obj.isAirBlock(world) && !(obj
-                          .getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)) {
+                    if (obj.exists(world) && !obj.isAirBlock(world) && !(obj.getTileEntity(world) instanceof TileEntityThermalEvaporationBlock)) {
                         MekanismUtils.notifyNeighborofChange(world, obj, this.pos);
                     }
                 }
             }
-
-            prevMaster = (master != null);
+            prevMaster = master != null;
         }
     }
 
@@ -49,22 +44,18 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
         TileEntityThermalEvaporationController controller = getController();
-
         if (controller != null && resource != null && resource.isFluidEqual(controller.outputTank.getFluid())) {
             return controller.outputTank.drain(resource.amount, doDrain);
         }
-
         return null;
     }
 
     @Override
     public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         TileEntityThermalEvaporationController controller = getController();
-
         if (controller != null) {
             return controller.outputTank.drain(maxDrain, doDrain);
         }
-
         return null;
     }
 
@@ -83,11 +74,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
         TileEntityThermalEvaporationController controller = getController();
-
         if (controller == null) {
             return PipeUtils.EMPTY;
         }
-
         return new FluidTankInfo[]{new FluidTankInfo(controller.inputTank), new FluidTankInfo(controller.outputTank)};
     }
 
@@ -114,7 +103,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public void transferHeatTo(double heat) {
         TileEntityThermalEvaporationController controller = getController();
-
         if (controller != null) {
             controller.heatToAbsorb += heat;
         }
@@ -142,9 +130,8 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
-              (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) ||
-              super.hasCapability(capability, side);
+        return capability == Capabilities.HEAT_TRANSFER_CAPABILITY || (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) ||
+               super.hasCapability(capability, side);
     }
 
     @Override
@@ -152,11 +139,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
-
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getController() != null) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
-
         return super.getCapability(capability, side);
     }
 }

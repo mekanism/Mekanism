@@ -25,14 +25,11 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
             if (slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3) {
-                if (InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.getType() == null
-                      || tileEntity.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
+                if (InfuseRegistry.getObject(slotStack) != null && (tileEntity.infuseStored.getType() == null || tileEntity.infuseStored.getType() == InfuseRegistry.getObject(slotStack).type)) {
                     if (!mergeItemStack(slotStack, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -49,43 +46,31 @@ public class ContainerMetallurgicInfuser extends ContainerMekanism<TileEntityMet
                         if (!mergeItemStack(slotStack, 31, inventorySlots.size(), false)) {
                             return ItemStack.EMPTY;
                         }
-                    } else {
-                        if (!mergeItemStack(slotStack, 4, 30, false)) {
-                            return ItemStack.EMPTY;
-                        }
+                    } else if (!mergeItemStack(slotStack, 4, 30, false)) {
+                        return ItemStack.EMPTY;
                     }
                 }
-            } else {
-                if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
+            } else if (!mergeItemStack(slotStack, 4, inventorySlots.size(), true)) {
+                return ItemStack.EMPTY;
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 
     public boolean isInputItem(ItemStack itemStack) {
         if (tileEntity.infuseStored.getType() != null) {
-            return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tileEntity.infuseStored, itemStack))
-                  != null;
-        } else {
-            return Recipe.METALLURGIC_INFUSER.get().keySet().stream()
-                  .anyMatch(input -> input.inputStack.isItemEqual(itemStack));
+            return RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(tileEntity.infuseStored, itemStack)) != null;
         }
-
+        return Recipe.METALLURGIC_INFUSER.get().keySet().stream().anyMatch(input -> input.inputStack.isItemEqual(itemStack));
     }
 
     @Override

@@ -76,24 +76,21 @@ public class RobitAIFollow extends EntityAIBase {
             return false;
         } else if (!theRobit.getFollowing()) {
             //Still looks up at the player if on chargepad or not following
-
             theRobit.getLookHelper().setLookPositionWithEntity(player, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
             return false;
         } else if (theRobit.getDistanceSq(player) < (minDist * minDist)) {
             return false;
         } else if (theRobit.getEnergy() == 0) {
             return false;
-        } else {
-            theOwner = player;
-            return true;
         }
+        theOwner = player;
+        return true;
     }
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit
-              .getFollowing() && theRobit.getEnergy() > 0
-              && theOwner.world.provider.getDimension() == theRobit.world.provider.getDimension();
+        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0
+               && theOwner.world.provider.getDimension() == theRobit.world.provider.getDimension();
     }
 
     @Override
@@ -113,7 +110,6 @@ public class RobitAIFollow extends EntityAIBase {
     @Override
     public void updateTask() {
         theRobit.getLookHelper().setLookPositionWithEntity(theOwner, 6.0F, theRobit.getVerticalFaceSpeed() / 10);
-
         if (theRobit.getFollowing()) {
             if (--ticker <= 0) {
                 ticker = 10;
@@ -123,17 +119,13 @@ public class RobitAIFollow extends EntityAIBase {
                         int x = MathHelper.floor(theOwner.posX) - 2;
                         int y = MathHelper.floor(theOwner.getEntityBoundingBox().minY);
                         int z = MathHelper.floor(theOwner.posZ) - 2;
-
                         for (int l = 0; l <= 4; ++l) {
                             for (int i1 = 0; i1 <= 4; ++i1) {
                                 BlockPos pos = new BlockPos(x + l, y, z + i1);
                                 BlockPos under = new BlockPos(x + l, y - 1, z + i1);
-
-                                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.getBlockState(under)
-                                      .isSideSolid(world, under, EnumFacing.UP) && isEmptyBlock(pos) && isEmptyBlock(
-                                      new BlockPos(x + l, y + 1, z + i1))) {
-                                    theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F,
-                                          theRobit.rotationYaw, theRobit.rotationPitch);
+                                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.getBlockState(under).isSideSolid(world, under, EnumFacing.UP) && isEmptyBlock(pos) &&
+                                    isEmptyBlock(new BlockPos(x + l, y + 1, z + i1))) {
+                                    theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
                                     thePathfinder.clearPath();
                                     return;
                                 }
@@ -148,7 +140,6 @@ public class RobitAIFollow extends EntityAIBase {
     private boolean isEmptyBlock(BlockPos pos) {
         IBlockState iblockstate = world.getBlockState(pos);
         Block block = iblockstate.getBlock();
-
         return block == Blocks.AIR || !iblockstate.isFullCube();
     }
 }

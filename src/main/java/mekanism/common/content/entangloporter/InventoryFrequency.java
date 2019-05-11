@@ -30,7 +30,6 @@ public class InventoryFrequency extends Frequency {
 
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
-
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
     }
@@ -46,19 +45,14 @@ public class InventoryFrequency extends Frequency {
     @Override
     public void write(NBTTagCompound nbtTags) {
         super.write(nbtTags);
-
         nbtTags.setDouble("storedEnergy", storedEnergy);
-
         if (storedFluid.getFluid() != null) {
             nbtTags.setTag("storedFluid", storedFluid.writeToNBT(new NBTTagCompound()));
         }
-
         if (storedGas.getGas() != null) {
             nbtTags.setTag("storedGas", storedGas.write(new NBTTagCompound()));
         }
-
         NBTTagList tagList = new NBTTagList();
-
         for (int slotCount = 0; slotCount < 1; slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
                 NBTTagCompound tagCompound = new NBTTagCompound();
@@ -67,50 +61,40 @@ public class InventoryFrequency extends Frequency {
                 tagList.appendTag(tagCompound);
             }
         }
-
         nbtTags.setTag("Items", tagList);
-
         nbtTags.setDouble("temperature", temperature);
     }
 
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
-
         storedEnergy = nbtTags.getDouble("storedEnergy");
 
         if (nbtTags.hasKey("storedFluid")) {
             storedFluid.readFromNBT(nbtTags.getCompoundTag("storedFluid"));
         }
-
         if (nbtTags.hasKey("storedGas")) {
             storedGas.read(nbtTags.getCompoundTag("storedGas"));
         }
 
         NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-
-            if (slotID >= 0 && slotID < 1) {
+            if (slotID == 0) {
                 inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
-
         temperature = nbtTags.getDouble("temperature");
     }
 
     @Override
     public void write(TileNetworkList data) {
         super.write(data);
-
         data.add(storedEnergy);
-
         if (storedFluid.getFluid() != null) {
             data.add(true);
             data.add(FluidRegistry.getFluidName(storedFluid.getFluid()));
@@ -118,7 +102,6 @@ public class InventoryFrequency extends Frequency {
         } else {
             data.add(false);
         }
-
         if (storedGas.getGas() != null) {
             data.add(true);
             data.add(storedGas.getGasType().getID());
@@ -126,32 +109,25 @@ public class InventoryFrequency extends Frequency {
         } else {
             data.add(false);
         }
-
         data.add(temperature);
     }
 
     @Override
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
-
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
-
         storedEnergy = dataStream.readDouble();
-
         if (dataStream.readBoolean()) {
-            storedFluid.setFluid(
-                  new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
+            storedFluid.setFluid(new FluidStack(FluidRegistry.getFluid(PacketHandler.readString(dataStream)), dataStream.readInt()));
         } else {
             storedFluid.setFluid(null);
         }
-
         if (dataStream.readBoolean()) {
             storedGas.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
         } else {
             storedGas.setGas(null);
         }
-
         temperature = dataStream.readDouble();
     }
 }

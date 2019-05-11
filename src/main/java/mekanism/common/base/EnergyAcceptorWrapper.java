@@ -29,18 +29,14 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         if (tileEntity == null || tileEntity.getWorld() == null) {
             return null;
         }
-
         EnergyAcceptorWrapper wrapper = null;
-
         if (CapabilityUtils.hasCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side)) {
             wrapper = fromCapability(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side, MekanismAcceptor::new);
-        } else if (MekanismUtils.useForge() && CapabilityUtils
-              .hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
+        } else if (MekanismUtils.useForge() && CapabilityUtils.hasCapability(tileEntity, CapabilityEnergy.ENERGY, side)) {
             wrapper = fromCapability(tileEntity, CapabilityEnergy.ENERGY, side, ForgeAcceptor::new);
         } else if (MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver) {
             wrapper = new RFAcceptor((IEnergyReceiver) tileEntity);
-        } else if (MekanismUtils.useTesla() && CapabilityUtils
-              .hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
+        } else if (MekanismUtils.useTesla() && CapabilityUtils.hasCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side)) {
             wrapper = fromCapability(tileEntity, Capabilities.TESLA_CONSUMER_CAPABILITY, side, TeslaAcceptor::new);
         } else if (MekanismUtils.useIC2()) {
             IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
@@ -48,11 +44,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
                 wrapper = new IC2Acceptor((IEnergySink) tile);
             }
         }
-
         if (wrapper != null) {
             wrapper.coord = Coord4D.get(tileEntity);
         }
-
         return wrapper;
     }
 
@@ -65,8 +59,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
         if (acceptor != null) {
             return makeAcceptor.apply(acceptor);
         } else {
-            LOGGER.error("Tile {} @ {} told us it had {} cap but returned null", tileEntity,
-                  tileEntity.getPos(), capability.getName());
+            LOGGER.error("Tile {} @ {} told us it had {} cap but returned null", tileEntity, tileEntity.getPos(), capability.getName());
         }
         return null;
     }
@@ -145,7 +138,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
                 return fromEU(toTransfer);
             }
             double rejects = acceptor.injectEnergy(side, toTransfer, 0);
-
             return fromEU(toTransfer - rejects);
         }
 

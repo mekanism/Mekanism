@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
  * Created by Thiakil on 5/05/2019.
  */
 public class MekanismDataFixers {
+
     public static final int DATA_VERSION = MekFixers.values().length;
 
     public static void register() {
@@ -28,6 +29,7 @@ public class MekanismDataFixers {
 
         /**
          * 1 based version number
+         *
          * @return the version number to use for this fix
          */
         public int getFixVersion() {

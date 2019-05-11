@@ -30,18 +30,14 @@ public class RecipeUtils {
         } else if (target.isEmpty()) {
             return true;
         }
-
         if (target.getItem() != input.getItem()) {
             return false;
         }
-
         if (target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE) {
             return false;
         }
-
         if (target.getItem() instanceof ITierItem && input.getItem() instanceof ITierItem) {
-            if (((ITierItem) target.getItem()).getBaseTier(target) != ((ITierItem) input.getItem())
-                  .getBaseTier(input)) {
+            if (((ITierItem) target.getItem()).getBaseTier(target) != ((ITierItem) input.getItem()).getBaseTier(input)) {
                 return false;
             }
         }
@@ -50,34 +46,26 @@ public class RecipeUtils {
             if (isFactory(target) && isFactory(input)) {
                 RecipeType recipeTypeInput = ((IFactory) input.getItem()).getRecipeTypeOrNull(input);
                 //If either factory has invalid NBT don't crash it
-                return recipeTypeInput != null
-                      && ((IFactory) target.getItem()).getRecipeTypeOrNull(target) == recipeTypeInput;
+                return recipeTypeInput != null && ((IFactory) target.getItem()).getRecipeTypeOrNull(target) == recipeTypeInput;
             }
         }
-
         return true;
     }
 
     private static boolean isFactory(ItemStack stack) {
-        return MachineType.get(stack) == MachineType.BASIC_FACTORY
-              || MachineType.get(stack) == MachineType.ADVANCED_FACTORY
-              || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+        return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
     }
 
     public static ItemStack getCraftingResult(InventoryCrafting inv, ItemStack toReturn) {
         int invLength = inv.getSizeInventory();
-
         if (toReturn.getItem() instanceof IEnergizedItem) {
             double energyFound = 0;
-
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof IEnergizedItem) {
                     energyFound += ((IEnergizedItem) itemstack.getItem()).getEnergy(itemstack);
                 }
             }
-
             double energyToSet = Math.min(((IEnergizedItem) toReturn.getItem()).getMaxEnergy(toReturn), energyFound);
             if (energyToSet > 0) {
                 ((IEnergizedItem) toReturn.getItem()).setEnergy(toReturn, energyToSet);
@@ -86,25 +74,20 @@ public class RecipeUtils {
 
         if (toReturn.getItem() instanceof IGasItem) {
             GasStack gasFound = null;
-
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
                     GasStack stored = ((IGasItem) itemstack.getItem()).getGas(itemstack);
-
                     if (stored != null) {
                         if (!((IGasItem) toReturn.getItem()).canReceiveGas(toReturn, stored.getGas())) {
                             return ItemStack.EMPTY;
                         }
-
                         if (gasFound == null) {
                             gasFound = stored;
                         } else {
                             if (gasFound.getGas() != stored.getGas()) {
                                 return ItemStack.EMPTY;
                             }
-
                             gasFound.amount += stored.amount;
                         }
                     }
@@ -120,13 +103,9 @@ public class RecipeUtils {
         if (toReturn.getItem() instanceof ISecurityItem) {
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-
                 if (!itemstack.isEmpty() && itemstack.getItem() instanceof ISecurityItem) {
-                    ((ISecurityItem) toReturn.getItem())
-                          .setOwnerUUID(toReturn, ((ISecurityItem) itemstack.getItem()).getOwnerUUID(itemstack));
-                    ((ISecurityItem) toReturn.getItem())
-                          .setSecurity(toReturn, ((ISecurityItem) itemstack.getItem()).getSecurity(itemstack));
-
+                    ((ISecurityItem) toReturn.getItem()).setOwnerUUID(toReturn, ((ISecurityItem) itemstack.getItem()).getOwnerUUID(itemstack));
+                    ((ISecurityItem) toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem) itemstack.getItem()).getSecurity(itemstack));
                     break;
                 }
             }
@@ -134,25 +113,20 @@ public class RecipeUtils {
 
         if (FluidContainerUtils.isFluidContainer(toReturn)) {
             FluidStack fluidFound = null;
-
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-
                 if (FluidContainerUtils.isFluidContainer(itemstack)) {
                     FluidStack stored = FluidUtil.getFluidContained(itemstack);
-
                     if (stored != null) {
                         if (FluidUtil.getFluidHandler(itemstack).fill(stored, false) == 0) {
                             return ItemStack.EMPTY;
                         }
-
                         if (fluidFound == null) {
                             fluidFound = stored;
                         } else {
                             if (fluidFound.getFluid() != stored.getFluid()) {
                                 return ItemStack.EMPTY;
                             }
-
                             fluidFound.amount += stored.amount;
                         }
                     }
@@ -167,13 +141,10 @@ public class RecipeUtils {
         if (BasicBlockType.get(toReturn) == BasicBlockType.BIN) {
             int foundCount = 0;
             ItemStack foundType = ItemStack.EMPTY;
-
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-
                 if (!itemstack.isEmpty() && BasicBlockType.get(itemstack) == BasicBlockType.BIN) {
                     InventoryBin binInv = new InventoryBin(itemstack);
-
                     foundCount = binInv.getItemCount();
                     foundType = binInv.getItemType();
                 }
@@ -188,28 +159,20 @@ public class RecipeUtils {
 
         if (MachineType.get(toReturn) != null && MachineType.get(toReturn).supportsUpgrades) {
             Map<Upgrade, Integer> upgrades = new HashMap<>();
-
             for (int i = 0; i < invLength; i++) {
                 ItemStack itemstack = inv.getStackInSlot(i);
-
-                if (!itemstack.isEmpty() && MachineType.get(itemstack) != null && MachineType
-                      .get(itemstack).supportsUpgrades) {
+                if (!itemstack.isEmpty() && MachineType.get(itemstack) != null && MachineType.get(itemstack).supportsUpgrades) {
                     Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
-
                     for (Map.Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
                         if (entry != null && entry.getKey() != null && entry.getValue() != null) {
                             Integer val = upgrades.get(entry.getKey());
-
-                            upgrades.put(entry.getKey(),
-                                  Math.min(entry.getKey().getMax(), (val != null ? val : 0) + entry.getValue()));
+                            upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), (val != null ? val : 0) + entry.getValue()));
                         }
                     }
                 }
             }
-
             Upgrade.saveMap(upgrades, ItemDataUtils.getDataMap(toReturn));
         }
-
         return toReturn;
     }
 

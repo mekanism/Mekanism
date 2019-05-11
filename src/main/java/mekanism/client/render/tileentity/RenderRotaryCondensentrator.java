@@ -15,8 +15,7 @@ public class RenderRotaryCondensentrator extends TileEntitySpecialRenderer<TileE
     private ModelRotaryCondensentrator model = new ModelRotaryCondensentrator();
 
     @Override
-    public void render(TileEntityRotaryCondensentrator tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityRotaryCondensentrator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x + 0.5F, (float) y + 1.5F, (float) z + 1.5F);
 

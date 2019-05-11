@@ -25,20 +25,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemCraftingFormula extends ItemMekanism {
 
     public static ModelResourceLocation MODEL = new ModelResourceLocation("mekanism:CraftingFormula", "inventory");
-    public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation("mekanism:CraftingFormulaInvalid",
-          "inventory");
-    public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation("mekanism:CraftingFormulaEncoded",
-          "inventory");
-
-    public ItemCraftingFormula() {
-        super();
-    }
+    public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation("mekanism:CraftingFormulaInvalid", "inventory");
+    public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation("mekanism:CraftingFormulaEncoded", "inventory");
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         NonNullList<ItemStack> inv = getInventory(itemstack);
-
         if (inv != null) {
             addIngredientDetails(inv, list);
         }
@@ -46,26 +39,21 @@ public class ItemCraftingFormula extends ItemMekanism {
 
     private void addIngredientDetails(NonNullList<ItemStack> inv, List<String> list) {
         List<ItemStack> stacks = new ArrayList<>();
-
         for (ItemStack stack : inv) {
             if (!stack.isEmpty()) {
                 boolean found = false;
-
                 for (ItemStack iterStack : stacks) {
                     if (InventoryUtils.canStack(stack, iterStack)) {
                         iterStack.grow(stack.getCount());
                         found = true;
                     }
                 }
-
                 if (!found) {
                     stacks.add(stack);
                 }
             }
         }
-
         list.add(EnumColor.GREY + LangUtils.localize("tooltip.ingredients") + ":");
-
         for (ItemStack stack : stacks) {
             list.add(EnumColor.GREY + " - " + stack.getDisplayName() + " (" + stack.getCount() + ")");
         }
@@ -75,18 +63,14 @@ public class ItemCraftingFormula extends ItemMekanism {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-
         if (player.isSneaking()) {
             if (!world.isRemote) {
                 setInventory(stack, null);
                 setInvalid(stack, false);
-
                 ((EntityPlayerMP) player).sendContainerToPlayer(player.openContainer);
             }
-
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
-
         return new ActionResult<>(EnumActionResult.PASS, stack);
     }
 
@@ -101,10 +85,8 @@ public class ItemCraftingFormula extends ItemMekanism {
         if (getInventory(stack) == null) {
             return super.getItemStackDisplayName(stack);
         }
-
-        return super.getItemStackDisplayName(stack) + " " + (isInvalid(stack) ? EnumColor.DARK_RED + "(" + LangUtils
-              .localize("tooltip.invalid")
-              : EnumColor.DARK_GREEN + "(" + LangUtils.localize("tooltip.encoded")) + ")";
+        return super.getItemStackDisplayName(stack) + " " + (isInvalid(stack) ? EnumColor.DARK_RED + "(" + LangUtils.localize("tooltip.invalid")
+                                                                              : EnumColor.DARK_GREEN + "(" + LangUtils.localize("tooltip.encoded")) + ")";
     }
 
     public boolean isInvalid(ItemStack stack) {
@@ -119,19 +101,15 @@ public class ItemCraftingFormula extends ItemMekanism {
         if (!ItemDataUtils.hasData(stack, "Items")) {
             return null;
         }
-
         NBTTagList tagList = ItemDataUtils.getList(stack, "Items");
         NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
-
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-
             if (slotID >= 0 && slotID < 9) {
                 inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
-
         return inventory;
     }
 
@@ -140,9 +118,7 @@ public class ItemCraftingFormula extends ItemMekanism {
             ItemDataUtils.removeData(stack, "Items");
             return;
         }
-
         NBTTagList tagList = new NBTTagList();
-
         for (int slotCount = 0; slotCount < 9; slotCount++) {
             if (!inv.get(slotCount).isEmpty()) {
                 NBTTagCompound tagCompound = new NBTTagCompound();
@@ -151,7 +127,6 @@ public class ItemCraftingFormula extends ItemMekanism {
                 tagList.appendTag(tagCompound);
             }
         }
-
         ItemDataUtils.setList(stack, "Items", tagList);
     }
 }

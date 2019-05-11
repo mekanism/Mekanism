@@ -18,8 +18,7 @@ public class TypeConfigManager<T extends Enum<T>> extends Option<TypeConfigManag
     private Supplier<List<T>> validValuesSupplier;
     private Function<T, String> nameSupplier;
 
-    TypeConfigManager(BaseConfig owner, String category, Class<T> enumClazz, Supplier<List<T>> validValuesSupplier,
-          Function<T, String> nameSupplier) {
+    TypeConfigManager(BaseConfig owner, String category, Class<T> enumClazz, Supplier<List<T>> validValuesSupplier, Function<T, String> nameSupplier) {
         super(owner, category, "", null);//key unused
         this.validValuesSupplier = validValuesSupplier;
         this.nameSupplier = nameSupplier;
@@ -42,6 +41,7 @@ public class TypeConfigManager<T extends Enum<T>> extends Option<TypeConfigManag
      * Get the enum constant from a name. Used in recipes, allowed to be non-cached
      *
      * @param name JSON supplied name
+     *
      * @return the found enum constant or null
      */
     @Nullable

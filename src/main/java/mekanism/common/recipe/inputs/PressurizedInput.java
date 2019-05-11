@@ -43,48 +43,43 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         return !theSolid.isEmpty() && theFluid != null && theGas != null;
     }
 
-    public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank,
-          boolean deplete) {
+    public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete) {
         if (meets(new PressurizedInput(inventory.get(index), fluidTank.getFluid(), gasTank.getGas()))) {
             if (deplete) {
                 inventory.set(index, StackUtils.subtract(inventory.get(index), theSolid));
                 fluidTank.drain(theFluid.amount, true);
                 gasTank.draw(theGas.amount, true);
             }
-
             return true;
         }
-
         return false;
     }
 
     /**
-     * Whether or not this PressurizedReactants's ItemStack entry's item type is equal to the item type of the given
-     * item.
+     * Whether or not this PressurizedReactants's ItemStack entry's item type is equal to the item type of the given item.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's item type is contained in this PressurizedReactants
      */
     public boolean containsType(ItemStack stack) {
         if (stack.isEmpty() || stack.getCount() == 0) {
             return false;
         }
-
         return MachineInput.inputItemMatches(stack, theSolid);
     }
 
     /**
-     * Whether or not this PressurizedReactants's FluidStack entry's fluid type is equal to the fluid type of the given
-     * fluid.
+     * Whether or not this PressurizedReactants's FluidStack entry's fluid type is equal to the fluid type of the given fluid.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's fluid type is contained in this PressurizedReactants
      */
     public boolean containsType(FluidStack stack) {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-
         return stack.isFluidEqual(theFluid);
     }
 
@@ -92,13 +87,13 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
      * Whether or not this PressurizedReactants's GasStack entry's gas type is equal to the gas type of the given gas.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's gas type is contained in this PressurizedReactants
      */
     public boolean containsType(GasStack stack) {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-
         return stack.isGasEqual(theGas);
     }
 
@@ -106,20 +101,17 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
      * Actual implementation of meetsInput(), performs the checks.
      *
      * @param input - input to check
+     *
      * @return if the input meets this input's requirements
      */
     public boolean meets(PressurizedInput input) {
         if (input == null || !input.isValid()) {
             return false;
         }
-
-        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid)
-              && input.theGas.isGasEqual(theGas))) {
+        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid) && input.theGas.isGasEqual(theGas))) {
             return false;
         }
-
-        return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount
-              && input.theGas.amount >= theGas.amount;
+        return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
     }
 
     @Override
@@ -141,8 +133,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
 
     @Override
     public int hashIngredients() {
-        return StackUtils.hashItemStack(theSolid) << 16
-              | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
+        return StackUtils.hashItemStack(theSolid) << 16 | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
     }
 
     @Override
@@ -156,7 +147,6 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
     }
 
     public PressurizedInput wildCopy() {
-        return new PressurizedInput(
-              new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
+        return new PressurizedInput(new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
     }
 }

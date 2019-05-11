@@ -48,8 +48,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter, TILE ext
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
                 } else {
-                    Mekanism.packetHandler
-                          .sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
                 }
                 sendPacketToServer(0);
             } else {

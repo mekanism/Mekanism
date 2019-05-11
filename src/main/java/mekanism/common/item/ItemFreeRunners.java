@@ -74,8 +74,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot,
-          ModelBiped _default) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.FREERUNNERS;
         return model;
@@ -84,10 +83,8 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils
-              .getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
-        list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack)
-              .getName());
+        list.add(EnumColor.AQUA + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack), getMaxEnergy(itemstack)));
+        list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
     }
 
     public ItemStack getUnchargedItem() {
@@ -142,14 +139,11 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
         if (canReceive(theItem)) {
             double energyNeeded = getMaxEnergy(theItem) - getEnergy(theItem);
             double toReceive = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyNeeded);
-
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) + toReceive);
             }
-
             return MekanismUtils.clampToInt(toReceive * MekanismConfig.current().general.TO_RF.val());
         }
-
         return 0;
     }
 
@@ -158,15 +152,12 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     public int extractEnergy(ItemStack theItem, int energy, boolean simulate) {
         if (canSend(theItem)) {
             double energyRemaining = getEnergy(theItem);
-            double toSend = Math.min((energy * MekanismConfig.current().general.FROM_RF.val()), energyRemaining);
-
+            double toSend = Math.min(energy * MekanismConfig.current().general.FROM_RF.val(), energyRemaining);
             if (!simulate) {
                 setEnergy(theItem, getEnergy(theItem) - toSend);
             }
-
             return MekanismUtils.clampToInt(toSend * MekanismConfig.current().general.TO_RF.val());
         }
-
         return 0;
     }
 
@@ -207,12 +198,10 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
     public void onEntityAttacked(LivingAttackEvent event) {
         EntityLivingBase base = event.getEntityLiving();
         ItemStack stack = base.getItemStackFromSlot(EntityEquipmentSlot.FEET);
-
         if (!stack.isEmpty() && stack.getItem() instanceof ItemFreeRunners) {
             ItemFreeRunners boots = (ItemFreeRunners) stack.getItem();
-
             if (boots.getMode(stack) == FreeRunnerMode.NORMAL && boots.getEnergy(stack) > 0
-                  && event.getSource() == DamageSource.FALL) {
+                && event.getSource() == DamageSource.FALL) {
                 boots.setEnergy(stack, boots.getEnergy(stack) - event.getAmount() * 50);
                 event.setCanceled(true);
             }

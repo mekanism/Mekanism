@@ -28,10 +28,8 @@ public class GasOutput extends MachineOutput<GasOutput> {
     public boolean applyOutputs(GasTank gasTank, boolean doEmit, int scale) {
         if (gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount * scale) {
             gasTank.receive(output.copy().withAmount(output.amount * scale), doEmit);
-
             return true;
         }
-
         return false;
     }
 }

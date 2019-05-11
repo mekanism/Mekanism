@@ -37,7 +37,6 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     public TileComponentChunkLoader(TileEntityContainerBlock tile) {
         tileEntity = tile;
-
         tile.components.add(this);
     }
 
@@ -48,10 +47,8 @@ public class TileComponentChunkLoader implements ITileComponent {
                     ForgeChunkManager.unforceChunk(chunkTicket, chunk);
                 }
             }
-
             ForgeChunkManager.releaseTicket(chunkTicket);
         }
-
         chunkTicket = t;
     }
 
@@ -68,7 +65,6 @@ public class TileComponentChunkLoader implements ITileComponent {
                     }
                 }
             }
-
             for (ChunkPos chunk : chunkSet) {
                 if (!chunkTicket.getChunkList().contains(chunk)) {
                     ForgeChunkManager.forceChunk(chunkTicket, chunk);
@@ -79,7 +75,6 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     public void refreshChunkSet() {
         IChunkLoader loader = (IChunkLoader) tileEntity;
-
         if (!chunkSet.equals(loader.getChunkSet())) {
             chunkSet = loader.getChunkSet();
             sortChunks();
@@ -88,15 +83,13 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     public void forceChunks(Ticket ticket) {
         setTicket(ticket);
-
         for (ChunkPos chunk : chunkSet) {
             ForgeChunkManager.forceChunk(chunkTicket, chunk);
         }
     }
 
     public boolean canOperate() {
-        return MekanismConfig.current().general.allowChunkloading.val() && ((IUpgradeTile) tileEntity).getComponent()
-              .getInstalledTypes().contains(Upgrade.ANCHOR);
+        return MekanismConfig.current().general.allowChunkloading.val() && ((IUpgradeTile) tileEntity).getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
     }
 
     @Override
@@ -117,8 +110,7 @@ public class TileComponentChunkLoader implements ITileComponent {
                 Ticket ticket;
                 if (tileEntity instanceof ISecurityTile) {
                     ticket = ForgeChunkManager.requestPlayerTicket(Mekanism.instance,
-                          MekanismUtils.getLastKnownUsername(((ISecurityTile) tileEntity).getSecurity().getOwnerUUID()),
-                          tileEntity.getWorld(), Type.NORMAL);
+                          MekanismUtils.getLastKnownUsername(((ISecurityTile) tileEntity).getSecurity().getOwnerUUID()), tileEntity.getWorld(), Type.NORMAL);
                 } else {
                     ticket = ForgeChunkManager.requestTicket(Mekanism.instance, tileEntity.getWorld(), Type.NORMAL);
                 }
@@ -127,7 +119,6 @@ public class TileComponentChunkLoader implements ITileComponent {
                     ticket.getModData().setInteger("x", tileEntity.getPos().getX());
                     ticket.getModData().setInteger("y", tileEntity.getPos().getY());
                     ticket.getModData().setInteger("z", tileEntity.getPos().getZ());
-
                     forceChunks(ticket);
                 }
             }
@@ -137,10 +128,8 @@ public class TileComponentChunkLoader implements ITileComponent {
     @Override
     public void read(NBTTagCompound nbtTags) {
         prevCoord = Coord4D.read(nbtTags.getCompoundTag("prevCoord"));
-
         chunkSet.clear();
         NBTTagList list = nbtTags.getTagList("chunkSet", NBT.TAG_COMPOUND);
-
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound compound = list.getCompoundTagAt(i);
             chunkSet.add(new ChunkPos(compound.getInteger("chunkX"), compound.getInteger("chunkZ")));
@@ -158,14 +147,12 @@ public class TileComponentChunkLoader implements ITileComponent {
         }
 
         NBTTagList list = new NBTTagList();
-
         for (ChunkPos pos : chunkSet) {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setInteger("chunkX", pos.x);
             compound.setInteger("chunkZ", pos.z);
             list.appendTag(compound);
         }
-
         nbtTags.setTag("chunkSet", list);
     }
 

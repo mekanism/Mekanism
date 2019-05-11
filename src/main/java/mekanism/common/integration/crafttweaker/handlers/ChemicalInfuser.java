@@ -26,10 +26,8 @@ public class ChemicalInfuser {
     @ZenMethod
     public static void addRecipe(IGasStack leftGasInput, IGasStack rightGasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, leftGasInput, rightGasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER,
-                        new ChemicalInfuserRecipe(GasHelper.toGas(leftGasInput), GasHelper.toGas(rightGasInput),
-                              GasHelper.toGas(gasOutput))));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER, new ChemicalInfuserRecipe(GasHelper.toGas(leftGasInput),
+                  GasHelper.toGas(rightGasInput), GasHelper.toGas(gasOutput))));
         }
     }
 
@@ -37,9 +35,8 @@ public class ChemicalInfuser {
     public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient leftGasInput,
           @Optional IIngredient rightGasInput) {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER, new IngredientWrapper(gasOutput),
-                        new IngredientWrapper(leftGasInput, rightGasInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_INFUSER, new IngredientWrapper(gasOutput),
+                  new IngredientWrapper(leftGasInput, rightGasInput)));
         }
     }
 

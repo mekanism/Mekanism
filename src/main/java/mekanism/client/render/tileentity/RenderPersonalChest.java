@@ -15,8 +15,7 @@ public class RenderPersonalChest extends TileEntitySpecialRenderer<TileEntityPer
     private ModelChest model = new ModelChest();
 
     @Override
-    public void render(TileEntityPersonalChest tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityPersonalChest tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y + 1.0F, (float) z);
         GlStateManager.rotate(90, 0.0F, 1.0F, 0.0F);

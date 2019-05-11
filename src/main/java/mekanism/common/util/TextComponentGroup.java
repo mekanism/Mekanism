@@ -31,11 +31,9 @@ public class TextComponentGroup extends TextComponentString {
     public TextComponentGroup createCopy() {
         TextComponentGroup textcomponentstring = new TextComponentGroup();
         textcomponentstring.setStyle(this.getStyle().createShallowCopy());
-
         for (ITextComponent itextcomponent : this.getSiblings()) {
             textcomponentstring.appendSibling(itextcomponent.createCopy());
         }
-
         return textcomponentstring;
     }
 

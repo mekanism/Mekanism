@@ -4,12 +4,13 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.tier.InductionCellTier;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -24,21 +25,16 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     }
 
     public String getName() {
-        return LangUtils.localize(
-              getBlockType().getTranslationKey() + ".InductionCell" + tier.getBaseTier().getSimpleName() + ".name");
+        return LangUtils.localize(getBlockType().getTranslationKey() + ".InductionCell" + tier.getBaseTier().getSimpleName() + ".name");
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             InductionCellTier prevTier = tier;
-
             tier = InductionCellTier.values()[dataStream.readInt()];
-
             super.handlePacketData(dataStream);
-
             electricityStored = dataStream.readDouble();
-
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -48,18 +44,14 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(tier.ordinal());
-
         super.getNetworkedData(data);
-
         data.add(electricityStored);
-
         return data;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         tier = InductionCellTier.values()[nbtTags.getInteger("tier")];
         electricityStored = nbtTags.getDouble("electricityStored");
     }
@@ -68,10 +60,8 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("tier", tier.ordinal());
         nbtTags.setDouble("electricityStored", electricityStored);
-
         return nbtTags;
     }
 
@@ -91,13 +81,12 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
     }
 
     @Override
-    public boolean hasCapability(@Nonnull net.minecraftforge.common.capabilities.Capability<?> capability,
-          net.minecraft.util.EnumFacing facing) {
+    public boolean hasCapability(@Nonnull net.minecraftforge.common.capabilities.Capability<?> capability, EnumFacing facing) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, net.minecraft.util.EnumFacing facing) {
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
             return Capabilities.ENERGY_STORAGE_CAPABILITY.cast(this);
         }

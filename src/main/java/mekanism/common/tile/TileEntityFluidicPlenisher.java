@@ -51,8 +51,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable,
-      IFluidHandlerWrapper, ISustainedTank, IUpgradeTile, IRedstoneControl, ISecurityTile {
+public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
+      IUpgradeTile, IRedstoneControl, ISecurityTile {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
@@ -87,7 +87,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     public void onUpdate() {
         if (!world.isRemote) {
             ChargeUtils.discharge(2, this);
-
             if (FluidContainerUtils.isFluidContainer(inventory.get(0))) {
                 FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, 0, 1, new FluidChecker() {
                     @Override
@@ -97,12 +96,10 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
                 });
             }
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid() != null
-                  && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
+            if (MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
                 if (!finishedCalc) {
                     setEnergy(getEnergy() - energyPerTick);
                 }
-
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
@@ -113,16 +110,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 
                         if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= Fluid.BUCKET_VOLUME) {
                             if (fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
-                                world.setBlockState(below.getPos(),
-                                      MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(),
-                                      3);
-
+                                world.setBlockState(below.getPos(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getDefaultState(), 3);
                                 setEnergy(getEnergy() - energyPerTick);
                                 fluidTank.drain(Fluid.BUCKET_VOLUME, true);
                             }
                         }
                     }
-
                     operatingTicks = 0;
                 }
             }
@@ -134,16 +127,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
             finishedCalc = true;
             return;
         }
-
         if (activeNodes.isEmpty()) {
             if (usedNodes.isEmpty()) {
                 Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
-
                 if (!canReplace(below, true, true)) {
                     finishedCalc = true;
                     return;
                 }
-
                 activeNodes.add(below);
             } else {
                 finishedCalc = true;
@@ -152,32 +142,26 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         }
 
         Set<Coord4D> toRemove = new HashSet<>();
-
         for (Coord4D coord : activeNodes) {
             if (coord.exists(world)) {
                 FluidStack fluid = fluidTank.getFluid();
                 if (canReplace(coord, true, false) && fluid != null) {
-                    world.setBlockState(coord.getPos(),
-                          MekanismUtils.getFlowingBlock(fluid.getFluid()).getDefaultState(), 3);
-
+                    world.setBlockState(coord.getPos(), MekanismUtils.getFlowingBlock(fluid.getFluid()).getDefaultState(), 3);
                     fluidTank.drain(Fluid.BUCKET_VOLUME, true);
                 }
 
                 for (EnumFacing dir : dirs) {
                     Coord4D sideCoord = coord.offset(dir);
-
                     if (sideCoord.exists(world) && canReplace(sideCoord, true, true)) {
                         activeNodes.add(sideCoord);
                     }
                 }
-
                 toRemove.add(coord);
                 break;
             } else {
                 toRemove.add(coord);
             }
         }
-
         usedNodes.addAll(toRemove);
         activeNodes.removeAll(toRemove);
     }
@@ -186,26 +170,21 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         if (checkNodes && usedNodes.contains(coord)) {
             return false;
         }
-
         if (coord.isAirBlock(world) || MekanismUtils.isDeadFluid(world, coord)) {
             return true;
         }
-
         if (MekanismUtils.isFluid(world, coord)) {
             return isPathfinding;
         }
-
         return coord.getBlock(world).isReplaceable(world, coord.getPos());
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             finishedCalc = dataStream.readBoolean();
             controlType = RedstoneControl.values()[dataStream.readInt()];
-
             TileUtils.readTankData(dataStream, fluidTank);
         }
     }
@@ -213,12 +192,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(finishedCalc);
         data.add(controlType.ordinal());
-
         TileUtils.addTankData(data, fluidTank);
-
         return data;
     }
 
@@ -226,7 +202,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setBoolean("finishedCalc", finishedCalc);
         nbtTags.setInteger("controlType", controlType.ordinal());
@@ -236,34 +211,28 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         }
 
         NBTTagList activeList = new NBTTagList();
-
         for (Coord4D wrapper : activeNodes) {
             NBTTagCompound tagCompound = new NBTTagCompound();
             wrapper.write(tagCompound);
             activeList.appendTag(tagCompound);
         }
-
         if (activeList.tagCount() != 0) {
             nbtTags.setTag("activeNodes", activeList);
         }
 
         NBTTagList usedList = new NBTTagList();
-
         for (Coord4D obj : usedNodes) {
             activeList.appendTag(obj.write(new NBTTagCompound()));
         }
-
         if (activeList.tagCount() != 0) {
             nbtTags.setTag("usedNodes", usedList);
         }
-
         return nbtTags;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         operatingTicks = nbtTags.getInteger("operatingTicks");
         finishedCalc = nbtTags.getBoolean("finishedCalc");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
@@ -279,7 +248,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
                 activeNodes.add(Coord4D.read(tagList.getCompoundTagAt(i)));
             }
         }
-
         if (nbtTags.hasKey("usedNodes")) {
             NBTTagList tagList = nbtTags.getTagList("usedNodes", NBT.TAG_COMPOUND);
 
@@ -299,7 +267,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         } else if (slotID == 2) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
-
         return false;
     }
 
@@ -307,10 +274,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 2) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else {
-            return slotID == 1;
         }
-
+        return slotID == 1;
     }
 
     @Override
@@ -330,9 +295,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
             return new int[]{0};
         } else if (side == EnumFacing.DOWN) {
             return new int[]{1};
-        } else {
-            return new int[]{2};
         }
+        return new int[]{2};
     }
 
     @Override
@@ -340,7 +304,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         if (direction == EnumFacing.UP) {
             return new FluidTankInfo[]{fluidTank.getInfo()};
         }
-
         return PipeUtils.EMPTY;
     }
 
@@ -366,11 +329,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 
     @Override
     public FluidStack drain(EnumFacing from, @Nullable FluidStack resource, boolean doDrain) {
-        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid()
-              && from == EnumFacing.UP) {
+        if (resource != null && fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.UP) {
             return drain(from, resource.amount, doDrain);
         }
-
         return null;
     }
 
@@ -379,7 +340,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         if (from == EnumFacing.UP && resource != null && resource.getFluid().canBePlacedInWorld()) {
             return fluidTank.fill(resource, true);
         }
-
         return 0;
     }
 
@@ -403,10 +363,8 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         activeNodes.clear();
         usedNodes.clear();
         finishedCalc = false;
-
-        player.sendMessage(
-              new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY + LangUtils
-                    .localize("tooltip.configurator.plenisherReset")));
+        player.sendMessage(new TextComponentString(EnumColor.DARK_BLUE + Mekanism.LOG_TAG + " " + EnumColor.GREY +
+                                                   LangUtils.localize("tooltip.configurator.plenisherReset")));
 
         return EnumActionResult.SUCCESS;
     }
@@ -418,9 +376,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.CONFIGURABLE_CAPABILITY
-              || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
-              || super.hasCapability(capability, side);
+        return capability == Capabilities.CONFIGURABLE_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
@@ -428,11 +384,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.cast(this);
         }
-
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -447,7 +401,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
             activeNodes.clear();
             usedNodes.clear();
             finishedCalc = false;
-
             return new Object[]{"Plenisher calculation reset."};
         }
         throw new NoSuchMethodException();
@@ -461,7 +414,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
     @Override
     public void recalculateUpgradables(Upgrade upgrade) {
         super.recalculateUpgradables(upgrade);
-
         switch (upgrade) {
             case SPEED:
                 ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);

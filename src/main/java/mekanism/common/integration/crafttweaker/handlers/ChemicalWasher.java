@@ -26,17 +26,16 @@ public class ChemicalWasher {
     @ZenMethod
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER,
-                  new WasherRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput))));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER, new WasherRecipe(GasHelper.toGas(gasInput),
+                  GasHelper.toGas(gasOutput))));
         }
     }
 
     @ZenMethod
     public static void removeRecipe(IIngredient gasOutput, @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, gasOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER, new IngredientWrapper(gasOutput),
-                        new IngredientWrapper(gasInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.CHEMICAL_WASHER, new IngredientWrapper(gasOutput),
+                  new IngredientWrapper(gasInput)));
         }
     }
 

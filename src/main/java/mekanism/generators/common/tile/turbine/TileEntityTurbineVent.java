@@ -27,18 +27,12 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (structure != null && structure.flowRemaining > 0) {
             FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, structure.flowRemaining);
-
             for (EnumFacing side : EnumFacing.VALUES) {
                 TileEntity tile = Coord4D.get(this).offset(side).getTileEntity(world);
-
-                if (CapabilityUtils
-                      .hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
-                    IFluidHandler handler = CapabilityUtils
-                          .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
-
+                if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
+                    IFluidHandler handler = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
                     if (PipeUtils.canFill(handler, fluidStack)) {
                         structure.flowRemaining -= handler.fill(fluidStack, true);
                     }
@@ -49,8 +43,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
 
     @Override
     public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{
-              fakeInfo} : PipeUtils.EMPTY;
+        return ((!world.isRemote && structure != null) || (world.isRemote && clientHasStructure)) ? new FluidTankInfo[]{fakeInfo} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -90,7 +83,6 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
                 return true;
             }
         }
-
         return super.hasCapability(capability, side);
     }
 
@@ -101,7 +93,6 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
             }
         }
-
         return super.getCapability(capability, side);
     }
 }

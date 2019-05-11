@@ -39,7 +39,6 @@ public final class ItemRegistryUtils {
         String modId = itemResourceLocation.getNamespace();
         String lowercaseModId = modId.toLowerCase(Locale.ENGLISH);
         String modName = modIDMap.computeIfAbsent(lowercaseModId, k -> WordUtils.capitalize(modId));
-
         return modName;
     }
 }

@@ -17,8 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 
 public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends
-      TileEntityOperationalMachine implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration,
-      ISideConfiguration, IConfigCardAccess {
+      TileEntityOperationalMachine implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IComputerIntegration, ISideConfiguration, IConfigCardAccess {
 
     public ResourceLocation guiLocation;
 
@@ -28,18 +27,15 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
     public TileComponentConfig configComponent;
 
     /**
-     * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound
-     * effect, and animated texture.
+     * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
      *
-     * @param soundPath - location of the sound effect
-     * @param name - full name of this machine
-     * @param baseMaxEnergy - how much energy this machine can store
+     * @param soundPath         - location of the sound effect
+     * @param name              - full name of this machine
+     * @param baseMaxEnergy     - how much energy this machine can store
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityBasicMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
-          int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+    public TileEntityBasicMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
         super("machine." + soundPath, name, baseMaxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired);
-
         guiLocation = location;
     }
 
@@ -85,13 +81,11 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, EnumFacing side) {
-        return configComponent.isCapabilityDisabled(capability, side, facing) || super
-              .isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side, facing) || super.isCapabilityDisabled(capability, side);
     }
 }

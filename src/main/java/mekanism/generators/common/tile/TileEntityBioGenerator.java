@@ -29,8 +29,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded",
-          "getBioFuel", "getBioFuelNeeded"};
+    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
     private static FluidTankInfo[] ALL_TANKS = new FluidTankInfo[0];
     /**
      * The FluidSlot biofuel instance for this generator.
@@ -48,27 +47,21 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
         if (!inventory.get(0).isEmpty()) {
             ChargeUtils.charge(1, this);
-
             FluidStack fluid = FluidUtil.getFluidContained(inventory.get(0));
-
             if (fluid != null && FluidRegistry.isFluidRegistered("bioethanol")) {
                 if (fluid.getFluid() == FluidRegistry.getFluid("bioethanol")) {
                     IFluidHandler handler = FluidUtil.getFluidHandler(inventory.get(0));
                     FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, true);
-
                     if (drained != null) {
                         bioFuelSlot.fluidStored += drained.amount;
                     }
                 }
             } else {
                 int fuel = getFuel(inventory.get(0));
-
                 if (fuel > 0) {
                     int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
-
                     if (fuel <= fuelNeeded) {
                         bioFuelSlot.fluidStored += fuel;
-
                         if (!inventory.get(0).getItem().getContainerItem(inventory.get(0)).isEmpty()) {
                             inventory.set(0, inventory.get(0).getItem().getContainerItem(inventory.get(0)));
                         } else {
@@ -78,18 +71,14 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                 }
             }
         }
-
         if (canOperate()) {
             if (!world.isRemote) {
                 setActive(true);
             }
-
             bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
             setEnergy(electricityStored + MekanismConfig.current().generators.bioGeneration.val());
-        } else {
-            if (!world.isRemote) {
-                setActive(false);
-            }
+        } else if (!world.isRemote) {
+            setActive(false);
         }
     }
 
@@ -98,20 +87,16 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         if (slotID == 0) {
             if (getFuel(itemstack) > 0) {
                 return true;
-            } else {
-                if (FluidRegistry.isFluidRegistered("bioethanol")) {
-                    FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
-                    if (fluidContained != null) {
-                        return fluidContained.getFluid() == FluidRegistry.getFluid("bioethanol");
-                    }
+            } else if (FluidRegistry.isFluidRegistered("bioethanol")) {
+                FluidStack fluidContained = FluidUtil.getFluidContained(itemstack);
+                if (fluidContained != null) {
+                    return fluidContained.getFluid() == FluidRegistry.getFluid("bioethanol");
                 }
-
-                return false;
             }
+            return false;
         } else if (slotID == 1) {
             return ChargeUtils.canBeCharged(itemstack);
         }
-
         return true;
     }
 
@@ -123,7 +108,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         bioFuelSlot.fluidStored = nbtTags.getInteger("bioFuelStored");
     }
 
@@ -131,9 +115,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("bioFuelStored", bioFuelSlot.fluidStored);
-
         return nbtTags;
     }
 
@@ -145,6 +127,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
      * Gets the scaled fuel level for the GUI.
      *
      * @param i - multiplier
+     *
      * @return Scaled fuel level
      */
     public int getScaledFuelLevel(int i) {
@@ -165,7 +148,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             bioFuelSlot.fluidStored = dataStream.readInt();
         }
@@ -193,7 +175,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             case 2:
                 return new Object[]{BASE_MAX_ENERGY};
             case 3:
-                return new Object[]{(BASE_MAX_ENERGY - electricityStored)};
+                return new Object[]{BASE_MAX_ENERGY - electricityStored};
             case 4:
                 return new Object[]{bioFuelSlot.fluidStored};
             case 5:
@@ -210,21 +192,17 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
                 int fuelTransfer;
                 int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
                 int attemptTransfer = resource.amount;
-
                 if (attemptTransfer <= fuelNeeded) {
                     fuelTransfer = attemptTransfer;
                 } else {
                     fuelTransfer = fuelNeeded;
                 }
-
                 if (doFill) {
                     bioFuelSlot.setFluid(bioFuelSlot.fluidStored + fuelTransfer);
                 }
-
                 return fuelTransfer;
             }
         }
-
         return 0;
     }
 
@@ -265,8 +243,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super
-              .hasCapability(capability, side);
+        return (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) || super.hasCapability(capability, side);
     }
 
     @Override
@@ -274,7 +251,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         if (side != facing && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new FluidHandlerWrapper(this, side));
         }
-
         return super.getCapability(capability, side);
     }
 

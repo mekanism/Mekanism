@@ -11,12 +11,12 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.ITierItem;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.multipart.MultipartMekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.PipeTier;
@@ -56,69 +56,47 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
     }
 
     @Override
-    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world,
-          @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState state) {
+    public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY,
+          float hitZ, @Nonnull IBlockState state) {
         boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, state);
-
         if (place) {
             TileEntitySidedPipe tileEntity = (TileEntitySidedPipe) world.getTileEntity(pos);
             tileEntity.setBaseTier(getBaseTier(stack));
-
             if (!world.isRemote) {
-                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
-                      tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new TileNetworkList())),
+                      new Range4D(Coord4D.get(tileEntity)));
             }
         }
-
         return place;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
-          @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             TransmissionType transmission = TransmitterType.values()[itemstack.getItemDamage()].getTransmission();
             BaseTier tier = getBaseTier(itemstack);
-
             if (transmission == TransmissionType.ENERGY) {
-                list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils
-                            .getEnergyDisplay(CableTier.get(tier).getCableCapacity()) + "/t");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY +
+                         MekanismUtils.getEnergyDisplay(CableTier.get(tier).getCableCapacity()) + "/t");
             } else if (transmission == TransmissionType.FLUID) {
-                list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + PipeTier
-                            .get(tier).getPipeCapacity() + "mB/t");
-                list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + PipeTier
-                            .get(tier).getPipePullAmount() + "mB/t");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + PipeTier.get(tier).getPipeCapacity() + "mB/t");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + PipeTier.get(tier).getPipePullAmount() + "mB/t");
             } else if (transmission == TransmissionType.GAS) {
-                list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + TubeTier
-                            .get(tier).getTubeCapacity() + "mB/t");
-                list.add(
-                      EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + TubeTier
-                            .get(tier).getTubePullAmount() + "mB/t");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + TubeTier.get(tier).getTubeCapacity() + "mB/t");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + TubeTier.get(tier).getTubePullAmount() + "mB/t");
             } else if (transmission == TransmissionType.ITEM) {
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (
-                      TransporterTier.get(tier).getSpeed() / (100 / 20)) + " m/s");
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY
-                      + TransporterTier.get(tier).getPullAmount() * 2 + "/s");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (TransporterTier.get(tier).getSpeed() / (100 / 20)) + " m/s");
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + TransporterTier.get(tier).getPullAmount() * 2 + "/s");
             } else if (transmission == TransmissionType.HEAT) {
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY
-                      + ConductorTier.get(tier).getInverseConduction());
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY
-                      + ConductorTier.get(tier).getBaseConductionInsulation());
-                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY
-                      + ConductorTier.get(tier).getInverseHeatCapacity());
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.conduction") + ": " + EnumColor.GREY + ConductorTier.get(tier).getInverseConduction());
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.insulation") + ": " + EnumColor.GREY + ConductorTier.get(tier).getBaseConductionInsulation());
+                list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.heatCapacity") + ": " + EnumColor.GREY + ConductorTier.get(tier).getInverseHeatCapacity());
             }
-
-            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings
-                  .getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils
-                  .localize("tooltip.forDetails"));
+            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) +
+                     EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
         } else {
             TransmitterType type = TransmitterType.values()[itemstack.getItemDamage()];
-
             switch (type) {
                 case UNIVERSAL_CABLE: {
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
@@ -129,8 +107,7 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
                 }
                 case MECHANICAL_PIPE: {
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.fluids") + " " + EnumColor.GREY
-                          + "(MinecraftForge)");
+                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
                     break;
                 }
                 case PRESSURIZED_TUBE: {
@@ -140,27 +117,21 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
                 }
                 case LOGISTICAL_TRANSPORTER: {
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils
-                          .localize("tooltip.universal") + ")");
-                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils
-                          .localize("tooltip.universal") + ")");
+                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
+                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     break;
                 }
                 case RESTRICTIVE_TRANSPORTER: {
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils
-                          .localize("tooltip.universal") + ")");
-                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils
-                          .localize("tooltip.universal") + ")");
+                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
+                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.restrictiveDesc"));
                     break;
                 }
                 case DIVERSION_TRANSPORTER: {
                     list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
-                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils
-                          .localize("tooltip.universal") + ")");
-                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils
-                          .localize("tooltip.universal") + ")");
+                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
+                    list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
                     list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.diversionDesc"));
                     break;
                 }
@@ -178,12 +149,10 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
     public String getTranslationKey(ItemStack stack) {
         TransmitterType type = TransmitterType.get(stack.getItemDamage());
         String name = type.getTranslationKey();
-
         if (type.hasTiers()) {
             BaseTier tier = getBaseTier(stack);
             name = tier.getSimpleName() + name;
         }
-
         return getTranslationKey() + "." + name;
     }
 
@@ -192,7 +161,6 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
         if (!itemstack.hasTagCompound()) {
             return BaseTier.BASIC;
         }
-
         return BaseTier.values()[itemstack.getTagCompound().getInteger("tier")];
     }
 
@@ -201,7 +169,6 @@ public class ItemBlockTransmitter extends ItemBlockMultipartAble implements ITie
         if (!itemstack.hasTagCompound()) {
             itemstack.setTagCompound(new NBTTagCompound());
         }
-
         itemstack.getTagCompound().setInteger("tier", tier.ordinal());
     }
 

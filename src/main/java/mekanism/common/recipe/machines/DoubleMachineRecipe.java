@@ -5,8 +5,7 @@ import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public abstract class DoubleMachineRecipe<RECIPE extends DoubleMachineRecipe<RECIPE>> extends
-      MachineRecipe<DoubleMachineInput, ItemStackOutput, RECIPE> {
+public abstract class DoubleMachineRecipe<RECIPE extends DoubleMachineRecipe<RECIPE>> extends MachineRecipe<DoubleMachineInput, ItemStackOutput, RECIPE> {
 
     public DoubleMachineRecipe(DoubleMachineInput input, ItemStackOutput output) {
         super(input, output);
@@ -21,8 +20,7 @@ public abstract class DoubleMachineRecipe<RECIPE extends DoubleMachineRecipe<REC
     }
 
     public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex) {
-        return inputMatches(inventory, inputIndex, extraIndex) && getOutput()
-              .applyOutputs(inventory, outputIndex, false);
+        return inputMatches(inventory, inputIndex, extraIndex) && getOutput().applyOutputs(inventory, outputIndex, false);
     }
 
     public void operate(NonNullList<ItemStack> inventory, int inputIndex, int extraIndex, int outputIndex) {

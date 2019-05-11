@@ -11,8 +11,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultCableOutputter implements IStrictEnergyOutputter {
 
     public static void register() {
-        CapabilityManager.INSTANCE
-              .register(IStrictEnergyOutputter.class, new NullStorage<>(), DefaultCableOutputter::new);
+        CapabilityManager.INSTANCE.register(IStrictEnergyOutputter.class, new NullStorage<>(), DefaultCableOutputter::new);
     }
 
     @Override

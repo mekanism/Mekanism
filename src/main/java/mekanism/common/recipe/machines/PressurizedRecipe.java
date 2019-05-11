@@ -16,24 +16,18 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
 
     public int ticks;
 
-    public PressurizedRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid,
-          GasStack outputGas, double energy, int duration) {
-        this(new PressurizedInput(inputSolid, inputFluid, inputGas), new PressurizedOutput(outputSolid, outputGas),
-              energy, duration);
+    public PressurizedRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double energy, int duration) {
+        this(new PressurizedInput(inputSolid, inputFluid, inputGas), new PressurizedOutput(outputSolid, outputGas), energy, duration);
     }
 
-    public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts, double energy,
-          int duration) {
+    public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts, double energy, int duration) {
         super(pressurizedInput, pressurizedProducts);
-
         extraEnergy = energy;
         ticks = duration;
     }
 
-    public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts,
-          NBTTagCompound extraNBT) {
+    public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts, NBTTagCompound extraNBT) {
         super(pressurizedInput, pressurizedProducts);
-
         extraEnergy = extraNBT.getDouble("extraEnergy");
         ticks = extraNBT.getInteger("duration");
     }
@@ -43,14 +37,11 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
         return new PressurizedRecipe(getInput().copy(), getOutput().copy(), extraEnergy, ticks);
     }
 
-    public boolean canOperate(NonNullList<ItemStack> inventory, FluidTank inputFluidTank, GasTank inputGasTank,
-          GasTank outputGasTank) {
-        return getInput().use(inventory, 0, inputFluidTank, inputGasTank, false) && getOutput()
-              .applyOutputs(inventory, 2, outputGasTank, false);
+    public boolean canOperate(NonNullList<ItemStack> inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank) {
+        return getInput().use(inventory, 0, inputFluidTank, inputGasTank, false) && getOutput().applyOutputs(inventory, 2, outputGasTank, false);
     }
 
-    public void operate(NonNullList<ItemStack> inventory, FluidTank inputFluidTank, GasTank inputGasTank,
-          GasTank outputGasTank) {
+    public void operate(NonNullList<ItemStack> inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank) {
         if (getInput().use(inventory, 0, inputFluidTank, inputGasTank, true)) {
             getOutput().applyOutputs(inventory, 2, outputGasTank, true);
         }

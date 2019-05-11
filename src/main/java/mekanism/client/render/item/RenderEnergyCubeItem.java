@@ -7,8 +7,8 @@ import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.SideData.IOState;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.ITierItem;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -42,8 +42,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
         for (EnumFacing side : EnumFacing.VALUES) {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
-            energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier,
-                  Minecraft.getMinecraft().renderEngine);
+            energyCube.renderSide(0.0625F, side, side == EnumFacing.NORTH ? IOState.OUTPUT : IOState.INPUT, tier, Minecraft.getMinecraft().renderEngine);
         }
 
         MekanismRenderer.blendOff();
@@ -62,8 +61,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GL11.glColor4f((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F,
-                  (float) (energy / tier.getMaxEnergy()));
+            GL11.glColor4f((float) c[0] / 255F, (float) c[1] / 255F, (float) c[2] / 255F, (float) (energy / tier.getMaxEnergy()));
             GlStateManager.translate(0, (float) Math.sin(Math.toRadians(MekanismClient.ticksPassed * 3)) / 7, 0);
             GlStateManager.rotate(MekanismClient.ticksPassed * 4, 0, 1, 0);
             GlStateManager.rotate(36F + MekanismClient.ticksPassed * 4, 0, 1, 1);

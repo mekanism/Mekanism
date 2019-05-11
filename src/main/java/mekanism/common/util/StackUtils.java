@@ -22,23 +22,18 @@ public final class StackUtils {
         if (wild.isEmpty() && check.isEmpty()) {
             return true;
         }
-
-        return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE
-              || check.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check
-              .getItemDamage());
+        return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || check.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
+                                                     wild.getItemDamage() == check.getItemDamage());
     }
 
     //ignores count
     public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check) {
         boolean wildcard = equalsWildcard(wild, check);
-
         if (wild.isEmpty() || check.isEmpty()) {
             return wildcard;
         }
-
-        return wildcard && (!wild.hasTagCompound() ? !check.hasTagCompound()
-              : (wild.getTagCompound() == check.getTagCompound() || wild.getTagCompound()
-                    .equals(check.getTagCompound())));
+        return wildcard && (!wild.hasTagCompound() ? !check.hasTagCompound() : (wild.getTagCompound() == check.getTagCompound() ||
+                                                                                wild.getTagCompound().equals(check.getTagCompound())));
     }
 
     //assumes stacks same
@@ -48,7 +43,6 @@ public final class StackUtils {
         } else if (stack2.isEmpty()) {
             return stack1;
         }
-
         return size(stack1, stack1.getCount() - stack2.getCount());
     }
 
@@ -56,26 +50,21 @@ public final class StackUtils {
         if (size <= 0 || stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-
         ItemStack ret = stack.copy();
         ret.setCount(size);
-
         return ret;
     }
 
     public static List<ItemStack> getMergeRejects(NonNullList<ItemStack> orig, NonNullList<ItemStack> toAdd) {
         List<ItemStack> ret = new ArrayList<>();
-
         for (int i = 0; i < toAdd.size(); i++) {
             if (!toAdd.get(i).isEmpty()) {
                 ItemStack reject = getMergeReject(orig.get(i), toAdd.get(i));
-
                 if (!reject.isEmpty()) {
                     ret.add(reject);
                 }
             }
         }
-
         return ret;
     }
 
@@ -91,15 +80,12 @@ public final class StackUtils {
         if (orig.isEmpty()) {
             return toAdd;
         }
-
         if (toAdd.isEmpty()) {
             return orig;
         }
-
         if (!orig.isItemEqual(toAdd) || !ItemStack.areItemStackTagsEqual(orig, toAdd)) {
             return orig;
         }
-
         return size(orig, Math.min(orig.getMaxStackSize(), orig.getCount() + toAdd.getCount()));
     }
 
@@ -107,29 +93,23 @@ public final class StackUtils {
         if (orig.isEmpty()) {
             return ItemStack.EMPTY;
         }
-
         if (toAdd.isEmpty()) {
             return orig;
         }
-
         if (!orig.isItemEqual(toAdd) || !ItemStack.areItemStackTagsEqual(orig, toAdd)) {
             return orig;
         }
-
         int newSize = orig.getCount() + toAdd.getCount();
-
         if (newSize > orig.getMaxStackSize()) {
             return size(orig, newSize - orig.getMaxStackSize());
-        } else {
-            return size(orig, newSize);
         }
+        return size(orig, newSize);
     }
 
     public static int hashItemStack(ItemStack stack) {
         if (stack.isEmpty()) {
             return -1;
         }
-
         ResourceLocation registryName = stack.getItem().getRegistryName();
         int nameHash = registryName == null ? 0 : registryName.hashCode();
         return nameHash << 8 | stack.getMetadata();
@@ -138,15 +118,17 @@ public final class StackUtils {
     /**
      * Get state for placement for a generic item, with our fake player
      *
-     * @param stack the item to place
-     * @param world which universe
-     * @param pos where
+     * @param stack  the item to place
+     * @param world  which universe
+     * @param pos    where
      * @param player our fake player, usually
-     * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing, float, float, float, int, net.minecraft.entity.EntityLivingBase, net.minecraft.util.EnumHand)}
+     *
+     * @return the result of {@link Block#getStateForPlacement(net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing, float, float,
+     * float, int, net.minecraft.entity.EntityLivingBase, net.minecraft.util.EnumHand)}
      */
     @Nonnull
     public static IBlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, EntityPlayer player) {
         Block blockFromItem = Block.getBlockFromItem(stack.getItem());
-        return blockFromItem.getStateForPlacement(world, pos, EnumFacing.UP, 0,0,0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
+        return blockFromItem.getStateForPlacement(world, pos, EnumFacing.UP, 0, 0, 0, stack.getMetadata(), player, EnumHand.MAIN_HAND);
     }
 }

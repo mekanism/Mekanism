@@ -30,7 +30,6 @@ public class InfuseRegistry {
         if (infuseTypes.containsKey(infuse.name)) {
             return;
         }
-
         infuseTypes.put(infuse.name, infuse);
     }
 
@@ -38,13 +37,13 @@ public class InfuseRegistry {
      * Gets an InfuseType from it's name, or null if it doesn't exist.
      *
      * @param name - the name of the InfuseType to get
+     *
      * @return the name's corresponding InfuseType
      */
     public static InfuseType get(String name) {
         if (name.equals("null")) {
             return null;
         }
-
         return infuseTypes.get(name);
     }
 
@@ -52,6 +51,7 @@ public class InfuseRegistry {
      * Whether or not the registry contains a correspondent InfuseType to a name.
      *
      * @param name - the name to check
+     *
      * @return if the name has a coorespondent InfuseType
      */
     public static boolean contains(String name) {
@@ -59,19 +59,17 @@ public class InfuseRegistry {
     }
 
     /**
-     * Registers a block or item that serves as an infuse object.  An infuse object will store a certain type and amount
-     * of infuse, and will deliver this amount to the Metallurgic Infuser's buffer of infuse.  The item's stack size
-     * will be decremented when it is placed in the Metallurgic Infuser's infuse slot, and the machine can accept the
-     * type and amount of infuse stored in the object.
+     * Registers a block or item that serves as an infuse object.  An infuse object will store a certain type and amount of infuse, and will deliver this amount to the
+     * Metallurgic Infuser's buffer of infuse.  The item's stack size will be decremented when it is placed in the Metallurgic Infuser's infuse slot, and the machine can
+     * accept the type and amount of infuse stored in the object.
      *
-     * @param itemStack - stack the infuse object is linked to -- stack size is ignored
+     * @param itemStack    - stack the infuse object is linked to -- stack size is ignored
      * @param infuseObject - the infuse object with the type and amount data
      */
     public static void registerInfuseObject(ItemStack itemStack, InfuseObject infuseObject) {
         if (getObject(itemStack) != null) {
             return;
         }
-
         infuseObjects.put(itemStack, infuseObject);
     }
 
@@ -79,6 +77,7 @@ public class InfuseRegistry {
      * Gets the InfuseObject data from an ItemStack.
      *
      * @param itemStack - the ItemStack to check
+     *
      * @return the ItemStack's InfuseObject
      */
     public static InfuseObject getObject(ItemStack itemStack) {
@@ -87,7 +86,6 @@ public class InfuseRegistry {
                 return obj.getValue();
             }
         }
-
         return null;
     }
 

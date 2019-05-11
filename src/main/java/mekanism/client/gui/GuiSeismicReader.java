@@ -46,7 +46,6 @@ public class GuiSeismicReader extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-
         upButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 75, 13, 13);
         downButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 92, 13, 13);
         tooltip = new Rectangle((width - xSize) / 2 + 30, (height - ySize) / 2 + 82, 16, 16);
@@ -75,8 +74,7 @@ public class GuiSeismicReader extends GuiScreen {
             GL11.glColor3f(0.5f, 0.5f, 1f);
         }
 
-        drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(),
-              downButton.getHeight());
+        drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
         GL11.glColor3f(1, 1, 1);
 
         // Fix the overlapping if > 100
@@ -120,8 +118,7 @@ public class GuiSeismicReader extends GuiScreen {
 
         // Get the name from the stack and render it
         if (currentLayer - 1 >= 0) {
-            ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 1,
-                  blockList.get(currentLayer - 1).getLeft());
+            ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 1, blockList.get(currentLayer - 1).getLeft());
             String renderString = nameStack.getDisplayName();
 
             String capitalised = renderString.substring(0, 1).toUpperCase() + renderString.substring(1);
@@ -153,8 +150,7 @@ public class GuiSeismicReader extends GuiScreen {
             if (blockList.get(currentLayer - 1) != null) {
                 Block block = blockList.get(currentLayer - 1).getRight();
 
-                if (pair.getRight() == block && Objects
-                      .equals(pair.getLeft(), blockList.get(currentLayer - 1).getLeft())) {
+                if (pair.getRight() == block && Objects.equals(pair.getLeft(), blockList.get(currentLayer - 1).getLeft())) {
                     frequency++;
                 }
             }
@@ -170,20 +166,17 @@ public class GuiSeismicReader extends GuiScreen {
 
     public String wrapString(String str, int index) {
         String string = str;
-
         for (int i = 0; i < string.length(); i++) {
             if (i == index) {
                 string = string.substring(0, i) + "\n" + string.substring(i);
             }
         }
-
         return string;
     }
 
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-
         blockList.clear();
     }
 
@@ -192,7 +185,6 @@ public class GuiSeismicReader extends GuiScreen {
             IBlockState state = worldObj.getBlockState(p);
             Block block = state.getBlock();
             int metadata = block.getMetaFromState(state);
-
             blockList.add(Pair.of(metadata, block));
         }
     }
@@ -200,7 +192,6 @@ public class GuiSeismicReader extends GuiScreen {
     @Override
     protected void mouseClicked(int xPos, int yPos, int buttonClicked) throws IOException {
         super.mouseClicked(xPos, yPos, buttonClicked);
-
         if (upButton.intersects(new Rectangle(xPos, yPos, 1, 1))) {
             if (currentLayer + 1 <= blockList.size() - 1) {
                 currentLayer++;

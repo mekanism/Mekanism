@@ -108,70 +108,50 @@ public class ToolsItems {
         GlowstoneShovel = init(new ItemMekanismShovel(MekanismTools.toolGLOWSTONE), "GlowstoneShovel");
         GlowstoneHoe = init(new ItemMekanismHoe(MekanismTools.toolGLOWSTONE), "GlowstoneHoe");
         GlowstoneSword = init(new ItemMekanismSword(MekanismTools.toolGLOWSTONE), "GlowstoneSword");
-        GlowstoneHelmet = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 0, EntityEquipmentSlot.HEAD),
-              "GlowstoneHelmet");
-        GlowstoneChestplate = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 1, EntityEquipmentSlot.CHEST),
-              "GlowstoneChestplate");
-        GlowstoneLeggings = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 2, EntityEquipmentSlot.LEGS),
-              "GlowstoneLeggings");
-        GlowstoneBoots = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 3, EntityEquipmentSlot.FEET),
-              "GlowstoneBoots");
+        GlowstoneHelmet = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 0, EntityEquipmentSlot.HEAD), "GlowstoneHelmet");
+        GlowstoneChestplate = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 1, EntityEquipmentSlot.CHEST), "GlowstoneChestplate");
+        GlowstoneLeggings = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 2, EntityEquipmentSlot.LEGS), "GlowstoneLeggings");
+        GlowstoneBoots = init(new ItemMekanismArmor(MekanismTools.armorGLOWSTONE, 3, EntityEquipmentSlot.FEET), "GlowstoneBoots");
         BronzePaxel = init(new ItemMekanismPaxel(MekanismTools.toolBRONZE2), "BronzePaxel");
         BronzePickaxe = init(new ItemMekanismPickaxe(MekanismTools.toolBRONZE), "BronzePickaxe");
         BronzeAxe = init(new ItemMekanismAxe(MekanismTools.toolBRONZE), "BronzeAxe");
         BronzeShovel = init(new ItemMekanismShovel(MekanismTools.toolBRONZE), "BronzeShovel");
         BronzeHoe = init(new ItemMekanismHoe(MekanismTools.toolBRONZE), "BronzeHoe");
         BronzeSword = init(new ItemMekanismSword(MekanismTools.toolBRONZE), "BronzeSword");
-        BronzeHelmet = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 0, EntityEquipmentSlot.HEAD),
-              "BronzeHelmet");
-        BronzeChestplate = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 1, EntityEquipmentSlot.CHEST),
-              "BronzeChestplate");
-        BronzeLeggings = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 2, EntityEquipmentSlot.LEGS),
-              "BronzeLeggings");
-        BronzeBoots = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 3, EntityEquipmentSlot.FEET),
-              "BronzeBoots");
+        BronzeHelmet = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 0, EntityEquipmentSlot.HEAD), "BronzeHelmet");
+        BronzeChestplate = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 1, EntityEquipmentSlot.CHEST), "BronzeChestplate");
+        BronzeLeggings = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 2, EntityEquipmentSlot.LEGS), "BronzeLeggings");
+        BronzeBoots = init(new ItemMekanismArmor(MekanismTools.armorBRONZE, 3, EntityEquipmentSlot.FEET), "BronzeBoots");
         OsmiumPaxel = init(new ItemMekanismPaxel(MekanismTools.toolOSMIUM2), "OsmiumPaxel");
         OsmiumPickaxe = init(new ItemMekanismPickaxe(MekanismTools.toolOSMIUM), "OsmiumPickaxe");
         OsmiumAxe = init(new ItemMekanismAxe(MekanismTools.toolOSMIUM), "OsmiumAxe");
         OsmiumShovel = init(new ItemMekanismShovel(MekanismTools.toolOSMIUM), "OsmiumShovel");
         OsmiumHoe = init(new ItemMekanismHoe(MekanismTools.toolOSMIUM), "OsmiumHoe");
         OsmiumSword = init(new ItemMekanismSword(MekanismTools.toolOSMIUM), "OsmiumSword");
-        OsmiumHelmet = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 0, EntityEquipmentSlot.HEAD),
-              "OsmiumHelmet");
-        OsmiumChestplate = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 1, EntityEquipmentSlot.CHEST),
-              "OsmiumChestplate");
-        OsmiumLeggings = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 2, EntityEquipmentSlot.LEGS),
-              "OsmiumLeggings");
-        OsmiumBoots = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 3, EntityEquipmentSlot.FEET),
-              "OsmiumBoots");
+        OsmiumHelmet = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 0, EntityEquipmentSlot.HEAD), "OsmiumHelmet");
+        OsmiumChestplate = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 1, EntityEquipmentSlot.CHEST), "OsmiumChestplate");
+        OsmiumLeggings = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 2, EntityEquipmentSlot.LEGS), "OsmiumLeggings");
+        OsmiumBoots = init(new ItemMekanismArmor(MekanismTools.armorOSMIUM, 3, EntityEquipmentSlot.FEET), "OsmiumBoots");
         ObsidianPaxel = init(new ItemMekanismPaxel(MekanismTools.toolOBSIDIAN2), "ObsidianPaxel");
         ObsidianPickaxe = init(new ItemMekanismPickaxe(MekanismTools.toolOBSIDIAN), "ObsidianPickaxe");
         ObsidianAxe = init(new ItemMekanismAxe(MekanismTools.toolOBSIDIAN), "ObsidianAxe");
         ObsidianShovel = init(new ItemMekanismShovel(MekanismTools.toolOBSIDIAN), "ObsidianShovel");
         ObsidianHoe = init(new ItemMekanismHoe(MekanismTools.toolOBSIDIAN), "ObsidianHoe");
         ObsidianSword = init(new ItemMekanismSword(MekanismTools.toolOBSIDIAN), "ObsidianSword");
-        ObsidianHelmet = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 0, EntityEquipmentSlot.HEAD),
-              "ObsidianHelmet");
-        ObsidianChestplate = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 1, EntityEquipmentSlot.CHEST),
-              "ObsidianChestplate");
-        ObsidianLeggings = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 2, EntityEquipmentSlot.LEGS),
-              "ObsidianLeggings");
-        ObsidianBoots = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 3, EntityEquipmentSlot.FEET),
-              "ObsidianBoots");
+        ObsidianHelmet = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 0, EntityEquipmentSlot.HEAD), "ObsidianHelmet");
+        ObsidianChestplate = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 1, EntityEquipmentSlot.CHEST), "ObsidianChestplate");
+        ObsidianLeggings = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 2, EntityEquipmentSlot.LEGS), "ObsidianLeggings");
+        ObsidianBoots = init(new ItemMekanismArmor(MekanismTools.armorOBSIDIAN, 3, EntityEquipmentSlot.FEET), "ObsidianBoots");
         LazuliPaxel = init(new ItemMekanismPaxel(MekanismTools.toolLAZULI2), "LapisLazuliPaxel");
         LazuliPickaxe = init(new ItemMekanismPickaxe(MekanismTools.toolLAZULI), "LapisLazuliPickaxe");
         LazuliAxe = init(new ItemMekanismAxe(MekanismTools.toolLAZULI), "LapisLazuliAxe");
         LazuliShovel = init(new ItemMekanismShovel(MekanismTools.toolLAZULI), "LapisLazuliShovel");
         LazuliHoe = init(new ItemMekanismHoe(MekanismTools.toolLAZULI), "LapisLazuliHoe");
         LazuliSword = init(new ItemMekanismSword(MekanismTools.toolLAZULI), "LapisLazuliSword");
-        LazuliHelmet = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 0, EntityEquipmentSlot.HEAD),
-              "LapisLazuliHelmet");
-        LazuliChestplate = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 1, EntityEquipmentSlot.CHEST),
-              "LapisLazuliChestplate");
-        LazuliLeggings = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 2, EntityEquipmentSlot.LEGS),
-              "LapisLazuliLeggings");
-        LazuliBoots = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 3, EntityEquipmentSlot.FEET),
-              "LapisLazuliBoots");
+        LazuliHelmet = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 0, EntityEquipmentSlot.HEAD), "LapisLazuliHelmet");
+        LazuliChestplate = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 1, EntityEquipmentSlot.CHEST), "LapisLazuliChestplate");
+        LazuliLeggings = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 2, EntityEquipmentSlot.LEGS), "LapisLazuliLeggings");
+        LazuliBoots = init(new ItemMekanismArmor(MekanismTools.armorLAZULI, 3, EntityEquipmentSlot.FEET), "LapisLazuliBoots");
         SteelPaxel = init(new ItemMekanismPaxel(MekanismTools.toolSTEEL2), "SteelPaxel");
         SteelPickaxe = init(new ItemMekanismPickaxe(MekanismTools.toolSTEEL), "SteelPickaxe");
         SteelAxe = init(new ItemMekanismAxe(MekanismTools.toolSTEEL), "SteelAxe");
@@ -179,10 +159,8 @@ public class ToolsItems {
         SteelHoe = init(new ItemMekanismHoe(MekanismTools.toolSTEEL), "SteelHoe");
         SteelSword = init(new ItemMekanismSword(MekanismTools.toolSTEEL), "SteelSword");
         SteelHelmet = init(new ItemMekanismArmor(MekanismTools.armorSTEEL, 0, EntityEquipmentSlot.HEAD), "SteelHelmet");
-        SteelChestplate = init(new ItemMekanismArmor(MekanismTools.armorSTEEL, 1, EntityEquipmentSlot.CHEST),
-              "SteelChestplate");
-        SteelLeggings = init(new ItemMekanismArmor(MekanismTools.armorSTEEL, 2, EntityEquipmentSlot.LEGS),
-              "SteelLeggings");
+        SteelChestplate = init(new ItemMekanismArmor(MekanismTools.armorSTEEL, 1, EntityEquipmentSlot.CHEST), "SteelChestplate");
+        SteelLeggings = init(new ItemMekanismArmor(MekanismTools.armorSTEEL, 2, EntityEquipmentSlot.LEGS), "SteelLeggings");
         SteelBoots = init(new ItemMekanismArmor(MekanismTools.armorSTEEL, 3, EntityEquipmentSlot.FEET), "SteelBoots");
     }
 

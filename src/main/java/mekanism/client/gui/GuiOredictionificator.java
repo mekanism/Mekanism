@@ -68,7 +68,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         if (tileEntity.filters.size() <= 3) {
             return 0;
         }
-        return (int) ((tileEntity.filters.size() * scroll) - ((3F / (float) tileEntity.filters.size())) * scroll);
+        return (int) ((tileEntity.filters.size() * scroll) - (3F / (float) tileEntity.filters.size()) * scroll);
     }
 
     @Override
@@ -84,17 +84,13 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     protected void actionPerformed(GuiButton guibutton) throws IOException {
         super.actionPerformed(guibutton);
         if (guibutton.id == 0) {
-            Mekanism.packetHandler.sendToServer(
-                  new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0,
-                        0));
+            Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0));
         }
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer
-              .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
-                    6, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         for (int i = 0; i < 3; i++) {
             if (tileEntity.filters.get(getFilterIndex() + i) != null) {
@@ -147,8 +143,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (tileEntity.filters.size() > 3) {
                     dragOffset = yAxis - (getScroll() + 18);
@@ -162,11 +158,9 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 if (tileEntity.filters.get(getFilterIndex() + i) != null) {
                     int yStart = i * 22 + 18;
                     if (xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22) {
-                        OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex() + i);
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         Mekanism.packetHandler.sendToServer(
-                              new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX,
-                                    Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
+                              new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex() + i, 0));
                     }
                 }
             }
@@ -177,7 +171,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
         if (isDragging) {
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int yAxis = mouseY - (height - ySize) / 2;
             scroll = Math.min(Math.max((float) (yAxis - 18 - dragOffset) / 73F, 0), 1);
         }
     }

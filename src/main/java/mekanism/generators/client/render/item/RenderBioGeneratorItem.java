@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderBioGeneratorItem {
+
     private static ModelBioGenerator bioGenerator = new ModelBioGenerator();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {

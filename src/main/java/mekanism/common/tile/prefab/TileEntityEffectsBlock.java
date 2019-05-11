@@ -41,13 +41,12 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     /**
      * The base of all blocks that deal with electricity, make noise and potential generate ambient lighting
      *
-     * @param sound - the sound path of this block
-     * @param name - full name of this block
+     * @param sound         - the sound path of this block
+     * @param name          - full name of this block
      * @param baseMaxEnergy - how much energy this block can store
      */
     public TileEntityEffectsBlock(String sound, String name, double baseMaxEnergy) {
         super(name, baseMaxEnergy);
-
         // TODO: Have subclasses pass in a static SoundEvent so we avoid per-instance # of SoundEvents for same sound
         // TODO: Factories don't currently pass in the right value for sound ID of wrapped machine; overhaul this.
         if (!sound.equals("null")) {
@@ -65,12 +64,10 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         return 1.0f;
     }
 
-
     // Protected way for subclasses to swap out a sound
     @SideOnly(Side.CLIENT)
     protected void setSoundEvent(SoundEvent event) {
         this.soundEvent = event;
-
         // Stop the active sound if it's playing, since underlying sound might be changing
         SoundHandler.stopTileSound(getPos());
     }
@@ -118,7 +115,6 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @Override
     public void invalidate() {
         super.invalidate();
-
         if (world.isRemote) {
             updateSound();
         }
@@ -127,11 +123,9 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (world.isRemote) {
             updateSound();
         }
-
         if (world.isRemote && !isActive && lastActive > 0) {
             long updateDiff = world.getTotalWorldTime() - lastActive;
             if (updateDiff > RECENT_THRESHOLD) {
@@ -148,13 +142,10 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
 
     @Override
     public void setActive(boolean active) {
-        boolean stateChange = (isActive != active);
-
+        boolean stateChange = isActive != active;
         if (stateChange) {
             isActive = active;
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         }
     }
 
@@ -167,11 +158,9 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             boolean newActive = dataStream.readBoolean();
-
-            boolean stateChange = (newActive != isActive);
+            boolean stateChange = newActive != isActive;
             isActive = newActive;
 
             if (stateChange && !isActive) {
@@ -191,7 +180,6 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(isActive);
         return data;
     }
@@ -206,9 +194,7 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setBoolean("isActive", isActive);
-
         return nbtTags;
     }
 
@@ -216,12 +202,10 @@ public abstract class TileEntityEffectsBlock extends TileEntityElectricBlock imp
         if (!(this instanceof IUpgradeTile)) {
             return false;
         }
-
         IUpgradeTile tile = (IUpgradeTile) this;
         if (tile.getComponent().supports(Upgrade.MUFFLING)) {
             return tile.getComponent().getUpgrades(Upgrade.MUFFLING) == Upgrade.MUFFLING.getMax();
         }
-
         return false;
     }
 }

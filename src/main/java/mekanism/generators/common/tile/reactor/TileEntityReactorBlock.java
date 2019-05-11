@@ -40,14 +40,12 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
         if (reactor != fusionReactor) {
             changed = true;
         }
-
         fusionReactor = reactor;
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-
         if (getReactor() != null) {
             getReactor().formMultiblock(false);
         }
@@ -56,15 +54,12 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (changed) {
             changed = false;
         }
-
         if (!world.isRemote && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed())) {
             updateController();
         }
-
         attempted = false;
     }
 
@@ -81,7 +76,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
-
         if (!(this instanceof TileEntityReactorController) && getReactor() != null) {
             getReactor().formMultiblock(true);
         }
@@ -90,7 +84,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
     @Override
     public void onAdded() {
         super.onAdded();
-
         if (!world.isRemote) {
             if (getReactor() != null) {
                 getReactor().formMultiblock(false);
@@ -103,7 +96,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
     public void updateController() {
         if (!(this instanceof TileEntityReactorController)) {
             TileEntityReactorController found = new ControllerFinder().find();
-
             if (found != null && (found.getReactor() == null || !found.getReactor().isFormed())) {
                 found.formMultiblock(false);
             }
@@ -136,18 +128,14 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
             }
 
             iterated.add(pos);
-
             for (EnumFacing side : EnumFacing.VALUES) {
                 Coord4D coord = pos.offset(side);
-
                 if (!iterated.contains(coord) && coord.getTileEntity(world) instanceof TileEntityReactorBlock) {
                     ((TileEntityReactorBlock) coord.getTileEntity(world)).attempted = true;
-
                     if (coord.getTileEntity(world) instanceof TileEntityReactorController) {
                         found = (TileEntityReactorController) coord.getTileEntity(world);
                         return;
                     }
-
                     loop(coord);
                 }
             }
@@ -155,7 +143,6 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock {
 
         public TileEntityReactorController find() {
             loop(Coord4D.get(TileEntityReactorBlock.this));
-
             return found;
         }
     }

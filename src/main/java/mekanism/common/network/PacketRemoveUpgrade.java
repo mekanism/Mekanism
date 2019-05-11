@@ -18,15 +18,11 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
     @Override
     public IMessage onMessage(RemoveUpgradeMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-
             if (tileEntity instanceof IUpgradeTile && tileEntity instanceof TileEntityBasicBlock) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tileEntity;
                 Upgrade upgrade = Upgrade.values()[message.upgradeType];
-
                 if (upgradeTile.getComponent().getUpgrades(upgrade) > 0) {
                     if (player.inventory.addItemStackToInventory(upgrade.getStack())) {
                         upgradeTile.getComponent().removeUpgrade(upgrade);
@@ -34,7 +30,6 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
                 }
             }
         }, player);
-
         return null;
     }
 
@@ -55,14 +50,12 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
         @Override
         public void toBytes(ByteBuf dataStream) {
             coord4D.write(dataStream);
-
             dataStream.writeInt(upgradeType);
         }
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
             coord4D = Coord4D.read(dataStream);
-
             upgradeType = dataStream.readInt();
         }
     }

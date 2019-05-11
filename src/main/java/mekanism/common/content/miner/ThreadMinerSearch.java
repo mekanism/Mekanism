@@ -35,12 +35,10 @@ public class ThreadMinerSearch extends Thread {
     @Override
     public void run() {
         state = State.SEARCHING;
-
         if (!tileEntity.inverse && tileEntity.filters.isEmpty()) {
             state = State.FINISHED;
             return;
         }
-
         Coord4D coord = tileEntity.getStartingCoord();
         int diameter = tileEntity.getDiameter();
         int size = tileEntity.getTotalSize();
@@ -71,34 +69,28 @@ public class ThreadMinerSearch extends Thread {
             info.block = state.getBlock();
             info.meta = state.getBlock().getMetaFromState(state);
 
-            if (info.block == null || info.block instanceof BlockLiquid || info.block instanceof IFluidBlock
-                  || info.block.isAir(state, world, testPos)) {
+            if (info.block == null || info.block instanceof BlockLiquid || info.block instanceof IFluidBlock || info.block.isAir(state, world, testPos)) {
                 //Skip air and liquids
                 continue;
             }
 
             if (state.getBlockHardness(world, testPos) >= 0) {
                 MinerFilter filterFound = null;
-
                 if (acceptedItems.containsKey(info)) {
                     filterFound = acceptedItems.get(info);
                 } else {
                     ItemStack stack = new ItemStack(info.block, 1, info.meta);
-
                     if (tileEntity.isReplaceStack(stack)) {
                         continue;
                     }
-
                     for (MinerFilter filter : tileEntity.filters) {
                         if (filter.canFilter(stack)) {
                             filterFound = filter;
                             break;
                         }
                     }
-
                     acceptedItems.put(info, filterFound);
                 }
-
                 if (tileEntity.inverse == (filterFound == null)) {
                     set(i, new Coord4D(x, y, z, world.provider.getDimension()));
                     replaceMap.put(i, filterFound);
@@ -115,9 +107,7 @@ public class ThreadMinerSearch extends Thread {
 
     public void set(int i, Coord4D location) {
         Chunk3D chunk = new Chunk3D(location);
-
         oresToMine.computeIfAbsent(chunk, k -> new BitSet());
-
         oresToMine.get(chunk).set(i);
     }
 

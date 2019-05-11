@@ -70,8 +70,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
 
     @Override
     public void registerTESRs() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedSolarGenerator.class,
-              new RenderAdvancedSolarGenerator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedSolarGenerator.class, new RenderAdvancedSolarGenerator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBioGenerator.class, new RenderBioGenerator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasGenerator.class, new RenderGasGenerator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHeatGenerator.class, new RenderHeatGenerator());
@@ -100,13 +99,11 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy {
         ModelLoader.setCustomStateMapper(GeneratorsBlocks.ReactorGlass, reactorMapper);
 
         for (GeneratorType type : GeneratorType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta,
-                  new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
         }
 
         for (ReactorBlockType type : ReactorBlockType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta,
-                  new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(type.blockType.getBlock()), type.meta, new ModelResourceLocation("mekanismgenerators:" + type.getName(), "inventory"));
         }
     }
 

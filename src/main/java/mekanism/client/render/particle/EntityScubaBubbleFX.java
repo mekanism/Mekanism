@@ -14,10 +14,8 @@ public class EntityScubaBubbleFX extends ParticleBubble {
 
     private static Minecraft mc = FMLClientHandler.instance().getClient();
 
-    public EntityScubaBubbleFX(World world, double posX, double posY, double posZ, double velX, double velY,
-          double velZ) {
+    public EntityScubaBubbleFX(World world, double posX, double posY, double posZ, double velX, double velY, double velZ) {
         super(world, posX, posY, posZ, velX, velY, velZ);
-
         particleScale = (rand.nextFloat() * 0.2F) + 0.3F;
         particleMaxAge *= 2;
     }
@@ -25,16 +23,13 @@ public class EntityScubaBubbleFX extends ParticleBubble {
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         particleAge++;
     }
 
     @Override
-    public void renderParticle(BufferBuilder worldRendererIn, Entity entityIn, float partialTicks, float p_180434_4_,
-          float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
+    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         if (particleAge > 0) {
-            super.renderParticle(worldRendererIn, entityIn, partialTicks, p_180434_4_, p_180434_5_, p_180434_6_,
-                  p_180434_7_, p_180434_8_);
+            super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         }
     }
 }

@@ -19,9 +19,7 @@ public class ChemicalDissolutionChamberRecipeWrapper implements IRecipeWrapper {
 
     @Override
     public void getIngredients(IIngredients ingredients) {
-        ingredients.setInput(MekanismJEI.TYPE_GAS, new GasStack(MekanismFluids.SulfuricAcid,
-              TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE
-                    * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED));
+        ingredients.setInput(MekanismJEI.TYPE_GAS, new GasStack(MekanismFluids.SulfuricAcid, TileEntityChemicalDissolutionChamber.BASE_INJECT_USAGE * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED));
         ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.ingredient);
         ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.recipeOutput.output);
     }
