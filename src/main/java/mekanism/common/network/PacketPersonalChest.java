@@ -40,16 +40,14 @@ public class PacketPersonalChest implements IMessageHandler<PersonalChestMessage
                         }
                     }
                 } catch (Exception e) {
-                    Mekanism.logger.error("Error while handling electric chest open packet.");
-                    e.printStackTrace();
+                    Mekanism.logger.error("Error while handling electric chest open packet.", e);
                 }
             } else if (message.packetType == PersonalChestPacketType.CLIENT_OPEN) {
                 try {
                     Mekanism.proxy.openPersonalChest(player, message.guiType, message.windowId, message.isBlock,
                           message.coord4D == null ? BlockPos.ORIGIN : message.coord4D.getPos(), message.currentHand);
                 } catch (Exception e) {
-                    Mekanism.logger.error("Error while handling electric chest open packet.");
-                    e.printStackTrace();
+                    Mekanism.logger.error("Error while handling electric chest open packet.", e);
                 }
             }
         }, player);

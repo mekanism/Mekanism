@@ -140,8 +140,7 @@ public class PacketHandler {
                 }
             }
         } catch (Exception e) {
-            Mekanism.logger.error("Error while encoding packet data.");
-            e.printStackTrace();
+            Mekanism.logger.error("Error while encoding packet data.", e);
         }
     }
 
