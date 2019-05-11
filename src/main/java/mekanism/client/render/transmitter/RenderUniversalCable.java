@@ -11,10 +11,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable> {
 
-    public RenderUniversalCable() {
-        super();
-    }
-
     @Override
     public void render(TileEntityUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (MekanismConfig.current().client.opaqueTransmitters.val() || cable.currentPower == 0) {

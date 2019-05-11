@@ -17,10 +17,6 @@ import net.minecraft.world.World;
 
 public class ItemAlloy extends ItemMekanism {
 
-    public ItemAlloy() {
-        super();
-    }
-
     @Nonnull
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {

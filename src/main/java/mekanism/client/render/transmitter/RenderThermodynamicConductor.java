@@ -11,10 +11,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor> {
 
-    public RenderThermodynamicConductor() {
-        super();
-    }
-
     @Override
     public void render(TileEntityThermodynamicConductor transmitter, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {

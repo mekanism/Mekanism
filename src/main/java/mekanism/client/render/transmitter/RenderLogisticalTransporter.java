@@ -38,10 +38,6 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private EntityItem entityItem = new EntityItem(null);
     private Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
 
-    public RenderLogisticalTransporter() {
-        super();
-    }
-
     public static void onStitch(TextureMap map) {
         cachedOverlays.clear();
 

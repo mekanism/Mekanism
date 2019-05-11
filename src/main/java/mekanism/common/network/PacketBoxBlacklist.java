@@ -21,9 +21,6 @@ public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, 
 
     public static class BoxBlacklistMessage implements IMessage {
 
-        public BoxBlacklistMessage() {
-        }
-
         @Override
         public void toBytes(ByteBuf dataStream) {
             Set<BlockInfo> boxIgnore = MekanismAPI.getBoxIgnore();
