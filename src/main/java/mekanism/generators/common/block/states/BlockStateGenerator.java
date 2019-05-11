@@ -1,14 +1,14 @@
 package mekanism.generators.common.block.states;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockType;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.LangUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -57,7 +57,7 @@ public class BlockStateGenerator extends ExtendedBlockState {
 
         public PropertyEnum<GeneratorType> getProperty() {
             if (generatorTypeProperty == null) {
-                generatorTypeProperty = PropertyEnum.create("type", GeneratorType.class, new GeneratorBlockPredicate(this));
+                generatorTypeProperty = PropertyEnum.create("type", GeneratorType.class, input-> input != null && input.blockType == this);
             }
             return generatorTypeProperty;
         }
@@ -77,13 +77,13 @@ public class BlockStateGenerator extends ExtendedBlockState {
         BIO_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true, Plane.HORIZONTAL, false),
         ADVANCED_SOLAR_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true, Plane.HORIZONTAL, false),
         WIND_GENERATOR(GeneratorBlock.GENERATOR_BLOCK_1, 6, "WindGenerator", 5, 200000, TileEntityWindGenerator.class, true, Plane.HORIZONTAL, false),
-        TURBINE_ROTOR(GeneratorBlock.GENERATOR_BLOCK_1, 7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false, Predicates.alwaysFalse(), false),
-        ROTATIONAL_COMPLEX(GeneratorBlock.GENERATOR_BLOCK_1, 8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false, Predicates.alwaysFalse(), false),
-        ELECTROMAGNETIC_COIL(GeneratorBlock.GENERATOR_BLOCK_1, 9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false, Predicates.alwaysFalse(), false),
-        TURBINE_CASING(GeneratorBlock.GENERATOR_BLOCK_1, 10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false, Predicates.alwaysFalse(), false),
-        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false, Predicates.alwaysFalse(), false),
-        TURBINE_VENT(GeneratorBlock.GENERATOR_BLOCK_1, 12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false, Predicates.alwaysFalse(), false),
-        SATURATING_CONDENSER(GeneratorBlock.GENERATOR_BLOCK_1, 13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser.class, false, Predicates.alwaysFalse(), false);
+        TURBINE_ROTOR(GeneratorBlock.GENERATOR_BLOCK_1, 7, "TurbineRotor", -1, -1, TileEntityTurbineRotor.class, false, BlockStateUtils.NO_ROTATION, false),
+        ROTATIONAL_COMPLEX(GeneratorBlock.GENERATOR_BLOCK_1, 8, "RotationalComplex", -1, -1, TileEntityRotationalComplex.class, false, BlockStateUtils.NO_ROTATION, false),
+        ELECTROMAGNETIC_COIL(GeneratorBlock.GENERATOR_BLOCK_1, 9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false, BlockStateUtils.NO_ROTATION, false),
+        TURBINE_CASING(GeneratorBlock.GENERATOR_BLOCK_1, 10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false, BlockStateUtils.NO_ROTATION, false),
+        TURBINE_VALVE(GeneratorBlock.GENERATOR_BLOCK_1, 11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false, BlockStateUtils.NO_ROTATION, false),
+        TURBINE_VENT(GeneratorBlock.GENERATOR_BLOCK_1, 12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false, BlockStateUtils.NO_ROTATION, false),
+        SATURATING_CONDENSER(GeneratorBlock.GENERATOR_BLOCK_1, 13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser.class, false, BlockStateUtils.NO_ROTATION, false);
 
         private static final List<GeneratorType> GENERATORS_FOR_CONFIG;
 
@@ -187,29 +187,15 @@ public class BlockStateGenerator extends ExtendedBlockState {
         }
 
         public boolean canRotateTo(EnumFacing side) {
-            return facingPredicate.apply(side);
+            return facingPredicate.test(side);
         }
 
         public boolean hasRotations() {
-            return !facingPredicate.equals(Predicates.alwaysFalse());
+            return !facingPredicate.equals(BlockStateUtils.NO_ROTATION);
         }
 
         public boolean hasActiveTexture() {
             return activable;
-        }
-    }
-
-    public static class GeneratorBlockPredicate implements Predicate<GeneratorType> {
-
-        public GeneratorBlock GeneratorBlock;
-
-        public GeneratorBlockPredicate(GeneratorBlock type) {
-            GeneratorBlock = type;
-        }
-
-        @Override
-        public boolean apply(GeneratorType input) {
-            return input.blockType == GeneratorBlock;
         }
     }
 
