@@ -24,7 +24,6 @@ public enum PipeTier implements ITier {
                 return transmitter;
             }
         }
-
         return BASIC;
     }
 

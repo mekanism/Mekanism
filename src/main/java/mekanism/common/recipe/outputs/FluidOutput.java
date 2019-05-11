@@ -28,10 +28,8 @@ public class FluidOutput extends MachineOutput<FluidOutput> {
     public boolean applyOutputs(FluidTank fluidTank, boolean doEmit) {
         if (fluidTank.fill(output, false) > 0) {
             fluidTank.fill(output, doEmit);
-
             return true;
         }
-
         return false;
     }
 }

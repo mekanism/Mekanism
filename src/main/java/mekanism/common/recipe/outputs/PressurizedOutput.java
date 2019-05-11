@@ -30,8 +30,8 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
     }
 
     public boolean canAddProducts(NonNullList<ItemStack> inventory, int index) {
-        return inventory.get(index).isEmpty() || (inventory.get(index).isItemEqual(itemOutput)
-                                                  && inventory.get(index).getCount() + itemOutput.getCount() <= inventory.get(index).getMaxStackSize());
+        return inventory.get(index).isEmpty() ||
+               (inventory.get(index).isItemEqual(itemOutput) && inventory.get(index).getCount() + itemOutput.getCount() <= inventory.get(index).getMaxStackSize());
     }
 
     public void fillTank(GasTank tank) {
@@ -52,10 +52,8 @@ public class PressurizedOutput extends MachineOutput<PressurizedOutput> {
                 fillTank(tank);
                 addProducts(inventory, index);
             }
-
             return true;
         }
-
         return false;
     }
 

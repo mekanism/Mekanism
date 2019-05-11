@@ -60,10 +60,8 @@ public class InfusionInput extends MachineInput<InfusionInput> {
                 inventory.set(index, StackUtils.subtract(inventory.get(index), inputStack));
                 infuseStorage.subtract(infuse);
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -77,7 +75,6 @@ public class InfusionInput extends MachineInput<InfusionInput> {
         if (!isValid()) {
             return !other.isValid();
         }
-
         return infuse.getType() == other.infuse.getType() && MachineInput.inputItemMatches(inputStack, other.inputStack);
     }
 
@@ -87,7 +84,6 @@ public class InfusionInput extends MachineInput<InfusionInput> {
     }
 
     public InfusionInput wildCopy() {
-        return new InfusionInput(infuse,
-              new ItemStack(inputStack.getItem(), inputStack.getCount(), OreDictionary.WILDCARD_VALUE));
+        return new InfusionInput(infuse, new ItemStack(inputStack.getItem(), inputStack.getCount(), OreDictionary.WILDCARD_VALUE));
     }
 }

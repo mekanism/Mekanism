@@ -47,18 +47,16 @@ public class ChanceOutput extends MachineOutput<ChanceOutput> {
         return !secondaryOutput.isEmpty();
     }
 
-    public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex,
-          boolean doEmit) {
+    public boolean applyOutputs(NonNullList<ItemStack> inventory, int primaryIndex, int secondaryIndex, boolean doEmit) {
         if (hasPrimary()) {
-            if (inventory.get(primaryIndex).isEmpty()) {
+            ItemStack primaryStack = inventory.get(primaryIndex);
+            if (primaryStack.isEmpty()) {
                 if (doEmit) {
                     inventory.set(primaryIndex, primaryOutput.copy());
                 }
-            } else if (inventory.get(primaryIndex).isItemEqual(primaryOutput)
-                       && inventory.get(primaryIndex).getCount() + primaryOutput.getCount() <= inventory.get(primaryIndex)
-                  .getMaxStackSize()) {
+            } else if (primaryStack.isItemEqual(primaryOutput) && primaryStack.getCount() + primaryOutput.getCount() <= primaryStack.getMaxStackSize()) {
                 if (doEmit) {
-                    inventory.get(primaryIndex).grow(primaryOutput.getCount());
+                    primaryStack.grow(primaryOutput.getCount());
                 }
             } else {
                 return false;
@@ -66,25 +64,19 @@ public class ChanceOutput extends MachineOutput<ChanceOutput> {
         }
 
         if (hasSecondary() && (!doEmit || checkSecondary())) {
-            if (inventory.get(secondaryIndex).isEmpty()) {
+            ItemStack secondaryStack = inventory.get(secondaryIndex);
+            if (secondaryStack.isEmpty()) {
                 if (doEmit) {
                     inventory.set(secondaryIndex, secondaryOutput.copy());
                 }
-
-                return true;
-            } else if (inventory.get(secondaryIndex).isItemEqual(secondaryOutput)
-                       && inventory.get(secondaryIndex).getCount() + primaryOutput.getCount() <= inventory
-                  .get(secondaryIndex).getMaxStackSize()) {
+            } else if (secondaryStack.isItemEqual(secondaryOutput) && secondaryStack.getCount() + primaryOutput.getCount() <= secondaryStack.getMaxStackSize()) {
                 if (doEmit) {
-                    inventory.get(secondaryIndex).grow(secondaryOutput.getCount());
+                    secondaryStack.grow(secondaryOutput.getCount());
                 }
-
-                return true;
             } else {
                 return false;
             }
         }
-
         return true;
     }
 

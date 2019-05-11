@@ -43,18 +43,15 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         return !theSolid.isEmpty() && theFluid != null && theGas != null;
     }
 
-    public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank,
-          boolean deplete) {
+    public boolean use(NonNullList<ItemStack> inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete) {
         if (meets(new PressurizedInput(inventory.get(index), fluidTank.getFluid(), gasTank.getGas()))) {
             if (deplete) {
                 inventory.set(index, StackUtils.subtract(inventory.get(index), theSolid));
                 fluidTank.drain(theFluid.amount, true);
                 gasTank.draw(theGas.amount, true);
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -69,7 +66,6 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (stack.isEmpty() || stack.getCount() == 0) {
             return false;
         }
-
         return MachineInput.inputItemMatches(stack, theSolid);
     }
 
@@ -84,7 +80,6 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-
         return stack.isFluidEqual(theFluid);
     }
 
@@ -99,7 +94,6 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-
         return stack.isGasEqual(theGas);
     }
 
@@ -114,14 +108,10 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
         if (input == null || !input.isValid()) {
             return false;
         }
-
-        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid)
-              && input.theGas.isGasEqual(theGas))) {
+        if (!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid) && input.theGas.isGasEqual(theGas))) {
             return false;
         }
-
-        return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount
-               && input.theGas.amount >= theGas.amount;
+        return input.theSolid.getCount() >= theSolid.getCount() && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
     }
 
     @Override
@@ -143,8 +133,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
 
     @Override
     public int hashIngredients() {
-        return StackUtils.hashItemStack(theSolid) << 16
-               | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
+        return StackUtils.hashItemStack(theSolid) << 16 | (theFluid.getFluid() != null ? theFluid.getFluid().hashCode() : 0) << 8 | theGas.hashCode();
     }
 
     @Override
@@ -158,7 +147,6 @@ public class PressurizedInput extends MachineInput<PressurizedInput> {
     }
 
     public PressurizedInput wildCopy() {
-        return new PressurizedInput(
-              new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
+        return new PressurizedInput(new ItemStack(theSolid.getItem(), theSolid.getCount(), OreDictionary.WILDCARD_VALUE), theFluid, theGas);
     }
 }

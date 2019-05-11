@@ -5,8 +5,7 @@ import mekanism.common.recipe.outputs.ChanceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<RECIPE>> extends
-      MachineRecipe<ItemStackInput, ChanceOutput, RECIPE> {
+public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<RECIPE>> extends MachineRecipe<ItemStackInput, ChanceOutput, RECIPE> {
 
     public ChanceMachineRecipe(ItemStackInput input, ChanceOutput output) {
         super(input, output);
@@ -17,8 +16,7 @@ public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<REC
     }
 
     public boolean canOperate(NonNullList<ItemStack> inventory, int inputIndex, int primaryIndex, int secondaryIndex) {
-        return inputMatches(inventory, inputIndex) && getOutput()
-              .applyOutputs(inventory, primaryIndex, secondaryIndex, false);
+        return inputMatches(inventory, inputIndex) && getOutput().applyOutputs(inventory, primaryIndex, secondaryIndex, false);
     }
 
     public void operate(NonNullList<ItemStack> inventory, int inputIndex, int primaryIndex, int secondaryIndex) {

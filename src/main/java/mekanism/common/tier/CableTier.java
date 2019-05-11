@@ -22,7 +22,6 @@ public enum CableTier implements ITier {
                 return transmitter;
             }
         }
-
         return BASIC;
     }
 

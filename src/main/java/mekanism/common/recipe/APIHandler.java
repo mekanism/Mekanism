@@ -14,9 +14,8 @@ import net.minecraftforge.fml.common.LoaderState;
 public class APIHandler implements MekanismRecipeHelper {
 
     private static void checkPhase() {
-        Preconditions
-              .checkState(Loader.instance().getLoaderState().ordinal() < LoaderState.POSTINITIALIZATION.ordinal(),
-                    "Recipes should be registered before PostInit. Try net.minecraftforge.event.RegistryEvent.Register<IRecipe>");
+        Preconditions.checkState(Loader.instance().getLoaderState().ordinal() < LoaderState.POSTINITIALIZATION.ordinal(),
+              "Recipes should be registered before PostInit. Try net.minecraftforge.event.RegistryEvent.Register<IRecipe>");
     }
 
     @Override
@@ -80,15 +79,13 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput,
-          GasStack rightOutput) {
+    public void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput) {
         checkPhase();
         RecipeHandler.addElectrolyticSeparatorRecipe(fluid, energy, leftOutput, rightOutput);
     }
 
     @Override
-    public void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput,
-          double chance) {
+    public void addPrecisionSawmillRecipe(ItemStack input, ItemStack primaryOutput, ItemStack secondaryOutput, double chance) {
         checkPhase();
         RecipeHandler.addPrecisionSawmillRecipe(input, primaryOutput, secondaryOutput, chance);
     }
@@ -118,8 +115,7 @@ public class APIHandler implements MekanismRecipeHelper {
     }
 
     @Override
-    public void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid,
-          GasStack outputGas, double extraEnergy, int ticks) {
+    public void addPRCRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double extraEnergy, int ticks) {
         checkPhase();
         RecipeHandler.addPRCRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks);
     }

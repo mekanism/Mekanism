@@ -23,8 +23,7 @@ public class OxidationRecipe extends MachineRecipe<ItemStackInput, GasOutput, Ox
     }
 
     public boolean canOperate(NonNullList<ItemStack> inventory, GasTank outputTank) {
-        return getInput().useItemStackFromInventory(inventory, 0, false) && getOutput()
-              .applyOutputs(outputTank, false, 1);
+        return getInput().useItemStackFromInventory(inventory, 0, false) && getOutput().applyOutputs(outputTank, false, 1);
     }
 
     public void operate(NonNullList<ItemStack> inventory, GasTank outputTank) {

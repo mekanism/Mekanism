@@ -44,25 +44,20 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
 
     public static ShapelessMekanismRecipe create(NBTTagCompound nbtTags) {
         if (!nbtTags.hasKey("result") || !nbtTags.hasKey("input")) {
-            Mekanism.logger
-                  .error(Mekanism.LOG_TAG + " Shapeless recipe parse error: missing input or result compound tag.");
+            Mekanism.logger.error(Mekanism.LOG_TAG + " Shapeless recipe parse error: missing input or result compound tag.");
             return null;
         }
 
         ItemStack result = new ItemStack(nbtTags.getCompoundTag("result"));
         NBTTagList list = nbtTags.getTagList("input", Constants.NBT.TAG_COMPOUND);
-
         if (result.isEmpty() || list.tagCount() == 0) {
-            Mekanism.logger
-                  .error(Mekanism.LOG_TAG + " Shapeless recipe parse error: invalid result stack or input data list.");
+            Mekanism.logger.error(Mekanism.LOG_TAG + " Shapeless recipe parse error: invalid result stack or input data list.");
             return null;
         }
 
         Object[] ret = new Object[list.tagCount()];
-
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound compound = list.getCompoundTagAt(i);
-
             if (compound.hasKey("oredict")) {
                 ret[i] = compound.getString("oredict");
             } else if (compound.hasKey("itemstack")) {
@@ -72,7 +67,6 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
                 return null;
             }
         }
-
         return new ShapelessMekanismRecipe(null, result, ret); //TODO Find out correct value for group
     }
 
@@ -84,11 +78,9 @@ public class ShapelessMekanismRecipe extends ShapelessOreRecipe {
         for (JsonElement ele : JsonUtils.getJsonArray(json, "ingredients")) {
             ings.add(CraftingHelper.getIngredient(ele, context));
         }
-
         if (ings.isEmpty()) {
             throw new JsonParseException("No ingredients for shapeless recipe");
         }
-
         ItemStack itemstack = ShapedRecipes.deserializeItem(JsonUtils.getJsonObject(json, "result"), true);
         return new ShapelessMekanismRecipe(group.isEmpty() ? null : new ResourceLocation(group), ings, itemstack);
     }

@@ -21,7 +21,6 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
         if (!container.isEmpty() && container.getCount() >= contained.getCount()) {
             return inputItemMatches(container, contained);
         }
-
         return false;
     }
 
@@ -43,15 +42,13 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
     public abstract boolean testEquality(INPUT other);
 
     public static boolean inputItemMatches(ItemStack container, ItemStack contained) {
-        return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER)
-              .test(container, contained);
+        return ITEM_MATCHER_OVERRIDES.getOrDefault(container.getItem().getClass(), DEFAULT_MATCHER).test(container, contained);
     }
 
     private static boolean inputItemMatchesDefault(ItemStack container, ItemStack contained) {
         if (OreDictCache.getOreDictName(container).contains("treeSapling")) {
             return StackUtils.equalsWildcard(contained, container);
         }
-
         return StackUtils.equalsWildcardWithNBT(contained, container) && container.getCount() >= contained.getCount();
     }
 
@@ -65,7 +62,6 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>> {
         if (isInstance(other)) {
             return testEquality((INPUT) other);
         }
-
         return false;
     }
 

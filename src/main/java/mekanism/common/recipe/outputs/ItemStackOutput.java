@@ -21,21 +21,18 @@ public class ItemStackOutput extends MachineOutput<ItemStackOutput> {
     }
 
     public boolean applyOutputs(NonNullList<ItemStack> inventory, int index, boolean doEmit) {
-        if (inventory.get(index).isEmpty()) {
+        ItemStack stack = inventory.get(index);
+        if (stack.isEmpty()) {
             if (doEmit) {
                 inventory.set(index, output.copy());
             }
-
             return true;
-        } else if (inventory.get(index).isItemEqual(output)
-                   && inventory.get(index).getCount() + output.getCount() <= inventory.get(index).getMaxStackSize()) {
+        } else if (stack.isItemEqual(output) && stack.getCount() + output.getCount() <= stack.getMaxStackSize()) {
             if (doEmit) {
-                inventory.get(index).grow(output.getCount());
+                stack.grow(output.getCount());
             }
-
             return true;
         }
-
         return false;
     }
 

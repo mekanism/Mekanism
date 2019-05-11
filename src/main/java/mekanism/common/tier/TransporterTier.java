@@ -24,7 +24,6 @@ public enum TransporterTier implements ITier {
                 return transmitter;
             }
         }
-
         return BASIC;
     }
 

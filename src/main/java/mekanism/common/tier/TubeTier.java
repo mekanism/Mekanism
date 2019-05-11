@@ -24,7 +24,6 @@ public enum TubeTier implements ITier {
                 return transmitter;
             }
         }
-
         return BASIC;
     }
 

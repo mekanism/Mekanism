@@ -73,18 +73,15 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
             if (leftTank.getNeeded() >= leftGas.amount * scale && rightTank.getNeeded() >= rightGas.amount * scale) {
                 leftTank.receive(leftGas.copy().withAmount(leftGas.amount * scale), doEmit);
                 rightTank.receive(rightGas.copy().withAmount(rightGas.amount * scale), doEmit);
-
                 return true;
             }
         } else if (leftTank.canReceive(rightGas.getGas()) && rightTank.canReceive(leftGas.getGas())) {
             if (leftTank.getNeeded() >= rightGas.amount * scale && rightTank.getNeeded() >= leftGas.amount * scale) {
                 leftTank.receive(rightGas.copy().withAmount(rightGas.amount * scale), doEmit);
                 rightTank.receive(leftGas.copy().withAmount(leftGas.amount * scale), doEmit);
-
                 return true;
             }
         }
-
         return false;
     }
 
@@ -115,7 +112,6 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-
         return stack.isGasEqual(leftGas) || stack.isGasEqual(rightGas);
     }
 
@@ -130,11 +126,9 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
         if (input == null || !input.isValid()) {
             return false;
         }
-
         if (input.leftGas.getGas() != leftGas.getGas() || input.rightGas.getGas() != rightGas.getGas()) {
             return false;
         }
-
         return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
     }
 
