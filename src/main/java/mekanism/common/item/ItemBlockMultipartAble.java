@@ -111,10 +111,8 @@ public abstract class ItemBlockMultipartAble extends ItemBlock {
     protected abstract IMultipart getMultiPart();
 
     @Override
-    public boolean canPlaceBlockOnSide(World worldIn, @Nonnull BlockPos pos, @Nonnull EnumFacing side,
-          EntityPlayer player, ItemStack stack) {
-        return super.canPlaceBlockOnSide(worldIn, pos, side, player, stack) || (Mekanism.hooks.MCMPLoaded
-                                                                                && MultipartHelper.getContainer(worldIn, pos).isPresent());
+    public boolean canPlaceBlockOnSide(World worldIn, @Nonnull BlockPos pos, @Nonnull EnumFacing side, @Nonnull EntityPlayer player, ItemStack stack) {
+        return super.canPlaceBlockOnSide(worldIn, pos, side, player, stack) || (Mekanism.hooks.MCMPLoaded && MultipartHelper.getContainer(worldIn, pos).isPresent());
     }
 
     @Override
