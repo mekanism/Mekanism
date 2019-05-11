@@ -30,59 +30,47 @@ public class TurbineFluidTank implements IFluidTank {
             if (resource == null || resource.getFluid() == null) {
                 return 0;
             }
-
             if (turbine.structure.fluidStored != null && !turbine.structure.fluidStored.isFluidEqual(resource)) {
                 return 0;
             }
-
             if (turbine.structure.fluidStored == null || turbine.structure.fluidStored.getFluid() == null) {
                 if (resource.amount <= getCapacity()) {
                     if (doFill) {
                         turbine.structure.fluidStored = resource.copy();
-
                         if (resource.amount > 0) {
                             MekanismUtils.saveChunk(turbine);
                         }
                     }
-
                     return resource.amount;
                 } else {
                     if (doFill) {
                         turbine.structure.fluidStored = resource.copy();
                         turbine.structure.fluidStored.amount = getCapacity();
-
                         if (getCapacity() > 0) {
                             MekanismUtils.saveChunk(turbine);
                         }
                     }
-
                     return getCapacity();
                 }
             } else if (resource.amount <= getNeeded()) {
                 if (doFill) {
                     turbine.structure.fluidStored.amount += resource.amount;
-
                     if (resource.amount > 0) {
                         MekanismUtils.saveChunk(turbine);
                     }
                 }
-
                 return resource.amount;
             } else {
                 int prevNeeded = getNeeded();
-
                 if (doFill) {
                     turbine.structure.fluidStored.amount = getCapacity();
-
                     if (prevNeeded > 0) {
                         MekanismUtils.saveChunk(turbine);
                     }
                 }
-
                 return prevNeeded;
             }
         }
-
         return 0;
     }
 
@@ -92,35 +80,26 @@ public class TurbineFluidTank implements IFluidTank {
             if (turbine.structure.fluidStored == null || turbine.structure.fluidStored.getFluid() == null) {
                 return null;
             }
-
             if (turbine.structure.fluidStored.amount <= 0) {
                 return null;
             }
-
             int used = maxDrain;
-
             if (turbine.structure.fluidStored.amount < used) {
                 used = turbine.structure.fluidStored.amount;
             }
-
             if (doDrain) {
                 turbine.structure.fluidStored.amount -= used;
             }
-
             FluidStack drained = new FluidStack(turbine.structure.fluidStored.getFluid(), used);
-
             if (turbine.structure.fluidStored.amount <= 0) {
                 turbine.structure.fluidStored = null;
             }
-
             if (drained.amount > 0 && doDrain) {
                 MekanismUtils.saveChunk(turbine);
                 turbine.sendPacketToRenderer();
             }
-
             return drained;
         }
-
         return null;
     }
 
@@ -133,7 +112,6 @@ public class TurbineFluidTank implements IFluidTank {
         if (turbine.structure != null) {
             return turbine.structure.fluidStored.amount;
         }
-
         return 0;
     }
 

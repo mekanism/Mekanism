@@ -18,18 +18,15 @@ public class GasesCommand extends CraftTweakerCommand {
 
     @Override
     protected void init() {
-        setDescription(SpecialMessagesChat.getClickableCommandText(TextFormatting.DARK_GREEN + "/ct " + subCommandName,
-              "/ct " + subCommandName, true), SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA +
-              "Outputs a list of all registered gases to the crafttweaker.log"));
+        setDescription(SpecialMessagesChat.getClickableCommandText(TextFormatting.DARK_GREEN + "/ct " + subCommandName, "/ct " + subCommandName, true),
+              SpecialMessagesChat.getNormalMessage(TextFormatting.DARK_AQUA + "Outputs a list of all registered gases to the crafttweaker.log"));
     }
 
     @Override
     public void executeCommand(MinecraftServer server, ICommandSender sender, String[] args) {
         CraftTweakerAPI.logCommand("Gases:");
         List<Gas> gases = GasRegistry.getRegisteredGasses();
-        gases.forEach(
-              gas -> CraftTweakerAPI.logCommand(String.format("<gas:%s>, %s", gas.getName(), gas.getLocalizedName())));
-        sender.sendMessage(SpecialMessagesChat.getLinkToCraftTweakerLog(
-              "List of " + gases.size() + " gases generated;", sender));
+        gases.forEach(gas -> CraftTweakerAPI.logCommand(String.format("<gas:%s>, %s", gas.getName(), gas.getLocalizedName())));
+        sender.sendMessage(SpecialMessagesChat.getLinkToCraftTweakerLog("List of " + gases.size() + " gases generated;", sender));
     }
 }

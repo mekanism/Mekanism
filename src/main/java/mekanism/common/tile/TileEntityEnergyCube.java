@@ -10,8 +10,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
@@ -19,6 +17,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -36,8 +36,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl,
-      ISideConfiguration, ISecurityTile, ITierUpgradeable, IConfigCardAccess {
+public class TileEntityEnergyCube extends TileEntityElectricBlock implements IComputerIntegration, IRedstoneControl, ISideConfiguration, ISecurityTile, ITierUpgradeable,
+      IConfigCardAccess {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
     /**
@@ -62,7 +62,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
      */
     public TileEntityEnergyCube() {
         super("EnergyCube", 0);
-
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -85,23 +84,17 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             ChargeUtils.charge(0, this);
             ChargeUtils.discharge(1, this);
-
             if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
                 CableUtils.emit(this);
             }
 
             int newScale = getScaledEnergyLevel(20);
-
             if (newScale != prevScale) {
-                Mekanism.packetHandler.sendToReceivers(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             }
-
             prevScale = newScale;
         }
     }
@@ -111,14 +104,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         if (upgradeTier.ordinal() != tier.ordinal() + 1) {
             return false;
         }
-
         tier = EnergyCubeTier.values()[upgradeTier.ordinal()];
-
-        Mekanism.packetHandler
-              .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                    new Range4D(Coord4D.get(this)));
+        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
         markDirty();
-
         return true;
     }
 
@@ -133,7 +121,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         if (tier == EnergyCubeTier.CREATIVE) {
             return Integer.MAX_VALUE;
         }
-
         return tier.getOutput();
     }
 
@@ -144,7 +131,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         } else if (slotID == 1) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
-
         return true;
     }
 
@@ -181,7 +167,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         } else if (slotID == 0) {
             return ChargeUtils.canBeOutputted(itemstack, true);
         }
-
         return false;
     }
 
@@ -200,7 +185,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
             case 2:
                 return new Object[]{getMaxEnergy()};
             case 3:
-                return new Object[]{(getMaxEnergy() - getEnergy())};
+                return new Object[]{getMaxEnergy() - getEnergy()};
             default:
                 throw new NoSuchMethodException();
         }
@@ -209,13 +194,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             EnergyCubeTier prevTier = tier;
-
             tier = EnergyCubeTier.values()[dataStream.readInt()];
             controlType = RedstoneControl.values()[dataStream.readInt()];
-
             if (prevTier != tier) {
                 MekanismUtils.updateBlock(world, getPos());
             }
@@ -225,17 +207,14 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(tier.ordinal());
         data.add(controlType.ordinal());
-
         return data;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         tier = EnergyCubeTier.values()[nbtTags.getInteger("tier")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
@@ -244,10 +223,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("tier", tier.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
-
         return nbtTags;
     }
 
@@ -256,11 +233,8 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         if (tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE) {
             return;
         }
-
         super.setEnergy(energy);
-
         int newRedstoneLevel = getRedstoneLevel();
-
         if (newRedstoneLevel != currentRedstoneLevel) {
             markDirty();
             currentRedstoneLevel = newRedstoneLevel;
@@ -318,7 +292,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements ICo
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 }

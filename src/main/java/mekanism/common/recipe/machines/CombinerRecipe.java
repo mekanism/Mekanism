@@ -16,8 +16,7 @@ public class CombinerRecipe extends DoubleMachineRecipe<CombinerRecipe> {
     }
 
     /**
-     * @deprecated Replaced by {@link #CombinerRecipe(ItemStack, ItemStack, ItemStack)}. May be removed with Minecraft
-     * 1.13.
+     * @deprecated Replaced by {@link #CombinerRecipe(ItemStack, ItemStack, ItemStack)}. May be removed with Minecraft 1.13.
      */
     @Deprecated
     public CombinerRecipe(ItemStack input, ItemStack output) {

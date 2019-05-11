@@ -35,8 +35,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityMachine implements IGasHandler, ISustainedData,
-      ITankManager {
+public class TileEntityChemicalDissolutionChamber extends TileEntityMachine implements IGasHandler, ISustainedData, ITankManager {
 
     public static final int MAX_GAS = 10000;
     public static final int BASE_INJECT_USAGE = 1;
@@ -52,10 +51,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     public DissolutionRecipe cachedRecipe;
 
     public TileEntityChemicalDissolutionChamber() {
-        super("machine.dissolution", "ChemicalDissolutionChamber",
-                MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getStorage(),
-                MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getUsage(), 4);
-
+        super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getStorage(), MachineType.CHEMICAL_DISSOLUTION_CHAMBER.getUsage(), 4);
         inventory = NonNullList.withSize(5, ItemStack.EMPTY);
         upgradeComponent.setSupported(Upgrade.GAS);
     }
@@ -65,7 +61,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
             ItemStack itemStack = inventory.get(0);
-
             if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
                 //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though
                 IGasItem item = (IGasItem) itemStack.getItem();
@@ -78,40 +73,28 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
                     }
                 }
             }
-
             TileUtils.drawGas(inventory.get(2), outputTank);
-
             boolean changed = false;
-
             DissolutionRecipe recipe = getRecipe();
-
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
-
-            if (canOperate(recipe) && getEnergy() >= energyPerTick && injectTank.getStored() >= injectUsageThisTick
-                  && MekanismUtils.canFunction(this)) {
+            if (canOperate(recipe) && getEnergy() >= energyPerTick && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this)) {
                 setActive(true);
                 setEnergy(getEnergy() - energyPerTick);
                 minorOperate();
-
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
                     operate(recipe);
                     operatingTicks = 0;
                 }
-            } else {
-                if (prevEnergy >= getEnergy()) {
-                    changed = true;
-                    setActive(false);
-                }
+            } else if (prevEnergy >= getEnergy()) {
+                changed = true;
+                setActive(false);
             }
-
             if (changed && !canOperate(recipe)) {
                 operatingTicks = 0;
             }
-
             prevEnergy = getEnergy();
-
             TileUtils.emitGas(this, outputTank, gasOutput, MekanismUtils.getRight(facing));
         }
     }
@@ -123,17 +106,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         } else if (slotID == 3) {
             return ChargeUtils.canBeDischarged(itemstack);
         }
-
         return false;
     }
 
     @Override
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 2) {
-            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem())
-                  .canProvideGas(itemstack, null);
+            return !itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem && ((IGasItem) itemstack.getItem()).canProvideGas(itemstack, null);
         }
-
         return false;
     }
 
@@ -147,21 +127,18 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         } else if (side == MekanismUtils.getRight(facing)) {
             return new int[]{2};
         }
-
         return InventoryUtils.EMPTY;
     }
 
     public double getScaledProgress() {
-        return ((double) operatingTicks) / ((double) ticksRequired);
+        return (double) operatingTicks / (double) ticksRequired;
     }
 
     public DissolutionRecipe getRecipe() {
         ItemStackInput input = getInput();
-
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getDissolutionRecipe(getInput());
         }
-
         return cachedRecipe;
     }
 
@@ -175,7 +152,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
 
     public void operate(DissolutionRecipe recipe) {
         recipe.operate(inventory, outputTank);
-
         markDirty();
     }
 
@@ -186,7 +162,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             operatingTicks = dataStream.readInt();
             TileUtils.readTankData(dataStream, injectTank);
@@ -206,7 +181,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         operatingTicks = nbtTags.getInteger("operatingTicks");
         injectTank.read(nbtTags.getCompoundTag("injectTank"));
         outputTank.read(nbtTags.getCompoundTag("gasTank"));
@@ -216,11 +190,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setTag("injectTank", injectTank.write(new NBTTagCompound()));
         nbtTags.setTag("gasTank", outputTank.write(new NBTTagCompound()));
-
         return nbtTags;
     }
 
@@ -234,7 +206,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         if (canReceiveGas(side, stack.getGas())) {
             return injectTank.receive(stack, doTransfer);
         }
-
         return 0;
     }
 
@@ -279,7 +250,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -303,7 +273,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
         if (injectTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "injectTank", injectTank.getGas().write(new NBTTagCompound()));
         }
-
         if (outputTank.getGas() != null) {
             ItemDataUtils.setCompound(itemStack, "outputTank", outputTank.getGas().write(new NBTTagCompound()));
         }
@@ -318,11 +287,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityMachine impl
     @Override
     public void recalculateUpgradables(Upgrade upgrade) {
         super.recalculateUpgradables(upgrade);
-
         switch (upgrade) {
             case ENERGY:
-                energyPerTick = MekanismUtils
-                      .getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades
+                energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK); // incorporate speed upgrades
                 break;
             case GAS:
                 injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);

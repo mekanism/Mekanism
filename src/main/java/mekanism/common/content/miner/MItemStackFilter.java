@@ -25,30 +25,24 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
         if (itemStack.isEmpty()) {
             return false;
         }
-
         if (itemStack.getItem() == itemType.getItem() && fuzzy) {
             return true;
         }
-
         return itemType.isItemEqual(itemStack);
     }
 
     @Override
     public NBTTagCompound write(NBTTagCompound nbtTags) {
         super.write(nbtTags);
-
         nbtTags.setInteger("type", 0);
-
         nbtTags.setBoolean("fuzzy", fuzzy);
         itemType.writeToNBT(nbtTags);
-
         return nbtTags;
     }
 
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-
         fuzzy = nbtTags.getBoolean("fuzzy");
         itemType = new ItemStack(nbtTags);
     }
@@ -56,11 +50,8 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
     @Override
     public void write(TileNetworkList data) {
         data.add(0);
-
         super.write(data);
-
         data.add(fuzzy);
-
         data.add(MekanismUtils.getID(itemType));
         data.add(itemType.getCount());
         data.add(itemType.getItemDamage());
@@ -69,9 +60,7 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
     @Override
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
-
         fuzzy = dataStream.readBoolean();
-
         itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
     }
 
@@ -86,8 +75,7 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MItemStackFilter && ((MItemStackFilter) filter).itemType
-              .isItemEqual(itemType);
+        return super.equals(filter) && filter instanceof MItemStackFilter && ((MItemStackFilter) filter).itemType.isItemEqual(itemType);
     }
 
     @Override
@@ -97,7 +85,6 @@ public class MItemStackFilter extends MinerFilter implements IItemStackFilter {
         filter.requireStack = requireStack;
         filter.fuzzy = fuzzy;
         filter.itemType = itemType.copy();
-
         return filter;
     }
 }

@@ -52,7 +52,6 @@ public class GasBracketHandler implements IBracketHandler {
             Token token = tokens.get(i);
             valueBuilder.append(token.getValue());
         }
-
         Gas gas = GasRegistry.getGas(valueBuilder.toString());
         return gas == null ? null : new GasReferenceSymbol(environment, valueBuilder.toString());
     }

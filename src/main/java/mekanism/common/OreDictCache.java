@@ -19,24 +19,18 @@ public final class OreDictCache {
         if (check.isEmpty()) {
             return new ArrayList<>();
         }
-
         ItemInfo info = ItemInfo.get(check);
         List<String> cached = cachedKeys.get(info);
-
         if (cached != null) {
             return cached;
         }
 
         int[] idsFound = OreDictionary.getOreIDs(check);
-
         List<String> ret = new ArrayList<>();
-
         for (Integer id : idsFound) {
             ret.add(OreDictionary.getOreName(id));
         }
-
         cachedKeys.put(info, ret);
-
         return ret;
     }
 
@@ -46,12 +40,10 @@ public final class OreDictCache {
         }
 
         List<String> keys = new ArrayList<>();
-
         for (String s : OreDictionary.getOreNames()) {
             if (s == null) {
                 continue;
             }
-
             if (oreName.equals(s) || oreName.equals("*")) {
                 keys.add(s);
             } else if (oreName.endsWith("*") && !oreName.startsWith("*")) {
@@ -70,19 +62,15 @@ public final class OreDictCache {
         }
 
         List<ItemStack> stacks = new ArrayList<>();
-
         for (String key : keys) {
             for (ItemStack stack : OreDictionary.getOres(key)) {
                 ItemStack toAdd = stack.copy();
-
                 if (!stacks.contains(stack) && (!forceBlock || toAdd.getItem() instanceof ItemBlock)) {
                     stacks.add(stack.copy());
                 }
             }
         }
-
         oreDictStacks.put(oreName, stacks);
-
         return stacks;
     }
 
@@ -90,14 +78,11 @@ public final class OreDictCache {
         if (modIDStacks.get(modName) != null) {
             return modIDStacks.get(modName);
         }
-
         List<ItemStack> stacks = new ArrayList<>();
-
         for (String key : OreDictionary.getOreNames()) {
             for (ItemStack stack : OreDictionary.getOres(key)) {
                 ItemStack toAdd = stack.copy();
                 String s = ItemRegistryUtils.getMod(toAdd);
-
                 if (!stacks.contains(stack) && toAdd.getItem() instanceof ItemBlock) {
                     if (modName.equals(s) || modName.equals("*")) {
                         stacks.add(stack.copy());
@@ -117,9 +102,7 @@ public final class OreDictCache {
                 }
             }
         }
-
         modIDStacks.put(modName, stacks);
-
         return stacks;
     }
 }

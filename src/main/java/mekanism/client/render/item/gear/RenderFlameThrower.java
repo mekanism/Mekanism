@@ -33,10 +33,8 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
         GlStateManager.rotate(135, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-20, 0.0F, 0.0F, 1.0F);
 
-        if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND
-              || transformType == TransformType.THIRD_PERSON_RIGHT_HAND
-              || transformType == TransformType.FIRST_PERSON_LEFT_HAND
-              || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
+        if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND
+            || transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
                 GlStateManager.rotate(55, 0.0F, 1.0F, 0.0F);
             } else if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
@@ -45,11 +43,9 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
             } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
                 GlStateManager.translate(0.0F, 0.7F, 0.0F);
                 GlStateManager.rotate(75, 0.0F, 1.0F, 0.0F);
-            } else //if(type == TransformType.THIRD_PERSON_LEFT_HAND)
-            {
+            } else {//if(type == TransformType.THIRD_PERSON_LEFT_HAND)
                 GlStateManager.translate(-0.5F, 0.7F, 0.0F);
             }
-
             GlStateManager.scale(2.5F, 2.5F, 2.5F);
             GlStateManager.translate(0.0F, -1.0F, -0.5F);
         } else if (transformType == TransformType.GUI) {

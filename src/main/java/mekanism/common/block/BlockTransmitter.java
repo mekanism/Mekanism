@@ -99,7 +99,6 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         if (tile == null || tile.getTransmitterType().getSize() == Size.SMALL) {
             return smallDefault;
         }
-
         return largeDefault;
     }
 
@@ -107,17 +106,14 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         if (tile == null) {
             return;
         }
-
         if (box == null) {
             throw new IllegalStateException("box should not be null");
         }
-
         if (tile.getTransmitterType().getSize() == Size.SMALL) {
             smallDefault = box;
-            return;
+        } else {
+            largeDefault = box;
         }
-
-        largeDefault = box;
     }
 
     private static TileEntitySidedPipe getTileEntitySidedPipe(IBlockAccess world, BlockPos pos) {
@@ -131,7 +127,6 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
                 sidedPipe = (TileEntitySidedPipe) childEntity;
             }
         }
-
         return sidedPipe;
     }
 
@@ -143,7 +138,6 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         if (tile != null) {
             state = state.withProperty(BlockStateTransmitter.tierProperty, tile.getBaseTier());
         }
-
         return state;
     }
 
@@ -172,19 +166,13 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     @Override
     public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess w, BlockPos pos) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(w, pos);
-
         if (tile != null) {
             return tile.getExtendedState(state);
-        } else {
-            ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.NORMAL, ConnectionType.NORMAL,
-                  ConnectionType.NORMAL,
-                  ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
-            PropertyConnection connectionProp = new PropertyConnection((byte) 0, (byte) 0, typeArray, true);
-
-            return ((IExtendedBlockState) state)
-                  .withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true))
-                  .withProperty(PropertyConnection.INSTANCE, connectionProp);
         }
+        ConnectionType[] typeArray = new ConnectionType[]{ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
+                                                          ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
+        PropertyConnection connectionProp = new PropertyConnection((byte) 0, (byte) 0, typeArray, true);
+        return ((IExtendedBlockState) state).withProperty(OBJProperty.INSTANCE, new OBJState(Collections.emptyList(), true)).withProperty(PropertyConnection.INSTANCE, connectionProp);
     }
 
     @Nonnull
@@ -192,24 +180,19 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
-
         if (tile != null && tile.getTransmitterType().getSize() == Size.SMALL) {
             return smallSides[6];
         }
-
         return largeSides[6];
     }
 
     @Override
     @Deprecated
-    public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos,
-          @Nonnull AxisAlignedBB entityBox, @Nonnull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn,
-          boolean b) {
+    public void addCollisionBoxToList(IBlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull AxisAlignedBB entityBox,
+          @Nonnull List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean b) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
-
         if (tile != null) {
             List<AxisAlignedBB> boxes = tile.getCollisionBoxes(entityBox.offset(-pos.getX(), -pos.getY(), -pos.getZ()));
-
             for (AxisAlignedBB box : boxes) {
                 collidingBoxes.add(box.offset(pos));
             }
@@ -225,33 +208,25 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
 
     @Override
     @Deprecated
-    public RayTraceResult collisionRayTrace(IBlockState blockState, @Nonnull World world, @Nonnull BlockPos pos,
-          @Nonnull Vec3d start, @Nonnull Vec3d end) {
+    public RayTraceResult collisionRayTrace(IBlockState blockState, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Vec3d start, @Nonnull Vec3d end) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
-
         if (tile == null) {
             return null;
         }
-
         List<AxisAlignedBB> boxes = tile.getCollisionBoxes();
         AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, start, end, boxes);
-
         if (result != null && result.valid()) {
             setDefaultForTile(tile, result.bounds);
         }
-
         return result != null ? result.hit : null;
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-          EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
-
         if (stack.isEmpty()) {
             return false;
         }
-
         IMekWrench wrenchHandler = Wrenches.getHandler(stack);
         if (wrenchHandler != null) {
             RayTraceResult raytrace = new RayTraceResult(new Vec3d(hitX, hitY, hitZ), facing, pos);
@@ -259,11 +234,9 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
                 if (!world.isRemote) {
                     MekanismUtils.dismantleBlock(this, state, world, pos);
                 }
-
                 return true;
             }
         }
-
         return false;
     }
 
@@ -274,15 +247,12 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         TileEntitySidedPipe tileEntity = getTileEntitySidedPipe(world, pos);
         if (tileEntity != null) {
             itemStack = new ItemStack(MekanismBlocks.Transmitter, 1, tileEntity.getTransmitterType().ordinal());
-
             if (!itemStack.hasTagCompound()) {
                 itemStack.setTagCompound(new NBTTagCompound());
             }
-
             ITierItem tierItem = (ITierItem) itemStack.getItem();
             tierItem.setBaseTier(itemStack, tileEntity.getBaseTier());
         }
-
         return itemStack;
     }
 
@@ -292,8 +262,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
         if (!target.typeOfHit.equals(Type.BLOCK)) {
             return super.addHitEffects(state, world, target, manager);
         }
-        return MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager) ||
-              super.addHitEffects(state, world, target, manager);
+        return MekanismParticleHelper.addBlockHitEffects(world, target.getBlockPos(), target.sideHit, manager) || super.addHitEffects(state, world, target, manager);
     }
 
     @Override
@@ -312,8 +281,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer,
-          ItemStack stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
             tile.onAdded();
@@ -325,8 +293,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
-            EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(),
-                  neighbor.getZ() - pos.getZ());
+            EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
         }
     }
@@ -335,8 +302,7 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
         TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
         if (tile != null) {
-            EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(),
-                  neighbor.getZ() - pos.getZ());
+            EnumFacing side = EnumFacing.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
             tile.onNeighborTileChange(side);
         }
     }
@@ -344,12 +310,9 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     @Override
     public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
         TransmitterType type = state.getValue(BlockStateTransmitter.typeProperty);
-
-        if (layer == BlockRenderLayer.TRANSLUCENT && (type == TransmitterType.LOGISTICAL_TRANSPORTER
-              || type == TransmitterType.DIVERSION_TRANSPORTER)) {
+        if (layer == BlockRenderLayer.TRANSLUCENT && (type == TransmitterType.LOGISTICAL_TRANSPORTER || type == TransmitterType.DIVERSION_TRANSPORTER)) {
             return true;
         }
-
         return layer == BlockRenderLayer.CUTOUT;
     }
 
@@ -387,7 +350,6 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
     @Override
     public TileEntity createNewTileEntity(@Nonnull World worldIn, int meta) {
         TransmitterType type = TransmitterType.get(meta);
-
         switch (type) {
             case UNIVERSAL_CABLE:
                 return new TileEntityUniversalCable();
@@ -404,7 +366,6 @@ public class BlockTransmitter extends BlockTileDrops implements ITileEntityProvi
             case THERMODYNAMIC_CONDUCTOR:
                 return new TileEntityThermodynamicConductor();
         }
-
         return null;
     }
 }

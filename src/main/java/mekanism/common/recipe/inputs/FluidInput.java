@@ -35,7 +35,6 @@ public class FluidInput extends MachineInput<FluidInput> {
             fluidTank.drain(ingredient.amount * scale, deplete);
             return true;
         }
-
         return false;
     }
 
@@ -49,7 +48,6 @@ public class FluidInput extends MachineInput<FluidInput> {
         if (!isValid()) {
             return !other.isValid();
         }
-
         return ingredient.equals(other.ingredient);
     }
 

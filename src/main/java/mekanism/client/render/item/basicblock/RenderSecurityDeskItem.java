@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderSecurityDeskItem {
+
     private static ModelSecurityDesk securityDesk = new ModelSecurityDesk();
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {

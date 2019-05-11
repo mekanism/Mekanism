@@ -76,14 +76,12 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
     public void renderForeground(int xAxis, int yAxis) {
         mc.renderEngine.bindTexture(RESOURCE);
         if (inBounds(xAxis, yAxis)) {
-            String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT)
-                  : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
+            String securityDisplay = isItem ? SecurityUtils.getSecurityDisplay(getItem(), Side.CLIENT) : SecurityUtils.getSecurityDisplay(tileEntity, Side.CLIENT);
             String securityText = EnumColor.GREY + LangUtils.localize("gui.security") + ": " + securityDisplay;
             String ownerText = SecurityUtils.getOwnerDisplay(mc.player, getOwnerUsername());
             String overrideText = EnumColor.RED + "(" + LangUtils.localize("gui.overridden") + ")";
 
-            if (isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT)
-                  : SecurityUtils.isOverridden(tileEntity, Side.CLIENT)) {
+            if (isItem ? SecurityUtils.isOverridden(getItem(), Side.CLIENT) : SecurityUtils.isOverridden(tileEntity, Side.CLIENT)) {
                 displayTooltips(Arrays.asList(securityText, ownerText, overrideText), xAxis, yAxis);
             } else {
                 displayTooltips(Arrays.asList(securityText, ownerText), xAxis, yAxis);
@@ -113,11 +111,9 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
                 mc.player.closeScreen();
                 return SecurityMode.PUBLIC;
             }
-
             return ((ISecurityItem) getItem().getItem()).getSecurity(getItem());
-        } else {
-            return ((ISecurityTile) tileEntity).getSecurity().getMode();
         }
+        return ((ISecurityTile) tileEntity).getSecurity().getMode();
     }
 
     private UUID getOwner() {
@@ -156,17 +152,13 @@ public class GuiSecurityTab extends GuiTileEntityElement<TileEntity> {
             if (getOwner() != null && mc.player.getUniqueID().equals(getOwner())) {
                 if (inBounds(xAxis, yAxis)) {
                     SecurityMode current = getSecurity();
-                    int ordinalToSet =
-                          current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;
+                    int ordinalToSet = current.ordinal() < (SecurityMode.values().length - 1) ? current.ordinal() + 1 : 0;
 
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                     if (isItem) {
-                        Mekanism.packetHandler
-                              .sendToServer(new SecurityModeMessage(currentHand, SecurityMode.values()[ordinalToSet]));
+                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(currentHand, SecurityMode.values()[ordinalToSet]));
                     } else {
-                        Mekanism.packetHandler.sendToServer(
-                              new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
+                        Mekanism.packetHandler.sendToServer(new SecurityModeMessage(Coord4D.get(tileEntity), SecurityMode.values()[ordinalToSet]));
                     }
                 }
             }

@@ -68,8 +68,7 @@ public class GuiRedstoneControl extends GuiTileEntityElement<TileEntity> {
             }
 
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-            Mekanism.packetHandler.sendToServer(
-                  new RedstoneControlMessage(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+            Mekanism.packetHandler.sendToServer(new RedstoneControlMessage(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
         }
     }
 }

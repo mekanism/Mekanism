@@ -2,9 +2,9 @@ package mekanism.common.security;
 
 import io.netty.buffer.ByteBuf;
 import java.util.UUID;
+import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.PacketHandler;
-import mekanism.api.TileNetworkList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +24,6 @@ public class SecurityFrequency extends Frequency {
 
     public SecurityFrequency(UUID uuid) {
         super("Security", uuid);
-
         trusted = new HashList<>();
         securityMode = SecurityMode.PUBLIC;
     }
@@ -40,17 +39,14 @@ public class SecurityFrequency extends Frequency {
     @Override
     public void write(NBTTagCompound nbtTags) {
         super.write(nbtTags);
-
         nbtTags.setBoolean("override", override);
         nbtTags.setInteger("securityMode", securityMode.ordinal());
 
         if (!trusted.isEmpty()) {
             NBTTagList trustedList = new NBTTagList();
-
             for (String s : trusted) {
                 trustedList.appendTag(new NBTTagString(s));
             }
-
             nbtTags.setTag("trusted", trustedList);
         }
     }
@@ -67,7 +63,6 @@ public class SecurityFrequency extends Frequency {
 
         if (nbtTags.hasKey("trusted")) {
             NBTTagList trustedList = nbtTags.getTagList("trusted", NBT.TAG_STRING);
-
             for (int i = 0; i < trustedList.tagCount(); i++) {
                 trusted.add(trustedList.getStringTagAt(i));
             }
@@ -82,7 +77,6 @@ public class SecurityFrequency extends Frequency {
         data.add(securityMode.ordinal());
 
         data.add(trusted.size());
-
         for (String s : trusted) {
             data.add(s);
         }

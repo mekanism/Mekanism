@@ -11,13 +11,8 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable> {
 
-    public RenderUniversalCable() {
-        super();
-    }
-
     @Override
-    public void render(TileEntityUniversalCable cable, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityUniversalCable cable, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (MekanismConfig.current().client.opaqueTransmitters.val() || cable.currentPower == 0) {
             return;
         }
@@ -41,7 +36,6 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
 
     public void renderEnergySide(BufferBuilder renderer, EnumFacing side, TileEntityUniversalCable cable) {
         bindTexture(MekanismRenderer.getBlocksTexture());
-        renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side),
-              new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
+        renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
     }
 }

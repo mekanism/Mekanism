@@ -13,10 +13,10 @@ public interface IToolHammer {
     /**
      * Called to ensure that the tool can be used on a block.
      *
-     * @param item The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other
-     * tools).
+     * @param item The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other tools).
      * @param user The entity using the tool.
-     * @param pos Coordinates of the block.
+     * @param pos  Coordinates of the block.
+     *
      * @return True if this tool can be used.
      */
     boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos);
@@ -24,10 +24,10 @@ public interface IToolHammer {
     /**
      * Called to ensure that the tool can be used on an entity.
      *
-     * @param item The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other
-     * tools).
-     * @param user The entity using the tool.
+     * @param item   The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other tools).
+     * @param user   The entity using the tool.
      * @param entity The entity the tool is being used on.
+     *
      * @return True if this tool can be used.
      */
     boolean isUsable(ItemStack item, EntityLivingBase user, Entity entity);
@@ -35,21 +35,18 @@ public interface IToolHammer {
     /**
      * Callback for when the tool has been used reactively.
      *
-     * @param item The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other
-     * tools).
+     * @param item The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other tools).
      * @param user The entity using the tool.
-     * @param pos Coordinates of the block.
+     * @param pos  Coordinates of the block.
      */
     void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos);
 
     /**
      * Callback for when the tool has been used reactively.
      *
-     * @param item The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other
-     * tools).
-     * @param user The entity using the tool.
+     * @param item   The ItemStack for the tool. Not required to match equipped item (e.g., multi-tools that contain other tools).
+     * @param user   The entity using the tool.
      * @param entity The entity the tool is being used on.
      */
     void toolUsed(ItemStack item, EntityLivingBase user, Entity entity);
-
 }

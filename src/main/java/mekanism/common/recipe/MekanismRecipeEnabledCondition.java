@@ -28,8 +28,7 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
 
         if (Loader.isModLoaded(MekanismGenerators.MODID) && JsonUtils.hasField(json, "generatorType")) {
             final String generatorType = JsonUtils.getString(json, "generatorType");
-            final BlockStateGenerator.GeneratorType type = MekanismConfig.current().generators.generatorsManager
-                  .typeFromName(generatorType);
+            final BlockStateGenerator.GeneratorType type = MekanismConfig.current().generators.generatorsManager.typeFromName(generatorType);
             //noinspection Convert2Lambda - classloading issues if generators not installed
             return new BooleanSupplier() {
                 @Override
@@ -43,7 +42,7 @@ public class MekanismRecipeEnabledCondition implements IConditionFactory {
             return () -> MekanismConfig.current().general.controlCircuitOreDict.val();
         }
 
-        throw new IllegalStateException(
-              "Config defined with recipe_enabled condition without a valid field defined! Valid values: \"machineType\", \"generatorType\" (when Mekanism Generators installed) and \"circuitOredict\"");
+        throw new IllegalStateException("Config defined with recipe_enabled condition without a valid field defined! Valid values: \"machineType\", \"generatorType\" "
+                                        + "(when Mekanism Generators installed) and \"circuitOredict\"");
     }
 }

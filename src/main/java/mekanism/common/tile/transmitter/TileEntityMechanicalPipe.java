@@ -26,8 +26,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements
-      IFluidHandlerWrapper {
+public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
 
     public PipeTier tier = PipeTier.BASIC;
 
@@ -36,8 +35,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public FluidTank buffer = new FluidTank(Fluid.BUCKET_VOLUME);
 
     public FluidStack lastWrite;
-    public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(
-          IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
+    public CapabilityWrapperManager<IFluidHandlerWrapper, FluidHandlerWrapper> manager = new CapabilityWrapperManager<>(IFluidHandlerWrapper.class, FluidHandlerWrapper.class);
 
     @Override
     public BaseTier getBaseTier() {
@@ -54,16 +52,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public void update() {
         if (!getWorld().isRemote) {
             updateShare();
-
             IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(getPos(), getWorld());
-
             for (EnumFacing side : getConnections(ConnectionType.PULL)) {
                 if (connectedAcceptors[side.ordinal()] != null) {
                     IFluidHandler container = connectedAcceptors[side.ordinal()];
-
                     if (container != null) {
                         FluidStack received = container.drain(getPullAmount(), false);
-
                         if (received != null && received.amount != 0) {
                             container.drain(takeFluid(received, true), true);
                         }
@@ -71,7 +65,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
                 }
             }
         }
-
         super.update();
     }
 
@@ -79,9 +72,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public void updateShare() {
         if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0) {
             FluidStack last = getSaveShare();
-
-            if ((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getFluid() == last
-                  .getFluid())) || (last == null && lastWrite != null)) {
+            if ((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getFluid() == last.getFluid())) || (last == null && lastWrite != null)) {
                 lastWrite = last;
                 markDirty();
             }
@@ -93,14 +84,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (getTransmitter().hasTransmitterNetwork() && transmitterNetwork.buffer != null) {
             int remain = transmitterNetwork.buffer.amount % transmitterNetwork.transmittersSize();
             int toSave = transmitterNetwork.buffer.amount / transmitterNetwork.transmittersSize();
-
             if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
                 toSave += remain;
             }
-
             return PipeUtils.copy(transmitterNetwork.buffer, toSave);
         }
-
         return null;
     }
 
@@ -109,25 +97,21 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (!getWorld().isRemote && getTransmitter().hasTransmitterNetwork()) {
             if (lastWrite != null && getTransmitter().getTransmitterNetwork().buffer != null) {
                 getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
-
                 if (getTransmitter().getTransmitterNetwork().buffer.amount <= 0) {
                     getTransmitter().getTransmitterNetwork().buffer = null;
                 }
             }
         }
-
         super.onChunkUnload();
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         if (nbtTags.hasKey("tier")) {
             tier = PipeTier.values()[nbtTags.getInteger("tier")];
         }
         buffer.setCapacity(getCapacity());
-
         if (nbtTags.hasKey("cacheFluid")) {
             buffer.setFluid(FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cacheFluid")));
         } else {
@@ -139,15 +123,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         if (lastWrite != null && lastWrite.amount > 0) {
             nbtTags.setTag("cacheFluid", lastWrite.writeToNBT(new NBTTagCompound()));
         } else {
             nbtTags.removeTag("cacheFluid");
         }
-
         nbtTags.setInteger("tier", tier.ordinal());
-
         return nbtTags;
     }
 
@@ -207,8 +188,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public void takeShare() {
-        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null
-              && lastWrite != null) {
+        if (getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null && lastWrite != null) {
             getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
             buffer.setFluid(lastWrite);
         }
@@ -219,7 +199,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (getConnectionType(from) == ConnectionType.NORMAL) {
             return takeFluid(resource, doFill);
         }
-
         return 0;
     }
 
@@ -249,7 +228,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             //Our buffer or the network's buffer if we have a network
             return getAllTanks();
         }
-
         return PipeUtils.EMPTY;
     }
 
@@ -269,12 +247,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public IFluidHandler getCachedAcceptor(EnumFacing side) {
         TileEntity tile = getCachedTile(side);
-
         if (CapabilityUtils.hasCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())) {
-            return CapabilityUtils
-                  .getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+            return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
         }
-
         return null;
     }
 
@@ -289,29 +264,23 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     public boolean upgrade(int tierOrdinal) {
         if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
             tier = PipeTier.values()[tier.ordinal() + 1];
-
             markDirtyTransmitters();
             sendDesc = true;
-
             return true;
         }
-
         return false;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) throws Exception {
         tier = PipeTier.values()[dataStream.readInt()];
-
         super.handlePacketData(dataStream);
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(tier.ordinal());
-
         super.getNetworkedData(data);
-
         return data;
     }
 
@@ -325,7 +294,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(manager.getWrapper(this, side));
         }
-
         return super.getCapability(capability, side);
     }
 }

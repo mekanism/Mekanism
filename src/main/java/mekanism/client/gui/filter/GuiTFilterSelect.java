@@ -23,8 +23,7 @@ public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter
 
     @Override
     protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler.sendToServer(
-              new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
+        Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
     }
 
     @Override

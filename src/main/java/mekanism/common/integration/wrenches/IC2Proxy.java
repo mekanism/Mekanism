@@ -16,12 +16,10 @@ public class IC2Proxy implements MekWrenchProxy, IMekWrench {
 
     public IC2Proxy() {
         Class<?> w = null;
-
         try {
             w = Class.forName(IC2_WRENCH_CLASS);
         } catch (ClassNotFoundException ignored) {
         }
-
         wrenchClass = w;
     }
 

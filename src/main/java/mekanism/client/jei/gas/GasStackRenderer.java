@@ -39,12 +39,10 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     public GasStackRenderer(int capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay) {
-        this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height,
-              overlay);
+        this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height, overlay);
     }
 
-    public GasStackRenderer(int capacityMb, TooltipMode tooltipMode, int width, int height,
-          @Nullable IDrawable overlay) {
+    public GasStackRenderer(int capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {
         this.capacityMb = capacityMb;
         this.tooltipMode = tooltipMode;
         this.width = width;
@@ -72,8 +70,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         GlStateManager.color(red, green, blue, 1.0F);
     }
 
-    private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite,
-          int maskTop, int maskRight, double zLevel) {
+    private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel) {
         double uMin = (double) textureSprite.getMinU();
         double uMax = (double) textureSprite.getMaxU();
         double vMin = (double) textureSprite.getMinV();
@@ -123,8 +120,8 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         drawTiledSprite(minecraft, xPosition, yPosition, width, height, gas.getTint(), scaledAmount, getStillGasSprite(minecraft, gas));
     }
 
-    private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth,
-          final int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite) {
+    private void drawTiledSprite(Minecraft minecraft, final int xPosition, final int yPosition, final int tiledWidth, final int tiledHeight, int color, int scaledAmount,
+          TextureAtlasSprite sprite) {
         minecraft.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         setGLColorFromInt(color);
 
@@ -161,8 +158,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         String gasName = gasType.getLocalizedName();
         tooltip.add(gasName);
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            String amount = LangUtils
-                  .localizeWithFormat("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb);
+            String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount.with.capacity", gasStack.amount, capacityMb);
             tooltip.add(TextFormatting.GRAY + amount);
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
             String amount = LangUtils.localizeWithFormat("jei.tooltip.liquid.amount", gasStack.amount);

@@ -31,7 +31,6 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
 
     @Override
     public void setTransmitterNetwork(N network) {
-
     }
 
     @Override
@@ -101,7 +100,6 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
 
     @Override
     public void setOrphan(boolean orphaned) {
-
     }
 
     @Override
@@ -121,12 +119,10 @@ public class DefaultGridTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, B
 
     @Override
     public void takeShare() {
-
     }
 
     @Override
     public void updateShare() {
-
     }
 
     @Override

@@ -15,8 +15,7 @@ public class GuiProgress extends GuiElement {
     private final int xLocation;
     private final int yLocation;
 
-    public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, ResourceLocation def, int x,
-          int y) {
+    public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiProgress.png"), gui, def);
         xLocation = x;
         yLocation = y;
@@ -35,12 +34,10 @@ public class GuiProgress extends GuiElement {
         mc.renderEngine.bindTexture(RESOURCE);
 
         if (handler.isActive()) {
-            guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY,
-                  type.width, type.height);
+            guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
             int innerOffsetX = 2;
             int displayInt = (int) (handler.getProgress() * (type.width - 2 * innerOffsetX));
-            guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation,
-                  type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
+            guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
         }
 
         mc.renderEngine.bindTexture(defaultLocation);

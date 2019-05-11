@@ -38,13 +38,11 @@ public class ItemBlockReactor extends ItemBlock {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list,
-          @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<String> list, @Nonnull ITooltipFlag flag) {
         ReactorBlockType type = ReactorBlockType.get(itemstack);
 
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + "shift" + EnumColor.GREY + " "
-                  + LangUtils.localize("tooltip.forDetails") + ".");
+            list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
         } else {
             list.addAll(MekanismUtils.splitTooltip(type.getDescription(), itemstack));
         }

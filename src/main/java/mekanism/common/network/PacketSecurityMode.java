@@ -21,15 +21,11 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
     @Override
     public IMessage onMessage(SecurityModeMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             if (message.packetType == SecurityPacketType.BLOCK) {
                 TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-
                 if (tileEntity instanceof ISecurityTile) {
                     UUID owner = ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
-
                     if (owner != null && player.getUniqueID().equals(owner)) {
                         ((ISecurityTile) tileEntity).getSecurity().setMode(message.value);
                         tileEntity.markDirty();
@@ -37,13 +33,11 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
                 }
             } else {
                 ItemStack stack = player.getHeldItem(message.currentHand);
-
                 if (stack.getItem() instanceof ISecurityItem) {
                     ((ISecurityItem) stack.getItem()).setSecurity(stack, message.value);
                 }
             }
         }, player);
-
         return null;
     }
 
@@ -64,14 +58,12 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
 
         public SecurityModeMessage(Coord4D coord, SecurityMode control) {
             packetType = SecurityPacketType.BLOCK;
-
             coord4D = coord;
             value = control;
         }
 
         public SecurityModeMessage(EnumHand hand, SecurityMode control) {
             packetType = SecurityPacketType.ITEM;
-
             currentHand = hand;
             value = control;
         }
@@ -79,26 +71,22 @@ public class PacketSecurityMode implements IMessageHandler<SecurityModeMessage, 
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             if (packetType == SecurityPacketType.BLOCK) {
                 coord4D.write(dataStream);
             } else {
                 dataStream.writeInt(currentHand.ordinal());
             }
-
             dataStream.writeInt(value.ordinal());
         }
 
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = SecurityPacketType.values()[dataStream.readInt()];
-
             if (packetType == SecurityPacketType.BLOCK) {
                 coord4D = Coord4D.read(dataStream);
             } else {
                 currentHand = EnumHand.values()[dataStream.readInt()];
             }
-
             value = SecurityMode.values()[dataStream.readInt()];
         }
     }

@@ -28,7 +28,6 @@ public class BlockPlastic extends Block {
         setHardness(type == PlasticBlockType.REINFORCED ? 50F : 5F);
         setResistance(type == PlasticBlockType.REINFORCED ? 2000F : 10F);
         setCreativeTab(Mekanism.tabMekanism);
-
         if (type == PlasticBlockType.SLICK) {
             slipperiness = 0.98F;
         }
@@ -79,7 +78,6 @@ public class BlockPlastic extends Block {
         if (type == PlasticBlockType.GLOW) {
             return 10;
         }
-
         return 0;
     }
 }

@@ -61,9 +61,8 @@ public class AdvancedMachineRecipeCategory extends BaseRecipeCategory {
             itemStacks.set(1, ((ItemStackOutput) tempRecipe.recipeOutput).output);
             itemStacks.set(2, ((AdvancedMachineRecipeWrapper) recipeWrapper).getFuelStacks(input.gasType));
             IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-            initGas(gasStacks, 0, true, 33, 21, 6, 12,
-                  new GasStack(input.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
-                        * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK), false);
+            initGas(gasStacks, 0, true, 33, 21, 6, 12, new GasStack(input.gasType, TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
+                                                                                   * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK), false);
         }
     }
 }

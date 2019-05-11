@@ -34,17 +34,15 @@ public class Enrichment {
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
                 recipes.add(new EnrichmentRecipe(stack, output));
             }
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.ENRICHMENT_CHAMBER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.ENRICHMENT_CHAMBER, recipes));
         }
     }
 
     @ZenMethod
     public static void removeRecipe(IIngredient itemInput, @Optional IIngredient itemOutput) {
         if (IngredientHelper.checkNotNull(NAME, itemInput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.ENRICHMENT_CHAMBER, new IngredientWrapper(itemOutput),
-                        new IngredientWrapper(itemInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.ENRICHMENT_CHAMBER, new IngredientWrapper(itemOutput),
+                  new IngredientWrapper(itemInput)));
         }
     }
 

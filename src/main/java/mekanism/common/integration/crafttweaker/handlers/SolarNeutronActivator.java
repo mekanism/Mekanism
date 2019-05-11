@@ -26,18 +26,16 @@ public class SolarNeutronActivator {
     @ZenMethod
     public static void addRecipe(IGasStack gasInput, IGasStack gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput, gasOutput)) {
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR,
-                        new SolarNeutronRecipe(GasHelper.toGas(gasInput), GasHelper.toGas(gasOutput))));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR, new SolarNeutronRecipe(GasHelper.toGas(gasInput),
+                  GasHelper.toGas(gasOutput))));
         }
     }
 
     @ZenMethod
     public static void removeRecipe(IIngredient gasInput, @Optional IIngredient gasOutput) {
         if (IngredientHelper.checkNotNull(NAME, gasInput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR,
-                        new IngredientWrapper(gasOutput), new IngredientWrapper(gasInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.SOLAR_NEUTRON_ACTIVATOR, new IngredientWrapper(gasOutput),
+                  new IngredientWrapper(gasInput)));
         }
     }
 

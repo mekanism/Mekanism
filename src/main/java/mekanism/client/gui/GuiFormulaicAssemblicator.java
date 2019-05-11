@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -16,7 +17,6 @@ import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.api.TileNetworkList;
 import mekanism.common.inventory.container.ContainerFormulaicAssemblicator;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -50,8 +50,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         addGuiElement(new GuiEnergyInfo(() -> {
             String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
-                  LangUtils.localize("gui.needed") + ": " + MekanismUtils
-                        .getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
+                  LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
         }, this, resource));
         addGuiElement(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
         ySize += 64;
@@ -59,12 +58,10 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRenderer
-              .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
-                    6, 0x404040);
+        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91) {
             drawHoveringText(LangUtils.localize("gui.fillEmpty"), xAxis, yAxis);
         }
@@ -78,12 +75,10 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
             drawHoveringText(LangUtils.localize("gui.craftAvailable"), xAxis, yAxis);
         }
         if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
-            drawHoveringText(LangUtils.localize("gui.autoModeToggle") + ": " +
-                  LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
+            drawHoveringText(LangUtils.localize("gui.autoModeToggle") + ": " + LangUtils.transOnOff(tileEntity.autoMode), xAxis, yAxis);
         }
         if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
-            drawHoveringText(LangUtils.localize("gui.stockControl") + ": " +
-                  LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
+            drawHoveringText(LangUtils.localize("gui.stockControl") + ": " + LangUtils.transOnOff(tileEntity.stockControl), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -167,13 +162,14 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                     Slot slot = inventorySlots.inventorySlots.get(i + 20);
                     GlStateManager.pushMatrix();
 
+                    int guiX = guiWidth + slot.xPos;
+                    int guiY = guiHeight + slot.yPos;
                     if (slot.getStack().isEmpty() || !slot.getStack().isItemEqual(stack)) {
-                        drawGradientRect(guiWidth + slot.xPos, guiHeight + slot.yPos, guiWidth + slot.xPos + 16,
-                              guiHeight + slot.yPos + 16, -2137456640, -2137456640);
+                        drawGradientRect(guiX, guiY, guiX + 16, guiY + 16, -2137456640, -2137456640);
                     }
 
                     RenderHelper.enableGUIStandardItemLighting();
-                    itemRender.renderItemAndEffectIntoGUI(stack, guiWidth + slot.xPos, guiHeight + slot.yPos);
+                    itemRender.renderItemAndEffectIntoGUI(stack, guiX, guiY);
                     MekanismRenderer.resetColor();
                     GlStateManager.popMatrix();
                 }
@@ -184,10 +180,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     private boolean canEncode() {
-        return tileEntity.formula == null && !tileEntity.inventory.get(2).isEmpty() && tileEntity.inventory.get(2)
-              .getItem() instanceof ItemCraftingFormula &&
-              ((ItemCraftingFormula) tileEntity.inventory.get(2).getItem()).getInventory(tileEntity.inventory.get(2))
-                    == null;
+        if (tileEntity.formula != null) {
+            return false;
+        }
+        ItemStack formulaStack = tileEntity.inventory.get(2);
+        return !formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
     }
 
     @Override
@@ -195,15 +192,13 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         super.mouseClicked(mouseX, mouseY, button);
 
         if (button == 0) {
-            int xAxis = (mouseX - (width - xSize) / 2);
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int xAxis = mouseX - (width - xSize) / 2;
+            int yAxis = mouseY - (height - ySize) / 2;
 
             if (!tileEntity.autoMode) {
                 if (xAxis >= 44 && xAxis <= 60 && yAxis >= 75 && yAxis <= 91) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                     TileNetworkList data = TileNetworkList.withContents(4);
-
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 }
 
@@ -211,26 +206,20 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
                     if (canEncode()) {
                         if (xAxis >= 7 && xAxis <= 21 && yAxis >= 45 && yAxis <= 59) {
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                             TileNetworkList data = TileNetworkList.withContents(1);
-
                             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                         }
                     }
 
                     if (xAxis >= 71 && xAxis <= 87 && yAxis >= 75 && yAxis <= 91) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                         TileNetworkList data = TileNetworkList.withContents(2);
-
                         Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                     }
 
                     if (xAxis >= 89 && xAxis <= 105 && yAxis >= 75 && yAxis <= 91) {
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                         TileNetworkList data = TileNetworkList.withContents(3);
-
                         Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                     }
                 }
@@ -239,17 +228,13 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
             if (tileEntity.formula != null) {
                 if (xAxis >= 107 && xAxis <= 123 && yAxis >= 75 && yAxis <= 91) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                     TileNetworkList data = TileNetworkList.withContents(0);
-
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 }
 
                 if (xAxis >= 26 && xAxis <= 42 && yAxis >= 75 && yAxis <= 91) {
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-
                     TileNetworkList data = TileNetworkList.withContents(5);
-
                     Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
                 }
             }

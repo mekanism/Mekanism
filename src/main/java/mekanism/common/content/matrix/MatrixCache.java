@@ -25,11 +25,9 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
     public void load(NBTTagCompound nbtTags) {
         NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
-
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-
             if (slotID >= 0 && slotID < 2) {
                 inventory.set(slotID, new ItemStack(tagCompound));
             }
@@ -39,7 +37,6 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
     @Override
     public void save(NBTTagCompound nbtTags) {
         NBTTagList tagList = new NBTTagList();
-
         for (int slotCount = 0; slotCount < 2; slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
                 NBTTagCompound tagCompound = new NBTTagCompound();
@@ -48,7 +45,6 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
                 tagList.appendTag(tagCompound);
             }
         }
-
         nbtTags.setTag("Items", tagList);
     }
 }

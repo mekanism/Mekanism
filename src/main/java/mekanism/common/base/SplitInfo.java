@@ -15,11 +15,8 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
 
     public abstract TYPE getTotalSent();
 
-    public boolean shouldRecheck() {
-        return amountPerChanged && toSplitAmong > 0;
-    }
-
     public static class IntegerSplitInfo extends SplitInfo<Integer> {
+
         private int amountToSplit;
         //AmountPer is the one that needs to be int or double
         private int amountPerTarget;
@@ -62,6 +59,7 @@ public abstract class SplitInfo<TYPE extends Number & Comparable<TYPE>> {
     }
 
     public static class DoubleSplitInfo extends SplitInfo<Double> {
+
         private double amountToSplit;
         private double amountPerTarget;
         private double sentSoFar;

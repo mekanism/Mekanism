@@ -12,8 +12,7 @@ import net.minecraftforge.fluids.FluidTank;
 
 public class WasherRecipe extends MachineRecipe<GasInput, GasOutput, WasherRecipe> {
 
-    public FluidInput waterInput = new FluidInput(
-          new FluidStack(FluidRegistry.WATER, TileEntityChemicalWasher.WATER_USAGE));
+    public FluidInput waterInput = new FluidInput(new FluidStack(FluidRegistry.WATER, TileEntityChemicalWasher.WATER_USAGE));
 
     public WasherRecipe(GasInput input, GasOutput output) {
         super(input, output);
@@ -29,8 +28,7 @@ public class WasherRecipe extends MachineRecipe<GasInput, GasOutput, WasherRecip
     }
 
     public boolean canOperate(GasTank inputTank, FluidTank fluidTank, GasTank outputTank) {
-        return getInput().useGas(inputTank, false, 1) && waterInput.useFluid(fluidTank, false, 1) && getOutput()
-              .applyOutputs(outputTank, false, 1);
+        return getInput().useGas(inputTank, false, 1) && waterInput.useFluid(fluidTank, false, 1) && getOutput().applyOutputs(outputTank, false, 1);
     }
 
     public void operate(GasTank inputTank, FluidTank fluidTank, GasTank outputTank, int scale) {

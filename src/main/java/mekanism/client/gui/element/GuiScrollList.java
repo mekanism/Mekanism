@@ -71,10 +71,8 @@ public class GuiScrollList extends GuiElement {
     @Override
     public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) {
         mc.renderEngine.bindTexture(RESOURCE);
-
         drawBlack(guiWidth, guiHeight);
         drawSelected(guiWidth, guiHeight, selected);
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -83,9 +81,8 @@ public class GuiScrollList extends GuiElement {
 
         for (int yIter = 0; yIter < size; yIter++) {
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = (xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10);
-                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (yIter * 10), 0, 0,
-                      width, 10);
+                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
+                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (yIter * 10), 0, 0, width, 10);
             }
         }
     }
@@ -97,9 +94,8 @@ public class GuiScrollList extends GuiElement {
             int xDisplays = xSize / 10 + (xSize % 10 > 0 ? 1 : 0);
 
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = (xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10);
-                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10),
-                      guiHeight + yPosition + (index - scroll) * 10, 0, 10, width, 10);
+                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
+                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (index - scroll) * 10, 0, 10, width, 10);
             }
         }
     }
@@ -125,15 +121,14 @@ public class GuiScrollList extends GuiElement {
     }
 
     public int getScroll() {
-        return Math.max(Math.min((int) (scroll * (getMaxScroll() - 4)), (getMaxScroll() - 4)), 0);
+        return Math.max(Math.min((int) (scroll * (getMaxScroll() - 4)), getMaxScroll() - 4), 0);
     }
 
     public int getScrollIndex() {
         if (textEntries.size() <= size) {
             return 0;
         }
-
-        return (int) ((textEntries.size() * scroll) - (((float) size / (float) textEntries.size())) * scroll);
+        return (int) ((textEntries.size() * scroll) - ((float) size / (float) textEntries.size()) * scroll);
     }
 
     @Override
@@ -141,18 +136,14 @@ public class GuiScrollList extends GuiElement {
         if (!textEntries.isEmpty()) {
             for (int i = 0; i < size; i++) {
                 int index = getScrollIndex() + i;
-
                 if (index <= textEntries.size() - 1) {
-                    renderScaledText(textEntries.get(index), xPosition + 1, yPosition + 1 + (10 * i), 0x00CD00,
-                          xSize - 6);
+                    renderScaledText(textEntries.get(index), xPosition + 1, yPosition + 1 + (10 * i), 0x00CD00, xSize - 6);
                 }
             }
         }
 
         mc.renderEngine.bindTexture(RESOURCE);
-
         drawScroll();
-
         mc.renderEngine.bindTexture(defaultLocation);
     }
 
@@ -165,17 +156,14 @@ public class GuiScrollList extends GuiElement {
         if (button == 0) {
             int xStart = xPosition + xSize - 5;
 
-            if (xAxis >= xStart && xAxis <= xStart + 4 && yAxis >= getScroll() + yPosition + 1
-                  && yAxis <= getScroll() + 4 + yPosition + 1) {
+            if (xAxis >= xStart && xAxis <= xStart + 4 && yAxis >= getScroll() + yPosition + 1 && yAxis <= getScroll() + 4 + yPosition + 1) {
                 if (textEntries.size() > size) {
                     dragOffset = yAxis - (getScroll() + yPosition + 1);
                     isDragging = true;
                 }
-            } else if (xAxis >= xPosition && xAxis <= xPosition + xSize - 6 && yAxis >= yPosition
-                  && yAxis <= yPosition + size * 10) {
+            } else if (xAxis >= xPosition && xAxis <= xPosition + xSize - 6 && yAxis >= yPosition && yAxis <= yPosition + size * 10) {
                 int index = getScrollIndex();
                 clearSelection();
-
                 for (int i = 0; i < size; i++) {
                     if (index + i <= textEntries.size() - 1) {
                         if (yAxis >= (yPosition + i * 10) && yAxis <= (yPosition + i * 10 + 10)) {
@@ -191,17 +179,14 @@ public class GuiScrollList extends GuiElement {
     @Override
     public void mouseClickMove(int xAxis, int yAxis, int button, long ticks) {
         super.mouseClickMove(xAxis, yAxis, button, ticks);
-
         if (isDragging) {
-            scroll = Math
-                  .min(Math.max((float) (yAxis - (yPosition + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
+            scroll = Math.min(Math.max((float) (yAxis - (yPosition + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
         }
     }
 
     @Override
     public void mouseReleased(int xAxis, int yAxis, int type) {
         super.mouseReleased(xAxis, yAxis, type);
-
         if (type == 0) {
             if (isDragging) {
                 dragOffset = 0;
@@ -213,10 +198,9 @@ public class GuiScrollList extends GuiElement {
     @Override
     public void mouseWheel(int x, int y, int delta) {
         super.mouseWheel(x, y, delta);
-
         if (x > xPosition && x < xPosition + xSize && y > yPosition && y < yPosition + size * 10) {
-            scroll = Math.min(Math.max(scroll - (delta / 120F) * (1F / textEntries.size()), 0),
-                  1); // 120 = DirectInput factor for one notch. Linux/OSX LWGL scale accordingly
+            // 120 = DirectInput factor for one notch. Linux/OSX LWGL scale accordingly
+            scroll = Math.min(Math.max(scroll - (delta / 120F) * (1F / textEntries.size()), 0), 1);
             drawScroll();
         }
     }

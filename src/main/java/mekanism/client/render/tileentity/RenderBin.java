@@ -20,31 +20,22 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
     private final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 
     @Override
-    public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage,
-          float alpha) {
+    public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.facing);
-
-        if (obj.getBlockState(tileEntity.getWorld())
-              .isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite())) {
+        if (obj.getBlockState(tileEntity.getWorld()).isSideSolid(tileEntity.getWorld(), obj.getPos(), tileEntity.facing.getOpposite())) {
             return;
         }
-
         render(tileEntity.facing, tileEntity.itemType, tileEntity.clientAmount, true, x, y, z);
     }
 
-    public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y,
-          double z) {
+    public void render(EnumFacing facing, ItemStack itemType, int clientAmount, boolean text, double x, double y, double z) {
         String amount = "";
-
         if (!itemType.isEmpty()) {
             amount = Integer.toString(clientAmount);
-
             if (clientAmount == Integer.MAX_VALUE) {
                 amount = LangUtils.localize("gui.infinite");
             }
-
             GlStateManager.pushMatrix();
-
             switch (facing) {
                 case NORTH:
                     GL11.glTranslated(x + 0.73, y + 0.83, z - 0.0001);
@@ -67,15 +58,11 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
 
             float scale = 0.03125F;
             float scaler = 0.9F;
-
             GlStateManager.scale(scale * scaler, scale * scaler, -0.0001F);
             GlStateManager.rotate(180, 0, 0, 1);
-
             renderItem.renderItemAndEffectIntoGUI(itemType, 0, 0);
-
             GlStateManager.popMatrix();
         }
-
         if (text && !amount.equals("")) {
             renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
         }
@@ -84,10 +71,9 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
     @SuppressWarnings("incomplete-switch")
     private void renderText(String text, EnumFacing side, float maxScale, double x, double y, double z) {
         GlStateManager.pushMatrix();
-
         GlStateManager.doPolygonOffset(-10, -10);
         GlStateManager.enablePolygonOffset();
-
+        //TODO: Look into this because it gets cast to 1 due to division
         float displayWidth = 1 - (2 / 16);
         float displayHeight = 1 - (2 / 16);
         GlStateManager.translate(x, y, z);
@@ -121,10 +107,9 @@ public class RenderBin extends TileEntitySpecialRenderer<TileEntityBin> {
         FontRenderer fontRenderer = getFontRenderer();
 
         int requiredWidth = Math.max(fontRenderer.getStringWidth(text), 1);
-        int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-        int requiredHeight = lineHeight;
+        int requiredHeight = fontRenderer.FONT_HEIGHT + 2;
         float scaler = 0.4F;
-        float scaleX = (displayWidth / requiredWidth);
+        float scaleX = displayWidth / requiredWidth;
         float scale = scaleX * scaler;
 
         if (maxScale > 0) {

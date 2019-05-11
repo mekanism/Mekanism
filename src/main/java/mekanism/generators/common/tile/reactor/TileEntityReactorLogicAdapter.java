@@ -12,10 +12,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration {
 
-    private static final String[] methods = new String[]{"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat",
-          "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing",
-          "getIgnitionTemp",
-          "getEnergy", "getMaxEnergy", "getWater", "getSteam", "getFuel", "getDeuterium", "getTritium"};
+    private static final String[] methods = new String[]{"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat",
+                                                         "getInjectionRate", "setInjectionRate", "hasFuel", "getProducing", "getIgnitionTemp", "getEnergy",
+                                                         "getMaxEnergy", "getWater", "getSteam", "getFuel", "getDeuterium", "getTritium"};
     public ReactorLogic logicType = ReactorLogic.DISABLED;
     public boolean activeCooled;
     public boolean prevOutputting;
@@ -28,14 +27,11 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!world.isRemote) {
             boolean outputting = checkMode();
-
             if (outputting != prevOutputting) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
             }
-
             prevOutputting = outputting;
         }
     }
@@ -48,11 +44,9 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         if (world.isRemote) {
             return prevOutputting;
         }
-
         if (getReactor() == null || !getReactor().isFormed()) {
             return false;
         }
-
         switch (logicType) {
             case DISABLED:
                 return false;
@@ -62,7 +56,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
                 return getReactor().getPlasmaTemp() >= getReactor().getMaxPlasmaTemperature(activeCooled);
             case DEPLETED:
                 return (getReactor().getDeuteriumTank().getStored() < getReactor().getInjectionRate() / 2) ||
-                      (getReactor().getTritiumTank().getStored() < getReactor().getInjectionRate() / 2);
+                       (getReactor().getTritiumTank().getStored() < getReactor().getInjectionRate() / 2);
             default:
                 return false;
         }
@@ -71,7 +65,6 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         logicType = ReactorLogic.values()[nbtTags.getInteger("logicType")];
         activeCooled = nbtTags.getBoolean("activeCooled");
     }
@@ -80,10 +73,8 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("logicType", logicType.ordinal());
         nbtTags.setBoolean("activeCooled", activeCooled);
-
         return nbtTags;
     }
 
@@ -91,13 +82,11 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     public void handlePacketData(ByteBuf dataStream) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             int type = dataStream.readInt();
-
             if (type == 0) {
                 activeCooled = !activeCooled;
             } else if (type == 1) {
                 logicType = ReactorLogic.values()[dataStream.readInt()];
             }
-
             return;
         }
 
@@ -113,11 +102,9 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(logicType.ordinal());
         data.add(activeCooled);
         data.add(prevOutputting);
-
         return data;
     }
 
@@ -131,7 +118,6 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         if (getReactor() == null || !getReactor().isFormed()) {
             return new Object[]{"Unformed."};
         }
-
         switch (method) {
             case 0:
                 return new Object[]{getReactor().isBurning()};
@@ -151,13 +137,11 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
                 if (arguments[0] instanceof Double) {
                     getReactor().setInjectionRate(((Double) arguments[0]).intValue());
                     return new Object[]{"Injection rate set."};
-                } else {
-                    return new Object[]{"Invalid parameters."};
                 }
+                return new Object[]{"Invalid parameters."};
             case 8:
-                return new Object[]{
-                      (getReactor().getDeuteriumTank().getStored() >= getReactor().getInjectionRate() / 2) &&
-                            (getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate() / 2)};
+                return new Object[]{(getReactor().getDeuteriumTank().getStored() >= getReactor().getInjectionRate() / 2) &&
+                                    (getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate() / 2)};
             case 9:
                 return new Object[]{getReactor().getPassiveGeneration(false, true)};
             case 10:

@@ -17,30 +17,19 @@ import net.minecraft.world.World;
 
 public class ItemAlloy extends ItemMekanism {
 
-    public ItemAlloy() {
-        super();
-    }
-
     @Nonnull
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side,
-          float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
         ItemStack stack = player.getHeldItem(hand);
-
-        if (MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val() && CapabilityUtils
-              .hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side)) {
+        if (MekanismConfig.current().general.allowTransmitterAlloyUpgrade.val() && CapabilityUtils.hasCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side)) {
             if (!world.isRemote) {
-                IAlloyInteraction interaction = CapabilityUtils
-                      .getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side);
-                int ordinal = stack.getItem() == MekanismItems.EnrichedAlloy ? 1
-                      : (stack.getItem() == MekanismItems.ReinforcedAlloy ? 2 : 3);
+                IAlloyInteraction interaction = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, side);
+                int ordinal = stack.getItem() == MekanismItems.EnrichedAlloy ? 1 : stack.getItem() == MekanismItems.ReinforcedAlloy ? 2 : 3;
                 interaction.onAlloyInteraction(player, hand, stack, ordinal);
             }
-
             return EnumActionResult.SUCCESS;
         }
-
         return EnumActionResult.PASS;
     }
 }

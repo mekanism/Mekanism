@@ -20,12 +20,12 @@ public enum Resource {
     }
 
     public static Resource getFromName(String s) {
+        s = s.toLowerCase(Locale.ROOT);
         for (Resource r : values()) {
-            if (r.name.toLowerCase(Locale.ROOT).equals(s.toLowerCase(Locale.ROOT))) {
+            if (r.name.toLowerCase(Locale.ROOT).equals(s)) {
                 return r;
             }
         }
-
         return null;
     }
 

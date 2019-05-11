@@ -11,8 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ConfigGuiFactory implements IModGuiFactory {
 
     @Override
-    public void initialize(Minecraft minecraftInstance) {
-
+    public void initialize(Minecraft instance) {
     }
 
     @Override

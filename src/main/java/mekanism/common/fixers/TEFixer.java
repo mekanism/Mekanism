@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.fixers.MekanismDataFixers.MekFixers;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.datafix.IFixableData;
 
 public class TEFixer extends BaseMekanismFixer {
 
@@ -29,7 +28,6 @@ public class TEFixer extends BaseMekanismFixer {
     @Nonnull
     public NBTTagCompound fixTagCompound(@Nonnull NBTTagCompound compound) {
         String teLoc = compound.getString("id");
-
         //Fix multipart
         if (teLoc.equals("mcmultipart:multipart.ticking") || teLoc.equals("mcmultipart:multipart.nonticking")) {
             if (compound.hasKey("parts")) {
@@ -47,7 +45,6 @@ public class TEFixer extends BaseMekanismFixer {
             compound.setString("id", newID);
             Mekanism.logger.info("Fixed TE from {} to {}", teLoc, newID);
         }
-
         return compound;
     }
 }

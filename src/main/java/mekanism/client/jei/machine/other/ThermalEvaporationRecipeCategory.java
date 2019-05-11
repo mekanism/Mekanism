@@ -14,8 +14,7 @@ public class ThermalEvaporationRecipeCategory extends BaseRecipeCategory {
 
     public ThermalEvaporationRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/nei/GuiThermalEvaporationController.png",
-              Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory(), "gui.thermalEvaporationController.short", null, 3, 12,
-              170, 62);
+              Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory(), "gui.thermalEvaporationController.short", null, 3, 12, 170, 62);
     }
 
     @Override

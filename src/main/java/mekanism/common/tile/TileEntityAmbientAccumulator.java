@@ -41,14 +41,11 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
                 cachedDimensionId = world.provider.getDimension();
                 cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
             }
-
-            if (cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput()
-                  .applyOutputs(collectedGas, false, 1)) {
+            if (cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput().applyOutputs(collectedGas, false, 1)) {
                 cachedRecipe.getOutput().applyOutputs(collectedGas, true, 1);
             }
         }
     }
-
 
     @Override
     public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer) {
@@ -106,7 +103,6 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 }

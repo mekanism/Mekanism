@@ -32,10 +32,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictManager {
 
-    private static final List<String> minorCompatIngot = Arrays
-          .asList("Aluminum", "Draconium", "Iridium", "Mithril", "Nickel", "Platinum", "Uranium");
-    private static final List<String> minorCompatGem = Arrays
-          .asList("Amber", "Diamond", "Emerald", "Malachite", "Peridot", "Ruby", "Sapphire", "Tanzanite", "Topaz");
+    private static final List<String> minorCompatIngot = Arrays.asList("Aluminum", "Draconium", "Iridium", "Mithril", "Nickel", "Platinum", "Uranium");
+    private static final List<String> minorCompatGem = Arrays.asList("Amber", "Diamond", "Emerald", "Malachite", "Peridot", "Ruby", "Sapphire", "Tanzanite", "Topaz");
 
     public static void init() {
         addLogRecipes();
@@ -58,22 +56,20 @@ public final class OreDictManager {
         }
 
         for (ItemStack ore : OreDictionary.getOres("oreNetherSteel")) {
-            RecipeHandler
-                  .addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 4, 1));
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 4, 1));
         }
 
         oreDict = OreDictionary.getOres("itemRubber");
         if (oreDict.size() > 0) {
             ItemStack itemRubber = StackUtils.size(oreDict.get(0), 1);
             for (ItemStack rubber : OreDictionary.getOres("woodRubber")) {
-                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(rubber, 1),
-                      new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(), 4), itemRubber, 1F);
+                RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(rubber, 1), new ItemStack(Blocks.PLANKS, BlockPlanks.EnumType.JUNGLE.getMetadata(), 4),
+                      itemRubber, 1F);
             }
         }
 
         for (ItemStack sulfur : OreDictionary.getOres("dustSulfur")) {
-            RecipeHandler
-                  .addChemicalOxidizerRecipe(StackUtils.size(sulfur, 1), new GasStack(MekanismFluids.SulfurDioxide, 100));
+            RecipeHandler.addChemicalOxidizerRecipe(StackUtils.size(sulfur, 1), new GasStack(MekanismFluids.SulfurDioxide, 100));
         }
 
         for (ItemStack salt : OreDictionary.getOres("dustSalt")) {
@@ -82,50 +78,39 @@ public final class OreDictManager {
 
         for (ItemStack dust : OreDictionary.getOres("dustRefinedObsidian")) {
             RecipeHandler.addOsmiumCompressorRecipe(StackUtils.size(dust, 1), new ItemStack(MekanismItems.Ingot, 1, 0));
-            RecipeHandler
-                  .addEnrichmentChamberRecipe(StackUtils.size(dust, 1), new ItemStack(MekanismItems.CompressedObsidian));
-
-            InfuseRegistry
-                  .registerInfuseObject(StackUtils.size(dust, 1), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 10));
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(dust, 1), new ItemStack(MekanismItems.CompressedObsidian));
+            InfuseRegistry.registerInfuseObject(StackUtils.size(dust, 1), new InfuseObject(InfuseRegistry.get("OBSIDIAN"), 10));
         }
 
         for (Resource resource : Resource.values()) {
             for (ItemStack clump : OreDictionary.getOres("clump" + resource.getName())) {
-                RecipeHandler.addCrusherRecipe(StackUtils.size(clump, 1),
-                      new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
+                RecipeHandler.addCrusherRecipe(StackUtils.size(clump, 1), new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
             }
 
             for (ItemStack shard : OreDictionary.getOres("shard" + resource.getName())) {
-                RecipeHandler.addPurificationChamberRecipe(StackUtils.size(shard, 1),
-                      new ItemStack(MekanismItems.Clump, 1, resource.ordinal()));
+                RecipeHandler.addPurificationChamberRecipe(StackUtils.size(shard, 1), new ItemStack(MekanismItems.Clump, 1, resource.ordinal()));
             }
 
             for (ItemStack crystal : OreDictionary.getOres("crystal" + resource.getName())) {
-                RecipeHandler
-                      .addChemicalInjectionChamberRecipe(StackUtils.size(crystal, 1), MekanismFluids.HydrogenChloride,
-                            new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
+                RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(crystal, 1), MekanismFluids.HydrogenChloride,
+                      new ItemStack(MekanismItems.Shard, 1, resource.ordinal()));
             }
 
             for (ItemStack dust : OreDictionary.getOres("dustDirty" + resource.getName())) {
-                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(dust, 1),
-                      new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
+                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(dust, 1), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
             }
 
             for (ItemStack ore : OreDictionary.getOres("ore" + resource.getName())) {
-                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1),
-                      new ItemStack(MekanismItems.Dust, 2, resource.ordinal()));
-                RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1),
-                      new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
-                RecipeHandler
-                      .addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride,
-                            new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
+                RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Dust, 2, resource.ordinal()));
+                RecipeHandler.addPurificationChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.Clump, 3, resource.ordinal()));
+                RecipeHandler.addChemicalInjectionChamberRecipe(StackUtils.size(ore, 1), MekanismFluids.HydrogenChloride,
+                      new ItemStack(MekanismItems.Shard, 4, resource.ordinal()));
                 RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1),
                       new GasStack(GasRegistry.getGas(resource.getName().toLowerCase(Locale.ROOT)), 1000));
             }
 
             for (ItemStack ingot : OreDictionary.getOres("ingot" + resource.getName())) {
-                RecipeHandler.addCrusherRecipe(StackUtils.size(ingot, 1),
-                      new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
+                RecipeHandler.addCrusherRecipe(StackUtils.size(ingot, 1), new ItemStack(MekanismItems.Dust, 1, resource.ordinal()));
             }
 
             oreDict = OreDictionary.getOres("ore" + resource.getName());
@@ -154,26 +139,21 @@ public final class OreDictManager {
             for (ItemStack gem : OreDictionary.getOres("gemQuartz")) {
                 RecipeHandler.addCrusherRecipe(StackUtils.size(gem, 1), dustNeterQuartz);
             }
-            
         }
-        
+
         oreDict = OreDictionary.getOres("oreQuartz");
         if (oreDict.size() > 0) {
             ItemStack oreQuartz = StackUtils.size(oreDict.get(0), 1);
             oreDict = OreDictionary.getOres("dustQuartz");
             if (oreDict.size() > 0) {
                 for (ItemStack dust : oreDict) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE),
-                          oreQuartz);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE), oreQuartz);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemQuartz")) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 8), new ItemStack(Blocks.COBBLESTONE),
-                          oreQuartz);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 8), new ItemStack(Blocks.COBBLESTONE), oreQuartz);
                 }
             }
-            
         }
 
         oreDict = OreDictionary.getOres("gemQuartz");
@@ -182,7 +162,6 @@ public final class OreDictManager {
             for (ItemStack dust : OreDictionary.getOres("dustNetherQuartz")) {
                 RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(dust, 1), gemQuartz);
             }
-
             gemQuartz = StackUtils.size(gemQuartz, 6);
             for (ItemStack ore : OreDictionary.getOres("oreQuartz")) {
                 RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), gemQuartz);
@@ -203,14 +182,11 @@ public final class OreDictManager {
             oreDict = OreDictionary.getOres("dustLapis");
             if (oreDict.size() > 0) {
                 for (ItemStack dust : oreDict) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 16), new ItemStack(Blocks.COBBLESTONE),
-                          oreLapis);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 16), new ItemStack(Blocks.COBBLESTONE), oreLapis);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemLapis")) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 16), new ItemStack(Blocks.COBBLESTONE),
-                          oreLapis);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 16), new ItemStack(Blocks.COBBLESTONE), oreLapis);
                 }
             }
         }
@@ -232,8 +208,7 @@ public final class OreDictManager {
         if (oreDict.size() > 0) {
             ItemStack oreRedstone = StackUtils.size(oreDict.get(0), 1);
             for (ItemStack dust : OreDictionary.getOres("dustRedstone")) {
-                RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 16), new ItemStack(Blocks.COBBLESTONE),
-                      oreRedstone);
+                RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 16), new ItemStack(Blocks.COBBLESTONE), oreRedstone);
             }
         }
 
@@ -246,8 +221,7 @@ public final class OreDictManager {
         }
 
         for (ItemStack ore : OreDictionary.getOres("oreCoal")) {
-            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1),
-                  new ItemStack(Items.COAL, 2));
+            RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Items.COAL, 2));
         }
 
         oreDict = OreDictionary.getOres("oreAmethyst");
@@ -256,14 +230,11 @@ public final class OreDictManager {
             oreDict = OreDictionary.getOres("dustAmethyst");
             if (oreDict.size() > 0) {
                 for (ItemStack dust : oreDict) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 3), new ItemStack(Blocks.END_STONE),
-                          oreAmethyst);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 3), new ItemStack(Blocks.END_STONE), oreAmethyst);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemAmethyst")) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 3), new ItemStack(Blocks.END_STONE),
-                          oreAmethyst);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 3), new ItemStack(Blocks.END_STONE), oreAmethyst);
                 }
             }
         }
@@ -282,14 +253,11 @@ public final class OreDictManager {
             oreDict = OreDictionary.getOres("dustApatite");
             if (oreDict.size() > 0) {
                 for (ItemStack dust : oreDict) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 6), new ItemStack(Blocks.COBBLESTONE),
-                          oreApatite);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 6), new ItemStack(Blocks.COBBLESTONE), oreApatite);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : OreDictionary.getOres("gemApatite")) {
-                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 6), new ItemStack(Blocks.COBBLESTONE),
-                          oreApatite);
+                    RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 6), new ItemStack(Blocks.COBBLESTONE), oreApatite);
                 }
             }
         }
@@ -345,15 +313,13 @@ public final class OreDictManager {
         oreDict = OreDictionary.getOres("ingotSilver");
         if (oreDict.size() > 0) {
             ItemStack ingotSilver = StackUtils.size(oreDict.get(0), 1);
-            FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.SILVER.ordinal()),
-                  ingotSilver, 0.0F);
+            FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.SILVER.ordinal()), ingotSilver, 0.0F);
         }
 
         oreDict = OreDictionary.getOres("ingotLead");
         if (oreDict.size() > 0) {
             ItemStack ingotLead = StackUtils.size(oreDict.get(0), 1);
-            FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.LEAD.ordinal()),
-                  ingotLead, 0.0F);
+            FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, Resource.LEAD.ordinal()), ingotLead, 0.0F);
         }
 
         oreDict = OreDictionary.getOres("dustCoal");
@@ -395,8 +361,7 @@ public final class OreDictManager {
         }
 
         for (ItemStack dust : OreDictionary.getOres("dustObsidian")) {
-            RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 4), new ItemStack(Blocks.COBBLESTONE),
-                  new ItemStack(Blocks.OBSIDIAN));
+            RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 4), new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.OBSIDIAN));
             RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, StackUtils.size(dust, 1),
                   new ItemStack(MekanismItems.OtherDust, 1, 5));
         }
@@ -411,8 +376,7 @@ public final class OreDictManager {
 
         for (ItemStack ore : OreDictionary.getOres("treeSapling")) {
             if (ore.getItemDamage() == 0 || ore.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE),
-                      new ItemStack(MekanismItems.BioFuel, 2));
+                RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE), new ItemStack(MekanismItems.BioFuel, 2));
             }
         }
     }
@@ -425,8 +389,7 @@ public final class OreDictManager {
 
 
     /**
-     * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them.
-     * Credit to CofhCore.
+     * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Credit to CofhCore.
      */
     private static void addLogRecipes() {
         Container tempContainer = new Container() {
@@ -460,8 +423,8 @@ public final class OreDictManager {
         ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
 
         if (!resultEntry.isEmpty()) {
-            RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6),
-                  new ItemStack(MekanismItems.Sawdust), MekanismConfig.current().general.sawdustChanceLog.val());
+            RecipeHandler.addPrecisionSawmillRecipe(log, StackUtils.size(resultEntry, 6), new ItemStack(MekanismItems.Sawdust),
+                  MekanismConfig.current().general.sawdustChanceLog.val());
         }
     }
 
@@ -480,12 +443,11 @@ public final class OreDictManager {
 
         if (ores.size() > 0) {
             for (ItemStack dust : dusts) {
-                RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE),
-                      StackUtils.size(ores.get(0), 1));    
+                RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 8), new ItemStack(Blocks.COBBLESTONE), StackUtils.size(ores.get(0), 1));
             }
         }
     }
-    
+
     public static void addStandardOredictGem(String suffix) {
         NonNullList<ItemStack> gems = OreDictionary.getOres("gem" + suffix);
         NonNullList<ItemStack> dusts = OreDictionary.getOres("dust" + suffix);
@@ -510,8 +472,7 @@ public final class OreDictManager {
                 for (ItemStack dust : dusts) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(dust, 3), base, ore);
                 }
-            }
-            else {
+            } else {
                 for (ItemStack gem : gems) {
                     RecipeHandler.addCombinerRecipe(StackUtils.size(gem, 3), base, ore);
                 }

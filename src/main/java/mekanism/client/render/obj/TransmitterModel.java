@@ -2,7 +2,6 @@ package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,39 +70,28 @@ public class TransmitterModel extends OBJBakedModelBase {
     private TextureAtlasSprite particle;
     private TransmitterOverride override = new TransmitterOverride();
 
-    public TransmitterModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format,
-          ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4f> transform) {
+    public TransmitterModel(IBakedModel base, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures,
+          Map<TransformType, Matrix4f> transform) {
         super(base, model, state, format, textures, transform);
         particle = textureMap.getOrDefault("None_Center", textureMap.getOrDefault("CentreMaterial", tempSprite));
         modelInstances.add(this);
     }
 
     private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s) {
-        return new TRSRTransformation(
-              new Vector3f(tx / 16, ty / 16, tz / 16),
-              TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
-              new Vector3f(s, s, s),
-              null);
+        return new TRSRTransformation(new Vector3f(tx / 16, ty / 16, tz / 16), TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
+              new Vector3f(s, s, s), null);
     }
 
     public static void registerIcons(TextureMap map) {
-        transporter_center[0] = map
-              .registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlass"));
-        transporter_center_color[0] = map.registerSprite(
-              new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlassColored"));
-        transporter_side[0] = map.registerSprite(
-              new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlass"));
-        transporter_side_color[0] = map.registerSprite(
-              new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
+        transporter_center[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlass"));
+        transporter_center_color[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterGlassColored"));
+        transporter_side[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlass"));
+        transporter_side_color[0] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/LogisticalTransporterVerticalGlassColored"));
 
-        transporter_center[1] = map.registerSprite(
-              new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlass"));
-        transporter_center_color[1] = map.registerSprite(
-              new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlassColored"));
-        transporter_side[1] = map.registerSprite(
-              new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlass"));
-        transporter_side_color[1] = map.registerSprite(new ResourceLocation(
-              "mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlassColored"));
+        transporter_center[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlass"));
+        transporter_center_color[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterGlassColored"));
+        transporter_side[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlass"));
+        transporter_side_color[1] = map.registerSprite(new ResourceLocation("mekanism:blocks/models/multipart/opaque/LogisticalTransporterVerticalGlassColored"));
     }
 
     public static void clearCache() {
@@ -143,17 +131,14 @@ public class TransmitterModel extends OBJBakedModelBase {
             }
 
             try {
-                int hash = Objects.hash(layer.ordinal(), color,
-                      PropertyConnection.INSTANCE.valueToString(extended.getValue(PropertyConnection.INSTANCE)));
+                int hash = Objects.hash(layer.ordinal(), color, PropertyConnection.INSTANCE.valueToString(extended.getValue(PropertyConnection.INSTANCE)));
 
-                if (obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap()
-                      .containsKey(Group.ALL_EXCEPT)) {
+                if (obj.getVisibilityMap().containsKey(Group.ALL) || obj.getVisibilityMap().containsKey(Group.ALL_EXCEPT)) {
                     updateStateVisibilityMap(obj);
                 }
 
                 if (!modelCache.containsKey(hash)) {
-                    TransmitterModel model = new TransmitterModel(baseModel, getModel(), obj, vertexFormat, textureMap,
-                          transformationMap);
+                    TransmitterModel model = new TransmitterModel(baseModel, getModel(), obj, vertexFormat, textureMap, transformationMap);
                     model.tempState = state;
                     modelCache.put(hash, model.getQuads(state, side, rand));
                 }
@@ -171,12 +156,10 @@ public class TransmitterModel extends OBJBakedModelBase {
         if (tempState != null) {
             PropertyColor prop = ((IExtendedBlockState) tempState).getValue(PropertyColor.INSTANCE);
 
-            if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT && prop != null
-                  && prop.color != null) {
+            if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT && prop != null && prop.color != null) {
                 return new float[]{prop.color.getColor(0), prop.color.getColor(1), prop.color.getColor(2), 1};
             }
         }
-
         return null;
     }
 
@@ -196,29 +179,21 @@ public class TransmitterModel extends OBJBakedModelBase {
 
             if (MinecraftForgeClient.getRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
                 int opaqueVal = MekanismConfig.current().client.opaqueTransmitters.val() ? 1 : 0;
-
                 if (prop != null && prop.color != null) {
-                    return (!sideIconOverride && f.getMaterialName().contains("Center"))
-                          ? transporter_center_color[opaqueVal] : transporter_side_color[opaqueVal];
-                } else {
-                    return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center[opaqueVal]
-                          : transporter_side[opaqueVal];
+                    return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center_color[opaqueVal] : transporter_side_color[opaqueVal];
                 }
-            } else {
-                if (groupName.endsWith("NONE") && sideIconOverride) {
-                    for (String s : getModel().getMatLib().getMaterialNames()) {
-                        if (s.contains("Texture.Name")) {
-                            continue;
-                        }
-
-                        if (!s.contains("Center") && !s.contains("Centre") && (
-                              MekanismConfig.current().client.opaqueTransmitters.val() == s.contains("Opaque"))) {
-                            return textureMap.get(s);
-                        }
+                return (!sideIconOverride && f.getMaterialName().contains("Center")) ? transporter_center[opaqueVal] : transporter_side[opaqueVal];
+            } else if (groupName.endsWith("NONE") && sideIconOverride) {
+                for (String s : getModel().getMatLib().getMaterialNames()) {
+                    if (s.contains("Texture.Name")) {
+                        continue;
                     }
-                } else if (MekanismConfig.current().client.opaqueTransmitters.val()) {
-                    return textureMap.get(f.getMaterialName() + "_Opaque");
+                    if (!s.contains("Center") && !s.contains("Centre") && (MekanismConfig.current().client.opaqueTransmitters.val() == s.contains("Opaque"))) {
+                        return textureMap.get(s);
+                    }
                 }
+            } else if (MekanismConfig.current().client.opaqueTransmitters.val()) {
+                return textureMap.get(f.getMaterialName() + "_Opaque");
             }
         }
 
@@ -230,17 +205,13 @@ public class TransmitterModel extends OBJBakedModelBase {
         if (tempState != null) {
             EnumFacing side = EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z);
             PropertyConnection connection = ((IExtendedBlockState) tempState).getValue(PropertyConnection.INSTANCE);
-
             return connection != null && groupName.endsWith("NONE") && getIconStatus(side, connection) == 2;
         }
-
         return false;
     }
 
     public byte getIconStatus(EnumFacing side, PropertyConnection connection) {
-        ConnectionType type = TileEntitySidedPipe
-              .getConnectionType(side, connection.connectionByte, connection.transmitterConnections,
-                    connection.connectionTypes);
+        ConnectionType type = TileEntitySidedPipe.getConnectionType(side, connection.connectionByte, connection.transmitterConnections, connection.connectionTypes);
 
         if (type == ConnectionType.NONE) {
             if (connection.renderCenter) {
@@ -255,27 +226,24 @@ public class TransmitterModel extends OBJBakedModelBase {
                 return (byte) 2;
             }
         }
-
         return (byte) 0;
     }
 
     @Nonnull
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(
-          ItemCameraTransforms.TransformType cameraTransformType) {
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
         return Pair.of(this, transforms.get(cameraTransformType).getMatrix());
     }
 
     private class TransmitterOverride extends ItemOverrideList {
 
         public TransmitterOverride() {
-            super(Lists.newArrayList());
+            super(new ArrayList<>());
         }
 
         @Nonnull
         @Override
-        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world,
-              EntityLivingBase entity) {
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
 
@@ -283,11 +251,9 @@ public class TransmitterModel extends OBJBakedModelBase {
                     visible.add(side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE"));
                 }
 
-                itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), vertexFormat,
-                      textureMap, transformationMap);
+                itemCache = new TransmitterModel(baseModel, getModel(), new OBJState(visible, true), vertexFormat, textureMap, transformationMap);
                 itemCache.tempStack = stack;
             }
-
             return itemCache;
         }
     }

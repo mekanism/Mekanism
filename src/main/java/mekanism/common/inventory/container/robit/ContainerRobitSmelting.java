@@ -32,23 +32,17 @@ public class ContainerRobitSmelting extends ContainerRobit {
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-
         for (IContainerListener listener : listeners) {
-            IContainerListener icrafting = listener;
-
             if (lastCookTime != robit.furnaceCookTime) {
-                icrafting.sendWindowProperty(this, 0, robit.furnaceCookTime);
+                listener.sendWindowProperty(this, 0, robit.furnaceCookTime);
             }
-
             if (lastBurnTime != robit.furnaceBurnTime) {
-                icrafting.sendWindowProperty(this, 1, robit.furnaceBurnTime);
+                listener.sendWindowProperty(this, 1, robit.furnaceBurnTime);
             }
-
             if (lastItemBurnTime != robit.currentItemBurnTime) {
-                icrafting.sendWindowProperty(this, 2, robit.currentItemBurnTime);
+                listener.sendWindowProperty(this, 2, robit.currentItemBurnTime);
             }
         }
-
         lastCookTime = robit.furnaceCookTime;
         lastBurnTime = robit.furnaceBurnTime;
         lastItemBurnTime = robit.currentItemBurnTime;
@@ -59,11 +53,9 @@ public class ContainerRobitSmelting extends ContainerRobit {
         if (i == 0) {
             robit.furnaceCookTime = j;
         }
-
         if (i == 1) {
             robit.furnaceBurnTime = j;
         }
-
         if (i == 2) {
             robit.currentItemBurnTime = j;
         }
@@ -74,11 +66,9 @@ public class ContainerRobitSmelting extends ContainerRobit {
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
             if (slotID == 2) {
                 if (!mergeItemStack(slotStack, 3, 39, true)) {
                     return ItemStack.EMPTY;
@@ -102,20 +92,16 @@ public class ContainerRobitSmelting extends ContainerRobit {
             } else if (!mergeItemStack(slotStack, 3, 39, false)) {
                 return ItemStack.EMPTY;
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 

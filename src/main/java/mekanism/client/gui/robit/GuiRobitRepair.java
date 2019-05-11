@@ -79,24 +79,21 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
 
             if (flag) {
                 int l = -16777216 | (k & 16579836) >> 2 | k & -16777216;
-                int i1 = (xSize - 25) - 8 - fontRenderer.getStringWidth(s);
+                int i1 = xSize - 25 - 8 - fontRenderer.getStringWidth(s);
                 byte b0 = 67;
 
                 if (fontRenderer.getUnicodeFlag()) {
-                    drawRect(i1 - 3, b0 - 2, (xSize - 25) - 7, b0 + 10, -16777216);
-                    drawRect(i1 - 2, b0 - 1, (xSize - 25) - 8, b0 + 9, -12895429);
+                    drawRect(i1 - 3, b0 - 2, xSize - 25 - 7, b0 + 10, -16777216);
+                    drawRect(i1 - 2, b0 - 1, xSize - 25 - 8, b0 + 9, -12895429);
                 } else {
                     fontRenderer.drawString(s, i1, b0 + 1, l);
                     fontRenderer.drawString(s, i1 + 1, b0, l);
                     fontRenderer.drawString(s, i1 + 1, b0 + 1, l);
                 }
-
                 fontRenderer.drawString(s, i1, b0, k);
             }
         }
-
         GL11.glEnable(GL11.GL_LIGHTING);
-
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -104,8 +101,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
     protected void keyTyped(char c, int i) throws IOException {
         if (itemNameField.textboxKeyTyped(c, i)) {
             repairContainer.updateItemName(itemNameField.getText());
-            mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName",
-                  (new PacketBuffer(Unpooled.buffer())).writeString(itemNameField.getText())));
+            mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
         } else {
             super.keyTyped(c, i);
         }
@@ -138,10 +134,8 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth + 59, guiHeight + 20, 0,
-              ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
-        if ((repairContainer.getSlot(0).getHasStack() || repairContainer.getSlot(1).getHasStack()) && !repairContainer
-              .getSlot(2).getHasStack()) {
+        drawTexturedModalRect(guiWidth + 59, guiHeight + 20, 0, ySize + (repairContainer.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+        if ((repairContainer.getSlot(0).getHasStack() || repairContainer.getSlot(1).getHasStack()) && !repairContainer.getSlot(2).getHasStack()) {
             drawTexturedModalRect(guiWidth + 99, guiHeight + 45, xSize + 18, 36, 28, 21);
         }
     }
@@ -158,8 +152,7 @@ public class GuiRobitRepair extends GuiRobit implements IContainerListener {
             itemNameField.setEnabled(!itemstack.isEmpty());
             if (!itemstack.isEmpty()) {
                 repairContainer.updateItemName(itemNameField.getText());
-                mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName",
-                      new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
+                mc.player.connection.sendPacket(new CPacketCustomPayload("MC|ItemName", new PacketBuffer(Unpooled.buffer()).writeString(itemNameField.getText())));
             }
         }
     }

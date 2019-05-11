@@ -32,8 +32,8 @@ import net.minecraftforge.fml.common.Optional.Method;
       @Interface(iface = "cofh.redstoneflux.api.IEnergyReceiver", modid = MekanismHooks.REDSTONEFLUX_MOD_ID),
       @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink,
-      IStrictEnergyAcceptor, IEnergyReceiver, IEnergyProvider, IComputerIntegration, ISpecialConfigData {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyReceiver,
+      IEnergyProvider, IComputerIntegration, ISpecialConfigData {
 
     @Override
     public boolean isEmpty() {
@@ -41,7 +41,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return true;
         }
-
         return inv.isEmpty();
     }
 
@@ -51,7 +50,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return 0;
         }
-
         return inv.getSizeInventory();
     }
 
@@ -62,7 +60,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return ItemStack.EMPTY;
         }
-
         return inv.getStackInSlot(i);
     }
 
@@ -73,7 +70,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return ItemStack.EMPTY;
         }
-
         return inv.decrStackSize(i, j);
     }
 
@@ -84,7 +80,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return ItemStack.EMPTY;
         }
-
         return inv.removeStackFromSlot(i);
     }
 
@@ -94,7 +89,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return;
         }
-
         inv.setInventorySlotContents(i, itemstack);
     }
 
@@ -105,7 +99,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return "null";
         }
-
         return inv.getName();
     }
 
@@ -115,7 +108,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-
         return inv.hasCustomName();
     }
 
@@ -131,7 +123,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return 0;
         }
-
         return inv.getInventoryStackLimit();
     }
 
@@ -141,7 +132,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-
         return inv.isUsableByPlayer(entityplayer);
     }
 
@@ -151,7 +141,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return;
         }
-
         inv.openInventory(player);
     }
 
@@ -161,7 +150,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return;
         }
-
         inv.closeInventory(player);
     }
 
@@ -171,7 +159,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-
         return inv.isItemValidForSlot(i, itemstack);
     }
 
@@ -182,7 +169,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
     @Override
     public void setField(int id, int value) {
-
     }
 
     @Override
@@ -201,7 +187,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return InventoryUtils.EMPTY;
         }
-
         return inv.getSlotsForFace(side);
     }
 
@@ -211,7 +196,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-
         return inv.canInsertItem(i, itemstack, side);
     }
 
@@ -221,7 +205,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-
         return inv.canExtractItem(i, itemstack, side);
     }
 
@@ -232,7 +215,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-
         return inv.acceptsEnergyFrom(emitter, direction);
     }
 
@@ -243,7 +225,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null || !canReceiveEnergy(from)) {
             return 0;
         }
-
         return inv.receiveEnergy(from, maxReceive, simulate);
     }
 
@@ -254,7 +235,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return 0;
         }
-
         return inv.extractEnergy(from, maxExtract, simulate);
     }
 
@@ -271,7 +251,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return 0;
         }
-
         return inv.getEnergyStored(from);
     }
 
@@ -282,7 +261,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return 0;
         }
-
         return inv.getMaxEnergyStored(from);
     }
 
@@ -292,7 +270,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null || !canReceiveEnergy(side)) {
             return 0;
         }
-
         return inv.acceptEnergy(side, amount, simulate);
     }
 
@@ -302,7 +279,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return false;
         }
-
         return inv.canBoundReceiveEnergy(getPos(), side);
     }
 
@@ -320,7 +296,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null || !canReceiveEnergy(directionFrom)) {
             return amount;
         }
-
         return inv.injectEnergy(directionFrom, amount, voltage);
     }
 
@@ -331,7 +306,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return 0;
         }
-
         return inv.getSinkTier();
     }
 
@@ -353,14 +327,12 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             //world.setBlockToAir(mainPos);
             return null;
         }
-
         return (IAdvancedBoundingBlock) tile;
     }
 
     @Override
     public void onPower() {
         super.onPower();
-
         IAdvancedBoundingBlock inv = getInv();
         if (inv != null) {
             inv.onPower();
@@ -370,7 +342,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     @Override
     public void onNoPower() {
         super.onNoPower();
-
         IAdvancedBoundingBlock inv = getInv();
         if (inv != null) {
             inv.onNoPower();
@@ -383,7 +354,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return new String[]{};
         }
-
         return inv.getMethods();
     }
 
@@ -393,7 +363,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return new Object[]{};
         }
-
         return inv.invoke(method, arguments);
     }
 
@@ -403,7 +372,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return new NBTTagCompound();
         }
-
         return inv.getConfigurationData(nbtTags);
     }
 
@@ -413,7 +381,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return;
         }
-
         inv.setConfigurationData(nbtTags);
     }
 
@@ -423,7 +390,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return "null";
         }
-
         return inv.getDataType();
     }
 
@@ -432,12 +398,10 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return super.hasCapability(capability, facing);
         }
-
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return super.hasCapability(capability, facing);
         }
-
         return inv.hasOffsetCapability(capability, facing, pos.subtract(mainPos));
     }
 
@@ -446,12 +410,10 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
             return super.getCapability(capability, facing);
         }
-
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return super.getCapability(capability, facing);
         }
-
         return inv.getOffsetCapability(capability, facing, pos.subtract(mainPos));
     }
 }

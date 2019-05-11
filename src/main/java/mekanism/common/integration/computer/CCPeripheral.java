@@ -40,8 +40,7 @@ public class CCPeripheral implements IPeripheral {
 
     @Override
     @Optional.Method(modid = MekanismHooks.COMPUTERCRAFT_MOD_ID)
-    public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method,
-          @Nonnull Object[] arguments) {
+    public Object[] callMethod(@Nonnull IComputerAccess computer, @Nonnull ILuaContext context, int method, @Nonnull Object[] arguments) {
         try {
             return computerTile.invoke(method, arguments);
         } catch (NoSuchMethodException e) {
@@ -73,11 +72,9 @@ public class CCPeripheral implements IPeripheral {
         @Override
         public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side) {
             TileEntity te = world.getTileEntity(pos);
-
             if (te instanceof IComputerIntegration) {
                 return new CCPeripheral((IComputerIntegration) te);
             }
-
             return null;
         }
     }

@@ -17,31 +17,24 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 public class GenHandler implements IWorldGenerator {
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
-          IChunkProvider chunkProvider) {
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         if (!(chunkGenerator instanceof ChunkGeneratorHell) && !(chunkGenerator instanceof ChunkGeneratorEnd)) {
             for (int i = 0; i < MekanismConfig.current().general.osmiumPerChunk.val(); i++) {
-                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60),
-                      (chunkZ * 16) + random.nextInt(16));
-                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0),
-                      MekanismConfig.current().general.osmiumMaxVeinSize.val(), BlockMatcher.forBlock(Blocks.STONE))
-                      .generate(world, random, pos);
+                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
+                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(0), MekanismConfig.current().general.osmiumMaxVeinSize.val(),
+                      BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
             }
 
             for (int i = 0; i < MekanismConfig.current().general.copperPerChunk.val(); i++) {
-                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60),
-                      (chunkZ * 16) + random.nextInt(16));
-                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1),
-                      MekanismConfig.current().general.copperMaxVeinSize.val(), BlockMatcher.forBlock(Blocks.STONE))
-                      .generate(world, random, pos);
+                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
+                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(1), MekanismConfig.current().general.copperMaxVeinSize.val(),
+                      BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
             }
 
             for (int i = 0; i < MekanismConfig.current().general.tinPerChunk.val(); i++) {
-                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60),
-                      (chunkZ * 16) + random.nextInt(16));
-                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2),
-                      MekanismConfig.current().general.tinMaxVeinSize.val(), BlockMatcher.forBlock(Blocks.STONE))
-                      .generate(world, random, pos);
+                BlockPos pos = new BlockPos(chunkX * 16 + random.nextInt(16), random.nextInt(60), (chunkZ * 16) + random.nextInt(16));
+                new WorldGenMinable(MekanismBlocks.OreBlock.getStateFromMeta(2), MekanismConfig.current().general.tinMaxVeinSize.val(),
+                      BlockMatcher.forBlock(Blocks.STONE)).generate(world, random, pos);
             }
 
             for (int i = 0; i < MekanismConfig.current().general.saltPerChunk.val(); i++) {

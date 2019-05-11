@@ -34,19 +34,16 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
     @Override
     public void load(NBTTagCompound nbtTags) {
         editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
-
         NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
         inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 
         for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
             NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
             byte slotID = tagCompound.getByte("Slot");
-
             if (slotID >= 0 && slotID < 2) {
                 inventory.set(slotID, new ItemStack(tagCompound));
             }
         }
-
         if (nbtTags.hasKey("cachedFluid")) {
             fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
         }
@@ -55,9 +52,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
     @Override
     public void save(NBTTagCompound nbtTags) {
         nbtTags.setInteger("editMode", editMode.ordinal());
-
         NBTTagList tagList = new NBTTagList();
-
         for (int slotCount = 0; slotCount < 2; slotCount++) {
             if (!inventory.get(slotCount).isEmpty()) {
                 NBTTagCompound tagCompound = new NBTTagCompound();
@@ -66,9 +61,7 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
                 tagList.appendTag(tagCompound);
             }
         }
-
         nbtTags.setTag("Items", tagList);
-
         if (fluid != null) {
             nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
         }

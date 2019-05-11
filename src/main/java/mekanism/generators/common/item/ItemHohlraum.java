@@ -34,14 +34,11 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
-
         if (gasStack == null) {
             list.add(LangUtils.localize("tooltip.noGas") + ".");
             list.add(EnumColor.DARK_RED + LangUtils.localize("tooltip.insufficientFuel"));
         } else {
-            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
-                  + gasStack.amount);
-
+            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
             if (gasStack.amount == getMaxGas(itemstack)) {
                 list.add(EnumColor.DARK_GREEN + LangUtils.localize("tooltip.readyForReaction") + "!");
             } else {
@@ -65,14 +62,11 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-
         if (stack.getGas() != MekanismFluids.FusionFuel) {
             return 0;
         }
-
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
         setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
-
         return toUse;
     }
 
@@ -122,7 +116,6 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
         } else {
             int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
             GasStack gasStack = new GasStack(stack.getGas(), amount);
-
             ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new NBTTagCompound()));
         }
     }
@@ -130,7 +123,6 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
     public ItemStack getEmptyItem() {
         ItemStack stack = new ItemStack(this);
         setGas(stack, null);
-
         return stack;
     }
 
@@ -142,7 +134,6 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem {
         ItemStack empty = new ItemStack(this);
         setGas(empty, null);
         list.add(empty);
-
         ItemStack filled = new ItemStack(this);
         setGas(filled, new GasStack(MekanismFluids.FusionFuel, ((IGasItem) filled.getItem()).getMaxGas(filled)));
         list.add(filled);

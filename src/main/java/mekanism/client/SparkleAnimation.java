@@ -38,9 +38,7 @@ public class SparkleAnimation {
 
     public void run() {
         if (MekanismConfig.current().general.dynamicTankEasterEgg.val()) {
-            tile.getWorld()
-                  .playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(),
-                        MekanismSounds.CJ_EASTER_EGG, SoundCategory.BLOCKS, 1F, 1F);
+            tile.getWorld().playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG, SoundCategory.BLOCKS, 1F, 1F);
         }
 
         // Using the provided radius, get an iterable over all the positions within the radius
@@ -61,19 +59,20 @@ public class SparkleAnimation {
             }
 
             for (int i = 0; i < 2; i++) {
-                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
-                      pos.getY() + random.nextDouble(), pos.getZ() + -.01, 0, 0, 0);
-                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(),
-                      pos.getY() + random.nextDouble(), pos.getZ() + 1.01, 0, 0, 0);
-                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + -.01,
-                      pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0, 0);
-                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 1.01,
-                      pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(),
+                      pos.getZ() + -.01, 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(),
+                      pos.getZ() + 1.01, 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + -.01, pos.getY() + random.nextDouble(),
+                      pos.getZ() + random.nextDouble(), 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.REDSTONE, pos.getX() + 1.01, pos.getY() + random.nextDouble(),
+                      pos.getZ() + random.nextDouble(), 0, 0, 0);
             }
         }
     }
 
     public interface INodeChecker {
+
         boolean isNode(TileEntity tile);
     }
 }

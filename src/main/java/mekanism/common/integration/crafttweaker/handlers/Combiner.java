@@ -44,8 +44,7 @@ public class Combiner {
     }
 
     /**
-     * @deprecated Replaced by {@link #addRecipe(IIngredient, IIngredient, IItemStack)}. May be removed with Minecraft
-     * 1.13.
+     * @deprecated Replaced by {@link #addRecipe(IIngredient, IIngredient, IItemStack)}. May be removed with Minecraft 1.13.
      */
     @ZenMethod
     @Deprecated
@@ -64,9 +63,8 @@ public class Combiner {
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
           @Optional IIngredient extraInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.COMBINER, new IngredientWrapper(itemOutput),
-                        new IngredientWrapper(itemInput, extraInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.COMBINER, new IngredientWrapper(itemOutput),
+                  new IngredientWrapper(itemInput, extraInput)));
         }
     }
 

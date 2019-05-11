@@ -37,11 +37,9 @@ public class TileComponentConfig implements ITileComponent {
 
     public TileComponentConfig(TileEntityContainerBlock tile, TransmissionType... types) {
         tileEntity = tile;
-
         for (TransmissionType type : types) {
             addSupported(type);
         }
-
         tile.components.add(this);
     }
 
@@ -56,7 +54,6 @@ public class TileComponentConfig implements ITileComponent {
         if (!transmissions.contains(type)) {
             transmissions.add(type);
         }
-
         sideOutputs.put(type, new ArrayList<>());
         ejecting.put(type, false);
         canEject.put(type, true);
@@ -72,7 +69,6 @@ public class TileComponentConfig implements ITileComponent {
                 ret.add(sideToCheck);
             }
         }
-
         return ret;
     }
 
@@ -112,7 +108,6 @@ public class TileComponentConfig implements ITileComponent {
 
     public void fillConfig(TransmissionType type, int data) {
         byte sideData = (byte) data;
-
         setConfig(type, sideData, sideData, sideData, sideData, sideData, sideData);
     }
 
@@ -120,14 +115,12 @@ public class TileComponentConfig implements ITileComponent {
         addOutput(type, new SideData("None", EnumColor.GREY, IOState.OFF));
         addOutput(type, new SideData("Input", EnumColor.DARK_GREEN, IOState.INPUT));
         addOutput(type, new SideData("Output", EnumColor.DARK_RED, IOState.OUTPUT));
-
         setConfig(type, new byte[]{1, 1, 2, 1, 1, 1});
     }
 
     public void setInputConfig(TransmissionType type) {
         addOutput(type, new SideData("None", EnumColor.GREY, IOState.OFF));
         addOutput(type, new SideData("Input", EnumColor.DARK_GREEN, IOState.INPUT));
-
         fillConfig(type, 1);
         setCanEject(type, false);
     }
@@ -157,7 +150,6 @@ public class TileComponentConfig implements ITileComponent {
         if (side == null) {
             return EMPTY;
         }
-
         return getOutput(type, MekanismUtils.getBaseOrientation(side, facing));
     }
 
@@ -175,7 +167,6 @@ public class TileComponentConfig implements ITileComponent {
             sideConfig.set(side, (byte) 0);
             index = 0;
         }
-
         return getOutputs(type).get(index);
     }
 
@@ -212,7 +203,6 @@ public class TileComponentConfig implements ITileComponent {
         for (TransmissionType type : transmissions) {
             byte[] array = new byte[6];
             dataStream.readBytes(array);
-
             sideConfigs.put(type, new SideConfig(array));
             ejecting.put(type, dataStream.readBoolean());
         }
@@ -224,7 +214,6 @@ public class TileComponentConfig implements ITileComponent {
             nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type).asByteArray());
             nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type));
         }
-
         nbtTags.setBoolean("sideDataStored", true);
     }
 
@@ -235,7 +224,6 @@ public class TileComponentConfig implements ITileComponent {
         for (TransmissionType type : transmissions) {
             data.add(type.ordinal());
         }
-
         for (TransmissionType type : transmissions) {
             data.add(sideConfigs.get(type).asByteArray());
             data.add(ejecting.get(type));

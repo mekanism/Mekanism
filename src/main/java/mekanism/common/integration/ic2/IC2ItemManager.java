@@ -14,7 +14,6 @@ public class IC2ItemManager implements IElectricItemManager {
     public static IC2ItemManager getManager(IEnergizedItem item) {
         IC2ItemManager manager = new IC2ItemManager();
         manager.energizedItem = item;
-
         return manager;
     }
 
@@ -22,17 +21,12 @@ public class IC2ItemManager implements IElectricItemManager {
     public double charge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean simulate) {
         if (energizedItem.canReceive(itemStack)) {
             double energyNeeded = energizedItem.getMaxEnergy(itemStack) - energizedItem.getEnergy(itemStack);
-            double energyToStore = Math
-                  .min(Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(),
-                        energizedItem.getMaxEnergy(itemStack) * 0.01), energyNeeded);
-
+            double energyToStore = Math.min(Math.min(amount * MekanismConfig.current().general.FROM_IC2.val(), energizedItem.getMaxEnergy(itemStack) * 0.01), energyNeeded);
             if (!simulate) {
                 energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) + energyToStore);
             }
-
             return MekanismUtils.clampToInt(energyToStore * MekanismConfig.current().general.TO_IC2.val());
         }
-
         return 0;
     }
 
@@ -41,16 +35,12 @@ public class IC2ItemManager implements IElectricItemManager {
           boolean simulate) {
         if (energizedItem.canSend(itemStack)) {
             double energyWanted = amount * MekanismConfig.current().general.FROM_IC2.val();
-            double energyToGive = Math.min(Math.min(energyWanted, energizedItem.getMaxEnergy(itemStack) * 0.01),
-                  energizedItem.getEnergy(itemStack));
-
+            double energyToGive = Math.min(Math.min(energyWanted, energizedItem.getMaxEnergy(itemStack) * 0.01), energizedItem.getEnergy(itemStack));
             if (!simulate) {
                 energizedItem.setEnergy(itemStack, energizedItem.getEnergy(itemStack) - energyToGive);
             }
-
             return MekanismUtils.clampToInt(energyToGive * MekanismConfig.current().general.TO_IC2.val());
         }
-
         return 0;
     }
 
@@ -71,7 +61,6 @@ public class IC2ItemManager implements IElectricItemManager {
 
     @Override
     public void chargeFromArmor(ItemStack itemStack, EntityLivingBase entity) {
-
     }
 
     @Override

@@ -15,9 +15,7 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
     @Override
     public IMessage onMessage(RobitMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             if (message.activeType == RobitPacketType.GUI) {
                 if (message.guiType == 0) {
                     player.openGui(Mekanism.instance, 21, player.world, message.entityId, 0, 0);
@@ -32,31 +30,26 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
                 }
             } else if (message.activeType == RobitPacketType.FOLLOW) {
                 EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
-
                 if (robit != null) {
                     robit.setFollowing(!robit.getFollowing());
                 }
             } else if (message.activeType == RobitPacketType.NAME) {
                 EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
-
                 if (robit != null) {
                     robit.setCustomNameTag(message.name);
                 }
             } else if (message.activeType == RobitPacketType.GO_HOME) {
                 EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
-
                 if (robit != null) {
                     robit.goHome();
                 }
             } else if (message.activeType == RobitPacketType.DROP_PICKUP) {
                 EntityRobit robit = (EntityRobit) player.world.getEntityByID(message.entityId);
-
                 if (robit != null) {
                     robit.setDropPickup(!robit.getDropPickup());
                 }
             }
         }, player);
-
         return null;
     }
 
@@ -82,7 +75,6 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
 
         public RobitMessage(RobitPacketType type, int i1, int i2, String s) {
             activeType = type;
-
             switch (activeType) {
                 case GUI:
                     guiType = i1;
@@ -107,7 +99,6 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(activeType.ordinal());
-
             switch (activeType) {
                 case GUI:
                     dataStream.writeInt(guiType);
@@ -132,7 +123,6 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage> {
         @Override
         public void fromBytes(ByteBuf dataStream) {
             activeType = RobitPacketType.values()[dataStream.readInt()];
-
             if (activeType == RobitPacketType.GUI) {
                 guiType = dataStream.readInt();
                 entityId = dataStream.readInt();

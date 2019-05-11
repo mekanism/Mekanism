@@ -23,8 +23,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     public static void register() {
-        CapabilityManager.INSTANCE
-              .register(ILogisticalTransporter.class, new NullStorage<>(), DefaultLogisticalTransporter::new);
+        CapabilityManager.INSTANCE.register(ILogisticalTransporter.class, new NullStorage<>(), DefaultLogisticalTransporter::new);
     }
 
     @Override
@@ -33,14 +32,12 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color,
-          boolean doEmit, int min) {
+    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         return TransitResponse.EMPTY;
     }
 
     @Override
     public void entityEntering(TransporterStack stack, int progress) {
-
     }
 
     @Override
@@ -50,7 +47,6 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     @Override
     public void setColor(EnumColor c) {
-
     }
 
     @Override
@@ -90,7 +86,6 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     @Override
     public void setTransmitterNetwork(InventoryNetwork network) {
-
     }
 
     @Override
@@ -160,7 +155,6 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     @Override
     public void setOrphan(boolean orphaned) {
-
     }
 
     @Override
@@ -180,12 +174,10 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
 
     @Override
     public void takeShare() {
-
     }
 
     @Override
     public void updateShare() {
-
     }
 
     @Override

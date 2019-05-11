@@ -26,8 +26,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implements IHeatTransfer, ISecurityTile,
-      IActiveState {
+public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implements IHeatTransfer, ISecurityTile, IActiveState {
 
     public double temperature;
     public double heatToAbsorb = 0;
@@ -63,7 +62,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     public void onUpdate() {
         if (world.isRemote && updateDelay > 0) {
             updateDelay--;
-
             if (updateDelay == 0 && clientActive != isActive) {
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());
@@ -73,45 +71,34 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
         if (!world.isRemote) {
             if (updateDelay > 0) {
                 updateDelay--;
-
                 if (updateDelay == 0 && clientActive != isActive) {
-                    Mekanism.packetHandler.sendToReceivers(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                          new Range4D(Coord4D.get(this)));
+                    Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
                 }
             }
 
             boolean burning = false;
-
             if (burnTime > 0) {
                 burnTime--;
                 burning = true;
             } else {
                 if (!inventory.get(0).isEmpty()) {
                     maxBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory.get(0)) / 2;
-
                     if (burnTime > 0) {
                         ItemStack preShrunk = inventory.get(0).copy();
                         inventory.get(0).shrink(1);
-
                         if (inventory.get(0).getCount() == 0) {
                             inventory.set(0, preShrunk.getItem().getContainerItem(preShrunk));
                         }
-
                         burning = true;
                     }
                 }
             }
-
             if (burning) {
                 heatToAbsorb += MekanismConfig.current().general.heatPerFuelTick.val();
             }
-
             double[] loss = simulateHeat();
             applyTemperatureChange();
-
             lastEnvironmentLoss = loss[1];
-
             setActive(burning);
         }
     }
@@ -119,7 +106,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         temperature = nbtTags.getDouble("temperature");
         clientActive = isActive = nbtTags.getBoolean("isActive");
         burnTime = nbtTags.getInteger("burnTime");
@@ -130,27 +116,22 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setDouble("temperature", temperature);
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("burnTime", burnTime);
         nbtTags.setInteger("maxBurnTime", maxBurnTime);
-
         return nbtTags;
     }
 
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             temperature = dataStream.readDouble();
             clientActive = dataStream.readBoolean();
             burnTime = dataStream.readInt();
             maxBurnTime = dataStream.readInt();
-
             lastEnvironmentLoss = dataStream.readDouble();
-
             if (updateDelay == 0 && clientActive != isActive) {
                 updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
                 isActive = clientActive;
@@ -162,14 +143,11 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(temperature);
         data.add(isActive);
         data.add(burnTime);
         data.add(maxBurnTime);
-
         data.add(lastEnvironmentLoss);
-
         return data;
     }
 
@@ -197,12 +175,8 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     @Override
     public void setActive(boolean active) {
         isActive = active;
-
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             updateDelay = 10;
             clientActive = active;
         }
@@ -247,7 +221,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     public double applyTemperatureChange() {
         temperature += heatToAbsorb;
         heatToAbsorb = 0;
-
         return temperature;
     }
 
@@ -259,11 +232,9 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
     @Override
     public IHeatTransfer getAdjacent(EnumFacing side) {
         TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-
         if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
         }
-
         return null;
     }
 
@@ -277,7 +248,6 @@ public class TileEntityFuelwoodHeater extends TileEntityContainerBlock implement
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 

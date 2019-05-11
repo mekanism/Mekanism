@@ -103,7 +103,6 @@ public class GeneratorsCommonProxy implements IGuiProvider {
     public void loadConfiguration() {
         MekanismConfig.local().generators.load(Mekanism.configuration);
         setGasGeneratorMaxEnergy();
-
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
         }
@@ -121,7 +120,6 @@ public class GeneratorsCommonProxy implements IGuiProvider {
     @Override
     public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos) {
         TileEntity tileEntity = world.getTileEntity(pos);
-
         switch (ID) {
             case 0:
                 return new ContainerHeatGenerator(player.inventory, (TileEntityHeatGenerator) tileEntity);
@@ -142,7 +140,6 @@ public class GeneratorsCommonProxy implements IGuiProvider {
             case 11:
             case 12:
             case 13:
-                return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
             case 15:
                 return new ContainerNull(player, (TileEntityContainerBlock) tileEntity);
         }

@@ -15,7 +15,6 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
 
     public ItemCapabilityWrapper(ItemStack stack, ItemCapability... caps) {
         itemStack = stack;
-
         for (ItemCapability c : caps) {
             c.wrapper = this;
             capabilities.add(c);
@@ -29,7 +28,6 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -40,7 +38,6 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
                 return (T) cap;
             }
         }
-
         return null;
     }
 

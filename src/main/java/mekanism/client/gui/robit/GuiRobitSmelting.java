@@ -34,8 +34,7 @@ public class GuiRobitSmelting extends GuiRobit {
         int displayInt;
         if (robit.furnaceBurnTime > 0) {
             displayInt = getBurnTimeRemainingScaled(12);
-            drawTexturedModalRect(guiWidth + 56, guiHeight + 36 + 12 - displayInt, 176 + 25 + 18, 36 + 12 - displayInt,
-                  14, displayInt + 2);
+            drawTexturedModalRect(guiWidth + 56, guiHeight + 36 + 12 - displayInt, 176 + 25 + 18, 36 + 12 - displayInt, 14, displayInt + 2);
         }
         displayInt = getCookProgressScaled(24);
         drawTexturedModalRect(guiWidth + 79, guiHeight + 34, 176 + 25 + 18, 36 + 14, displayInt + 1, 16);

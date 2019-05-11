@@ -2,9 +2,9 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CapabilityUtils;
@@ -22,29 +22,21 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
     @Override
     public IMessage onMessage(TileEntityMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
         if (player == null) {
             return null;
         }
-
-        PacketHandler.handlePacket(() ->
-        {
+        PacketHandler.handlePacket(() -> {
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-
             if (CapabilityUtils.hasCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null)) {
-                ITileNetwork network = CapabilityUtils
-                      .getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
-
+                ITileNetwork network = CapabilityUtils.getCapability(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null);
                 try {
                     network.handlePacketData(message.storedBuffer);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 message.storedBuffer.release();
             }
         }, player);
-
         return null;
     }
 
@@ -67,14 +59,10 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
         @Override
         public void toBytes(ByteBuf dataStream) {
             coord4D.write(dataStream);
-
             MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
             if (server != null) {
                 World world = server.getWorld(coord4D.dimensionId);
-                PacketHandler
-                      .log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.getTileEntity(world)
-                            + ")");
+                PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D + " (" + coord4D.getTileEntity(world) + ")");
             }
 
             PacketHandler.encode(parameters.toArray(), dataStream);

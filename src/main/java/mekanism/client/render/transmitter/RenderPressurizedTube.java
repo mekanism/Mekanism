@@ -12,16 +12,10 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPressurizedTube> {
 
-    public RenderPressurizedTube() {
-        super();
-    }
-
     @Override
-    public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityPressurizedTube tube, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (MekanismConfig.current().client.opaqueTransmitters.val() || !tube.getTransmitter().hasTransmitterNetwork()
-              || tube.getTransmitter().getTransmitterNetwork().refGas == null
-              || tube.getTransmitter().getTransmitterNetwork().gasScale == 0) {
+            || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0) {
             return;
         }
 

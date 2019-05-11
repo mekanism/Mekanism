@@ -28,7 +28,6 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
             MinecraftForge.EVENT_BUS.register(this);
             registered = true;
         }
-
         setRegistryName("bin");
     }
 
@@ -41,7 +40,6 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
         if (itemStack.isEmpty()) {
             return false;
         }
-
         return BasicBlockType.get(itemStack) == BasicBlockType.BIN && itemStack.getCount() <= 1;
     }
 
@@ -53,15 +51,12 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
 
     public ItemStack getResult(IInventory inv) {
         ItemStack bin = ItemStack.EMPTY;
-
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack stack = inv.getStackInSlot(i);
-
             if (isBin(stack)) {
                 if (!bin.isEmpty()) {
                     return ItemStack.EMPTY;
                 }
-
                 bin = stack.copy();
             }
         }
@@ -71,15 +66,12 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
         }
 
         ItemStack addStack = ItemStack.EMPTY;
-
         for (int i = 0; i < 9; i++) {
             ItemStack stack = inv.getStackInSlot(i);
-
             if (!stack.isEmpty() && !isBin(stack)) {
                 if (!addStack.isEmpty()) {
                     return ItemStack.EMPTY;
                 }
-
                 addStack = stack.copy();
             }
         }
@@ -91,14 +83,11 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
                 if (!binInv.getItemType().isEmpty() && !binInv.getItemType().isItemEqual(addStack)) {
                     return ItemStack.EMPTY;
                 }
-
                 binInv.add(addStack);
             }
-
             return bin;
-        } else {
-            return binInv.removeStack();
         }
+        return binInv.removeStack();
     }
 
     @Nonnull
@@ -128,10 +117,8 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
                         InventoryBin inv = new InventoryBin(bin.copy());
 
                         int size = inv.getItemCount();
-
                         ItemStack testRemove = inv.removeStack();
                         int newCount = size - (!testRemove.isEmpty() ? testRemove.getCount() : 0);
-
                         if (inv.getTier() == BinTier.CREATIVE) {
                             newCount = size;
                         }
@@ -142,12 +129,10 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
             } else {
                 int bin = -1;
                 int other = -1;
-
                 for (int i = 0; i < event.craftMatrix.getSizeInventory(); i++) {
                     if (isBin(event.craftMatrix.getStackInSlot(i))) {
                         bin = i;
-                    } else if (!isBin(event.craftMatrix.getStackInSlot(i)) && !event.craftMatrix.getStackInSlot(i)
-                          .isEmpty()) {
+                    } else if (!isBin(event.craftMatrix.getStackInSlot(i)) && !event.craftMatrix.getStackInSlot(i).isEmpty()) {
                         other = i;
                     }
                 }
@@ -156,7 +141,6 @@ public class BinRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRec
                 ItemStack otherStack = event.craftMatrix.getStackInSlot(other);
 
                 ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
-
                 if (!testRemain.isEmpty() && testRemain.getCount() > 0) {
                     ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
                     ((ItemProxy) proxy.getItem()).setSavedItem(proxy, testRemain.copy());

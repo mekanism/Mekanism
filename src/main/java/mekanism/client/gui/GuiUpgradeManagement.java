@@ -64,8 +64,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
         } else {
             int amount = tileEntity.getComponent().getUpgrades(selectedType);
             renderText(selectedType.getName() + " " + LangUtils.localize("gui.upgrade"), 92, 8, 0.6F, true);
-            renderText(LangUtils.localize("gui.upgrades.amount") + ": " + amount + "/" + selectedType.getMax(), 92, 16,
-                  0.6F, true);
+            renderText(LangUtils.localize("gui.upgrades.amount") + ": " + amount + "/" + selectedType.getMax(), 92, 16, 0.6F, true);
             int text = 0;
             for (String s : selectedType.getInfo((TileEntity) tileEntity)) {
                 renderText(s, 92, 22 + (6 * text++), 0.6F, true);
@@ -79,8 +78,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
             }
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         for (int i = 0; i < 4; i++) {
             int index = getUpgradeIndex() + i;
             if (index > upgrades.length - 1) {
@@ -92,8 +91,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             fontRenderer.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
             if (xAxis >= xPos && xAxis <= xPos + 58 && yAxis >= yPos && yAxis <= yPos + 12) {
-                drawHoveringText(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis,
-                      yAxis);
+                drawHoveringText(MekanismUtils.splitTooltip(upgrade.getDescription(), upgrade.getStack()), xAxis, yAxis);
             }
         }
 
@@ -103,8 +101,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
     private void renderText(String text, int x, int y, float size, boolean scale) {
         GlStateManager.pushMatrix();
         GlStateManager.scale(size, size, size);
-        fontRenderer
-              .drawString(text, scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y, 0x00CD00);
+        fontRenderer.drawString(text, scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y, 0x00CD00);
         GlStateManager.popMatrix();
     }
 
@@ -112,8 +109,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
         GlStateManager.pushMatrix();
         GlStateManager.scale(size, size, size);
         RenderHelper.enableGUIStandardItemLighting();
-        itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int) ((1F / size) * x) : x,
-              scale ? (int) ((1F / size) * y) : y);
+        itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int) ((1F / size) * x) : x, scale ? (int) ((1F / size) * y) : y);
         RenderHelper.disableStandardItemLighting();
         GlStateManager.popMatrix();
     }
@@ -125,8 +121,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         if (xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20) {
             drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 0, 14, 14);
         } else {
@@ -180,14 +176,14 @@ public class GuiUpgradeManagement extends GuiMekanism {
         if (getCurrentUpgrades().size() <= 4) {
             return 0;
         }
-        return (int) ((getCurrentUpgrades().size() * scroll) - ((4F / (float) getCurrentUpgrades().size())) * scroll);
+        return (int) ((getCurrentUpgrades().size() * scroll) - (4F / (float) getCurrentUpgrades().size()) * scroll);
     }
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {
         super.mouseClickMove(mouseX, mouseY, button, ticks);
         if (isDragging) {
-            int yAxis = (mouseY - (height - ySize) / 2);
+            int yAxis = mouseY - (height - ySize) / 2;
             scroll = Math.min(Math.max((float) (yAxis - 8 - dragOffset) / 42F, 0), 1);
         }
     }
@@ -209,8 +205,8 @@ public class GuiUpgradeManagement extends GuiMekanism {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException {
         super.mouseClicked(mouseX, mouseY, button);
-        int xAxis = (mouseX - (width - xSize) / 2);
-        int yAxis = (mouseY - (height - ySize) / 2);
+        int xAxis = mouseX - (width - xSize) / 2;
+        int yAxis = mouseY - (height - ySize) / 2;
         TileEntity tile = (TileEntity) tileEntity;
         if (button == 0) {
             if (xAxis >= 84 && xAxis <= 88 && yAxis >= getScroll() + 8 && yAxis <= getScroll() + 8 + 4) {
@@ -228,8 +224,7 @@ public class GuiUpgradeManagement extends GuiMekanism {
             }
             if (selectedType != null && xAxis >= 136 && xAxis <= 148 && yAxis >= 57 && yAxis <= 69) {
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                Mekanism.packetHandler
-                      .sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
+                Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
             }
             int counter = 0;
             for (Upgrade upgrade : getCurrentUpgrades()) {

@@ -27,14 +27,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements
-      IStrictEnergyStorage, IComputerIntegration {
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration {
 
     protected static final int[] CHARGE_SLOT = {0};
     protected static final int[] DISCHARGE_SLOT = {1};
 
-    public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput",
-          "getTransferCap"};
+    public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
     public int clientCells;
     public int clientProviders;
 
@@ -68,14 +66,10 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public boolean onActivate(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (!player.isSneaking() && structure != null) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             player.openGui(Mekanism.instance, 49, world, getPos().getX(), getPos().getY(), getPos().getZ());
-
             return true;
         }
-
         return false;
     }
 
@@ -157,9 +151,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     public double getEnergy() {
         if (!world.isRemote) {
             return structure != null ? structure.getEnergy(world) : 0;
-        } else {
-            return structure != null ? structure.clientEnergy : 0;
         }
+        return structure != null ? structure.clientEnergy : 0;
     }
 
     @Override
@@ -185,7 +178,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         if (structure == null) {
             return new Object[]{"Unformed."};
         }
-
         switch (method) {
             case 0:
                 return new Object[]{getEnergy()};

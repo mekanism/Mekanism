@@ -24,8 +24,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
-public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory,
-      ISustainedInventory, ITickable, IToggleableCapability {
+public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory, ITickable, IToggleableCapability {
 
     /**
      * The inventory slot itemstacks used by this block.
@@ -36,8 +35,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
      * The full name of this machine.
      */
     public String fullName;
-    private CapabilityWrapperManager<ISidedInventory, ItemHandlerWrapper> itemManager = new CapabilityWrapperManager<>(
-          ISidedInventory.class, ItemHandlerWrapper.class);
+    private CapabilityWrapperManager<ISidedInventory, ItemHandlerWrapper> itemManager = new CapabilityWrapperManager<>(ISidedInventory.class, ItemHandlerWrapper.class);
     /**
      * Read only itemhandler for the null facing.
      */
@@ -76,22 +74,18 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
                 return false;
             }
         }
-
         return true;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         if (handleInventory()) {
             NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
             inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-
             for (int tagCount = 0; tagCount < tagList.tagCount(); tagCount++) {
                 NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
                 byte slotID = tagCompound.getByte("Slot");
-
                 if (slotID >= 0 && slotID < getSizeInventory()) {
                     setInventorySlotContents(slotID, new ItemStack(tagCompound));
                 }
@@ -106,7 +100,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
         if (handleInventory()) {
             NBTTagList tagList = new NBTTagList();
-
             for (int slotCount = 0; slotCount < getSizeInventory(); slotCount++) {
                 ItemStack stackInSlot = getStackInSlot(slotCount);
                 if (!stackInSlot.isEmpty()) {
@@ -116,10 +109,8 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
                     tagList.appendTag(tagCompound);
                 }
             }
-
             nbtTags.setTag("Items", tagList);
         }
-
         return nbtTags;
     }
 
@@ -144,7 +135,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         if (getInventory() == null) {
             return ItemStack.EMPTY;
         }
-
         return ItemStackHelper.getAndSplit(getInventory(), slotID, amount);
     }
 
@@ -154,25 +144,21 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         if (getInventory() == null) {
             return ItemStack.EMPTY;
         }
-
         return ItemStackHelper.getAndRemove(getInventory(), slotID);
     }
 
     @Override
     public void setInventorySlotContents(int slotID, @Nonnull ItemStack itemstack) {
         getInventory().set(slotID, itemstack);
-
         if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
             itemstack.setCount(getInventoryStackLimit());
         }
-
         markDirty();
     }
 
     @Override
     public boolean isUsableByPlayer(@Nonnull EntityPlayer entityplayer) {
-        return !isInvalid() && this.world
-              .isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
+        return !isInvalid() && this.world.isBlockLoaded(this.pos);//prevent Containers from remaining valid after the chunk has unloaded;
     }
 
     @Nonnull
@@ -223,13 +209,10 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         if (nbtTags == null || nbtTags.tagCount() == 0 || !handleInventory()) {
             return;
         }
-
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-
         for (int slots = 0; slots < nbtTags.tagCount(); slots++) {
             NBTTagCompound tagCompound = nbtTags.getCompoundTagAt(slots);
             byte slotID = tagCompound.getByte("Slot");
-
             if (slotID >= 0 && slotID < inventory.size()) {
                 inventory.set(slotID, new ItemStack(tagCompound));
             }
@@ -239,7 +222,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
     @Override
     public NBTTagList getInventory(Object... data) {
         NBTTagList tagList = new NBTTagList();
-
         if (handleInventory()) {
             for (int slots = 0; slots < inventory.size(); slots++) {
                 if (!inventory.get(slots).isEmpty()) {
@@ -250,7 +232,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
                 }
             }
         }
-
         return tagList;
     }
 
@@ -300,7 +281,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
         } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(getItemHandler(side));
         }
-
         return super.getCapability(capability, facing);
     }
 

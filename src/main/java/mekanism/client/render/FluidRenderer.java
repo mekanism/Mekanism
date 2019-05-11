@@ -127,7 +127,7 @@ public final class FluidRenderer {
             }
             case NORTH: {
                 toReturn.minX = .3;
-                toReturn.minY = -(getValveFluidHeight(data)) + .01;
+                toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = 1 + .02;
 
                 toReturn.maxX = .7;
@@ -137,7 +137,7 @@ public final class FluidRenderer {
             }
             case SOUTH: {
                 toReturn.minX = .3;
-                toReturn.minY = -(getValveFluidHeight(data)) + .01;
+                toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = -.4;
 
                 toReturn.maxX = .7;
@@ -147,7 +147,7 @@ public final class FluidRenderer {
             }
             case WEST: {
                 toReturn.minX = 1 + .02;
-                toReturn.minY = -(getValveFluidHeight(data)) + .01;
+                toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = .3;
 
                 toReturn.maxX = 1.4;
@@ -157,7 +157,7 @@ public final class FluidRenderer {
             }
             case EAST: {
                 toReturn.minX = -.4;
-                toReturn.minY = -(getValveFluidHeight(data)) + .01;
+                toReturn.minY = -getValveFluidHeight(data) + .01;
                 toReturn.minZ = .3;
 
                 toReturn.maxX = -.02;
@@ -224,9 +224,8 @@ public final class FluidRenderer {
 
         @Override
         public boolean equals(Object data) {
-            return data instanceof RenderData && ((RenderData) data).height == height &&
-                  ((RenderData) data).length == length && ((RenderData) data).width == width
-                  && ((RenderData) data).fluidType.isFluidEqual(fluidType);
+            return data instanceof RenderData && ((RenderData) data).height == height && ((RenderData) data).length == length && ((RenderData) data).width == width
+                   && ((RenderData) data).fluidType.isFluidEqual(fluidType);
         }
     }
 

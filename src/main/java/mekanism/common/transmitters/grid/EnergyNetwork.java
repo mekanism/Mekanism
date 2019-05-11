@@ -37,7 +37,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
                 net.deregister();
             }
         }
-
         register();
     }
 
@@ -49,7 +48,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
             joulesTransmitted = net.joulesTransmitted;
             lastPowerScale = net.lastPowerScale;
         }
-
         buffer.amount += net.buffer.amount;
         super.adoptTransmittersAndAcceptorsFrom(net);
     }
@@ -75,7 +73,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         if (buffer.amount > getCapacity()) {
             buffer.amount = getCapacity();
         }
-
         if (buffer.amount < 0) {
             buffer.amount = 0;
         }
@@ -85,11 +82,9 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     protected void updateMeanCapacity() {
         int numCables = transmitters.size();
         double reciprocalSum = 0;
-
         for (IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> cable : transmitters) {
             reciprocalSum += 1.0 / (double) cable.getCapacity();
         }
-
         meanCapacity = (double) numCables / reciprocalSum;
     }
 
@@ -97,7 +92,6 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             return 0;
         }
-
         return getCapacity() - buffer.amount;
     }
 
@@ -126,17 +120,14 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
                 totalHandlers += curHandlers;
             }
         }
-
         return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend);
     }
 
     public double emit(double energyToSend, boolean doEmit) {
         double toUse = Math.min(getEnergyNeeded(), energyToSend);
-
         if (doEmit) {
             buffer.amount += toUse;
         }
-
         return energyToSend - toUse;
     }
 
@@ -148,23 +139,18 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         clearJoulesTransmitted();
 
         double currentPowerScale = getPowerScale();
-
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-            if (Math.abs(currentPowerScale - lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (
-                  currentPowerScale == 0 || currentPowerScale == 1))) {
+            if (Math.abs(currentPowerScale - lastPowerScale) > 0.01 || (currentPowerScale != lastPowerScale && (currentPowerScale == 0 || currentPowerScale == 1))) {
                 needsUpdate = true;
             }
-
             if (needsUpdate) {
                 MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this, currentPowerScale));
                 lastPowerScale = currentPowerScale;
                 needsUpdate = false;
             }
-
             if (buffer.amount > 0) {
                 joulesTransmitted = tickEmit(buffer.amount);
                 buffer.amount -= joulesTransmitted;
@@ -173,8 +159,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
     }
 
     public double getPowerScale() {
-        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1),
-              getCapacity() == 0 ? 0 : buffer.amount / getCapacity());
+        return Math.max(jouleBufferLastTick == 0 ? 0 : Math.min(Math.ceil(Math.log10(getPower()) * 2) / 10, 1), getCapacity() == 0 ? 0 : buffer.amount / getCapacity());
     }
 
     public void clearJoulesTransmitted() {

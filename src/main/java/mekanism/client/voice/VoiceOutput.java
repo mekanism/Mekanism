@@ -26,7 +26,7 @@ public class VoiceOutput extends Thread {
     @Override
     public void run() {
         try {
-            sourceLine = ((SourceDataLine) AudioSystem.getLine(speaker));
+            sourceLine = (SourceDataLine) AudioSystem.getLine(speaker);
             sourceLine.open(voiceClient.getAudioFormat(), 2200);
             sourceLine.start();
             byte[] audioData = new byte[4096]; //less allocation/gc (if done outside the loop)

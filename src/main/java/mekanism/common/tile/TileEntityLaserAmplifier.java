@@ -33,8 +33,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl,
-      IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration, ISecurityTile {
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, IStrictEnergyOutputter, IStrictEnergyStorage,
+      IComputerIntegration, ISecurityTile {
 
     public static final double MAX_ENERGY = 5E9;
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy"};
@@ -74,7 +74,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
             if (on) {
                 RayTraceResult mop = LaserManager.fireLaserClient(this, facing, lastFired, world);
                 Coord4D hitCoord = mop == null ? null : new Coord4D(mop, world);
-
                 if (hitCoord == null || !hitCoord.equals(digging)) {
                     digging = hitCoord;
                     diggingProgress = 0;
@@ -85,12 +84,9 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
 
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !(LaserManager
-                          .getReceptor(tileHit, mop.sideHit).canLasersDig())))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, mop.sideHit) && !LaserManager.getReceptor(tileHit, mop.sideHit).canLasersDig()))) {
                         diggingProgress += lastFired;
-
-                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
-                              .val()) {
+                        if (diggingProgress < hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
                     }
@@ -99,9 +95,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
             }
         } else {
             boolean prevRedstone = emittingRedstone;
-
             emittingRedstone = false;
-
             if (ticks < time) {
                 ticks++;
             } else {
@@ -110,12 +104,10 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
             if (toFire() > 0) {
                 double firing = toFire();
-
                 if (!on || firing != lastFired) {
                     on = true;
                     lastFired = firing;
-                    Mekanism.packetHandler.sendToAllAround(
-                          new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                    Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                           Coord4D.get(this).getTargetPoint(50D));
                 }
 
@@ -131,41 +123,31 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                     IBlockState blockHit = hitCoord.getBlockState(world);
                     TileEntity tileHit = hitCoord.getTileEntity(world);
                     float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-
-                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !(LaserManager
-                          .getReceptor(tileHit, info.movingPos.sideHit).canLasersDig())))) {
+                    if (!(hardness < 0 || (LaserManager.isReceptor(tileHit, info.movingPos.sideHit) && !LaserManager.getReceptor(tileHit, info.movingPos.sideHit).canLasersDig()))) {
                         diggingProgress += firing;
-
-                        if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness
-                              .val()) {
+                        if (diggingProgress >= hardness * MekanismConfig.current().general.laserEnergyNeededPerHardness.val()) {
                             LaserManager.breakBlock(hitCoord, true, world, pos);
                             diggingProgress = 0;
                         }
                     }
                 }
-
                 emittingRedstone = info.foundEntity;
-
                 setEnergy(getEnergy() - firing);
             } else if (on) {
                 on = false;
                 diggingProgress = 0;
-                Mekanism.packetHandler.sendToAllAround(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
+                Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
                       Coord4D.get(this).getTargetPoint(50D));
             }
 
             if (outputMode != RedstoneOutput.ENTITY_DETECTION) {
                 emittingRedstone = false;
             }
-
             int newRedstoneLevel = getRedstoneLevel();
-
             if (newRedstoneLevel != currentRedstoneLevel) {
                 markDirty();
                 currentRedstoneLevel = newRedstoneLevel;
             }
-
             if (emittingRedstone != prevRedstone) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
             }
@@ -175,15 +157,12 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     @Override
     public double pullEnergy(EnumFacing side, double amount, boolean simulate) {
         double toGive = Math.min(getEnergy(), amount);
-
         if (toGive < 0.0001) {
             return 0;
         }
-
         if (!simulate) {
             setEnergy(getEnergy() - toGive);
         }
-
         return toGive;
     }
 
@@ -209,7 +188,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
         if (outputMode != RedstoneOutput.ENERGY_CONTENTS) {
             return 0;
         }
-
         double fractionFull = getEnergy() / getMaxEnergy();
         return MathHelper.floor((float) (fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
     }
@@ -217,7 +195,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
         data.add(on);
         data.add(minThreshold);
         data.add(maxThreshold);
@@ -227,7 +204,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
         data.add(controlType.ordinal());
         data.add(emittingRedstone);
         data.add(outputMode.ordinal());
-
         return data;
     }
 
@@ -245,11 +221,9 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
                     time = dataStream.readInt();
                     break;
                 case 3:
-                    outputMode = RedstoneOutput.values()[outputMode.ordinal() == RedstoneOutput.values().length - 1 ? 0
-                          : outputMode.ordinal() + 1];
+                    outputMode = RedstoneOutput.values()[outputMode.ordinal() == RedstoneOutput.values().length - 1 ? 0 : outputMode.ordinal() + 1];
                     break;
             }
-
             return;
         }
 
@@ -271,7 +245,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         on = nbtTags.getBoolean("on");
         minThreshold = nbtTags.getDouble("minThreshold");
         maxThreshold = nbtTags.getDouble("maxThreshold");
@@ -286,7 +259,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setBoolean("on", on);
         nbtTags.setDouble("minThreshold", minThreshold);
         nbtTags.setDouble("maxThreshold", maxThreshold);
@@ -295,7 +267,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
         nbtTags.setDouble("lastFired", lastFired);
         nbtTags.setInteger("controlType", controlType.ordinal());
         nbtTags.setInteger("outputMode", outputMode.ordinal());
-
         return nbtTags;
     }
 
@@ -348,10 +319,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY
-              || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
-              || capability == Capabilities.LASER_RECEPTOR_CAPABILITY
-              || super.hasCapability(capability, facing);
+        return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY
+               || capability == Capabilities.LASER_RECEPTOR_CAPABILITY || super.hasCapability(capability, facing);
     }
 
     @Override

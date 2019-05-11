@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
@@ -38,23 +39,25 @@ public class CommandMek extends CommandTreeBase {
         event.registerServerCommand(new Cmd("mtpop", "cmd.mek.tpop", cmd::teleportPop));
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return "mek";
     }
 
+    @Nonnull
     @Override
-    public String getUsage(ICommandSender sender) {
+    public String getUsage(@Nonnull ICommandSender sender) {
         return "cmd.mek.usage";
     }
 
 
-    public void toggleDebug(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void toggleDebug(MinecraftServer server, ICommandSender sender, String[] args) {
         MekanismAPI.debug = !MekanismAPI.debug;
         CommandBase.notifyCommandListener(sender, this, "cmd.mek.debug", MekanismAPI.debug);
     }
 
-    public void setupTestRules(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void setupTestRules(MinecraftServer server, ICommandSender sender, String[] args) {
         GameRules rules = server.getEntityWorld().getGameRules();
         rules.setOrCreateGameRule("doMobSpawning", "false");
         rules.setOrCreateGameRule("doDaylightCycle", "false");
@@ -77,7 +80,7 @@ public class CommandMek extends CommandTreeBase {
 
         // Save the current location on the stack
         UUID player = sender.getCommandSenderEntity().getUniqueID();
-        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<BlockPos>());
+        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
         playerLocations.push(sender.getPosition());
         tpStack.put(player, playerLocations);
 
@@ -86,18 +89,17 @@ public class CommandMek extends CommandTreeBase {
         notifyCommandListener(sender, this, "cmd.mek.tp", args[0], args[1], args[2]);
     }
 
-    public void teleportPop(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void teleportPop(MinecraftServer server, ICommandSender sender, String[] args) {
         UUID player = sender.getCommandSenderEntity().getUniqueID();
 
         // Get stack of locations for the user; if there's at least one entry, pop it off
         // and send the user back there
-        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<BlockPos>());
+        Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
         if (!playerLocations.isEmpty()) {
             BlockPos lastPos = playerLocations.pop();
             tpStack.put(player, playerLocations);
             teleport(sender.getCommandSenderEntity(), lastPos.getX(), lastPos.getY(), lastPos.getZ());
-            notifyCommandListener(sender, this, "cmd.mek.tpop",
-                  lastPos.getX(), lastPos.getY(), lastPos.getZ(), playerLocations.size());
+            notifyCommandListener(sender, this, "cmd.mek.tpop", lastPos.getX(), lastPos.getY(), lastPos.getZ(), playerLocations.size());
         } else {
             notifyCommandListener(sender, this, "cmd.mek.tpop.empty.stack");
         }
@@ -105,10 +107,10 @@ public class CommandMek extends CommandTreeBase {
 
     private void teleport(Entity player, double x, double y, double z) {
         if (player instanceof EntityPlayerMP) {
-            EntityPlayerMP mp = (EntityPlayerMP)player;
+            EntityPlayerMP mp = (EntityPlayerMP) player;
             mp.connection.setPlayerLocation(x, y, z, mp.rotationYaw, mp.rotationPitch);
         } else {
-            EntityPlayerSP sp = (EntityPlayerSP)player;
+            EntityPlayerSP sp = (EntityPlayerSP) player;
             sp.setLocationAndAngles(x, y, z, sp.rotationYaw, sp.rotationPitch);
         }
     }
@@ -126,23 +128,26 @@ public class CommandMek extends CommandTreeBase {
             this.ex = ex;
         }
 
+        @Nonnull
         @Override
         public String getName() {
             return name;
         }
 
+        @Nonnull
         @Override
-        public String getUsage(ICommandSender sender) {
+        public String getUsage(@Nonnull ICommandSender sender) {
             return usage + ".usage";
         }
 
         @Override
-        public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
             ex.execute(server, sender, args);
         }
     }
 
     interface CmdExecute {
+
         void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
     }
 }

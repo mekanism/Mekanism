@@ -46,10 +46,9 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> list) {
-        if (!isInCreativeTab(tabs)) {
-            return;
+        if (isInCreativeTab(tabs)) {
+            list.add(getEmptyItem());
         }
-        list.add(getEmptyItem());
     }
 
     @Override
@@ -59,11 +58,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        double gasRatio = ((getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY);
-        double fluidRatio = (
-              (FluidUtil.getFluidContained(stack) != null ? (double) FluidUtil.getFluidContained(stack).amount : 0D)
-                    / (double) CAPACITY);
-
+        double gasRatio = (getGas(stack) != null ? (double) getGas(stack).amount : 0D) / (double) CAPACITY;
+        double fluidRatio = (FluidUtil.getFluidContained(stack) != null ? (double) FluidUtil.getFluidContained(stack).amount : 0D) / (double) CAPACITY;
         return 1D - Math.max(gasRatio, fluidRatio);
     }
 
@@ -71,16 +67,12 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-
         if (player.isSneaking() && !world.isRemote) {
             setGas(stack, null);
             FluidUtil.getFluidHandler(stack).drain(CAPACITY, true);
-
             ((EntityPlayerMP) player).sendContainerToPlayer(player.openContainer);
-
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
-
         return new ActionResult<>(EnumActionResult.PASS, stack);
     }
 
@@ -89,16 +81,12 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
     public void addInformation(ItemStack itemstack, World world, List<String> list, ITooltipFlag flag) {
         GasStack gasStack = getGas(itemstack);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemstack);
-
         if (gasStack == null && fluidStack == null) {
             list.add(LangUtils.localize("gui.empty") + ".");
         } else if (gasStack != null) {
-            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": "
-                  + gasStack.amount);
+            list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
         } else {
-            list.add(
-                  LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": "
-                        + fluidStack.amount);
+            list.add(LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": " + fluidStack.amount);
         }
     }
 
@@ -112,10 +100,8 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         if (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()) {
             return 0;
         }
-
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
         setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack) + toUse));
-
         return toUse;
     }
 
@@ -124,12 +110,9 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         if (getGas(itemstack) == null) {
             return null;
         }
-
         Gas type = getGas(itemstack).getGas();
-
         int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
         setGas(itemstack, new GasStack(type, getStored(itemstack) - gasToUse));
-
         return new GasStack(type, gasToUse);
     }
 
@@ -163,7 +146,6 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem {
         } else {
             int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
             GasStack gasStack = new GasStack(stack.getGas(), amount);
-
             ItemDataUtils.setCompound(itemstack, "gasStack", gasStack.write(new NBTTagCompound()));
         }
     }

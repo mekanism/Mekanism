@@ -27,21 +27,15 @@ public class CommonPlayerTracker {
         MinecraftServer server = event.player.getServer();
         if (!event.player.world.isRemote) {
             if (server == null || !server.isSinglePlayer()) {
-                Mekanism.packetHandler
-                      .sendTo(new ConfigSyncMessage(MekanismConfig.local()), (EntityPlayerMP) event.player);
+                Mekanism.packetHandler.sendTo(new ConfigSyncMessage(MekanismConfig.local()), (EntityPlayerMP) event.player);
                 Mekanism.logger.info("Sent config to '" + event.player.getDisplayNameString() + ".'");
             }
             Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP) event.player);
             // TODO: Coalesce all these sync events into a single message
-            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()),
-                  (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()),
-                  (EntityPlayerMP) event.player);
-            Mekanism.packetHandler
-                  .sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(
-                  new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null,
-                        false), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(new SecurityUpdateMessage(SecurityPacket.FULL, null, null), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP) event.player);
         }
     }
 
@@ -55,15 +49,10 @@ public class CommonPlayerTracker {
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         Mekanism.playerState.clearPlayer(event.player);
         Mekanism.freeRunnerOn.remove(event.player.getUniqueID());
-
         if (!event.player.world.isRemote) {
-            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()),
-                  (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()),
-                  (EntityPlayerMP) event.player);
-            Mekanism.packetHandler.sendTo(
-                  new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null,
-                        false), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(JetpackDataMessage.FULL(Mekanism.playerState.getActiveJetpacks()), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(ScubaTankDataMessage.FULL(Mekanism.playerState.getActiveGasmasks()), (EntityPlayerMP) event.player);
+            Mekanism.packetHandler.sendTo(new PacketFreeRunnerData.FreeRunnerDataMessage(PacketFreeRunnerData.FreeRunnerPacket.FULL, null, false), (EntityPlayerMP) event.player);
         }
     }
 }

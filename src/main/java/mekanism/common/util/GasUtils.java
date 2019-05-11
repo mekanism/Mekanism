@@ -35,17 +35,12 @@ public final class GasUtils {
 
     public static IGasHandler[] getConnectedAcceptors(BlockPos pos, World world, Set<EnumFacing> sides) {
         IGasHandler[] acceptors = new IGasHandler[]{null, null, null, null, null, null};
-
         for (EnumFacing orientation : sides) {
             TileEntity acceptor = world.getTileEntity(pos.offset(orientation));
-
-            if (CapabilityUtils
-                  .hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite())) {
-                acceptors[orientation.ordinal()] = CapabilityUtils
-                      .getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
+            if (CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite())) {
+                acceptors[orientation.ordinal()] = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, orientation.getOpposite());
             }
         }
-
         return acceptors;
     }
 
@@ -62,7 +57,6 @@ public final class GasUtils {
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
             return false;
         }
-
         return CapabilityUtils.hasCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite());
     }
 
@@ -70,22 +64,19 @@ public final class GasUtils {
      * Removes a specified amount of gas from an IGasItem.
      *
      * @param itemStack - ItemStack of the IGasItem
-     * @param type - type of gas to remove from the IGasItem, null if it doesn't matter
-     * @param amount - amount of gas to remove from the ItemStack
+     * @param type      - type of gas to remove from the IGasItem, null if it doesn't matter
+     * @param amount    - amount of gas to remove from the ItemStack
+     *
      * @return the GasStack removed by the IGasItem
      */
     public static GasStack removeGas(ItemStack itemStack, Gas type, int amount) {
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) itemStack.getItem();
-
-            if (type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item
-                  .canProvideGas(itemStack, type)) {
+            if (type != null && item.getGas(itemStack) != null && item.getGas(itemStack).getGas() != type || !item.canProvideGas(itemStack, type)) {
                 return null;
             }
-
             return item.removeGas(itemStack, amount);
         }
-
         return null;
     }
 
@@ -93,15 +84,14 @@ public final class GasUtils {
      * Adds a specified amount of gas to an IGasItem.
      *
      * @param itemStack - ItemStack of the IGasItem
-     * @param stack - stack to add to the IGasItem
+     * @param stack     - stack to add to the IGasItem
+     *
      * @return amount of gas accepted by the IGasItem
      */
     public static int addGas(ItemStack itemStack, GasStack stack) {
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem())
-              .canReceiveGas(itemStack, stack.getGas())) {
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem()).canReceiveGas(itemStack, stack.getGas())) {
             return ((IGasItem) itemStack.getItem()).addGas(itemStack, stack.copy());
         }
-
         return 0;
     }
 
@@ -109,8 +99,9 @@ public final class GasUtils {
      * Emits gas from a central block by splitting the received stack among the sides given.
      *
      * @param stack - the stack to output
-     * @param from - the TileEntity to output from
+     * @param from  - the TileEntity to output from
      * @param sides - the list of sides to output from
+     *
      * @return the amount of gas emitted
      */
     public static int emit(GasStack stack, TileEntity from, Set<EnumFacing> sides) {
@@ -128,8 +119,7 @@ public final class GasUtils {
             }
             EnumFacing opposite = orientation.getOpposite();
             if (CapabilityUtils.hasCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, opposite)) {
-                IGasHandler handler = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY,
-                      opposite);
+                IGasHandler handler = CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, opposite);
                 if (handler != null && handler.canReceiveGas(opposite, stack.getGas())) {
                     target.addHandler(opposite, handler);
                 }
@@ -162,6 +152,7 @@ public final class GasUtils {
      * Gets the amount of ticks the declared itemstack can fuel this machine.
      *
      * @param itemStack - itemstack to check with
+     *
      * @return fuel ticks
      */
     public static GasStack getItemGas(ItemStack itemStack, BiFunction<Gas, Integer, GasStack> getIfValid) {
@@ -210,7 +201,6 @@ public final class GasUtils {
                 }
             }
         }
-
         return gasStack;
     }
 

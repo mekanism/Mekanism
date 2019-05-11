@@ -24,18 +24,12 @@ public class GuiMekanismConfig extends GuiConfig {
 
     private static List<IConfigElement> getConfigElements() {
         List<IConfigElement> list = new ArrayList<>();
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.general"),
-              "mekanism.configgui.ctgy.general", GeneralEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.machines"),
-              "mekanism.configgui.ctgy.machines", MachinesEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tier"),
-              "mekanism.configgui.ctgy.tier", TierEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.usage"),
-              "mekanism.configgui.ctgy.usage", UsageEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.storage"),
-              "mekanism.configgui.ctgy.storage", StorageEntry.class));
-        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.client"),
-              "mekanism.configgui.ctgy.client", ClientEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.general"), "mekanism.configgui.ctgy.general", GeneralEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.machines"), "mekanism.configgui.ctgy.machines", MachinesEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tier"), "mekanism.configgui.ctgy.tier", TierEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.usage"), "mekanism.configgui.ctgy.usage", UsageEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.storage"), "mekanism.configgui.ctgy.storage", StorageEntry.class));
+        list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.client"), "mekanism.configgui.ctgy.client", ClientEntry.class));
         return list;
     }
 
@@ -48,10 +42,8 @@ public class GuiMekanismConfig extends GuiConfig {
         @Override
         protected GuiScreen buildChildScreen() {
             return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory(Configuration.CATEGORY_GENERAL))
-                        .getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+                  new ConfigElement(Mekanism.configuration.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 
@@ -63,10 +55,8 @@ public class GuiMekanismConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory("machines")).getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("machines")).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 
@@ -78,10 +68,8 @@ public class GuiMekanismConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory("tier")).getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("tier")).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 
@@ -93,10 +81,8 @@ public class GuiMekanismConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory("usage")).getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("usage")).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 
@@ -108,10 +94,8 @@ public class GuiMekanismConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory("storage")).getChildElements(),
-                  owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("storage")).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_GENERAL, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 
@@ -123,10 +107,8 @@ public class GuiMekanismConfig extends GuiConfig {
 
         @Override
         protected GuiScreen buildChildScreen() {
-            return new GuiConfig(owningScreen,
-                  new ConfigElement(Mekanism.configuration.getCategory("client")).getChildElements(),
-                  owningScreen.modID, "client", false, false,
-                  GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+            return new GuiConfig(owningScreen, new ConfigElement(Mekanism.configuration.getCategory("client")).getChildElements(), owningScreen.modID,
+                  Configuration.CATEGORY_CLIENT, false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
         }
     }
 }

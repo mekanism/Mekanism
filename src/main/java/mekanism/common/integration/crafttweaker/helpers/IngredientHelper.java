@@ -105,12 +105,10 @@ public class IngredientHelper {
             return matches(input.itemStack, toMatch.getLeft()) && matches(input.extraStack, toMatch.getRight());
         } else if (in instanceof PressurizedInput) {
             PressurizedInput input = (PressurizedInput) in;
-            return matches(input.getSolid(), toMatch.getLeft()) && matches(input.getFluid(), toMatch.getMiddle())
-                  && matches(input.getGas(), toMatch.getRight());
+            return matches(input.getSolid(), toMatch.getLeft()) && matches(input.getFluid(), toMatch.getMiddle()) && matches(input.getGas(), toMatch.getRight());
         } else if (in instanceof InfusionInput) {
             InfusionInput input = (InfusionInput) in;
-            return matches(input.inputStack, toMatch.getIngredient()) && (toMatch.getInfuseType().isEmpty() || toMatch
-                  .getInfuseType().equalsIgnoreCase(input.infuse.getType().name));
+            return matches(input.inputStack, toMatch.getIngredient()) && (toMatch.getInfuseType().isEmpty() || toMatch.getInfuseType().equalsIgnoreCase(input.infuse.getType().name));
         } else if (in instanceof IntegerInput) {
             IntegerInput input = (IntegerInput) in;
             return input.ingredient == toMatch.getAmount();
@@ -130,15 +128,13 @@ public class IngredientHelper {
             return matches(output.output, toMatch.getIngredient());
         } else if (out instanceof ChanceOutput) {
             ChanceOutput output = (ChanceOutput) out;
-            return matches(output.primaryOutput, toMatch.getLeft()) && matches(output.secondaryOutput,
-                  toMatch.getRight());
+            return matches(output.primaryOutput, toMatch.getLeft()) && matches(output.secondaryOutput, toMatch.getRight());
         } else if (out instanceof ChemicalPairOutput) {
             ChemicalPairOutput output = (ChemicalPairOutput) out;
             return matches(output.leftGas, toMatch.getLeft()) && matches(output.rightGas, toMatch.getRight());
         } else if (out instanceof PressurizedOutput) {
             PressurizedOutput output = (PressurizedOutput) out;
-            return matches(output.getItemOutput(), toMatch.getLeft()) && matches(output.getGasOutput(),
-                  toMatch.getRight());
+            return matches(output.getItemOutput(), toMatch.getLeft()) && matches(output.getGasOutput(), toMatch.getRight());
         }
         return false;
     }

@@ -29,6 +29,7 @@ public class GasTank implements GasTankInfo {
      * Returns the tank stored in the defined tag compound, or null if it doesn't exist.
      *
      * @param nbtTags - tag compound to read from
+     *
      * @return tank stored in the tag compound
      */
     public static GasTank readFromNBT(NBTTagCompound nbtTags) {
@@ -38,7 +39,6 @@ public class GasTank implements GasTankInfo {
 
         GasTank tank = new GasTank();
         tank.read(nbtTags);
-
         return tank;
     }
 
@@ -47,6 +47,7 @@ public class GasTank implements GasTankInfo {
      *
      * @param amount - amount to draw
      * @param doDraw - if the gas should actually be removed from this tank
+     *
      * @return gas taken from this GasTank as a GasStack value
      */
     public GasStack draw(int amount, boolean doDraw) {
@@ -55,27 +56,24 @@ public class GasTank implements GasTankInfo {
         }
 
         GasStack ret = new GasStack(stored.getGas(), Math.min(getStored(), amount));
-
         if (ret.amount > 0) {
             if (doDraw) {
                 stored.amount -= ret.amount;
-
                 if (stored.amount <= 0) {
                     stored = null;
                 }
             }
-
             return ret;
         }
-
         return null;
     }
 
     /**
      * Adds a specified amount of gas to this tank.
      *
-     * @param amount - the GasStack for this tank to receive
+     * @param amount    - the GasStack for this tank to receive
      * @param doReceive - if the gas should actually be added to this tank
+     *
      * @return the amount of gas accepted by this tank
      */
     public int receive(GasStack amount, boolean doReceive) {
@@ -100,27 +98,29 @@ public class GasTank implements GasTankInfo {
      * If this GasTank can receive the specified type of gas. Will return false if this tank does not need anymore gas.
      *
      * @param gas - gas to check
+     *
      * @return if this GasTank can accept the defined gas
      */
     public boolean canReceive(Gas gas) {
-        return getNeeded() != 0 && (stored == null || (gas == null || gas == stored.getGas()));
+        return getNeeded() != 0 && (stored == null || gas == null || gas == stored.getGas());
     }
 
     /**
      * If this GasTank can receive the specified type of gas. Will return TRUE if this tank does not need anymore gas.
      *
      * @param gas - gas to check
+     *
      * @return if this GasTank can accept the defined gas
      */
     public boolean canReceiveType(Gas gas) {
-        return stored == null || (gas == null || gas == stored.getGas());
+        return stored == null || gas == null || gas == stored.getGas();
     }
 
     /**
-     * If this GasTank can be drawn of the specified type of gas. Will return false if this tank does not contain any
-     * gas.
+     * If this GasTank can be drawn of the specified type of gas. Will return false if this tank does not contain any gas.
      *
      * @param gas - gas to check
+     *
      * @return if this GasTank can be drawn of the defined gas
      */
     public boolean canDraw(Gas gas) {
@@ -168,7 +168,6 @@ public class GasTank implements GasTankInfo {
      */
     public void setGas(GasStack stack) {
         stored = stack;
-
         if (stored != null) {
             stored.amount = Math.min(getMaxGas(), stored.amount);
             if (stored.amount <= 0) {
@@ -199,15 +198,14 @@ public class GasTank implements GasTankInfo {
      * Writes this tank to a defined tag compound.
      *
      * @param nbtTags - tag compound to write to
+     *
      * @return tag compound with this tank's data
      */
     public NBTTagCompound write(NBTTagCompound nbtTags) {
         if (stored != null && stored.getGas() != null && stored.amount > 0) {
             nbtTags.setTag("stored", stored.write(new NBTTagCompound()));
         }
-
         nbtTags.setInteger("maxGas", maxGas);
-
         return nbtTags;
     }
 
@@ -224,7 +222,6 @@ public class GasTank implements GasTankInfo {
                 stored = null;
             }
         }
-
         if (nbtTags.hasKey("maxGas") && nbtTags.getInteger("maxGas") != 0) {
             maxGas = nbtTags.getInteger("maxGas");
         }

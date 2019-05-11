@@ -10,8 +10,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
- * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input
- * ItemStack.
+ * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input ItemStack.
  *
  * @author AidanBrady
  */
@@ -61,10 +60,8 @@ public class InfusionInput extends MachineInput<InfusionInput> {
                 inventory.set(index, StackUtils.subtract(inventory.get(index), inputStack));
                 infuseStorage.subtract(infuse);
             }
-
             return true;
         }
-
         return false;
     }
 
@@ -78,7 +75,6 @@ public class InfusionInput extends MachineInput<InfusionInput> {
         if (!isValid()) {
             return !other.isValid();
         }
-
         return infuse.getType() == other.infuse.getType() && MachineInput.inputItemMatches(inputStack, other.inputStack);
     }
 
@@ -88,7 +84,6 @@ public class InfusionInput extends MachineInput<InfusionInput> {
     }
 
     public InfusionInput wildCopy() {
-        return new InfusionInput(infuse,
-              new ItemStack(inputStack.getItem(), inputStack.getCount(), OreDictionary.WILDCARD_VALUE));
+        return new InfusionInput(infuse, new ItemStack(inputStack.getItem(), inputStack.getCount(), OreDictionary.WILDCARD_VALUE));
     }
 }

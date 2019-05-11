@@ -34,8 +34,7 @@ public class GuiBucketIO extends GuiElement {
 
     @Override
     protected boolean inBounds(int xAxis, int yAxis) {
-        return xAxis >= 180 && xAxis <= 196 && yAxis >= 71 && yAxis <= 87 || xAxis >= 180 && xAxis <= 196
-              && yAxis >= 102 && yAxis <= 118;
+        return xAxis >= 180 && xAxis <= 196 && yAxis >= 71 && yAxis <= 87 || xAxis >= 180 && xAxis <= 196 && yAxis >= 102 && yAxis <= 118;
     }
 
     @Override

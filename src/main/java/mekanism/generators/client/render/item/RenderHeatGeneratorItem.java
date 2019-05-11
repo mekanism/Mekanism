@@ -23,7 +23,6 @@ public class RenderHeatGeneratorItem {
         GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslated(0.0F, -1.0F, 0.0F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
-        heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0,
-              Minecraft.getMinecraft().renderEngine);
+        heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getMinecraft().renderEngine);
     }
 }

@@ -12,8 +12,6 @@ import mekanism.api.Range4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.tier.BaseTier;
-import mekanism.common.tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.property.PropertyColor;
 import mekanism.common.block.states.BlockStateTransmitter.TransmitterType;
@@ -24,6 +22,8 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.integration.multipart.MultipartTileNetworkJoiner;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tier.BaseTier;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
@@ -79,7 +79,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void onWorldSeparate() {
         super.onWorldSeparate();
-
         if (!getWorld().isRemote) {
             PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         }
@@ -92,14 +91,10 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean isValidTransmitter(TileEntity tileEntity) {
-        ILogisticalTransporter transporter = CapabilityUtils
-              .getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
-
-        if (getTransmitter().getColor() == null || transporter.getColor() == null
-              || getTransmitter().getColor() == transporter.getColor()) {
+        ILogisticalTransporter transporter = CapabilityUtils.getCapability(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null);
+        if (getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor()) {
             return super.isValidTransmitter(tileEntity);
         }
-
         return false;
     }
 
@@ -116,7 +111,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void update() {
         super.update();
-
         getTransmitter().update();
     }
 
@@ -138,8 +132,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
             // There's a stack available to insert into the network...
             if (!request.isEmpty()) {
-                TransitResponse response = TransporterUtils
-                      .insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+                TransitResponse response = TransporterUtils.insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
 
                 // If the insert succeeded, remove the inserted count and try again for another 10 ticks
                 if (!response.isEmpty()) {
@@ -158,7 +151,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void onWorldJoin() {
         super.onWorldJoin();
-
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
     }
 
@@ -176,37 +168,27 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public void handlePacketData(ByteBuf dataStream) throws Exception {
         if (FMLCommonHandler.instance().getSide().isClient()) {
             int type = dataStream.readInt();
-
             if (type == 0) {
                 super.handlePacketData(dataStream);
-
                 tier = TransporterTier.values()[dataStream.readInt()];
-
                 int c = dataStream.readInt();
-
                 EnumColor prev = getTransmitter().getColor();
-
                 if (c != -1) {
                     getTransmitter().setColor(TransporterUtils.colors.get(c));
                 } else {
                     getTransmitter().setColor(null);
                 }
-
                 if (prev != getTransmitter().getColor()) {
                     MekanismUtils.updateBlock(world, pos);
                 }
-
                 getTransmitter().readFromPacket(dataStream);
-
             } else if (type == SYNC_PACKET) {
                 readStack(dataStream);
-
             } else if (type == BATCH_PACKET) {
                 int updates = dataStream.readInt();
                 for (int i = 0; i < updates; i++) {
                     readStack(dataStream);
                 }
-
                 int deletes = dataStream.readInt();
                 for (int i = 0; i < deletes; i++) {
                     getTransmitter().deleteStack(dataStream.readInt());
@@ -218,11 +200,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(0);
-
         super.getNetworkedData(data);
-
         data.add(tier.ordinal());
-
         if (getTransmitter().getColor() != null) {
             data.add(TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         } else {
@@ -231,42 +210,33 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
         // Serialize all the in-flight stacks (this includes their ID)
         getTransmitter().writeToPacket(data);
-
         return data;
     }
 
     public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
         TileNetworkList data = new TileNetworkList();
-
         if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
         }
-
         data.add(SYNC_PACKET);
         data.add(stackId);
         stack.write(getTransmitter(), data);
-
         return data;
     }
 
     public TileNetworkList makeBatchPacket(Map<Integer, TransporterStack> updates, Set<Integer> deletes) {
         TileNetworkList data = new TileNetworkList();
-
         if (Mekanism.hooks.MCMPLoaded) {
             MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
         }
-
         data.add(BATCH_PACKET);
-
         data.add(updates.size());
         for (Entry<Integer, TransporterStack> entry : updates.entrySet()) {
             data.add(entry.getKey());
             entry.getValue().write(getTransmitter(), data);
         }
-
         data.add(deletes.size());
         data.addAll(deletes);
-
         return data;
     }
 
@@ -274,11 +244,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private void readStack(ByteBuf dataStream) {
         int id = dataStream.readInt();
         TransporterStack stack = TransporterStack.readFromPacket(dataStream);
-
         if (stack.progress == 0) {
             stack.progress = 5;
         }
-
         getTransmitter().addStack(id, stack);
     }
 
@@ -286,11 +254,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         if (nbtTags.hasKey("tier")) {
             tier = TransporterTier.values()[nbtTags.getInteger("tier")];
         }
-
         getTransmitter().readFromNBT(nbtTags);
     }
 
@@ -298,25 +264,19 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setInteger("tier", tier.ordinal());
-
         if (getTransmitter().getColor() != null) {
             nbtTags.setInteger("color", TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         }
-
         NBTTagList stacks = new NBTTagList();
-
         for (TransporterStack stack : getTransmitter().getTransit()) {
             NBTTagCompound tagCompound = new NBTTagCompound();
             stack.write(tagCompound);
             stacks.appendTag(tagCompound);
         }
-
         if (stacks.tagCount() != 0) {
             nbtTags.setTag("stacks", stacks);
         }
-
         return nbtTags;
     }
 
@@ -325,41 +285,32 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         TransporterUtils.incrementColor(getTransmitter());
         onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-        Mekanism.packetHandler.sendToReceivers(
-              new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new TileNetworkList())),
+        Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(new Coord4D(getPos(), getWorld()), getNetworkedData(new TileNetworkList())),
               new Range4D(new Coord4D(getPos(), getWorld())));
-        TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
-              .string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
-              .translation("tooltip.configurator.toggleColor")
-              .string(": ");
+        TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
+              .translation("tooltip.configurator.toggleColor").string(": ");
 
         if (getTransmitter().getColor() != null) {
             msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
         } else {
             msg.translation("gui.none");
         }
-
         player.sendMessage(msg);
-
         return EnumActionResult.SUCCESS;
     }
 
     @Override
     public EnumActionResult onRightClick(EntityPlayer player, EnumFacing side) {
         super.onRightClick(player, side);
-        TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY)
-              .string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
-              .translation("tooltip.configurator.viewColor")
-              .string(": ");
+        TextComponentGroup msg = new TextComponentGroup(TextFormatting.GRAY).string(Mekanism.LOG_TAG + " ", TextFormatting.DARK_BLUE)
+              .translation("tooltip.configurator.viewColor").string(": ");
 
         if (getTransmitter().getColor() != null) {
             msg.appendSibling(getTransmitter().getColor().getTranslatedColouredComponent());
         } else {
             msg.translation("gui.none");
         }
-
         player.sendMessage(msg);
-
         return EnumActionResult.SUCCESS;
     }
 
@@ -371,7 +322,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public void onChunkUnload() {
         super.onChunkUnload();
-
         if (!getWorld().isRemote) {
             for (TransporterStack stack : getTransmitter().getTransit()) {
                 TransporterUtils.drop(getTransmitter(), stack);
@@ -410,20 +360,16 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public boolean upgrade(int tierOrdinal) {
         if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
             tier = TransporterTier.values()[tier.ordinal() + 1];
-
             markDirtyTransmitters();
             sendDesc = true;
-
             return true;
         }
-
         return false;
     }
 
     @Override
     public IBlockState getExtendedState(IBlockState state) {
-        return ((IExtendedBlockState) super.getExtendedState(state))
-              .withProperty(PropertyColor.INSTANCE, new PropertyColor(getRenderColor()));
+        return ((IExtendedBlockState) super.getExtendedState(state)).withProperty(PropertyColor.INSTANCE, new PropertyColor(getRenderColor()));
     }
 
     @Override
@@ -436,7 +382,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
             return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.cast(getTransmitter());
         }
-
         return super.getCapability(capability, side);
     }
 }

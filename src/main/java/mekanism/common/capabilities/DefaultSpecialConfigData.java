@@ -8,8 +8,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class DefaultSpecialConfigData extends DefaultConfigCardAccess implements ISpecialConfigData {
 
     public static void register() {
-        CapabilityManager.INSTANCE
-              .register(ISpecialConfigData.class, new NullStorage<>(), DefaultSpecialConfigData::new);
+        CapabilityManager.INSTANCE.register(ISpecialConfigData.class, new NullStorage<>(), DefaultSpecialConfigData::new);
     }
 
     @Override
@@ -19,7 +18,6 @@ public class DefaultSpecialConfigData extends DefaultConfigCardAccess implements
 
     @Override
     public void setConfigurationData(NBTTagCompound nbtTags) {
-
     }
 
     @Override

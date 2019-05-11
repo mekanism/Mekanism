@@ -41,21 +41,15 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String stored = "" + (tileEntity.gasTank.getStored() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite")
-              : tileEntity.gasTank.getStored());
-        String capacityInfo =
-              stored + " / " + (tileEntity.tier.getStorage() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite")
-                    : tileEntity.tier.getStorage());
-        fontRenderer
-              .drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2),
-                    6, 0x404040);
+        String stored = "" + (tileEntity.gasTank.getStored() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.gasTank.getStored());
+        String capacityInfo = stored + " / " + (tileEntity.tier.getStorage() == Integer.MAX_VALUE ? LangUtils.localize("gui.infinite") : tileEntity.tier.getStorage());
+        fontRenderer.drawString(tileEntity.getName(), (xSize / 2) - (fontRenderer.getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
         fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
-        renderScaledText(
-              LangUtils.localize("gui.gas") + ": " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas()
-                    .getGas().getLocalizedName() : LangUtils.localize("gui.none")), 45, 49, 0x404040, 112);
+        renderScaledText(LangUtils.localize("gui.gas") + ": " + (tileEntity.gasTank.getGas() != null
+                                                                 ? tileEntity.gasTank.getGas().getGas().getLocalizedName()
+                                                                 : LangUtils.localize("gui.none")), 45, 49, 0x404040, 112);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-        String name = chooseByMode(tileEntity.dumping, LangUtils.localize("gui.idle"),
-              LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
+        String name = chooseByMode(tileEntity.dumping, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
         fontRenderer.drawString(name, 156 - fontRenderer.getStringWidth(name), 73, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -80,8 +74,8 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
     @Override
     protected void mouseClicked(int x, int y, int button) throws IOException {
         super.mouseClicked(x, y, button);
-        int xAxis = (x - (width - xSize) / 2);
-        int yAxis = (y - (height - ySize) / 2);
+        int xAxis = x - (width - xSize) / 2;
+        int yAxis = y - (height - ySize) / 2;
         if (xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82) {
             TileNetworkList data = TileNetworkList.withContents(0);
             Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
@@ -103,7 +97,6 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank> {
         } else if (dumping.equals(TileEntityGasTank.GasMode.DUMPING_EXCESS)) {
             return dumpingExcessOption;
         }
-
         return idleOption; //should not happen;
     }
 }

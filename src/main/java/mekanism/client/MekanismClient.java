@@ -27,7 +27,6 @@ public class MekanismClient extends Mekanism {
 
     public static void updateKey(KeyBinding key, int type) {
         boolean down = Minecraft.getMinecraft().currentScreen == null && key.isKeyDown();
-
         if (down != keyMap.has(Minecraft.getMinecraft().player, type)) {
             Mekanism.packetHandler.sendToServer(new KeyMessage(type, down));
             keyMap.update(Minecraft.getMinecraft().player, type, down);

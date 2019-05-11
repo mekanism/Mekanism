@@ -7,8 +7,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GlStateManager;
@@ -31,9 +31,7 @@ public class RenderFluidTankItem {
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         ItemBlockMachine itemMachine = (ItemBlockMachine) stack.getItem();
-        float fluidScale =
-              (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0)
-                    / itemMachine.getCapacity(stack);
+        float fluidScale = (float) (itemMachine.getFluidStack(stack) != null ? itemMachine.getFluidStack(stack).amount : 0) / itemMachine.getCapacity(stack);
         FluidTankTier tier = FluidTankTier.values()[itemMachine.getBaseTier(stack).ordinal()];
         FluidStack fluid = itemMachine.getFluidStack(stack);
 

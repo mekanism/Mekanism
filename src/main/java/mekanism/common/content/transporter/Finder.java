@@ -36,7 +36,6 @@ public abstract class Finder {
             if (oreKeys.isEmpty()) {
                 return false;
             }
-
             for (String oreKey : oreKeys) {
                 if (oreDictName.equals(oreKey) || oreDictName.equals("*")) {
                     return true;
@@ -54,7 +53,6 @@ public abstract class Finder {
                     }
                 }
             }
-
             return false;
         }
     }
@@ -69,8 +67,7 @@ public abstract class Finder {
 
         @Override
         public boolean modifies(ItemStack stack) {
-            return itemType.getHasSubtypes() ? StackUtils.equalsWildcard(itemType, stack)
-                  : itemType.getItem() == stack.getItem();
+            return itemType.getHasSubtypes() ? StackUtils.equalsWildcard(itemType, stack) : itemType.getItem() == stack.getItem();
         }
     }
 
@@ -87,9 +84,7 @@ public abstract class Finder {
             if (stack.isEmpty() || !(stack.getItem() instanceof ItemBlock)) {
                 return false;
             }
-
-            return Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()).getMaterial()
-                  == materialType;
+            return Block.getBlockFromItem(stack.getItem()).getStateFromMeta(stack.getItemDamage()).getMaterial() == materialType;
         }
     }
 
@@ -106,9 +101,7 @@ public abstract class Finder {
             if (stack.isEmpty()) {
                 return false;
             }
-
             String id = ItemRegistryUtils.getMod(stack);
-
             if (modID.equals(id) || modID.equals("*")) {
                 return true;
             } else if (modID.endsWith("*") && !modID.startsWith("*")) {
@@ -118,7 +111,6 @@ public abstract class Finder {
             } else if (modID.startsWith("*") && modID.endsWith("*")) {
                 return id.contains(modID.substring(1, modID.length() - 1));
             }
-
             return false;
         }
     }

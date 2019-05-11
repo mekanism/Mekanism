@@ -34,11 +34,9 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
         addGuiElement(new GuiRedstoneControl(this, tileEntity, resource));
         addGuiElement(new GuiSecurityTab(this, tileEntity, resource));
         addGuiElement(new GuiEnergyInfo(() -> Arrays.asList(
-              LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(
-                    tileEntity.getActive() ? MekanismConfig.current().generators.windGenerationMin.val() * tileEntity
-                          .getCurrentMultiplier() : 0) + "/t",
-              LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput())
-                    + "/t"), this, resource));
+              LangUtils.localize("gui.producing") + ": " +
+              MekanismUtils.getEnergyDisplay(tileEntity.getActive() ? MekanismConfig.current().generators.windGenerationMin.val() * tileEntity.getCurrentMultiplier() : 0) + "/t",
+              LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t"), this, resource));
         addGuiElement(new GuiPowerBar(this, tileEntity, resource, 164, 15));
         addGuiElement(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
@@ -47,16 +45,10 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         fontRenderer.drawString(tileEntity.getName(), 45, 6, 0x404040);
         fontRenderer.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        fontRenderer
-              .drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26,
-                    0x00CD00);
-        fontRenderer.drawString(LangUtils.localize("gui.power") + ": " + powerFormat
-                    .format(MekanismUtils.convertToDisplay(
-                          MekanismConfig.current().generators.windGenerationMin.val() * tileEntity.getCurrentMultiplier())),
-              51, 35, 0x00CD00);
-        fontRenderer.drawString(
-              LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t",
-              51, 44, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy(), tileEntity.getMaxEnergy()), 51, 26, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("gui.power") + ": " + powerFormat.format(MekanismUtils.convertToDisplay(
+              MekanismConfig.current().generators.windGenerationMin.val() * tileEntity.getCurrentMultiplier())), 51, 35, 0x00CD00);
+        fontRenderer.drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
         int size = 44;
         if (!tileEntity.getActive()) {
             size += 9;
@@ -76,7 +68,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator> {
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, (tileEntity.getActive() ? 52 : 64), 12, 12);
+        drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, tileEntity.getActive() ? 52 : 64, 12, 12);
         super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
 

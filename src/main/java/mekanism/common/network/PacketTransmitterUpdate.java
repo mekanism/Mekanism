@@ -32,48 +32,36 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
     @Override
     public IMessage onMessage(TransmitterUpdateMessage message, MessageContext context) {
         EntityPlayer player = PacketHandler.getPlayer(context);
-
         if (player == null) {
             return null;
         }
-
         PacketHandler.handlePacket(() -> {
             if (message.coord4D == null) {
                 return;
             }
             TileEntity tileEntity = message.coord4D.getTileEntity(player.world);
-
             if (CapabilityUtils.hasCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
-                IGridTransmitter transmitter = CapabilityUtils
-                      .getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
+                IGridTransmitter transmitter = CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
                 if (transmitter == null) {
                     //Should never be the case, but removes the warning
                     return;
                 }
-
                 if (message.packetType == PacketType.UPDATE) {
-                    DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter
-                          .getTransmitterNetwork() : transmitter.createEmptyNetwork();
+                    DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
                     network.register();
                     transmitter.setTransmitterNetwork(network);
-
                     for (Coord4D coord : message.transmitterCoords) {
                         TileEntity tile = coord.getTileEntity(player.world);
-
                         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
-                            CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
-                                  .setTransmitterNetwork(network);
+                            CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).setTransmitterNetwork(network);
                         }
                     }
-
                     network.updateCapacity();
                     return;
                 }
-
                 if (MekanismConfig.current().client.opaqueTransmitters.val() || !transmitter.hasTransmitterNetwork()) {
                     return;
                 }
-
                 TransmissionType transmissionType = transmitter.getTransmissionType();
                 if (message.packetType == PacketType.ENERGY) {
                     if (transmissionType == TransmissionType.ENERGY) {
@@ -82,29 +70,24 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                 } else if (message.packetType == PacketType.GAS) {
                     if (transmissionType == TransmissionType.GAS) {
                         GasNetwork net = (GasNetwork) transmitter.getTransmitterNetwork();
-
                         if (message.gasType != null) {
                             net.refGas = message.gasType;
                         }
-
                         net.buffer = message.gasStack;
                         net.didTransfer = message.didGasTransfer;
                     }
                 } else if (message.packetType == PacketType.FLUID) {
                     if (transmissionType == TransmissionType.FLUID) {
                         FluidNetwork net = (FluidNetwork) transmitter.getTransmitterNetwork();
-
                         if (message.fluidType != null) {
                             net.refFluid = message.fluidType;
                         }
-
                         net.buffer = message.fluidStack;
                         net.didTransfer = message.didFluidTransfer;
                     }
                 }
             }
         }, player);
-
         return null;
     }
 
@@ -169,30 +152,23 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             coord4D.write(dataStream);
-
             PacketHandler.log("Sending '" + packetType + "' update message from coordinate " + coord4D);
-
             switch (packetType) {
                 case UPDATE:
                     dataStream.writeBoolean(newNetwork);
                     dataStream.writeInt(transmittersAdded.size());
-
                     for (IGridTransmitter transmitter : transmittersAdded) {
                         transmitter.coord().write(dataStream);
                     }
-
                     break;
                 case ENERGY:
                     dataStream.writeDouble(power);
-
                     break;
                 case GAS:
                     dataStream.writeInt(gasStack != null ? gasStack.getGas().getID() : -1);
                     dataStream.writeInt(gasStack != null ? gasStack.amount : 0);
                     dataStream.writeBoolean(didGasTransfer);
-
                     break;
                 case FLUID:
                     if (fluidStack != null) {
@@ -201,9 +177,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
                     } else {
                         dataStream.writeBoolean(false);
                     }
-
                     dataStream.writeBoolean(didFluidTransfer);
-
                     break;
                 default:
                     break;
@@ -213,9 +187,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = PacketType.values()[dataStream.readInt()];
-
             coord4D = Coord4D.read(dataStream);
-
             if (packetType == PacketType.UPDATE) {
                 newNetwork = dataStream.readBoolean();
                 transmitterCoords = new HashSet<>();

@@ -13,7 +13,7 @@ public interface ISustainedInventory {
      * Sets the inventory tag list to a new value.
      *
      * @param nbtTags - NBTTagList value to set
-     * @param data - ItemStack parameter if using on item
+     * @param data    - ItemStack parameter if using on item
      */
     void setInventory(NBTTagList nbtTags, Object... data);
 
@@ -21,6 +21,7 @@ public interface ISustainedInventory {
      * Gets the inventory tag list from an item or block.
      *
      * @param data - ItemStack parameter if using on item
+     *
      * @return inventory tag list
      */
     NBTTagList getInventory(Object... data);

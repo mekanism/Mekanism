@@ -28,7 +28,6 @@ public class MekanismIngredient extends Ingredient {
                 }
             }
         }
-
         return EMPTY;
     }
 
@@ -47,7 +46,6 @@ public class MekanismIngredient extends Ingredient {
         @Override
         public Ingredient parse(JsonContext context, JsonObject json) {
             final ItemStack stack = CraftingHelper.getItemStack(json, context);
-
             return MekanismIngredient.fromStacks(stack);
         }
     }

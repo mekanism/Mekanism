@@ -39,25 +39,16 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     @Override
     public Coord4D getAdjacentConnectableTransmitterCoord(EnumFacing side) {
         Coord4D sideCoord = coord().offset(side);
-
         TileEntity potentialTransmitterTile = sideCoord.getTileEntity(world());
-
         if (!containingTile.canConnectMutual(side)) {
             return null;
         }
-
-        if (CapabilityUtils
-              .hasCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
-            IGridTransmitter transmitter = CapabilityUtils
-                  .getCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY,
-                        side.getOpposite());
-
-            if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType()) && containingTile
-                  .isValidTransmitter(potentialTransmitterTile)) {
+        if (CapabilityUtils.hasCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite())) {
+            IGridTransmitter transmitter = CapabilityUtils.getCapability(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite());
+            if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType()) && containingTile.isValidTransmitter(potentialTransmitterTile)) {
                 return sideCoord;
             }
         }
-
         return null;
     }
 
@@ -82,13 +73,10 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     @Override
     public boolean isValid() {
         TileEntityTransmitter cont = getTileEntity();
-
         if (cont == null) {
             return false;
         }
-
-        return !cont.isInvalid() && coord().exists(world()) && coord().getTileEntity(world()) == cont
-              && cont.getTransmitter() == this;
+        return !cont.isInvalid() && coord().exists(world()) && coord().getTileEntity(world()) == cont && cont.getTransmitter() == this;
     }
 
     @Override
@@ -99,16 +87,12 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     @Override
     public NETWORK getExternalNetwork(Coord4D from) {
         TileEntity tile = from.getTileEntity(world());
-
         if (CapabilityUtils.hasCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)) {
-            IGridTransmitter transmitter = CapabilityUtils
-                  .getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-
+            IGridTransmitter transmitter = CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
             if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType())) {
                 return ((IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
             }
         }
-
         return null;
     }
 

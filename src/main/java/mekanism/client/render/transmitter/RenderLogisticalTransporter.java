@@ -36,12 +36,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
     private EntityItem entityItem = new EntityItem(null);
-    private Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager()
-          .getEntityClassRenderObject(EntityItem.class);
-
-    public RenderLogisticalTransporter() {
-        super();
-    }
+    private Render<Entity> renderer = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
 
     public static void onStitch(TextureMap map) {
         cachedOverlays.clear();
@@ -52,8 +47,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     @Override
-    public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (MekanismConfig.current().client.opaqueTransmitters.val()) {
             return;
         }
@@ -63,8 +57,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         entityItem.setNoDespawn();
         entityItem.hoverStart = 0;
 
-        entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5,
-              transporter.getPos().getZ() + 0.5);
+        entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
         entityItem.world = transporter.getWorld();
 
         for (TransporterStack stack : transporter.getTransmitter().getTransit()) {
@@ -72,8 +65,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 GL11.glPushMatrix();
                 entityItem.setItem(stack.itemStack);
 
-                float[] pos = TransporterUtils
-                      .getStackPosition(transporter.getTransmitter(), stack, partialTick * transporter.tier.getSpeed());
+                float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick * transporter.tier.getSpeed());
 
                 GL11.glTranslated(x + pos[0], y + pos[1], z + pos[2]);
                 GL11.glScalef(0.75F, 0.75F, 0.75F);

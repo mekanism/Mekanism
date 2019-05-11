@@ -26,8 +26,7 @@ public class AdvancedMachineRecipeWrapper implements IRecipeWrapper {
     public void getIngredients(IIngredients ingredients) {
         ingredients.setInput(VanillaTypes.ITEM, ((AdvancedMachineInput) recipe.getInput()).itemStack);
         ingredients.setInput(MekanismJEI.TYPE_GAS, new GasStack(((AdvancedMachineInput) recipe.getInput()).gasType,
-              TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED
-                    * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK));
+              TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED * TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK));
         ingredients.setOutput(VanillaTypes.ITEM, ((ItemStackOutput) recipe.getOutput()).output);
     }
 

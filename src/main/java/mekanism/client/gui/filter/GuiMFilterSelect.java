@@ -23,8 +23,7 @@ public class GuiMFilterSelect extends GuiFilterSelect<TileEntityDigitalMiner> {
 
     @Override
     protected void sendPacketToServer(int guiID) {
-        Mekanism.packetHandler.sendToServer(
-              new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
+        Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), guiID, 0, 0));
     }
 
     @Override

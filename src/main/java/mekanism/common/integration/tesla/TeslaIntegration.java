@@ -53,12 +53,10 @@ public class TeslaIntegration implements ITeslaHolder, ITeslaConsumer, ITeslaPro
     }
 
     public long rfToTesla(int rf) {
-        return Math.round(
-              rf * MekanismConfig.current().general.FROM_RF.val() * MekanismConfig.current().general.TO_TESLA.val());
+        return Math.round(rf * MekanismConfig.current().general.FROM_RF.val() * MekanismConfig.current().general.TO_TESLA.val());
     }
 
     public int teslaToRF(long tesla) {
-        return MekanismUtils.clampToInt(
-              tesla * MekanismConfig.current().general.FROM_TESLA.val() * MekanismConfig.current().general.TO_RF.val());
+        return MekanismUtils.clampToInt(tesla * MekanismConfig.current().general.FROM_TESLA.val() * MekanismConfig.current().general.TO_RF.val());
     }
 }

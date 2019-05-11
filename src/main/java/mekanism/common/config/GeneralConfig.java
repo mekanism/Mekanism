@@ -24,14 +24,14 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption dynamicTankEasterEgg = new BooleanOption(this, "general", "DynamicTankEasterEgg", false,
           "Audible sparkles.");
 
-    public final BooleanOption voiceServerEnabled = new BooleanOption(this, "general", "WalkieTalkieServerEnabled",
-          false, "Enables the voice server for Walkie Talkies.");
+    public final BooleanOption voiceServerEnabled = new BooleanOption(this, "general", "WalkieTalkieServerEnabled", false,
+          "Enables the voice server for Walkie Talkies.");
 
     public final BooleanOption cardboardSpawners = new BooleanOption(this, "general", "AllowSpawnerBoxPickup", true,
           "Allows vanilla spawners to be moved with a Cardboard Box.");
 
-    public final BooleanOption enableWorldRegeneration = new BooleanOption(this, "general", "EnableWorldRegeneration",
-          false, "Allows chunks to retrogen Mekanism ore blocks.");
+    public final BooleanOption enableWorldRegeneration = new BooleanOption(this, "general", "EnableWorldRegeneration", false,
+          "Allows chunks to retrogen Mekanism ore blocks.");
 
     public final BooleanOption spawnBabySkeletons = new BooleanOption(this, "general", "SpawnBabySkeletons", true,
           "Enable the spawning of baby skeletons. Think baby zombies but skeletons.");
@@ -113,8 +113,7 @@ public class GeneralConfig extends BaseConfig {
 
     //If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
     public final IntOption maxUpgradeMultiplier = new IntOption(this, "general", "UpgradeModifier", 10,
-          "Base factor for working out machine performance with upgrades - UpgradeModifier * (UpgradesInstalled/UpgradesPossible).",
-          1, Integer.MAX_VALUE);
+          "Base factor for working out machine performance with upgrades - UpgradeModifier * (UpgradesInstalled/UpgradesPossible).", 1, Integer.MAX_VALUE);
 
     public final IntOption minerSilkMultiplier = new IntOption(this, "general", "MinerSilkMultiplier", 6,
           "Energy multiplier for using silk touch mode with the Digital Miner.");
@@ -122,8 +121,8 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption prefilledGasTanks = new BooleanOption(this, "general", "PrefilledGasTanks", true,
           "Add filled creative gas tanks to creative/JEI.");
 
-    public final DoubleOption armoredJetpackDamageRatio = new DoubleOption(this, "general", "ArmoredJetpackDamageRatio",
-          0.8, "Damage absorb ratio of the Armored Jetpack.");
+    public final DoubleOption armoredJetpackDamageRatio = new DoubleOption(this, "general", "ArmoredJetpackDamageRatio", 0.8,
+          "Damage absorb ratio of the Armored Jetpack.");
 
     public final IntOption armoredJetpackDamageMax = new IntOption(this, "general", "ArmoredJepackDamageMax", 115,
           "Max damage the Armored Jetpack can absorb.");
@@ -131,8 +130,8 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption aestheticWorldDamage = new BooleanOption(this, "general", "AestheticWorldDamage", true,
           "If enabled, lasers can break blocks and the flamethrower starts fires.");
 
-    public final BooleanOption opsBypassRestrictions = new BooleanOption(this, "general", "OpsBypassRestrictions",
-          false, "Ops can bypass the block security restrictions if enabled.");
+    public final BooleanOption opsBypassRestrictions = new BooleanOption(this, "general", "OpsBypassRestrictions", false,
+          "Ops can bypass the block security restrictions if enabled.");
 
     public final IntOption maxJetpackGas = new IntOption(this, "general", "MaxJetpackGas", 24000,
           "Jetpack Gas Tank capacity in mB.");
@@ -152,14 +151,14 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption maxPlenisherNodes = new IntOption(this, "general", "MaxPlenisherNodes", 4000,
           "Fluidic Plenisher stops after this many blocks.");
 
-    public final DoubleOption evaporationHeatDissipation = new DoubleOption(this, "general",
-          "EvaporationHeatDissipation", 0.02D, "Thermal Evaporation Tower heat loss per tick.");
+    public final DoubleOption evaporationHeatDissipation = new DoubleOption(this, "general", "EvaporationHeatDissipation", 0.02D,
+          "Thermal Evaporation Tower heat loss per tick.");
 
-    public final DoubleOption evaporationTempMultiplier = new DoubleOption(this, "general", "EvaporationTempMultiplier",
-          0.1D, "Temperature to amount produced ratio for Thermal Evaporation Tower.");
+    public final DoubleOption evaporationTempMultiplier = new DoubleOption(this, "general", "EvaporationTempMultiplier", 0.1D,
+          "Temperature to amount produced ratio for Thermal Evaporation Tower.");
 
-    public final DoubleOption evaporationSolarMultiplier = new DoubleOption(this, "general",
-          "EvaporationSolarMultiplier", 0.2D, "Heat to absorb per Solar Panel array of Thermal Evaporation Tower.");
+    public final DoubleOption evaporationSolarMultiplier = new DoubleOption(this, "general", "EvaporationSolarMultiplier", 0.2D,
+          "Heat to absorb per Solar Panel array of Thermal Evaporation Tower.");
 
     public final DoubleOption evaporationMaxTemp = new DoubleOption(this, "general", "EvaporationMaxTemp", 3000D,
           "Max Temperature of the Thermal Evaporation Tower.");
@@ -170,14 +169,13 @@ public class GeneralConfig extends BaseConfig {
     public final DoubleOption maxEnergyPerSteam = new DoubleOption(this, "general", "MaxEnergyPerSteam", 100D,
           "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler.");
 
-    public final DoubleOption superheatingHeatTransfer = new DoubleOption(this, "general", "SuperheatingHeatTransfer",
-          10000D, "Amount of heat each Boiler heating element produces.");
+    public final DoubleOption superheatingHeatTransfer = new DoubleOption(this, "general", "SuperheatingHeatTransfer", 10000D,
+          "Amount of heat each Boiler heating element produces.");
 
     public final DoubleOption heatPerFuelTick = new DoubleOption(this, "general", "HeatPerFuelTick", 4D,
           "Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.");
 
-    public final BooleanOption allowTransmitterAlloyUpgrade = new BooleanOption(this, "general",
-          "AllowTransmitterAlloyUpgrade", true,
+    public final BooleanOption allowTransmitterAlloyUpgrade = new BooleanOption(this, "general", "AllowTransmitterAlloyUpgrade", true,
           "Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.");
 
     public final BooleanOption allowChunkloading = new BooleanOption(this, "general", "AllowChunkloading", true,
@@ -189,8 +187,8 @@ public class GeneralConfig extends BaseConfig {
     public final IntOption portableTeleporterDelay = new IntOption(this, "general", "PortableTeleporterDelay", 0,
           "Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.");
 
-    public final DoubleOption quantumEntangloporterEnergyTransfer = new DoubleOption(this, "general",
-          "QuantumEntangloporterEnergyTransfer", 16000000D, "Maximum buffer of an Entangoloporter frequency.");
+    public final DoubleOption quantumEntangloporterEnergyTransfer = new DoubleOption(this, "general", "QuantumEntangloporterEnergyTransfer", 16000000D,
+          "Maximum buffer of an Entangoloporter frequency.");
 
     public final BooleanOption blacklistIC2 = new BooleanOption(this, "general", "BlacklistIC2Power", false,
           "Disables IC2 power integration. Requires world restart (server-side option in SMP).");
@@ -204,11 +202,11 @@ public class GeneralConfig extends BaseConfig {
     public final BooleanOption blacklistForge = new BooleanOption(this, "general", "BlacklistForgePower", false,
           "Disables Forge Energy (FE,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).");
 
-    public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType",
-          EnergyType.RF, "Displayed energy type in Mekanism GUIs.");
+    public EnumOption<EnergyType> energyUnit = new EnumOption<>(this, "general", "EnergyType", EnergyType.RF,
+          "Displayed energy type in Mekanism GUIs.");
 
-    public EnumOption<TempType> tempUnit = new EnumOption<>(this, "general", "Temperature Units",
-          TempType.K, "Displayed temperature unit in Mekanism GUIs.");
+    public EnumOption<TempType> tempUnit = new EnumOption<>(this, "general", "Temperature Units", TempType.K,
+          "Displayed temperature unit in Mekanism GUIs.");
 
     public final IntOption laserRange = new IntOption(this, "general", "LaserRange", 64,
           "How far (in blocks) a laser can travel.");
@@ -220,20 +218,16 @@ public class GeneralConfig extends BaseConfig {
           "If machine is disabled in config, do we set its block to air if it is found in world?");
 
     public final IntOption digitalMinerMaxRadius = new IntOption(this, "general", "digitalMinerMaxRadius", 32,
-          "Maximum radius in blocks that the Digital Miner can reach. "
-                + "(Increasing this may have negative effects on stability and/or performance. "
-                + "We strongly recommend you leave it at the default value.)", 1, Integer.MAX_VALUE);
+          "Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability and/or performance. "
+          + "We strongly recommend you leave it at the default value.)", 1, Integer.MAX_VALUE);
 
     public final DoubleOption sawdustChancePlank = new DoubleOption(this, "general", "SawdustChancePlank", 0.25D,
-          "Chance of producing sawdust per operation in the precision sawmill when turning planks into sticks.")
-          .setRequiresGameRestart(true);
+          "Chance of producing sawdust per operation in the precision sawmill when turning planks into sticks.").setRequiresGameRestart(true);
 
     public final DoubleOption sawdustChanceLog = new DoubleOption(this, "general", "SawdustChanceLog", 1D,
-          "Chance of producing sawdust per operation in the precision sawmill when turning logs into planks.")
-          .setRequiresGameRestart(true);
+          "Chance of producing sawdust per operation in the precision sawmill when turning logs into planks.").setRequiresGameRestart(true);
 
-    public final TypeConfigManager<MachineType> machinesManager = new TypeConfigManager<>(this,
-          "machines", MachineType.class, MachineType::getValidMachines, t -> t.blockName);
+    public final TypeConfigManager<MachineType> machinesManager = new TypeConfigManager<>(this, "machines", MachineType.class, MachineType::getValidMachines, t -> t.blockName);
 
     public final EnumMap<BaseTier, TierConfig> tiers = TierConfig.create(this);
 }

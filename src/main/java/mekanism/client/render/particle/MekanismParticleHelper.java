@@ -25,13 +25,15 @@ public class MekanismParticleHelper {
 
     /**
      * Adds block hit particles for the specified block, accounting for tier colour
-     * @see ParticleManager#addBlockHitEffects(net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing) for source of copy
      *
-     * @param world relevant world
-     * @param pos position of block
-     * @param side which side was hit
+     * @param world   relevant world
+     * @param pos     position of block
+     * @param side    which side was hit
      * @param manager vanilla particle manager in use
+     *
      * @return true if handled (always true)
+     *
+     * @see ParticleManager#addBlockHitEffects(net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing) for source of copy
      */
     public static boolean addBlockHitEffects(World world, BlockPos pos, EnumFacing side, ParticleManager manager) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
@@ -48,12 +50,9 @@ public class MekanismParticleHelper {
             int blockY = pos.getY();
             int blockZ = pos.getZ();
             AxisAlignedBB axisalignedbb = iblockstate.getBoundingBox(world, pos);
-            double particleX = (double) blockX + world.rand.nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX
-                  - OFFSET_1) + OFFSET_2 + axisalignedbb.minX;
-            double particleY = (double) blockY + world.rand.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY
-                  - OFFSET_1) + OFFSET_2 + axisalignedbb.minY;
-            double particleZ = (double) blockZ + world.rand.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ
-                  - OFFSET_1) + OFFSET_2 + axisalignedbb.minZ;
+            double particleX = (double) blockX + world.rand.nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX - OFFSET_1) + OFFSET_2 + axisalignedbb.minX;
+            double particleY = (double) blockY + world.rand.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY - OFFSET_1) + OFFSET_2 + axisalignedbb.minY;
+            double particleZ = (double) blockZ + world.rand.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ - OFFSET_1) + OFFSET_2 + axisalignedbb.minZ;
 
             if (side == EnumFacing.DOWN) {
                 particleY = (double) blockY + axisalignedbb.minY - OFFSET_2;

@@ -20,44 +20,34 @@ public class ContainerDigitalMiner extends ContainerMekanism<TileEntityDigitalMi
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot currentSlot = inventorySlots.get(slotID);
-
         if (currentSlot != null && currentSlot.getHasStack()) {
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
-
             if (ChargeUtils.canBeDischarged(slotStack)) {
                 if (slotID > 27) {
                     if (!mergeItemStack(slotStack, 27, 28, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else {
-                    if (!mergeItemStack(slotStack, 28, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
-                }
-            } else {
-                if (slotID < 27) {
-                    if (!mergeItemStack(slotStack, 28, inventorySlots.size(), true)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (!mergeItemStack(slotStack, 0, 27, false)) {
+                } else if (!mergeItemStack(slotStack, 28, inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
+            } else if (slotID < 27) {
+                if (!mergeItemStack(slotStack, 28, inventorySlots.size(), true)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (!mergeItemStack(slotStack, 0, 27, false)) {
+                return ItemStack.EMPTY;
             }
-
             if (slotStack.getCount() == 0) {
                 currentSlot.putStack(ItemStack.EMPTY);
             } else {
                 currentSlot.onSlotChanged();
             }
-
             if (slotStack.getCount() == stack.getCount()) {
                 return ItemStack.EMPTY;
             }
-
             currentSlot.onTake(player, slotStack);
         }
-
         return stack;
     }
 
@@ -68,7 +58,6 @@ public class ContainerDigitalMiner extends ContainerMekanism<TileEntityDigitalMi
                 addSlotToContainer(new Slot(tileEntity, slotX + slotY * 9, 8 + slotX * 18, 80 + slotY * 18));
             }
         }
-
         addSlotToContainer(new SlotDischarge(tileEntity, 27, 152, 6));
     }
 

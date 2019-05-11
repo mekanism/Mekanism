@@ -28,13 +28,11 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
-public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements IHeatTransfer, IComputerIntegration,
-      IRedstoneControl, ISecurityTile {
+public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements IHeatTransfer, IComputerIntegration, IRedstoneControl, ISecurityTile {
 
     private static final int[] SLOTS = {0};
 
-    private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature",
-          "setEnergyUsage"};
+    private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature", "setEnergyUsage"};
     public double energyUsage = 100;
     public double temperature;
     public double heatToAbsorb = 0;
@@ -63,10 +61,8 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (world.isRemote && updateDelay > 0) {
             updateDelay--;
-
             if (updateDelay == 0 && clientActive != isActive) {
                 isActive = clientActive;
                 MekanismUtils.updateBlock(world, getPos());
@@ -75,19 +71,15 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
 
         if (!world.isRemote) {
             boolean packet = false;
-
             if (updateDelay > 0) {
                 updateDelay--;
-
                 if (updateDelay == 0 && clientActive != isActive) {
                     packet = true;
                 }
             }
 
             ChargeUtils.discharge(0, this);
-
             double toUse = 0;
-
             if (MekanismUtils.canFunction(this)) {
                 toUse = Math.min(getEnergy(), energyUsage);
                 heatToAbsorb += toUse / MekanismConfig.current().general.energyPerHeat.val();
@@ -95,24 +87,17 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             }
 
             setActive(toUse > 0);
-
             double[] loss = simulateHeat();
             applyTemperatureChange();
-
             lastEnvironmentLoss = loss[1];
-
-            float newSoundScale = (float) Math.max(0, (toUse / 1E5));
-
+            float newSoundScale = (float) Math.max(0, toUse / 1E5);
             if (Math.abs(newSoundScale - soundScale) > 0.01) {
                 packet = true;
             }
 
             soundScale = newSoundScale;
-
             if (packet) {
-                Mekanism.packetHandler.sendToReceivers(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             }
         }
     }
@@ -130,12 +115,10 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         energyUsage = nbtTags.getDouble("energyUsage");
         temperature = nbtTags.getDouble("temperature");
         clientActive = isActive = nbtTags.getBoolean("isActive");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
         maxEnergy = energyUsage * 400;
     }
 
@@ -143,12 +126,10 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setDouble("energyUsage", energyUsage);
         nbtTags.setDouble("temperature", temperature);
         nbtTags.setBoolean("isActive", isActive);
         nbtTags.setInteger("controlType", controlType.ordinal());
-
         return nbtTags;
     }
 
@@ -157,12 +138,10 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
             maxEnergy = energyUsage * 400;
-
             return;
         }
 
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             energyUsage = dataStream.readDouble();
             temperature = dataStream.readDouble();
@@ -170,9 +149,7 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
             maxEnergy = dataStream.readDouble();
             soundScale = dataStream.readFloat();
             controlType = RedstoneControl.values()[dataStream.readInt()];
-
             lastEnvironmentLoss = dataStream.readDouble();
-
             if (updateDelay == 0 && clientActive != isActive) {
                 updateDelay = MekanismConfig.current().general.UPDATE_DELAY.val();
                 isActive = clientActive;
@@ -193,7 +170,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         data.add(controlType.ordinal());
 
         data.add(lastEnvironmentLoss);
-
         return data;
     }
 
@@ -226,7 +202,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     public double applyTemperatureChange() {
         temperature += heatToAbsorb;
         heatToAbsorb = 0;
-
         return temperature;
     }
 
@@ -238,11 +213,9 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     @Override
     public IHeatTransfer getAdjacent(EnumFacing side) {
         TileEntity adj = Coord4D.get(this).offset(side).getTileEntity(world);
-
         if (CapabilityUtils.hasCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())) {
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite());
         }
-
         return null;
     }
 
@@ -256,7 +229,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 
@@ -268,12 +240,8 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
     @Override
     public void setActive(boolean active) {
         isActive = active;
-
         if (clientActive != active && updateDelay == 0) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             updateDelay = 10;
             clientActive = active;
         }
@@ -310,7 +278,6 @@ public class TileEntityResistiveHeater extends TileEntityEffectsBlock implements
                         return new Object[]{"Set energy usage."};
                     }
                 }
-
                 return new Object[]{"Invalid parameters."};
             default:
                 throw new NoSuchMethodException();

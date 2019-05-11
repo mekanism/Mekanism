@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.api.TileNetworkList;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
@@ -28,8 +28,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityContainerBlock implements
-      IMultiblock<T> {
+public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityContainerBlock implements IMultiblock<T> {
 
     /**
      * The multiblock data for this structure.
@@ -76,44 +75,35 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             if (structure == null) {
                 structure = getNewStructure();
             }
-
             if (structure != null && structure.renderLocation != null && clientHasStructure && isRendering) {
                 if (!prevStructure) {
                     Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength,
                           structure.volWidth, structure.volHeight, tile -> MultiblockManager.areEqual(this, tile));
                 }
             }
-
             prevStructure = clientHasStructure;
         }
-
-        if (playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote
-              && structure == null))) {
+        if (playersUsing.size() > 0 && ((world.isRemote && !clientHasStructure) || (!world.isRemote && structure == null))) {
             for (EntityPlayer player : playersUsing) {
                 player.closeScreen();
             }
         }
-
         if (!world.isRemote) {
             if (structure == null) {
                 isRendering = false;
-
                 if (cachedID != null) {
                     getManager().updateCache(this);
                 }
             }
-
             if (structure == null && ticker == 5) {
                 doUpdate();
             }
-
             if (prevStructure == (structure == null)) {
                 if (structure != null && !getSynchronizedData().hasRenderer) {
                     getSynchronizedData().hasRenderer = true;
                     isRendering = true;
                     sendStructure = true;
                 }
-
                 for (EnumFacing side : EnumFacing.VALUES) {
                     Coord4D obj = Coord4D.get(this).offset(side);
                     if (structure != null && (structure.locations.contains(obj) || structure.internalLocations
@@ -121,23 +111,19 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                         continue;
                     }
                     TileEntity tile = obj.getTileEntity(world);
-
-                    if (!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()) && !(
-                          tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
+                    if (!obj.isAirBlock(world) && (tile == null || tile.getClass() != getClass()) &&
+                        !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
                         MekanismUtils.notifyNeighborofChange(world, obj, getPos());
                     }
                 }
 
-                Mekanism.packetHandler.sendToReceivers(
-                      new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                      new Range4D(Coord4D.get(this)));
+                Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             }
 
             prevStructure = structure != null;
 
             if (structure != null) {
                 getSynchronizedData().didTick = false;
-
                 if (getSynchronizedData().inventoryID != null) {
                     cachedData.sync(getSynchronizedData());
                     cachedID = getSynchronizedData().inventoryID;
@@ -151,7 +137,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public void doUpdate() {
         if (!world.isRemote && (structure == null || !getSynchronizedData().didTick)) {
             getProtocol().doUpdate();
-
             if (structure != null) {
                 getSynchronizedData().didTick = true;
             }
@@ -162,7 +147,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         if (structure != null) {
             for (Coord4D obj : getSynchronizedData().locations) {
                 TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) obj.getTileEntity(world);
-
                 if (tileEntity != null && tileEntity.isRendering) {
                     Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity),
                           tileEntity.getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(tileEntity)));
@@ -212,7 +196,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             if (structure == null) {
                 structure = getNewStructure();
@@ -226,7 +209,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     getSynchronizedData().volHeight = dataStream.readInt();
                     getSynchronizedData().volWidth = dataStream.readInt();
                     getSynchronizedData().volLength = dataStream.readInt();
-
                     getSynchronizedData().renderLocation = Coord4D.read(dataStream);
                     if (dataStream.readBoolean()) {
                         getSynchronizedData().inventoryID = PacketHandler.readString(dataStream);
@@ -241,7 +223,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         if (structure == null) {
             if (nbtTags.hasKey("cachedID")) {
                 cachedID = nbtTags.getString("cachedID");
@@ -254,12 +235,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         if (cachedID != null) {
             nbtTags.setString("cachedID", cachedID);
             cachedData.save(nbtTags);
         }
-
         return nbtTags;
     }
 

@@ -24,8 +24,7 @@ public class GuiGraph extends GuiElement {
     private int currentScale = 10;
     private boolean fixedScale = false;
 
-    public GuiGraph(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY,
-          GraphDataHandler handler) {
+    public GuiGraph(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY, GraphDataHandler handler) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiGraph.png"), gui, def);
         xPosition = x;
         yPosition = y;
@@ -45,7 +44,6 @@ public class GuiGraph extends GuiElement {
         }
 
         graphData.add(data);
-
         if (!fixedScale) {
             for (int i : graphData) {
                 if (i > currentScale) {
@@ -96,10 +94,9 @@ public class GuiGraph extends GuiElement {
 
         for (int yIter = 0; yIter < yDisplays; yIter++) {
             for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int width = (xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10);
-                int height = (ySize % 10 > 0 && yIter == yDisplays - 1 ? ySize % 10 : 10);
-                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (yIter * 10), 0, 0,
-                      width, height);
+                int width = xSize % 10 > 0 && xIter == xDisplays - 1 ? xSize % 10 : 10;
+                int height = ySize % 10 > 0 && yIter == yDisplays - 1 ? ySize % 10 : 10;
+                guiObj.drawTexturedRect(guiWidth + xPosition + (xIter * 10), guiHeight + yPosition + (yIter * 10), 0, 0, width, height);
             }
         }
     }
@@ -108,17 +105,15 @@ public class GuiGraph extends GuiElement {
         for (int i = 0; i < graphData.size(); i++) {
             int data = Math.min(currentScale, graphData.get(i));
             int relativeHeight = (int) (((double) data / (double) currentScale) * ySize);
-            guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - relativeHeight), 10, 0,
-                  1, 1);
+            guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - relativeHeight), 10, 0, 1, 1);
 
             int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
 
             for (int iter = 0; iter < displays; iter++) {
                 MekanismRenderer.blendOn();
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
-                int height = ((relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10);
-                guiObj.drawTexturedRect(guiWidth + xPosition + i,
-                      guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
+                int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
+                guiObj.drawTexturedRect(guiWidth + xPosition + i, guiHeight + yPosition + (ySize - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height);
                 MekanismRenderer.blendOff();
             }
         }

@@ -9,8 +9,8 @@ import mcmultipart.api.multipart.IMultipartTile;
 import mcmultipart.api.slot.EnumFaceSlot;
 import mcmultipart.api.slot.IPartSlot;
 import mcmultipart.api.world.IMultipartBlockAccess;
-import mekanism.common.base.ITileNetwork;
 import mekanism.api.TileNetworkList;
+import mekanism.common.base.ITileNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
@@ -18,11 +18,10 @@ import net.minecraft.world.IBlockAccess;
 /**
  * Used to route {@link ITileNetwork} packets sent to multipart containers with more than one possible recipient.<br>
  * <br>
- * When MCMP is enabled single byte EnumFacing ordinal headers are added to packets sent by glow panels and transmitters
- * that are then used by this class to route packets to the part attached to the appropriate side.<br>
+ * When MCMP is enabled single byte EnumFacing ordinal headers are added to packets sent by glow panels and transmitters that are then used by this class to route packets
+ * to the part attached to the appropriate side.<br>
  * <br>
- * In this case, since transmitters do not attach to a side and therefore have no matching EnumFacing the special value
- * 6 is used to represent the center slot.
+ * In this case, since transmitters do not attach to a side and therefore have no matching EnumFacing the special value 6 is used to represent the center slot.
  */
 public class MultipartTileNetworkJoiner implements ITileNetwork {
 
@@ -49,7 +48,6 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
                 container = (IMultipartContainer) worldTile;
             }
         }
-
         if (container != null) {
             for (IPartSlot slot : container.getParts().keySet()) {
                 Optional<IMultipartTile> partTile = container.getPartTile(slot);
@@ -65,11 +63,10 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
     }
 
     /**
-     * Determines whether or not an {@link ITileNetwork} joiner is needed and, if so, adds a single byte header used to
-     * route packets inside multipart containers.
+     * Determines whether or not an {@link ITileNetwork} joiner is needed and, if so, adds a single byte header used to route packets inside multipart containers.
      *
      * @param entity The entity for which <code>getNetworkedData</code> is being called
-     * @param data The network data list
+     * @param data   The network data list
      * @param facing The side this part is attached to or <code>null</code> for the center slot
      */
     public static void addMultipartHeader(TileEntity entity, TileNetworkList data, EnumFacing facing) {
@@ -77,10 +74,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
         IMultipartContainer container = MultipartMekanism.getContainer(entity.getWorld(), entity.getPos());
         if (container != null) {
             for (IPartSlot slot : container.getParts().keySet()) {
-                TileEntity part = container.getPartTile(slot)
-                      .map(IMultipartTile::getTileEntity)
-                      .orElse(null);
-
+                TileEntity part = container.getPartTile(slot).map(IMultipartTile::getTileEntity).orElse(null);
                 if (part instanceof ITileNetwork) {
                     tileNetworkParts++;
                     if (tileNetworkParts > 1) {
@@ -89,7 +83,6 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
                 }
             }
         }
-
         if (tileNetworkParts > 1) {
             data.add(0, (byte) (facing == null ? 6 : facing.ordinal()));
         }
@@ -99,12 +92,10 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
     public void handlePacketData(ByteBuf dataStream) throws Exception {
         while (dataStream.readableBytes() > 0) {
             byte side = dataStream.readByte();
-
             ITileNetwork networkTile = tileSideMap.get(side);
             if (networkTile == null) {
                 break;
             }
-
             networkTile.handlePacketData(dataStream);
         }
     }
@@ -117,7 +108,6 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
             data.addAll(childData);
             childData.clear();
         }
-
         return data;
     }
 }

@@ -16,16 +16,14 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
       TileEntityBasicMachine<INPUT, OUTPUT, RECIPE> implements ITierUpgradeable {
 
     /**
-     * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound
-     * effect, and animated texture.
+     * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
      *
-     * @param soundPath - location of the sound effect
-     * @param name - full name of this machine
-     * @param baseMaxEnergy - how much energy this machine can store
+     * @param soundPath         - location of the sound effect
+     * @param name              - full name of this machine
+     * @param baseMaxEnergy     - how much energy this machine can store
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityUpgradeableMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
-          int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
+    public TileEntityUpgradeableMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int upgradeSlot, int baseTicksRequired, ResourceLocation location) {
         super(soundPath, name, baseMaxEnergy, baseEnergyUsage, upgradeSlot, baseTicksRequired, location);
     }
 
@@ -34,7 +32,6 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         if (upgradeTier != BaseTier.BASIC) {
             return false;
         }
-
         world.setBlockToAir(getPos());
         world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5), 3);
 
@@ -60,8 +57,7 @@ public abstract class TileEntityUpgradeableMachine<INPUT extends MachineInput<IN
         factory.upgradeComponent.readFrom(upgradeComponent);
         factory.upgradeComponent.setUpgradeSlot(0);
         factory.ejectorComponent.readFrom(ejectorComponent);
-        factory.ejectorComponent
-              .setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
+        factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
         factory.setRecipeType(type);
         factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
         factory.securityComponent.readFrom(securityComponent);

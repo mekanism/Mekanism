@@ -13,7 +13,6 @@ public class DefaultLaserReceptor implements ILaserReceptor {
 
     @Override
     public void receiveLaserEnergy(double energy, EnumFacing side) {
-
     }
 
     @Override

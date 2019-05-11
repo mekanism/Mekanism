@@ -20,8 +20,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
     private ModelTurbine model = new ModelTurbine();
 
     @Override
-    public void render(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         renderAModelAt(tileEntity, x, y, z, partialTick);
     }
 
@@ -37,16 +36,13 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer<TileEntityTurb
         int baseIndex = tileEntity.getPosition() * 2;
         float rotateSpeed = 0.0F;
 
-        if (tileEntity.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap
-              .containsKey(tileEntity.getMultiblock())) {
+        if (tileEntity.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap.containsKey(tileEntity.getMultiblock())) {
             rotateSpeed = SynchronizedTurbineData.clientRotationMap.get(tileEntity.getMultiblock());
         }
 
         if (!Mekanism.proxy.isPaused()) {
-            tileEntity.rotationLower =
-                  (tileEntity.rotationLower + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 1))) % 360;
-            tileEntity.rotationUpper =
-                  (tileEntity.rotationUpper + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 2))) % 360;
+            tileEntity.rotationLower = (tileEntity.rotationLower + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 1))) % 360;
+            tileEntity.rotationUpper = (tileEntity.rotationUpper + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 2))) % 360;
         }
 
         if (tileEntity.getHousedBlades() > 0) {

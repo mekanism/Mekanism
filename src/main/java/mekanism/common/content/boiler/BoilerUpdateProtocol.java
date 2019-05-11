@@ -29,8 +29,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 
     @Override
     protected boolean isValidFrame(int x, int y, int z) {
-        return BasicBlockType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z)))
-              == BasicBlockType.BOILER_CASING;
+        return BasicBlockType.get(pointer.getWorld().getBlockState(new BlockPos(x, y, z))) == BasicBlockType.BOILER_CASING;
     }
 
     @Override
@@ -38,10 +37,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         if (super.isValidInnerNode(x, y, z)) {
             return true;
         }
-
-        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension())
-              .getTileEntity(pointer.getWorld());
-
+        TileEntity tile = new Coord4D(x, y, z, pointer.getWorld().provider.getDimension()).getTileEntity(pointer.getWorld());
         return tile instanceof TileEntityPressureDisperser || tile instanceof TileEntitySuperheatingElement;
     }
 
@@ -50,10 +46,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         if (structure.volHeight >= 3) {
             Set<Coord4D> dispersers = new HashSet<>();
             Set<Coord4D> elements = new HashSet<>();
-
             for (Coord4D coord : innerNodes) {
                 TileEntity tile = coord.getTileEntity(pointer.getWorld());
-
                 if (tile instanceof TileEntityPressureDisperser) {
                     dispersers.add(coord);
                 } else if (tile instanceof TileEntitySuperheatingElement) {
@@ -63,27 +57,22 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
             }
 
             int prevDispersers = dispersers.size();
-
             //Ensure at least one disperser exists
             if (dispersers.size() == 0) {
                 return false;
             }
-
             //Find a single disperser contained within this multiblock
             final Coord4D initDisperser = dispersers.iterator().next();
 
             //Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
-            Coord4D pos = new Coord4D(structure.renderLocation.x, initDisperser.y, structure.renderLocation.z,
-                  pointer.getWorld().provider.getDimension());
+            Coord4D pos = new Coord4D(structure.renderLocation.x, initDisperser.y, structure.renderLocation.z, pointer.getWorld().provider.getDimension());
             for (int x = 1; x < structure.volLength - 1; x++) {
                 for (int z = 1; z < structure.volWidth - 1; z++) {
                     Coord4D coord4D = pos.translate(x, 0, z);
                     TileEntity tile = coord4D.getTileEntity(pointer.getWorld());
-
                     if (!(tile instanceof TileEntityPressureDisperser)) {
                         return false;
                     }
-
                     dispersers.remove(coord4D);
                 }
             }
@@ -135,9 +124,9 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                 @Override
                 public final boolean isValid(Coord4D coord) {
                     return coord.y >= renderLocation.y - 1 && coord.y < initDisperser.y &&
-                          coord.x >= renderLocation.x && coord.x < renderLocation.x + volLength &&
-                          coord.z >= renderLocation.z && coord.z < renderLocation.z + volWidth &&
-                          (coord.isAirBlock(pointer.getWorld()) || isViableNode(coord.getPos()));
+                           coord.x >= renderLocation.x && coord.x < renderLocation.x + volLength &&
+                           coord.z >= renderLocation.z && coord.z < renderLocation.z + volWidth &&
+                           (coord.isAirBlock(pointer.getWorld()) || isViableNode(coord.getPos()));
                 }
             }).calculate(initAir);
 
@@ -146,11 +135,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
                 return false;
             }
 
-            int steamHeight = (structure.renderLocation.y + structure.volHeight - 2) - initDisperser.y;
+            int steamHeight = structure.renderLocation.y + structure.volHeight - 2 - initDisperser.y;
             structure.steamVolume = structure.volWidth * structure.volLength * steamHeight;
 
-            structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1,
-                  structure.renderLocation.z, pointer.getWorld().provider.getDimension());
+            structure.upperRenderLocation = new Coord4D(structure.renderLocation.x, initDisperser.y + 1, structure.renderLocation.z, pointer.getWorld().provider.getDimension());
 
             return true;
         }
@@ -178,47 +166,39 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
           MultiblockCache<SynchronizedBoilerData> merge) {
         if (((BoilerCache) cache).water == null) {
             ((BoilerCache) cache).water = ((BoilerCache) merge).water;
-        } else if (((BoilerCache) merge).water != null && ((BoilerCache) cache).water
-              .isFluidEqual(((BoilerCache) merge).water)) {
+        } else if (((BoilerCache) merge).water != null && ((BoilerCache) cache).water.isFluidEqual(((BoilerCache) merge).water)) {
             ((BoilerCache) cache).water.amount += ((BoilerCache) merge).water.amount;
         }
 
         if (((BoilerCache) cache).steam == null) {
             ((BoilerCache) cache).steam = ((BoilerCache) merge).steam;
-        } else if (((BoilerCache) merge).steam != null && ((BoilerCache) cache).steam
-              .isFluidEqual(((BoilerCache) merge).steam)) {
+        } else if (((BoilerCache) merge).steam != null && ((BoilerCache) cache).steam.isFluidEqual(((BoilerCache) merge).steam)) {
             ((BoilerCache) cache).steam.amount += ((BoilerCache) merge).steam.amount;
         }
 
-        ((BoilerCache) cache).temperature = Math
-              .max(((BoilerCache) cache).temperature, ((BoilerCache) merge).temperature);
+        ((BoilerCache) cache).temperature = Math.max(((BoilerCache) cache).temperature, ((BoilerCache) merge).temperature);
     }
 
     @Override
     protected void onFormed() {
         super.onFormed();
 
-        if ((structureFound).waterStored != null) {
-            (structureFound).waterStored.amount = Math
-                  .min((structureFound).waterStored.amount, structureFound.waterVolume * WATER_PER_TANK);
+        if (structureFound.waterStored != null) {
+            structureFound.waterStored.amount = Math.min(structureFound.waterStored.amount, structureFound.waterVolume * WATER_PER_TANK);
         }
 
-        if ((structureFound).steamStored != null) {
-            (structureFound).steamStored.amount = Math
-                  .min((structureFound).steamStored.amount, structureFound.steamVolume * STEAM_PER_TANK);
+        if (structureFound.steamStored != null) {
+            structureFound.steamStored.amount = Math.min(structureFound.steamStored.amount, structureFound.steamVolume * STEAM_PER_TANK);
         }
     }
 
     @Override
-    protected void onStructureCreated(SynchronizedBoilerData structure, int origX, int origY, int origZ, int xmin,
-          int xmax, int ymin, int ymax, int zmin, int zmax) {
+    protected void onStructureCreated(SynchronizedBoilerData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {
         for (Coord4D obj : structure.locations) {
             if (obj.getTileEntity(pointer.getWorld()) instanceof TileEntityBoilerValve) {
                 ValveData data = new ValveData();
                 data.location = obj;
-                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin,
-                      origZ + zmax);
-
+                data.side = getSide(obj, origX + xmin, origX + xmax, origY + ymin, origY + ymax, origZ + zmin, origZ + zmax);
                 structure.valves.add(data);
             }
         }

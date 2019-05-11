@@ -24,7 +24,7 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
     /**
      * Creates a chemical input with two defined gasses.
      *
-     * @param left - left gas
+     * @param left  - left gas
      * @param right - right gas
      */
     public ChemicalPairOutput(GasStack left, GasStack right) {
@@ -49,10 +49,10 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
     }
 
     /**
-     * Whether or not the defined input contains the same gasses and at least the required amount of the defined gasses
-     * as this input.
+     * Whether or not the defined input contains the same gasses and at least the required amount of the defined gasses as this input.
      *
      * @param input - input to check
+     *
      * @return if the input meets this input's requirements
      */
     public boolean meetsInput(ChemicalPairOutput input) {
@@ -73,25 +73,22 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
             if (leftTank.getNeeded() >= leftGas.amount * scale && rightTank.getNeeded() >= rightGas.amount * scale) {
                 leftTank.receive(leftGas.copy().withAmount(leftGas.amount * scale), doEmit);
                 rightTank.receive(rightGas.copy().withAmount(rightGas.amount * scale), doEmit);
-
                 return true;
             }
         } else if (leftTank.canReceive(rightGas.getGas()) && rightTank.canReceive(leftGas.getGas())) {
             if (leftTank.getNeeded() >= rightGas.amount * scale && rightTank.getNeeded() >= leftGas.amount * scale) {
                 leftTank.receive(rightGas.copy().withAmount(rightGas.amount * scale), doEmit);
                 rightTank.receive(leftGas.copy().withAmount(leftGas.amount * scale), doEmit);
-
                 return true;
             }
         }
-
         return false;
     }
 
     /**
      * Draws the needed amount of gas from each tank.
      *
-     * @param leftTank - left tank to draw from
+     * @param leftTank  - left tank to draw from
      * @param rightTank - right tank to draw from
      */
     public void draw(GasTank leftTank, GasTank rightTank) {
@@ -108,13 +105,13 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
      * Whether or not one of this ChemicalInput's GasStack entry's gas type is equal to the gas type of the given gas.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's gas type is contained in this ChemicalInput
      */
     public boolean containsType(GasStack stack) {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-
         return stack.isGasEqual(leftGas) || stack.isGasEqual(rightGas);
     }
 
@@ -122,17 +119,16 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput> {
      * Actual implementation of meetsInput(), performs the checks.
      *
      * @param input - input to check
+     *
      * @return if the input meets this input's requirements
      */
     private boolean meets(ChemicalPairOutput input) {
         if (input == null || !input.isValid()) {
             return false;
         }
-
         if (input.leftGas.getGas() != leftGas.getGas() || input.rightGas.getGas() != rightGas.getGas()) {
             return false;
         }
-
         return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
     }
 

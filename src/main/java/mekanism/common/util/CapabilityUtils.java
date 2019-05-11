@@ -10,7 +10,6 @@ public final class CapabilityUtils {
         if (provider == null || cap == null) {
             return false;
         }
-
         return provider.hasCapability(cap, side);
     }
 
@@ -18,7 +17,6 @@ public final class CapabilityUtils {
         if (provider == null || cap == null) {
             return null;
         }
-
         return provider.getCapability(cap, side);
     }
 }

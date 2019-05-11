@@ -55,8 +55,7 @@ public class WailaDataProvider implements IWailaDataProvider {
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-          IWailaConfigHandler config) {
+    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         TileEntity tile = accessor.getTileEntity();
 
         if (tile instanceof TileEntityInductionCell) {
@@ -76,37 +75,32 @@ public class WailaDataProvider implements IWailaDataProvider {
         } else if (tile instanceof TileEntityBoundingBlock) {
             TileEntityBoundingBlock bound = (TileEntityBoundingBlock) tile;
             Coord4D coord = new Coord4D(bound.getPos(), tile.getWorld());
-
             //TODO: Switch to IItemHandler though there is no good way to get the name of an IItemHandler
             if (bound.receivedCoords && coord.getTileEntity(tile.getWorld()) instanceof IInventory) {
                 currenttip.set(0, EnumColor.WHITE + ((IInventory) coord.getTileEntity(tile.getWorld())).getName());
             }
         }
-
         return currenttip;
     }
 
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-          IWailaConfigHandler config) {
+    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         return currenttip;
     }
 
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-          IWailaConfigHandler config) {
+    public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         return currenttip;
     }
 
     @Nonnull
     @Override
     @Method(modid = MekanismHooks.WAILA_MOD_ID)
-    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world,
-          BlockPos pos) {
+    public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
         return tag;
     }
 }

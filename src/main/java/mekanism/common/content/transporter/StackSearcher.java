@@ -16,7 +16,6 @@ public class StackSearcher {
     public StackSearcher(TileEntity tile, EnumFacing direction) {
         tileEntity = tile;
         side = direction;
-
         if (InventoryUtils.isItemHandler(tile, direction.getOpposite())) {
             slotCount = InventoryUtils.getItemHandler(tile, direction.getOpposite()).getSlots();
         }
@@ -26,35 +25,26 @@ public class StackSearcher {
         if (!InventoryUtils.assertItemHandler("StackSearcher", tileEntity, side.getOpposite())) {
             return null;
         }
-
         IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
-
         for (slotCount = slotCount - 1; slotCount >= 0; slotCount--) {
             ItemStack stack = inventory.extractItem(slotCount, amount, true);
-
             if (!stack.isEmpty() && id.modifies(stack)) {
                 return new InvStack(tileEntity, slotCount, stack, side.getOpposite());
             }
         }
-
         return null;
     }
 
     public InvStack takeDefinedItem(ItemStack type, int min, int max) {
         InvStack ret = new InvStack(tileEntity, side.getOpposite());
-
         if (!InventoryUtils.assertItemHandler("StackSearcher", tileEntity, side.getOpposite())) {
             return null;
         }
-
         IItemHandler inventory = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
-
         for (slotCount = slotCount - 1; slotCount >= 0; slotCount--) {
             ItemStack stack = inventory.extractItem(slotCount, max, true);
-
             if (!stack.isEmpty() && StackUtils.equalsWildcardWithNBT(stack, type)) {
                 int current = !ret.getStack().isEmpty() ? ret.getStack().getCount() : 0;
-
                 if (current + stack.getCount() <= max) {
                     ret.appendStack(slotCount, stack.copy());
                 } else {
@@ -62,7 +52,6 @@ public class StackSearcher {
                     copy.setCount(max - current);
                     ret.appendStack(slotCount, copy);
                 }
-
                 if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
                     return ret;
                 }
@@ -72,7 +61,6 @@ public class StackSearcher {
         if (!ret.getStack().isEmpty() && ret.getStack().getCount() >= min) {
             return ret;
         }
-
         return null;
     }
 

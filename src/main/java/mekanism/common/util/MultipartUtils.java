@@ -16,7 +16,6 @@ public final class MultipartUtils {
     public static AxisAlignedBB rotate(AxisAlignedBB aabb, EnumFacing side) {
         Vec3d v1 = rotate(new Vec3d(aabb.minX, aabb.minY, aabb.minZ), side);
         Vec3d v2 = rotate(new Vec3d(aabb.maxX, aabb.maxY, aabb.maxZ), side);
-
         return new AxisAlignedBB(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
     }
 
@@ -35,7 +34,6 @@ public final class MultipartUtils {
             case EAST:
                 return new Vec3d(-vec.y, vec.x, vec.z);
         }
-
         return null;
     }
 
@@ -51,51 +49,40 @@ public final class MultipartUtils {
         float f5 = f2 * f3;
         float f6 = f1 * f3;
         double d3 = 5.0D;
-
         if (player instanceof EntityPlayerMP) {
             d3 = player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
         }
-
         Vec3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
         return Pair.of(start, end);
     }
 
-    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end,
-          Collection<AxisAlignedBB> boxes) {
+    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, Collection<AxisAlignedBB> boxes) {
         double minDistance = Double.POSITIVE_INFINITY;
         AdvancedRayTraceResult hit = null;
         int i = -1;
 
         for (AxisAlignedBB aabb : boxes) {
             AdvancedRayTraceResult result = aabb == null ? null : collisionRayTrace(pos, start, end, aabb, i, null);
-
             if (result != null) {
                 double d = result.squareDistanceTo(start);
-
                 if (d < minDistance) {
                     minDistance = d;
                     hit = result;
                 }
             }
-
             i++;
         }
-
         return hit;
     }
 
-    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB bounds,
-          int subHit, Object hitInfo) {
+    public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB bounds, int subHit, Object hitInfo) {
         RayTraceResult result = bounds.offset(pos).calculateIntercept(start, end);
-
         if (result == null) {
             return null;
         }
-
         result = new RayTraceResult(RayTraceResult.Type.BLOCK, result.hitVec, result.sideHit, pos);
         result.subHit = subHit;
         result.hitInfo = hitInfo;
-
         return new AdvancedRayTraceResult(result, bounds);
     }
 

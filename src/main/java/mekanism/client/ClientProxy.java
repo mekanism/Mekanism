@@ -263,31 +263,24 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void loadConfiguration() {
         super.loadConfiguration();
-
         MekanismConfig.current().client.load(Mekanism.configuration);
-
         if (Mekanism.configuration.hasChanged()) {
             Mekanism.configuration.save();
         }
     }
 
     @Override
-    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos,
-          EnumHand hand) {
-        TileEntityPersonalChest tileEntity = (TileEntityPersonalChest) entityplayer.world.getTileEntity(pos);
-
+    public void openPersonalChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos, EnumHand hand) {
         if (id == 0) {
             if (isBlock) {
-                FMLClientHandler.instance()
-                      .displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, tileEntity));
+                TileEntityPersonalChest tileEntity = (TileEntityPersonalChest) entityplayer.world.getTileEntity(pos);
+                FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, tileEntity));
                 entityplayer.openContainer.windowId = windowId;
             } else {
                 ItemStack stack = entityplayer.getHeldItem(hand);
-
                 if (MachineType.get(stack) == MachineType.PERSONAL_CHEST) {
                     InventoryPersonalChest inventory = new InventoryPersonalChest(stack, hand);
-                    FMLClientHandler.instance()
-                          .displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
+                    FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPersonalChest(entityplayer.inventory, inventory));
                     entityplayer.openContainer.windowId = windowId;
                 }
             }
@@ -296,63 +289,45 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerTESRs() {
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityAdvancedFactory.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedFactory.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBin.class, new RenderBin());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerCasing.class, new RenderThermoelectricBoiler());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBoilerValve.class, new RenderThermoelectricBoiler());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityChemicalCrystallizer.class, new RenderChemicalCrystallizer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalDissolutionChamber.class,
-              new RenderChemicalDissolutionChamber());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalInjectionChamber.class,
-              new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalCrystallizer.class, new RenderChemicalCrystallizer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalDissolutionChamber.class, new RenderChemicalDissolutionChamber());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemicalInjectionChamber.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCombiner.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDigitalMiner.class, new RenderDigitalMiner());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityDiversionTransporter.class, new RenderLogisticalTransporter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDiversionTransporter.class, new RenderLogisticalTransporter());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDynamicTank.class, new RenderDynamicTank());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDynamicValve.class, new RenderDynamicTank());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEliteFactory.class, new RenderConfigurableMachine<>());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityEnergizedSmelter.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergizedSmelter.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyCube.class, new RenderEnergyCube());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityEnrichmentChamber.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnrichmentChamber.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFactory.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidTank.class, RenderFluidTank.INSTANCE);
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityFormulaicAssemblicator.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFormulaicAssemblicator.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasTank.class, new RenderGasTank());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityLogisticalTransporter.class, new RenderLogisticalTransporter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLogisticalTransporter.class, new RenderLogisticalTransporter());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMechanicalPipe.class, new RenderMechanicalPipe());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityMetallurgicInfuser.class, new RenderConfigurableMachine<>());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityOsmiumCompressor.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMetallurgicInfuser.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityOsmiumCompressor.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPRC.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPersonalChest.class, new RenderPersonalChest());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityPrecisionSawmill.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPrecisionSawmill.class, new RenderConfigurableMachine<>());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPressurizedTube.class, new RenderPressurizedTube());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityPurificationChamber.class, new RenderConfigurableMachine<>());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityQuantumEntangloporter.class, new RenderQuantumEntangloporter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPurificationChamber.class, new RenderConfigurableMachine<>());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityQuantumEntangloporter.class, new RenderQuantumEntangloporter());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityResistiveHeater.class, new RenderResistiveHeater());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntityRestrictiveTransporter.class, new RenderLogisticalTransporter());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRestrictiveTransporter.class, new RenderLogisticalTransporter());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySecurityDesk.class, new RenderSecurityDesk());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySeismicVibrator.class, new RenderSeismicVibrator());
-        ClientRegistry
-              .bindTileEntitySpecialRenderer(TileEntitySolarNeutronActivator.class, new RenderSolarNeutronActivator());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySolarNeutronActivator.class, new RenderSolarNeutronActivator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTeleporter.class, new RenderTeleporter());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermalEvaporationController.class,
-              new RenderThermalEvaporationController());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermodynamicConductor.class,
-              new RenderThermodynamicConductor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermalEvaporationController.class, new RenderThermalEvaporationController());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermodynamicConductor.class, new RenderThermodynamicConductor());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityUniversalCable.class, new RenderUniversalCable());
     }
 
@@ -415,8 +390,7 @@ public class ClientProxy extends CommonProxy {
             ModelBakery.registerItemVariants(MekanismItems.WalkieTalkie, ItemWalkieTalkie.getModel(i));
         }
 
-        ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL,
-              ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
+        ModelBakery.registerItemVariants(MekanismItems.CraftingFormula, ItemCraftingFormula.MODEL, ItemCraftingFormula.INVALID_MODEL, ItemCraftingFormula.ENCODED_MODEL);
 
         MekanismItems.Jetpack.setTileEntityItemStackRenderer(new RenderJetpack());
         MekanismItems.ArmoredJetpack.setTileEntityItemStackRenderer(new RenderArmoredJetpack());
@@ -430,7 +404,6 @@ public class ClientProxy extends CommonProxy {
         Item.getItemFromBlock(MekanismBlocks.MachineBlock2).setTileEntityItemStackRenderer(new RenderMachineItem());
         Item.getItemFromBlock(MekanismBlocks.MachineBlock3).setTileEntityItemStackRenderer(new RenderMachineItem());
         Item.getItemFromBlock(MekanismBlocks.BasicBlock2).setTileEntityItemStackRenderer(new RenderBasicBlockItem());
-
     }
 
     private ModelResourceLocation getInventoryMRL(String type) {
@@ -453,45 +426,28 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomStateMapper(MekanismBlocks.CardboardBox, boxMapper);
         ModelLoader.setCustomStateMapper(MekanismBlocks.Transmitter, transmitterMapper);
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0,
-              getInventoryMRL("ObsidianTNT"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0,
-              getInventoryMRL("SaltBlock"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0,
-              new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1,
-              new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0,
-              getInventoryMRL("EnergyCube"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), 0, getInventoryMRL("ObsidianTNT"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SaltBlock), 0, getInventoryMRL("SaltBlock"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 0, new ModelResourceLocation("mekanism:CardboardBox", "storage=false"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.CardboardBox), 1, new ModelResourceLocation("mekanism:CardboardBox", "storage=true"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.EnergyCube), 0, getInventoryMRL("EnergyCube"));
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock), 4,
-              getInventoryMRL("digital_miner"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock), 13,
-              getInventoryMRL("personal_chest"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock), 4, getInventoryMRL("digital_miner"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock), 13, getInventoryMRL("personal_chest"));
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 6,
-              getInventoryMRL("chemical_dissolution_chamber"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 8,
-              getInventoryMRL("chemical_crystallizer"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 9,
-              getInventoryMRL("seismic_vibrator"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 6, getInventoryMRL("chemical_dissolution_chamber"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 8, getInventoryMRL("chemical_crystallizer"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 9, getInventoryMRL("seismic_vibrator"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 11, getInventoryMRL("fluid_tank"));
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), 11,
-              getInventoryMRL("fluid_tank"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 0, getInventoryMRL("quantum_entangloporter"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 1, getInventoryMRL("solar_neutron_activator"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 4, getInventoryMRL("resistive_heater"));
 
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 0,
-              getInventoryMRL("quantum_entangloporter"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 1,
-              getInventoryMRL("solar_neutron_activator"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), 4,
-              getInventoryMRL("resistive_heater"));
-
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), 9,
-              getInventoryMRL("security_desk"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), 9, getInventoryMRL("security_desk"));
 
         for (int i = 0; i < EnumColor.DYES.length; i++) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPanel), i,
-                  getInventoryMRL("glowpanel"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPanel), i, getInventoryMRL("glowpanel"));
         }
 
         for (MachineType type : MachineType.values()) {
@@ -503,8 +459,7 @@ public class ClientProxy extends CommonProxy {
             String resource = "mekanism:" + type.getName();
             RecipeType recipePointer = null;
 
-            if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
-                  || type == MachineType.ELITE_FACTORY) {
+            if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
                 recipePointer = RecipeType.values()[0];
                 resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
             }
@@ -512,38 +467,30 @@ public class ClientProxy extends CommonProxy {
             while (true) {
                 if (machineResources.get(resource) == null) {
                     List<String> entries = new ArrayList<>();
-
                     if (type.hasActiveTexture()) {
                         entries.add("active=false");
                     }
-
                     if (type.hasRotations()) {
                         entries.add("facing=north");
                     }
 
                     String properties = getProperties(entries);
-
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
-
                     machineResources.put(resource, model);
                     modelsToAdd.add(model);
 
-                    if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
-                          || type == MachineType.ELITE_FACTORY) {
+                    if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
                         if (recipePointer.ordinal() < RecipeType.values().length - 1) {
                             recipePointer = RecipeType.values()[recipePointer.ordinal() + 1];
                             resource = "mekanism:" + type.getName() + "_" + recipePointer.getName();
-
                             continue;
                         }
                     }
                 }
-
                 break;
             }
 
-            ModelLoader.registerItemVariants(Item.getItemFromBlock(type.typeBlock.getBlock()),
-                  modelsToAdd.toArray(new ModelResourceLocation[]{}));
+            ModelLoader.registerItemVariants(Item.getItemFromBlock(type.typeBlock.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[]{}));
         }
 
         for (BasicBlockType type : BasicBlockType.values()) {
@@ -559,41 +506,32 @@ public class ClientProxy extends CommonProxy {
             while (true) {
                 if (basicResources.get(resource) == null) {
                     List<String> entries = new ArrayList<>();
-
                     if (type.hasActiveTexture()) {
                         entries.add("active=false");
                     }
-
                     if (type.hasRotations() || type == BasicBlockType.THERMAL_EVAPORATION_CONTROLLER) {
                         entries.add("facing=north");
                     }
 
                     //TODO: Is this check against bin's needed
                     String properties = type == BasicBlockType.BIN ? "inventory" : getProperties(entries);
-
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
-
                     basicResources.put(resource, model);
                     modelsToAdd.add(model);
 
                     if (type.tiers) {
                         if (tierPointer.ordinal() < BaseTier.values().length - 1) {
                             tierPointer = BaseTier.values()[tierPointer.ordinal() + 1];
-
                             if (type == BasicBlockType.BIN || tierPointer.isObtainable()) {
                                 resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-
                                 continue;
                             }
                         }
                     }
                 }
-
                 break;
             }
-
-            ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()),
-                  modelsToAdd.toArray(new ModelResourceLocation[]{}));
+            ModelLoader.registerItemVariants(Item.getItemFromBlock(type.blockType.getBlock()), modelsToAdd.toArray(new ModelResourceLocation[]{}));
         }
 
         for (TransmitterType type : TransmitterType.values()) {
@@ -610,76 +548,55 @@ public class ClientProxy extends CommonProxy {
                 if (transmitterResources.get(resource) == null) {
                     String properties = "inventory";
                     ModelResourceLocation model = new ModelResourceLocation(resource, properties);
-
                     transmitterResources.put(resource, model);
                     modelsToAdd.add(model);
-
                     if (type.hasTiers()) {
                         if (tierPointer.ordinal() < BaseTier.values().length - 1) {
                             tierPointer = BaseTier.values()[tierPointer.ordinal() + 1];
-
                             if (tierPointer.isObtainable()) {
                                 resource = "mekanism:" + type.getName() + "_" + tierPointer.getName();
-
                                 continue;
                             }
                         }
                     }
                 }
-
                 break;
             }
 
-            ModelLoader.registerItemVariants(Item.getItemFromBlock(MekanismBlocks.Transmitter),
-                  modelsToAdd.toArray(new ModelResourceLocation[]{}));
+            ModelLoader.registerItemVariants(Item.getItemFromBlock(MekanismBlocks.Transmitter), modelsToAdd.toArray(new ModelResourceLocation[]{}));
         }
 
         for (EnumColor color : EnumColor.DYES) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticBlock),
-                  color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=plastic"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SlickPlasticBlock),
-                  color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=slick"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPlasticBlock),
-                  color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=glow"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ReinforcedPlasticBlock),
-                  color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=reinforced"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.RoadPlasticBlock),
-                  color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=road"));
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticFence),
-                  color.getMetaValue(), getInventoryMRL("PlasticFence"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=plastic"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.SlickPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=slick"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.GlowPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=glow"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.ReinforcedPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=reinforced"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.RoadPlasticBlock), color.getMetaValue(), new ModelResourceLocation("mekanism:plastic_block", "type=road"));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.PlasticFence), color.getMetaValue(), getInventoryMRL("PlasticFence"));
         }
 
         for (EnumOreType ore : EnumOreType.values()) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(),
-                  new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MekanismBlocks.OreBlock), ore.ordinal(), new ModelResourceLocation("mekanism:OreBlock", "type=" + ore.getName()));
         }
 
-        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), stack ->
-        {
+        ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.GasTank), stack -> {
             GasTankTier tier = GasTankTier.values()[((ItemBlockGasTank) stack.getItem()).getBaseTier(stack).ordinal()];
             ResourceLocation baseLocation = new ResourceLocation("mekanism", "GasTank");
-
             return new ModelResourceLocation(baseLocation, "facing=north,tier=" + tier);
         });
 
-        ItemMeshDefinition machineMesher = stack ->
-        {
+        ItemMeshDefinition machineMesher = stack -> {
             MachineType type = MachineType.get(stack);
-
             if (type != null) {
                 String resource = "mekanism:" + type.getName();
-
-                if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY
-                      || type == MachineType.ELITE_FACTORY) {
+                if (type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY) {
                     RecipeType recipe = ((ItemBlockMachine) stack.getItem()).getRecipeTypeOrNull(stack);
                     if (recipe != null) {
                         resource = "mekanism:" + type.getName() + "_" + recipe.getName();
                     }
                 }
-
                 return machineResources.get(resource);
             }
-
             return null;
         };
 
@@ -687,75 +604,58 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), machineMesher);
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), machineMesher);
 
-        ItemMeshDefinition basicMesher = stack ->
-        {
+        ItemMeshDefinition basicMesher = stack -> {
             BasicBlockType type = BasicBlockType.get(stack);
-
             if (type != null) {
                 String resource = "mekanism:" + type.getName();
-
                 if (type.tiers) {
                     BaseTier tier = ((ItemBlockBasic) stack.getItem()).getBaseTier(stack);
                     resource = "mekanism:" + type.getName() + "_" + tier.getName();
                 }
-
                 return basicResources.get(resource);
             }
-
             return null;
         };
 
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock), basicMesher);
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.BasicBlock2), basicMesher);
 
-        ItemMeshDefinition transmitterMesher = stack ->
-        {
+        ItemMeshDefinition transmitterMesher = stack -> {
             TransmitterType type = TransmitterType.get(stack.getItemDamage());
 
             if (type != null) {
                 String resource = "mekanism:" + type.getName();
-
                 if (type.hasTiers()) {
                     BaseTier tier = ((ItemBlockTransmitter) stack.getItem()).getBaseTier(stack);
                     resource = "mekanism:" + type.getName() + "_" + tier.getName();
                 }
-
                 return transmitterResources.get(resource);
             }
-
             return null;
         };
 
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(MekanismBlocks.Transmitter), transmitterMesher);
 
         //Walkie Talkie dynamic texture
-        ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, stack ->
-        {
+        ModelLoader.setCustomMeshDefinition(MekanismItems.WalkieTalkie, stack -> {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemWalkieTalkie) {
                 ItemWalkieTalkie item = (ItemWalkieTalkie) stack.getItem();
-
                 if (item.getOn(stack)) {
                     return ItemWalkieTalkie.CHANNEL_MODELS.get(item.getChannel(stack));
                 }
             }
-
             return ItemWalkieTalkie.OFF_MODEL;
         });
 
         //Crafting Formula dynamic texture
-        ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, stack ->
-        {
+        ModelLoader.setCustomMeshDefinition(MekanismItems.CraftingFormula, stack -> {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
                 ItemCraftingFormula item = (ItemCraftingFormula) stack.getItem();
-
                 if (item.getInventory(stack) == null) {
                     return ItemCraftingFormula.MODEL;
-                } else {
-                    return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL
-                          : ItemCraftingFormula.ENCODED_MODEL;
                 }
+                return item.isInvalid(stack) ? ItemCraftingFormula.INVALID_MODEL : ItemCraftingFormula.ENCODED_MODEL;
             }
-
             return ItemCraftingFormula.MODEL;
         });
 
@@ -812,11 +712,9 @@ public class ClientProxy extends CommonProxy {
                 return new GuiTeleporter(player.inventory, (TileEntityTeleporter) tileEntity);
             case 14:
                 ItemStack itemStack = player.getHeldItem(EnumHand.values()[pos.getX()]);
-
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemPortableTeleporter) {
                     return new GuiTeleporter(player, EnumHand.values()[pos.getX()], itemStack);
                 }
-
                 return null;
             case 15:
                 return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
@@ -829,72 +727,57 @@ public class ClientProxy extends CommonProxy {
             //EMPTY 19, 20
             case 21:
                 EntityRobit robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new GuiRobitMain(player.inventory, robit);
                 }
-
                 return null;
             case 22:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new GuiRobitCrafting(player.inventory, robit);
                 }
-
                 return null;
             case 23:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new GuiRobitInventory(player.inventory, robit);
                 }
-
                 return null;
             case 24:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new GuiRobitSmelting(player.inventory, robit);
                 }
-
                 return null;
             case 25:
                 robit = (EntityRobit) world.getEntityByID(pos.getX());
-
                 if (robit != null) {
                     return new GuiRobitRepair(player.inventory, robit);
                 }
-
                 return null;
             case 29:
                 return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer) tileEntity);
             case 30:
                 return new GuiChemicalInfuser(player.inventory, (TileEntityChemicalInfuser) tileEntity);
             case 31:
-                return new GuiChemicalInjectionChamber(player.inventory,
-                      (TileEntityAdvancedElectricMachine) tileEntity);
+                return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine) tileEntity);
             case 32:
                 return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator) tileEntity);
             case 33:
-                return new GuiThermalEvaporationController(player.inventory,
-                      (TileEntityThermalEvaporationController) tileEntity);
+                return new GuiThermalEvaporationController(player.inventory, (TileEntityThermalEvaporationController) tileEntity);
             case 34:
                 return new GuiPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill) tileEntity);
             case 35:
-                return new GuiChemicalDissolutionChamber(player.inventory,
-                      (TileEntityChemicalDissolutionChamber) tileEntity);
+                return new GuiChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber) tileEntity);
             case 36:
                 return new GuiChemicalWasher(player.inventory, (TileEntityChemicalWasher) tileEntity);
             case 37:
                 return new GuiChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer) tileEntity);
             case 38:
                 ItemStack itemStack1 = player.getHeldItem(EnumHand.values()[pos.getX()]);
-
                 if (!itemStack1.isEmpty() && itemStack1.getItem() instanceof ItemSeismicReader) {
                     return new GuiSeismicReader(world, new Coord4D(player), itemStack1.copy());
                 }
-
                 return null;
             case 39:
                 return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator) tileEntity);
@@ -939,7 +822,6 @@ public class ClientProxy extends CommonProxy {
             case 59:
                 return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter) tileEntity);
         }
-
         return null;
     }
 
@@ -949,12 +831,10 @@ public class ClientProxy extends CommonProxy {
 
         if (screen instanceof GuiTeleporter && !((GuiTeleporter) screen).isStackEmpty()) {
             GuiTeleporter teleporter = (GuiTeleporter) screen;
-
             teleporter.setStatus(message.status);
             teleporter.setFrequency(message.frequency);
             teleporter.setPublicCache(message.publicCache);
             teleporter.setPrivateCache(message.privateCache);
-
             teleporter.updateButtons();
         }
     }
@@ -973,15 +853,13 @@ public class ClientProxy extends CommonProxy {
             if (MekanismConfig.current().client.enableMultiblockFormationParticles.val()) {
                 anim.run();
             } else {
-                player.sendStatusMessage(
-                      new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
+                player.sendStatusMessage(new TextComponentGroup(TextFormatting.BLUE).translation("chat.mek.multiblockformed"), true);
             }
         }
     }
 
     @Override
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height,
-          INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
         doSparkle(tileEntity, new SparkleAnimation(tileEntity, renderLoc, length, width, height, checker));
     }
 
@@ -990,61 +868,40 @@ public class ClientProxy extends CommonProxy {
         doSparkle(tileEntity, new SparkleAnimation(tileEntity, corner1, corner2, checker));
     }
 
-
     @Override
     public void init() {
         super.init();
 
-        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) ->
-        {
+        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
             BlockMachine machine = (BlockMachine) state.getBlock();
-
             if (state.getValue(machine.getMachineBlock().getProperty()) == MachineType.FLUID_TANK) {
                 EnumColor color = state.getValue(BlockStateMachine.tierProperty).getColor();
-
-                return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (
-                      color.getColor(2) * 255);
+                return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
             }
-
             return -1;
         }, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
-        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) ->
-              {
+        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, worldIn, pos, tintIndex) -> {
                   EnumDyeColor color = state.getValue(colorProperty);
                   EnumColor dye = EnumColor.DYES[color.getDyeDamage()];
-
-                  return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2)
-                        * 255);
-              }, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock,
-              MekanismBlocks.ReinforcedPlasticBlock,
+                  return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
+              }, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock,
               MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
-        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) ->
-        {
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             if (MachineType.get(stack) == MachineType.FLUID_TANK) {
                 EnumColor color = ((ItemBlockMachine) stack.getItem()).getBaseTier(stack).getColor();
-
-                return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (
-                      color.getColor(2) * 255);
+                return (int) (color.getColor(0) * 255) << 16 | (int) (color.getColor(1) * 255) << 8 | (int) (color.getColor(2) * 255);
             }
-
             return -1;
         }, MekanismBlocks.MachineBlock, MekanismBlocks.MachineBlock2, MekanismBlocks.MachineBlock3);
-        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) ->
-              {
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
                   EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getItemDamage() & 15);
                   EnumColor dye = EnumColor.DYES[dyeColor.getDyeDamage()];
-
-                  return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2)
-                        * 255);
-              }, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock,
-              MekanismBlocks.ReinforcedPlasticBlock,
+                  return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
+              }, MekanismBlocks.PlasticBlock, MekanismBlocks.GlowPlasticBlock, MekanismBlocks.RoadPlasticBlock, MekanismBlocks.ReinforcedPlasticBlock,
               MekanismBlocks.SlickPlasticBlock, MekanismBlocks.PlasticFence);
-        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) ->
-        {
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler((stack, tintIndex) -> {
             EnumColor dye = EnumColor.DYES[stack.getItemDamage()];
-
-            return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2)
-                  * 255);
+            return (int) (dye.getColor(0) * 255) << 16 | (int) (dye.getColor(1) * 255) << 8 | (int) (dye.getColor(2) * 255);
         }, MekanismItems.Balloon);
 
         MinecraftForge.EVENT_BUS.register(new ClientConnectionHandler());
@@ -1073,32 +930,25 @@ public class ClientProxy extends CommonProxy {
         modelRegistry.putObject(ERL, RenderEnergyCubeItem.model = new ItemLayerWrapper(modelRegistry.getObject(ERL)));
 
         ModelResourceLocation JetpackRL = getInventoryMRL("Jetpack");
-        modelRegistry
-              .putObject(JetpackRL, RenderJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(JetpackRL)));
+        modelRegistry.putObject(JetpackRL, RenderJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(JetpackRL)));
 
         ModelResourceLocation ArmorJetpackRL = getInventoryMRL("ArmoredJetpack");
-        modelRegistry.putObject(ArmorJetpackRL,
-              RenderArmoredJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(ArmorJetpackRL)));
+        modelRegistry.putObject(ArmorJetpackRL, RenderArmoredJetpack.model = new ItemLayerWrapper(modelRegistry.getObject(ArmorJetpackRL)));
 
         ModelResourceLocation GasMaskRL = getInventoryMRL("GasMask");
-        modelRegistry
-              .putObject(GasMaskRL, RenderGasMask.model = new ItemLayerWrapper(modelRegistry.getObject(GasMaskRL)));
+        modelRegistry.putObject(GasMaskRL, RenderGasMask.model = new ItemLayerWrapper(modelRegistry.getObject(GasMaskRL)));
 
         ModelResourceLocation ScubaTankRL = getInventoryMRL("ScubaTank");
-        modelRegistry.putObject(ScubaTankRL,
-              RenderScubaTank.model = new ItemLayerWrapper(modelRegistry.getObject(ScubaTankRL)));
+        modelRegistry.putObject(ScubaTankRL, RenderScubaTank.model = new ItemLayerWrapper(modelRegistry.getObject(ScubaTankRL)));
 
         ModelResourceLocation FreeRunnerRL = getInventoryMRL("FreeRunners");
-        modelRegistry.putObject(FreeRunnerRL,
-              RenderFreeRunners.model = new ItemLayerWrapper(modelRegistry.getObject(FreeRunnerRL)));
+        modelRegistry.putObject(FreeRunnerRL, RenderFreeRunners.model = new ItemLayerWrapper(modelRegistry.getObject(FreeRunnerRL)));
 
         ModelResourceLocation AtomicDisassemblerRL = getInventoryMRL("AtomicDisassembler");
-        modelRegistry.putObject(AtomicDisassemblerRL,
-              RenderAtomicDisassembler.model = new ItemLayerWrapper(modelRegistry.getObject(AtomicDisassemblerRL)));
+        modelRegistry.putObject(AtomicDisassemblerRL, RenderAtomicDisassembler.model = new ItemLayerWrapper(modelRegistry.getObject(AtomicDisassemblerRL)));
 
         ModelResourceLocation FlamethrowerRL = getInventoryMRL("Flamethrower");
-        modelRegistry.putObject(FlamethrowerRL,
-              RenderFlameThrower.model = new ItemLayerWrapper(modelRegistry.getObject(FlamethrowerRL)));
+        modelRegistry.putObject(FlamethrowerRL, RenderFlameThrower.model = new ItemLayerWrapper(modelRegistry.getObject(FlamethrowerRL)));
 
         machineModelBake(modelRegistry, "digital_miner", MachineType.DIGITAL_MINER);
         machineModelBake(modelRegistry, "solar_neutron_activator", MachineType.SOLAR_NEUTRON_ACTIVATOR);
@@ -1115,16 +965,14 @@ public class ClientProxy extends CommonProxy {
         basicBlockModelBake(modelRegistry, "security_desk", BasicBlockType.SECURITY_DESK);
     }
 
-    private void machineModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type,
-          MachineType machineType) {
+    private void machineModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, MachineType machineType) {
         ModelResourceLocation modelResourceLocation = getInventoryMRL(type);
         ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
         RenderMachineItem.modelMap.put(machineType, itemLayerWrapper);
         modelRegistry.putObject(modelResourceLocation, itemLayerWrapper);
     }
 
-    private void basicBlockModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type,
-          BasicBlockType basicType) {
+    private void basicBlockModelBake(IRegistry<ModelResourceLocation, IBakedModel> modelRegistry, String type, BasicBlockType basicType) {
         ModelResourceLocation modelResourceLocation = getInventoryMRL(type);
         ItemLayerWrapper itemLayerWrapper = new ItemLayerWrapper(modelRegistry.getObject(modelResourceLocation));
         RenderBasicBlockItem.modelMap.put(basicType, itemLayerWrapper);
@@ -1155,13 +1003,10 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public boolean isPaused() {
-        if (FMLClientHandler.instance().getClient().isSingleplayer() && !FMLClientHandler.instance().getClient()
-              .getIntegratedServer().getPublic()) {
+        if (FMLClientHandler.instance().getClient().isSingleplayer() && !FMLClientHandler.instance().getClient().getIntegratedServer().getPublic()) {
             GuiScreen screen = FMLClientHandler.instance().getClient().currentScreen;
-
             return screen != null && screen.doesGuiPauseGame();
         }
-
         return false;
     }
 
@@ -1174,9 +1019,8 @@ public class ClientProxy extends CommonProxy {
     public EntityPlayer getPlayer(MessageContext context) {
         if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
             return context.getServerHandler().player;
-        } else {
-            return Minecraft.getMinecraft().player;
         }
+        return Minecraft.getMinecraft().player;
     }
 
     @Override
@@ -1192,8 +1036,7 @@ public class ClientProxy extends CommonProxy {
                 if (server != null) {
                     server.addScheduledTask(runnable);
                 } else {
-                    Mekanism.logger.error(
-                          "Packet handler wanted to set a scheduled task, but we couldn't find a way to set one.");
+                    Mekanism.logger.error("Packet handler wanted to set a scheduled task, but we couldn't find a way to set one.");
                     Mekanism.logger.error("Player = {}, World = {}", player, player.world);
                 }
             }

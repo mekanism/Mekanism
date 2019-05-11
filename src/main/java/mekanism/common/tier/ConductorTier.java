@@ -30,7 +30,6 @@ public enum ConductorTier implements ITier {
                 return transmitter;
             }
         }
-
         return BASIC;
     }
 

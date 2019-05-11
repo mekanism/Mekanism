@@ -10,5 +10,4 @@ import javax.annotation.meta.TypeQualifierDefault;
 @TypeQualifierDefault(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FieldsAreNonnullByDefault {
-
 }

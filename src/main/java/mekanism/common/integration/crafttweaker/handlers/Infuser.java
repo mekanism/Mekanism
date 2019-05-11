@@ -45,8 +45,7 @@ public class Infuser {
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
                 recipes.add(new MetallurgicInfuserRecipe(new InfusionInput(type, infuseAmount, stack), output));
             }
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, recipes));
         }
     }
 
@@ -54,9 +53,8 @@ public class Infuser {
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
           @Optional String infuseType) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
-                        new IngredientWrapper(itemInput, infuseType)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.METALLURGIC_INFUSER, new IngredientWrapper(itemOutput),
+                  new IngredientWrapper(itemInput, infuseType)));
         }
     }
 

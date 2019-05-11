@@ -39,8 +39,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityContainerBlock
                 renderRemaining = scale;
                 scale = 0;
             }
-            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start,
-                  fluidTexture, 16, 16 - (16 - renderRemaining));
+            drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
             start += 16;
             if (renderRemaining == 0 || scale == 0) {
                 break;

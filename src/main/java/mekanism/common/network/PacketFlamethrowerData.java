@@ -20,22 +20,20 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
         // Queue up the processing on the central thread
         EntityPlayer player = PacketHandler.getPlayer(context);
         PacketHandler.handlePacket(() -> {
-                  if (message.packetType == FlamethrowerPacket.UPDATE) {
-                      Mekanism.playerState.setFlamethrowerState(message.uuid, message.value, false);
-
-                      // If we got this packet on the server, resend out to all clients in same dimension
-                      // TODO: Why is this a dimensional thing?!
-                      if (!player.world.isRemote) {
-                          Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
-                      }
-                  } else if (message.packetType == FlamethrowerPacket.MODE) {
-                      ItemStack stack = player.getHeldItem(message.currentHand);
-                      if (!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower) {
-                          ((ItemFlamethrower) stack.getItem()).incrementMode(stack);
-                      }
-                  }
-              },
-              player);
+            if (message.packetType == FlamethrowerPacket.UPDATE) {
+                Mekanism.playerState.setFlamethrowerState(message.uuid, message.value, false);
+                // If we got this packet on the server, resend out to all clients in same dimension
+                // TODO: Why is this a dimensional thing?!
+                if (!player.world.isRemote) {
+                    Mekanism.packetHandler.sendToDimension(message, player.world.provider.getDimension());
+                }
+            } else if (message.packetType == FlamethrowerPacket.MODE) {
+                ItemStack stack = player.getHeldItem(message.currentHand);
+                if (!stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower) {
+                    ((ItemFlamethrower) stack.getItem()).incrementMode(stack);
+                }
+            }
+        }, player);
         return null;
     }
 
@@ -57,7 +55,6 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
 
         public FlamethrowerDataMessage(FlamethrowerPacket type, EnumHand hand, UUID uuid, boolean state) {
             packetType = type;
-
             if (type == FlamethrowerPacket.UPDATE) {
                 this.uuid = uuid;
                 value = state;
@@ -69,7 +66,6 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
         @Override
         public void toBytes(ByteBuf dataStream) {
             dataStream.writeInt(packetType.ordinal());
-
             if (packetType == FlamethrowerPacket.UPDATE) {
                 PacketHandler.writeUUID(dataStream, uuid);
                 dataStream.writeBoolean(value);
@@ -81,7 +77,6 @@ public class PacketFlamethrowerData implements IMessageHandler<FlamethrowerDataM
         @Override
         public void fromBytes(ByteBuf dataStream) {
             packetType = FlamethrowerPacket.values()[dataStream.readInt()];
-
             if (packetType == FlamethrowerPacket.UPDATE) {
                 uuid = PacketHandler.readUUID(dataStream);
                 value = dataStream.readBoolean();

@@ -9,9 +9,7 @@ import net.minecraft.util.NonNullList;
 
 public class ItemIngot extends ItemMekanism implements IMetaItem {
 
-    public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze",
-          "Glowstone", "Steel", "Copper",
-          "Tin"};
+    public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", "Glowstone", "Steel", "Copper", "Tin"};
 
     public ItemIngot() {
         super();
@@ -30,11 +28,10 @@ public class ItemIngot extends ItemMekanism implements IMetaItem {
 
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
-        if (!isInCreativeTab(tabs)) {
-            return;
-        }
-        for (int counter = 0; counter < en_USNames.length; counter++) {
-            itemList.add(new ItemStack(this, 1, counter));
+        if (isInCreativeTab(tabs)) {
+            for (int counter = 0; counter < en_USNames.length; counter++) {
+                itemList.add(new ItemStack(this, 1, counter));
+            }
         }
     }
 

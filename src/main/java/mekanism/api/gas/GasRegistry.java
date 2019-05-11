@@ -22,6 +22,7 @@ public class GasRegistry {
      * Register a new gas into GasRegistry. Call this BEFORE post-init.
      *
      * @param gas - Gas to register
+     *
      * @return the gas that has been registered, pulled right out of GasRegistry
      */
     public static Gas register(Gas gas) {
@@ -37,9 +38,7 @@ public class GasRegistry {
                 }
             }
         }
-
         registeredGasses.add(gas);
-
         return getGas(gas.getName());
     }
 
@@ -47,6 +46,7 @@ public class GasRegistry {
      * Gets the gas associated with the defined ID.
      *
      * @param id - ID to check
+     *
      * @return gas associated with defined ID
      */
     public static Gas getGas(int id) {
@@ -61,6 +61,7 @@ public class GasRegistry {
      * Gets the gas associated with the defined fluid.
      *
      * @param f - fluid to check
+     *
      * @return the gas associated with the fluid
      */
     public static Gas getGas(Fluid f) {
@@ -77,6 +78,7 @@ public class GasRegistry {
      * Whether or not GasRegistry contains a gas with the specified name
      *
      * @param name - name to check
+     *
      * @return if GasRegistry contains a gas with the defined name
      */
     public static boolean containsGas(String name) {
@@ -96,15 +98,16 @@ public class GasRegistry {
      * Gets the gas associated with the specified name.
      *
      * @param name - name of the gas to get
+     *
      * @return gas associated with the name
      */
     public static Gas getGas(String name) {
+        name = name.toLowerCase(Locale.ROOT);
         for (Gas gas : registeredGasses) {
-            if (gas.getName().toLowerCase(Locale.ROOT).equals(name.toLowerCase(Locale.ROOT))) {
+            if (gas.getName().toLowerCase(Locale.ROOT).equals(name)) {
                 return gas;
             }
         }
-
         return null;
     }
 
@@ -112,13 +115,13 @@ public class GasRegistry {
      * Gets the gas ID of a specified gas.
      *
      * @param gas - gas to get the ID from
+     *
      * @return gas ID
      */
     public static int getGasID(Gas gas) {
         if (gas == null || !containsGas(gas.getName())) {
             return -1;
         }
-
         return registeredGasses.indexOf(gas);
     }
 

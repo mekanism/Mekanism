@@ -39,8 +39,7 @@ public class Compressor {
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
                 recipes.add(new OsmiumCompressorRecipe(stack, output));
             }
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, recipes));
         }
     }
 
@@ -53,8 +52,7 @@ public class Compressor {
             for (ItemStack stack : CraftTweakerMC.getIngredient(ingredientInput).getMatchingStacks()) {
                 recipes.add(new OsmiumCompressorRecipe(new AdvancedMachineInput(stack, gas), output));
             }
-            CrafttweakerIntegration.LATE_ADDITIONS
-                  .add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, recipes));
+            CrafttweakerIntegration.LATE_ADDITIONS.add(new AddMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, recipes));
         }
     }
 
@@ -62,9 +60,8 @@ public class Compressor {
     public static void removeRecipe(IIngredient itemOutput, @Optional IIngredient itemInput,
           @Optional IIngredient gasInput) {
         if (IngredientHelper.checkNotNull(NAME, itemOutput)) {
-            CrafttweakerIntegration.LATE_REMOVALS
-                  .add(new RemoveMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, new IngredientWrapper(itemOutput),
-                        new IngredientWrapper(itemInput, gasInput)));
+            CrafttweakerIntegration.LATE_REMOVALS.add(new RemoveMekanismRecipe<>(NAME, Recipe.OSMIUM_COMPRESSOR, new IngredientWrapper(itemOutput),
+                  new IngredientWrapper(itemInput, gasInput)));
         }
     }
 

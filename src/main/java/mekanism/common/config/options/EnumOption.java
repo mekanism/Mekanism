@@ -43,10 +43,8 @@ public class EnumOption<T extends Enum<T>> extends Option<EnumOption<T>> {
     @Override
     public void load(Configuration config) {
         final Property prop = config.get(this.category, this.key, this.defaultValue.name(), this.comment);
-
         prop.setRequiresMcRestart(this.requiresGameRestart);
         prop.setRequiresWorldRestart(this.requiresWorldRestart);
-
         this.value = Enum.valueOf(this.enumClass, prop.getString());
     }
 

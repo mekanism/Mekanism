@@ -51,10 +51,6 @@ public enum TransmissionType {
     }
 
     public boolean checkTransmissionType(TileEntity sideTile, TileEntity currentTile) {
-        if (sideTile instanceof ITransmitter) {
-            return ((ITransmitter) sideTile).getTransmissionType() == this;
-        }
-
-        return false;
+        return sideTile instanceof ITransmitter && ((ITransmitter) sideTile).getTransmissionType() == this;
     }
 }

@@ -5,8 +5,7 @@ import mekanism.common.recipe.outputs.ItemStackOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
-public abstract class BasicMachineRecipe<RECIPE extends BasicMachineRecipe<RECIPE>> extends
-      MachineRecipe<ItemStackInput, ItemStackOutput, RECIPE> {
+public abstract class BasicMachineRecipe<RECIPE extends BasicMachineRecipe<RECIPE>> extends MachineRecipe<ItemStackInput, ItemStackOutput, RECIPE> {
 
     public BasicMachineRecipe(ItemStackInput input, ItemStackOutput output) {
         super(input, output);

@@ -25,7 +25,6 @@ public class RenderBasicBlockItem extends SubTypeItemRenderer<BasicBlockType> {
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         BasicBlockType basicType = BasicBlockType.get(stack);
-
         if (basicType != null) {
             if (basicType == BasicBlockType.BIN) {
                 RenderBinItem.renderStack(stack, transformType);
@@ -37,7 +36,6 @@ public class RenderBasicBlockItem extends SubTypeItemRenderer<BasicBlockType> {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-
     }
 
     @Nullable

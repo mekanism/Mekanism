@@ -14,10 +14,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelResistiveHeater extends ModelBase {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils
-          .getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOn.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils
-          .getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOff.png");
+    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOn.png");
+    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "ResistiveHeater_OverlayOff.png");
 
     ModelRenderer wallLeft;
     ModelRenderer base;

@@ -2,9 +2,9 @@ package mekanism.common.item;
 
 import java.util.Locale;
 import javax.annotation.Nonnull;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.base.IMetaItem;
 import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.prefab.TileEntityBasicBlock;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,32 +27,25 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
 
     @Nonnull
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX,
-          float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         if (world.isRemote) {
             return EnumActionResult.PASS;
         }
-
         TileEntity tile = world.getTileEntity(pos);
         ItemStack stack = player.getHeldItem(hand);
         BaseTier tier = BaseTier.values()[stack.getItemDamage()];
-
         if (tile instanceof ITierUpgradeable) {
             if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).playersUsing.size() > 0) {
                 return EnumActionResult.FAIL;
             }
-
             if (((ITierUpgradeable) tile).upgrade(tier)) {
                 if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
                 }
-
                 return EnumActionResult.SUCCESS;
             }
-
             return EnumActionResult.PASS;
         }
-
         return EnumActionResult.PASS;
     }
 
@@ -68,12 +61,11 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
 
     @Override
     public void getSubItems(@Nonnull CreativeTabs tabs, @Nonnull NonNullList<ItemStack> itemList) {
-        if (!isInCreativeTab(tabs)) {
-            return;
-        }
-        for (BaseTier tier : BaseTier.values()) {
-            if (tier.isObtainable()) {
-                itemList.add(new ItemStack(this, 1, tier.ordinal()));
+        if (isInCreativeTab(tabs)) {
+            for (BaseTier tier : BaseTier.values()) {
+                if (tier.isObtainable()) {
+                    itemList.add(new ItemStack(this, 1, tier.ordinal()));
+                }
             }
         }
     }
@@ -81,7 +73,6 @@ public class ItemTierInstaller extends ItemMekanism implements IMetaItem {
     @Nonnull
     @Override
     public String getTranslationKey(ItemStack item) {
-        return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase(Locale.ROOT)
-              + "TierInstaller";
+        return "item." + BaseTier.values()[item.getItemDamage()].getSimpleName().toLowerCase(Locale.ROOT) + "TierInstaller";
     }
 }

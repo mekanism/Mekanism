@@ -44,10 +44,8 @@ public class BlockStateReactor extends ExtendedBlockState {
 
         public PropertyEnum<ReactorBlockType> getProperty() {
             if (predicatedProperty == null) {
-                predicatedProperty = PropertyEnum
-                      .create("type", ReactorBlockType.class, new ReactorBlockPredicate(this));
+                predicatedProperty = PropertyEnum.create("type", ReactorBlockType.class, new ReactorBlockPredicate(this));
             }
-
             return predicatedProperty;
         }
 
@@ -64,15 +62,12 @@ public class BlockStateReactor extends ExtendedBlockState {
     }
 
     public enum ReactorBlockType implements IStringSerializable {
-        REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController.class,
-              true),
+        REACTOR_CONTROLLER(ReactorBlock.REACTOR_BLOCK, 0, "ReactorController", 10, TileEntityReactorController.class, true),
         REACTOR_FRAME(ReactorBlock.REACTOR_BLOCK, 1, "ReactorFrame", -1, TileEntityReactorFrame.class, false),
         REACTOR_PORT(ReactorBlock.REACTOR_BLOCK, 2, "ReactorPort", -1, TileEntityReactorPort.class, true),
-        REACTOR_LOGIC_ADAPTER(ReactorBlock.REACTOR_BLOCK, 3, "ReactorLogicAdapter", 15,
-              TileEntityReactorLogicAdapter.class, false),
+        REACTOR_LOGIC_ADAPTER(ReactorBlock.REACTOR_BLOCK, 3, "ReactorLogicAdapter", 15, TileEntityReactorLogicAdapter.class, false),
         REACTOR_GLASS(ReactorBlock.REACTOR_GLASS, 0, "ReactorGlass", -1, TileEntityReactorGlass.class, false),
-        LASER_FOCUS_MATRIX(ReactorBlock.REACTOR_GLASS, 1, "ReactorLaserFocusMatrix", -1,
-              TileEntityReactorLaserFocusMatrix.class, false);
+        LASER_FOCUS_MATRIX(ReactorBlock.REACTOR_GLASS, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class, false);
 
         public ReactorBlock blockType;
         public int meta;
@@ -81,8 +76,7 @@ public class BlockStateReactor extends ExtendedBlockState {
         public Class<? extends TileEntity> tileEntityClass;
         public boolean activable;
 
-        ReactorBlockType(ReactorBlock b, int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass,
-              boolean activeState) {
+        ReactorBlockType(ReactorBlock b, int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass, boolean activeState) {
             blockType = b;
             meta = i;
             name = s;
@@ -95,7 +89,6 @@ public class BlockStateReactor extends ExtendedBlockState {
             if (block instanceof BlockReactor) {
                 return get(((BlockReactor) block).getReactorBlock(), meta);
             }
-
             return null;
         }
 
@@ -105,7 +98,6 @@ public class BlockStateReactor extends ExtendedBlockState {
                     return type;
                 }
             }
-
             return null;
         }
 
@@ -117,8 +109,7 @@ public class BlockStateReactor extends ExtendedBlockState {
             try {
                 return tileEntityClass.newInstance();
             } catch (Exception e) {
-                Mekanism.logger.error("Unable to indirectly create tile entity.");
-                e.printStackTrace();
+                Mekanism.logger.error("Unable to indirectly create tile entity.", e);
                 return null;
             }
         }
@@ -170,14 +161,10 @@ public class BlockStateReactor extends ExtendedBlockState {
                 builder.append("=");
                 builder.append(state.getValue(activeProperty));
             }
-
             if (builder.length() == 0) {
                 builder.append("normal");
             }
-
-            ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators",
-                  nameOverride != null ? nameOverride : type.getName());
-
+            ResourceLocation baseLocation = new ResourceLocation("mekanismgenerators", nameOverride != null ? nameOverride : type.getName());
             return new ModelResourceLocation(baseLocation, builder.toString());
         }
     }

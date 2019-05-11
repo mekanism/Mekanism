@@ -47,8 +47,7 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
 
     private final IDrawable background;
 
-    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized,
-          @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
+    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, String name, String unlocalized, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;
         guiLocation = new ResourceLocation(guiTexture);
 
@@ -133,21 +132,17 @@ public abstract class BaseRecipeCategory implements IRecipeCategory<IRecipeWrapp
         return Collections.emptyList();
     }
 
-    protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width,
-          int height, @Nullable GasStack stack, boolean overlay) {
+    protected void initGas(IGuiIngredientGroup<GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nullable GasStack stack, boolean overlay) {
         if (stack == null) {
             return;
         }
 
         IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;
-
-        GasStackRenderer renderer = new GasStackRenderer(stack.amount, false, width, height,
-              overlay ? fluidOverlay : null);
+        GasStackRenderer renderer = new GasStackRenderer(stack.amount, false, width, height, overlay ? fluidOverlay : null);
         group.init(slot, input, renderer, x, y, width, height, 0, 0);
         group.set(slot, stack);
     }
 
     public static class GuiDummy extends Gui {
-
     }
 }

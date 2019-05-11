@@ -18,7 +18,6 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
 
         Coord4D coord = Coord4D.get(this).offset(EnumFacing.DOWN);
         TileEntity tile = coord.getTileEntity(world);
-
         if (tile instanceof TileEntityTurbineRotor) {
             ((TileEntityTurbineRotor) tile).updateRotors();
         }

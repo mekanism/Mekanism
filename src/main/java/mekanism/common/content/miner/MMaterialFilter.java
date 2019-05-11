@@ -17,8 +17,7 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
     private ItemStack materialItem = ItemStack.EMPTY;
 
     public Material getMaterial() {
-        return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getItemDamage())
-              .getMaterial();
+        return Block.getBlockFromItem(materialItem.getItem()).getStateFromMeta(materialItem.getItemDamage()).getMaterial();
     }
 
     @Override
@@ -26,33 +25,27 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
         if (itemStack.isEmpty() || !(itemStack.getItem() instanceof ItemBlock)) {
             return false;
         }
-
         return new MaterialFinder(getMaterial()).modifies(itemStack);
     }
 
     @Override
     public NBTTagCompound write(NBTTagCompound nbtTags) {
         super.write(nbtTags);
-
         nbtTags.setInteger("type", 2);
         materialItem.writeToNBT(nbtTags);
-
         return nbtTags;
     }
 
     @Override
     protected void read(NBTTagCompound nbtTags) {
         super.read(nbtTags);
-
         materialItem = new ItemStack(nbtTags);
     }
 
     @Override
     public void write(TileNetworkList data) {
         data.add(2);
-
         super.write(data);
-
         data.add(MekanismUtils.getID(materialItem));
         data.add(materialItem.getCount());
         data.add(materialItem.getItemDamage());
@@ -61,9 +54,7 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
     @Override
     protected void read(ByteBuf dataStream) {
         super.read(dataStream);
-
-        materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(),
-              dataStream.readInt());
+        materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
     }
 
     @Override
@@ -77,8 +68,7 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MMaterialFilter && ((MMaterialFilter) filter).materialItem
-              .isItemEqual(materialItem);
+        return super.equals(filter) && filter instanceof MMaterialFilter && ((MMaterialFilter) filter).materialItem.isItemEqual(materialItem);
     }
 
     @Override
@@ -87,7 +77,6 @@ public class MMaterialFilter extends MinerFilter implements IMaterialFilter {
         filter.replaceStack = replaceStack;
         filter.requireStack = requireStack;
         filter.materialItem = materialItem;
-
         return filter;
     }
 

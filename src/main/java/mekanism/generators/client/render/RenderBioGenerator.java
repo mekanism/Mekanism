@@ -25,8 +25,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer<TileEntityBioG
     private Map<EnumFacing, DisplayInteger[]> energyDisplays = new HashMap<>();
 
     @Override
-    public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         if (tileEntity.bioFuelSlot.fluidStored > 0) {
             push();
 

@@ -23,38 +23,32 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
     private FluidStack STEAM = new FluidStack(FluidRegistry.getFluid("steam"), 1);
 
     @Override
-    public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage, float alpha) {
+    public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         renderAModelAt(tileEntity, x, y, z, partialTick, destroyStage);
     }
 
-    public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick,
-          int destroyStage) {
+    public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
         if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null
-              && tileEntity.structure.complex != null) {
+            && tileEntity.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
             Coord4D coord = tileEntity.structure.complex;
 
             while (true) {
                 coord = coord.offset(EnumFacing.DOWN);
                 TileEntity tile = coord.getTileEntity(tileEntity.getWorld());
-
                 if (!(tile instanceof TileEntityTurbineRotor)) {
                     break;
                 }
-
                 TileEntityRendererDispatcher.instance.render(tile, partialTick, destroyStage);
             }
 
             RenderTurbineRotor.internalRender = false;
 
-            if (tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0
-                  && tileEntity.structure.volLength > 0) {
+            if (tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount != 0 && tileEntity.structure.volLength > 0) {
                 RenderData data = new RenderData();
 
                 data.location = tileEntity.structure.renderLocation;
-                data.height = tileEntity.structure.lowerVolume / (tileEntity.structure.volLength
-                      * tileEntity.structure.volWidth);
+                data.height = tileEntity.structure.lowerVolume / (tileEntity.structure.volLength * tileEntity.structure.volWidth);
                 data.length = tileEntity.structure.volLength;
                 data.width = tileEntity.structure.volWidth;
                 data.fluidType = STEAM;
@@ -69,9 +63,8 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer<TileEntit
                     MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
                     MekanismRenderer.colorFluid(tileEntity.structure.fluidStored);
 
-                    GL11.glColor4f(1F, 1F, 1F, Math.min(1,
-                          ((float) tileEntity.structure.fluidStored.amount / (float) tileEntity.structure
-                                .getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
+                    GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float) tileEntity.structure.fluidStored.amount /
+                                                            (float) tileEntity.structure.getFluidCapacity()) + MekanismRenderer.GAS_RENDER_BASE));
                     FluidRenderer.getTankDisplay(data).render();
 
                     MekanismRenderer.glowOff();

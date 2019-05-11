@@ -13,7 +13,7 @@ public interface ISustainedTank {
      * Sets the tank tag list to a new value.
      *
      * @param fluidStack - Fluidstack to apply to
-     * @param data - ItemStack parameter if using on item
+     * @param data       - ItemStack parameter if using on item
      */
     void setFluidStack(FluidStack fluidStack, Object... data);
 
@@ -21,6 +21,7 @@ public interface ISustainedTank {
      * Gets the tank tag list from an item or block.
      *
      * @param data - ItemStack parameter if using on item
+     *
      * @return inventory tag list
      */
     FluidStack getFluidStack(Object... data);
@@ -29,6 +30,7 @@ public interface ISustainedTank {
      * Whether or not this block or item has an internal tank.
      *
      * @param data - ItemStack parameter if using on item
+     *
      * @return if the block or item has an internal tank
      */
     boolean hasTank(Object... data);

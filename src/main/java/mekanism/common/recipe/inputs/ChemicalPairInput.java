@@ -24,7 +24,7 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
     /**
      * Creates a chemical input with two defined gasses.
      *
-     * @param left - left gas
+     * @param left  - left gas
      * @param right - right gas
      */
     public ChemicalPairInput(GasStack left, GasStack right) {
@@ -44,23 +44,19 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
     public boolean useGas(GasTank leftTank, GasTank rightTank, boolean deplete, int scale) {
         int leftAmount = leftGas.amount * scale;
         int rightAmount = rightGas.amount * scale;
-
         if (leftTank.canDraw(leftGas.getGas()) && rightTank.canDraw(rightGas.getGas())) {
             if (leftTank.getStored() >= leftAmount && rightTank.getStored() >= rightAmount) {
                 leftTank.draw(leftAmount, deplete);
                 rightTank.draw(rightAmount, deplete);
-
                 return true;
             }
         } else if (leftTank.canDraw(rightGas.getGas()) && rightTank.canDraw(leftGas.getGas())) {
             if (leftTank.getStored() >= rightAmount && rightTank.getStored() >= leftAmount) {
                 leftTank.draw(rightAmount, deplete);
                 rightTank.draw(leftAmount, deplete);
-
                 return true;
             }
         }
-
         return false;
     }
 
@@ -73,10 +69,10 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
     }
 
     /**
-     * Whether or not the defined input contains the same gasses and at least the required amount of the defined gasses
-     * as this input.
+     * Whether or not the defined input contains the same gasses and at least the required amount of the defined gasses as this input.
      *
      * @param input - input to check
+     *
      * @return if the input meets this input's requirements
      */
     public boolean meetsInput(ChemicalPairInput input) {
@@ -95,7 +91,7 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
     /**
      * Draws the needed amount of gas from each tank.
      *
-     * @param leftTank - left tank to draw from
+     * @param leftTank  - left tank to draw from
      * @param rightTank - right tank to draw from
      */
     public void draw(GasTank leftTank, GasTank rightTank) {
@@ -112,13 +108,13 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
      * Whether or not one of this ChemicalInput's GasStack entry's gas type is equal to the gas type of the given gas.
      *
      * @param stack - stack to check
+     *
      * @return if the stack's gas type is contained in this ChemicalInput
      */
     public boolean containsType(GasStack stack) {
         if (stack == null || stack.amount == 0) {
             return false;
         }
-
         return stack.isGasEqual(leftGas) || stack.isGasEqual(rightGas);
     }
 
@@ -126,17 +122,16 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
      * Actual implementation of meetsInput(), performs the checks.
      *
      * @param input - input to check
+     *
      * @return if the input meets this input's requirements
      */
     private boolean meets(ChemicalPairInput input) {
         if (input == null || !input.isValid()) {
             return false;
         }
-
         if (input.leftGas.getGas() != leftGas.getGas() || input.rightGas.getGas() != rightGas.getGas()) {
             return false;
         }
-
         return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
     }
 
@@ -156,7 +151,7 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput> {
             return !other.isValid();
         }
         return (other.leftGas.hashCode() == leftGas.hashCode() && other.rightGas.hashCode() == rightGas.hashCode())
-              || (other.leftGas.hashCode() == rightGas.hashCode() && other.rightGas.hashCode() == leftGas.hashCode());
+               || (other.leftGas.hashCode() == rightGas.hashCode() && other.rightGas.hashCode() == leftGas.hashCode());
     }
 
     @Override

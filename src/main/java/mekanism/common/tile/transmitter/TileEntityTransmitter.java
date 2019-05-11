@@ -21,8 +21,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 
-public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends
-      TileEntitySidedPipe implements IAlloyInteraction {
+public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> extends TileEntitySidedPipe implements IAlloyInteraction {
 
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
@@ -51,14 +50,12 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         } else if (lastClientNetwork != null) {
             getTransmitter().setTransmitterNetwork(lastClientNetwork);
         }
-
         unloaded = false;
     }
 
     @Override
     public void update() {
         super.update();
-
         if (delayedRefresh) {
             //Gets run the tick after the variable has been set. This is enough
             // time to ensure that the transmitter has been registered.
@@ -79,14 +76,12 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         if (!getWorld().isRemote) {
             getTransmitter().takeShare();
         }
-
         super.onChunkUnload();
     }
 
     @Override
     public void onWorldSeparate() {
         unloaded = true;
-
         if (!getWorld().isRemote) {
             TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
         } else {
@@ -98,7 +93,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public void markDirtyTransmitters() {
         super.markDirtyTransmitters();
-
         if (getTransmitter().hasTransmitterNetwork()) {
             TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
         }
@@ -107,7 +101,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public void markDirtyAcceptor(EnumFacing side) {
         super.markDirtyAcceptor(side);
-
         if (getTransmitter().hasTransmitterNetwork()) {
             getTransmitter().getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
         }
@@ -214,11 +207,9 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     protected TileEntity getCachedTile(EnumFacing side) {
         ConnectionType type = connectionTypes[side.ordinal()];
-
         if (type == ConnectionType.PULL || type == ConnectionType.NONE) {
             return null;
         }
-
         return connectionMapContainsSide(currentAcceptorConnections, side) ? cachedAcceptors[side.ordinal()] : null;
     }
 
@@ -227,7 +218,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         if (getTransmitter().hasTransmitterNetwork()) {
             int upgraded = 0;
             List<IGridTransmitter<A, N, BUFFER>> list = new ArrayList<>(getTransmitter().getTransmitterNetwork().getTransmitters());
-
             list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
                     Coord4D thisCoord = new Coord4D(getPos(), getWorld());
@@ -240,25 +230,20 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
                 return 0;
             });
-
             for (IGridTransmitter<A, N, BUFFER> iter : list) {
                 if (iter instanceof TransmitterImpl) {
                     TileEntityTransmitter t = ((TransmitterImpl) iter).containingTile;
-
                     if (t.upgrade(tierOrdinal)) {
                         upgraded++;
-
                         if (upgraded == 8) {
                             break;
                         }
                     }
                 }
             }
-
             if (upgraded > 0) {
                 if (!player.capabilities.isCreativeMode) {
                     stack.shrink(1);
-
                     if (stack.getCount() == 0) {
                         player.setHeldItem(hand, ItemStack.EMPTY);
                     }
@@ -292,9 +277,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing side) {
-        return capability == Capabilities.GRID_TRANSMITTER_CAPABILITY
-              || capability == Capabilities.ALLOY_INTERACTION_CAPABILITY
-              || super.hasCapability(capability, side);
+        return capability == Capabilities.GRID_TRANSMITTER_CAPABILITY || capability == Capabilities.ALLOY_INTERACTION_CAPABILITY || super.hasCapability(capability, side);
     }
 
     @Override
@@ -304,7 +287,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         } else if (capability == Capabilities.ALLOY_INTERACTION_CAPABILITY) {
             return Capabilities.ALLOY_INTERACTION_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 }

@@ -31,8 +31,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory {
     }
 
     public static List<ItemStack> getInfuseStacks(InfuseType type) {
-        return InfuseRegistry.getObjectMap().entrySet().stream()
-              .filter(obj -> obj.getValue().type == type).map(Entry::getKey).collect(Collectors.toList());
+        return InfuseRegistry.getObjectMap().entrySet().stream().filter(obj -> obj.getValue().type == type).map(Entry::getKey).collect(Collectors.toList());
     }
 
     @Override

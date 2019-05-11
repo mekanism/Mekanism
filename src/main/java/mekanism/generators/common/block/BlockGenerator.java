@@ -61,9 +61,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Block class for handling multiple generator block IDs. 0: Heat Generator 1: Solar Generator 3: Hydrogen Generator 4:
- * Bio-Generator 5: Advanced Solar Generator 6: Wind Generator 7: Turbine Rotor 8: Rotational Complex 9: Electromagnetic
- * Coil 10: Turbine Casing 11: Turbine Valve 12: Turbine Vent 13: Saturating Condenser
+ * Block class for handling multiple generator block IDs. 0: Heat Generator 1: Solar Generator 3: Hydrogen Generator 4: Bio-Generator 5: Advanced Solar Generator 6: Wind
+ * Generator 7: Turbine Rotor 8: Rotational Complex 9: Electromagnetic Coil 10: Turbine Casing 11: Turbine Valve 12: Turbine Vent 13: Saturating Condenser
  *
  * @author AidanBrady
  */
@@ -71,7 +70,6 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
 
     private static final AxisAlignedBB SOLAR_BOUNDS = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
     private static final AxisAlignedBB ROTOR_BOUNDS = new AxisAlignedBB(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
-    public Random machineRand = new Random();
 
     public BlockGenerator() {
         super(Material.IRON);
@@ -102,7 +100,6 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         GeneratorType type = GeneratorType.get(getGeneratorBlock(), meta & 0xF);
-
         return getDefaultState().withProperty(getTypeProperty(), type);
     }
 
@@ -117,29 +114,23 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-
         if (tile instanceof TileEntityBasicBlock && ((TileEntityBasicBlock) tile).facing != null) {
             state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock) tile).facing);
         }
-
         if (tile instanceof IActiveState) {
             state = state.withProperty(BlockStateGenerator.activeProperty, ((IActiveState) tile).getActive());
         }
-
         return state;
     }
 
     @Override
     @Deprecated
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
-          BlockPos neighborPos) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-
             if (tileEntity instanceof IMultiblock) {
                 ((IMultiblock<?>) tileEntity).doUpdate();
             }
-
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
@@ -147,8 +138,7 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityliving,
-          ItemStack itemstack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entityliving, ItemStack itemstack) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
 
         int side = MathHelper.floor((double) (entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
@@ -182,11 +172,9 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
 
         tileEntity.setFacing((short) change);
         tileEntity.redstone = world.getRedstonePowerFromNeighbors(pos) > 0;
-
         if (tileEntity instanceof IBoundingBlock) {
             ((IBoundingBlock) tileEntity).onPlace();
         }
-
         if (!world.isRemote && tileEntity instanceof IMultiblock) {
             ((IMultiblock<?>) tileEntity).doUpdate();
         }
@@ -196,14 +184,12 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         if (MekanismConfig.current().client.enableAmbientLighting.val()) {
             TileEntity tileEntity = MekanismUtils.getTileEntitySafe(world, pos);
-
             if (tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator)) {
                 if (((IActiveState) tileEntity).getActive() && ((IActiveState) tileEntity).lightUpdate()) {
                     return MekanismConfig.current().client.ambientLightingLevel.val();
                 }
             }
         }
-
         return 0;
     }
 
@@ -215,12 +201,9 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
 
     @Override
     @Deprecated
-    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world,
-          @Nonnull BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(IBlockState state, @Nonnull EntityPlayer player, @Nonnull World world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
-
-        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos)
-              : 0.0F;
+        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
     @Override
@@ -248,14 +231,11 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             if (tileEntity.facing == EnumFacing.WEST) {
                 switch (type) {
                     case HEAT_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom + iRandom),
-                              (double) yRandom, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom + iRandom), (double) yRandom,
-                              (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom + iRandom), (double) yRandom, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom + iRandom), (double) yRandom, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
                         break;
                     case BIO_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .25, pos.getY() + .2,
-                              pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .25, pos.getY() + .2, pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
                         break;
                     default:
                         break;
@@ -263,14 +243,11 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             } else if (tileEntity.facing == EnumFacing.EAST) {
                 switch (type) {
                     case HEAT_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom + iRandom),
-                              (double) yRandom + 0.5F, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
-                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom + iRandom),
-                              (double) yRandom + 0.5F, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom + iRandom), (double) yRandom + 0.5F, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom + iRandom), (double) yRandom + 0.5F, (double) (zRandom - jRandom), 0.0D, 0.0D, 0.0D);
                         break;
                     case BIO_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .75, pos.getY() + .2,
-                              pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .75, pos.getY() + .2, pos.getZ() + .5, 0.0D, 0.0D, 0.0D);
                         break;
                     default:
                         break;
@@ -278,14 +255,11 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             } else if (tileEntity.facing == EnumFacing.NORTH) {
                 switch (type) {
                     case HEAT_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom - jRandom),
-                              (double) yRandom + 0.5F, (double) (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom - jRandom),
-                              (double) yRandom + 0.5F, (double) (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
                         break;
                     case BIO_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .5, pos.getY() + .2,
-                              pos.getZ() + .25, 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .5, pos.getY() + .2, pos.getZ() + .25, 0.0D, 0.0D, 0.0D);
                         break;
                     default:
                         break;
@@ -293,14 +267,11 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             } else if (tileEntity.facing == EnumFacing.SOUTH) {
                 switch (type) {
                     case HEAT_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom - jRandom),
-                              (double) yRandom + 0.5F, (double) (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom - jRandom),
-                              (double) yRandom + 0.5F, (double) (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.FLAME, (double) (xRandom - jRandom), (double) yRandom + 0.5F, (double) (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
                         break;
                     case BIO_GENERATOR:
-                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .5, pos.getY() + .2,
-                              pos.getZ() + .75, 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, pos.getX() + .5, pos.getY() + .2, pos.getZ() + .75, 0.0D, 0.0D, 0.0D);
                         break;
                     default:
                         break;
@@ -312,19 +283,15 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Override
     public void breakBlock(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state) {
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
-
         if (!world.isRemote && tileEntity instanceof TileEntityTurbineRotor) {
             int amount = ((TileEntityTurbineRotor) tileEntity).getHousedBlades();
-
             if (amount > 0) {
                 spawnAsEntity(world, pos, new ItemStack(GeneratorsItems.TurbineBlade, amount));
             }
         }
-
         if (tileEntity instanceof IBoundingBlock) {
             ((IBoundingBlock) tileEntity).onBreak();
         }
-
         super.breakBlock(world, pos, state);
     }
 
@@ -334,7 +301,6 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
         if (world.isRemote) {
             return true;
         }
-
         TileEntityBasicBlock tileEntity = (TileEntityBasicBlock) world.getTileEntity(pos);
         int metadata = state.getBlock().getMetaFromState(state);
         ItemStack stack = entityplayer.getHeldItem(hand);
@@ -346,47 +312,39 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
                 if (wrenchHandler.canUseWrench(entityplayer, hand, stack, raytrace)) {
                     if (SecurityUtils.canAccess(entityplayer, tileEntity)) {
                         wrenchHandler.wrenchUsed(entityplayer, hand, stack, raytrace);
-
                         if (entityplayer.isSneaking()) {
                             MekanismUtils.dismantleBlock(this, state, world, pos);
                             return true;
                         }
-
                         if (tileEntity != null) {
                             int change = tileEntity.facing.rotateY().ordinal();
-
                             tileEntity.setFacing((short) change);
                             world.notifyNeighborsOfStateChange(pos, this, true);
                         }
                     } else {
                         SecurityUtils.displayNoAccess(entityplayer);
                     }
-
                     return true;
                 }
             }
         }
 
-        if (metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta
-              || metadata == GeneratorType.TURBINE_VENT.meta) {
+        if (metadata == GeneratorType.TURBINE_CASING.meta || metadata == GeneratorType.TURBINE_VALVE.meta || metadata == GeneratorType.TURBINE_VENT.meta) {
             return ((IMultiblock<?>) tileEntity).onActivate(entityplayer, hand, stack);
         }
 
         if (metadata == GeneratorType.TURBINE_ROTOR.meta) {
             TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tileEntity;
-
             if (!entityplayer.isSneaking()) {
                 if (!stack.isEmpty() && stack.getItem() == GeneratorsItems.TurbineBlade) {
                     if (rod.addBlade()) {
                         if (!entityplayer.capabilities.isCreativeMode) {
                             stack.shrink(1);
-
                             if (stack.getCount() == 0) {
                                 entityplayer.setHeldItem(hand, ItemStack.EMPTY);
                             }
                         }
                     }
-
                     return true;
                 }
             } else if (stack.isEmpty()) {
@@ -406,7 +364,6 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
                     }
                 }
             }
-
             return true;
         }
 
@@ -419,22 +376,18 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
                 } else {
                     SecurityUtils.displayNoAccess(entityplayer);
                 }
-
                 return true;
             }
         }
-
         return false;
     }
 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         int metadata = state.getBlock().getMetaFromState(state);
-
         if (GeneratorType.get(getGeneratorBlock(), metadata) == null) {
             return null;
         }
-
         return GeneratorType.get(getGeneratorBlock(), metadata).create();
     }
 
@@ -475,7 +428,6 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         GeneratorType type = GeneratorType.get(state);
-
         switch (type) {
             case SOLAR_GENERATOR:
                 return SOLAR_BOUNDS;
@@ -495,14 +447,11 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
         if (itemStack.getTagCompound() == null && !(tileEntity instanceof TileEntityMultiblock)) {
             itemStack.setTagCompound(new NBTTagCompound());
         }
-
         if (tileEntity == null) {
             return ItemStack.EMPTY;
         }
-
         if (tileEntity instanceof ISecurityTile) {
             ISecurityItem securityItem = (ISecurityItem) itemStack.getItem();
-
             if (securityItem.hasSecurity(itemStack)) {
                 securityItem.setOwnerUUID(itemStack, ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID());
                 securityItem.setSecurity(itemStack, ((ISecurityTile) tileEntity).getSecurity().getMode());
@@ -513,26 +462,21 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             IEnergizedItem electricItem = (IEnergizedItem) itemStack.getItem();
             electricItem.setEnergy(itemStack, ((TileEntityElectricBlock) tileEntity).electricityStored);
         }
-
-        if (tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock) tileEntity)
-              .handleInventory()) {
+        if (tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock) tileEntity).handleInventory()) {
             ISustainedInventory inventory = (ISustainedInventory) itemStack.getItem();
             inventory.setInventory(((TileEntityContainerBlock) tileEntity).getInventory(), itemStack);
         }
-
         if (tileEntity instanceof ISustainedData) {
             ((ISustainedData) tileEntity).writeSustainedData(itemStack);
         }
-
         if (((ISustainedTank) itemStack.getItem()).hasTank(itemStack)) {
             if (tileEntity instanceof ISustainedTank) {
-                if (((ISustainedTank) tileEntity).getFluidStack() != null) {
-                    ((ISustainedTank) itemStack.getItem())
-                          .setFluidStack(((ISustainedTank) tileEntity).getFluidStack(), itemStack);
+                ISustainedTank tank = (ISustainedTank) tileEntity;
+                if (tank.getFluidStack() != null) {
+                    ((ISustainedTank) itemStack.getItem()).setFluidStack(tank.getFluidStack(), itemStack);
                 }
             }
         }
-
         return itemStack;
     }
 
@@ -540,11 +484,7 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         GeneratorType type = GeneratorType.get(getGeneratorBlock(), state.getBlock().getMetaFromState(state));
-
-        return type != GeneratorType.SOLAR_GENERATOR &&
-              type != GeneratorType.ADVANCED_SOLAR_GENERATOR &&
-              type != GeneratorType.WIND_GENERATOR &&
-              type != GeneratorType.TURBINE_ROTOR;
+        return type != GeneratorType.SOLAR_GENERATOR && type != GeneratorType.ADVANCED_SOLAR_GENERATOR && type != GeneratorType.WIND_GENERATOR && type != GeneratorType.TURBINE_ROTOR;
 
     }
 
@@ -552,33 +492,27 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     public EnumFacing[] getValidRotations(World world, @Nonnull BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         EnumFacing[] valid = new EnumFacing[6];
-
         if (tile instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-
             for (EnumFacing dir : EnumFacing.VALUES) {
                 if (basicTile.canSetFacing(dir.ordinal())) {
                     valid[dir.ordinal()] = dir;
                 }
             }
         }
-
         return valid;
     }
 
     @Override
     public boolean rotateBlock(World world, @Nonnull BlockPos pos, @Nonnull EnumFacing axis) {
         TileEntity tile = world.getTileEntity(pos);
-
         if (tile instanceof TileEntityBasicBlock) {
             TileEntityBasicBlock basicTile = (TileEntityBasicBlock) tile;
-
             if (basicTile.canSetFacing(axis.ordinal())) {
                 basicTile.setFacing((short) axis.ordinal());
                 return true;
             }
         }
-
         return false;
     }
 
@@ -587,26 +521,21 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
-          EntityLiving.SpawnPlacementType type) {
+    public boolean canCreatureSpawn(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EntityLiving.SpawnPlacementType type) {
         int meta = state.getBlock().getMetaFromState(state);
 
         switch (meta) {
             case 10: // Turbine Casing
             case 11: // Turbine Valve
             case 12: // Turbine Vent
-                TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils
-                      .getTileEntitySafe(world, pos);
-
+                TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
                 if (tileEntity != null) {
                     if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
                         if (tileEntity.structure != null) {
                             return false;
                         }
-                    } else {
-                        if (tileEntity.clientHasStructure) {
-                            return false;
-                        }
+                    } else if (tileEntity.clientHasStructure) {
+                        return false;
                     }
                 }
             default:

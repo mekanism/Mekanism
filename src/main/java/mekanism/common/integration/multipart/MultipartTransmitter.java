@@ -21,8 +21,7 @@ import net.minecraft.world.World;
 public class MultipartTransmitter implements IMultipart {
 
     @Override
-    public IPartSlot getSlotForPlacement(World world, BlockPos pos, IBlockState state, EnumFacing facing, float hitX,
-          float hitY, float hitZ, EntityLivingBase placer) {
+    public IPartSlot getSlotForPlacement(World world, BlockPos pos, IBlockState state, EnumFacing facing, float hitX, float hitY, float hitZ, EntityLivingBase placer) {
         return EnumCenterSlot.CENTER;
     }
 
@@ -34,7 +33,6 @@ public class MultipartTransmitter implements IMultipart {
     @Override
     public void onAdded(IPartInfo part) {
         TileEntity tile = part.getTile().getTileEntity();
-
         if (tile instanceof TileEntitySidedPipe) {
             ((TileEntitySidedPipe) tile).onAdded();
         }
@@ -43,7 +41,6 @@ public class MultipartTransmitter implements IMultipart {
     @Override
     public void onPartAdded(IPartInfo part, IPartInfo otherPart) {
         TileEntity tile = part.getTile().getTileEntity();
-
         if (tile instanceof TileEntitySidedPipe) {
             tile.validate();
             ((TileEntitySidedPipe) tile).notifyTileChange();
@@ -53,7 +50,6 @@ public class MultipartTransmitter implements IMultipart {
     @Override
     public void onPartChanged(IPartInfo part, IPartInfo otherPart) {
         TileEntity tile = part.getTile().getTileEntity();
-
         if (tile instanceof TileEntitySidedPipe) {
             ((TileEntitySidedPipe) tile).onPartChanged(otherPart.getPart());
         }
@@ -62,26 +58,21 @@ public class MultipartTransmitter implements IMultipart {
     @Override
     public void onPartHarvested(IPartInfo part, EntityPlayer player) {
         TileEntity tile = part.getTile().getTileEntity();
-
         if (tile instanceof TileEntitySidedPipe) {
             IBlockState partState = part.getState();
-            partState.getBlock().removedByPlayer(partState, part.getPartWorld(),
-                  part.getContainer().getPartPos(), player, true);
+            partState.getBlock().removedByPlayer(partState, part.getPartWorld(), part.getContainer().getPartPos(), player, true);
         }
-
         IMultipart.super.onPartHarvested(part, player);
     }
 
     @Override
     public void onPartPlacedBy(IPartInfo part, EntityLivingBase placer, ItemStack stack) {
         TileEntity tile = part.getTile().getTileEntity();
-
         if (tile instanceof TileEntitySidedPipe) {
             BaseTier baseTier = BaseTier.BASIC;
             if (stack.hasTagCompound()) {
                 baseTier = BaseTier.values()[stack.getTagCompound().getInteger("tier")];
             }
-
             ((TileEntitySidedPipe) tile).setBaseTier(baseTier);
         }
     }

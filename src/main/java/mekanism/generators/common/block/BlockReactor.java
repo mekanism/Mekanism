@@ -63,15 +63,12 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     @Deprecated
     public IBlockState getActualState(@Nonnull IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(worldIn, pos);
-
         if (tile instanceof TileEntityReactorController) {
             state = state.withProperty(BlockStateReactor.activeProperty, ((IActiveState) tile).getActive());
         }
-
         if (tile instanceof TileEntityReactorPort) {
             state = state.withProperty(BlockStateReactor.activeProperty, ((TileEntityReactorPort) tile).fluidEject);
         }
-
         return state;
     }
 
@@ -86,14 +83,12 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta & 0xF);
-
         return getDefaultState().withProperty(getTypeProperty(), type);
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        ReactorBlockType type = state.getValue(getTypeProperty());
-        return type.meta;
+        return state.getValue(getTypeProperty()).meta;
     }
 
     @Override
@@ -103,11 +98,9 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
 
     @Override
     @Deprecated
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock,
-          BlockPos neighborPos) {
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         if (!world.isRemote) {
             TileEntity tileEntity = world.getTileEntity(pos);
-
             if (tileEntity instanceof TileEntityBasicBlock) {
                 ((TileEntityBasicBlock) tileEntity).onNeighborChange(neighborBlock);
             }
@@ -115,8 +108,7 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer,
-          EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
         }
@@ -131,31 +123,24 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
                     MekanismUtils.dismantleBlock(this, state, world, pos);
                     return true;
                 }
-
-                ((IToolWrench) stack.getItem()).wrenchUsed(entityplayer, hand, stack,
-                      new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
-
+                ((IToolWrench) stack.getItem()).wrenchUsed(entityplayer, hand, stack, new RayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos));
                 return true;
             }
         }
 
         if (tileEntity instanceof TileEntityReactorController) {
             if (!entityplayer.isSneaking()) {
-                entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world,
-                      pos.getX(), pos.getY(), pos.getZ());
+                entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
         }
 
         if (tileEntity instanceof TileEntityReactorLogicAdapter) {
             if (!entityplayer.isSneaking()) {
-                entityplayer.openGui(MekanismGenerators.instance,
-                      BlockStateReactor.ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(),
-                      pos.getZ());
+                entityplayer.openGui(MekanismGenerators.instance, BlockStateReactor.ReactorBlockType.get(this, metadata).guiId, world, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
         }
-
         return false;
     }
 
@@ -171,11 +156,9 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     @Override
     public TileEntity createTileEntity(@Nonnull World world, @Nonnull IBlockState state) {
         int metadata = state.getBlock().getMetaFromState(state);
-
         if (ReactorBlockType.get(getReactorBlock(), metadata) == null) {
             return null;
         }
-
         return ReactorBlockType.get(getReactorBlock(), metadata).create();
     }
 
@@ -213,11 +196,9 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     @Override
     @Deprecated
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos,
-          EnumFacing side) {
+    public boolean shouldSideBeRendered(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         int meta = state.getBlock().getMetaFromState(state);
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), meta);
-
         if (type == ReactorBlockType.REACTOR_GLASS || type == ReactorBlockType.LASER_FOCUS_MATRIX) {
             IBlockState stateOffset = world.getBlockState(pos.offset(side));
             if (this == stateOffset.getBlock()) {
@@ -228,7 +209,6 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
                 }
             }
         }
-
         return super.shouldSideBeRendered(state, world, pos, side);
     }
 
@@ -236,11 +216,9 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     @Deprecated
     public int getWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         TileEntity tile = MekanismUtils.getTileEntitySafe(world, pos);
-
         if (tile instanceof TileEntityReactorLogicAdapter) {
             return ((TileEntityReactorLogicAdapter) tile).checkMode() ? 15 : 0;
         }
-
         return 0;
     }
 
@@ -248,7 +226,6 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     @Deprecated
     public boolean isSideSolid(IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, EnumFacing side) {
         ReactorBlockType type = ReactorBlockType.get(getReactorBlock(), state.getBlock().getMetaFromState(state));
-
         switch (type) {
             case REACTOR_FRAME:
             case REACTOR_PORT:
@@ -262,7 +239,6 @@ public abstract class BlockReactor extends Block implements ITileEntityProvider 
     @Override
     public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         ReactorBlockType type = BlockStateReactor.ReactorBlockType.get(this, state.getBlock().getMetaFromState(state));
-
         return type == ReactorBlockType.REACTOR_LOGIC_ADAPTER;
     }
 

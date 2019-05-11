@@ -72,11 +72,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     public void update() {
         if (!world.isRemote && MekanismConfig.current().general.destroyDisabledBlocks.val()) {
             MachineType type = MachineType.get(getBlockType(), getBlockMetadata());
-
             if (type != null && !type.isEnabled()) {
-                Mekanism.logger
-                      .info("Destroying machine of type '" + type.blockName + "' at coords " + Coord4D.get(this)
-                            + " as according to config.");
+                Mekanism.logger.info("Destroying machine of type '" + type.blockName + "' at coords " + Coord4D.get(this) + " as according to config.");
                 world.setBlockToAir(getPos());
                 return;
             }
@@ -87,17 +84,13 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         }
 
         onUpdate();
-
         if (!world.isRemote) {
             if (doAutoSync && playersUsing.size() > 0) {
                 for (EntityPlayer player : playersUsing) {
-                    Mekanism.packetHandler
-                          .sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                                (EntityPlayerMP) player);
+                    Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), (EntityPlayerMP) player);
                 }
             }
         }
-
         ticker++;
         redstoneLastTick = redstone;
     }
@@ -105,7 +98,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void updateContainingBlockInfo() {
         super.updateContainingBlockInfo();
-
         onAdded();
     }
 
@@ -122,13 +114,11 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             facing = EnumFacing.byIndex(dataStream.readInt());
             redstone = dataStream.readBoolean();
-
             if (clientFacing != facing) {
                 MekanismUtils.updateBlock(world, getPos());
                 world.notifyNeighborsOfStateChange(getPos(), world.getBlockState(getPos()).getBlock(), true);
                 clientFacing = facing;
             }
-
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
@@ -139,18 +129,15 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(facing == null ? -1 : facing.ordinal());
         data.add(redstone);
-
         for (ITileComponent component : components) {
             component.write(data);
         }
-
         return data;
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-
         for (ITileComponent component : components) {
             component.invalidate();
         }
@@ -159,7 +146,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void validate() {
         super.validate();
-
         if (world.isRemote) {
             Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
         }
@@ -173,13 +159,10 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         if (nbtTags.hasKey("facing")) {
             facing = EnumFacing.byIndex(nbtTags.getInteger("facing"));
         }
-
         redstone = nbtTags.getBoolean("redstone");
-
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
@@ -189,17 +172,13 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         if (facing != null) {
             nbtTags.setInteger("facing", facing.ordinal());
         }
-
         nbtTags.setBoolean("redstone", redstone);
-
         for (ITileComponent component : components) {
             component.write(nbtTags);
         }
-
         return nbtTags;
     }
 
@@ -220,11 +199,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         if (canSetFacing(direction)) {
             facing = EnumFacing.byIndex(direction);
         }
-
         if (!(facing == clientFacing || world.isRemote)) {
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             markDirty();
             clientFacing = facing;
         }
@@ -234,6 +210,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
      * Whether or not this block's orientation can be changed to a specific direction. True by default.
      *
      * @param facing - facing to check
+     *
      * @return if the block's orientation can be changed
      */
     public boolean canSetFacing(int facing) {
@@ -259,13 +236,9 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
     private void updatePower() {
         boolean power = world.getRedstonePowerFromNeighbors(getPos()) > 0;
-
         if (redstone != power) {
             redstone = power;
-            Mekanism.packetHandler
-                  .sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())),
-                        new Range4D(Coord4D.get(this)));
-
+            Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new TileNetworkList())), new Range4D(Coord4D.get(this)));
             onPowerChange();
         }
     }
@@ -282,7 +255,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
         if (manager == Mekanism.securityFrequencies && this instanceof ISecurityTile) {
             return ((ISecurityTile) this).getSecurity().getFrequency();
         }
-
         return null;
     }
 

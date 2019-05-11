@@ -41,6 +41,7 @@ import mekanism.client.jei.machine.other.PRCRecipeWrapper;
 import mekanism.client.jei.machine.other.RotaryCondensentratorRecipeWrapper;
 import mekanism.client.jei.machine.other.SolarNeutronRecipeWrapper;
 import mekanism.client.jei.machine.other.ThermalEvaporationRecipeWrapper;
+import mekanism.common.Mekanism;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
@@ -72,7 +73,6 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraftforge.fml.common.Loader;
 
 public class RecipeRegistryHelper {
 
@@ -81,8 +81,7 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.ENRICHMENT_CHAMBER, EnrichmentRecipe.class, MachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7,
-              Recipe.ENRICHMENT_CHAMBER.getJEICategory());
+        registry.addRecipeClickArea(GuiEnrichmentChamber.class, 79, 40, 24, 7, Recipe.ENRICHMENT_CHAMBER.getJEICategory());
         registerRecipeItem(registry, MachineType.ENRICHMENT_CHAMBER, Recipe.ENRICHMENT_CHAMBER);
     }
 
@@ -109,8 +108,7 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.PURIFICATION_CHAMBER, PurificationRecipe.class, AdvancedMachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiPurificationChamber.class, 79, 40, 24, 7,
-              Recipe.PURIFICATION_CHAMBER.getJEICategory());
+        registry.addRecipeClickArea(GuiPurificationChamber.class, 79, 40, 24, 7, Recipe.PURIFICATION_CHAMBER.getJEICategory());
         registerRecipeItem(registry, MachineType.PURIFICATION_CHAMBER, Recipe.PURIFICATION_CHAMBER);
     }
 
@@ -119,8 +117,7 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.OSMIUM_COMPRESSOR, OsmiumCompressorRecipe.class, AdvancedMachineRecipeWrapper::new);
-        registry
-              .addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, Recipe.OSMIUM_COMPRESSOR.getJEICategory());
+        registry.addRecipeClickArea(GuiOsmiumCompressor.class, 79, 40, 24, 7, Recipe.OSMIUM_COMPRESSOR.getJEICategory());
         registerRecipeItem(registry, MachineType.OSMIUM_COMPRESSOR, Recipe.OSMIUM_COMPRESSOR);
     }
 
@@ -128,10 +125,8 @@ public class RecipeRegistryHelper {
         if (!MachineType.CHEMICAL_INJECTION_CHAMBER.isEnabled()) {
             return;
         }
-        addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, InjectionRecipe.class,
-              AdvancedMachineRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiChemicalInjectionChamber.class, 79, 40, 24, 7,
-              Recipe.CHEMICAL_INJECTION_CHAMBER.getJEICategory());
+        addRecipes(registry, Recipe.CHEMICAL_INJECTION_CHAMBER, InjectionRecipe.class, AdvancedMachineRecipeWrapper::new);
+        registry.addRecipeClickArea(GuiChemicalInjectionChamber.class, 79, 40, 24, 7, Recipe.CHEMICAL_INJECTION_CHAMBER.getJEICategory());
         registerRecipeItem(registry, MachineType.CHEMICAL_INJECTION_CHAMBER, Recipe.CHEMICAL_INJECTION_CHAMBER);
     }
 
@@ -140,8 +135,7 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.PRECISION_SAWMILL, SawmillRecipe.class, ChanceMachineRecipeWrapper::new);
-        registry
-              .addRecipeClickArea(GuiPrecisionSawmill.class, 79, 40, 24, 7, Recipe.PRECISION_SAWMILL.getJEICategory());
+        registry.addRecipeClickArea(GuiPrecisionSawmill.class, 79, 40, 24, 7, Recipe.PRECISION_SAWMILL.getJEICategory());
         registerRecipeItem(registry, MachineType.PRECISION_SAWMILL, Recipe.PRECISION_SAWMILL);
     }
 
@@ -149,11 +143,8 @@ public class RecipeRegistryHelper {
         if (!MachineType.METALLURGIC_INFUSER.isEnabled()) {
             return;
         }
-        addRecipes(registry, Recipe.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class,
-              MetallurgicInfuserRecipeWrapper::new);
-        registry
-              .addRecipeClickArea(GuiMetallurgicInfuser.class, 72, 47, 32, 8,
-                    Recipe.METALLURGIC_INFUSER.getJEICategory());
+        addRecipes(registry, Recipe.METALLURGIC_INFUSER, MetallurgicInfuserRecipe.class, MetallurgicInfuserRecipeWrapper::new);
+        registry.addRecipeClickArea(GuiMetallurgicInfuser.class, 72, 47, 32, 8, Recipe.METALLURGIC_INFUSER.getJEICategory());
         registerRecipeItem(registry, MachineType.METALLURGIC_INFUSER, Recipe.METALLURGIC_INFUSER);
     }
 
@@ -161,10 +152,8 @@ public class RecipeRegistryHelper {
         if (!MachineType.CHEMICAL_CRYSTALLIZER.isEnabled()) {
             return;
         }
-        addRecipes(registry, Recipe.CHEMICAL_CRYSTALLIZER, CrystallizerRecipe.class,
-              ChemicalCrystallizerRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiChemicalCrystallizer.class, 53, 62, 48, 8,
-              Recipe.CHEMICAL_CRYSTALLIZER.getJEICategory());
+        addRecipes(registry, Recipe.CHEMICAL_CRYSTALLIZER, CrystallizerRecipe.class, ChemicalCrystallizerRecipeWrapper::new);
+        registry.addRecipeClickArea(GuiChemicalCrystallizer.class, 53, 62, 48, 8, Recipe.CHEMICAL_CRYSTALLIZER.getJEICategory());
         registerRecipeItem(registry, MachineType.CHEMICAL_CRYSTALLIZER, Recipe.CHEMICAL_CRYSTALLIZER);
     }
 
@@ -172,10 +161,8 @@ public class RecipeRegistryHelper {
         if (!MachineType.CHEMICAL_DISSOLUTION_CHAMBER.isEnabled()) {
             return;
         }
-        addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, DissolutionRecipe.class,
-              ChemicalDissolutionChamberRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiChemicalDissolutionChamber.class, 64, 40, 48, 8,
-              Recipe.CHEMICAL_DISSOLUTION_CHAMBER.getJEICategory());
+        addRecipes(registry, Recipe.CHEMICAL_DISSOLUTION_CHAMBER, DissolutionRecipe.class, ChemicalDissolutionChamberRecipeWrapper::new);
+        registry.addRecipeClickArea(GuiChemicalDissolutionChamber.class, 64, 40, 48, 8, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.getJEICategory());
         registerRecipeItem(registry, MachineType.CHEMICAL_DISSOLUTION_CHAMBER, Recipe.CHEMICAL_DISSOLUTION_CHAMBER);
     }
 
@@ -194,8 +181,7 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.CHEMICAL_OXIDIZER, OxidationRecipe.class, ChemicalOxidizerRecipeWrapper::new);
-        registry
-              .addRecipeClickArea(GuiChemicalOxidizer.class, 64, 40, 48, 8, Recipe.CHEMICAL_OXIDIZER.getJEICategory());
+        registry.addRecipeClickArea(GuiChemicalOxidizer.class, 64, 40, 48, 8, Recipe.CHEMICAL_OXIDIZER.getJEICategory());
         registerRecipeItem(registry, MachineType.CHEMICAL_OXIDIZER, Recipe.CHEMICAL_OXIDIZER);
     }
 
@@ -213,8 +199,7 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronRecipe.class, SolarNeutronRecipeWrapper::new);
-        registry.addRecipeClickArea(GuiSolarNeutronActivator.class, 64, 39, 48, 8,
-              Recipe.SOLAR_NEUTRON_ACTIVATOR.getJEICategory());
+        registry.addRecipeClickArea(GuiSolarNeutronActivator.class, 64, 39, 48, 8, Recipe.SOLAR_NEUTRON_ACTIVATOR.getJEICategory());
         registerRecipeItem(registry, MachineType.SOLAR_NEUTRON_ACTIVATOR, Recipe.SOLAR_NEUTRON_ACTIVATOR);
     }
 
@@ -222,23 +207,15 @@ public class RecipeRegistryHelper {
         if (!MachineType.ELECTROLYTIC_SEPARATOR.isEnabled()) {
             return;
         }
-        addRecipes(registry, Recipe.ELECTROLYTIC_SEPARATOR, SeparatorRecipe.class,
-              ElectrolyticSeparatorRecipeWrapper::new);
-
-        registry.addRecipeClickArea(GuiElectrolyticSeparator.class, 80, 30, 16, 6,
-              Recipe.ELECTROLYTIC_SEPARATOR.getJEICategory());
+        addRecipes(registry, Recipe.ELECTROLYTIC_SEPARATOR, SeparatorRecipe.class, ElectrolyticSeparatorRecipeWrapper::new);
+        registry.addRecipeClickArea(GuiElectrolyticSeparator.class, 80, 30, 16, 6, Recipe.ELECTROLYTIC_SEPARATOR.getJEICategory());
         registerRecipeItem(registry, MachineType.ELECTROLYTIC_SEPARATOR, Recipe.ELECTROLYTIC_SEPARATOR);
     }
 
     public static void registerEvaporationPlant(IModRegistry registry) {
-        addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, ThermalEvaporationRecipe.class,
-              ThermalEvaporationRecipeWrapper::new);
-
-        registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38,
-              Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
-
-        registry.addRecipeCatalyst(BasicBlockType.THERMAL_EVAPORATION_CONTROLLER.getStack(1),
-              Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
+        addRecipes(registry, Recipe.THERMAL_EVAPORATION_PLANT, ThermalEvaporationRecipe.class, ThermalEvaporationRecipeWrapper::new);
+        registry.addRecipeClickArea(GuiThermalEvaporationController.class, 49, 20, 78, 38, Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
+        registry.addRecipeCatalyst(BasicBlockType.THERMAL_EVAPORATION_CONTROLLER.getStack(1), Recipe.THERMAL_EVAPORATION_PLANT.getJEICategory());
     }
 
     public static void registerReactionChamber(IModRegistry registry) {
@@ -246,7 +223,6 @@ public class RecipeRegistryHelper {
             return;
         }
         addRecipes(registry, Recipe.PRESSURIZED_REACTION_CHAMBER, PressurizedRecipe.class, PRCRecipeWrapper::new);
-
         registry.addRecipeClickArea(GuiPRC.class, 75, 37, 36, 10, Recipe.PRESSURIZED_REACTION_CHAMBER.getJEICategory());
         registerRecipeItem(registry, MachineType.PRESSURIZED_REACTION_CHAMBER, Recipe.PRESSURIZED_REACTION_CHAMBER);
     }
@@ -257,7 +233,6 @@ public class RecipeRegistryHelper {
         }
         List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<>();
         List<RotaryCondensentratorRecipeWrapper> decondensentratorRecipes = new ArrayList<>();
-
         for (Gas gas : GasRegistry.getRegisteredGasses()) {
             if (gas.hasFluid()) {
                 condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, true));
@@ -268,8 +243,7 @@ public class RecipeRegistryHelper {
         String decondensentrating = "mekanism.rotary_condensentrator_decondensentrating";
         registry.addRecipes(condensentratorRecipes, condensentrating);
         registry.addRecipes(decondensentratorRecipes, decondensentrating);
-        registry
-              .addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, condensentrating, decondensentrating);
+        registry.addRecipeClickArea(GuiRotaryCondensentrator.class, 64, 39, 48, 8, condensentrating, decondensentrating);
         registry.addRecipeCatalyst(MachineType.ROTARY_CONDENSENTRATOR.getStack(), condensentrating, decondensentrating);
     }
 
@@ -277,13 +251,8 @@ public class RecipeRegistryHelper {
         if (!MachineType.ENERGIZED_SMELTER.isEnabled()) {
             return;
         }
-        registry.handleRecipes(SmeltingRecipe.class, MachineRecipeWrapper::new,
-              Recipe.ENERGIZED_SMELTER.getJEICategory());
-
-        boolean crafttweakerLoaded = Loader.isModLoaded("crafttweaker");
-
-        if (crafttweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) // Removed / Removed + Added
-        {
+        registry.handleRecipes(SmeltingRecipe.class, MachineRecipeWrapper::new, Recipe.ENERGIZED_SMELTER.getJEICategory());
+        if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
             // Add all recipes
             Collection<SmeltingRecipe> recipeList = Recipe.ENERGIZED_SMELTER.get().values();
             registry.addRecipes(recipeList.stream().map(MachineRecipeWrapper::new).collect(Collectors.toList()),
@@ -292,18 +261,15 @@ public class RecipeRegistryHelper {
             registry
                   .addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7,
                         Recipe.ENERGIZED_SMELTER.getJEICategory());
-        } else if (crafttweakerLoaded && EnergizedSmelter.hasAddedRecipe()) // Added but not removed
-        {
+        } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
             // Only add added recipes
             Map<ItemStackInput, SmeltingRecipe> smeltingRecipes = Recipe.ENERGIZED_SMELTER.get();
-            List<MachineRecipeWrapper> smeltingWrapper = smeltingRecipes.entrySet().stream()
-                  .filter(entry -> !FurnaceRecipes.instance().getSmeltingList().keySet()
-                        .contains(entry.getKey().ingredient)).map(entry -> new MachineRecipeWrapper(entry.getValue()))
-                  .collect(Collectors.toList());
+            List<MachineRecipeWrapper> smeltingWrapper = smeltingRecipes.entrySet().stream().filter(entry ->
+                  !FurnaceRecipes.instance().getSmeltingList().keySet().contains(entry.getKey().ingredient)).map(entry ->
+                  new MachineRecipeWrapper(entry.getValue())).collect(Collectors.toList());
             registry.addRecipes(smeltingWrapper, Recipe.ENERGIZED_SMELTER.getJEICategory());
 
-            registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING,
-                  Recipe.ENERGIZED_SMELTER.getJEICategory());
+            registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.SMELTING, Recipe.ENERGIZED_SMELTER.getJEICategory());
             registerVanillaSmeltingRecipeCatalyst(registry);
         } else {
             //Only use furnace list, so no extra registration.
@@ -319,15 +285,12 @@ public class RecipeRegistryHelper {
             return;
         }
         registry.addRecipeCatalyst(MachineType.FORMULAIC_ASSEMBLICATOR.getStack(), VanillaRecipeCategoryUid.CRAFTING);
-        registry.getRecipeTransferRegistry()
-              .addRecipeTransferHandler(ContainerFormulaicAssemblicator.class, VanillaRecipeCategoryUid.CRAFTING,
-                    20, 9, 35, 36);
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerFormulaicAssemblicator.class, VanillaRecipeCategoryUid.CRAFTING, 20, 9, 35, 36);
     }
 
     private static void registerVanillaSmeltingRecipeCatalyst(IModRegistry registry) {
         registry.addRecipeCatalyst(MachineType.ENERGIZED_SMELTER.getStack(), VanillaRecipeCategoryUid.SMELTING);
-        FactoryTier.forEnabled(tier -> registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING),
-              VanillaRecipeCategoryUid.SMELTING));
+        FactoryTier.forEnabled(tier -> registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, RecipeType.SMELTING), VanillaRecipeCategoryUid.SMELTING));
     }
 
     private static <T> void addRecipes(IModRegistry registry, Recipe type, Class<T> recipeClass,
@@ -335,8 +298,7 @@ public class RecipeRegistryHelper {
         String recipeCategoryUid = type.getJEICategory();
         registry.handleRecipes(recipeClass, factory, recipeCategoryUid);
         Collection<T> recipeList = type.get().values();
-        registry.addRecipes(recipeList.stream().map(factory::getRecipeWrapper).collect(Collectors.toList()),
-              recipeCategoryUid);
+        registry.addRecipes(recipeList.stream().map(factory::getRecipeWrapper).collect(Collectors.toList()), recipeCategoryUid);
     }
 
     private static void registerRecipeItem(IModRegistry registry, MachineType type, Recipe recipe) {
@@ -350,8 +312,7 @@ public class RecipeRegistryHelper {
         }
         if (factoryType != null) {
             RecipeType finalFactoryType = factoryType;
-            FactoryTier.forEnabled(tier -> registry
-                  .addRecipeCatalyst(MekanismUtils.getFactory(tier, finalFactoryType), recipe.getJEICategory()));
+            FactoryTier.forEnabled(tier -> registry.addRecipeCatalyst(MekanismUtils.getFactory(tier, finalFactoryType), recipe.getJEICategory()));
         }
     }
 }

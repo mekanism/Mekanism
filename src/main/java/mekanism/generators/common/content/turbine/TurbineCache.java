@@ -30,7 +30,6 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
         if (nbtTags.hasKey("cachedFluid")) {
             fluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
         }
-
         electricity = nbtTags.getDouble("electricity");
         dumpMode = GasMode.values()[nbtTags.getInteger("dumpMode")];
     }
@@ -40,7 +39,6 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
         if (fluid != null) {
             nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
         }
-
         nbtTags.setDouble("electricity", electricity);
         nbtTags.setInteger("dumpMode", dumpMode.ordinal());
     }

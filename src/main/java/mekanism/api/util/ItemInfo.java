@@ -19,9 +19,7 @@ public class ItemInfo {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ItemInfo &&
-              ((ItemInfo) obj).item == item &&
-              ((ItemInfo) obj).meta == meta;
+        return obj instanceof ItemInfo && ((ItemInfo) obj).item == item && ((ItemInfo) obj).meta == meta;
     }
 
     @Override

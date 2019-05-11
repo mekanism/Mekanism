@@ -65,7 +65,7 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter, TILE exten
             return;
         }
         if (Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c)
-              || isTextboxKey(c, i)) {
+            || isTextboxKey(c, i)) {
             oreDictText.textboxKeyTyped(c, i);
         }
     }

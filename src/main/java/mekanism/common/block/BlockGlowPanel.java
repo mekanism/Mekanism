@@ -37,11 +37,8 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     static {
         AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
         Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
-
         for (EnumFacing side : EnumFacing.VALUES) {
-            bounds[side.ordinal()] = MultipartUtils
-                  .rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side)
-                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z);
+            bounds[side.ordinal()] = MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side).offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z);
         }
     }
 
@@ -54,11 +51,9 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
 
     public static boolean canStay(IBlockAccess world, BlockPos pos) {
         boolean canStay = false;
-
         if (Mekanism.hooks.MCMPLoaded) {
             canStay = MultipartMekanism.hasCenterSlot(world, pos);
         }
-
         if (!canStay) {
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityGlowPanel) {
@@ -67,7 +62,6 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
                 canStay = glowPanel.getWorld().isSideSolid(adj.getPos(), glowPanel.side.getOpposite());
             }
         }
-
         return canStay;
     }
 
@@ -82,7 +76,6 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
                 glowPanel = (TileEntityGlowPanel) childEntity;
             }
         }
-
         return glowPanel;
     }
 
@@ -110,16 +103,12 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     @Override
     public IBlockState getExtendedState(@Nonnull IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-
         if (tileEntity != null) {
             state = state.withProperty(BlockStateFacing.facingProperty, tileEntity.side);
-
             if (state instanceof IExtendedBlockState) {
-                return ((IExtendedBlockState) state)
-                      .withProperty(PropertyColor.INSTANCE, new PropertyColor(tileEntity.colour));
+                return ((IExtendedBlockState) state).withProperty(PropertyColor.INSTANCE, new PropertyColor(tileEntity.colour));
             }
         }
-
         return state;
     }
 
@@ -127,7 +116,6 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     @Deprecated
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos neighbor) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-
         if (tileEntity != null && !world.isRemote && !canStay(world, pos)) {
             dropBlockAsItem(world, pos, world.getBlockState(pos), 0);
             world.setBlockToAir(pos);
@@ -139,11 +127,9 @@ public class BlockGlowPanel extends BlockTileDrops implements ITileEntityProvide
     @Deprecated
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityGlowPanel tileEntity = getTileEntityGlowPanel(world, pos);
-
         if (tileEntity != null) {
             return bounds[tileEntity.side.ordinal()];
         }
-
         return super.getBoundingBox(state, world, pos);
     }
 

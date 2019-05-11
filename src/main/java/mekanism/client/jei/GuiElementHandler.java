@@ -18,9 +18,7 @@ public class GuiElementHandler implements IAdvancedGuiHandler {
     public List<Rectangle> getGuiExtraAreas(GuiContainer gui) {
         if (gui instanceof GuiMekanism) {
             GuiMekanism guiMek = (GuiMekanism) gui;
-            return guiMek.getGuiElements().stream()
-                  .map(element -> element.getBounds(guiMek.getXPos(), guiMek.getYPos()).toRectangle())
-                  .collect(Collectors.toList());
+            return guiMek.getGuiElements().stream().map(element -> element.getBounds(guiMek.getXPos(), guiMek.getYPos()).toRectangle()).collect(Collectors.toList());
         }
         return null;
     }

@@ -38,7 +38,6 @@ public class ItemMekanismTool extends ItemTool {
         } else if (material == MekanismTools.toolSTEEL || material == MekanismTools.toolSTEEL2) {
             return new ItemStack(MekanismItems.Ingot, 1, 4);
         }
-
         return material.getRepairItemStack();
     }
 

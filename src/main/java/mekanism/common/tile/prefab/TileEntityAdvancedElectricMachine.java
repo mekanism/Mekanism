@@ -37,11 +37,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends
-      TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler,
-      ISustainedData {
+      TileEntityUpgradeableMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ISustainedData {
 
-    private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive",
-          "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
+    private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy",
+                                                         "getEnergyNeeded"};
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final int BASE_GAS_PER_TICK = 1;
     public static int MAX_GAS = 210;
@@ -58,22 +57,18 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     public Gas prevGas;
 
     /**
-     * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output
-     * slot (2), energy slot (3), and the upgrade slot (4). The machine will not run if it does not have enough
-     * electricity, or if it doesn't have enough fuel ticks.
+     * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), energy slot (3), and the upgrade slot (4).
+     * The machine will not run if it does not have enough electricity, or if it doesn't have enough fuel ticks.
      *
-     * @param soundPath - location of the sound effect
-     * @param name - full name of this machine
-     * @param baseMaxEnergy - maximum amount of energy this machine can hold.
-     * @param baseEnergyUsage - how much energy this machine uses per tick.
-     * @param ticksRequired - how many ticks it takes to smelt an item.
+     * @param soundPath        - location of the sound effect
+     * @param name             - full name of this machine
+     * @param baseMaxEnergy    - maximum amount of energy this machine can hold.
+     * @param baseEnergyUsage  - how much energy this machine uses per tick.
+     * @param ticksRequired    - how many ticks it takes to smelt an item.
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
-    public TileEntityAdvancedElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage,
-          int ticksRequired, int secondaryPerTick) {
-        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired,
-              MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
-
+    public TileEntityAdvancedElectricMachine(String soundPath, String name, double baseMaxEnergy, double baseEnergyUsage, int ticksRequired, int secondaryPerTick) {
+        super(soundPath, name, baseMaxEnergy, baseEnergyUsage, 4, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
@@ -95,7 +90,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         if (upgradeableSecondaryEfficiency()) {
             upgradeComponent.setSupported(Upgrade.GAS);
         }
-
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
     }
@@ -116,6 +110,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * Gets the amount of ticks the declared itemstack can fuel this machine.
      *
      * @param itemstack - itemstack to check with
+     *
      * @return fuel ticks
      */
     public GasStack getItemGas(ItemStack itemstack) {
@@ -137,28 +132,18 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
         if (!world.isRemote) {
             ChargeUtils.discharge(3, this);
-
             handleSecondaryFuel();
-
             boolean inactive = false;
-
             RECIPE recipe = getRecipe();
+            secondaryEnergyThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int) Math.ceil(secondaryEnergyPerTick);
 
-            secondaryEnergyThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick)
-                  : (int) Math.ceil(secondaryEnergyPerTick);
-
-            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick
-                  && gasTank.getStored() >= secondaryEnergyThisTick) {
+            if (canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick) {
                 setActive(true);
-
                 operatingTicks++;
-
                 if (operatingTicks >= ticksRequired) {
                     operate(recipe);
-
                     operatingTicks = 0;
                 }
-
                 gasTank.draw(secondaryEnergyThisTick, true);
                 electricityStored -= energyPerTick;
             } else {
@@ -169,9 +154,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
             if (inactive && getRecipe() == null) {
                 operatingTicks = 0;
             }
-
             prevEnergy = getEnergy();
-
             if (!(gasTank.getGasType() == null || gasTank.getStored() == 0)) {
                 prevGas = gasTank.getGasType();
             }
@@ -182,10 +165,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         if (!inventory.get(1).isEmpty() && gasTank.getNeeded() > 0) {
             GasStack stack = getItemGas(inventory.get(1));
             int gasNeeded = gasTank.getNeeded();
-
             if (stack != null && gasTank.canReceive(stack.getGas()) && gasNeeded >= stack.amount) {
                 gasTank.receive(stack, true);
-
                 inventory.get(1).shrink(1);
             }
         }
@@ -204,8 +185,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         if (slotID == 2) {
             return false;
         } else if (slotID == 4) {
-            return itemstack.getItem() == MekanismItems.SpeedUpgrade
-                  || itemstack.getItem() == MekanismItems.EnergyUpgrade;
+            return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
         } else if (slotID == 0) {
             for (AdvancedMachineInput input : getRecipes().keySet()) {
                 if (input.itemStack.isItemEqual(itemstack)) {
@@ -217,7 +197,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         } else if (slotID == 1) {
             return getItemGas(itemstack) != null;
         }
-
         return false;
     }
 
@@ -229,18 +208,15 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     @Override
     public RECIPE getRecipe() {
         AdvancedMachineInput input = getInput();
-
         if (cachedRecipe == null || !input.testEquality(cachedRecipe.getInput())) {
             cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
         }
-
         return cachedRecipe;
     }
 
     @Override
     public void operate(RECIPE recipe) {
         recipe.operate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
-
         markDirty();
         ejectorComponent.outputItems();
     }
@@ -253,7 +229,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     @Override
     public void handlePacketData(ByteBuf dataStream) {
         super.handlePacketData(dataStream);
-
         if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
             TileUtils.readTankData(dataStream, gasTank);
         }
@@ -269,7 +244,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     @Override
     public void readFromNBT(NBTTagCompound nbtTags) {
         super.readFromNBT(nbtTags);
-
         gasTank.read(nbtTags.getCompoundTag("gasTank"));
         gasTank.setMaxGas(MAX_GAS);
     }
@@ -278,9 +252,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbtTags) {
         super.writeToNBT(nbtTags);
-
         nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
-
         return nbtTags;
     }
 
@@ -288,6 +260,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
      * Gets the scaled secondary energy level for the GUI.
      *
      * @param i - multiplier
+     *
      * @return scaled secondary energy
      */
     public int getScaledGasLevel(int i) {
@@ -298,10 +271,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
     public boolean canExtractItem(int slotID, @Nonnull ItemStack itemstack, @Nonnull EnumFacing side) {
         if (slotID == 3) {
             return ChargeUtils.canBeOutputted(itemstack, false);
-        } else {
-            return slotID == 2;
         }
-
+        return slotID == 2;
     }
 
     @Override
@@ -345,14 +316,12 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
         } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             return Capabilities.GAS_HANDLER_CAPABILITY.cast(this);
         }
-
         return super.getCapability(capability, side);
     }
 
     @Override
     public void recalculateUpgradables(Upgrade upgrade) {
         super.recalculateUpgradables(upgrade);
-
         if (upgrade == Upgrade.SPEED || (upgradeableSecondaryEfficiency() && upgrade == Upgrade.GAS)) {
             secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
         }
