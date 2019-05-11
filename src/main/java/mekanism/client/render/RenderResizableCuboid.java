@@ -1,9 +1,9 @@
 package mekanism.client.render;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -41,7 +41,7 @@ public class RenderResizableCuboid {
     /**
      * The AO map assumes that each direction in the world has a different amount of light going towards it.
      */
-    private static final Map<EnumFacing, Vec3d> aoMap = Maps.newEnumMap(EnumFacing.class);
+    private static final Map<EnumFacing, Vec3d> aoMap = new EnumMap<>(EnumFacing.class);
     private static final int U_MIN = 0;
     private static final int U_MAX = 1;
     private static final int V_MIN = 2;
@@ -522,7 +522,7 @@ public class RenderResizableCuboid {
      * @param rotation TODO
      */
     private List<RenderInfo> getRenderInfos(float[] uv, double sizeU, double sizeV, double textureSizeU, double textureSizeV, double textureOffsetU, double textureOffsetV) {
-        List<RenderInfo> infos = Lists.newArrayList();
+        List<RenderInfo> infos = new ArrayList<>();
         boolean firstU = true;
         for (double u = 0; u < sizeU; u += textureSizeU) {
             float[] uvCu = Arrays.copyOf(uv, 4);

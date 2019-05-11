@@ -2,7 +2,6 @@ package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -239,7 +238,7 @@ public class TransmitterModel extends OBJBakedModelBase {
     private class TransmitterOverride extends ItemOverrideList {
 
         public TransmitterOverride() {
-            super(Lists.newArrayList());
+            super(new ArrayList<>());
         }
 
         @Nonnull
